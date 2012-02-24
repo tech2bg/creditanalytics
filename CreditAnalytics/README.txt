@@ -3,55 +3,48 @@ CreditAnalytics
 
 
 Lakshmi Krishnamurthy
-v1.1, 24 January 2012
+v1.2, 22 February 2012
 
 
-Overview
+If you are looking to ...
 
-CreditAnalytics is a full featured fixed income credit analytics library, developed with a special focus towards the needs of the credit products community (CDS, CDX, CDO, and bonds of all types and variants).
+- Create IR discount curve from rates, or by calibration from quotes of cash/money market LIBOR/swap/future
+- Create credit curve from hazard rate or survival probabilites, or from quotes of bonds/CDS/other credit sensitive instruments
+- Creates basis and correlation curves using single name and credit basket products
+- Build FX Spot, forward, and FX basis curves from a variety of inputs
+- Day counts of all kinds, holiday calendars for 150+ jurisdictions, and weirdest date adjustment rules
+- Pull up a complete description of a bond using its ISIN/CUSIP/other standard identifier, and calc price, yield, G/I/Z Spread, bond credit basis or any other relative value metric, or
+- Build your own bond or semi-funded note using any of the bells provided
+- Pull in all the ref data for a given bond (incl. non-valuation details such as issue dates, notional, domicile, option schedule), or for all the bonds for the given issuer/sector/rating etc
+- Build a standard CDS/CDX/CDO instrument by code, or a bespoke one using the numerous built-in custom features
+- Pull historical and live IR/CDS/CDX/CDO/bond quotes, analytics
+_ Generate 1000+ measures for each of the product for a given scenario, or
+- Generate valuations for fully customizable scenario adjustment
+- All these in a set of very simple, elegant group of APIs
 
-
-CreditAnalytics Features
-
-CreditAnalytics captures the valuation, the analytics, and the risk measures calculation for the full set of liquid and semi-liquid credit products. The following is a comprehensive suite of credit products that it handles:
-·	Single name credit default swaps (with amortizing coupon and notional schedules, and custom recovery schedules)
-·	Portfolio credit default basket swaps (in particular, it covers the full range of liquid and custom CDX/iTRAXX across sectors, etc), again with variable coupon, notional, and custom recovery schedules
-·	Basic structured credit products such as nth-to-default basket and its full set of variants, tranches on the standard indices as well as bespoke baskets, squared/cubed structured variants, both in funded and unfunded forms.
-·	Comprehensive coverage of all bond types – fixed/floating rate bonds, support for different rate indices and fixings, amortizing/capitalizing bonds, perpetual bonds, European/Bermudan/American embedded option schedules and their variants, fix-to-float on exercise, custom bonds with principal, coupon, and recovery schedules.
-·	Optionaly, CreditAnalytics also installs an initial set of bond reference data, bond marks, and IR, treasury, and credit curve closes. Once installed, it can also connect to this database to run analytics and valuation on CDS and bond positions.
-
-CreditAnalytics contains the following built-in set of curve calibration functionality from market quotes:
-·	Although not its primary function, CreditAnalytics can bootstrap discount curve from a variety of IR instruments and their quotes – cash/money market instruments, futures (e.g., EDSF), swaps, and treasury quotes.
-·	Comprehensive calibration routines for single name credit curves such from CDS, bonds, or a mixture of quotes. Inputs can be in one of CDS quoted measures (fixed coupon flat spreads, upfront points, or fair premium/par spreads), one of bond quotes (e.g., yield/Z Spread, asset swap spread, spread to treasury, I spread, spread to the treasury curve (G Spread) etc), or a mixture of any instrument and their corresponding measure.
-·	For basket products, CreditAnalytics provides a comprehensive set of basket basis calibration routines for the credit indices, correlation calibration routines for standard/bespoke tranches, as well as a suite of advanced correlation calibration functionality (such as multi-factor and random-factor correlation calibration, base correlation surface set up, and calibration to the Merton model).
-·	With version 1.1 and above, coverage has been introduced for bond baskets and bond ETFs.
-
-Finally, CreditAnalytics also calculates an elaborate sequence of measures relevant to each product. It is built with an enhanced sequence of standard scenario curves that can be used to generate very elaborate scenario measures.
+... CreditAnalytics does all this (and more)!
 
 
-Documentation
+To learn more ...
 
-Detailed documentation of CreditAnalytics functionality, as well as the product/measures/risk scenarios covered may be found at the user documentation, coverage document, and the developer guide. Consult the javadoc for elaborate API usage information.
-
-
-Installation and Dependencies
-
-The core modules of CreditAnalytics are just two jars:
-·	Drip.jar: This contains the complete suite of the entire CreditAnalytics analytics. Download and install this in your classpath.
-·	Ojdbc14.jar: This jar file is entirely optional. This contains the Oracle JDBC drivers needed for access to the reference data (optional). Download and install this in your classpath.
+Check out the detailed documentation of at the user documentation site. javadoc gives elaborate API usage information.
 
 
-Configuration
+All you need is to install is a single jar file. Really.
 
-All the configuration entries are maintained in the provided Config.xml file. Configuration includes information on the location to the day count files, data tables for the bond static reference data, bond closing marks data, and IR/CDS/treasury closing quotes. Every one of this information is optional, and the consequence of not providing a configuration file is that the defaults will be used. The following are defaults:
-·	Day count entries absent – CreditAnalytics uses a comprehensive set of built in day count conventions and holiday calendars across the overwhelming majority of locations, so day count entries are mostly not needed (unless specifically to overwrite the CreditAnalytics ‘s day count/holiday calendar).
-·	Bond reference data tables absent – Will not be able to access a bond by its ISIN/CUSIP or any of the identifiers. You will still be able to create all variants of user-defined bonds, from simple fixed rate bonds to complex callable floaters (see next section).
-·	Closing curve mark tables absent: Will not be able to retrieve closing IR/credit/treasury/FX curve marks and create those curves. Will still be able to calibrate user-defined curves from custom quotes (see next section).
+It is called drip.jar (with version info appended). This contains the complete suite of the entire CreditAnalytics analytics. Drop this in the classpath.
+
+If you wish to get bond ref data or closing marks, you may optionally need Ojdbc14.jar - the Oracle JDBC drivers needed for access to the reference data. Again in your classpath it goes.
 
 
-Getting Started
+Configuring is simple too, 
 
-Once you have downloaded and installed CreditAnalytics, the first step is to set up the configuration by altering the entries provided in the Config.xml file (you can rename it, as long you identify the full path in the initializer – see below). Of course, you don’t need to provide a configuration file – in which case the settings default to the values provided in the previous section.
+Built-in configuration covers a humoungous variety of day count conventions, calendars, and date adjustment rules. Unsatisfied with any factory calendar default? Examine it first by using one of the API calls, then muck with appropriate Config.xml entry in the config directory, and use this file as the start up.
+
+
+After installation, start by
+
+ ... altering the entries in the Config.xml file (you can rename it, as long you identify the full path in the initializer - see below). Of course, you don't even need a configuration file - in which case the settings default to the values provided in the previous section.
 
 The sample FIFull.java is the place to start. It contains a comprehensive set of illustrated usage of all the CreditAnalytics API calls.
 
@@ -61,3 +54,14 @@ The sample FIFull.java is the place to start. It contains a comprehensive set of
 
 FI.Init initializes the CreditAnalytics library - it takes the optional configuration file as an input. If the initialization is not successful, certain CreditAnalytics functionality will not be available, as the sample demonstrates.
 
+The sample EODLive.java shows historical/live data extractions and their eventual analytics.
+
+
+Licence
+
+CreditAnalytics is distributed under the Apache 2.0 licence - please see the attached Licence for details.
+
+
+Contributors
+
+Lakshmi Krishnamurthy (lakshmi7977@gmail.com)
