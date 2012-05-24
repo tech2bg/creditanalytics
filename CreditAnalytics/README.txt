@@ -3,7 +3,7 @@ CreditAnalytics
 
 
 Lakshmi Krishnamurthy
-v1.4, 1 May 2012
+v1.5, 22 May 2012
 
 
 If you are looking to ...
