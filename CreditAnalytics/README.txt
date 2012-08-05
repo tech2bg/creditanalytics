@@ -3,7 +3,7 @@ CreditAnalytics
 
 
 Lakshmi Krishnamurthy
-v1.5, 22 May 2012
+v1.6, 19 July 2012
 
 
 If you are looking to ...
@@ -50,9 +50,9 @@ Any of the samples in the examples folder would be the place to start. They cont
 
 		java.lang.String strConfig;
 
-		boolean bFIInit = org.drip.service.api.FI.Init (strConfig);
+		boolean bFIInit = org.drip.service.api.CreditAnalytics.Init (strConfig);
 
-FI.Init initializes the CreditAnalytics library - it takes the optional configuration file as an input. If the initialization is not successful, certain CreditAnalytics functionality will not be available, as the sample demonstrates.
+CreditAnalytics.Init initializes the CreditAnalytics library - it takes the optional configuration file as an input. If the initialization is not successful, certain CreditAnalytics functionality will not be available, as the sample demonstrates.
 
 Examples folder contains samples for bond/CDS/CDX creation and usage, show historical/live data extractions, and their eventual analytics.
 
@@ -64,4 +64,7 @@ CreditAnalytics is distributed under the Apache 2.0 licence - please see the att
 
 Contributors
 
+Luis Cota
 Lakshmi Krishnamurthy (lakshmi7977@gmail.com)
+Warren Masters
+
