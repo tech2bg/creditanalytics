@@ -22,6 +22,8 @@ org.drip.product.definition
 org.drip.product.fx
 org.drip.product.params
 org.drip.product.rates
+org.drip.regression.core
+org.drip.regression.sample
 org.drip.service.api
 org.drip.service.bridge
 org.drip.service.env
