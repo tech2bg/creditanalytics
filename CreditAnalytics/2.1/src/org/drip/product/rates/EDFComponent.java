@@ -40,6 +40,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 100.;
 	private java.lang.String _strIR = "";
 	private java.lang.String _strEDCode = "";
+	private java.lang.String _strDC = "Act/360";
+	private java.lang.String _strCalendar = "USD";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
@@ -54,23 +56,45 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	/**
+	 * Constructs an EDFComponent Component
+	 * 
+	 * @param dtEffective Effective Date
+	 * @param dtMaturity Maturity Date
+	 * @param strIR IR Curve
+	 * @param strDC Day Count
+	 * @param strCalendar Calendar
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
+
 	public EDFComponent (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final java.lang.String strIR)
+		final java.lang.String strIR,
+		final java.lang.String strDC,
+		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (null == dtEffective || null == dtMaturity || null == strIR || strIR.isEmpty())
-			throw new java.lang.Exception ("Invalid EDFuture ctr params!");
+		if (null == dtEffective || null == dtMaturity || null == (_strIR = strIR) || _strIR.isEmpty() ||
+			(_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective = dtEffective.getJulian()))
+			throw new java.lang.Exception ("EDFComponent ctr:: Invalid Params!");
 
-		_strIR = strIR;
-
-		if ((_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective = dtEffective.getJulian()))
-			throw new java.lang.Exception ("EDFuture: mat " + dtMaturity.toString() + " <= effective " +
-				dtEffective.toString() + "!");
+		_strDC = strDC;
+		_strCalendar = strCalendar;
 
 		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 	}
+
+	/**
+	 * Constructs an EDFComponent Component
+	 * 
+	 * @param strFullEDCode EDF Component Code
+	 * @param dt Start Date
+	 * @param strIR IR Curve
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
 
 	public EDFComponent (
 		final java.lang.String strFullEDCode,
@@ -78,19 +102,21 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strIR)
 		throws java.lang.Exception
 	{
-		if (null == dt) throw new java.lang.Exception ("Bad EDF base date!");
+		if (null == dt || null == (_strIR = strIR) || _strIR.isEmpty())
+			throw new java.lang.Exception ("EDFComponent ctr:: Invalid Params!");
 
 		java.lang.String strEDCode = strFullEDCode;
 
 		if (4 != strEDCode.length() || !strEDCode.toUpperCase().startsWith ("ED"))
-			 throw new java.lang.Exception ("Unknown EDF Code: " + strEDCode);
+			 throw new java.lang.Exception ("EDFComponent ctr:: Unknown EDF Code " + strEDCode);
 
-		_strIR = strIR;
+		_strCalendar = strIR;
 		int iEffectiveMonth = -1;
 
 		int iYearDigit = new java.lang.Integer ("" + strEDCode.charAt (3)).intValue();
 
-		if (10 <= iYearDigit) throw new java.lang.Exception ("Invalid ED year in " + strEDCode);
+		if (10 <= iYearDigit)
+			throw new java.lang.Exception ("EDFComponent ctr:: Invalid ED year in " + strEDCode);
 
 		char chMonth = strEDCode.charAt (2);
 
@@ -103,7 +129,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		else if ('Z' == chMonth)
 			 iEffectiveMonth = org.drip.analytics.date.JulianDate.DECEMBER;
 		else
-			 throw new java.lang.Exception ("Unknown Month in " + strEDCode);
+			 throw new java.lang.Exception ("EDFComponent ctr:: Unknown Month in " + strEDCode);
 
 		org.drip.analytics.date.JulianDate dtEDEffective = dt.getFirstEDFStartDate (3);
 
@@ -158,7 +184,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
 			throw new java.lang.Exception ("EDFuture de-serializer: Cannot locate notional");
 
-		_dblNotional = new java.lang.Double (astrField[1]).doubleValue();
+		_dblNotional = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("EDFuture de-serializer: Cannot locate IR curve name");
@@ -180,13 +206,13 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
 			throw new java.lang.Exception ("EDFuture de-serializer: Cannot locate maturity date");
 
-		_dblMaturity = new java.lang.Double (astrField[4]).doubleValue();
+		_dblMaturity = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
 			throw new java.lang.Exception ("EDFuture de-serializer: Cannot locate effective date");
 
-		_dblEffective = new java.lang.Double (astrField[5]).doubleValue();
+		_dblEffective = new java.lang.Double (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty())
 			throw new java.lang.Exception ("EDFuture de-serializer: Cannot locate notional schedule");
@@ -255,7 +281,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		throws java.lang.Exception
 	{
 		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("EDF.getNotional got NaN date");
+			throw new java.lang.Exception ("EDF::getNotional => Got NaN date");
 
 		return _notlSchedule.getFactor (dblDate);
 	}
@@ -275,7 +301,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
 			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
-			throw new java.lang.Exception ("EDF.getNotional got NaN date");
+			throw new java.lang.Exception ("EDF::getNotional => Got NaN date");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
 	}
@@ -344,29 +370,34 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getDiscountCurve()) return null;
+		if (null == valParams || null == mktParams || valParams._dblValue >= _dblMaturity) return null;
+
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == dc) return null;
 
 		long lStart = System.nanoTime();
 
 		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.HashMap<java.lang.String,
 			java.lang.Double>();
 
-		if (valParams._dblValue >= _dblMaturity) return mapResult;
-
 		try {
-			double dblCashSettle = valParams._dblCashPay;
+			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
+				_settleParams.cashSettleDate (valParams._dblValue);
 
-			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams._dblValue);
+			double dblUnadjustedAnnuity = dc.getDF (_dblMaturity) / dc.getDF (_dblEffective) / dc.getDF
+				(dblCashSettle);
 
-			mapResult.put ("PV", mktParams.getDiscountCurve().getDF (_dblMaturity) /
-				mktParams.getDiscountCurve().getDF (_dblEffective) / mktParams.getDiscountCurve().getDF
-					(dblCashSettle) * _dblNotional * 0.01 * getNotional (_dblEffective, _dblMaturity));
+			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.getDF (dblCashSettle);
 
-			mapResult.put ("Price", 100. * (1 - mktParams.getDiscountCurve().calcImpliedRate (_dblEffective,
-				_dblMaturity)));
-
-			mapResult.put ("Rate", mktParams.getDiscountCurve().calcImpliedRate (_dblEffective,
+			mapResult.put ("PV", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
 				_dblMaturity));
+
+			mapResult.put ("Price", 100. * dblAdjustedAnnuity);
+
+			mapResult.put ("Rate", ((1. / dblUnadjustedAnnuity) - 1.) /
+				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
+					false, _dblMaturity, null, _strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -530,7 +561,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		throws java.lang.Exception
 	{
 		EDFComponent edf = new EDFComponent (org.drip.analytics.date.JulianDate.Today(),
-			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"), "GBP");
+			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"), "GBP", "Act/360", "GBP");
 
 		byte[] abEDF = edf.serialize();
 

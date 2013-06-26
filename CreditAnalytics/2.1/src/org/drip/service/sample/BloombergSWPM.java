@@ -16,9 +16,8 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.CashBuilder;
 import org.drip.product.creator.EDFutureBuilder;
-import org.drip.product.creator.IRSBuilder;
+import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.CalibratableComponent;
-import org.drip.product.definition.RatesComponent;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -108,7 +107,7 @@ public class BloombergSWPM {
 			adblRate[i + adblEDFRate.length + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + adblEDFRate.length + astrCashTenor.length] = adblIRSRate[i];
 
-			aCompCalib[i + adblEDFRate.length + astrCashTenor.length] = IRSBuilder.CreateIRS (dtStart.addDays (2), new
+			aCompCalib[i + adblEDFRate.length + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
 				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addDays (2).addTenor
 					(astrIRSTenor[i]).getJulian()), 0., strCurrency, strIndex, strCurrency);
 
@@ -121,7 +120,7 @@ public class BloombergSWPM {
 
 		Map<String, Double> mIndexFixings = new HashMap<String, Double>();
 
-		mIndexFixings.put (strIndex, 0.0042);
+		mIndexFixings.put (strIndex, 0.0027675);
 
 		Map<JulianDate, Map<String, Double>> mmFixings = new HashMap<JulianDate, Map<String, Double>>();
 
@@ -158,19 +157,19 @@ public class BloombergSWPM {
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtStart = JulianDate.CreateFromYMD (2013, JulianDate.JUNE, 19);
+		JulianDate dtStart = JulianDate.CreateFromYMD (2013, JulianDate.JUNE, 24);
 
 		/*
-		 * This part is best modeled by Curve #47 in the SWPM "Curves" tab
+		 * This part is best modeled by Curve #23 in the SWPM "Curves" tab
 		 */
 
 		String[] astrCashTenor = new String[] {"3M"};
-		double[] adblCashRate = new double[] {0.0027175};
-		double[] adblEDFRate = new double[] {0.00277, 0.00309};
-		String[] astrIRSTenor = new String[] {   "1Y",      "2Y",      "3Y",      "4Y",      "5Y",      "6Y",      "7Y",
-				 "8Y",      "9Y",     "10Y",     "12Y",     "15Y",     "20Y",     "30Y"};
-		double[] adblIRSRate = new double[] {0.003177, 0.0045574, 0.0073411, 0.0109921, 0.0145993, 0.0175048, 0.0198985,
-			0.0219095, 0.0236188, 0.0250914, 0.0274766, 0.0297526, 0.0315100, 0.0327862};
+		double[] adblCashRate = new double[] {0.0027675};
+		double[] adblEDFRate = new double[] {0.0027675, 0.0027675};
+		String[] astrIRSTenor = new String[] {    "3Y",      "4Y",      "5Y",      "6Y",      "7Y",
+				 "8Y",      "9Y",     "10Y",     "11Y",     "12Y",     "15Y",     "20Y",     "30Y"};
+		double[] adblIRSRate = new double[] {0.0125641, 0.0125641, 0.0162899, 0.0194465, 0.0220434,
+			0.0241815, 0.0259419, 0.0274346, 0.0286947, 0.0297873, 0.0319690, 0.0335305, 0.0345367};
 
 		DiscountCurve dc = BuildBBGRatesCurve (dtStart, astrCashTenor, adblCashRate, adblEDFRate, astrIRSTenor, adblIRSRate, "USD");
 
@@ -178,17 +177,25 @@ public class BloombergSWPM {
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtStart.addDays (2), 0, "", Convention.DR_ACTUAL);
 
-		RatesComponent swap = IRSBuilder.CreateIRS (
-			dtStart.addDays (2),
-			dtStart.addDays (2).addTenor ("5Y"),
-			0.01478734,
-			"USD",
-			"USD-LIBOR-6M",
-			"USD");
+		JulianDate dtEffective = dtStart.addDays (2);
+
+		JulianDate dtMaturity = dtStart.addDays (2).addTenor ("5Y");
+
+		System.out.println ("Effective: " + dtEffective);
+
+		System.out.println ("Maturity: " + dtMaturity);
+
+		org.drip.product.definition.RatesComponent fixStream = RatesStreamBuilder.CreateFixedStream (dtEffective,
+			dtMaturity, 0.01628993, "USD", "USD");
+
+		org.drip.product.definition.RatesComponent floatStream = RatesStreamBuilder.CreateFloatingStream (dtEffective,
+			dtMaturity, 0., "USD", "USD-LIBOR", "USD");
+
+		org.drip.product.rates.IRSComponent swap = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
 
 		Map<String, Double> mIndexFixings = new HashMap<String, Double>();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
+		mIndexFixings.put ("USD-LIBOR-6M", 0.0027675);
 
 		Map<JulianDate, Map<String, Double>> mmFixings = new HashMap<JulianDate, Map<String, Double>>();
 
@@ -201,6 +208,8 @@ public class BloombergSWPM {
 		System.out.println ("PV: " + mapSwapCalc.get ("CleanPV"));
 
 		System.out.println ("DV01: " + mapSwapCalc.get ("DirtyDV01"));
+
+		System.out.println ("Fair Premium: " + org.drip.math.common.FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 3, 100.));
 
 		System.out.println ("\nCashflow\n--------");
 

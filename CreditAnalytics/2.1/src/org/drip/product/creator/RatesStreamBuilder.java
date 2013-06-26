@@ -31,13 +31,76 @@ package org.drip.product.creator;
  */
 
 /**
- * This class contains the suite of helper functions for creating the Interest Rate Swap Product from
+ * This class contains the suite of helper functions for creating the Stream-based Rates Products from
  * 		different kinds of inputs.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class IRSBuilder {
+public class RatesStreamBuilder {
+
+	/**
+	 * Creates a Fixed Stream instance from effective/maturity dates, coupon, and IR curve name
+	 * 
+	 * @param dtEffective JulianDate effective
+	 * @param dtMaturity JulianDate maturity
+	 * @param dblCoupon Double coupon
+	 * @param strIR IR curve name
+	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * 
+	 * @return The Fixed Stream Instance
+	 */
+
+	public static final org.drip.product.definition.RatesComponent CreateFixedStream (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.analytics.date.JulianDate dtMaturity,
+		final double dblCoupon,
+		final java.lang.String strIR,
+		final java.lang.String strCalendar)
+	{
+		try {
+			return new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
+				dblCoupon, 2, "30/360", "30/360", false, null, null, null, null, null, null, null, null,
+					100., strIR, strCalendar);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Creates a Floating Stream instance from effective/maturity dates, coupon, IR curve name, and
+	 * 	floater index
+	 * 
+	 * @param dtEffective JulianDate effective
+	 * @param dtMaturity JulianDate maturity
+	 * @param dblCoupon Double coupon
+	 * @param strIR IR curve name
+	 * @param strFloatingRateIndex Floater Index
+	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * 
+	 * @return The Floating Stream Instance
+	 */
+
+	public static final org.drip.product.definition.RatesComponent CreateFloatingStream (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.analytics.date.JulianDate dtMaturity,
+		final double dblCoupon,
+		final java.lang.String strIR,
+		final java.lang.String strFloatingRateIndex,
+		final java.lang.String strCalendar)
+	{
+		try {
+			return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+				dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", strFloatingRateIndex, false, null, null,
+					null, null, null, null, null, null, null, -100., strIR, strCalendar);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	/**
 	 * Creates an IRS product from effective/maturity dates, coupon, and IR curve name/rate index
@@ -68,14 +131,11 @@ public class IRSBuilder {
 		}
 
 		try {
-			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
-				(dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 2, "30/360", "30/360", false,
-					null, null, null, null, null, null, null, null, 100., strIR, strCalendar);
+			org.drip.product.definition.RatesComponent fixStream = CreateFixedStream (dtEffective,
+				dtMaturity, dblCoupon, strIR, strCalendar);
 
-			org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
-				(dtEffective.getJulian(), dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360",
-					strFloatingRateIndex, false, null, null, null, null, null, null, null, null, null, -100.,
-						strIR, strCalendar);
+			org.drip.product.definition.RatesComponent floatStream = CreateFloatingStream (dtEffective,
+				dtMaturity, dblCoupon, strIR, strFloatingRateIndex, strCalendar);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
@@ -119,15 +179,11 @@ public class IRSBuilder {
 		}
 
 		try {
-			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
-				(dtEffective.getJulian(), dtEffective.addTenor (strTenor).getJulian(), dblCoupon, 2,
-					"30/360", "30/360", false, null, null, null, null, null, null, null, null, 100., strIR,
-						strCalendar);
+			org.drip.product.definition.RatesComponent fixStream = CreateFixedStream (dtEffective,
+				dtEffective.addTenor (strTenor), dblCoupon, strIR, strCalendar);
 
-			org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
-				(dtEffective.getJulian(), dtEffective.addTenor (strTenor).getJulian(), 0., 4, "Act/360",
-					"Act/360", strFloatingRateIndex, false, null, null, null, null, null, null, null, null,
-						null, -100., strIR, strCalendar);
+			org.drip.product.definition.RatesComponent floatStream = CreateFloatingStream (dtEffective,
+				dtEffective.addTenor (strTenor), dblCoupon, strIR, strFloatingRateIndex, strCalendar);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
@@ -143,6 +199,50 @@ public class IRSBuilder {
 	}
 
 	/**
+	 * Create a Fixed Stream Instance from the byte array
+	 * 
+	 * @param ab Byte Array
+	 * 
+	 * @return Fixed Stream Instance
+	 */
+
+	public static final org.drip.product.definition.RatesComponent FixedStreamFromByteArray (
+		final byte[] ab)
+	{
+		if (null == ab || 0 == ab.length) return null;
+
+		try {
+			return new org.drip.product.rates.FixedStream (ab);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create a Floating Stream Instance from the byte array
+	 * 
+	 * @param ab Byte Array
+	 * 
+	 * @return Floating Stream Instance
+	 */
+
+	public static final org.drip.product.definition.RatesComponent FloatingStreamFromByteArray (
+		final byte[] ab)
+	{
+		if (null == ab || 0 == ab.length) return null;
+
+		try {
+			return new org.drip.product.rates.FloatingStream (ab);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Create a IRS Instance from the byte array
 	 * 
 	 * @param ab Byte Array
@@ -150,7 +250,7 @@ public class IRSBuilder {
 	 * @return IRS Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent FromByteArray (
+	public static final org.drip.product.definition.RatesComponent IRSFromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;

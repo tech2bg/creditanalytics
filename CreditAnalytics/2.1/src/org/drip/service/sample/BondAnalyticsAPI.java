@@ -106,7 +106,7 @@ public class BondAnalyticsAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i];
 
-			aCompCalib[i + astrCashTenor.length] = IRSBuilder.CreateIRS (dtStart.addDays (2), new
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
 				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addTenor
 					(astrIRSTenor[i]).getJulian()), 0., strCurrency, strIndex, strCurrency);
 		}
@@ -396,8 +396,7 @@ public class BondAnalyticsAPI {
 			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
 				(valParams, cmp, null, 0.03), 1, 3, 100.));
 
-			double dblPrice = aBond[i].calcPriceFromYield
-					(valParams, cmp, null, 0.03);
+			double dblPrice = aBond[i].calcPriceFromYield (valParams, cmp, null, 0.03);
 
 			WorkoutInfo wi = aBond[i].calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
 

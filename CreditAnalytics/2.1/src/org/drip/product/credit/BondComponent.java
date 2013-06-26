@@ -66,6 +66,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	private static final int s_iDiscretizationScheme =
 		org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP;
 
+	/*
+	 * Discount Curve to derive the zero curve off of
+	 */
+
+	private static final int ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE = 1;
+	private static final int ZERO_OFF_OF_TREASURIES_DISCOUNT_CURVE = 2;
+
 	private org.drip.product.params.TreasuryBenchmark _tsyParams = null;
 	private org.drip.product.params.CouponSetting _cpnParams = null;
 	private org.drip.product.params.NotionalSetting _notlParams = null;
@@ -104,6 +111,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == strTsyBmk || strTsyBmk.isEmpty())
 			strTsyBmk = org.drip.analytics.support.AnalyticsHelper.BaseTsyBmk (valParams._dblValue,
 				dblWorkoutDate);
+
+		System.out.println ("strTsyBmk = " + strTsyBmk);
 
 		if (null != mktParams.getTSYBenchmarkQuotes() && null != strTsyBmk && !strTsyBmk.isEmpty())
 			cqTsyBmkYield = mktParams.getTSYBenchmarkQuotes().get (strTsyBmk);
@@ -1985,26 +1994,31 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
+		final int iZeroCurveBaseDC,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getDiscountCurve() ||
+		if (null == valParams || valParams._dblValue >= dblWorkoutDate + LEFT_EOS_SNIP|| null == mktParams ||
 			java.lang.Double.isNaN (dblWorkoutDate) || java.lang.Double.isNaN (dblWorkoutFactor) ||
 				java.lang.Double.isNaN (dblZCBump))
-			throw new java.lang.Exception ("Invalid inputs into BondComponent::calcPriceFromZC");
-
-		if (valParams._dblValue >= dblWorkoutDate + LEFT_EOS_SNIP)
-			throw new java.lang.Exception ("Val date " + org.drip.analytics.date.JulianDate.fromJulian
-				(valParams._dblValue) + " greater than Work-out " +
-					org.drip.analytics.date.JulianDate.fromJulian (dblWorkoutDate));
+			throw new java.lang.Exception ("BondComponent::calcPriceFromZC => Invalid Inputs");
 
 		double dblPVFromZC = 0.;
 		boolean bTerminateCouponFlow = false;
 		double dblCashPayDate = java.lang.Double.NaN;
 		double dblScalingNotional = java.lang.Double.NaN;
 		org.drip.analytics.definition.ZeroCurve zc = null;
+		org.drip.analytics.definition.DiscountCurve dcBase = null;
+
+		if (ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE == iZeroCurveBaseDC)
+			dcBase = mktParams.getDiscountCurve();
+		else if (ZERO_OFF_OF_TREASURIES_DISCOUNT_CURVE == iZeroCurveBaseDC)
+			dcBase = mktParams.getTSYDiscountCurve();
+
+		if (null == dcBase)
+			throw new java.lang.Exception ("BondComponent::calcPriceFromZC => Invalid discount curve");
 
 		try {
 			dblCashPayDate = _mktConv.getSettleDate (valParams);
@@ -2019,9 +2033,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		try {
 			zc = org.drip.analytics.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams._iFreq,
 				_periodParams._strCouponDC, _ccyParams._strCouponCurrency, _periodParams._bApplyCpnEOMAdj,
-					_periodParams.getPeriods(), dblWorkoutDate, dblCashPayDate, mktParams.getDiscountCurve(),
-						null == quotingParams ? (null == _mktConv ? null : _mktConv._quotingParams) :
-							quotingParams, dblZCBump);
+					_periodParams.getPeriods(), dblWorkoutDate, dblCashPayDate, dcBase, null == quotingParams
+						? (null == _mktConv ? null : _mktConv._quotingParams) : quotingParams, dblZCBump);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -7778,8 +7791,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			!org.drip.math.common.NumberUtil.IsValid (dblPrice))
 			throw new java.lang.Exception ("BondComponent::calcOASFromPrice => Input inputs");
 
-		return new BondCalibrator (this).calibDiscCurveSpreadFromPrice (valParams, mktParams, dblWorkoutDate,
+		/* return new BondCalibrator (this).calibDiscCurveSpreadFromPrice (valParams, mktParams, dblWorkoutDate,
 			dblWorkoutFactor, dblPrice);
+
+		return calcZSpreadFromPrice (valParams, mktParams, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+			dblPrice); */
+
+		return new BondCalibrator (this).calibrateZSpreadFromPrice (valParams, mktParams,
+			ZERO_OFF_OF_TREASURIES_DISCOUNT_CURVE, dblWorkoutDate, dblWorkoutFactor, dblPrice);
 	}
 
 	@Override public double calcOASFromPrice (
@@ -9109,8 +9128,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcPriceFromBumpedZC (valParams, mktParams, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			dblZSpread);
+		return calcPriceFromBumpedZC (valParams, mktParams, quotingParams,
+			ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE, dblWorkoutDate, dblWorkoutFactor, dblZSpread);
 	}
 
 	@Override public double calcPriceFromZSpread (
@@ -10115,8 +10134,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromZSpread => Invalid Inputs");
 
 		return calcYieldFromPrice (valParams, mktParams, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromBumpedZC (valParams, mktParams, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblZSpread));
+			calcPriceFromBumpedZC (valParams, mktParams, quotingParams,
+				ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE, dblWorkoutDate, dblWorkoutFactor, dblZSpread));
 	}
 
 	@Override public double calcYieldFromZSpread (
@@ -11488,8 +11507,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return new BondCalibrator (this).calibrateZSpreadFromPrice (valParams, mktParams, dblWorkoutDate,
-			dblWorkoutFactor, dblPrice);
+		return new BondCalibrator (this).calibrateZSpreadFromPrice (valParams, mktParams,
+			ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE, dblWorkoutDate, dblWorkoutFactor, dblPrice);
 	}
 
 	@Override public double calcZSpreadFromPrice (
@@ -12094,6 +12113,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		 * 
 		 * @param valParams Valuation Parameters
 		 * @param mktParams Bond Market Parameters
+		 * @param iZeroCurveBaseDC The Discount Curve to derive the zero curve off of
 		 * @param dblWorkoutDate JulianDate Work-out
 		 * @param dblWorkoutFactor Work-out factor
 		 * @param dblPrice Price to be calibrated to
@@ -12106,6 +12126,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		public double calibrateZSpreadFromPrice (
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.param.definition.ComponentMarketParams mktParams,
+			final int iZeroCurveBaseDC,
 			final double dblWorkoutDate,
 			final double dblWorkoutFactor,
 			final double dblPrice)
@@ -12120,8 +12141,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					final double dblZSpread)
 					throws java.lang.Exception
 				{
-					return _bond.calcPriceFromBumpedZC (valParams, mktParams, null, dblWorkoutDate,
-						dblWorkoutFactor, dblZSpread) - dblPrice;
+					return _bond.calcPriceFromBumpedZC (valParams, mktParams, null, iZeroCurveBaseDC,
+						dblWorkoutDate, dblWorkoutFactor, dblZSpread) - dblPrice;
 				}
 			};
 

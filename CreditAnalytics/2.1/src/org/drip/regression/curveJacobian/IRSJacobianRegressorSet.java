@@ -120,7 +120,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 						astrCalibMeasure[i] = "Rate";
 
 						try {
-							aCompCalib[i] = org.drip.product.creator.IRSBuilder.CreateIRS (dtStart.addDays
+							aCompCalib[i] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtStart.addDays
 								(2), new org.drip.analytics.date.JulianDate (adblDate[i]), 0., "USD",
 									"USD-LIBOR-6M", "USD");
 						} catch (java.lang.Exception e) {

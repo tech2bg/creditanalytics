@@ -264,9 +264,11 @@ public class CurveCalibrator {
 				if (!SetNode (dc, iInstr, bFlat, dblValue))
 					throw new java.lang.Exception ("Cannot set Value = " + dblValue + " for node " + iInstr);
 
-				return dblCalibValue - comp.calcMeasureValue (valParams, null,
-					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-						dcTSY, dcEDSF, null, null, null, mmFixings), quotingParams, strMeasure);
+				return dblCalibValue - comp.calcMeasureValue (valParams, new
+					org.drip.param.pricer.PricerParams (1, new org.drip.param.definition.CalibrationParams
+						(strMeasure, 0, null), true, 0),
+							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+								(dc, dcTSY, dcEDSF, null, null, null, mmFixings), quotingParams, strMeasure);
 			}
 		};
 

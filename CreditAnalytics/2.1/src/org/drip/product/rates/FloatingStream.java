@@ -139,6 +139,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			_bApplyAccEOMAdj,
 			bFullStub, // Full First Coupon Period?
 			false, // Merge the first 2 Periods - create a long stub?
+			true,
 			strCalendar)) || 0 == _lPeriods.size())
 			throw new java.lang.Exception ("FloatingStream ctr: Cannot generate Period Schedule");
 	}

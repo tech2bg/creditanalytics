@@ -40,23 +40,39 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 100.;
 	private java.lang.String _strIR = "";
 	private java.lang.String _strCode = "";
-	// private java.lang.String _strDC = "Act/360";
+	private java.lang.String _strDC = "Act/360";
+	private java.lang.String _strCalendar = "USD";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
+	/**
+	 * Constructs a Cash Component
+	 * 
+	 * @param dtEffective Effective Date
+	 * @param dtMaturity Maturity Date
+	 * @param strIR IR Curve
+	 * @param strDC Day Count
+	 * @param strCalendar Calendar
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
+
 	public CashComponent (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final java.lang.String strIR)
+		final java.lang.String strIR,
+		final java.lang.String strDC,
+		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (null == dtEffective || null == dtMaturity || null == (_strIR = strIR) || strIR.isEmpty())
-			throw new java.lang.Exception ("Invalid Cash.CreateCash params!");
+		if (null == dtEffective || null == dtMaturity || null == (_strIR = strIR) || strIR.isEmpty() ||
+			(_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective = dtEffective.getJulian()))
+			throw new java.lang.Exception ("CashComponent ctr: Invalid Inputs!");
 
-		if ((_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective = dtEffective.getJulian()))
-			throw new java.lang.Exception ("Cash: mat <= effective!");
+		_strDC = strDC;
+		_strCalendar = strCalendar;
 
 		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 	}
@@ -99,7 +115,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split (strSerializedCash,
 			getFieldDelimiter());
 
-		if (null == astrField || 7 > astrField.length)
+		if (null == astrField || 9 > astrField.length)
 			throw new java.lang.Exception ("Cash de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]).doubleValue();
@@ -108,7 +124,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate notional");
 
-		_dblNotional = new java.lang.Double (astrField[1]).doubleValue();
+		_dblNotional = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate IR curve name");
@@ -126,33 +142,49 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		else
 			_strCode = "";
 
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (null == astrField[4] || astrField[4].isEmpty())
+			throw new java.lang.Exception ("Cash de-serializer: Cannot locate day count convention");
+
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			_strDC = astrField[4];
+		else
+			_strDC = "";
+
+		if (null == astrField[5] || astrField[5].isEmpty())
+			throw new java.lang.Exception ("Cash de-serializer: Cannot locate Calendar");
+
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			_strCalendar = astrField[5];
+		else
+			_strCalendar = "";
+
+		if (null == astrField[6] || astrField[6].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate maturity date");
 
-		_dblMaturity = new java.lang.Double (astrField[4]).doubleValue();
+		_dblMaturity = new java.lang.Double (astrField[6]);
 
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+		if (null == astrField[7] || astrField[7].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate effective date");
 
-		_dblEffective = new java.lang.Double (astrField[5]).doubleValue();
+		_dblEffective = new java.lang.Double (astrField[7]);
 
-		if (null == astrField[6] || astrField[6].isEmpty())
+		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate notional schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
 			_notlSchedule = null;
 		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[6].getBytes());
+			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[8].getBytes());
 
-		if (null == astrField[7] || astrField[7].isEmpty())
+		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate cash settle params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
 			_settleParams = null;
 		else
-			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[7].getBytes());
+			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[9].getBytes());
 	}
 
 	@Override public java.lang.String getPrimaryCode()
@@ -279,29 +311,34 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getDiscountCurve()) return null;
+		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams) return null;
+
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == dc) return null;
 
 		long lStart = System.nanoTime();
 
 		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.HashMap<java.lang.String,
 			java.lang.Double>();
 
-		if (valParams._dblValue >= _dblMaturity) return mapResult;
-
 		try {
-			double dblCashSettle = valParams._dblCashPay;
+			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
+				_settleParams.cashSettleDate (valParams._dblValue);
 
-			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams._dblValue);
+			double dblUnadjustedAnnuity = dc.getDF (_dblMaturity) / dc.getDF (_dblEffective) / dc.getDF
+				(dblCashSettle);
 
-			mapResult.put ("PV", mktParams.getDiscountCurve().getDF (_dblMaturity) /
-				mktParams.getDiscountCurve().getDF (_dblEffective) / mktParams.getDiscountCurve().getDF
-					(dblCashSettle) * _dblNotional * 0.01 * getNotional (_dblEffective, _dblMaturity));
+			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.getDF (dblCashSettle);
 
-			mapResult.put ("Price", 100. * (1 - mktParams.getDiscountCurve().calcLIBOR (_dblEffective,
-				_dblMaturity)));
-
-			mapResult.put ("Rate", mktParams.getDiscountCurve().calcImpliedRate (_dblEffective,
+			mapResult.put ("PV", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
 				_dblMaturity));
+
+			mapResult.put ("Price", 100. * dblAdjustedAnnuity);
+
+			mapResult.put ("Rate", ((1. / dblUnadjustedAnnuity) - 1.) /
+				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
+					false, _dblMaturity, null, _strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -408,6 +445,16 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		else
 			sb.append (_strCode + getFieldDelimiter());
 
+		if (null == _strDC || _strDC.isEmpty())
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else
+			sb.append (_strDC + getFieldDelimiter());
+
+		if (null == _strCalendar || _strCalendar.isEmpty())
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else
+			sb.append (_strCalendar + getFieldDelimiter());
+
 		sb.append (_dblMaturity + getFieldDelimiter());
 
 		sb.append (_dblEffective + getFieldDelimiter());
@@ -441,7 +488,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		throws java.lang.Exception
 	{
 		CashComponent cash = new CashComponent (org.drip.analytics.date.JulianDate.Today(),
-			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"), "AUD");
+			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"), "AUD", "Act/360", "BMA");
 
 		byte[] abCash = cash.serialize();
 

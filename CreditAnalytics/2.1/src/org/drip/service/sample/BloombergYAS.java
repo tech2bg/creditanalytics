@@ -17,6 +17,7 @@ import org.drip.analytics.definition.*;
 import org.drip.analytics.period.Period;
 import org.drip.math.common.FormatUtil;
 import org.drip.param.definition.*;
+import org.drip.param.market.MultiSidedQuote;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
 import org.drip.product.params.EmbeddedOptionSchedule;
@@ -99,7 +100,7 @@ public class BloombergYAS {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i];
 
-			aCompCalib[i + astrCashTenor.length] = IRSBuilder.CreateIRS (dtStart.addDays (2), new
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
 				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addTenor
 					(astrIRSTenor[i]).getJulian()), 0., strCurrency, strIndex, strCurrency);
 		}
@@ -124,32 +125,139 @@ public class BloombergYAS {
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings);
 	}
 
+	/*
+	 * Sample demonstrating creation of simple fixed coupon treasury bond
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final Bond CreateTSYBond (
+		final String strName,
+		final double dblCoupon,
+		final JulianDate dt,
+		final String strTenor)
+		throws Exception
+	{
+		return BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
+				strName,					// Name
+				"USDTSY",					// Fictitious Treasury Curve Name
+				dblCoupon,					// Bond Coupon
+				2, 							// Frequency
+				"Act/Act",					// Day Count
+				dt, 						// Effective
+				dt.addTenor (strTenor),		// Maturity
+				null,						// Principal Schedule
+				null);
+	}
+
+	/*
+	 * Sample demonstrating creation of a set of the on-the-run treasury bonds
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final Bond[] CreateOnTheRunTSYBondSet (
+		final JulianDate dt,
+		final String[] astrTenor,
+		final double[] adblCoupon)
+		throws Exception
+	{
+		Bond aTSYBond[] = new Bond[astrTenor.length];
+
+		for (int i = 0; i < astrTenor.length; ++i)
+			aTSYBond[i] = CreateTSYBond ("TSY" + astrTenor[i] + "ON", adblCoupon[i], dt, astrTenor[i]);
+
+		return aTSYBond;
+	}
+
+	/*
+	 * Sample demonstrating building of the treasury discount curve based off the on-the run instruments and their yields
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final DiscountCurve BuildOnTheRunTSYDiscountCurve (
+		final JulianDate dt,
+		final Bond[] aTSYBond,
+		final double[] adblTSYYield)
+		throws Exception
+	{
+		String astrCalibMeasure[] = new String[aTSYBond.length];
+
+		for (int i = 0; i < aTSYBond.length; ++i)
+			astrCalibMeasure[i] = "Yield";
+
+		return RatesScenarioCurveBuilder.CreateDiscountCurve (dt,
+			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+			aTSYBond,
+			adblTSYYield,
+			astrCalibMeasure,
+			null);
+	}
+
+	private static final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> MakeTSYQuotes (
+		final String[] astrTSYTenor,
+		final double[] adblTSYYield)
+		throws Exception
+	{
+		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mTSYQuotes = new
+			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();
+
+		for (int i = 0; i < astrTSYTenor.length; ++i) {
+			org.drip.param.market.ComponentMultiMeasureQuote cmmq = new org.drip.param.market.ComponentMultiMeasureQuote();
+
+			cmmq.addQuote ("Yield", new MultiSidedQuote ("mid", adblTSYYield[i]), true);
+
+			mTSYQuotes.put (astrTSYTenor[i] + "ON", cmmq);
+		}
+
+		return mTSYQuotes;
+	}
+
 	public static final void BondPricerSample()
 		throws Exception
 	{
-		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 20);
+		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
 
-		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 6, 24);
+		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
 
 		double dblNotional = 1000000.;
-		String[] astrCashTenor = new String[] {};
-		double[] adblCashRate = new double[] {};
+		/* String[] astrCashTenor = new String[] {   "3M",    "6M",    "1Y",    "2Y",    "3Y",    "4Y",    "5Y",    "7Y",
+			   "10Y",   "20Y",   "30Y"};
+		double[] adblCashRate = new double[]  {0.00277, 0.00425, 0.00703, 0.00567, 0.00883, 0.01277, 0.01658, 0.02240,
+			 0.02787, 0.03402, 0.03507}; */
+		String[] astrCashTenor = new String[] {"3M"};
+		double[] adblCashRate = new double[] {0.00276};
 		String[] astrIRSTenor = new String[] {   "1Y",    "2Y",    "3Y",    "4Y",    "5Y",    "6Y",    "7Y",
 			   "8Y",    "9Y",   "10Y",   "11Y",   "12Y",   "15Y",   "20Y",   "25Y",   "30Y",   "40Y",   "50Y"};
-		double[] adblIRSRate = new double[]  {0.00317, 0.00422, 0.00645, 0.00953, 0.01274, 0.01563, 0.01819,
-			0.02037, 0.02223, 0.02386, 0.02526, 0.02643, 0.02890, 0.03091, 0.03184, 0.03236, 0.03259, 0.03238};
+		double[] adblIRSRate = new double[]  {0.00367, 0.00533, 0.00843, 0.01238, 0.01609, 0.01926, 0.02191,
+			0.02406, 0.02588, 0.02741, 0.02870, 0.02982, 0.03208, 0.03372, 0.03445, 0.03484, 0.03501, 0.03484};
+		String[] astrTSYTenor = new String[] {   "1M",    "3M",    "6M",    "1Y",    "2Y",    "3Y",    "5Y",    "7Y",
+				"10Y",  "30Y"};
+		final double[] adblTSYCoupon = new double[] {0.0000, 0.0000, 0.0000, 0.0000, 0.00375, 0.00500, 0.0100, 0.01375,
+			0.01375, 0.02875};
+		double[] adblTSYYield = new double[] {0.00018, 0.00058, 0.00104, 0.00160, 0.00397, 0.00696, 0.01421, 0.01955,
+			0.02529, 0.03568};
 
-		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
-			adblIRSRate, "USD");
+		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, "USD");
+
+		Bond[] aTSYBond = CreateOnTheRunTSYBondSet (dtCurve, astrTSYTenor, adblTSYCoupon);
+
+		/*
+		 * Create the on-the-run treasury discount curve
+		 */
+
+		DiscountCurve dcTSY = BuildOnTheRunTSYDiscountCurve (dtCurve, aTSYBond, adblTSYYield);
 
 		BondComponent bond = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
-				"TEST",		// Name
+				"TEST",			// Name
 				"USD",			// Currency
-				0.06125,			// Bond Coupon
+				0.0875,			// Bond Coupon
 				2, 				// Frequency
 				"30/360",		// Day Count
-				JulianDate.CreateFromYMD (2013, 5, 24), // Effective
-				JulianDate.CreateFromYMD (2018, 6, 1),	// Maturity
+				JulianDate.CreateFromYMD (2010, 3, 17), // Effective
+				JulianDate.CreateFromYMD (2015, 4, 1),	// Maturity
 				null,		// Principal Schedule
 				null);
 
@@ -167,21 +275,28 @@ public class BloombergYAS {
 
 		bond.setEmbeddedCallSchedule (eos); */
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.MakeDiscountCMP (dc);
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, dcTSY, null, null,
+			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);
 
-		double dblPrice = 0.988;
+		double dblPrice = 1.1025;
 
 		double dblAccrued = bond.calcAccrued (valParams._dblValue, cmp);
 
 		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
+
+		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+
+		double dblGSpread = bond.calcGSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
 
 		double dblISpread = bond.calcISpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
 
 		double dblZSpread = bond.calcZSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
 
 		double dblASW = bond.calcASWFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+
+		double dblOAS = bond.calcOASFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
 
 		double dblModDur = bond.calcModifiedDurationFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
 
@@ -201,11 +316,17 @@ public class BloombergYAS {
 
 		System.out.println ("\n--SPREAD AND YIELD CALCULATIONS--\n");
 
-		System.out.println ("I Spread : " + org.drip.math.common.FormatUtil.FormatDouble (dblISpread, 1, 0, 10000.));
+		System.out.println ("TSY Spread : " + org.drip.math.common.FormatUtil.FormatDouble (dblTSYSpread, 1, 0, 10000.));
 
-		System.out.println ("Z Spread : " + org.drip.math.common.FormatUtil.FormatDouble (dblZSpread, 1, 0, 10000.));
+		System.out.println ("G Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblGSpread, 1, 0, 10000.));
 
-		System.out.println ("ASW      : " + org.drip.math.common.FormatUtil.FormatDouble (dblASW, 1, 0, 10000.));
+		System.out.println ("I Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblISpread, 1, 0, 10000.));
+
+		System.out.println ("Z Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblZSpread, 1, 0, 10000.));
+
+		System.out.println ("ASW        : " + org.drip.math.common.FormatUtil.FormatDouble (dblASW, 1, 0, 10000.));
+
+		System.out.println ("OAS        : " + org.drip.math.common.FormatUtil.FormatDouble (dblOAS, 1, 0, 10000.));
 
 		System.out.println ("\n--RISK--\n");
 

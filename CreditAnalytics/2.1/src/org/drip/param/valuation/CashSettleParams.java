@@ -162,9 +162,14 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iLag +
-			getFieldDelimiter() + _strCalendar + getFieldDelimiter() + _iAdjustMode);
+			getFieldDelimiter());
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		if (null == _strCalendar || _strCalendar.isEmpty())
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else
+			sb.append (_strCalendar + getFieldDelimiter());
+
+		return sb.append (_iAdjustMode + getObjectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

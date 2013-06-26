@@ -514,6 +514,7 @@ public abstract class Bond extends CreditComponent {
 	 * @param valParams ValuationParams
 	 * @param mktParams ComponentMarketParams
 	 * @param quotingParams Quoting Parameters
+	 * @param iZeroCurveBaseDC The Discount Curve to derive the zero curve off of
 	 * @param dblWorkoutDate Double Work-out date
 	 * @param dblWorkoutFactor Double Work-out factor
 	 * @param dblZCBump Bump to be applied to the zero curve
@@ -527,6 +528,7 @@ public abstract class Bond extends CreditComponent {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
+		final int iZeroCurveBaseDC,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblZCBump)

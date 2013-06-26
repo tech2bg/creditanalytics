@@ -66,7 +66,7 @@ public class EODCurves {
 					strCurrency);
 
 			if ("S".equalsIgnoreCase (strInstrCode))
-				return org.drip.product.creator.IRSBuilder.CreateIRS (dtEffective.addDays (2), strTenor, 0.,
+				return org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective.addDays (2), strTenor, 0.,
 					strCurrency, strCurrency + "-LIBOR-6M", strCurrency);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

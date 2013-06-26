@@ -38,25 +38,208 @@ package org.drip.service.bridge;
  */
 
 public class CreditAnalyticsStub {
-	private static void sendMessage (
-		final java.io.ObjectOutputStream out,
-		final java.lang.String strMsg)
-		throws java.lang.Exception
-	{
-		out.writeObject (strMsg);
+	private static final boolean s_bWhineOnError = false;
 
-		out.flush();
+	private static boolean SendMessage (
+		final java.io.ObjectOutputStream oos,
+		final byte[] abMsg)
+	{
+		try {
+			oos.writeObject (abMsg);
+
+			oos.flush();
+
+			return true;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
-	private static final void run (
-		final java.sql.Statement stmt,
+	private static final org.drip.param.valuation.ValuationParams GetValuationParams (
+		final org.drip.service.bridge.CreditAnalyticsRequest cre)
+	{
+		return (null != cre && null != cre.getValuationParams()) ? cre.getValuationParams() :
+			org.drip.param.valuation.ValuationParams.CreateSpotValParams
+				(org.drip.analytics.date.JulianDate.Today().getJulian());
+	}
+
+	private static final org.drip.param.definition.ComponentMarketParams GetCMP (
+		final org.drip.product.definition.Component comp,
+		final org.drip.service.bridge.CreditAnalyticsRequest cre,
+		final org.drip.param.definition.MarketParams mpc)
+	{
+		return (null != cre && null != cre.getCMP()) ? cre.getCMP() : mpc.getScenCMP (comp, "Base");
+	}
+
+	private static final org.drip.param.pricer.PricerParams GetPricerParams (
+		final org.drip.service.bridge.CreditAnalyticsRequest cre)
+	{
+		return (null != cre && null != cre.getPricerParams()) ? cre.getPricerParams() :
+			org.drip.param.pricer.PricerParams.MakeStdPricerParams();
+	}
+
+	private static final org.drip.param.valuation.QuotingParams GetQuotingParams (
+		final org.drip.service.bridge.CreditAnalyticsRequest cre)
+	{
+		return (null != cre && null != cre.getQuotingParams()) ? cre.getQuotingParams() : null;
+	}
+
+	private static final org.drip.param.definition.Quote GetQuote (
+		final org.drip.product.credit.BondComponent bond,
+		final org.drip.param.definition.ComponentMarketParams cmp,
 		final org.drip.param.definition.MarketParams mpc,
-		final org.drip.analytics.date.JulianDate dt)
+		final java.lang.String strMeasure)
+	{
+		org.drip.param.definition.ComponentQuote cq = (null != cmp && null != cmp.getComponentQuote()) ?
+			cmp.getComponentQuote() : mpc.getCompQuote (bond.getIdentifierSet()._strID);
+
+		return null == cq ? null : cq.getQuote (strMeasure);
+	}
+
+	private static final org.drip.analytics.output.BondRVMeasures ProcessRequest (
+		final org.drip.service.bridge.CreditAnalyticsRequest cre,
+		final org.drip.param.definition.MarketParams mpc)
+	{
+		if (null == cre) return null;
+
+		org.drip.product.credit.BondComponent bond = (org.drip.product.credit.BondComponent)
+			cre.getComponent();
+
+		if (null == bond) return null;
+
+		org.drip.param.valuation.ValuationParams valParams = GetValuationParams (cre);
+
+		org.drip.param.definition.ComponentMarketParams cmp = GetCMP (bond, cre, mpc);
+
+		if (null == cmp) return null;
+
+		org.drip.param.pricer.PricerParams pricerParams = GetPricerParams (cre);
+
+		org.drip.param.valuation.QuotingParams quotingParams = GetQuotingParams (cre);
+
+		org.drip.param.definition.Quote qPrice = GetQuote (bond, cmp, mpc, "Price");
+
+		if (null == qPrice) return null;
+
+		double dblAskPrice = 0.01 * qPrice.getQuote ("ASK");
+
+		if (!org.drip.math.common.NumberUtil.IsValid (dblAskPrice)) return null;
+
+		double dblAssetSwapSpread = java.lang.Double.NaN;
+		double dblBondBasis = java.lang.Double.NaN;
+		double dblConvexity = java.lang.Double.NaN;
+		double dblCreditBasis = java.lang.Double.NaN;
+		double dblDiscountMargin = java.lang.Double.NaN;
+		double dblDuration = java.lang.Double.NaN;
+		double dblGSpread = java.lang.Double.NaN;
+		double dblISpread = java.lang.Double.NaN;
+		double dblOASpread = java.lang.Double.NaN;
+		double dblPECS = java.lang.Double.NaN;
+		double dblTSYSpread = java.lang.Double.NaN;
+		double dblYield = java.lang.Double.NaN;
+		double dblZSpread = java.lang.Double.NaN;
+		org.drip.analytics.output.BondRVMeasures brvm = null;
+
+		try {
+			dblAssetSwapSpread = bond.calcASWFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblBondBasis = bond.calcBondBasisFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblConvexity = bond.calcConvexityFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblCreditBasis = bond.calcCreditBasisFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblDuration = bond.calcDurationFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblDiscountMargin = bond.calcDiscountMarginFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblGSpread = bond.calcGSpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblISpread = bond.calcISpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblOASpread = bond.calcOASFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblPECS = bond.calcPECSFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblYield = bond.calcYieldFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			dblZSpread = bond.calcZSpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
+		} catch (java.lang.Exception e) {
+			if (s_bWhineOnError) e.printStackTrace();
+		}
+
+		try {
+			brvm = new org.drip.analytics.output.BondRVMeasures (dblAskPrice, dblBondBasis, dblZSpread,
+				dblGSpread, dblISpread, dblOASpread, dblTSYSpread, dblDiscountMargin, dblAssetSwapSpread,
+					dblCreditBasis, dblPECS, dblDuration, dblConvexity, new
+						org.drip.param.valuation.WorkoutInfo (bond.getMaturityDate().getJulian(), dblYield,
+							1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		return brvm;
+	}
+
+	private static final boolean run (
+		final java.net.ServerSocket sockAS,
+		final org.drip.param.definition.MarketParams mpc)
 		throws java.lang.Exception
 	{
-		java.net.ServerSocket sockAS = org.drip.param.config.ConfigLoader.InitAnalServer
-			("c:\\Lakshmi\\BondAnal\\Config.xml");
-
 		java.net.Socket sockAC = sockAS.accept();
 
 		System.out.println ("Connection from: " + sockAC.getInetAddress().getHostName());
@@ -65,69 +248,63 @@ public class CreditAnalyticsStub {
 
 		java.io.ObjectInputStream in = new java.io.ObjectInputStream (sockAC.getInputStream());
 
-		java.lang.String strCommand = (java.lang.String) in.readObject();
+		byte[] abCommand = (byte[]) in.readObject();
 
-		if (strCommand.startsWith ("BondAnalFromPrice")) {
-			sendMessage (out, "InProgress");
+		if (null == abCommand || 0 == abCommand.length) {
+			org.drip.service.bridge.CreditAnalyticsResponse creFailureResponse = new
+				org.drip.service.bridge.CreditAnalyticsResponse ("BAD_REQUEST",
+					org.drip.service.bridge.CreditAnalyticsResponse.CAR_FAILURE, "Invalid Request");
 
-			int iNumRecord = 0;
-			java.lang.String astrFields[] = new java.lang.String[4];
+			System.out.println ("\t---Sending Failure Response " + creFailureResponse.getRequestID() + " @ "
+				+ creFailureResponse.getTimeSnap());
 
-			java.util.StringTokenizer st = new java.util.StringTokenizer (strCommand, ";");
+			SendMessage (out, creFailureResponse.serialize());
 
-			while (st.hasMoreTokens())
-				astrFields[iNumRecord++] = st.nextToken();
+			return false;
+		}
 
-			(st = new java.util.StringTokenizer (astrFields[1], "=")).nextToken();
+		org.drip.service.bridge.CreditAnalyticsRequest cre = null;
 
-			java.lang.String strISIN = st.nextToken();
+		try {
+			cre = new org.drip.service.bridge.CreditAnalyticsRequest (abCommand);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 
-			(st = new java.util.StringTokenizer (astrFields[2], "=")).nextToken();
+			org.drip.service.bridge.CreditAnalyticsResponse creFailureResponse = new
+				org.drip.service.bridge.CreditAnalyticsResponse ("BAD_REQUEST",
+					org.drip.service.bridge.CreditAnalyticsResponse.CAR_FAILURE, "Invalid Request");
 
-			double dblBidPrice = (new java.lang.Double (st.nextToken())).doubleValue();
+			System.out.println ("\t---Sending Failure Response " + creFailureResponse.getRequestID() + " @ "
+				+ creFailureResponse.getTimeSnap());
 
-			(st = new java.util.StringTokenizer (astrFields[3], "=")).nextToken();
+			SendMessage (out, creFailureResponse.serialize());
 
-			double dblAskPrice = (new java.lang.Double (st.nextToken())).doubleValue();
+			return false;
+		}
 
-			System.out.println ("ISIN: " + strISIN + "; Bid: " + dblBidPrice + "; Ask: " + dblAskPrice);
+		org.drip.service.bridge.CreditAnalyticsResponse creStatusResponse = new
+			org.drip.service.bridge.CreditAnalyticsResponse (cre.getID(),
+				org.drip.service.bridge.CreditAnalyticsResponse.CAR_SUCCESS, "InProgress");
 
-			if ("CompleteSet".equalsIgnoreCase (strISIN)) {
-				org.drip.tester.functional.BondTestSuite.RunFullBondTests (mpc, dt, dblBidPrice,
-					dblAskPrice);
+		System.out.println ("\t---Sending Status Response " + creStatusResponse.getRequestID() + " @ " +
+			creStatusResponse.getTimeSnap());
 
-				sendMessage (out, "Completed");
-			} else {
-				long lTestStart = System.nanoTime();
+		if (!SendMessage (out, creStatusResponse.serialize())) return false;
 
-				java.util.Map<java.lang.String, org.drip.analytics.output.BondRVMeasures> mapBMRV =
-					org.drip.service.env.BondManager.CalcBondAnalyticsFromPrice (strISIN, mpc, dt,
-						dblBidPrice, dblBidPrice + 1.);
+		org.drip.analytics.output.BondRVMeasures bondRVM = ProcessRequest (cre, mpc);
 
-				System.out.println ("Run on " + strISIN + " took " + (System.nanoTime() - lTestStart) *
-					1.e-06 + " milli-sec\n");
+		if (null == bondRVM) return false;
 
-				if (null == mapBMRV || 2 != mapBMRV.size())
-					sendMessage (out, "Bad Analytics for " + strISIN + "[" + strCommand + "]");
-				else {
-					java.lang.String strAskRVCalcOP = "";
-					java.lang.String strBidRVCalcOP = "";
+		org.drip.service.bridge.CreditAnalyticsResponse carFinalResponse = new
+			org.drip.service.bridge.CreditAnalyticsResponse (cre.getID(),
+				org.drip.service.bridge.CreditAnalyticsResponse.CAR_SUCCESS, "BondRVMeasures");
 
-					org.drip.analytics.output.BondRVMeasures bmRVAsk = mapBMRV.get ("ASK");
+		System.out.println ("\t---Sending Final Response " + carFinalResponse.getRequestID() + " @ " +
+			carFinalResponse.getTimeSnap());
 
-					if (null != bmRVAsk) strAskRVCalcOP = new java.lang.String (bmRVAsk.serialize());
+		if (!carFinalResponse.setSerializedMsg (bondRVM.serialize())) return false;
 
-					org.drip.analytics.output.BondRVMeasures bmRVBid = mapBMRV.get ("BID");
-
-					if (null != bmRVBid) strBidRVCalcOP = new java.lang.String (bmRVBid.serialize());
-
-					sendMessage (out, strAskRVCalcOP + "?" + strBidRVCalcOP);
-				}
-			}
-		} else
-			sendMessage (out, "Unknown Command: " + strCommand);
-
-		sockAS.close();
+		return SendMessage (out, carFinalResponse.serialize());
 	}
 
 	public static void main (
@@ -135,19 +312,17 @@ public class CreditAnalyticsStub {
 		throws java.lang.Exception
 	{
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv
-			("c:\\Lakshmi\\BondAnal\\Config.xml");
-
-		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 5,
-			20);
+			("c:\\DRIP\\CreditAnalytics\\Config.xml");
 
 		org.drip.param.definition.MarketParams mpc = org.drip.service.env.EnvManager.PopulateMPC (stmt,
-			dt);
+			org.drip.analytics.date.JulianDate.Today());
 
-		org.drip.service.env.BondManager.CommitBondsToMem (mpc, stmt);
+		java.net.ServerSocket sockAS = org.drip.param.config.ConfigLoader.InitAnalServer
+			("c:\\DRIP\\CreditAnalytics\\Config.xml");
 
 		System.out.println ("Ready ...");
 
 		while (true)
-			run (stmt, mpc, dt);
+			run (sockAS, mpc);
 	}
 }

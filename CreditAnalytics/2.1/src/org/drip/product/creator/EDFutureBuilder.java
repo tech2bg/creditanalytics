@@ -107,7 +107,8 @@ public class EDFutureBuilder {
 				org.drip.analytics.date.JulianDate dtEDFMaturity = dtEDFStart.addMonths (3);
 
 				(aEDF[i] = new org.drip.product.rates.EDFComponent (dtEDFStart, dtEDFMaturity,
-					strCurrency)).setPrimaryCode (MakeBaseEDFCode (dtEDFStart.getJulian()));
+					strCurrency, "Act/360", strCurrency)).setPrimaryCode (MakeBaseEDFCode
+						(dtEDFStart.getJulian()));
 
 				dtEDFStart = dtEDFStart.addMonths (3);
 			}
@@ -137,7 +138,7 @@ public class EDFutureBuilder {
 	{
 		try {
 			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
-				(dtEffective, dtMaturity, strIR);
+				(dtEffective, dtMaturity, strIR, "Act/360", strIR);
 
 			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.getJulian()));
 
@@ -166,7 +167,7 @@ public class EDFutureBuilder {
 	{
 		try {
 			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
-				(dtEffective, dtEffective.addTenor (strTenor), strIR);
+				(dtEffective, dtEffective.addTenor (strTenor), strIR, "Act/360", strIR);
 
 			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.getJulian()));
 

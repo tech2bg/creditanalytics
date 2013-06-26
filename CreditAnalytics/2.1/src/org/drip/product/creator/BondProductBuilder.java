@@ -434,6 +434,138 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Creates BondProductBuilder from the JSON Map and the input MPC
+	 * 
+	 * @param mapJSON The JSON Ref Data Map
+	 * @param mpc org.drip.param.definition.MarketParams to help fill some of the fields in
+	 * 
+	 * @return BondProductBuilder object
+	 */
+
+	public static final BondProductBuilder CreateFromJSONMap (
+		final java.util.Map<java.lang.String, java.lang.String> mapJSON,
+		final org.drip.param.definition.MarketParams mpc)
+	{
+		/* if (null == mapJSON || 0 == mapJSON.size() || !mapJSON.containsKey ("isin") || !mapJSON.containsKey
+			("cusip") || !mapJSON.containsKey ("ticker") || !mapJSON.containsKey ("coupon") ||
+				!mapJSON.containsKey ("maturity") || !mapJSON.containsKey ("frequency") ||
+					!mapJSON.containsKey ("couponType") || !mapJSON.containsKey ("maturityType") ||
+						!mapJSON.containsKey ("calcType") || !mapJSON.containsKey ("dayCount") ||
+							!mapJSON.containsKey ("redempValue") || !mapJSON.containsKey ("redempCrncy") ||
+								!mapJSON.containsKey ("cpnCrncy") || !mapJSON.containsKey ("tradeCrncy") ||
+									!mapJSON.containsKey ("firstCpnDate") || !mapJSON.containsKey
+										("issueDate") || !mapJSON.containsKey ("called") ||
+											!mapJSON.containsKey ("defaulted") || !mapJSON.containsKey
+												("quotedMargin"))
+			return null; */
+
+		BondProductBuilder bpb = new BondProductBuilder();
+
+		if (null == (bpb._strISIN = mapJSON.get ("isin"))) return null;
+
+		if (null == (bpb._strCUSIP = mapJSON.get ("cusip"))) return null;
+
+		if (null == (bpb._strTicker = mapJSON.get ("ticker"))) return null;
+
+		if (!org.drip.math.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * java.lang.Double.parseDouble
+			(mapJSON.get ("coupon"))))
+			return null;
+
+		if (null == (bpb._dtMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
+			(mapJSON.get ("maturity"), "-")))
+			return null;
+
+		bpb._iCouponFreq = java.lang.Integer.parseInt (mapJSON.get ("frequency"));
+
+		bpb._strCouponType = mapJSON.get ("couponType");
+
+		bpb._strMaturityType = mapJSON.get ("maturityType");
+
+		bpb._strCalculationType = mapJSON.get ("calcType");
+
+		bpb._strDayCountCode = mapJSON.get ("dayCount");
+
+		bpb._dblRedemptionValue = java.lang.Double.parseDouble (mapJSON.get ("redempValue"));
+
+		if (null == (bpb._strRedemptionCurrency = mapJSON.get ("redempCrncy")) ||
+			bpb._strRedemptionCurrency.isEmpty()) {
+			System.out.println ("Invalid redemption currency for " + DES (bpb));
+
+			return null;
+		}
+
+		if (null == (bpb._strCouponCurrency = mapJSON.get ("cpnCrncy")) || bpb._strCouponCurrency.isEmpty())
+		{
+			System.out.println ("Invalid Coupon currency for " + DES (bpb));
+
+			return null;
+		}
+
+		if (null == (bpb._strTradeCurrency = mapJSON.get ("tradeCrncy")) || bpb._strTradeCurrency.isEmpty())
+		{
+			System.out.println ("Invalid Trade currency for " + DES (bpb));
+
+			return null;
+		}
+
+		if (null == (bpb._dtFirstCoupon = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
+			(mapJSON.get ("firstCpnDate"), "-")))
+			return null;
+
+		if (null == (bpb._dtIssue = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
+			(mapJSON.get ("issueDate"), "-")))
+			return null;
+
+		try {
+			bpb._bIsCallable = java.lang.Boolean.parseBoolean (mapJSON.get ("callable"));
+
+			bpb._bIsPutable = java.lang.Boolean.parseBoolean (mapJSON.get ("putable"));
+
+			bpb._bIsSinkable = java.lang.Boolean.parseBoolean (mapJSON.get ("sinkable"));
+
+			bpb._bHasBeenCalled = java.lang.Boolean.parseBoolean (mapJSON.get ("called"));
+
+			// bpb._strFloatCouponConvention = rs.getString ("FloatCouponConvention");
+
+			bpb._bIsFloater = java.lang.Boolean.parseBoolean (mapJSON.get ("floater"));
+
+			// bpb._dblCurrentCoupon = 0.01 * rs.getDouble ("CurrentCoupon");
+
+			if (null == (bpb._dtFinalMaturity =
+				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
+					("finalMaturityDt"), "-")))
+				return null;
+
+			bpb._bIsPerpetual = java.lang.Boolean.parseBoolean (mapJSON.get ("perpetual"));
+
+			bpb._bIsDefaulted = java.lang.Boolean.parseBoolean (mapJSON.get ("defaulted"));
+
+			// bpb._dblFloatSpread = java.lang.Double.parseDouble (mapJSON.get ("quotedMargin"));
+
+			bpb._strRateIndex = mapJSON.get ("resetIndex");
+
+			if (bpb._bIsFloater && !org.drip.math.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
+				bpb._strRateIndex || bpb._strRateIndex.isEmpty())) {
+				System.out.println ("Invalid float spread for " + DES (bpb));
+
+				return null;
+			}
+
+			// bpb._strIssuerSPN = rs.getString ("SPN");
+
+			if (!bpb.validate (mpc)) return null;
+
+			if (m_bBlog) System.out.println ("Loaded " + DES (bpb) + ".");
+
+			return bpb;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Empty BondProductBuilder ctr - uninitialized members
 	 */
 

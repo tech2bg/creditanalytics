@@ -189,6 +189,7 @@ public class PeriodGenerator extends PeriodSet {
 						_bApplyCpnEOMAdj,
 						_strAccrualDC, // Accrual Day Count
 						_bApplyAccEOMAdj,
+						true,
 						_strCalendar))
 						|| 0 == _lPeriods.size())
 						return false;
@@ -211,6 +212,7 @@ public class PeriodGenerator extends PeriodSet {
 					_bApplyAccEOMAdj,
 					false, // Full First Coupon Period?
 					true, // Merge the first 2 Periods - create a long stub?
+					true,
 					_strCalendar))
 					|| 0 == _lPeriods.size())
 					return false;

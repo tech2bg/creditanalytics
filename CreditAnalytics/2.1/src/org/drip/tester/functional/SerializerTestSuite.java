@@ -276,10 +276,11 @@ public class SerializerTestSuite {
 
 		Verify (abEDF, org.drip.product.creator.EDFutureBuilder.FromByteArray (abEDF), "EDFuture");
 
-		byte[] abIRS = org.drip.product.creator.IRSBuilder.CreateIRS (dtToday, "4Y", 0.03, "JPY",
+		byte[] abIRS = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtToday, "4Y", 0.03, "JPY",
 			"JPY-LIBOR", "JPY").serialize();
 
-		Verify (abIRS, org.drip.product.creator.IRSBuilder.FromByteArray (abIRS), "InterestRateSwap");
+		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
+			"InterestRateSwap");
 
 		org.drip.param.definition.Quote q = org.drip.param.creator.QuoteBuilder.CreateQuote ("ASK", 103.);
 

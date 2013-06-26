@@ -727,7 +727,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		java.lang.String strIndex = strCurrency + "-LIBOR-6M";
 
-		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.IRSBuilder.CreateIRS
+		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.RatesStreamBuilder.CreateIRS
 			(dtStart, new org.drip.analytics.date.JulianDate (dblDate), 0., strCurrency, strIndex,
 				strCurrency);
 
@@ -772,7 +772,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		java.lang.String strIndex = strCurrency + "-LIBOR-6M";
 
-		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.IRSBuilder.CreateIRS
+		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.RatesStreamBuilder.CreateIRS
 			(dtStart, new org.drip.analytics.date.JulianDate (dblDate), 0., strCurrency, strIndex,
 				strCurrency);
 

@@ -49,7 +49,7 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 	 * Constructs an empty component quote from the component
 	 */
 
-	public ComponentMultiMeasureQuote ()
+	public ComponentMultiMeasureQuote()
 	{
 	}
 

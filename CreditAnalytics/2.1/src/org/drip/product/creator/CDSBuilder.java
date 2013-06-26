@@ -155,7 +155,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstEDFStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -186,7 +186,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstEDFStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -217,7 +217,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstEDFStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -249,7 +249,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstEDFStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 

@@ -133,9 +133,9 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
-			throw new java.lang.Exception ("CreditSetting de-serializer: Cannot locate Credit Curve Name");
-
-		_strCC = astrField[1];
+			_strCC = "";
+		else
+			_strCC = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))

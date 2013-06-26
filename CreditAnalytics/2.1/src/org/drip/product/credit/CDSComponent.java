@@ -49,8 +49,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	private double _dblCoupon = java.lang.Double.NaN;
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.product.params.CreditSetting _crValParams = null;
+	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.Period> _lPeriods = null;
 
@@ -421,6 +421,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_bApplyAccEOMAdj,
 			bConvCDS, // Full First Coupon Period?
 			false, // Merge the first 2 Periods - create a long stub?
+			false,
 			strCalendar);
 	}
 

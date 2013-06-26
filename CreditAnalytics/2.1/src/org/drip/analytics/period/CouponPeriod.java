@@ -119,6 +119,8 @@ public class CouponPeriod extends Period {
 	 * @param bApplyAccEOMAdj Apply end-of-month adjustment to the accrual periods
 	 * @param bFullStub TRUE - generates full first stub
 	 * @param bMergeLeadingPeriods - TRUE - Merge the Front 2 coupon periods
+	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
+	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
 	 * 
 	 * @return List of coupon Periods
@@ -142,6 +144,7 @@ public class CouponPeriod extends Period {
 		final boolean bApplyAccEOMAdj,
 		final boolean bFullStub,
 		final boolean bMergeLeadingPeriods,
+		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblEffective) ||
@@ -179,22 +182,40 @@ public class CouponPeriod extends Period {
 				periodSecond = periodFirst;
 
 				if (bFinalPeriod) {
+					double dblAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
+
+					double dblAccrualEnd = dblPeriodEndDate;
+
+					double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
+						org.drip.analytics.daycount.Convention.YearFraction (dblAccrualStart, dblAccrualEnd,
+							strAccrualDC, bApplyAccEOMAdj, dblMaturity, new
+								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStart,
+									dblAccrualEnd), strCalendar);
+
 					lsPeriods.add (0, periodFirst = new CouponPeriod (DAPAdjust (dblPeriodStartDate,
-						dapPeriodStart), dblPeriodEndDate, DAPAdjust (dblPeriodStartDate, dapAccrualStart),
-							dblPeriodEndDate, DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
-								(dblPeriodStartDate, dapReset), iFreq, 1. / iFreq, strCouponDC,
-									bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj, dblMaturity,
-										strCalendar));
+						dapPeriodStart), dblPeriodEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust
+							(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq,
+								dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
+									dblMaturity, strCalendar));
 
 					bFinalPeriod = false;
-				} else
+				} else {
+					double dblAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
+
+					double dblAccrualEnd = DAPAdjust (dblPeriodEndDate, dapAccrualEnd);
+
+					double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
+						org.drip.analytics.daycount.Convention.YearFraction (dblAccrualStart, dblAccrualEnd,
+							strAccrualDC, bApplyAccEOMAdj, dblMaturity, new
+								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStart,
+									dblAccrualEnd), strCalendar);
+
 					lsPeriods.add (0, periodFirst = new CouponPeriod (DAPAdjust (dblPeriodStartDate,
-						dapPeriodStart), DAPAdjust (dblPeriodEndDate, dapPeriodEnd), DAPAdjust
-							(dblPeriodStartDate, dapAccrualStart), DAPAdjust (dblPeriodEndDate,
-								dapAccrualEnd), DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
-									(dblPeriodStartDate, dapReset), iFreq, 1. / iFreq, strCouponDC,
-										bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj, dblMaturity,
-											strCalendar));
+						dapPeriodStart), DAPAdjust (dblPeriodEndDate, dapPeriodEnd), dblAccrualStart,
+							dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
+								(dblPeriodStartDate, dapReset), iFreq, dblDCF, strCouponDC, bApplyCpnEOMAdj,
+									strAccrualDC, bApplyAccEOMAdj, dblMaturity, strCalendar));
+				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -267,6 +288,7 @@ public class CouponPeriod extends Period {
 		final boolean bApplyCpnEOMAdj,
 		final java.lang.String strAccrualDC,
 		final boolean bApplyAccEOMAdj,
+		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblEffective) ||
@@ -288,19 +310,39 @@ public class CouponPeriod extends Period {
 			}
 
 			try {
-				if (!bFinalPeriod)
+				if (!bFinalPeriod) {
+					double dblAdjustedAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
+
+					double dblAdjustedAccrualEnd = DAPAdjust (dblPeriodEndDate, dapAccrualEnd);
+
+					double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
+						org.drip.analytics.daycount.Convention.YearFraction (dblAdjustedAccrualStart,
+							dblAdjustedAccrualEnd, strAccrualDC, bApplyAccEOMAdj, dblMaturity, new
+								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAdjustedAccrualStart,
+									dblAdjustedAccrualEnd), strCalendar);
+
 					lsPeriods.add (0, new CouponPeriod (DAPAdjust (dblPeriodStartDate, dapPeriodStart),
-						DAPAdjust (dblPeriodEndDate, dapPeriodEnd), DAPAdjust (dblPeriodStartDate,
-							dapAccrualStart), DAPAdjust (dblPeriodEndDate, dapAccrualEnd), DAPAdjust
-								(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq,
-									1. / iFreq, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
-										dblMaturity, strCalendar));
-				else
+						DAPAdjust (dblPeriodEndDate, dapPeriodEnd), dblAdjustedAccrualStart,
+							dblAdjustedAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
+								(dblPeriodStartDate, dapReset), iFreq, dblDCF, strCouponDC,
+									bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj, dblMaturity,
+										strCalendar));
+				} else {
+					double dblAdjustedAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
+
+					double dblAdjustedAccrualEnd = dblPeriodEndDate;
+					double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
+						org.drip.analytics.daycount.Convention.YearFraction (dblAdjustedAccrualStart,
+							dblAdjustedAccrualEnd, strAccrualDC, bApplyAccEOMAdj, dblMaturity, new
+								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAdjustedAccrualStart,
+									dblAdjustedAccrualEnd), strCalendar);
+
 					lsPeriods.add (0, new CouponPeriod (DAPAdjust (dblPeriodStartDate, dapPeriodStart),
-						dblPeriodEndDate, DAPAdjust (dblPeriodStartDate, dapAccrualStart), dblPeriodEndDate,
-							DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset),
-								iFreq, 1. / iFreq, strCouponDC, bApplyCpnEOMAdj, strAccrualDC,
-									bApplyAccEOMAdj, dblMaturity, strCalendar));
+						dblPeriodEndDate, dblAdjustedAccrualStart, dblAdjustedAccrualEnd, DAPAdjust
+							(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq,
+								dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
+									dblMaturity, strCalendar));
+				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -433,16 +475,9 @@ public class CouponPeriod extends Period {
 		if (_dblAccrualStart > dblAccrualEnd && dblAccrualEnd > _dblAccrualEnd)
 			throw new java.lang.Exception ("Invalid in-period accrual date!");
 
-		org.drip.analytics.daycount.ActActDCParams aap = new org.drip.analytics.daycount.ActActDCParams
-			(_iFreq, _dblAccrualStart, _dblAccrualEnd);
-
-		double dblCurrentDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblAccrualStart,
-			dblAccrualEnd, _strAccrualDC, _bApplyAccEOMAdj, _dblMaturity, aap, _strCalendar);
-
-		double dblPeriodDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblAccrualStart,
-			_dblAccrualEnd, _strAccrualDC, _bApplyAccEOMAdj, _dblMaturity, aap, _strCalendar);
-
-		return dblCurrentDCF * _dblDCF / dblPeriodDCF;
+		return org.drip.analytics.daycount.Convention.YearFraction (_dblAccrualStart, dblAccrualEnd,
+			_strAccrualDC, _bApplyAccEOMAdj, _dblMaturity, new org.drip.analytics.daycount.ActActDCParams
+				(_iFreq, _dblAccrualStart, _dblAccrualEnd), _strCalendar);
 	}
 	
 	public static final void main (

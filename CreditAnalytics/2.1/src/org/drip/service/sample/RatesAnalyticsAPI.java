@@ -248,7 +248,7 @@ public class RatesAnalyticsAPI {
 			astrCalibMeasure[i + 15] = "Rate";
 			adblRate[i + 15] = 0.01;
 
-			aCompCalib[i + 15] = IRSBuilder.CreateIRS (dtStart.addDays (2), new JulianDate (adblDate[i + 15]),
+			aCompCalib[i + 15] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new JulianDate (adblDate[i + 15]),
 				0., "USD", "USD-LIBOR-6M", "USD");
 		}
 
@@ -487,7 +487,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = IRSBuilder.CreateIRS (dtStart.addDays (2), new JulianDate (adblDate[i]), 0.,
+			aCompCalib[i] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new JulianDate (adblDate[i]), 0.,
 				"USD", "USD-LIBOR-6M", "USD");
 		}
 

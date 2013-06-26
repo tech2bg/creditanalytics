@@ -723,7 +723,7 @@ public class ProductTestSuite {
 			adblRate[i + 15] = 0.05;
 			astrCalibMeasure[i + 15] = "Rate";
 
-			aCompCalib[i + 15] = org.drip.product.creator.IRSBuilder.CreateIRS (dt.addDays (2), new
+			aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt.addDays (2), new
 				org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., "USD", "USD-LIBOR-6M", "USD");
 		}
 
@@ -1267,7 +1267,7 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.IRSBuilder.CreateIRS
+		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.RatesStreamBuilder.CreateIRS
 			(dt.addDays (2), dt.addDays ((int)(365.25 * 9 + 2)), 0.04, "USD","USD-LIBOR-6M", "USD");
 
 		org.drip.analytics.output.ComponentMeasures irsOut = irs.calcMeasures (new

@@ -64,7 +64,7 @@ public class CashBuilder {
 
 		try {
 			org.drip.product.definition.RatesComponent cash = new org.drip.product.rates.CashComponent (dtEffective,
-				dtEffective.addTenor (strTenor), strIR);
+				dtEffective.addTenor (strTenor), strIR, "Act/360", strIR);
 
 			cash.setPrimaryCode (strCode + "." + strTenor + "." + strIR);
 
@@ -77,7 +77,7 @@ public class CashBuilder {
 	}
 
 	/**
-	 * Creates a cash product from effective and maturity dates, and the IR cuve
+	 * Creates a cash product from effective and maturity dates, and the IR curve
 	 * 
 	 * @param dtEffective Effective date
 	 * @param dtMaturity Maturity
@@ -99,7 +99,7 @@ public class CashBuilder {
 
 		try {
 			org.drip.product.definition.RatesComponent cash = new org.drip.product.rates.CashComponent (dtEffective,
-				dtMaturity, strIR);
+				dtMaturity, strIR, "Act/360", strIR);
 
 			cash.setPrimaryCode ("CD." + dtMaturity + "." + strIR);
 

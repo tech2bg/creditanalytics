@@ -38,8 +38,8 @@ package org.drip.product.rates;
 
 public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.rates.FixedStream _fixStream = null;
-	private org.drip.product.rates.FloatingStream _floatStream = null;
+	private org.drip.product.definition.RatesComponent _fixStream = null;
+	private org.drip.product.definition.RatesComponent _floatStream = null;
 
 	@Override protected java.util.Map<java.lang.String, java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -51,66 +51,6 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
-	 * IRS Component constructor
-	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
-	 * @param dblCoupon Coupon
-	 * @param iFreq Frequency
-	 * @param strCouponDC Coupon Day Count
-	 * @param strAccrualDC Accrual Day Count
-	 * @param strFloatingRateIndex Floating Rate Index
-	 * @param bFullStub TRUE => Generate full first-stub
-	 * @param dapEffective Effective DAP
-	 * @param dapMaturity Maturity DAP
-	 * @param dapPeriodStart Period Start DAP
-	 * @param dapPeriodEnd Period End DAP
-	 * @param dapAccrualStart Accrual Start DAP
-	 * @param dapAccrualEnd Accrual End DAP
-	 * @param dapPay Pay DAP
-	 * @param dapReset Reset DAP
-	 * @param notlSchedule Notional Schedule
-	 * @param dblNotional Initial Notional Amount
-	 * @param strIR IR Curve
-	 * @param strCalendar Calendar
-	 * 
-	 * @throws java.lang.Exception Thrown if inputs are invalid
-	 */
-
-	/* public IRSComponent (
-		final double dblEffective,
-		final double dblMaturity,
-		final double dblCoupon,
-		final int iFreq,
-		final java.lang.String strCouponDC,
-		final java.lang.String strAccrualDC,
-		final java.lang.String strFloatingRateIndex,
-		final boolean bFullStub,
-		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
-		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapPay,
-		final org.drip.analytics.daycount.DateAdjustParams dapReset,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final double dblNotional,
-		final java.lang.String strIR,
-		final java.lang.String strCalendar)
-		throws java.lang.Exception
-	{
-		_fixStream = new org.drip.product.rates.FixedStream (dblEffective, dblMaturity, dblCoupon, iFreq,
-			strCouponDC, strAccrualDC, bFullStub, dapEffective, dapMaturity, dapPeriodStart, dapPeriodEnd,
-				dapAccrualStart, dapAccrualEnd, dapPay, notlSchedule, dblNotional, strIR, strCalendar);
-
-		_floatStream = new org.drip.product.rates.FloatingStream (dblEffective, dblMaturity, 0., iFreq,
-			strCouponDC, strAccrualDC, strFloatingRateIndex, bFullStub, dapEffective, dapMaturity,
-				dapPeriodStart, dapPeriodEnd, dapAccrualStart, dapAccrualEnd, dapPay, dapReset, notlSchedule,
-					-1. * dblNotional, strIR, strCalendar);
-	} */
-
-	/**
 	 * Construct the IRSComponent from the fixed and the floating streams
 	 * 
 	 * @param fixStream Fixed Stream
@@ -120,8 +60,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	 */
 
 	public IRSComponent (
-		final org.drip.product.rates.FixedStream fixStream,
-		final org.drip.product.rates.FloatingStream floatStream)
+		final org.drip.product.definition.RatesComponent fixStream,
+		final org.drip.product.definition.RatesComponent floatStream)
 		throws java.lang.Exception
 	{
 		if (null == (_fixStream = fixStream) || null == (_floatStream = floatStream))
@@ -206,6 +146,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	@Override public double getInitialNotional()
+		throws java.lang.Exception
 	{
 		return _fixStream.getInitialNotional();
 	}
@@ -372,12 +313,18 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			e.printStackTrace();
 		}
 
-		if (org.drip.math.common.NumberUtil.IsValid (dblValueNotional)) {
-			double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
+		try {
+			if (org.drip.math.common.NumberUtil.IsValid (dblValueNotional)) {
+				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
 
-			mapResult.put ("Price", dblCleanPrice);
+				mapResult.put ("Price", dblCleanPrice);
 
-			mapResult.put ("CleanPrice", dblCleanPrice);
+				mapResult.put ("CleanPrice", dblCleanPrice);
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
 		}
 
 		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
@@ -577,7 +524,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				null, null, null, null, null, null, 100., "JPY", "JPY");
 
 		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
-			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01, 4, "30/360", "30/360", "JPY-LIBOR",
+			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01, 4, "Act/360", "Act/360", "JPY-LIBOR",
 				false, null, null, null, null, null, null, null, null, null, -100., "JPY", "JPY");
 
 		IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
