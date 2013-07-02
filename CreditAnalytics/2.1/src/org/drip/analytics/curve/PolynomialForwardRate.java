@@ -182,7 +182,7 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 
 		if (null == (_csi = org.drip.math.grid.Span.CreateSpanInterpolator (adblDate, adblEndRate,
 			org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL,
-				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 4, 2,
+				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 4, null, 2, null,
 					org.drip.math.grid.Span.SET_ITEP)))
 			throw new java.lang.Exception ("PolynomialForwardRate ctr: Cannot construct CSI!");
 	}
@@ -676,7 +676,7 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 
 		if (null == (_csi = org.drip.math.grid.Span.CreateSpanInterpolator (_adblDate, dblValue,
 			org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL,
-				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 4, 2,
+				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 4, null, 2, null,
 					org.drip.math.grid.Span.SET_ITEP)))
 			return false;
 

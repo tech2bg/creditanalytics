@@ -5,9 +5,6 @@ package org.drip.service.sample;
  * Credit Product imports
  */
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
@@ -112,23 +109,11 @@ public class BondAnalyticsAPI {
 		}
 
 		/*
-		 * Create the sample (in this case dummy) IRS index rate fixings object
-		 */
-
-		Map<String, Double> mIndexFixings = new HashMap<String, Double>();
-
-		mIndexFixings.put (strIndex, 0.0042);
-
-		Map<JulianDate, Map<String, Double>> mmFixings = new HashMap<JulianDate, Map<String, Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
-
-		/*
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
 		return RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, strCurrency,
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings);
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 
 	/*
@@ -145,8 +130,8 @@ public class BondAnalyticsAPI {
 		double[] adblCashRate = new double[] {};
 		String[] astrIRSTenor = new String[] {   "1Y",    "2Y",    "3Y",    "4Y",    "5Y",    "6Y",    "7Y",
 			   "8Y",    "9Y",   "10Y",   "11Y",   "12Y",   "15Y",   "20Y",   "25Y",   "30Y",   "40Y",   "50Y"};
-		double[] adblIRSRate = new double[]  {0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000,
-			0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000, 0.04000};
+		double[] adblIRSRate = new double[]  {0.00367, 0.00533, 0.00843, 0.01238, 0.01609, 0.01926, 0.02191,
+			0.02406, 0.02588, 0.02741, 0.02870, 0.02982, 0.03208, 0.03372, 0.03445, 0.03484, 0.03501, 0.03484};
 
 		return BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
 			adblIRSRate, "USD");

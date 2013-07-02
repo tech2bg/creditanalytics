@@ -43,7 +43,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private boolean _bApplyCpnEOMAdj = false;
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private java.lang.String _strFloatingRateIndex = "USD-LIBOR-6M";
+	private java.lang.String _strFloatingRateIndex = "USD-LIBOR-3M";
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.Period> _lPeriods = null;
@@ -116,7 +116,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_strFloatingRateIndex = strIR + "-LIBOR-6M";
+		_strFloatingRateIndex = strIR + "-LIBOR-3M";
 
 		if (null != strFloatingRateIndex && strFloatingRateIndex.isEmpty())
 			_strFloatingRateIndex = strFloatingRateIndex;
@@ -474,21 +474,17 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					if (null == mktParams.getFixings() || null == mktParams.getFixings().get (new
 						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
 							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
-								(period.getResetDate())).get (_strFloatingRateIndex)) {
-						System.out.println ("IRS reset for index " + _strFloatingRateIndex +
-							" and reset date " + org.drip.analytics.date.JulianDate.fromJulian
-								(period.getResetDate()) + " not found!");
-
-						return null;
-					}
+								(period.getResetDate())).get (_strFloatingRateIndex))
+						dblResetRate = dblFloatingRate = mktParams.getDiscountCurve().calcLIBOR
+							(period.getStartDate(), period.getEndDate());
+					else
+						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
+							org.drip.analytics.date.JulianDate (period.getResetDate())).get
+								(_strFloatingRateIndex);
 
 					if (period.getStartDate() < valParams._dblValue)
 						dblAccrued01 = period.getAccrualDCF (valParams._dblValue) * 0.01 * getNotional
 							(period.getAccrualStartDate(), valParams._dblValue);
-
-					dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
-						org.drip.analytics.date.JulianDate (period.getResetDate())).get
-							(_strFloatingRateIndex);
 
 					dblResetDate = period.getResetDate();
 				} else

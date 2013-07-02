@@ -170,7 +170,7 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 			_adblDate[i] = adblDate[i];
 
 		_csi = new org.drip.math.grid.Span (_adblDate,
-			org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION);
+			org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION, null, null);
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 
 		if (null == (_csi = org.drip.math.grid.Span.CreateSpanInterpolator (adblDate, adblEndRate,
 			org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION,
-				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 4, 2,
+				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 4, null, 2, null,
 					org.drip.math.grid.Span.SET_ITEP)))
 			throw new java.lang.Exception ("HyperbolicTensionForwardRate ctr: Cannot construct CSI!");
 	}
@@ -732,7 +732,7 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 
 		if (null == (_csi = org.drip.math.grid.Span.CreateSpanInterpolator (_adblDate, dblValue,
 			org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION,
-				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 3, 2,
+				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 3, null, 2, null,
 					org.drip.math.grid.Span.SET_ITEP)))
 			return false;
 

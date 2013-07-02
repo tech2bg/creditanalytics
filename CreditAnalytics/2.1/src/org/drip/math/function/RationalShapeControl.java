@@ -47,23 +47,18 @@ public class RationalShapeControl extends org.drip.math.function.AbstractUnivari
 	/**
 	 * RationalShapeControl constructor
 	 * 
-	 * @param ep Segment Elastic Parameters
+	 * @param dblLambda Tension Parameter
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public RationalShapeControl (
-		final org.drip.math.grid.ElasticParams ep)
+		final double dblLambda)
 		throws java.lang.Exception
 	{
 		super (null);
 
-		if (ep.containsParameter ("Tension"))
-			_dblLambda = ep.getParamValue ("Tension");
-		else if (ep.containsParameter ("NormalizedTension"))
-			_dblLambda = ep.getParamValue ("NormalizedTension");
-
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblLambda))
+		if (!org.drip.math.common.NumberUtil.IsValid (_dblLambda = dblLambda))
 			throw new java.lang.Exception ("RationalShapeControl ctr: Invalid tension");
 	}
 

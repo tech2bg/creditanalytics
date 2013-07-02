@@ -895,13 +895,11 @@ public class ProductTestSuite {
 
 				aCDSBRA[i] = org.drip.product.creator.CDSBuilder.CreateSNAC (dt, (i + 1) + "Y", 0.01, "BRA");
 			} else {
-				aCDSARG[i] = org.drip.product.creator.CDSBuilder.CreateCDS (dt,
-					org.drip.analytics.date.JulianDate.CreateFromYMD (2012 + i, 6, 20), 0.07, "USD", 0.40,
-						"ARG", "USD", true);
+				aCDSARG[i] = org.drip.product.creator.CDSBuilder.CreateCDS (dt, dt.addYears (i + 1), 0.07,
+					"USD", 0.40, "ARG", "USD", true);
 
-				aCDSBRA[i] = org.drip.product.creator.CDSBuilder.CreateCDS (dt,
-					org.drip.analytics.date.JulianDate.CreateFromYMD (2012 + i, 6, 20), 0.01, "USD", 0.40,
-						"BRA", "USD", true);
+				aCDSBRA[i] = org.drip.product.creator.CDSBuilder.CreateCDS (dt, dt.addYears (i + 1), 0.01,
+					"USD", 0.40, "BRA", "USD", true);
 			}
 		}
 
@@ -1380,8 +1378,7 @@ public class ProductTestSuite {
 		throws java.lang.Exception
 	{
 		org.drip.product.definition.CreditDefaultSwap cds = org.drip.product.creator.CDSBuilder.CreateCDS
-			(dt, org.drip.analytics.date.JulianDate.CreateFromYMD (2015, 6, 20), 0.01, "USD", 0.40, "BRA",
-				"USD", true);
+			(dt, dt.addYears (5), 0.01, "USD", 0.40, "BRA", "USD", true);
 
 		org.drip.analytics.output.ComponentMeasures cdsOut = cds.calcMeasures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"),
@@ -1583,13 +1580,11 @@ public class ProductTestSuite {
 		double adblAmericanCallDates[] = new double[5];
 		double adblAmericanCallFactors[] = new double[5];
 
-		org.drip.product.credit.BondComponent bond = CreateSimpleBond ("BRA_5.00_21",
-			org.drip.analytics.date.JulianDate.CreateFromYMD (2012, 3, 20),
-				org.drip.analytics.date.JulianDate.CreateFromYMD (2013, 6, 20), 0.05, "USD", "BRA", "BRA");
+		org.drip.product.credit.BondComponent bond = CreateSimpleBond ("BRA_5.00_21", dt.subtractDays (365),
+			dt.addYears (10), 0.05, "USD", "BRA", "BRA");
 
 		for (int i = 0; i < 5; ++i) {
-			adblAmericanCallDates[i] = org.drip.analytics.date.JulianDate.CreateFromYMD (2016 + i, 6,
-				20).getJulian();
+			adblAmericanCallDates[i] = dt.addYears (i + 5).getJulian();
 
 			adblAmericanCallFactors[i] = 1.;
 		}
@@ -1826,8 +1821,7 @@ public class ProductTestSuite {
 		throws java.lang.Exception
 	{
 		org.drip.product.definition.BasketProduct cdx = org.drip.product.creator.CDSBasketBuilder.MakeCDX
-			(dt, org.drip.analytics.date.JulianDate.CreateFromYMD (2016, 6, 20), 0.05, "USD", new
-				java.lang.String[] {"ARG", "BRA"}, "CDX_Test");
+			(dt, dt.addYears (5), 0.05, "USD", new java.lang.String[] {"ARG", "BRA"}, "CDX_Test");
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
 			(dt, dt, "USD");
@@ -2757,7 +2751,7 @@ public class ProductTestSuite {
 
 		int iNumRuns = 1;
 		long lSleepTime = 1000L;
-		int iTestDetail = TD_BRIEF;
+		int iTestDetail = TD_SUCCESS_FAILURE;
 		int iTestProduct = TP_FIXED_BOND;
 		// int iTestProduct = TP_FIXED_BOND | TP_CDS | TP_BASKET_BOND;
 		// int iTestProduct = TP_CASH | TP_EDF | TP_IRS | TP_CDS | TP_FIXED_BOND | TP_CDX | TP_BASKET_BOND;

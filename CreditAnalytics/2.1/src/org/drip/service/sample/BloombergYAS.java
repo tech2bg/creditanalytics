@@ -2,12 +2,6 @@
 package org.drip.service.sample;
 
 /*
- * General imports
- */
-
-import java.util.*;
-
-/*
  * Credit Product imports
  */
 
@@ -80,7 +74,7 @@ public class BloombergYAS {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-6M";
+		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -106,23 +100,11 @@ public class BloombergYAS {
 		}
 
 		/*
-		 * Create the sample (in this case dummy) IRS index rate fixings object
-		 */
-
-		Map<String, Double> mIndexFixings = new HashMap<String, Double>();
-
-		mIndexFixings.put (strIndex, 0.0042);
-
-		Map<JulianDate, Map<String, Double>> mmFixings = new HashMap<JulianDate, Map<String, Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
-
-		/*
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
 		return RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, strCurrency,
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings);
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 
 	/*
@@ -261,7 +243,7 @@ public class BloombergYAS {
 				null,		// Principal Schedule
 				null);
 
-		/* double[] adblDate = new double[] {
+		double[] adblDate = new double[] {
 			JulianDate.CreateFromYMD (2016, 3, 1).getJulian(),
 			JulianDate.CreateFromYMD (2017, 3, 1).getJulian(),
 			JulianDate.CreateFromYMD (2018, 3, 1).getJulian(),
@@ -273,7 +255,7 @@ public class BloombergYAS {
 
 		EmbeddedOptionSchedule eos = new EmbeddedOptionSchedule (adblDate, adblFactor, false, 30, false, Double.NaN, "", Double.NaN);
 
-		bond.setEmbeddedCallSchedule (eos); */
+		bond.setEmbeddedCallSchedule (eos);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, dcTSY, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);

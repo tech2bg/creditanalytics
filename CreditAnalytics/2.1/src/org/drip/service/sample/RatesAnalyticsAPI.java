@@ -2,12 +2,6 @@
 package org.drip.service.sample;
 
 /*
- * Generic imports
- */
-
-import java.util.*;
-
-/*
  * Credit Product imports
  */
 
@@ -253,24 +247,12 @@ public class RatesAnalyticsAPI {
 		}
 
 		/*
-		 * Create the sample (in this case dummy) IRS index rate fixings object
-		 */
-
-		Map<String, Double> mIndexFixings = new HashMap<String, Double>();
-
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
-
-		Map<JulianDate, Map<String, Double>> mmFixings = new HashMap<JulianDate, Map<String, Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
-
-		/*
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
 		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-			aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings);
+			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
 		/*
 		 * Re-calculate the component input measure quotes from the calibrated discount curve object
@@ -279,7 +261,7 @@ public class RatesAnalyticsAPI {
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 				FormatUtil.FormatDouble (aCompCalib[i].calcMeasureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings),
+					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
 		/* for (int i = 0; i < 100; ++i) {
@@ -292,7 +274,7 @@ public class RatesAnalyticsAPI {
 			WengertJacobian wjComp = aCompCalib[i].calcPVDFMicroJack
 				(new ValuationParams (dtStart, dtStart, "USD"),
 				null,
-				ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings),
+				ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 				null);
 
 			System.out.println ("PV/DF Micro Jack[" + aCompCalib[i].getComponentName() + "]=" +
@@ -492,24 +474,12 @@ public class RatesAnalyticsAPI {
 		}
 
 		/*
-		 * Create the sample (in this case dummy) IRS index rate fixings object
-		 */
-
-		Map<String, Double> mIndexFixings = new HashMap<String, Double>();
-
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
-
-		Map<JulianDate, Map<String, Double>> mmFixings = new HashMap<JulianDate, Map<String, Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
-
-		/*
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
 		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-			aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings);
+			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
 		/*
 		 * Re-calculate the component input measure quotes from the calibrated discount curve object
@@ -518,7 +488,7 @@ public class RatesAnalyticsAPI {
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 				FormatUtil.FormatDouble (aCompCalib[i].calcMeasureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings),
+					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
 		org.drip.math.calculus.WengertJacobian wjQuoteDF = dc.compQuoteDFJacobian (dtStart);

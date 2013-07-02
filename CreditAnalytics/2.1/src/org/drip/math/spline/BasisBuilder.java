@@ -29,10 +29,19 @@ package org.drip.math.spline;
  */
 
 /**
- * This class implements the basis set and spline builder for the following typoes of splines:
+ * This class implements the basis set and spline builder for the following types of splines:
  * 	- Exponential basis tension splines
  * 	- Hyperbolic basis tension splines
  * 	- Polynomial basis tension splines
+ * 
+ * This elastic coefficients for the segment using Ck basis splines inside [0,...,1) - Globally
+ *  [x_0,...,x_1) are extracted for:
+ * 
+ * 			y = Interpolator (Ck, x) * ShapeControl (x)
+ * 
+ *		where is the normalized ordinate mapped as
+ * 
+ * 			x => (x - x_i-1) / (x_i - x_i-1)
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -52,6 +61,8 @@ public class BasisBuilder {
 	 * @param dblX0 Left Ordinate
 	 * @param dblX1 Right Ordinate
 	 * @param dblTension The Segment Tension
+	 * @param auShapeControl Shape Control Basis Function
+	 * @param lc Solution Constraint
 	 * 
 	 * @return Instance of Ck
 	 */
@@ -59,7 +70,9 @@ public class BasisBuilder {
 	public static final org.drip.math.spline.Ck CreateExponentialTensionBasis (
 		final double dblX0,
 		final double dblX1,
-		final double dblTension)
+		final double dblTension,
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final org.drip.math.spline.LinearConstraint lc)
 	{
 		try {
 			org.drip.math.function.AbstractUnivariate[] aAU = new
@@ -73,7 +86,7 @@ public class BasisBuilder {
 
 			aAU[3] = new org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblTension);
 
-			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, 2);
+			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, auShapeControl, 2, lc);
 
 			/* return new org.drip.math.spline.Ck (dblX0, dblX1, new org.drip.math.function.AbstractUnivariate[]
 				{new org.drip.math.function.Polynomial (0), new org.drip.math.function.Polynomial (1), new
@@ -99,6 +112,8 @@ public class BasisBuilder {
 	 * @param dblX0 Left Ordinate
 	 * @param dblX1 Right Ordinate
 	 * @param dblTension The Segment Tension
+	 * @param auShapeControl Shape Control Basis Function
+	 * @param lc Solution Constraint
 	 * 
 	 * @return Instance of Ck
 	 */
@@ -106,7 +121,9 @@ public class BasisBuilder {
 	public static final org.drip.math.spline.Ck CreateHyperbolicTensionBasis (
 		final double dblX0,
 		final double dblX1,
-		final double dblTension)
+		final double dblTension,
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final org.drip.math.spline.LinearConstraint lc)
 	{
 		try {
 			org.drip.math.function.AbstractUnivariate[] aAU = new
@@ -122,7 +139,7 @@ public class BasisBuilder {
 			aAU[3] = new org.drip.math.function.HyperbolicTension
 				(org.drip.math.function.HyperbolicTension.SINH, dblTension);
 
-			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, 2);
+			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, auShapeControl, 2, lc);
 
 			/* return new org.drip.math.spline.Ck (dblX0, dblX1, new org.drip.math.function.AbstractUnivariate[]
 				{new org.drip.math.function.Polynomial (0), new org.drip.math.function.Polynomial (1), new
@@ -149,7 +166,9 @@ public class BasisBuilder {
 	 * @param dblX0 Left Ordinate
 	 * @param dblX1 Right Ordinate
 	 * @param iNumBasis Number of Basis Functions
+	 * @param auShapeControl Shape Control Basis Function
 	 * @param iK Continuity Criterion in C_k
+	 * @param lc Solution Constraint
 	 * 
 	 * @return Instance of Ck
 	 */
@@ -158,7 +177,9 @@ public class BasisBuilder {
 		final double dblX0,
 		final double dblX1,
 		final int iNumBasis,
-		final int iK)
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final int iK,
+		final org.drip.math.spline.LinearConstraint lc)
 	{
 		if (0 == iNumBasis) return null;
 
@@ -169,7 +190,7 @@ public class BasisBuilder {
 			for (int i = 0; i < iNumBasis; ++i)
 				aAU[i] = new org.drip.math.function.Polynomial (i);
 
-			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, iK);
+			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, auShapeControl, iK, lc);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -183,7 +204,9 @@ public class BasisBuilder {
 	 * @param dblX0 Left Ordinate
 	 * @param dblX1 Right Ordinate
 	 * @param iNumBasis Number of Basis Functions
+	 * @param auShapeControl Shape Control Basis Function
 	 * @param iK Continuity Criterion in C_k
+	 * @param lc Solution Constraint
 	 * 
 	 * @return Instance of Ck
 	 */
@@ -192,7 +215,9 @@ public class BasisBuilder {
 		final double dblX0,
 		final double dblX1,
 		final int iNumBasis,
-		final int iK)
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final int iK,
+		final org.drip.math.spline.LinearConstraint lc)
 	{
 		if (0 == iNumBasis) return null;
 
@@ -203,7 +228,7 @@ public class BasisBuilder {
 			for (int i = 0; i < iNumBasis; ++i)
 				aAU[i] = new org.drip.math.function.BernsteinPolynomial (i, iNumBasis - 1 - i);
 
-			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, iK);
+			return new org.drip.math.spline.Ck (dblX0, dblX1, aAU, auShapeControl, iK, lc);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -220,22 +245,26 @@ public class BasisBuilder {
 		org.drip.math.grid.Segment seg1 = null;
 		org.drip.math.grid.Segment seg2 = null;
 
+		org.drip.math.function.AbstractUnivariate rsc = new org.drip.math.function.RationalShapeControl (1.);
+
 		if ("Exponential".equalsIgnoreCase (astrArgs[0])) {
-			seg1 = org.drip.math.spline.BasisBuilder.CreateExponentialTensionBasis (1., 5., 1.);
+			seg1 = org.drip.math.spline.BasisBuilder.CreateExponentialTensionBasis (1., 5., 1., rsc, null);
 
-			seg2 = org.drip.math.spline.BasisBuilder.CreateExponentialTensionBasis (5., 9., 1.);
+			seg2 = org.drip.math.spline.BasisBuilder.CreateExponentialTensionBasis (5., 9., 1., rsc, null);
 		} else if ("Hyperbolic".equalsIgnoreCase (astrArgs[0])) {
-			seg1 = org.drip.math.spline.BasisBuilder.CreateHyperbolicTensionBasis (1., 5., 1.);
+			seg1 = org.drip.math.spline.BasisBuilder.CreateHyperbolicTensionBasis (1., 5., 1., rsc, null);
 
-			seg2 = org.drip.math.spline.BasisBuilder.CreateHyperbolicTensionBasis (5., 9., 1.);
+			seg2 = org.drip.math.spline.BasisBuilder.CreateHyperbolicTensionBasis (5., 9., 1., rsc, null);
 		} else if ("Polynomial".equalsIgnoreCase (astrArgs[0])) {
-			seg1 = org.drip.math.spline.BasisBuilder.CreatePolynomialBasis (1., 5., iNumBasis, iK);
+			seg1 = org.drip.math.spline.BasisBuilder.CreatePolynomialBasis (1., 5., iNumBasis, rsc, iK, null);
 
-			seg2 = org.drip.math.spline.BasisBuilder.CreatePolynomialBasis (5., 9., iNumBasis, iK);
+			seg2 = org.drip.math.spline.BasisBuilder.CreatePolynomialBasis (5., 9., iNumBasis, rsc, iK, null);
 		} else if ("BernsteinPolynomial".equalsIgnoreCase (astrArgs[0])) {
-			seg1 = org.drip.math.spline.BasisBuilder.CreateBernsteinPolynomialBasis (1., 5., iNumBasis, iK);
+			seg1 = org.drip.math.spline.BasisBuilder.CreateBernsteinPolynomialBasis (1., 5., iNumBasis, rsc,
+				iK, null);
 
-			seg2 = org.drip.math.spline.BasisBuilder.CreateBernsteinPolynomialBasis (5., 9., iNumBasis, iK);
+			seg2 = org.drip.math.spline.BasisBuilder.CreateBernsteinPolynomialBasis (5., 9., iNumBasis, rsc,
+				iK, null);
 		}
 
 		org.drip.math.calculus.WengertJacobian wj1 = seg1.calibrateJacobian (1., 0., 7.);

@@ -223,7 +223,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					return null != (_dc =
 						org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (_dtStart,
 							_strCurrency,
-								org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF,
+								org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 						_aCompCalib, _adblCompCalibValue, _astrCalibMeasure, _mmFixings));
 				}
 			});

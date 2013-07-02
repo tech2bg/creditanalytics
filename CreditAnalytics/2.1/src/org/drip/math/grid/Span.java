@@ -61,12 +61,6 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 	public static final java.lang.String BASIS_SPLINE_EXPONENTIAL_TENSION = "ExponentialTension";
 
 	/**
-	 * Partitioned Tension Spline
-	 */
-
-	public static final java.lang.String BASIS_SPLINE_PARTITIONED_TENSION = "PartitionedTension";
-
-	/**
 	 * Calibration Mode: Natural Boundary Condition
 	 */
 
@@ -102,7 +96,9 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 	private double _dblTension = java.lang.Double.NaN;
 	private org.drip.math.grid.Segment[] _aCSS = null;
 	private InterpolatorTargetEvalParams _itep = null;
+	private org.drip.math.spline.LinearConstraint _lc = null;
 	private org.drip.math.calculus.WengertJacobian _wjSpan = null;
+	private org.drip.math.function.AbstractUnivariate _auShapeControl = null;
 
 	/**
 	 * Creates a Span instance over the specified X and Y input array points, using the specified basis
@@ -114,7 +110,9 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 	 * @param strCalibrationMode Calibration Mode
 	 * @param dblTension Segment Tension
 	 * @param iNumBasis Number of Basis Functions
+	 * @param auShapeControl Shape Control Basis Function
 	 * @param iK Continuity Criterion in C_k
+	 * @param lc Solution Constraint
 	 * @param iSetupMode Setup Mode
 	 * 
 	 * @return Span instance
@@ -127,16 +125,17 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 		final java.lang.String strCalibrationMode,
 		final double dblTension,
 		final int iNumBasis,
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
 		final int iK,
+		final org.drip.math.spline.LinearConstraint lc,
 		final int iSetupMode)
 	{
 		if (null == adblX || null == adblY || 0 == adblX.length || adblX.length != adblY.length || null ==
 			strBasisSpline || (!BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline) &&
 				!BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline) &&
 					!BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline) &&
-						!BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline) &&
-							!BASIS_SPLINE_PARTITIONED_TENSION.equalsIgnoreCase (strBasisSpline)) || null ==
-								strCalibrationMode)
+						!BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) || null ==
+							strCalibrationMode)
 			return null;
 
 		org.drip.math.grid.Span csi = null;
@@ -146,26 +145,27 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 			for (int i = 1; i < adblX.length; ++i) {
 				if (BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
 					if (null == (aCSS[i - 1] = org.drip.math.spline.BasisBuilder.CreatePolynomialBasis
-						(adblX[i - 1], adblX[i], iNumBasis, iK)))
+						(adblX[i - 1], adblX[i], iNumBasis, auShapeControl, iK, lc)))
 						return null;
 				} else if (BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
 					if (null == (aCSS[i - 1] =
 						org.drip.math.spline.BasisBuilder.CreateBernsteinPolynomialBasis (adblX[i - 1],
-							adblX[i], iNumBasis, iK)))
+							adblX[i], iNumBasis, auShapeControl, iK, lc)))
 						return null;
 				} else if (BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
 					if (null == (aCSS[i - 1] = org.drip.math.spline.BasisBuilder.CreateHyperbolicTensionBasis
-						(adblX[i - 1], adblX[i], dblTension)))
+						(adblX[i - 1], adblX[i], dblTension, auShapeControl, lc)))
 						return null;
 				} else if (BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
 					if (null == (aCSS[i - 1] =
 						org.drip.math.spline.BasisBuilder.CreateExponentialTensionBasis (adblX[i - 1],
-							adblX[i], dblTension)))
+							adblX[i], dblTension, auShapeControl, lc)))
 						return null;
 				}
 			}
 
-			csi = new org.drip.math.grid.Span (iNumBasis, iK, strBasisSpline, dblTension, aCSS);
+			csi = new org.drip.math.grid.Span (iNumBasis, iK, strBasisSpline, dblTension, auShapeControl, lc,
+				aCSS);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -184,7 +184,9 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 	 * @param strCalibrationMode Calibration Mode
 	 * @param dblTension Segment Tension Parameter
 	 * @param iNumBasis Number of Basis Functions
+	 * @param auShapeControl Shape Control Basis Function
 	 * @param iK Continuity Criterion in C_k
+	 * @param lc Solution Constraint
 	 * @param iSetupMode Setup Mode
 	 * 
 	 * @return Span Instance
@@ -197,7 +199,9 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 		final java.lang.String strCalibrationMode,
 		final double dblTension,
 		final int iNumBasis,
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
 		final int iK,
+		final org.drip.math.spline.LinearConstraint lc,
 		final int iSetupMode)
 	{
 		if (null == adblX || 0 == adblX.length || !org.drip.math.common.NumberUtil.IsValid (dblY) || null ==
@@ -210,7 +214,7 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 			adblY[i] = dblY;
 
 		return org.drip.math.grid.Span.CreateSpanInterpolator (adblX, adblY, strBasisSpline,
-			strCalibrationMode, dblTension, iNumBasis, iK, iSetupMode);
+			strCalibrationMode, dblTension, iNumBasis, auShapeControl, iK, lc, iSetupMode);
 	}
 
 	private Span (
@@ -218,6 +222,8 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 		final int iCk,
 		final java.lang.String strBasisSpline,
 		final double dblTension,
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final org.drip.math.spline.LinearConstraint lc,
 		final org.drip.math.grid.Segment[] aBSS)
 		throws java.lang.Exception
 	{
@@ -227,8 +233,11 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 			|| 0 == _aCSS.length)
 			throw new java.lang.Exception ("Span ctr: Invalid inputs");
 
+		_lc = lc;
 		_iCk = iCk;
 		_iNumBasis = iNumBasis;
+		_dblTension = dblTension;
+		_auShapeControl = auShapeControl;
 	}
 
 	private boolean initStartingSegment (
@@ -380,13 +389,16 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 	 * 
 	 * @param adblX Array of segment end points
 	 * @param strBasisSpline The Basis Spline
+	 * @param auShapeControl Shape Control Basis Function
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public Span (
 		final double[] adblX,
-		final java.lang.String strBasisSpline)
+		final java.lang.String strBasisSpline,
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final org.drip.math.spline.LinearConstraint lc)
 		throws java.lang.Exception
 	{
 		super (null);
@@ -404,16 +416,16 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 		for (int i = 1; i < adblX.length; ++i) {
 			if (BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline))
 				_aCSS[i - 1] = org.drip.math.spline.BasisBuilder.CreatePolynomialBasis (adblX[i - 1],
-					adblX[i], 1, 0);
+					adblX[i], 1, auShapeControl, 0, lc);
 			else if (BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline))
 				_aCSS[i - 1] = org.drip.math.spline.BasisBuilder.CreateBernsteinPolynomialBasis
-					(adblX[i - 1], adblX[i], 1, 0);
+					(adblX[i - 1], adblX[i], 1, auShapeControl, 0, lc);
 			else if (BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline))
 				_aCSS[i - 1] = org.drip.math.spline.BasisBuilder.CreateHyperbolicTensionBasis (adblX[i - 1],
-					adblX[i], dblTension);
+					adblX[i], dblTension, auShapeControl, lc);
 			else if (BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline))
 				_aCSS[i - 1] = org.drip.math.spline.BasisBuilder.CreateExponentialTensionBasis (adblX[i - 1],
-					adblX[i], dblTension);
+					adblX[i], dblTension, auShapeControl, lc);
 		}
 	}
 
@@ -476,6 +488,28 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 	public double getTension()
 	{
 		return _dblTension;
+	}
+
+	/**
+	 * Retrieve the Shape Control
+	 * 
+	 * @return The Shape Control
+	 */
+
+	public org.drip.math.function.AbstractUnivariate getShapeControl()
+	{
+		return _auShapeControl;
+	}
+
+	/**
+	 * Retrieve the Span Constraints
+	 * 
+	 * @return The Span Constraints
+	 */
+
+	public org.drip.math.spline.LinearConstraint getConstraint()
+	{
+		return _lc;
 	}
 
 	/**
@@ -743,8 +777,8 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 		}
 
 		return org.drip.math.grid.Span.CreateSpanInterpolator (adblX, adblY, getBasisSplineType(),
-			SPLINE_BOUNDARY_MODE_NATURAL, getTension(), getNumBasisFunctions(), getCk(), SET_ITEP |
-				CALIBRATE_SPAN);
+			SPLINE_BOUNDARY_MODE_NATURAL, getTension(), getNumBasisFunctions(), getShapeControl(), getCk(),
+				getConstraint(), SET_ITEP | CALIBRATE_SPAN);
 	}
 
 	/**
@@ -853,6 +887,7 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 
 	public static final void main (
 		final java.lang.String[] astrArgs)
+		throws java.lang.Exception
 	{
 		double dblX = 1.;
 		double[] adblX = new double[] { 1.00,  1.50,  2.00, 3.00, 4.00, 5.00, 6.50, 8.00, 10.00};
@@ -862,13 +897,14 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 		int iK = 2;
 		double dblTension = 1.;
 
+		org.drip.math.function.AbstractUnivariate rsc = new org.drip.math.function.RationalShapeControl (1.);
+
 		org.drip.math.grid.Span span = org.drip.math.grid.Span.CreateSpanInterpolator (adblX, adblY,
-			// BASIS_SPLINE_POLYNOMIAL, SPLINE_BOUNDARY_MODE_NATURAL, dblTension,
-			BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, SPLINE_BOUNDARY_MODE_NATURAL, dblTension,
-			// BASIS_SPLINE_EXPONENTIAL_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension,
-			// BASIS_SPLINE_HYPERBOLIC_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension,
-			// BASIS_SPLINE_PARTITIONED_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension,
-				iNumBasis, iK, SET_ITEP | CALIBRATE_SPAN);
+			// BASIS_SPLINE_POLYNOMIAL, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
+			// BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
+			// BASIS_SPLINE_EXPONENTIAL_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
+			BASIS_SPLINE_HYPERBOLIC_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
+				iK, null, SET_ITEP | CALIBRATE_SPAN);
 
 		while (dblX <= 10.) {
 			try {

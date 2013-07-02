@@ -141,7 +141,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 
 					return null != (dcIRS =
 						org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
-							org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF,
+							org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings));
 				}
 

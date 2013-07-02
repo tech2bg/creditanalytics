@@ -39,8 +39,10 @@ public class Ck extends org.drip.math.grid.Segment {
 	private int _iNumBasis = 0;
 	private double[][] _aadblF = null;
 	private double[][] _aadblFInv = null;
+	private org.drip.math.spline.LinearConstraint _lc = null;
 	private org.drip.math.calculus.WengertJacobian _wjMicro = null; 
 	private org.drip.math.function.AbstractUnivariate[] _aAU = null;
+	private org.drip.math.function.AbstractUnivariate _auShapeControl = null;
 
 	protected double[] _adblCoeff = null;
 
@@ -69,33 +71,7 @@ public class Ck extends org.drip.math.grid.Segment {
 		}
 	}
 
-	protected Ck (
-		final double dblLeft,
-		final double dblRight,
-		final org.drip.math.function.AbstractUnivariate[] aAU,
-		final int iK)
-		throws java.lang.Exception {
-		super (dblLeft, dblRight);
-
-		if (null == (_aAU = aAU) || 0 >= (_iNumBasis = _aAU.length) || (_iK = iK) > _iNumBasis - 2)
-			throw new java.lang.Exception ("Ck ctr: Invalid inputs!");
-
-		_adblCoeff = new double[_iNumBasis];
-	}
-
-	@Override public double y (
-		final double dblX)
-		throws java.lang.Exception
-	{
-		double dblY = 0.;
-
-		for (int i = 0; i < _aAU.length; ++i)
-			dblY += _adblCoeff[i] * _aAU[i].evaluate (dblX);
-
-		return dblY;
-	}
-
-	@Override public double derivative (
+	private double derivativeBasis (
 		final double dblX,
 		final int iOrder)
 		throws java.lang.Exception
@@ -106,6 +82,36 @@ public class Ck extends org.drip.math.grid.Segment {
 			dblDerivative += _adblCoeff[i] * _aAU[i].calcDerivative (dblX, iOrder);
 
 		return dblDerivative;
+	}
+
+	private double yBasis (
+		final double dblX)
+		throws java.lang.Exception
+	{
+		double dblY = 0.;
+
+		for (int i = 0; i < _aAU.length; ++i)
+			dblY += _adblCoeff[i] * _aAU[i].evaluate (dblX);
+
+		return null == _auShapeControl? dblY : dblY * _auShapeControl.evaluate (dblX);
+	}
+
+	protected Ck (
+		final double dblLeft,
+		final double dblRight,
+		final org.drip.math.function.AbstractUnivariate[] aAU,
+		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final int iK,
+		final org.drip.math.spline.LinearConstraint lc)
+		throws java.lang.Exception {
+		super (dblLeft, dblRight);
+
+		if (null == (_aAU = aAU) || 0 >= (_iNumBasis = _aAU.length) || (_iK = iK) > _iNumBasis - 2)
+			throw new java.lang.Exception ("Ck ctr: Invalid inputs!");
+
+		_lc = lc;
+		_auShapeControl = auShapeControl;
+		_adblCoeff = new double[_iNumBasis];
 	}
 
 	protected boolean y1 (
@@ -173,6 +179,35 @@ public class Ck extends org.drip.math.grid.Segment {
 		return 1 >= _iK;
 	}
 
+	@Override public double y (
+		final double dblX)
+		throws java.lang.Exception
+	{
+		return null == _auShapeControl ? yBasis (dblX) : yBasis (dblX) * _auShapeControl.evaluate (dblX);
+	}
+
+	@Override public double derivative (
+		final double dblX,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		if (null == _auShapeControl) return derivativeBasis (dblX, iOrder);
+
+		double dblDerivative = 0.;
+
+		for (int i = 0; i <= iOrder; ++i) {
+			double dblInterpDeriv = 0 == i ? yBasis (dblX): derivativeBasis (dblX, i);
+
+			double dblShapeControlDeriv = iOrder == i ? _auShapeControl.evaluate (dblX) :
+				_auShapeControl.calcDerivative (dblX, iOrder - i);
+
+			dblDerivative += (org.drip.math.common.NumberUtil.NCK (iOrder,  i) * dblInterpDeriv *
+				dblShapeControlDeriv);
+		}
+
+		return dblDerivative;
+	}
+
 	/**
 	 * Get the Ck constraint number
 	 * 
@@ -182,6 +217,17 @@ public class Ck extends org.drip.math.grid.Segment {
 	public int getCk()
 	{
 		return _iK;
+	}
+
+	/**
+	 * Retrieve the Shape Control
+	 * 
+	 * @return The Shape Control
+	 */
+
+	public org.drip.math.function.AbstractUnivariate getShapeControl()
+	{
+		return _auShapeControl;
 	}
 
 	@Override public int numBasis()
@@ -233,6 +279,8 @@ public class Ck extends org.drip.math.grid.Segment {
 		double[] adblRHS = new double[iNumCoeff];
 		_aadblF = new double[iNumCoeff][iNumCoeff];
 
+		int iNumConstraint = null == _lc ? 0 : _lc.size();
+
 		if (null == adblLeftDeriv || 0 == adblLeftDeriv.length) {
 			if (0 != _iK || 2 != iNumCoeff) return false;
 
@@ -245,8 +293,12 @@ public class Ck extends org.drip.math.grid.Segment {
 		for (int j = 0; j < iNumCoeff; ++j) {
 			if (j < 2)
 				adblRHS[j] = 0 == j ? dblYLeft : dblYRight;
+			else if (j < 2 + iNumConstraint)
+				adblRHS[j] = _lc.getValue (j - 2);
+			else if (j < 2 + iNumConstraint + _iK)
+				adblRHS[j] = adblLeftDeriv[j - 2];
 			else
-				adblRHS[j] = j < _iK + 2 ? adblLeftDeriv[j - 2] : 0.;
+				adblRHS[j] = 0.;
 		}
 
 		for (int i = 0; i < iNumCoeff; ++i) {
@@ -254,10 +306,13 @@ public class Ck extends org.drip.math.grid.Segment {
 				for (int l = 0; l < iNumCoeff; ++l) {
 					if (l < 2)
 						_aadblF[l][i] = _aAU[i].evaluate (l);
+					else if (l < 2 + iNumConstraint)
+						_aadblF[l][i] = _lc.getValue (l - 2, i);
+					else if (l < 2 + iNumConstraint + _iK)
+						_aadblF[l][i] = _aAU[i].calcDerivative (0., l - 1);
 					else
-						_aadblF[l][i] = l < _iK + 2 ? _aAU[i].calcDerivative (0., l - 1) :
-							org.drip.math.calculus.Integrator.Boole (new CrossBasisDerivativeProduct (_iK,
-								_aAU[i], _aAU[l]), 0., 1.);
+						_aadblF[l][i] = org.drip.math.calculus.Integrator.Boole (new
+							CrossBasisDerivativeProduct (_iK, _aAU[i], _aAU[l]), 0., 1.);
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -265,9 +320,6 @@ public class Ck extends org.drip.math.grid.Segment {
 				return false;
 			}
 		}
-
-		/* org.drip.math.linearalgebra.LinearSystemSolution lss =
-			org.drip.math.linearalgebra.LinearSystemSolver.SolveUsingGaussianElimination (_aadblF, adblRHS); */
 
 		org.drip.math.linearalgebra.LinearizationOutput lss =
 			org.drip.math.linearalgebra.LinearSystemSolver.SolveUsingMatrixInversion (_aadblF, adblRHS,

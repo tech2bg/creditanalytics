@@ -113,23 +113,11 @@ public class BloombergCDSW {
 		}
 
 		/*
-		 * Create the sample (in this case dummy) IRS index rate fixings object
-		 */
-
-		Map<String, Double> mIndexFixings = new HashMap<String, Double>();
-
-		mIndexFixings.put (strIndex, 0.0042);
-
-		Map<JulianDate, Map<String, Double>> mmFixings = new HashMap<JulianDate, Map<String, Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
-
-		/*
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
 		return RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, strCurrency,
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings);
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 
 	private static CreditCurve CreateCreditCurveFromCDS (

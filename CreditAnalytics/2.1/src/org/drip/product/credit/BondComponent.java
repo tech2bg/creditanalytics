@@ -112,8 +112,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			strTsyBmk = org.drip.analytics.support.AnalyticsHelper.BaseTsyBmk (valParams._dblValue,
 				dblWorkoutDate);
 
-		System.out.println ("strTsyBmk = " + strTsyBmk);
-
 		if (null != mktParams.getTSYBenchmarkQuotes() && null != strTsyBmk && !strTsyBmk.isEmpty())
 			cqTsyBmkYield = mktParams.getTSYBenchmarkQuotes().get (strTsyBmk);
 
@@ -11673,7 +11671,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			return null;
 
 		double dblStdPECS = java.lang.Double.NaN;
-		double dblBmkYield = java.lang.Double.NaN;
 		double dblStdPrice = java.lang.Double.NaN;
 		double dblStdYield = java.lang.Double.NaN;
 		double dblStdGSpread = java.lang.Double.NaN;
@@ -11682,7 +11679,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblStdDuration = java.lang.Double.NaN;
 		double dblStdConvexity = java.lang.Double.NaN;
 		double dblStdTSYSpread = java.lang.Double.NaN;
-		double dblStdPriceAtY01 = java.lang.Double.NaN;
 		double dblStdCreditBasis = java.lang.Double.NaN;
 		double dblStdDiscountMargin = java.lang.Double.NaN;
 		double dblStdAssetSwapSpread = java.lang.Double.NaN;
@@ -11710,64 +11706,61 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == _fltParams) {
 			try {
-				dblStdZSpread = new BondCalibrator (this).calibZeroCurveSpreadFromPrice (valParams,
-					mktParams, quotingParams, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				dblStdZSpread = calcZSpreadFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+					wi._dblExerciseFactor, dblStdPrice);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 			}
 
 			try {
-				dblStdOASpread = new BondCalibrator (this).calibDiscCurveSpreadFromPrice (valParams,
-					mktParams, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				dblStdOASpread = calcOASFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+					wi._dblExerciseFactor, dblStdPrice);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 			}
 		}
 
 		try {
-			if (null != mktParams.getTSYDiscountCurve())
-				dblStdGSpread = wi._dblYield - mktParams.getTSYDiscountCurve().calcLIBOR (wi._dblDate);
+			dblStdGSpread = calcGSpreadFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblStdPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblBmkYield = getTsyBmkYield (valParams, mktParams, wi._dblDate);
-
-			if (!java.lang.Double.isNaN (dblBmkYield)) dblStdTSYSpread = wi._dblYield - dblBmkYield;
+			dblStdTSYSpread = calcTSYSpreadFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblStdPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblStdPriceAtY01 = calcPriceFromYield (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, wi._dblYield + 0.0001);
+			dblStdDuration = calcModifiedDurationFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblStdPrice);
 
-			dblStdDuration = 10000. * (dblPrice - dblStdPriceAtY01) / dblPrice;
-			dblStdAssetSwapSpread = 0.0001 * (dblStdPrice - dblPrice) / (dblPrice - dblStdPriceAtY01);
+			dblStdAssetSwapSpread = calcASWFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblStdPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblStdConvexity = (dblStdPriceAtY01 + calcPriceFromYield (valParams, mktParams, quotingParams,
-				wi._dblDate, wi._dblExerciseFactor, wi._dblYield - 0.0001) - 2. * dblPrice) / dblPrice;
+			dblStdConvexity = calcConvexityFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblStdPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			if (null != mktParams.getCreditCurve())
-				dblStdCreditBasis = new BondCalibrator (this).calibrateCreditBasisFromPrice (valParams,
-					mktParams, wi._dblDate, wi._dblExerciseFactor, dblPrice, false);
+			dblStdCreditBasis = calcCreditBasisFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblStdPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			if (null != mktParams.getCreditCurve())
-				dblStdPECS = new BondCalibrator (this).calibrateCreditBasisFromPrice (valParams, mktParams,
-					wi._dblDate, wi._dblExerciseFactor, dblPrice, true);
+			dblStdPECS = calcPECSFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblStdPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -11778,12 +11771,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					(wi._dblDate), dblStdOASpread, dblStdTSYSpread, dblStdDiscountMargin,
 						dblStdAssetSwapSpread, dblStdCreditBasis, dblStdPECS, dblStdDuration,
 							dblStdConvexity, wi);
-
-			/* return new org.drip.analytics.output.BondRVMeasures (dblPrice, wi._dblYield - dblStdYield,
-				dblStdZSpread, dblStdGSpread, wi._dblYield - mktParams.getDiscountCurve().calcLIBOR
-					(wi._dblDate), dblStdOASpread, dblStdTSYSpread, dblStdDiscountMargin,
-					 	dblStdAssetSwapSpread, dblStdCreditBasis, dblStdPECS, dblStdDuration,
-					 		dblStdConvexity, wi).toMap (strPrefix); */
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}

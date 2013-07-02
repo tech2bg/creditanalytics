@@ -701,7 +701,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (dblDt1 < dblStartDate || dblDt2 < dblStartDate)
 			throw new java.lang.Exception ("DiscountCurve.calcLIBOR => Invalid input dates");
 
-		return 365.25 / (dblDt2 - dblDt1) * java.lang.Math.log (getDF (dblDt1) / getDF (dblDt2));
+		return 365.25 * ((getDF (dblDt1) / getDF (dblDt2)) - 1) / (dblDt2 - dblDt1);
+
+		// return 365.25 / (dblDt2 - dblDt1) * java.lang.Math.log (getDF (dblDt1) / getDF (dblDt2));
 	}
 
 	/**
@@ -883,7 +885,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.math.grid.Span span = org.drip.math.grid.Span.CreateSpanInterpolator (adblDate, adblQuote,
 			org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL,
-				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 2, 0,
+				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 2, null, 0, null,
 					org.drip.math.grid.Span.SET_ITEP | org.drip.math.grid.Span.CALIBRATE_SPAN);
 
 		if (null == span)

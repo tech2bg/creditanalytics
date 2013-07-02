@@ -122,7 +122,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 
 		_csi = org.drip.math.grid.Span.CreateSpanInterpolator (adblDate, adblDF,
 			org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL,
-				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 2, 0,
+				org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, 1., 2, null, 0, null,
 					org.drip.math.grid.Span.SET_ITEP | org.drip.math.grid.Span.CALIBRATE_SPAN);
 	}
 
