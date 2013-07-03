@@ -265,6 +265,24 @@ public class BasisBuilder {
 
 			seg2 = org.drip.math.spline.BasisBuilder.CreateBernsteinPolynomialBasis (5., 9., iNumBasis, rsc,
 				iK, null);
+		} else if ("Full".equalsIgnoreCase (astrArgs[0])) {
+			System.out.println ( " ----------- \n EXPONENTIAL \n ----------- \n");
+
+			main (new java.lang.String[] {"Exponential"});
+
+			System.out.println (" ---------- \n HYPERBOLIC \n ---------- \n");
+
+			main (new java.lang.String[] {"Hyperbolic"});
+
+			System.out.println (" ---------- \n POLYNOMIAL \n ---------- \n");
+
+			main (new java.lang.String[] {"Polynomial"});
+
+			System.out.println (" -------------------- \n BERNSTEINPOLYNOMIAL \n -------------------- \n");
+
+			main (new java.lang.String[] {"BernsteinPolynomial"});
+
+			return;
 		}
 
 		org.drip.math.calculus.WengertJacobian wj1 = seg1.calibrateJacobian (1., 0., 7.);

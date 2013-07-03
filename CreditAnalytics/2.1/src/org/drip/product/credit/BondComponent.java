@@ -11670,107 +11670,125 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			java.lang.Double.isNaN (dblPrice) || valParams._dblValue >= wi._dblDate + LEFT_EOS_SNIP)
 			return null;
 
-		double dblStdPECS = java.lang.Double.NaN;
-		double dblStdPrice = java.lang.Double.NaN;
-		double dblStdYield = java.lang.Double.NaN;
-		double dblStdGSpread = java.lang.Double.NaN;
-		double dblStdZSpread = java.lang.Double.NaN;
-		double dblStdOASpread = java.lang.Double.NaN;
-		double dblStdDuration = java.lang.Double.NaN;
-		double dblStdConvexity = java.lang.Double.NaN;
-		double dblStdTSYSpread = java.lang.Double.NaN;
-		double dblStdCreditBasis = java.lang.Double.NaN;
-		double dblStdDiscountMargin = java.lang.Double.NaN;
-		double dblStdAssetSwapSpread = java.lang.Double.NaN;
+		double dblASW = java.lang.Double.NaN;
+		double dblPECS = java.lang.Double.NaN;
+		double dblGSpread = java.lang.Double.NaN;
+		double dblISpread = java.lang.Double.NaN;
+		double dblYield01 = java.lang.Double.NaN;
+		double dblZSpread = java.lang.Double.NaN;
+		double dblOASpread = java.lang.Double.NaN;
+		double dblBondBasis = java.lang.Double.NaN;
+		double dblConvexity = java.lang.Double.NaN;
+		double dblTSYSpread = java.lang.Double.NaN;
+		double dblCreditBasis = java.lang.Double.NaN;
+		double dblDiscountMargin = java.lang.Double.NaN;
+		double dblMacaulayDuration = java.lang.Double.NaN;
+		double dblModifiedDuration = java.lang.Double.NaN;
 
 		try {
-			dblStdPrice = calcPriceFromBumpedDC (valParams, mktParams, wi._dblDate, wi._dblExerciseFactor,
-				0.);
-		} catch (java.lang.Exception e) {
-			if (!s_bSuppressErrors) e.printStackTrace();
-		}
-
-		try {
-			dblStdYield = calcYieldFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
-		} catch (java.lang.Exception e) {
-			if (!s_bSuppressErrors) e.printStackTrace();
-		}
-
-		try {
-			dblStdDiscountMargin = calcDiscountMarginFromPrice (valParams, mktParams, quotingParams,
-				wi._dblDate, wi._dblExerciseFactor, dblStdPrice);
+			dblDiscountMargin = calcDiscountMarginFromYield (valParams, mktParams, quotingParams,
+				wi._dblDate, wi._dblExerciseFactor, wi._dblYield);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		if (null == _fltParams) {
 			try {
-				dblStdZSpread = calcZSpreadFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-					wi._dblExerciseFactor, dblStdPrice);
+				dblZSpread = calcZSpreadFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+					wi._dblExerciseFactor, dblPrice);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 			}
 
 			try {
-				dblStdOASpread = calcOASFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-					wi._dblExerciseFactor, dblStdPrice);
+				dblOASpread = calcOASFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+					wi._dblExerciseFactor, dblPrice);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 			}
 		}
 
 		try {
-			dblStdGSpread = calcGSpreadFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
+			dblISpread = calcISpreadFromYield (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, wi._dblYield);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblStdTSYSpread = calcTSYSpreadFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
+			dblGSpread = calcGSpreadFromYield (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, wi._dblYield);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblStdDuration = calcModifiedDurationFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
-
-			dblStdAssetSwapSpread = calcASWFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
+			dblTSYSpread = calcTSYSpreadFromYield (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, wi._dblYield);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblStdConvexity = calcConvexityFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
+			dblMacaulayDuration = calcMacaulayDurationFromPrice (valParams, mktParams, quotingParams,
+				wi._dblDate, wi._dblExerciseFactor, dblPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblStdCreditBasis = calcCreditBasisFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
+			dblModifiedDuration = calcModifiedDurationFromPrice (valParams, mktParams, quotingParams,
+				wi._dblDate, wi._dblExerciseFactor, dblPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			dblStdPECS = calcPECSFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
-				wi._dblExerciseFactor, dblStdPrice);
+			dblASW = calcASWFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		try {
-			return new org.drip.analytics.output.BondRVMeasures (dblPrice, wi._dblYield - dblStdYield,
-				dblStdZSpread, dblStdGSpread, wi._dblYield - mktParams.getDiscountCurve().calcLIBOR
-					(wi._dblDate), dblStdOASpread, dblStdTSYSpread, dblStdDiscountMargin,
-						dblStdAssetSwapSpread, dblStdCreditBasis, dblStdPECS, dblStdDuration,
-							dblStdConvexity, wi);
+			dblConvexity = calcConvexityFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblPrice);
+		} catch (java.lang.Exception e) {
+			if (!s_bSuppressErrors) e.printStackTrace();
+		}
+
+		try {
+			dblCreditBasis = calcCreditBasisFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblPrice);
+		} catch (java.lang.Exception e) {
+			if (!s_bSuppressErrors) e.printStackTrace();
+		}
+
+		try {
+			dblPECS = calcPECSFromPrice (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, dblPrice);
+		} catch (java.lang.Exception e) {
+			if (!s_bSuppressErrors) e.printStackTrace();
+		}
+
+		try {
+			dblBondBasis = calcBondBasisFromYield (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, wi._dblYield);
+		} catch (java.lang.Exception e) {
+			if (!s_bSuppressErrors) e.printStackTrace();
+		}
+
+		try {
+			dblYield01 = calcYield01FromYield (valParams, mktParams, quotingParams, wi._dblDate,
+				wi._dblExerciseFactor, wi._dblYield);
+		} catch (java.lang.Exception e) {
+			if (!s_bSuppressErrors) e.printStackTrace();
+		}
+
+		try {
+			return new org.drip.analytics.output.BondRVMeasures (dblPrice, dblBondBasis, dblZSpread,
+				dblGSpread, dblISpread, dblOASpread, dblTSYSpread, dblDiscountMargin, dblASW, dblCreditBasis,
+					dblPECS, dblYield01, dblModifiedDuration, dblMacaulayDuration, dblConvexity, wi);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}

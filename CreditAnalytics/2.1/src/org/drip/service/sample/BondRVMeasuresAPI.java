@@ -8,13 +8,10 @@ package org.drip.service.sample;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
-import org.drip.analytics.period.Period;
-import org.drip.math.common.FormatUtil;
 import org.drip.param.definition.*;
 import org.drip.param.market.MultiSidedQuote;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-import org.drip.product.params.EmbeddedOptionSchedule;
 
 /*
  * Credit Analytics API imports
@@ -50,13 +47,19 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * Simple Bond Sample demonstrating the construction and usage of bond functionality
+ * Simple Bond RV Measures API Sample demonstrating the invocation and usage of Bond RV Measures
+ * 	functionality
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class BloombergYAS {
-	private static final String FIELD_SEPARATOR = "    ";
+public class BondRVMeasuresAPI {
+
+	/*
+	 * Sample demonstrating creation of a rates curve from instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
 
 	private static DiscountCurve BuildRatesCurveFromInstruments (
 		final JulianDate dtStart,
@@ -177,6 +180,12 @@ public class BloombergYAS {
 			null);
 	}
 
+	/*
+	 * Put together a named map of treasury quotes
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> MakeTSYQuotes (
 		final String[] astrTSYTenor,
 		final double[] adblTSYYield)
@@ -196,14 +205,99 @@ public class BloombergYAS {
 		return mTSYQuotes;
 	}
 
-	public static final void BondPricerSample()
+	/*
+	 * Print the Bond RV Measures
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final boolean PrintRVMeasures (
+		final java.lang.String strPrefix,
+		final org.drip.analytics.output.BondRVMeasures rv)
+	{
+		if (null == rv) return false;
+
+		System.out.println (strPrefix + "ASW: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblAssetSwapSpread, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "Bond Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblBondBasis, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "Convexity: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblConvexity, 0, 2, 1000000.));
+
+		System.out.println (strPrefix + "Credit Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblCreditBasis, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "Discount Margin: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblDiscountMargin, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "G Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblGSpread, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "I Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblISpread, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "Macaulay Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblMacaulayDuration, 0, 2, 1.));
+
+		System.out.println (strPrefix + "Modified Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblModifiedDuration, 0, 2, 10000.));
+
+		System.out.println (strPrefix + "OAS: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblOASpread, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "PECS: " + org.drip.math.common.FormatUtil.FormatDouble (rv._dblPECS,
+			0, 0, 10000.));
+
+		System.out.println (strPrefix + "Price: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblPrice, 0, 3, 100.));
+
+		System.out.println (strPrefix + "TSY Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblTSYSpread, 0, 0, 10000.));
+
+		try {
+			System.out.println (strPrefix + "Workout Date: " + new org.drip.analytics.date.JulianDate
+				(rv._wi._dblDate));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println (strPrefix + "Workout Factor: " + rv._wi._dblExerciseFactor);
+
+		System.out.println (strPrefix + "Workout Type: " + rv._wi._iWOType);
+
+		System.out.println (strPrefix + "Workout Yield: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._wi._dblYield, 0, 3, 100.));
+
+		System.out.println (strPrefix + "Yield01: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblYield01, 0, 2, 10000.));
+
+		System.out.println (strPrefix + "Yield Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblBondBasis, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "Yield Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblBondBasis, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "Z Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblZSpread, 0, 0, 10000.));
+
+		return true;
+	}
+
+	/*
+	 * Sample demonstrating invocation and extraction of RV Measures from a bond
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void BondRVMeasuresSample()
 		throws Exception
 	{
 		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
 
 		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
 
-		double dblNotional = 1000000.;
 		String[] astrCashTenor = new String[] {"3M"};
 		double[] adblCashRate = new double[] {0.00276};
 		String[] astrIRSTenor = new String[] {   "1Y",    "2Y",    "3Y",    "4Y",    "5Y",    "6Y",    "7Y",
@@ -238,20 +332,6 @@ public class BloombergYAS {
 				null,		// Principal Schedule
 				null);
 
-		double[] adblDate = new double[] {
-			JulianDate.CreateFromYMD (2016, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2017, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2018, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2019, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2020, 3, 1).getJulian()
-		};
-
-		double[] adblFactor = new double[] {1.045, 1.03, 1.015, 1., 1.};
-
-		EmbeddedOptionSchedule eos = new EmbeddedOptionSchedule (adblDate, adblFactor, false, 30, false, Double.NaN, "", Double.NaN);
-
-		bond.setEmbeddedCallSchedule (eos);
-
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, dcTSY, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
@@ -259,84 +339,11 @@ public class BloombergYAS {
 
 		double dblPrice = 1.1025;
 
-		double dblAccrued = bond.calcAccrued (valParams._dblValue, cmp);
-
 		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
 
-		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		org.drip.analytics.output.BondRVMeasures rvm = bond.standardMeasures (valParams, null, cmp, null, wi, dblPrice);
 
-		double dblGSpread = bond.calcGSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblISpread = bond.calcISpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblZSpread = bond.calcZSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblASW = bond.calcASWFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblOAS = bond.calcOASFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblModDur = bond.calcModifiedDurationFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblMacDur = bond.calcMacaulayDurationFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblYield01 = bond.calcYield01FromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		double dblConvexity = bond.calcConvexityFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
-
-		System.out.println ("Price          : " + org.drip.math.common.FormatUtil.FormatDouble (dblPrice, 1, 3, 100.));
-
-		System.out.println ("Yield          : " + org.drip.math.common.FormatUtil.FormatDouble (wi._dblYield, 1, 3, 100.));
-
-		System.out.println ("Workout Date   : " + new org.drip.analytics.date.JulianDate (wi._dblDate));
-
-		System.out.println ("Workout Factor : " + org.drip.math.common.FormatUtil.FormatDouble (wi._dblExerciseFactor, 1, 2, 100.));
-
-		System.out.println ("\n--SPREAD AND YIELD CALCULATIONS--\n");
-
-		System.out.println ("TSY Spread : " + org.drip.math.common.FormatUtil.FormatDouble (dblTSYSpread, 1, 0, 10000.));
-
-		System.out.println ("G Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblGSpread, 1, 0, 10000.));
-
-		System.out.println ("I Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblISpread, 1, 0, 10000.));
-
-		System.out.println ("Z Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblZSpread, 1, 0, 10000.));
-
-		System.out.println ("ASW        : " + org.drip.math.common.FormatUtil.FormatDouble (dblASW, 1, 0, 10000.));
-
-		System.out.println ("OAS        : " + org.drip.math.common.FormatUtil.FormatDouble (dblOAS, 1, 0, 10000.));
-
-		System.out.println ("\n--RISK--\n");
-
-		System.out.println ("Modified Duration : " + org.drip.math.common.FormatUtil.FormatDouble (dblModDur, 1, 2, 10000.));
-
-		System.out.println ("Macaulay Duration : " + org.drip.math.common.FormatUtil.FormatDouble (dblMacDur, 1, 2, 1.));
-
-		System.out.println ("Risk              : " + org.drip.math.common.FormatUtil.FormatDouble (dblYield01 * 10000., 1, 2, 1.));
-
-		System.out.println ("Convexity         : " + org.drip.math.common.FormatUtil.FormatDouble (dblConvexity, 1, 2, 1000000.));
-
-		System.out.println ("DV01              : " + org.drip.math.common.FormatUtil.FormatDouble (dblYield01 * dblNotional, 1, 0, 1.));
-
-		System.out.println ("\n--INVOICE--\n");
-
-		System.out.println ("Face      : " + org.drip.math.common.FormatUtil.FormatDouble (dblNotional, 1, 0, 1.));
-
-		System.out.println ("Principal : " + org.drip.math.common.FormatUtil.FormatDouble (dblPrice * dblNotional, 1, 2, 1.));
-
-		System.out.println ("Accrued   : " + org.drip.math.common.FormatUtil.FormatDouble (dblAccrued * dblNotional, 1, 2, 1.));
-
-		System.out.println ("Total     : " + org.drip.math.common.FormatUtil.FormatDouble ((dblPrice + dblAccrued) * dblNotional, 1, 2, 1.));
-
-		System.out.println ("\nCashflow\n--------");
-
-		for (Period p : bond.getCouponPeriod())
-			System.out.println (
-				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR
-			);
+		PrintRVMeasures ("\t\t\t", rvm);
 	}
 
 	public static final void main (
@@ -349,6 +356,6 @@ public class BloombergYAS {
 
 		CreditAnalytics.Init (strConfig);
 
-		BondPricerSample();
+		BondRVMeasuresSample();
 	}
 }

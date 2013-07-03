@@ -1,6 +1,8 @@
 
 package org.drip.service.bridge;
 
+import org.drip.param.valuation.WorkoutInfo;
+
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -38,8 +40,6 @@ package org.drip.service.bridge;
  */
 
 public class CreditAnalyticsStub {
-	private static final boolean s_bWhineOnError = false;
-
 	private static boolean SendMessage (
 		final java.io.ObjectOutputStream oos,
 		final byte[] abMsg)
@@ -73,19 +73,6 @@ public class CreditAnalyticsStub {
 		return (null != cre && null != cre.getCMP()) ? cre.getCMP() : mpc.getScenCMP (comp, "Base");
 	}
 
-	private static final org.drip.param.pricer.PricerParams GetPricerParams (
-		final org.drip.service.bridge.CreditAnalyticsRequest cre)
-	{
-		return (null != cre && null != cre.getPricerParams()) ? cre.getPricerParams() :
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams();
-	}
-
-	private static final org.drip.param.valuation.QuotingParams GetQuotingParams (
-		final org.drip.service.bridge.CreditAnalyticsRequest cre)
-	{
-		return (null != cre && null != cre.getQuotingParams()) ? cre.getQuotingParams() : null;
-	}
-
 	private static final org.drip.param.definition.Quote GetQuote (
 		final org.drip.product.credit.BondComponent bond,
 		final org.drip.param.definition.ComponentMarketParams cmp,
@@ -115,10 +102,6 @@ public class CreditAnalyticsStub {
 
 		if (null == cmp) return null;
 
-		org.drip.param.pricer.PricerParams pricerParams = GetPricerParams (cre);
-
-		org.drip.param.valuation.QuotingParams quotingParams = GetQuotingParams (cre);
-
 		org.drip.param.definition.Quote qPrice = GetQuote (bond, cmp, mpc, "Price");
 
 		if (null == qPrice) return null;
@@ -127,112 +110,9 @@ public class CreditAnalyticsStub {
 
 		if (!org.drip.math.common.NumberUtil.IsValid (dblAskPrice)) return null;
 
-		double dblAssetSwapSpread = java.lang.Double.NaN;
-		double dblBondBasis = java.lang.Double.NaN;
-		double dblConvexity = java.lang.Double.NaN;
-		double dblCreditBasis = java.lang.Double.NaN;
-		double dblDiscountMargin = java.lang.Double.NaN;
-		double dblDuration = java.lang.Double.NaN;
-		double dblGSpread = java.lang.Double.NaN;
-		double dblISpread = java.lang.Double.NaN;
-		double dblOASpread = java.lang.Double.NaN;
-		double dblPECS = java.lang.Double.NaN;
-		double dblTSYSpread = java.lang.Double.NaN;
-		double dblYield = java.lang.Double.NaN;
-		double dblZSpread = java.lang.Double.NaN;
-		org.drip.analytics.output.BondRVMeasures brvm = null;
+		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null, dblAskPrice);
 
-		try {
-			dblAssetSwapSpread = bond.calcASWFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblBondBasis = bond.calcBondBasisFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblConvexity = bond.calcConvexityFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblCreditBasis = bond.calcCreditBasisFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblDuration = bond.calcDurationFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblDiscountMargin = bond.calcDiscountMarginFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblGSpread = bond.calcGSpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblISpread = bond.calcISpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblOASpread = bond.calcOASFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblPECS = bond.calcPECSFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblYield = bond.calcYieldFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			dblZSpread = bond.calcZSpreadFromPrice (valParams, cmp, quotingParams, dblAskPrice);
-		} catch (java.lang.Exception e) {
-			if (s_bWhineOnError) e.printStackTrace();
-		}
-
-		try {
-			brvm = new org.drip.analytics.output.BondRVMeasures (dblAskPrice, dblBondBasis, dblZSpread,
-				dblGSpread, dblISpread, dblOASpread, dblTSYSpread, dblDiscountMargin, dblAssetSwapSpread,
-					dblCreditBasis, dblPECS, dblDuration, dblConvexity, new
-						org.drip.param.valuation.WorkoutInfo (bond.getMaturityDate().getJulian(), dblYield,
-							1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		return brvm;
+		return null == wi ? null : bond.standardMeasures (valParams, null, cmp, null, wi, dblAskPrice);
 	}
 
 	private static final boolean run (

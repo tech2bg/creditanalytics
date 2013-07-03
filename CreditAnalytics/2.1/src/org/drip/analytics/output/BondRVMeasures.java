@@ -103,10 +103,22 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 	public double _dblPECS = java.lang.Double.NaN;
 
 	/**
-	 * Duration
+	 * Yield 01
 	 */
 
-	public double _dblDuration = java.lang.Double.NaN;
+	public double _dblYield01 = java.lang.Double.NaN;
+
+	/**
+	 * Macaulay Duration
+	 */
+
+	public double _dblMacaulayDuration = java.lang.Double.NaN;
+
+	/**
+	 * Modified Duration
+	 */
+
+	public double _dblModifiedDuration = java.lang.Double.NaN;
 
 	/**
 	 * Convexity
@@ -149,7 +161,7 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split
 			(strSerializedBondRVMeasures, getFieldDelimiter());
 
-		if (null == astrField || 15 > astrField.length)
+		if (null == astrField || 17 > astrField.length)
 			throw new java.lang.Exception ("BondRVMeasures de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -206,27 +218,37 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		_dblPECS = new java.lang.Double (astrField[10]);
 
 		if (null == astrField[11] || astrField[11].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Duration");
+			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Yield01");
 
-		_dblDuration = new java.lang.Double (astrField[11]);
+		_dblYield01 = new java.lang.Double (astrField[11]);
 
 		if (null == astrField[12] || astrField[12].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Convexity");
+			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Mac Dur");
 
-		_dblConvexity = new java.lang.Double (astrField[12]);
+		_dblMacaulayDuration = new java.lang.Double (astrField[12]);
 
 		if (null == astrField[13] || astrField[13].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Bond Basis");
+			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Mod Dur");
 
-		_dblBondBasis = new java.lang.Double (astrField[13]);
+		_dblModifiedDuration = new java.lang.Double (astrField[13]);
 
 		if (null == astrField[14] || astrField[14].isEmpty())
+			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Convexity");
+
+		_dblConvexity = new java.lang.Double (astrField[14]);
+
+		if (null == astrField[15] || astrField[15].isEmpty())
+			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Bond Basis");
+
+		_dblBondBasis = new java.lang.Double (astrField[15]);
+
+		if (null == astrField[16] || astrField[16].isEmpty())
 			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Work-out info");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[14]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[16]))
 			_wi = null;
 		else
-			_wi = new org.drip.param.valuation.WorkoutInfo (astrField[14].getBytes());
+			_wi = new org.drip.param.valuation.WorkoutInfo (astrField[16].getBytes());
 	}
 
 	/**
@@ -243,7 +265,9 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 	 * @param dblAssetSwapSpread BondRV Asset Swap Spread
 	 * @param dblCreditBasis BondRV Credit Basis
 	 * @param dblPECS BondRV PECS
-	 * @param dblDuration BondRV Duration
+	 * @param dblYield01 BondRV Yield01
+	 * @param dblModifiedDuration BondRV Modified Duration
+	 * @param dblMacaulayDuration BondRV Macaulay Duration
 	 * @param dblConvexity BondRV Convexity
 	 * @param wi BondRV work-out info
 	 * 
@@ -262,7 +286,9 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		final double dblAssetSwapSpread,
 		final double dblCreditBasis,
 		final double dblPECS,
-		final double dblDuration,
+		final double dblYield01,
+		final double dblModifiedDuration,
+		final double dblMacaulayDuration,
 		final double dblConvexity,
 		final org.drip.param.valuation.WorkoutInfo wi)
 		throws java.lang.Exception
@@ -274,15 +300,17 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		_dblPrice = dblPrice;
 		_dblGSpread = dblGSpread;
 		_dblISpread = dblISpread;
+		_dblYield01 = dblYield01;
 		_dblZSpread = dblZSpread;
 		_dblOASpread = dblOASpread;
-		_dblDuration = dblDuration;
 		_dblBondBasis = dblBondBasis;
 		_dblConvexity = dblConvexity;
 		_dblTSYSpread = dblTSYSpread;
 		_dblCreditBasis = dblCreditBasis;
 		_dblDiscountMargin = dblDiscountMargin;
 		_dblAssetSwapSpread = dblAssetSwapSpread;
+		_dblMacaulayDuration = dblMacaulayDuration;
+		_dblModifiedDuration = dblModifiedDuration;
 	}
 
 	/**
@@ -311,11 +339,15 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 
 		mapRVMeasures.put (strPrefix + "DiscountMargin", _dblDiscountMargin);
 
-		mapRVMeasures.put (strPrefix + "Duration", _dblDuration);
+		mapRVMeasures.put (strPrefix + "Duration", _dblModifiedDuration);
 
 		mapRVMeasures.put (strPrefix + "GSpread", _dblGSpread);
 
 		mapRVMeasures.put (strPrefix + "ISpread", _dblISpread);
+
+		mapRVMeasures.put (strPrefix + "MacaulayDuration", _dblMacaulayDuration);
+
+		mapRVMeasures.put (strPrefix + "ModifiedDuration", _dblModifiedDuration);
 
 		mapRVMeasures.put (strPrefix + "OAS", _dblOASpread);
 
@@ -338,6 +370,8 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		mapRVMeasures.put (strPrefix + "WorkoutYield", _wi._dblYield);
 
 		mapRVMeasures.put (strPrefix + "Yield", _wi._dblYield);
+
+		mapRVMeasures.put (strPrefix + "Yield01", _dblYield01);
 
 		mapRVMeasures.put (strPrefix + "YieldBasis", _dblBondBasis);
 
@@ -367,8 +401,10 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 				_dblISpread + getFieldDelimiter() + _dblOASpread + getFieldDelimiter() + _dblTSYSpread +
 					getFieldDelimiter() + _dblDiscountMargin + getFieldDelimiter() + _dblAssetSwapSpread +
 						getFieldDelimiter() + _dblCreditBasis + getFieldDelimiter() + _dblPECS +
-							getFieldDelimiter() + _dblDuration + getFieldDelimiter() + _dblConvexity +
-								getFieldDelimiter() + _dblBondBasis + getFieldDelimiter());
+							getFieldDelimiter() + _dblYield01 + getFieldDelimiter() + _dblMacaulayDuration +
+								getFieldDelimiter() + _dblModifiedDuration + getFieldDelimiter() +
+									_dblConvexity + getFieldDelimiter() + _dblBondBasis +
+										getFieldDelimiter());
 
 		if (null == _wi)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -393,9 +429,10 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		BondRVMeasures brvm = new BondRVMeasures (1., 1.5, 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., new
-			org.drip.param.valuation.WorkoutInfo (org.drip.analytics.date.JulianDate.Today().getJulian(),
-				0.06, 1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY));
+		BondRVMeasures brvm = new BondRVMeasures (1., 1.5, 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.,
+			13., 14., new org.drip.param.valuation.WorkoutInfo
+				(org.drip.analytics.date.JulianDate.Today().getJulian(), 0.06, 1.,
+					org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY));
 
 		byte[] abBRVM = brvm.serialize();
 

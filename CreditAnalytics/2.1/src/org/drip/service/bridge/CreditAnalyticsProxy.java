@@ -485,7 +485,7 @@ public class CreditAnalyticsProxy {
 			(rv._dblBondBasis, 0, 0, 10000.));
 
 		System.out.println (strPrefix + "Convexity: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblConvexity, 0, 2, 100000000.));
+			(rv._dblConvexity, 0, 2, 1000000.));
 
 		System.out.println (strPrefix + "Credit Basis: " + org.drip.math.common.FormatUtil.FormatDouble
 			(rv._dblCreditBasis, 0, 0, 10000.));
@@ -493,14 +493,17 @@ public class CreditAnalyticsProxy {
 		System.out.println (strPrefix + "Discount Margin: " + org.drip.math.common.FormatUtil.FormatDouble
 			(rv._dblDiscountMargin, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Duration: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblDuration, 0, 2, 10000.));
-
 		System.out.println (strPrefix + "G Spread: " + org.drip.math.common.FormatUtil.FormatDouble
 			(rv._dblGSpread, 0, 0, 10000.));
 
 		System.out.println (strPrefix + "I Spread: " + org.drip.math.common.FormatUtil.FormatDouble
 			(rv._dblISpread, 0, 0, 10000.));
+
+		System.out.println (strPrefix + "Macaulay Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblMacaulayDuration, 0, 2, 1.));
+
+		System.out.println (strPrefix + "Modified Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblModifiedDuration, 0, 2, 10000.));
 
 		System.out.println (strPrefix + "OAS: " + org.drip.math.common.FormatUtil.FormatDouble
 			(rv._dblOASpread, 0, 0, 10000.));
@@ -526,7 +529,10 @@ public class CreditAnalyticsProxy {
 		System.out.println (strPrefix + "Workout Type: " + rv._wi._iWOType);
 
 		System.out.println (strPrefix + "Workout Yield: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._wi._dblYield, 0, 2, 100.));
+			(rv._wi._dblYield, 0, 3, 100.));
+
+		System.out.println (strPrefix + "Yield01: " + org.drip.math.common.FormatUtil.FormatDouble
+			(rv._dblYield01, 0, 2, 10000.));
 
 		System.out.println (strPrefix + "Yield Basis: " + org.drip.math.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
