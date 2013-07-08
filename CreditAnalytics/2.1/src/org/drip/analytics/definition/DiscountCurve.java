@@ -276,7 +276,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
 		org.drip.param.definition.ComponentMarketParams mktParams = new
-			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null,
+			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null,
 				getCalibFixings());
 
 		for (int i = 0; i < iNumComponents; ++i) {
@@ -646,7 +646,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
 		org.drip.param.definition.ComponentMarketParams mktParams = new
-			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null,
+			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null,
 				getCalibFixings());
 
 		for (int i = 0; i < iNumComponents; ++i) {
@@ -745,7 +745,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		mmFixings.put (dtStart, mIndexFixings);
 
 		org.drip.param.market.ComponentMarketParamSet cmp = new org.drip.param.market.ComponentMarketParamSet
-			(this, null, null, null, null, null, mmFixings);
+			(this, null, null, null, null, null, null, mmFixings);
 
 		return irs.calcMeasureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FairPremium");
@@ -790,7 +790,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		mmFixings.put (dtStart, mIndexFixings);
 
 		org.drip.param.market.ComponentMarketParamSet cmp = new org.drip.param.market.ComponentMarketParamSet
-			(this, null, null, null, null, null, mmFixings);
+			(this, null, null, null, null, null, null, mmFixings);
 
 		return irs.calcMeasureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "DV01");

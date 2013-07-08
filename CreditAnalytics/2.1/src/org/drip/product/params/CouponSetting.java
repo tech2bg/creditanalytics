@@ -138,21 +138,20 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 
 		_dblCoupon = new java.lang.Double (astrField[2]);
 
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon type");
 
 		_strCouponType = astrField[3];
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon");
+			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon ceiling");
 
 		_dblCouponCeiling = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon");
+			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon floor");
 
 		_dblCouponFloor = new java.lang.Double (astrField[5]);
 
@@ -198,9 +197,14 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + new java.lang.String
-			(_fsCoupon.serialize()) + getFieldDelimiter() + _dblCoupon + getFieldDelimiter() +
-				_strCouponType + getFieldDelimiter() + _dblCouponCeiling + getFieldDelimiter() +
-					_dblCouponFloor);
+			(_fsCoupon.serialize()) + getFieldDelimiter() + _dblCoupon + getFieldDelimiter());
+
+		if (null == _strCouponType || _strCouponType.isEmpty())
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else
+			sb.append (_strCouponType + getFieldDelimiter());
+
+		sb.append (_dblCouponCeiling + getFieldDelimiter() + _dblCouponFloor);
 
 		return sb.append (getObjectTrailer()).toString().getBytes();
 	}

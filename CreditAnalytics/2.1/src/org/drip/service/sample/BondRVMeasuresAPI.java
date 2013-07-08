@@ -67,6 +67,7 @@ public class BondRVMeasuresAPI {
 		final double[] adblCashRate,
 		final String[] astrIRSTenor,
 		final double[] adblIRSRate,
+		final double dblBump,
 		final String strCurrency)
 		throws Exception
 	{
@@ -83,7 +84,7 @@ public class BondRVMeasuresAPI {
 		for (int i = 0; i < astrCashTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
-			adblCompCalibValue[i] = adblCashRate[i];
+			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
 			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addDays (2), new JulianDate (adblDate[i] =
 				dtStart.addTenor (astrCashTenor[i]).getJulian()), strCurrency);
@@ -94,7 +95,7 @@ public class BondRVMeasuresAPI {
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
-			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i];
+			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
 			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
 				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addTenor
@@ -311,7 +312,7 @@ public class BondRVMeasuresAPI {
 		double[] adblTSYYield = new double[] {0.00018, 0.00058, 0.00104, 0.00160, 0.00397, 0.00696, 0.01421, 0.01955,
 			0.02529, 0.03568};
 
-		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, "USD");
+		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0., "USD");
 
 		Bond[] aTSYBond = CreateOnTheRunTSYBondSet (dtCurve, astrTSYTenor, adblTSYCoupon);
 
@@ -343,7 +344,15 @@ public class BondRVMeasuresAPI {
 
 		org.drip.analytics.output.BondRVMeasures rvm = bond.standardMeasures (valParams, null, cmp, null, wi, dblPrice);
 
-		PrintRVMeasures ("\t\t\t", rvm);
+		PrintRVMeasures ("\tBase: ", rvm);
+
+		DiscountCurve dcBumped = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0.0001, "USD");
+
+		cmp.setDiscountCurve (dcBumped);
+
+		org.drip.analytics.output.BondRVMeasures rvmBumped = bond.standardMeasures (valParams, null, cmp, null, wi, dblPrice);
+
+		PrintRVMeasures ("\tBumped: ", rvmBumped);
 	}
 
 	public static final void main (

@@ -49,7 +49,25 @@ public class ComponentMarketParamsBuilder {
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
 		final org.drip.analytics.definition.DiscountCurve dc)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, null, null, null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, null, null, null,
+			null);
+	}
+
+	/**
+	 * Creates a CMP with the rates discount curve and the forward
+	 * 
+	 * @param dc Rates Discount Curve
+	 * @param dcForward Forward Discount Curve
+	 * 
+	 * @return CMP
+	 */
+
+	public static final org.drip.param.definition.ComponentMarketParams MakeFloaterDiscountCMP (
+		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.definition.DiscountCurve dcForward)
+	{
+		return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, null, null, null, null,
+			null, null);
 	}
 
 	/**
@@ -65,7 +83,8 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.definition.DiscountCurve dc,
 		final org.drip.analytics.definition.DiscountCurve dcTSY)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, dcTSY, null, null, null, null, null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, null, null, null, null,
+			null);
 	}
 
 	/**
@@ -83,7 +102,8 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.definition.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.DiscountCurve dcEDSF)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, dcTSY, dcEDSF, null, null, null, null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, null, null, null,
+			null);
 	}
 
 	/**
@@ -99,7 +119,8 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.definition.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, cc, null, null, null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, cc, null, null,
+			null);
 	}
 
 	/**
@@ -127,8 +148,44 @@ public class ComponentMarketParamsBuilder {
 			java.lang.Double>> mmFixings)
 	{
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, dcTSY, dcEDSF, cc, compQuote,
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, compQuote,
 				mTSYQuotes, mmFixings);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Creates a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
+	 *  the EDSF discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
+	 *  and the double map of date/rate index and fixings
+	 * 
+	 * @param dc Rates Discount Curve
+	 * @param dcForward Forward Discount Curve
+	 * @param dcTSY Treasury Discount Curve
+	 * @param dcEDSF EDSF Discount Curve
+	 * @param cc Credit Curve
+	 * @param compQuote Component quote
+	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
+	 * @param mmFixings Double map of date/rate index and fixings
+	 */
+
+	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
+		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.definition.DiscountCurve dcForward,
+		final org.drip.analytics.definition.DiscountCurve dcTSY,
+		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.definition.CreditCurve cc,
+		final org.drip.param.definition.ComponentQuote compQuote,
+		final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mTSYQuotes,
+		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
+			java.lang.Double>> mmFixings)
+	{
+		try {
+			return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, dcTSY, dcEDSF, cc,
+				compQuote, mTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

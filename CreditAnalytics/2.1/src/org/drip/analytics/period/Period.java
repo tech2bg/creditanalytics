@@ -38,7 +38,7 @@ package org.drip.analytics.period;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Period extends org.drip.service.stream.Serializer {
+public class Period extends org.drip.service.stream.Serializer implements java.lang.Comparable<Period> {
 	protected double _dblDCF = java.lang.Double.NaN;
 	protected double _dblEnd = java.lang.Double.NaN;
 	protected double _dblPay = java.lang.Double.NaN;
@@ -327,6 +327,12 @@ public class Period extends org.drip.service.stream.Serializer {
 
 		return sb.append (super.getObjectTrailer()).toString().getBytes();
 	}
+	@Override public int hashCode()
+	{
+		long lBits = java.lang.Double.doubleToLongBits ((int) _dblPay);
+
+		return (int) (lBits ^ (lBits >>> 32));
+	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
 		final byte[] ab) {
@@ -337,6 +343,16 @@ public class Period extends org.drip.service.stream.Serializer {
 		}
 
 		return null;
+	}
+
+	@Override public int compareTo (
+		final Period periodOther)
+	{
+		if ((int) _dblPay > (int) (periodOther._dblPay)) return 1;
+
+		if ((int) _dblPay < (int) (periodOther._dblPay)) return -1;
+
+		return 0;
 	}
 
 	public static void main (

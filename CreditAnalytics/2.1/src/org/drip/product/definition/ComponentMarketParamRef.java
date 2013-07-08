@@ -38,6 +38,7 @@ package org.drip.product.definition;
  */
 
 public interface ComponentMarketParamRef {
+
 	/**
 	 * Gets the component name
 	 * 
@@ -53,6 +54,14 @@ public interface ComponentMarketParamRef {
 	 */
 
 	public abstract java.lang.String getIRCurveName();
+
+	/**
+	 * Gets the component name
+	 * 
+	 * @return The component name
+	 */
+
+	public abstract java.lang.String getRatesForwardCurveName();
 
 	/**
 	 * Gets the credit curve name

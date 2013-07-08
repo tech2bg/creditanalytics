@@ -963,4 +963,47 @@ public class AnalyticsHelper {
 
 		return lsPeriodMerged;
 	}
+
+	/**
+	 * Aggregate the period lists for an array of components
+	 * 
+	 * @param aComp Array of Components
+	 * 
+	 * @return The Aggregated Period Set
+	 */
+
+	public static final java.util.Set<org.drip.analytics.period.Period> AggregateComponentPeriods (
+		final org.drip.product.definition.Component[] aComp)
+	{
+		if (null == aComp) return null;
+
+		int iStartIndex = 0;
+		int iNumComp = aComp.length;
+
+		if (0 == iNumComp) return null;
+
+		for (int i = 0; i < iNumComp; ++i) {
+			if (null != aComp[i]) {
+				iStartIndex = i;
+				break;
+			}
+		}
+
+		java.util.Set<org.drip.analytics.period.Period> setAggregatedPeriod = new
+			java.util.TreeSet<org.drip.analytics.period.Period>();
+
+		for (int i = iStartIndex; i < iNumComp; ++i) {
+			if (null == aComp[i]) continue;
+
+			java.util.List<org.drip.analytics.period.Period> lsCompPeriod = aComp[i].getCouponPeriod();
+
+			if (null == lsCompPeriod || 0 == lsCompPeriod.size()) continue;
+
+			for (org.drip.analytics.period.Period p : lsCompPeriod) {
+				if (null != p) setAggregatedPeriod.add (p);
+			}
+		}
+
+		return setAggregatedPeriod;
+	}
 }

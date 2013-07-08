@@ -535,35 +535,35 @@ public class Convention {
 
 		sbDCSet.append ("30/365;ISMA 30/365;ISDA SWAPS:30/365;ISDA30/365;ISDA 30E/365;");
 
-		sbDCSet.append ("30/360;30U/360;30/360;Bond basis;30/360 US;US MUNI: 30/360;MUNI30/360;ISDA30/360");
+		sbDCSet.append ("30/360;30U/360;30/360;Bond basis;30/360 US;US MUNI: 30/360;MUNI30/360;ISDA30/360;");
 
 		sbDCSet.append ("30E/360;30/360 ICMA;30S/360;Eurobond basis;Eurobond basis (ISDA 2006);Special German;");
 
-		sbDCSet.append ("ISMA 30/360;30E/360 ISDA;Eurobond basis (ISDA 2000);German;German:30/360;Ger:30/360");
+		sbDCSet.append ("ISMA 30/360;30E/360 ISDA;Eurobond basis (ISDA 2000);German;German:30/360;Ger:30/360;");
 
-		sbDCSet.append ("ISDA SWAPS:30/360;ISDA 30E/360");
+		sbDCSet.append ("ISDA SWAPS:30/360;ISDA 30E/360;");
 
-		sbDCSet.append ("Actual/Actual;Actual/Actual ICMA;Act/Act ICMA;ISMA-99;Act/Act ISMA");
+		sbDCSet.append ("Actual/Actual;Actual/Actual ICMA;Act/Act ICMA;ISMA-99;Act/Act ISMA;");
 
-		sbDCSet.append ("ISMA 30/Act;30/Act;ISMA 30/Act;ISDA SWAPS:30/Act;ISDA30/Act;ISDA 30E/ACT");
+		sbDCSet.append ("ISMA 30/Act;30/Act;ISMA 30/Act;ISDA SWAPS:30/Act;ISDA30/Act;ISDA 30E/ACT;");
 
-		sbDCSet.append ("Actual/Actual ISDA;Actual/Actual;Act/Act;Actual/365;US:WIT Act/Act");
+		sbDCSet.append ("Actual/Actual ISDA;Actual/Actual;Act/Act;Actual/365;US:WIT Act/Act;");
 
-		sbDCSet.append ("Actual/365 Fixed;Act/365 Fixed;A/365 Fixed;A/365F;Act/365F;English;Act/365");
+		sbDCSet.append ("Actual/365 Fixed;Act/365 Fixed;A/365 Fixed;A/365F;Act/365F;English;Act/365;");
 
-		sbDCSet.append ("Actual/365 JGB;Actual/365 JGB (NL);NL/365");
+		sbDCSet.append ("Actual/365 JGB;Actual/365 JGB (NL);NL/365;");
 
-		sbDCSet.append ("Actual/360 Fixed;Act/360;A/360;French;US:WIB Act/360");
+		sbDCSet.append ("Actual/360 Fixed;Act/360;A/360;French;US:WIB Act/360;");
 
-		sbDCSet.append ("Actual/365L;ISMA-Year;Actual/Actual AFB");
+		sbDCSet.append ("Actual/365L;ISMA-Year;Actual/Actual AFB;");
 
-		sbDCSet.append ("NL/360");
+		sbDCSet.append ("NL/360;");
 
-		sbDCSet.append ("NL/Act");
+		sbDCSet.append ("NL/Act;");
 
-		sbDCSet.append ("Act/364");
+		sbDCSet.append ("Act/364;");
 
-		sbDCSet.append ("BUS252;BUS DAYS252;BUS/252");
+		sbDCSet.append ("BUS252;BUS DAYS252;BUS/252;");
 
 		return sbDCSet.toString();
 	}

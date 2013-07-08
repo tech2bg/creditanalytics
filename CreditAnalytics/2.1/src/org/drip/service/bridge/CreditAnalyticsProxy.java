@@ -160,7 +160,7 @@ public class CreditAnalyticsProxy {
 
 			try {
 				aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
-					org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., "USD", "USD-LIBOR-6M", "USD");
+					org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., "USD", "USD-LIBOR-3M", "USD");
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -169,7 +169,7 @@ public class CreditAnalyticsProxy {
 		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
 			java.util.HashMap<java.lang.String, java.lang.Double>();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
+		mIndexFixings.put ("USD-LIBOR-3M", 0.0042);
 
 		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
 			mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
@@ -418,7 +418,7 @@ public class CreditAnalyticsProxy {
 		}
 
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, dcTSY, dcEDSF, cc, cqBond,
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, cqBond,
 				mapTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

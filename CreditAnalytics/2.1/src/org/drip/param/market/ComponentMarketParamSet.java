@@ -32,13 +32,14 @@ package org.drip.param.market;
 
 /**
  * This class provides implementation of the ComponentMarketParamsRef interface. Serves as a place holder for
- * 		the market parameters needed to value the component object – discount curve, treasury curve, EDSF
- * 		curve, credit curve, component quote, treasury quote map, and fixings map.
+ * 	the market parameters needed to value the component object – discount curve, forward curve, treasury
+ *  curve, EDSF curve, credit curve, component quote, treasury quote map, and fixings map.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class ComponentMarketParamSet extends org.drip.param.definition.ComponentMarketParams {
+
 	/*
 	 * Credit Curve
 	 */
@@ -50,6 +51,12 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	 */
 
 	private org.drip.analytics.definition.DiscountCurve _dc = null;
+
+	/*
+	 * Forward Discount Curve
+	 */
+
+	private org.drip.analytics.definition.DiscountCurve _dcForward = null;
 
 	/*
 	 * Treasury Discount Curve
@@ -83,11 +90,12 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		java.lang.Double>> _mmFixings = null;
 
 	/**
-	 * Creates a CMP with the rates discount curve, the treasury discount curve, the EDSF discount curve, the
-	 * 	credit curve, the component quote, the map of treasury benchmark quotes, and the double map of
-	 * 	date/rate index and fixings
+	 * Creates a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
+	 *  the EDSF discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
+	 *  and the double map of date/rate index and fixings.
 	 * 
 	 * @param dc Rates Discount Curve
+	 * @param dcForward Forward Discount Curve
 	 * @param dcTSY Treasury Discount Curve
 	 * @param dcEDSF EDSF Discount Curve
 	 * @param cc Credit Curve
@@ -98,6 +106,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 	public ComponentMarketParamSet (
 		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.definition.DiscountCurve dcForward,
 		final org.drip.analytics.definition.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
@@ -110,6 +119,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		_dc = dc;
 		_dcTSY = dcTSY;
 		_dcEDSF = dcEDSF;
+		_dcForward= dcForward;
 		_compQuote = compQuote;
 		_mmFixings = mmFixings;
 		_mTSYQuotes = mTSYQuotes;
@@ -144,7 +154,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split
 			(strSerializedComponentMarketParams, getFieldDelimiter());
 
-		if (null == astrField || 8 > astrField.length)
+		if (null == astrField || 9 > astrField.length)
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -166,32 +176,40 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate TSY discount curve");
+				("ComponentMarketParams de-serializer: Cannot locate forward curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
-			_dcTSY = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[3].getBytes(),
+			_dcForward = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[3].getBytes(),
 				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate EDSF discount curve");
+				("ComponentMarketParams de-serializer: Cannot locate TSY discount curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
-			_dcEDSF = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[4].getBytes(),
+			_dcTSY = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[4].getBytes(),
 				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate component quote");
+				("ComponentMarketParams de-serializer: Cannot locate EDSF discount curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
-			_compQuote = new org.drip.param.market.ComponentMultiMeasureQuote (astrField[5].getBytes());
+			_dcEDSF = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[5].getBytes(),
+				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		if (null == astrField[6] || astrField[6].isEmpty())
+			throw new java.lang.Exception
+				("ComponentMarketParams de-serializer: Cannot locate component quote");
+
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+			_compQuote = new org.drip.param.market.ComponentMultiMeasureQuote (astrField[6].getBytes());
+
+		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate fixings");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6])) {
-			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[6],
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7])) {
+			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[7],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -236,11 +254,11 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			}
 		}
 
-		if (null == astrField[7] || astrField[7].isEmpty())
+		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate TSY quotes");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7])) {
-			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[7],
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8])) {
+			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[8],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -311,6 +329,20 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		if (null == dc) return false;
 
 		_dc = dc;
+		return true;
+	}
+
+	@Override public org.drip.analytics.definition.DiscountCurve getForwardDiscountCurve()
+	{
+		return _dcForward;
+	}
+
+	@Override public boolean setForwardDiscountCurve (
+		final org.drip.analytics.definition.DiscountCurve dcForward)
+	{
+		if (null == dcForward) return false;
+
+		_dcForward = dcForward;
 		return true;
 	}
 
@@ -389,6 +421,11 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
 			sb.append (new java.lang.String (_dc.serialize()) + getFieldDelimiter());
+
+		if (null == _dcForward)
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else
+			sb.append (new java.lang.String (_dcForward.serialize()) + getFieldDelimiter());
 
 		if (null == _dcTSY)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
@@ -482,6 +519,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		double[] adblDate = new double[3];
 		double[] adblRate = new double[3];
+		double[] adblForward = new double[3];
 		double[] adblRateTSY = new double[3];
 		double[] adblRateEDSF = new double[3];
 		double[] adblHazardRate = new double[3];
@@ -489,6 +527,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		for (int i = 0; i < 3; ++i) {
 			adblDate[i] = dblStart + 365. * (i + 1);
 			adblRate[i] = 0.015 * (i + 1);
+			adblForward[i] = 0.02 * (i + 1);
 			adblRateTSY[i] = 0.01 * (i + 1);
 			adblRateEDSF[i] = 0.0125 * (i + 1);
 			adblHazardRate[i] = 0.01 * (i + 1);
@@ -497,6 +536,11 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		org.drip.analytics.definition.DiscountCurve dc =
 			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
+					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+
+		org.drip.analytics.definition.DiscountCurve dcForward =
+			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblForward,
 					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.DiscountCurve dcTSY =
@@ -536,8 +580,8 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
-		ComponentMarketParamSet cmp = new ComponentMarketParamSet (dc, dcTSY, dcEDSF, cc, cq, mapTSYQuotes,
-			mmFixings);
+		ComponentMarketParamSet cmp = new ComponentMarketParamSet (dc, dcForward, dcTSY, dcEDSF, cc, cq,
+			mapTSYQuotes, mmFixings);
 
 		byte[] abCMP = cmp.serialize();
 

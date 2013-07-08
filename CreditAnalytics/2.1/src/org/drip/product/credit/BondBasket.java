@@ -50,24 +50,32 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		final org.drip.param.definition.BasketMarketParams bmp,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.TreeMap<java.lang.String,
-			java.lang.Double>();
+		java.util.Map<java.lang.String, java.lang.Double> mapBasketOP = super.value (valParams, pricerParams,
+			bmp, quotingParams);
 
-		for (int i = 0; i < _aBond.length; ++i) {
-			java.util.Map<java.lang.String, java.lang.Double> mapBondCalc = _aBond[i].value (valParams,
-				pricerParams, bmp.getComponentMarketParams (_aBond[i]), quotingParams);
+		if (null == mapBasketOP || 0 == mapBasketOP.size()) return null;
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> meBond : mapBondCalc.entrySet()) {
-				java.lang.Double dblValue = mapResult.get (meBond.getKey());
+		double dblBasketNotional = java.lang.Double.NaN;
 
-				if (null == dblValue)
-					mapResult.put (meBond.getKey(), meBond.getValue());
-				else
-					mapResult.put (meBond.getKey(), meBond.getValue() + _adblNormWeights[i] * dblValue);
-			}
+		try {
+			dblBasketNotional = getNotional (valParams._dblValue);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
 		}
 
-		return mapResult;
+		mapBasketOP.put ("Accrued", 100. * (1  + (mapBasketOP.get ("Accrued") / dblBasketNotional)));
+
+		mapBasketOP.put ("CleanPrice", 100. * (1  + (mapBasketOP.get ("CleanPV") / dblBasketNotional)));
+
+		mapBasketOP.put ("DirtyPrice", 100. * (1  + (mapBasketOP.get ("DirtyPV") / dblBasketNotional)));
+
+		mapBasketOP.put ("Notional", dblBasketNotional);
+
+		mapBasketOP.put ("Price", 100. * (1  + (mapBasketOP.get ("PV") / dblBasketNotional)));
+
+		return mapBasketOP;
 	}
 
 	/**
@@ -212,126 +220,9 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public int getNumberofComponents()
+	@Override public org.drip.product.definition.Component[] getComponents()
 	{
-		return _aBond.length;
-	}
-
-	@Override public double getInitialNotional()
-	{
-		return _dblNotional;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate getEffectiveDate()
-	{
-		return _dtEffective;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate getMaturityDate()
-	{
-		org.drip.analytics.date.JulianDate dtMaturity = _dtEffective;
-
-		for (int i = 0; i < _aBond.length; ++i) {
-			org.drip.analytics.date.JulianDate dtBondMaturity = _aBond[i].getMaturityDate();
-
-			if (null == dtBondMaturity) continue;
-
-			if (dtMaturity.getJulian() < dtBondMaturity.getJulian()) dtMaturity = dtBondMaturity;
-		}
-
-		return dtMaturity;
-	}
-
-
-	@Override public org.drip.analytics.date.JulianDate getFirstCouponDate()
-	{
-		org.drip.analytics.date.JulianDate dtFirstCoupon = _aBond[0].getFirstCouponDate();
-
-		for (org.drip.product.definition.Bond bond : _aBond) {
-			if (dtFirstCoupon.getJulian() > bond.getFirstCouponDate().getJulian())
-				dtFirstCoupon = bond.getFirstCouponDate();
-		}
-
-		return dtFirstCoupon;
-	}
-
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
-	{
-		return null;
-	}
-
-	@Override public java.util.Set<java.lang.String> getComponentIRCurveNames()
-	{
-		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
-
-		for (int i = 0; i < _aBond.length; ++i)
-			sIR.add (_aBond[i].getIRCurveName());
-
-		return sIR;
-	}
-
-	@Override public java.util.Set<java.lang.String> getComponentCreditCurveNames()
-	{
-		java.util.Set<java.lang.String> sCC = new java.util.HashSet<java.lang.String>();
-
-		for (int i = 0; i < _aBond.length; ++i)
-			sCC.add (_aBond[i].getCreditCurveName());
-
-		return sCC;
-	}
-
-
-	@Override public double getNotional (
-		final double dblDate)
-		throws java.lang.Exception
-	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("BondBasket.getNotional: Invalid input date!");
-
-		double dblNotional = 0.;
-
-		for (int i = 0; i < _aBond.length; ++i)
-			dblNotional += _aBond[i].getNotional (dblDate) * _adblNormWeights[i];
-
-		return dblNotional;
-	}
-
-	@Override public double getNotional (
-		final double dblDate1,
-		final double dblDate2)
-		throws java.lang.Exception
-	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
-			(dblDate2))
-			throw new java.lang.Exception ("BondBasket.getNotional: Invalid input dates!");
-
-		double dblNotional = 0.;
-
-		for (int i = 0; i < _aBond.length; ++i)
-			dblNotional += _aBond[i].getNotional (dblDate1, dblDate2) * _adblNormWeights[i];
-
-		return dblNotional;
-	}
-
-	@Override public double getCoupon (
-		final double dblDate,
-		final org.drip.param.definition.BasketMarketParams bmp)
-		throws java.lang.Exception
-	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("BondBasket.getCoupon: Invalid input date!");
-
-		double dblNotional = 0.;
-
-		for (int i = 0; i < _aBond.length; ++i) {
-			org.drip.param.definition.ComponentMarketParams cmp = null;
-
-			if (null != bmp) cmp = bmp.getComponentMarketParams (_aBond[i]);
-
-			dblNotional += _aBond[i].getCoupon (dblDate, cmp) * _adblNormWeights[i];
-		}
-
-		return dblNotional;
+		return _aBond;
 	}
 
 	@Override public java.util.Map<java.lang.String, java.lang.Double> value (

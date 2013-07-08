@@ -141,8 +141,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 
 		_dblFirstSettle = new java.lang.Double (astrField[1]);
 
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("MarketConvention de-serializer: Cannot locate Calculation Type");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))

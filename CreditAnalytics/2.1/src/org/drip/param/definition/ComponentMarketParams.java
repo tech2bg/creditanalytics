@@ -68,6 +68,25 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	public abstract org.drip.analytics.definition.DiscountCurve getDiscountCurve();
 
 	/**
+	 * (Re)-sets the Component Forward Discount Curve
+	 * 
+	 * @param dcForward Component Forward Discount Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setForwardDiscountCurve (
+		final org.drip.analytics.definition.DiscountCurve dcForward);
+
+	/**
+	 * Retrieves the Component Forward Discount Curve
+	 * 
+	 * @return Component Forward Discount Curve
+	 */
+
+	public abstract org.drip.analytics.definition.DiscountCurve getForwardDiscountCurve();
+
+	/**
 	 * (Re)-sets the Component Discount Curve
 	 * 
 	 * @param dc Component Discount Curve

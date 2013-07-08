@@ -704,6 +704,11 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _strIR;
 	}
 
+	@Override public java.lang.String getRatesForwardCurveName()
+	{
+		return "";
+	}
+
 	@Override public java.lang.String getCreditCurveName()
 	{
 		return _crValParams._strCC;

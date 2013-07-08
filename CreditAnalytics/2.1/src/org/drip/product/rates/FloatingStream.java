@@ -394,6 +394,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
+	@Override public java.lang.String getRatesForwardCurveName()
+	{
+		return _strFloatingRateIndex;
+	}
+
 	@Override public java.lang.String getCreditCurveName()
 	{
 		return "";
@@ -448,7 +453,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getDiscountCurve()) return null;
+		if (null == valParams || null == mktParams) return null;
+
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == dc) return null;
 
 		long lStart = System.nanoTime();
 
@@ -458,6 +467,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblDirtyFloatingPV = 0.;
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
+
+		org.drip.analytics.definition.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
+			dc : mktParams.getForwardDiscountCurve();
 
 		for (org.drip.analytics.period.Period period : _lPeriods) {
 			double dblFloatingRate = 0.;
@@ -475,8 +487,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
 							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
 								(period.getResetDate())).get (_strFloatingRateIndex))
-						dblResetRate = dblFloatingRate = mktParams.getDiscountCurve().calcLIBOR
-							(period.getStartDate(), period.getEndDate());
+						dblResetRate = dblFloatingRate = dcForward.calcLIBOR (period.getStartDate(),
+							period.getEndDate());
 					else
 						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
 							org.drip.analytics.date.JulianDate (period.getResetDate())).get
@@ -488,8 +500,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 					dblResetDate = period.getResetDate();
 				} else
-					dblFloatingRate = mktParams.getDiscountCurve().calcLIBOR (period.getStartDate(),
-						period.getEndDate());
+					dblFloatingRate = dcForward.calcLIBOR (period.getStartDate(), period.getEndDate());
 
 				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * mktParams.getDiscountCurve().getDF
 					(dblPeriodPayDate) * getNotional (period.getAccrualStartDate(), period.getEndDate());

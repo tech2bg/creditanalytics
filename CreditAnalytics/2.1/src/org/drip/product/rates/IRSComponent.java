@@ -188,6 +188,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _floatStream.getIRCurveName();
 	}
 
+	@Override public java.lang.String getRatesForwardCurveName()
+	{
+		return _floatStream.getRatesForwardCurveName();
+	}
+
 	@Override public java.lang.String getCreditCurveName()
 	{
 		return "";

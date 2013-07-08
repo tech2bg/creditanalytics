@@ -502,7 +502,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100.), true);
 
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, dcTSY, dcEDSF, cc, cqBond,
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, cqBond,
 				mapTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

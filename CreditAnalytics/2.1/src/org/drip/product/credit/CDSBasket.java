@@ -243,106 +243,9 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public double getNotional (
-		final double dblDate)
-		throws java.lang.Exception
+	@Override public org.drip.product.definition.Component[] getComponents()
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("CDSBasket.getNotional got NaN");
-
-		return _notlSchedule.getFactor (dblDate);
-	}
-
-	@Override public double getNotional (
-		final double dblDate1,
-		final double dblDate2)
-		throws java.lang.Exception
-	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
-			throw new java.lang.Exception ("BasketDefaultSwap.getNotional got NaN");
-
-		return _notlSchedule.getFactor (dblDate1, dblDate2);
-	}
-
-	@Override public double getInitialNotional()
-	{
-		return _dblNotional;
-	}
-
-	@Override public double getCoupon (
-		final double dblDate,
-		final org.drip.param.definition.BasketMarketParams bmp)
-		throws java.lang.Exception
-	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("BasketDefaultSwap.getCoupon got NaN");
-
-		return _dblCoupon;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate getEffectiveDate()
-	{
-		try {
-			return new org.drip.analytics.date.JulianDate (_dblEffective);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate getMaturityDate()
-	{
-		try {
-			return new org.drip.analytics.date.JulianDate (_dblMaturity);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate getFirstCouponDate()
-	{
-		org.drip.analytics.date.JulianDate dtFirstCoupon = _aComp[0].getFirstCouponDate();
-
-		for (org.drip.product.definition.Component comp : _aComp) {
-			if (dtFirstCoupon.getJulian() > comp.getFirstCouponDate().getJulian())
-				dtFirstCoupon = comp.getFirstCouponDate();
-		}
-
-		return dtFirstCoupon;
-	}
-
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
-	{
-		return _lPeriods;
-	}
-
-	@Override public int getNumberofComponents()
-	{
-		return _aComp.length;
-	}
-
-	@Override public java.util.Set<java.lang.String> getComponentIRCurveNames()
-	{
-		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
-
-		for (int i = 0; i < _aComp.length; ++i)
-			sIR.add (_aComp[i].getIRCurveName());
-
-		return sIR;
-	}
-
-	@Override public java.util.Set<java.lang.String> getComponentCreditCurveNames()
-	{
-		java.util.Set<java.lang.String> sCC = new java.util.HashSet<java.lang.String>();
-
-		for (int i = 0; i < _aComp.length; ++i)
-			sCC.add (_aComp[i].getCreditCurveName());
-
-		return sCC;
+		return _aComp;
 	}
 
 	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
@@ -351,45 +254,34 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		final org.drip.param.definition.BasketMarketParams bmp,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		double dblSumNotional  = 0.;
+		java.util.Map<java.lang.String, java.lang.Double> mapBasketOP = super.value (valParams, pricerParams,
+			bmp, quotingParams);
 
-		long lStart = System.nanoTime();
+		if (null == mapBasketOP || 0 == mapBasketOP.size()) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.HashMap<java.lang.String,
-			java.lang.Double>();
+		mapBasketOP.put ("FairPremium", mapBasketOP.get ("LossPV") / mapBasketOP.get ("DV01"));
 
-		for (int i = 0; i < _aComp.length; ++i) {
-			try {
-				dblSumNotional += _aComp[i].getInitialNotional() * _aComp[i].getNotional
-					(valParams._dblValue);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
+		double dblBasketNotional = java.lang.Double.NaN;
 
-				return null;
-			}
+		try {
+			dblBasketNotional = getNotional (valParams._dblValue);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 
-			java.util.Map<java.lang.String, java.lang.Double> mapCompCalc = _aComp[i].value (valParams,
-				pricerParams, bmp.getComponentMarketParams (_aComp[i]), quotingParams);
-
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> meComp : mapCompCalc.entrySet()) {
-				java.lang.Double dblValue = mapResult.get (meComp.getKey());
-
-				if (null == dblValue)
-					mapResult.put (meComp.getKey(), meComp.getValue());
-				else
-					mapResult.put (meComp.getKey(), meComp.getValue() + dblValue);
-			}
+			return null;
 		}
 
-		mapResult.put ("Price", 100. * (1  + (mapResult.get ("PV") / dblSumNotional)));
+		mapBasketOP.put ("Accrued", 100. * (1  + (mapBasketOP.get ("Accrued") / dblBasketNotional)));
 
-		mapResult.put ("FairPremium", mapResult.get ("LossPV") / mapResult.get ("DV01"));
+		mapBasketOP.put ("CleanPrice", 100. * (1  + (mapBasketOP.get ("CleanPV") / dblBasketNotional)));
 
-		mapResult.put ("CleanPrice", 100. * (1  + (mapResult.get ("CleanPV") / dblSumNotional)));
+		mapBasketOP.put ("DirtyPrice", 100. * (1  + (mapBasketOP.get ("DirtyPV") / dblBasketNotional)));
 
-		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
+		mapBasketOP.put ("Notional", dblBasketNotional);
 
-		return mapResult;
+		mapBasketOP.put ("Price", 100. * (1  + (mapBasketOP.get ("PV") / dblBasketNotional)));
+
+		return mapBasketOP;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()

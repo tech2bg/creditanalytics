@@ -263,6 +263,11 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
+	@Override public java.lang.String getRatesForwardCurveName()
+	{
+		return "";
+	}
+
 	@Override public java.lang.String getCreditCurveName()
 	{
 		return "";
