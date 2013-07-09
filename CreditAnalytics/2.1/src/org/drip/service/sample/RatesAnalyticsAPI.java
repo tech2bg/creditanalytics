@@ -135,19 +135,19 @@ public class RatesAnalyticsAPI {
 
 		// First 7 instruments - cash calibration
 
-		adblDate[0] = dtStart.addDays (3).getJulian(); // ON
+		adblDate[0] = dtStart.addBusDays (1, "USD").getJulian(); // ON
 
-		adblDate[1] = dtStart.addDays (4).getJulian(); // 1D (TN)
+		adblDate[1] = dtStart.addBusDays (2, "USD").getJulian(); // 1D (TN)
 
-		adblDate[2] = dtStart.addDays (9).getJulian(); // 1W
+		adblDate[2] = dtStart.addBusDays (7, "USD").getJulian(); // 1W
 
-		adblDate[3] = dtStart.addDays (16).getJulian(); // 2W
+		adblDate[3] = dtStart.addBusDays (14, "USD").getJulian(); // 2W
 
-		adblDate[4] = dtStart.addDays (32).getJulian(); // 1M
+		adblDate[4] = dtStart.addBusDays (30, "USD").getJulian(); // 1M
 
-		adblDate[5] = dtStart.addDays (62).getJulian(); // 2M
+		adblDate[5] = dtStart.addBusDays (60, "USD").getJulian(); // 2M
 
-		adblDate[6] = dtStart.addDays (92).getJulian(); // 3M
+		adblDate[6] = dtStart.addBusDays (90, "USD").getJulian(); // 3M
 
 		/*
 		 * Cash Rate Quotes
@@ -165,7 +165,9 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addDays (2), new JulianDate (adblDate[i]), "USD");
+			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, "USD"), // Effective
+				new JulianDate (adblDate[i]).addBusDays (2, "USD"), // Maturity
+				"USD");
 		}
 
 		// Next 8 instruments - EDF calibration
@@ -192,35 +194,35 @@ public class RatesAnalyticsAPI {
 
 		// Final 15 instruments - IRS calibration
 
-		adblDate[15] = dtStart.addDays ((int)(365.25 * 4 + 2)).getJulian(); // 4Y
+		adblDate[15] = dtStart.addBusDays ((int)(365.25 * 4 + 2), "USD").getJulian(); // 4Y
 
-		adblDate[16] = dtStart.addDays ((int)(365.25 * 5 + 2)).getJulian(); // 5Y
+		adblDate[16] = dtStart.addBusDays ((int)(365.25 * 5 + 2), "USD").getJulian(); // 5Y
 
-		adblDate[17] = dtStart.addDays ((int)(365.25 * 6 + 2)).getJulian(); // 6Y
+		adblDate[17] = dtStart.addBusDays ((int)(365.25 * 6 + 2), "USD").getJulian(); // 6Y
 
-		adblDate[18] = dtStart.addDays ((int)(365.25 * 7 + 2)).getJulian(); // 7Y
+		adblDate[18] = dtStart.addBusDays ((int)(365.25 * 7 + 2), "USD").getJulian(); // 7Y
 
-		adblDate[19] = dtStart.addDays ((int)(365.25 * 8 + 2)).getJulian(); // 8Y
+		adblDate[19] = dtStart.addBusDays ((int)(365.25 * 8 + 2), "USD").getJulian(); // 8Y
 
-		adblDate[20] = dtStart.addDays ((int)(365.25 * 9 + 2)).getJulian(); // 9Y
+		adblDate[20] = dtStart.addBusDays ((int)(365.25 * 9 + 2), "USD").getJulian(); // 9Y
 
-		adblDate[21] = dtStart.addDays ((int)(365.25 * 10 + 2)).getJulian(); // 10Y
+		adblDate[21] = dtStart.addBusDays ((int)(365.25 * 10 + 2), "USD").getJulian(); // 10Y
 
-		adblDate[22] = dtStart.addDays ((int)(365.25 * 11 + 2)).getJulian(); // 11Y
+		adblDate[22] = dtStart.addBusDays ((int)(365.25 * 11 + 2), "USD").getJulian(); // 11Y
 
-		adblDate[23] = dtStart.addDays ((int)(365.25 * 12 + 2)).getJulian(); // 12Y
+		adblDate[23] = dtStart.addBusDays ((int)(365.25 * 12 + 2), "USD").getJulian(); // 12Y
 
-		adblDate[24] = dtStart.addDays ((int)(365.25 * 15 + 2)).getJulian(); // 15Y
+		adblDate[24] = dtStart.addBusDays ((int)(365.25 * 15 + 2), "USD").getJulian(); // 15Y
 
-		adblDate[25] = dtStart.addDays ((int)(365.25 * 20 + 2)).getJulian(); // 20Y
+		adblDate[25] = dtStart.addBusDays ((int)(365.25 * 20 + 2), "USD").getJulian(); // 20Y
 
-		adblDate[26] = dtStart.addDays ((int)(365.25 * 25 + 2)).getJulian(); // 25Y
+		adblDate[26] = dtStart.addBusDays ((int)(365.25 * 25 + 2), "USD").getJulian(); // 25Y
 
-		adblDate[27] = dtStart.addDays ((int)(365.25 * 30 + 2)).getJulian(); // 30Y
+		adblDate[27] = dtStart.addBusDays ((int)(365.25 * 30 + 2), "USD").getJulian(); // 30Y
 
-		adblDate[28] = dtStart.addDays ((int)(365.25 * 40 + 2)).getJulian(); // 40Y
+		adblDate[28] = dtStart.addBusDays ((int)(365.25 * 40 + 2), "USD").getJulian(); // 40Y
 
-		adblDate[29] = dtStart.addDays ((int)(365.25 * 50 + 2)).getJulian(); // 50Y
+		adblDate[29] = dtStart.addBusDays ((int)(365.25 * 50 + 2), "USD").getJulian(); // 50Y
 
 		adblCompCalibValue[15] = .0166;
 		adblCompCalibValue[16] = .0206;
@@ -296,19 +298,19 @@ public class RatesAnalyticsAPI {
 
 		// First 7 instruments - cash calibration
 
-		adblDate[0] = dtStart.addDays (3).getJulian(); // ON
+		adblDate[0] = dtStart.addBusDays (1, "USD").getJulian(); // ON
 
-		adblDate[1] = dtStart.addDays (4).getJulian(); // 1D (TN)
+		adblDate[1] = dtStart.addBusDays (2, "USD").getJulian(); // 1D (TN)
 
-		adblDate[2] = dtStart.addDays (9).getJulian(); // 1W
+		adblDate[2] = dtStart.addBusDays (7, "USD").getJulian(); // 1W
 
-		adblDate[3] = dtStart.addDays (16).getJulian(); // 2W
+		adblDate[3] = dtStart.addBusDays (14, "USD").getJulian(); // 2W
 
-		adblDate[4] = dtStart.addDays (32).getJulian(); // 1M
+		adblDate[4] = dtStart.addBusDays (30, "USD").getJulian(); // 1M
 
-		adblDate[5] = dtStart.addDays (62).getJulian(); // 2M
+		adblDate[5] = dtStart.addBusDays (60, "USD").getJulian(); // 2M
 
-		adblDate[6] = dtStart.addDays (92).getJulian(); // 3M
+		adblDate[6] = dtStart.addBusDays (90, "USD").getJulian(); // 3M
 
 		/*
 		 * Cash Rate Quotes
@@ -334,7 +336,7 @@ public class RatesAnalyticsAPI {
 		 */
 
 		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
-			DiscountCurveBuilder.BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF,
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
 		/*
@@ -387,7 +389,7 @@ public class RatesAnalyticsAPI {
 		}
 
 		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
-			DiscountCurveBuilder.BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF,
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
 		/*
@@ -419,35 +421,35 @@ public class RatesAnalyticsAPI {
 
 		// Final 15 instruments - IRS calibration
 
-		adblDate[0] = dtStart.addDays ((int)(365.25 * 1 + 2)).getJulian(); // 4Y
+		adblDate[0] = dtStart.addBusDays ((int)(365.25 * 4 + 2), "USD").getJulian(); // 4Y
 
-		adblDate[1] = dtStart.addDays ((int)(365.25 * 2 + 2)).getJulian(); // 5Y
+		adblDate[1] = dtStart.addBusDays ((int)(365.25 * 5 + 2), "USD").getJulian(); // 5Y
 
-		adblDate[2] = dtStart.addDays ((int)(365.25 * 3 + 2)).getJulian(); // 6Y
+		adblDate[2] = dtStart.addBusDays ((int)(365.25 * 6 + 2), "USD").getJulian(); // 6Y
 
-		adblDate[3] = dtStart.addDays ((int)(365.25 * 7 + 2)).getJulian(); // 7Y
+		adblDate[3] = dtStart.addBusDays ((int)(365.25 * 7 + 2), "USD").getJulian(); // 7Y
 
-		adblDate[4] = dtStart.addDays ((int)(365.25 * 8 + 2)).getJulian(); // 8Y
+		adblDate[4] = dtStart.addBusDays ((int)(365.25 * 8 + 2), "USD").getJulian(); // 8Y
 
-		adblDate[5] = dtStart.addDays ((int)(365.25 * 9 + 2)).getJulian(); // 9Y
+		adblDate[5] = dtStart.addBusDays ((int)(365.25 * 9 + 2), "USD").getJulian(); // 9Y
 
-		adblDate[6] = dtStart.addDays ((int)(365.25 * 10 + 2)).getJulian(); // 10Y
+		adblDate[6] = dtStart.addBusDays ((int)(365.25 * 10 + 2), "USD").getJulian(); // 10Y
 
-		adblDate[7] = dtStart.addDays ((int)(365.25 * 11 + 2)).getJulian(); // 11Y
+		adblDate[7] = dtStart.addBusDays ((int)(365.25 * 11 + 2), "USD").getJulian(); // 11Y
 
-		adblDate[8] = dtStart.addDays ((int)(365.25 * 12 + 2)).getJulian(); // 12Y
+		adblDate[8] = dtStart.addBusDays ((int)(365.25 * 12 + 2), "USD").getJulian(); // 12Y
 
-		adblDate[9] = dtStart.addDays ((int)(365.25 * 15 + 2)).getJulian(); // 15Y
+		adblDate[9] = dtStart.addBusDays ((int)(365.25 * 15 + 2), "USD").getJulian(); // 15Y
 
-		adblDate[10] = dtStart.addDays ((int)(365.25 * 20 + 2)).getJulian(); // 20Y
+		adblDate[10] = dtStart.addBusDays ((int)(365.25 * 20 + 2), "USD").getJulian(); // 20Y
 
-		adblDate[11] = dtStart.addDays ((int)(365.25 * 25 + 2)).getJulian(); // 25Y
+		adblDate[11] = dtStart.addBusDays ((int)(365.25 * 25 + 2), "USD").getJulian(); // 25Y
 
-		adblDate[12] = dtStart.addDays ((int)(365.25 * 30 + 2)).getJulian(); // 30Y
+		adblDate[12] = dtStart.addBusDays ((int)(365.25 * 30 + 2), "USD").getJulian(); // 30Y
 
-		adblDate[13] = dtStart.addDays ((int)(365.25 * 40 + 2)).getJulian(); // 40Y
+		adblDate[13] = dtStart.addBusDays ((int)(365.25 * 40 + 2), "USD").getJulian(); // 40Y
 
-		adblDate[14] = dtStart.addDays ((int)(365.25 * 50 + 2)).getJulian(); // 50Y
+		adblDate[14] = dtStart.addBusDays ((int)(365.25 * 50 + 2), "USD").getJulian(); // 50Y
 
 		adblCompCalibValue[0] = .0166;
 		adblCompCalibValue[1] = .0206;

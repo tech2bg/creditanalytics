@@ -86,8 +86,9 @@ public class BondRVMeasuresAPI {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addDays (2), new JulianDate (adblDate[i] =
-				dtStart.addTenor (astrCashTenor[i]).getJulian()), strCurrency);
+			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i] = dtStart.addBusDays (2, strCurrency).addTenor (astrCashTenor[i]).getJulian()),
+				strCurrency);
 		}
 
 		// IRS Calibration
@@ -97,9 +98,9 @@ public class BondRVMeasuresAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
-				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addTenor
-					(astrIRSTenor[i]).getJulian()), 0., strCurrency, strIndex, strCurrency);
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addBusDays (2, strCurrency).addTenor (astrIRSTenor[i]).getJulian()),
+				0., strCurrency, strIndex, strCurrency);
 		}
 
 		/*

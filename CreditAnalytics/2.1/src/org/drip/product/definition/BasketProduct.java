@@ -39,6 +39,11 @@ package org.drip.product.definition;
 
 public abstract class BasketProduct extends org.drip.service.stream.Serializer implements
 	org.drip.product.definition.BasketMarketParamRef {
+	protected static final int MEASURE_AGGREGATION_TYPE_CUMULATIVE = 1;
+	protected static final int MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE = 2;
+	protected static final int MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE = 4;
+	protected static final int MEASURE_AGGREGATION_TYPE_IGNORE = 4;
+
 	class ComponentCurve {
 		java.lang.String _strName = null;
 		org.drip.analytics.definition.CreditCurve _cc = null;
@@ -332,6 +337,9 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 			" is an invalid measure!");
 	}
 
+	protected abstract int measureAggregationType (
+		final java.lang.String strMeasureName);
+
 	/**
 	 * Returns the basket name
 	 * 
@@ -347,6 +355,38 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 */
 
 	public abstract org.drip.product.definition.Component[] getComponents();
+
+	/**
+	 * Retrieve the component Weights
+	 * 
+	 * @return Array Containing the Component Weights
+	 */
+
+	public double[] getWeights()
+	{
+		org.drip.product.definition.Component[] aComp = getComponents();
+
+		double dblTotalWeight = 0.;
+		int iNumComp = aComp.length;
+		double[] adblWeight = new double[iNumComp];
+
+		for (int i = 0; i < iNumComp; ++i) {
+			try {
+				dblTotalWeight += (adblWeight[i] = aComp[i].getInitialNotional());
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		if (0. == dblTotalWeight) return null;
+
+		for (int i = 0; i < iNumComp; ++i)
+			adblWeight[i] /= dblTotalWeight;
+
+		return adblWeight;
+	}
 
 	@Override public java.util.Set<java.lang.String> getComponentIRCurveNames()
 	{
@@ -598,12 +638,14 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final org.drip.param.definition.BasketMarketParams bmp,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || null == bmp) return null;
+		long lStart = System.nanoTime();
 
 		java.util.Map<java.lang.String, java.lang.Double> mapBasketOP = new
 			java.util.HashMap<java.lang.String, java.lang.Double>();
 
 		org.drip.product.definition.Component[] aComp = getComponents();
+
+		double[] adblWeight = getWeights();
 
 		int iNumComp = aComp.length;
 
@@ -611,24 +653,37 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 			java.util.Map<java.lang.String, java.lang.Double> mapCompOP = aComp[i].value (valParams,
 				pricerParams, bmp.getComponentMarketParams (aComp[i]), quotingParams);
 
-			if (null != mapCompOP && 0 != mapCompOP.size()) {
-				for (java.util.Map.Entry<java.lang.String, java.lang.Double> meCompOP : mapCompOP.entrySet())
-				{
-					if (null == meCompOP) continue;
+			if (null == mapCompOP || 0 == mapCompOP.size()) continue;
 
-					java.lang.String strKey = meCompOP.getKey();
+			java.util.Set<java.util.Map.Entry<java.lang.String, java.lang.Double>> mapCompOPES =
+				mapCompOP.entrySet();
 
-					if (null == strKey || strKey.isEmpty()) continue;
+			if (null == mapCompOPES) continue;
 
-					java.lang.Double dblCompValue = mapCompOP.get (strKey);
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> meCompOP : mapCompOPES) {
+				if (null == meCompOP) continue;
 
-					java.lang.Double dblBasketValue = mapBasketOP.get (strKey);
+				java.lang.String strKey = meCompOP.getKey();
 
+				if (null == strKey || strKey.isEmpty()) continue;
+
+				java.lang.Double dblCompValue = mapCompOP.get (strKey);
+
+				java.lang.Double dblBasketValue = mapBasketOP.get (strKey);
+
+				if (MEASURE_AGGREGATION_TYPE_CUMULATIVE == measureAggregationType (strKey))
 					mapBasketOP.put (strKey, (null == dblCompValue ? 0. : dblCompValue) + (null ==
 						dblBasketValue ? 0. : dblBasketValue));
-				}
+				else if (MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE == measureAggregationType (strKey))
+					mapBasketOP.put (strKey, (null == dblCompValue ? 0. : adblWeight[i] * dblCompValue) +
+						(null == dblBasketValue ? 0. : dblBasketValue));
+				else if (MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE == measureAggregationType (strKey))
+					mapBasketOP.put (aComp[i].getComponentName() + "[" + strKey + "]", (null == dblCompValue
+						? 0. : dblCompValue));
 			}
 		}
+
+		mapBasketOP.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 		return mapBasketOP;
 	}

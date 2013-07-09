@@ -74,6 +74,7 @@ public class BondAnalyticsAPI {
 		final double[] adblCashRate,
 		final String[] astrIRSTenor,
 		final double[] adblIRSRate,
+		final double dblBump,
 		final String strCurrency)
 		throws Exception
 	{
@@ -83,17 +84,18 @@ public class BondAnalyticsAPI {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-6M";
+		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
 		for (int i = 0; i < astrCashTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
-			adblCompCalibValue[i] = adblCashRate[i];
+			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addDays (2), new JulianDate (adblDate[i] =
-				dtStart.addTenor (astrCashTenor[i]).getJulian()), strCurrency);
+			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i] = dtStart.addBusDays (2, strCurrency).addTenor (astrCashTenor[i]).getJulian()),
+				strCurrency);
 		}
 
 		// IRS Calibration
@@ -101,11 +103,11 @@ public class BondAnalyticsAPI {
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
-			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i];
+			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
-				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addTenor
-					(astrIRSTenor[i]).getJulian()), 0., strCurrency, strIndex, strCurrency);
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addBusDays (2, strCurrency).addTenor (astrIRSTenor[i]).getJulian()),
+				0., strCurrency, strIndex, strCurrency);
 		}
 
 		/*
@@ -134,7 +136,7 @@ public class BondAnalyticsAPI {
 			0.02406, 0.02588, 0.02741, 0.02870, 0.02982, 0.03208, 0.03372, 0.03445, 0.03484, 0.03501, 0.03484};
 
 		return BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
-			adblIRSRate, "USD");
+			adblIRSRate, 0., "USD");
 	}
 
 	/*

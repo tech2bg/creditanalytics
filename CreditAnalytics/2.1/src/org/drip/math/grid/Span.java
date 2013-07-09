@@ -900,10 +900,10 @@ public class Span extends org.drip.math.function.AbstractUnivariate {
 		org.drip.math.function.AbstractUnivariate rsc = new org.drip.math.function.RationalShapeControl (1.);
 
 		org.drip.math.grid.Span span = org.drip.math.grid.Span.CreateSpanInterpolator (adblX, adblY,
-			// BASIS_SPLINE_POLYNOMIAL, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
+			BASIS_SPLINE_POLYNOMIAL, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
 			// BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
 			// BASIS_SPLINE_EXPONENTIAL_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
-			BASIS_SPLINE_HYPERBOLIC_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
+			// BASIS_SPLINE_HYPERBOLIC_TENSION, SPLINE_BOUNDARY_MODE_NATURAL, dblTension, iNumBasis, rsc,
 				iK, null, SET_ITEP | CALIBRATE_SPAN);
 
 		while (dblX <= 10.) {

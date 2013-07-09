@@ -931,6 +931,115 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return mapMeasures;
 	}
 
+	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	{
+		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasureNames.add ("AccrualDays");
+
+		setstrMeasureNames.add ("Accrued");
+
+		setstrMeasureNames.add ("Accrued01");
+
+		setstrMeasureNames.add ("CleanDV01");
+
+		setstrMeasureNames.add ("CleanPV");
+
+		setstrMeasureNames.add ("DirtyDV01");
+
+		setstrMeasureNames.add ("DirtyPV");
+
+		setstrMeasureNames.add ("DV01");
+
+		setstrMeasureNames.add ("ExpLoss");
+
+		setstrMeasureNames.add ("ExpLossNoRec");
+
+		setstrMeasureNames.add ("FairAccrualDays");
+
+		setstrMeasureNames.add ("FairAccrued");
+
+		setstrMeasureNames.add ("FairAccrued01");
+
+		setstrMeasureNames.add ("FairCleanDV01");
+
+		setstrMeasureNames.add ("FairCleanPV");
+
+		setstrMeasureNames.add ("FairDirtyDV01");
+
+		setstrMeasureNames.add ("FairDirtyPV");
+
+		setstrMeasureNames.add ("FairDV01");
+
+		setstrMeasureNames.add ("FairExpLoss");
+
+		setstrMeasureNames.add ("FairExpLossNoRec");
+
+		setstrMeasureNames.add ("FairFairPremium");
+
+		setstrMeasureNames.add ("FairLossNoRecPV");
+
+		setstrMeasureNames.add ("FairLossPV");
+
+		setstrMeasureNames.add ("FairParSpread");
+
+		setstrMeasureNames.add ("FairPremium");
+
+		setstrMeasureNames.add ("FairPremiumPV");
+
+		setstrMeasureNames.add ("FairPV");
+
+		setstrMeasureNames.add ("FairUpfront");
+
+		setstrMeasureNames.add ("LossNoRecPV");
+
+		setstrMeasureNames.add ("LossPV");
+
+		setstrMeasureNames.add ("MarketAccrualDays");
+
+		setstrMeasureNames.add ("MarketAccrued");
+
+		setstrMeasureNames.add ("MarketAccrued01");
+
+		setstrMeasureNames.add ("MarketCleanDV01");
+
+		setstrMeasureNames.add ("MarketCleanPV");
+
+		setstrMeasureNames.add ("MarketDirtyDV01");
+
+		setstrMeasureNames.add ("MarketDirtyPV");
+
+		setstrMeasureNames.add ("MarketDV01");
+
+		setstrMeasureNames.add ("MarketExpLoss");
+
+		setstrMeasureNames.add ("MarketExpLossNoRec");
+
+		setstrMeasureNames.add ("MarketFairPremium");
+
+		setstrMeasureNames.add ("MarketLossNoRecPV");
+
+		setstrMeasureNames.add ("MarketLossPV");
+
+		setstrMeasureNames.add ("MarketParSpread");
+
+		setstrMeasureNames.add ("MarketPremiumPV");
+
+		setstrMeasureNames.add ("MarketPV");
+
+		setstrMeasureNames.add ("MarketUpfront");
+
+		setstrMeasureNames.add ("ParSpread");
+
+		setstrMeasureNames.add ("PremiumPV");
+
+		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("Upfront");
+
+		return setstrMeasureNames;
+	}
+
 	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,

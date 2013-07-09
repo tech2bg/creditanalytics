@@ -371,6 +371,40 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return _mapCC.get (strName);
 	}
 
+	@Override public boolean addComponentQuote (
+		final java.lang.String strName,
+		final org.drip.param.definition.ComponentQuote cq)
+	{
+		_mapCQComp.put (strName, cq);
+
+		return true;
+	}
+
+	@Override public boolean addTSYQuote (
+		final java.lang.String strName,
+		final org.drip.param.definition.ComponentQuote cqTSY)
+	{
+		_mapCQTSY.put (strName, cqTSY);
+
+		return true;
+	}
+
+	@Override public org.drip.param.definition.ComponentQuote getComponentQuote (
+		final java.lang.String strName)
+	{
+		if (null == strName || strName.isEmpty()) return null;
+
+		return _mapCQComp.get (strName);
+	}
+
+	@Override public org.drip.param.definition.ComponentQuote getTSYQuote (
+		final java.lang.String strName)
+	{
+		if (null == strName || strName.isEmpty()) return null;
+
+		return _mapCQTSY.get (strName);
+	}
+
 	@Override public org.drip.param.definition.ComponentMarketParams getComponentMarketParams (
 		final org.drip.product.definition.ComponentMarketParamRef compRef)
 	{

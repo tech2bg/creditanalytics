@@ -412,6 +412,21 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return mapResult;
 	}
 
+	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	{
+		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("Price");
+
+		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("Rate");
+
+		return setstrMeasureNames;
+	}
+
 	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,

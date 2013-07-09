@@ -306,6 +306,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("FairPremium", dblFairPremium);
 
+		mapResult.put ("ParRate", dblFairPremium);
+
 		mapResult.put ("Rate", dblFairPremium);
 
 		mapResult.put ("SwapRate", dblFairPremium);
@@ -335,6 +337,59 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 		return mapResult;
+	}
+
+	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	{
+		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasureNames.add ("Accrued01");
+
+		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("CleanDV01");
+
+		setstrMeasureNames.add ("CleanFixedPV");
+
+		setstrMeasureNames.add ("CleanFloatingPV");
+
+		setstrMeasureNames.add ("CleanPrice");
+
+		setstrMeasureNames.add ("CleanPV");
+
+		setstrMeasureNames.add ("DirtyDV01");
+
+		setstrMeasureNames.add ("DirtyFixedPV");
+
+		setstrMeasureNames.add ("DirtyFloatingPV");
+
+		setstrMeasureNames.add ("DirtyPV");
+
+		setstrMeasureNames.add ("DV01");
+
+		setstrMeasureNames.add ("FairPremium");
+
+		setstrMeasureNames.add ("FixAccrued");
+
+		setstrMeasureNames.add ("FloatAccrued");
+
+		setstrMeasureNames.add ("ParRate");
+
+		setstrMeasureNames.add ("Price");
+
+		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("Rate");
+
+		setstrMeasureNames.add ("ResetDate");
+
+		setstrMeasureNames.add ("ResetRate");
+
+		setstrMeasureNames.add ("SwapRate");
+
+		setstrMeasureNames.add ("Upfront");
+
+		return setstrMeasureNames;
 	}
 
 	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (

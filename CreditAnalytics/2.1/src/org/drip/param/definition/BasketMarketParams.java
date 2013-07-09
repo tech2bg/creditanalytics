@@ -88,6 +88,54 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 		final java.lang.String strName);
 
 	/**
+	 * Add a named Component Quote
+	 * 
+	 * @param strName Component Name
+	 * @param cq Component Quote
+	 * 
+	 * @return TRUE => Successfully added
+	 */
+
+	public abstract boolean addComponentQuote (
+		final java.lang.String strName,
+		final org.drip.param.definition.ComponentQuote cq);
+
+	/**
+	 * Add a named Treasury Quote
+	 * 
+	 * @param strName Treasury Name
+	 * @param cqTSY Treasury Component Quote
+	 * 
+	 * @return TRUE => Successfully added
+	 */
+
+	public abstract boolean addTSYQuote (
+		final java.lang.String strName,
+		final org.drip.param.definition.ComponentQuote cqTSY);
+
+	/**
+	 * Retrieve the Named Component Quote
+	 * 
+	 * @param strName Component Name
+	 * 
+	 * @return Component Quote
+	 */
+
+	public abstract org.drip.param.definition.ComponentQuote getComponentQuote (
+		final java.lang.String strName);
+
+	/**
+	 * Retrieve the Named Treasury Quote
+	 * 
+	 * @param strName Treasury Name
+	 * 
+	 * @return Treasury Quote
+	 */
+
+	public abstract org.drip.param.definition.ComponentQuote getTSYQuote (
+		final java.lang.String strName);
+
+	/**
 	 * Retrieves the basket component's market parameters
 	 * 
 	 * @param compRef The component's ComponentMarketParamRef

@@ -80,8 +80,11 @@ public class BloombergSWPM {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i];
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart, new JulianDate (adblDate[i] =
-				dtStart.addTenor (astrCashTenor[i]).getJulian()), strCurrency);
+			JulianDate dtEffective = dtStart.addBusDays (2, strCurrency);
+
+			aCompCalib[i] = CashBuilder.CreateCash (dtEffective,
+				new JulianDate (adblDate[i] = dtEffective.addTenor (astrCashTenor[i]).getJulian()),
+				strCurrency);
 
 			// System.out.println ("CASH = " + aCompCalib[i].getMaturityDate());
 		}
@@ -95,8 +98,6 @@ public class BloombergSWPM {
 			astrCalibMeasure[astrCashTenor.length + i] = "Rate";
 			adblRate[astrCashTenor.length + i] = java.lang.Double.NaN;
 			adblCompCalibValue[astrCashTenor.length + i] = adblEDFRate[i];
-
-			// System.out.println ("EDF = " + aCompCalib[astrCashTenor.length + i].getMaturityDate());
 		}
 
 		// IRS Calibration
@@ -106,11 +107,11 @@ public class BloombergSWPM {
 			adblRate[i + adblEDFRate.length + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + adblEDFRate.length + astrCashTenor.length] = adblIRSRate[i];
 
-			aCompCalib[i + adblEDFRate.length + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
-				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addDays (2).addTenor
-					(astrIRSTenor[i]).getJulian()), 0., strCurrency, strIndex, strCurrency);
+			JulianDate dtEffective = dtStart.addBusDays (2, strCurrency);
 
-			// System.out.println ("IRS = " + aCompCalib[i + adblEDFRate.length + astrCashTenor.length].getMaturityDate());
+			aCompCalib[i + adblEDFRate.length + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtEffective,
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtEffective.addTenor (astrIRSTenor[i]).getJulian()),
+				0., strCurrency, strIndex, strCurrency);
 		}
 
 		/*

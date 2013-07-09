@@ -458,23 +458,23 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("Accrued01", dblAccrued01 * dblNotlFactor);
 
-		mapResult.put ("FixAccrued", dblAccrued01 * _dblCoupon * dblNotlFactor);
-
-		mapResult.put ("DV01", dblCleanDV01 * dblNotlFactor);
-
 		mapResult.put ("CleanDV01", dblCleanDV01 * dblNotlFactor);
-
-		mapResult.put ("DirtyDV01", dblDirtyDV01 * dblNotlFactor);
 
 		mapResult.put ("CleanFixedPV", dblCleanDV01 * _dblCoupon * dblNotlFactor);
 
-		mapResult.put ("DirtyFixedPV", dblDirtyDV01 * _dblCoupon * dblNotlFactor);
-
-		mapResult.put ("PV", dblCleanDV01 * _dblCoupon * dblNotlFactor);
-
 		mapResult.put ("CleanPV", dblCleanDV01 * _dblCoupon * dblNotlFactor);
 
+		mapResult.put ("DirtyDV01", dblDirtyDV01 * dblNotlFactor);
+
+		mapResult.put ("DirtyFixedPV", dblDirtyDV01 * _dblCoupon * dblNotlFactor);
+
 		mapResult.put ("DirtyPV", dblDirtyDV01 * _dblCoupon * dblNotlFactor);
+
+		mapResult.put ("DV01", dblCleanDV01 * dblNotlFactor);
+
+		mapResult.put ("FixAccrued", dblAccrued01 * _dblCoupon * dblNotlFactor);
+
+		mapResult.put ("PV", dblCleanDV01 * _dblCoupon * dblNotlFactor);
 
 		mapResult.put ("Upfront", dblCleanDV01 * _dblCoupon * dblNotlFactor);
 
@@ -490,14 +490,49 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			double dblCleanPrice = 100. * (1. + (dblCleanDV01 * _dblCoupon / _dblNotional /
 				dblValueNotional));
 
-			mapResult.put ("Price", dblCleanPrice);
-
 			mapResult.put ("CleanPrice", dblCleanPrice);
+
+			mapResult.put ("Price", dblCleanPrice);
 		}
 
 		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 		return mapResult;
+	}
+
+	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	{
+		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasureNames.add ("Accrued01");
+
+		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("CleanDV01");
+
+		setstrMeasureNames.add ("CleanFixedPV");
+
+		setstrMeasureNames.add ("CleanPrice");
+
+		setstrMeasureNames.add ("CleanPV");
+
+		setstrMeasureNames.add ("DirtyDV01");
+
+		setstrMeasureNames.add ("DirtyFixedPV");
+
+		setstrMeasureNames.add ("DirtyPV");
+
+		setstrMeasureNames.add ("DV01");
+
+		setstrMeasureNames.add ("FixAccrued");
+
+		setstrMeasureNames.add ("Price");
+
+		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("Upfront");
+
+		return setstrMeasureNames;
 	}
 
 	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (

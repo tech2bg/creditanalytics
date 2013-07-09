@@ -184,6 +184,14 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		final org.drip.param.valuation.QuotingParams quotingParams);
 
 	/**
+	 * Retrieves the ordered set of the measure names whose values will be calculated
+	 * 
+	 * @return Set of Measure Names
+	 */
+
+	public abstract java.util.Set<java.lang.String> getMeasureNames();
+
+	/**
 	 * Calculates the value of the given component measure
 	 * 
 	 * @param valParams ValuationParams

@@ -829,7 +829,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split (strSerializedBond,
 			getFieldDelimiter());
 
-		if (null == astrField || 14 > astrField.length)
+		if (null == astrField || 15 > astrField.length)
 			throw new java.lang.Exception ("Bond de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -941,46 +941,52 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			_mktConv = new org.drip.product.params.QuoteConvention (astrField[8].getBytes());
 
 		if (null == astrField[9] || astrField[9].isEmpty())
-			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Credit Valuation params");
+			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond IR Valuation params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
-			_crValParams = null;
+			_irValParams = null;
 		else
-			_crValParams = new org.drip.product.params.CreditSetting
-				(astrField[9].getBytes());
+			_irValParams = new org.drip.product.params.RatesSetting (astrField[9].getBytes());
 
 		if (null == astrField[10] || astrField[10].isEmpty())
-			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Termination params");
+			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Credit Valuation params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[10]))
-			_cfteParams = null;
+			_crValParams = null;
 		else
-			_cfteParams = new org.drip.product.params.TerminationSetting (astrField[10].getBytes());
+			_crValParams = new org.drip.product.params.CreditSetting (astrField[10].getBytes());
 
 		if (null == astrField[11] || astrField[11].isEmpty())
-			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Period params");
+			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Termination params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[11]))
-			_periodParams = null;
+			_cfteParams = null;
 		else
-			_periodParams = new org.drip.product.params.PeriodSet
-				(astrField[11].getBytes());
+			_cfteParams = new org.drip.product.params.TerminationSetting (astrField[11].getBytes());
 
 		if (null == astrField[12] || astrField[12].isEmpty())
-			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond EOS Put params");
+			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Period params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[12]))
-			_eosPut = null;
+			_periodParams = null;
 		else
-			_eosPut = new org.drip.product.params.EmbeddedOptionSchedule (astrField[12].getBytes());
+			_periodParams = new org.drip.product.params.PeriodSet (astrField[12].getBytes());
 
 		if (null == astrField[13] || astrField[13].isEmpty())
-			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond EOS Call params");
+			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond EOS Put params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[13]))
+			_eosPut = null;
+		else
+			_eosPut = new org.drip.product.params.EmbeddedOptionSchedule (astrField[13].getBytes());
+
+		if (null == astrField[14] || astrField[14].isEmpty())
+			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond EOS Call params");
+
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[14]))
 			_eosCall = null;
 		else
-			_eosCall = new org.drip.product.params.EmbeddedOptionSchedule (astrField[13].getBytes());
+			_eosCall = new org.drip.product.params.EmbeddedOptionSchedule (astrField[14].getBytes());
 	}
 
 	@Override public double[] getSecTSYSpread (
@@ -12035,6 +12041,387 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return mapMeasures;
 	}
 
+	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	{
+		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasureNames.add ("Accrued");
+
+		setstrMeasureNames.add ("Accrued01");
+
+		setstrMeasureNames.add ("AssetSwapSpread");
+
+		setstrMeasureNames.add ("ASW");
+
+		setstrMeasureNames.add ("BondBasis");
+
+		setstrMeasureNames.add ("CleanCouponPV");
+
+		setstrMeasureNames.add ("CleanDV01");
+
+		setstrMeasureNames.add ("CleanIndexCouponPV");
+
+		setstrMeasureNames.add ("CleanPrice");
+
+		setstrMeasureNames.add ("CleanPV");
+
+		setstrMeasureNames.add ("Convexity");
+
+		setstrMeasureNames.add ("CreditRisklessParPV");
+
+		setstrMeasureNames.add ("CreditRisklessPrincipalPV");
+
+		setstrMeasureNames.add ("CreditRiskyParPV");
+
+		setstrMeasureNames.add ("CreditRiskyPrincipalPV");
+
+		setstrMeasureNames.add ("CreditBasis");
+
+		setstrMeasureNames.add ("DiscountMargin");
+
+		setstrMeasureNames.add ("DefaultExposure");
+
+		setstrMeasureNames.add ("DefaultExposureNoRec");
+
+		setstrMeasureNames.add ("DirtyCouponPV");
+
+		setstrMeasureNames.add ("DirtyDV01");
+
+		setstrMeasureNames.add ("DirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("DirtyPrice");
+
+		setstrMeasureNames.add ("DirtyPV");
+
+		setstrMeasureNames.add ("Duration");
+
+		setstrMeasureNames.add ("DV01");
+
+		setstrMeasureNames.add ("ExpectedRecovery");
+
+		setstrMeasureNames.add ("FairAccrued");
+
+		setstrMeasureNames.add ("FairAccrued01");
+
+		setstrMeasureNames.add ("FairAssetSwapSpread");
+
+		setstrMeasureNames.add ("FairASW");
+
+		setstrMeasureNames.add ("FairBondBasis");
+
+		setstrMeasureNames.add ("FairCleanCouponPV");
+
+		setstrMeasureNames.add ("FairCleanDV01");
+
+		setstrMeasureNames.add ("FairCleanIndexCouponPV");
+
+		setstrMeasureNames.add ("FairCleanPrice");
+
+		setstrMeasureNames.add ("FairCleanPV");
+
+		setstrMeasureNames.add ("FairConvexity");
+
+		setstrMeasureNames.add ("FairCreditBasis");
+
+		setstrMeasureNames.add ("FairCreditRisklessParPV");
+
+		setstrMeasureNames.add ("FairCreditRisklessPrincipalPV");
+
+		setstrMeasureNames.add ("FairCreditRiskyParPV");
+
+		setstrMeasureNames.add ("FairCreditRiskyPrincipalPV");
+
+		setstrMeasureNames.add ("FairDefaultExposure");
+
+		setstrMeasureNames.add ("FairDefaultExposureNoRec");
+
+		setstrMeasureNames.add ("FairDirtyCouponPV");
+
+		setstrMeasureNames.add ("FairDirtyDV01");
+
+		setstrMeasureNames.add ("FairDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("FairDirtyPrice");
+
+		setstrMeasureNames.add ("FairDirtyPV");
+
+		setstrMeasureNames.add ("FairDiscountMargin");
+
+		setstrMeasureNames.add ("FairDuration");
+
+		setstrMeasureNames.add ("FairDV01");
+
+		setstrMeasureNames.add ("FairExpectedRecovery");
+
+		setstrMeasureNames.add ("FairFirstIndexRate");
+
+		setstrMeasureNames.add ("FairGSpread");
+
+		setstrMeasureNames.add ("FairISpread");
+
+		setstrMeasureNames.add ("FairLossOnInstantaneousDefault");
+
+		setstrMeasureNames.add ("FairMacaulayDuration");
+
+		setstrMeasureNames.add ("FairModifiedDuration");
+
+		setstrMeasureNames.add ("FairOAS");
+
+		setstrMeasureNames.add ("FairOASpread");
+
+		setstrMeasureNames.add ("FairOptionAdjustedSpread");
+
+		setstrMeasureNames.add ("FairParPV");
+
+		setstrMeasureNames.add ("FairParSpread");
+
+		setstrMeasureNames.add ("FairPECS");
+
+		setstrMeasureNames.add ("FairPrice");
+
+		setstrMeasureNames.add ("FairPrincipalPV");
+
+		setstrMeasureNames.add ("FairPV");
+
+		setstrMeasureNames.add ("FairRecoveryPV");
+
+		setstrMeasureNames.add ("FairRisklessCleanCouponPV");
+
+		setstrMeasureNames.add ("FairRisklessCleanDV01");
+
+		setstrMeasureNames.add ("FairRisklessCleanIndexCouponPV");
+
+		setstrMeasureNames.add ("FairRisklessCleanPV");
+
+		setstrMeasureNames.add ("FairRisklessDirtyCouponPV");
+
+		setstrMeasureNames.add ("FairRisklessDirtyDV01");
+
+		setstrMeasureNames.add ("FairRisklessDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("FairRisklessDirtyPV");
+
+		setstrMeasureNames.add ("FairRiskyCleanCouponPV");
+
+		setstrMeasureNames.add ("FairRiskyCleanDV01");
+
+		setstrMeasureNames.add ("FairRiskyCleanIndexCouponPV");
+
+		setstrMeasureNames.add ("FairRiskyCleanPV");
+
+		setstrMeasureNames.add ("FairRiskyDirtyCouponPV");
+
+		setstrMeasureNames.add ("FairRiskyDirtyDV01");
+
+		setstrMeasureNames.add ("FairRiskyDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("FairRiskyDirtyPV");
+
+		setstrMeasureNames.add ("FairTSYSpread");
+
+		setstrMeasureNames.add ("FairWorkoutDate");
+
+		setstrMeasureNames.add ("FairWorkoutFactor");
+
+		setstrMeasureNames.add ("FairWorkoutType");
+
+		setstrMeasureNames.add ("FairWorkoutYield");
+
+		setstrMeasureNames.add ("FairYield");
+
+		setstrMeasureNames.add ("FairYield01");
+
+		setstrMeasureNames.add ("FairYieldBasis");
+
+		setstrMeasureNames.add ("FairYieldSpread");
+
+		setstrMeasureNames.add ("FairZeroDiscountMargin");
+
+		setstrMeasureNames.add ("FairZSpread");
+
+		setstrMeasureNames.add ("FirstCouponRate");
+
+		setstrMeasureNames.add ("FirstIndexRate");
+
+		setstrMeasureNames.add ("GSpread");
+
+		setstrMeasureNames.add ("ISpread");
+
+		setstrMeasureNames.add ("LossOnInstantaneousDefault");
+
+		setstrMeasureNames.add ("MacaulayDuration");
+
+		setstrMeasureNames.add ("MarketAccrued");
+
+		setstrMeasureNames.add ("MarketAccrued01");
+
+		setstrMeasureNames.add ("MarketCleanCouponPV");
+
+		setstrMeasureNames.add ("MarketCleanDV01");
+
+		setstrMeasureNames.add ("MarketCleanIndexCouponPV");
+
+		setstrMeasureNames.add ("MarketCleanPrice");
+
+		setstrMeasureNames.add ("MarketCleanPV");
+
+		setstrMeasureNames.add ("MarketCreditRisklessParPV");
+
+		setstrMeasureNames.add ("MarketCreditRisklessPrincipalPV");
+
+		setstrMeasureNames.add ("MarketCreditRiskyParPV");
+
+		setstrMeasureNames.add ("MarketCreditRiskyPrincipalPV");
+
+		setstrMeasureNames.add ("MarketDefaultExposure");
+
+		setstrMeasureNames.add ("MarketDefaultExposureNoRec");
+
+		setstrMeasureNames.add ("MarketDirtyCouponPV");
+
+		setstrMeasureNames.add ("MarketDirtyDV01");
+
+		setstrMeasureNames.add ("MarketDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("MarketDirtyPrice");
+
+		setstrMeasureNames.add ("MarketDirtyPV");
+
+		setstrMeasureNames.add ("MarketDV01");
+
+		setstrMeasureNames.add ("MarketExpectedRecovery");
+
+		setstrMeasureNames.add ("MarketFirstCouponRate");
+
+		setstrMeasureNames.add ("MarketFirstIndexRate");
+
+		setstrMeasureNames.add ("MarketInputType=CleanPrice");
+
+		setstrMeasureNames.add ("MarketInputType=CreditBasis");
+
+		setstrMeasureNames.add ("MarketInputType=DirtyPrice");
+
+		setstrMeasureNames.add ("MarketInputType=GSpread");
+
+		setstrMeasureNames.add ("MarketInputType=ISpread");
+
+		setstrMeasureNames.add ("MarketInputType=PECS");
+
+		setstrMeasureNames.add ("MarketInputType=QuotedMargin");
+
+		setstrMeasureNames.add ("MarketInputType=TSYSpread");
+
+		setstrMeasureNames.add ("MarketInputType=Yield");
+
+		setstrMeasureNames.add ("MarketInputType=ZSpread");
+
+		setstrMeasureNames.add ("MarketLossOnInstantaneousDefault");
+
+		setstrMeasureNames.add ("MarketParPV");
+
+		setstrMeasureNames.add ("MarketPrincipalPV");
+
+		setstrMeasureNames.add ("MarketPV");
+
+		setstrMeasureNames.add ("MarketRecoveryPV");
+
+		setstrMeasureNames.add ("MarketRisklessDirtyCouponPV");
+
+		setstrMeasureNames.add ("MarketRisklessDirtyDV01");
+
+		setstrMeasureNames.add ("MarketRisklessDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("MarketRisklessDirtyPV");
+
+		setstrMeasureNames.add ("MarketRiskyDirtyCouponPV");
+
+		setstrMeasureNames.add ("MarketRiskyDirtyDV01");
+
+		setstrMeasureNames.add ("MarketRiskyDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("MarketRiskyDirtyPV");
+
+		setstrMeasureNames.add ("ModifiedDuration");
+
+		setstrMeasureNames.add ("OAS");
+
+		setstrMeasureNames.add ("OASpread");
+
+		setstrMeasureNames.add ("OptionAdjustedSpread");
+
+		setstrMeasureNames.add ("ParEquivalentCDSSpread");
+
+		setstrMeasureNames.add ("ParPV");
+
+		setstrMeasureNames.add ("ParSpread");
+
+		setstrMeasureNames.add ("PECS");
+
+		setstrMeasureNames.add ("Price");
+
+		setstrMeasureNames.add ("PrincipalPV");
+
+		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("RecoveryPV");
+
+		setstrMeasureNames.add ("RisklessCleanCouponPV");
+
+		setstrMeasureNames.add ("RisklessCleanDV01");
+
+		setstrMeasureNames.add ("RisklessCleanIndexCouponPV");
+
+		setstrMeasureNames.add ("RisklessCleanPV");
+
+		setstrMeasureNames.add ("RisklessDirtyCouponPV");
+
+		setstrMeasureNames.add ("RisklessDirtyDV01");
+
+		setstrMeasureNames.add ("RisklessDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("RisklessDirtyPV");
+
+		setstrMeasureNames.add ("RiskyCleanCouponPV");
+
+		setstrMeasureNames.add ("RiskyCleanDV01");
+
+		setstrMeasureNames.add ("RiskyCleanIndexCouponPV");
+
+		setstrMeasureNames.add ("RiskyCleanPV");
+
+		setstrMeasureNames.add ("RiskyDirtyCouponPV");
+
+		setstrMeasureNames.add ("RiskyDirtyDV01");
+
+		setstrMeasureNames.add ("RiskyDirtyIndexCouponPV");
+
+		setstrMeasureNames.add ("RiskyDirtyPV");
+
+		setstrMeasureNames.add ("TSYSpread");
+
+		setstrMeasureNames.add ("WorkoutDate");
+
+		setstrMeasureNames.add ("WorkoutFactor");
+
+		setstrMeasureNames.add ("WorkoutType");
+
+		setstrMeasureNames.add ("WorkoutYield");
+
+		setstrMeasureNames.add ("Yield");
+
+		setstrMeasureNames.add ("Yield01");
+
+		setstrMeasureNames.add ("YieldBasis");
+
+		setstrMeasureNames.add ("YieldSpread");
+
+		setstrMeasureNames.add ("ZeroDiscountMargin");
+
+		setstrMeasureNames.add ("ZSpread");
+
+		return setstrMeasureNames;
+	}
+
 	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -12409,6 +12796,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
 			sb.append (new java.lang.String (_mktConv.serialize()) + getFieldDelimiter());
+
+		if (null == _irValParams)
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else
+			sb.append (new java.lang.String (_irValParams.serialize()) + getFieldDelimiter());
 
 		if (null == _crValParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());

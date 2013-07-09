@@ -17,6 +17,7 @@ import org.drip.analytics.definition.*;
 import org.drip.analytics.period.CouponPeriodCurveFactors;
 import org.drip.param.definition.*;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
+import org.drip.param.creator.RatesScenarioCurveBuilder;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
@@ -72,12 +73,13 @@ import org.drip.math.common.FormatUtil;
 public class BloombergCDSW {
 	private static final java.lang.String FIELD_SEPARATOR = "   ";
 
-	private static DiscountCurve BuildBBGRatesCurve (
+	private static DiscountCurve BuildRatesCurveFromInstruments (
 		final JulianDate dtStart,
 		final String[] astrCashTenor,
 		final double[] adblCashRate,
 		final String[] astrIRSTenor,
 		final double[] adblIRSRate,
+		final double dblBump,
 		final String strCurrency)
 		throws Exception
 	{
@@ -87,17 +89,18 @@ public class BloombergCDSW {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-6M";
+		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
 		for (int i = 0; i < astrCashTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
-			adblCompCalibValue[i] = adblCashRate[i];
+			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addDays (2), new JulianDate (adblDate[i] =
-				dtStart.addTenor (astrCashTenor[i]).getJulian()), strCurrency);
+			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i] = dtStart.addBusDays (2, strCurrency).addTenor (astrCashTenor[i]).getJulian()),
+				strCurrency);
 		}
 
 		// IRS Calibration
@@ -105,11 +108,11 @@ public class BloombergCDSW {
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
-			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i];
+			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new
-				JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addTenor
-					(astrIRSTenor[i]).getJulian()), 0., strCurrency, strIndex, strCurrency);
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addBusDays (2, strCurrency).addTenor (astrIRSTenor[i]).getJulian()),
+				0., strCurrency, strIndex, strCurrency);
 		}
 
 		/*
@@ -222,8 +225,8 @@ public class BloombergCDSW {
 		double[] adblIRSRate = new double[] {0.005775, 0.008930, 0.012950, 0.016705, 0.019960, 0.022620,
 			0.024765, 0.026575, 0.028130, 0.030530, 0.032720, 0.034280, 0.034975, 0.035360};
 
-		DiscountCurve dc = BuildBBGRatesCurve (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
-			adblIRSRate, "USD");
+		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
+			adblIRSRate, 0., "USD");
 
 		String[] astrCDSTenor = new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"};
 		double[] adblCDSParSpread = new double[] {100., 100., 100., 100., 100., 100., 100., 100.};

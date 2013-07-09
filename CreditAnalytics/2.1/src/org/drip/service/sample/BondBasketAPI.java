@@ -13,9 +13,14 @@ import java.util.Map;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.definition.DiscountCurve;
 import org.drip.param.definition.*;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.creator.BondBuilder;
+import org.drip.product.creator.CashBuilder;
+import org.drip.product.creator.RatesStreamBuilder;
+import org.drip.product.credit.*;
 import org.drip.product.definition.*;
 
 /*
@@ -38,7 +43,6 @@ import org.drip.math.common.FormatUtil;
 
 /*!
  * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
  * 		developers - http://www.credit-trader.org
@@ -67,6 +71,134 @@ import org.drip.math.common.FormatUtil;
  */
 
 public class BondBasketAPI {
+
+	/*
+	 * Sample demonstrating creation of a rates curve from instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static DiscountCurve BuildRatesCurveFromInstruments (
+		final JulianDate dtStart,
+		final String[] astrCashTenor,
+		final double[] adblCashRate,
+		final String[] astrIRSTenor,
+		final double[] adblIRSRate,
+		final double dblBump,
+		final String strCurrency)
+		throws Exception
+	{
+		int iNumDCInstruments = astrCashTenor.length + adblIRSRate.length;
+		double adblDate[] = new double[iNumDCInstruments];
+		double adblRate[] = new double[iNumDCInstruments];
+		String astrCalibMeasure[] = new String[iNumDCInstruments];
+		double adblCompCalibValue[] = new double[iNumDCInstruments];
+		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
+		String strIndex = strCurrency + "-LIBOR-3M";
+
+		// Cash Calibration
+
+		for (int i = 0; i < astrCashTenor.length; ++i) {
+			astrCalibMeasure[i] = "Rate";
+			adblRate[i] = java.lang.Double.NaN;
+			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
+
+			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i] = dtStart.addBusDays (2, strCurrency).addTenor (astrCashTenor[i]).getJulian()),
+				strCurrency);
+		}
+
+		// IRS Calibration
+
+		for (int i = 0; i < astrIRSTenor.length; ++i) {
+			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
+			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
+			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
+
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addBusDays (2, strCurrency).addTenor (astrIRSTenor[i]).getJulian()),
+				0., strCurrency, strIndex, strCurrency);
+		}
+
+		/*
+		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
+		 */
+
+		return RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, strCurrency,
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
+	}
+
+	/*
+	 * Sample demonstrating creation of simple fixed coupon treasury bond
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final Bond CreateTSYBond (
+		final String strName,
+		final double dblCoupon,
+		final JulianDate dt,
+		final String strTenor)
+		throws Exception
+	{
+		return BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
+				strName,					// Name
+				"USDTSY",					// Fictitious Treasury Curve Name
+				dblCoupon,					// Bond Coupon
+				2, 							// Frequency
+				"Act/Act",					// Day Count
+				dt, 						// Effective
+				dt.addTenor (strTenor),		// Maturity
+				null,						// Principal Schedule
+				null);
+	}
+
+	/*
+	 * Sample demonstrating creation of a set of the on-the-run treasury bonds
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final Bond[] CreateOnTheRunTSYBondSet (
+		final JulianDate dt,
+		final String[] astrTenor,
+		final double[] adblCoupon)
+		throws Exception
+	{
+		Bond aTSYBond[] = new Bond[astrTenor.length];
+
+		for (int i = 0; i < astrTenor.length; ++i)
+			aTSYBond[i] = CreateTSYBond ("TSY" + astrTenor[i] + "ON", adblCoupon[i], dt, astrTenor[i]);
+
+		return aTSYBond;
+	}
+
+	/*
+	 * Sample demonstrating building of the treasury discount curve based off the on-the run instruments and their yields
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final DiscountCurve BuildOnTheRunTSYDiscountCurve (
+		final JulianDate dt,
+		final Bond[] aTSYBond,
+		final double[] adblTSYYield)
+		throws Exception
+	{
+		String astrCalibMeasure[] = new String[aTSYBond.length];
+
+		for (int i = 0; i < aTSYBond.length; ++i)
+			astrCalibMeasure[i] = "Yield";
+
+		return RatesScenarioCurveBuilder.CreateDiscountCurve (dt,
+			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+			aTSYBond,
+			adblTSYYield,
+			astrCalibMeasure,
+			null);
+	}
+
 	/**
 	 * Sample demonstrating the creation/usage of the bond basket API
 	 * 
@@ -76,28 +208,110 @@ public class BondBasketAPI {
 	public static final void BasketBondAPISample()
 		throws Exception
 	{
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
 
-		String[] astrBasketISIN = new String[] {"US78490FVJ55", "US78490FWD76", "US78490FVL02", "US78442FAZ18", "US78490FTL30"};
-		double[] adblBasketWeights = new double[] {1., 2., 3., 4., 5.};
+		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
 
 		/*
-		 * Creates the basket from the ISIN and the weight array
+		 * Build the IR Curve from the Rates' instruments
 		 */
 
-		BasketProduct bb = CreditAnalytics.MakeBondBasket ("SLMA_ETF", astrBasketISIN, adblBasketWeights, dtToday, 100.);
+		String[] astrCashTenor = new String[] {"3M"};
+		double[] adblCashRate = new double[] {0.00276};
+		String[] astrIRSTenor = new String[] {   "1Y",    "2Y",    "3Y",    "4Y",    "5Y",    "6Y",    "7Y",
+			   "8Y",    "9Y",   "10Y",   "11Y",   "12Y",   "15Y",   "20Y",   "25Y",   "30Y",   "40Y",   "50Y"};
+		double[] adblIRSRate = new double[]  {0.00367, 0.00533, 0.00843, 0.01238, 0.01609, 0.01926, 0.02191,
+			0.02406, 0.02588, 0.02741, 0.02870, 0.02982, 0.03208, 0.03372, 0.03445, 0.03484, 0.03501, 0.03484};
+
+		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0., "USD");
 
 		/*
-		 * Create the basket market parameters and add the named discount curve and the credit curves to it.
+		 * Construct the set of Treasury instruments (in the case on-the-run set)
+		 */
+
+		String[] astrTSYTenor = new String[] {   "1M",    "3M",    "6M",    "1Y",    "2Y",    "3Y",    "5Y",    "7Y",
+				"10Y",  "30Y"};
+		final double[] adblTSYCoupon = new double[] {0.0000, 0.0000, 0.0000, 0.0000, 0.00375, 0.00500, 0.0100, 0.01375,
+			0.01375, 0.02875};
+
+		Bond[] aTSYBond = CreateOnTheRunTSYBondSet (dtCurve, astrTSYTenor, adblTSYCoupon);
+
+		/*
+		 * Build the Treasury Curve from the Treasury instruments and their yields
+		 */
+
+		double[] adblTSYYield = new double[] {0.00018, 0.00058, 0.00104, 0.00160, 0.00397, 0.00696, 0.01421, 0.01955,
+			0.02529, 0.03568};
+
+		DiscountCurve dcTSY = BuildOnTheRunTSYDiscountCurve (dtCurve, aTSYBond, adblTSYYield);
+
+		/*
+		 * Construct the set of bonds and load them onto the basket
+		 */
+
+		BondComponent bond1 = BondBuilder.CreateSimpleFixed (
+                "TEST1",                                               // Name
+                "USD",                                  // Currency
+                0.09,                                      // Bond Coupon
+                2,                                                            // Frequency
+                "30/360",                             // Day Count
+                JulianDate.CreateFromYMD (2011, 2, 23), // Effective
+                JulianDate.CreateFromYMD (2021, 3, 1),               // Maturity
+                null,                       // Principal Schedule
+                null);
+
+		BondComponent bond2 = BondBuilder.CreateSimpleFixed (    // Simple Fixed Rate Bond
+                "TEST2",                                               // Name
+                "USD",                                  // Currency
+                0.09,                                      // Bond Coupon
+                2,                                                            // Frequency
+                "30/360",                             // Day Count
+                JulianDate.CreateFromYMD (2011, 2, 23), // Effective
+                JulianDate.CreateFromYMD (2021, 3, 1),               // Maturity
+                null,                       // Principal Schedule
+                null);
+
+		BondComponent bond3 = BondBuilder.CreateSimpleFixed (    // Simple Fixed Rate Bond
+                "TEST3",                                               // Name
+                "USD",                                  // Currency
+                0.09,                                      // Bond Coupon
+                2,                                                            // Frequency
+                "30/360",                             // Day Count
+                JulianDate.CreateFromYMD (2011, 2, 23), // Effective
+                JulianDate.CreateFromYMD (2021, 3, 1),               // Maturity
+                null,                       // Principal Schedule
+                null);
+
+		BasketProduct bb = new BondBasket ("TurtlePower", new org.drip.product.definition.Bond[] {bond1, bond2, bond3},
+                new double[] {0.7, 0.5, 0.8}, org.drip.analytics.date.JulianDate.Today(), 1.);
+
+		/*
+		 * Verify - Simple Bond Basket Serializer
+		 */
+
+		byte[] abBB = bb.serialize();
+
+		System.out.println ("Before: " + new java.lang.String (abBB));
+
+		BasketProduct bbAfter = new BondBasket (abBB);
+
+		System.out.println ("After: " + new java.lang.String (bbAfter.serialize()));
+
+		/*
+		 * Create the basket market parameters and add the named discount curve and the treasury curves to it.
 		 */
 
 		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
 
-		bmp.addDC ("USD", DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04));
+		bmp.addDC ("USD", dc);
 
-		bmp.addDC ("USDTSY", DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.03));
+		bmp.addDC ("USDTSY", dcTSY);
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtToday, 0, "USD", Convention.DR_ACTUAL);
+		/*
+		 * Construct the Valuation and the Pricing Parameters
+		 */
+
+		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "USD", Convention.DR_ACTUAL);
 
 		PricerParams pricerParams = new PricerParams (7, null, false, PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON);
 
@@ -107,19 +321,21 @@ public class BondBasketAPI {
 
 		Map<String, Double> mapResult = bb.value (valParams, pricerParams, bmp, null);
 
-		System.out.println ("Fair Clean Price: " + FormatUtil.FormatDouble (mapResult.get ("FairCleanPV"), 2, 3, 100.));
+		System.out.println ("Clean Price:      " + FormatUtil.FormatDouble (mapResult.get ("CleanPrice"), 0, 2, 100.));
 
-		System.out.println ("Fair Yield: " + FormatUtil.FormatDouble (mapResult.get ("Yield"), 2, 3, 100.));
+		System.out.println ("Fair Clean Price: " + FormatUtil.FormatDouble (mapResult.get ("FairCleanPrice"), 0, 2, 100.));
 
-		System.out.println ("Fair GSpread: " + FormatUtil.FormatDouble (mapResult.get ("FairGSpread"), 1, 3, 100.));
+		System.out.println ("Fair Yield:       " + FormatUtil.FormatDouble (mapResult.get ("FairYield"), 0, 2, 100.));
 
-		System.out.println ("Fair ZSpread: " + FormatUtil.FormatDouble (mapResult.get ("FairZSpread"), 1, 3, 100.));
+		System.out.println ("Fair GSpread:     " + FormatUtil.FormatDouble (mapResult.get ("FairGSpread"), 0, 0, 10000.));
 
-		System.out.println ("Fair ISpread: " + FormatUtil.FormatDouble (mapResult.get ("FairISpread"), 1, 3, 100.));
+		System.out.println ("Fair ZSpread:     " + FormatUtil.FormatDouble (mapResult.get ("FairZSpread"), 0, 0, 10000.));
 
-		System.out.println ("Fair DV01: " + mapResult.get ("FairDV01"));
+		System.out.println ("Fair ISpread:     " + FormatUtil.FormatDouble (mapResult.get ("FairISpread"), 0, 0, 10000.));
 
-		System.out.println ("Accrued: " + mapResult.get ("Accrued"));
+		System.out.println ("Fair Duration:    " + FormatUtil.FormatDouble (mapResult.get ("FairDuration"), 0, 2, 10000.));
+
+		System.out.println ("Accrued:          " + FormatUtil.FormatDouble (mapResult.get ("Accrued"), 0, 2, 100.));
 	}
 
 	public static final void main (
@@ -130,11 +346,7 @@ public class BondBasketAPI {
 
 		String strConfig = "";
 
-		if (!CreditAnalytics.Init (strConfig)) {
-			System.out.println ("Cannot fully init FI!");
-
-			System.exit (301);
-		}
+		CreditAnalytics.Init (strConfig);
 
 		BasketBondAPISample();
 	}

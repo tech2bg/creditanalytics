@@ -49,6 +49,165 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private java.util.List<org.drip.analytics.period.CouponPeriod> _lPeriods = null;
 
+	@Override protected int measureAggregationType (
+		final java.lang.String strMeasureName)
+	{
+		if ("AccrualDays".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE;
+
+		if ("Accrued".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("Accrued01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("CleanDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("CleanPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("DirtyDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("DirtyPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("DV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("ExpLoss".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("ExpLossNoRec".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairAccrualDays".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE;
+
+		if ("FairAccrued".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairAccrued01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairCleanDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairCleanPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairDirtyDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairDirtyPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairExpLoss".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairExpLossNoRec".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairFairPremium".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("FairLossNoRecPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairLossPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairParSpread".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("FairPremium".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("FairPremiumPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("FairUpfront".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("LossNoRecPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("LossPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketAccrualDays".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE;
+
+		if ("MarketAccrued".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketAccrued01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketCleanDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketCleanPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketDirtyDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketDirtyPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketDV01".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketExpLoss".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketExpLossNoRec".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketFairPremium".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("MarketLossNoRecPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketLossPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketParSpread".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("MarketPremiumPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("MarketUpfront".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("ParSpread".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		if ("PremiumPV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("PV".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
+
+		if ("Upfront".equalsIgnoreCase (strMeasureName))
+			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
+
+		return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_IGNORE;
+	}
+
 	/**
 	 * Constructs a CDS Basket from the components and their weights
 	 * 
@@ -246,42 +405,6 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	@Override public org.drip.product.definition.Component[] getComponents()
 	{
 		return _aComp;
-	}
-
-	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.BasketMarketParams bmp,
-		final org.drip.param.valuation.QuotingParams quotingParams)
-	{
-		java.util.Map<java.lang.String, java.lang.Double> mapBasketOP = super.value (valParams, pricerParams,
-			bmp, quotingParams);
-
-		if (null == mapBasketOP || 0 == mapBasketOP.size()) return null;
-
-		mapBasketOP.put ("FairPremium", mapBasketOP.get ("LossPV") / mapBasketOP.get ("DV01"));
-
-		double dblBasketNotional = java.lang.Double.NaN;
-
-		try {
-			dblBasketNotional = getNotional (valParams._dblValue);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		mapBasketOP.put ("Accrued", 100. * (1  + (mapBasketOP.get ("Accrued") / dblBasketNotional)));
-
-		mapBasketOP.put ("CleanPrice", 100. * (1  + (mapBasketOP.get ("CleanPV") / dblBasketNotional)));
-
-		mapBasketOP.put ("DirtyPrice", 100. * (1  + (mapBasketOP.get ("DirtyPV") / dblBasketNotional)));
-
-		mapBasketOP.put ("Notional", dblBasketNotional);
-
-		mapBasketOP.put ("Price", 100. * (1  + (mapBasketOP.get ("PV") / dblBasketNotional)));
-
-		return mapBasketOP;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()

@@ -590,6 +590,53 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return mapResult;
 	}
 
+	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	{
+		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasureNames.add ("Accrued01");
+
+		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("CleanFloatingPV");
+
+		setstrMeasureNames.add ("CleanDV01");
+
+		setstrMeasureNames.add ("CleanPrice");
+
+		setstrMeasureNames.add ("CleanPV");
+
+		setstrMeasureNames.add ("DirtyFloatingPV");
+
+		setstrMeasureNames.add ("DirtyDV01");
+
+		setstrMeasureNames.add ("DirtyPrice");
+
+		setstrMeasureNames.add ("DirtyPV");
+
+		setstrMeasureNames.add ("DV01");
+
+		setstrMeasureNames.add ("FairPremium");
+
+		setstrMeasureNames.add ("FloatAccrued");
+
+		setstrMeasureNames.add ("ParRate");
+
+		setstrMeasureNames.add ("Price");
+
+		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("Rate");
+
+		setstrMeasureNames.add ("ResetDate");
+
+		setstrMeasureNames.add ("ResetRate");
+
+		setstrMeasureNames.add ("Upfront");
+
+		return setstrMeasureNames;
+	}
+
 	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,

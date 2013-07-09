@@ -2,24 +2,38 @@
 package org.drip.service.sample;
 
 /*
- * Generic imports
+ * Generic Imports
  */
 
-import java.util.*;
+import java.util.Map;
 
 /*
- * Credit Product imports
+ * Credit Product Imports
  */
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.definition.*;
+import org.drip.param.definition.*;
+import org.drip.param.pricer.PricerParams;
+import org.drip.param.valuation.ValuationParams;
+import org.drip.product.creator.*;
+import org.drip.product.credit.*;
 import org.drip.product.definition.*;
 
 /*
- * Credit Analytics API imports
+ * Credit Analytics API Imports
  */
 
+import org.drip.analytics.creator.*;
+import org.drip.param.creator.*;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.service.env.StandardCDXManager;
+
+/*
+ * DRIP Math Support
+ */
+
+import org.drip.math.common.FormatUtil;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -27,7 +41,6 @@ import org.drip.service.env.StandardCDXManager;
 
 /*!
  * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
  * 		developers - http://www.credit-trader.org
@@ -50,84 +63,218 @@ import org.drip.service.env.StandardCDXManager;
  */
 
 /**
- * Demo of the CDS basket API Sample
+ * Demo of the bond basket API Sample
  * 
  * @author Lakshmi Krishnamurthy
  */
 
 public class CDSBasketAPI {
 
-	/**
-	 * Sample demonstrating the creation/usage of the CDX API
+	/*
+	 * Sample demonstrating creation of a rates curve from instruments
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void BasketCDSAPISample()
+	private static DiscountCurve BuildRatesCurveFromInstruments (
+		final JulianDate dtStart,
+		final String[] astrCashTenor,
+		final double[] adblCashRate,
+		final String[] astrIRSTenor,
+		final double[] adblIRSRate,
+		final double dblBump,
+		final String strCurrency)
+		throws Exception
 	{
-		JulianDate dtToday = JulianDate.CreateFromYMD (2013, JulianDate.MAY, 10);
+		int iNumDCInstruments = astrCashTenor.length + adblIRSRate.length;
+		double adblDate[] = new double[iNumDCInstruments];
+		double adblRate[] = new double[iNumDCInstruments];
+		String astrCalibMeasure[] = new String[iNumDCInstruments];
+		double adblCompCalibValue[] = new double[iNumDCInstruments];
+		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
+		String strIndex = strCurrency + "-LIBOR-3M";
+
+		// Cash Calibration
+
+		for (int i = 0; i < astrCashTenor.length; ++i) {
+			astrCalibMeasure[i] = "Rate";
+			adblRate[i] = java.lang.Double.NaN;
+			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
+
+			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i] = dtStart.addBusDays (2, strCurrency).addTenor (astrCashTenor[i]).getJulian()),
+				strCurrency);
+		}
+
+		// IRS Calibration
+
+		for (int i = 0; i < astrIRSTenor.length; ++i) {
+			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
+			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
+			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
+
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addBusDays (2, strCurrency),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addBusDays (2, strCurrency).addTenor (astrIRSTenor[i]).getJulian()),
+				0., strCurrency, strIndex, strCurrency);
+		}
 
 		/*
-		 * Construct the CDX.NA.IG 5Y Series 17 index by name and series
+		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		BasketProduct bpCDX = CreditAnalytics.MakeCDX ("CDX.NA.IG", 17, "5Y");
+		return RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, strCurrency,
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
+	}
+
+	/**
+	 * Sample demonstrating the creation/usage of the Credit Curve from CDS Instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static CreditCurve CreateCreditCurveFromCDS (
+		final JulianDate dtStart,
+		final double[] adblQuote,
+		final String[] astrTenor,
+		final DiscountCurve dc,
+		final double dblRecovery,
+		final String strCCName)
+		throws Exception
+	{
+		String[] astrCalibMeasure = new String[adblQuote.length];
+		CreditDefaultSwap[] aCDS = new CreditDefaultSwap[adblQuote.length];
+
+		for (int i = 0; i < astrTenor.length; ++i) {
+			aCDS[i] = CDSBuilder.CreateSNAC (dtStart, astrTenor[i], 0.01, strCCName);
+
+			astrCalibMeasure[i] = "FairPremium";
+		}
 
 		/*
-		 * Construct the on-the-run CDX.NA.IG 5Y Series index
+		 * Build the credit curve from the CDS instruments and the fair premium
 		 */
 
-		BasketProduct bpCDXOTR = CreditAnalytics.MakeCDX ("CDX.NA.IG", dtToday, "5Y");
+		return CreditScenarioCurveBuilder.CreateCreditCurve (strCCName, dtStart, aCDS, dc,
+			adblQuote, astrCalibMeasure, dblRecovery, false);
+	}
+
+	/**
+	 * Sample demonstrating the creation/usage of the bond basket API
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	public static final void BasketBondAPISample()
+		throws Exception
+	{
+		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
+
+		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
 
 		/*
-		 * List of all the built-in CDX names
+		 * Build the IR Curve from the Rates' instruments
 		 */
 
-		Set<String> setstrCDXNames = StandardCDXManager.GetCDXNames();
+		String[] astrCashTenor = new String[] {"3M"};
+		double[] adblCashRate = new double[] {0.00276};
+		String[] astrIRSTenor = new String[] {   "1Y",    "2Y",    "3Y",    "4Y",    "5Y",    "6Y",    "7Y",
+			   "8Y",    "9Y",   "10Y",   "11Y",   "12Y",   "15Y",   "20Y",   "25Y",   "30Y",   "40Y",   "50Y"};
+		double[] adblIRSRate = new double[]  {0.00367, 0.00533, 0.00843, 0.01238, 0.01609, 0.01926, 0.02191,
+			0.02406, 0.02588, 0.02741, 0.02870, 0.02982, 0.03208, 0.03372, 0.03445, 0.03484, 0.03501, 0.03484};
+
+		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0., "USD");
 
 		/*
-		 * Descriptions of all the built-in CDX names
+		 * Build the Component Credit Curve from the CDS instruments
 		 */
 
-		Map<String, String> mapCDXDescr = StandardCDXManager.GetCDXDescriptions();
+		CreditCurve ccCHN = CreateCreditCurveFromCDS (dtCurve,
+			new double[] {100., 100., 100., 100., 100., 100., 100., 100.},
+			new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"}, dc, 0.4, "CHN");
+
+		CreditCurve ccIND = CreateCreditCurveFromCDS (dtCurve,
+			new double[] {100., 100., 100., 100., 100., 100., 100., 100.},
+			new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"}, dc, 0.4, "IND");
+
+		CreditCurve ccBRA = CreateCreditCurveFromCDS (dtCurve,
+			new double[] {100., 100., 100., 100., 100., 100., 100., 100.},
+			new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"}, dc, 0.4, "BRA");
+
+		CreditCurve ccRUS = CreateCreditCurveFromCDS (dtCurve,
+			new double[] {100., 100., 100., 100., 100., 100., 100., 100.},
+			new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"}, dc, 0.4, "RUS");
+
+		CreditCurve ccKOR = CreateCreditCurveFromCDS (dtCurve,
+			new double[] {100., 100., 100., 100., 100., 100., 100., 100.},
+			new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"}, dc, 0.4, "KOR");
+
+		CreditCurve ccTUR = CreateCreditCurveFromCDS (dtCurve,
+			new double[] {100., 100., 100., 100., 100., 100., 100., 100.},
+			new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"}, dc, 0.4, "TUR");
 
 		/*
-		 * Construct the on-the run CDX.EM 5Y corresponding to T - 1Y
+		 * Create the basket market parameters and add the named discount curve and the credit curves to it.
 		 */
 
-		BasketProduct bpPresetOTR = StandardCDXManager.GetOnTheRun ("CDX.EM", dtToday.subtractTenor ("1Y"), "5Y");
+		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
+
+		bmp.addDC ("USD", dc);
+
+		bmp.addCC ("CHN", ccCHN);
+
+		bmp.addCC ("IND", ccIND);
+
+		bmp.addCC ("BRA", ccBRA);
+
+		bmp.addCC ("RUS", ccRUS);
+
+		bmp.addCC ("KOR", ccKOR);
+
+		bmp.addCC ("TUR", ccTUR);
 
 		/*
-		 * Construct the on-the run ITRAXX.ENERGY 5Y corresponding to T - 7Y
+		 * Create the CDS basket from the component CDS and their weights
 		 */
 
-		BasketProduct bpPreLoadedOTR = StandardCDXManager.GetOnTheRun ("ITRAXX.ENERGY", dtToday.subtractTenor
-			("7Y"), "5Y");
+		org.drip.product.definition.CreditDefaultSwap aCDS[] = new
+			org.drip.product.definition.CreditDefaultSwap[6];
+
+		aCDS[0] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "CHN");
+
+		aCDS[1] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "IND");
+
+		aCDS[2] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "BRA");
+
+		aCDS[3] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "RUS");
+
+		aCDS[4] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "KOR");
+
+		aCDS[5] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "TUR");
+
+		org.drip.product.definition.BasketProduct bds = new CDSBasket (aCDS[0].getEffectiveDate(), aCDS[0].getMaturityDate(),
+			0.01, aCDS, new double[] {1., 2., 3., 4., 5., 6.}, "BRIC");
 
 		/*
-		 * Retrieve the full set of date/index series set for ITRAXX.ENERGY
+		 * Construct the Valuation and the Pricing Parameters
 		 */
 
-		Map<JulianDate, Integer> mapCDXSeries = StandardCDXManager.GetCDXSeriesMap ("ITRAXX.ENERGY");
+		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "USD", Convention.DR_ACTUAL);
 
-		System.out.println (bpCDX.getName() + ": " + bpCDX.getEffectiveDate() + "=>" + bpCDX.getMaturityDate());
+		PricerParams pricerParams = new PricerParams (7, null, false, PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON);
 
-		System.out.println (bpCDXOTR.getName() + ": " + bpCDXOTR.getEffectiveDate() + "=>" + bpCDXOTR.getMaturityDate());
+		/*
+		 * Generate the CDS basket measures from the valuation, the pricer, and the market parameters
+		 */
 
-		int i = 0;
+		Map<String, Double> mapResult = bds.value (valParams, pricerParams, bmp, null);
 
-		for (String strCDX : setstrCDXNames)
-			System.out.println ("CDX[" + i++ + "]: " + strCDX);
+		System.out.println ("Accrued:      " + FormatUtil.FormatDouble (mapResult.get ("Accrued"), 0, 2, 100.));
 
-		for (Map.Entry<String, String> meCDXDescr : mapCDXDescr.entrySet())
-			System.out.println ("[" + meCDXDescr.getKey() + "]: " + meCDXDescr.getValue());
+		System.out.println ("Clean PV:     " + FormatUtil.FormatDouble (mapResult.get ("CleanPV"), 0, 2, 1.));
 
-		System.out.println (bpPresetOTR.getName() + ": " + bpPresetOTR.getEffectiveDate() + "=>" + bpPresetOTR.getMaturityDate());
+		System.out.println ("Fair Premium: " + FormatUtil.FormatDouble (mapResult.get ("FairPremium"), 0, 2, 1.));
 
-		System.out.println (bpPreLoadedOTR.getName() + ": " + bpPreLoadedOTR.getEffectiveDate() + "=>" + bpPreLoadedOTR.getMaturityDate());
-
-		for (Map.Entry<JulianDate, Integer> me : mapCDXSeries.entrySet())
-			System.out.println ("ITRAXX.ENERGY[" + me.getValue() + "]: " + me.getKey());
+		System.out.println ("Fair Upfront: " + FormatUtil.FormatDouble (mapResult.get ("FairUpfront"), 0, 2, 1.));
 	}
 
 	public static final void main (
@@ -140,6 +287,6 @@ public class CDSBasketAPI {
 
 		CreditAnalytics.Init (strConfig);
 
-		BasketCDSAPISample();
+		BasketBondAPISample();
 	}
 }
