@@ -259,9 +259,9 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 	{
 		ComponentMultiMeasureQuote cq = new ComponentMultiMeasureQuote();
 
-		cq.addQuote ("Price", new MultiSidedQuote ("ASK", 103.), false);
+		cq.addQuote ("Price", new MultiSidedQuote ("ASK", 103., 100000.), false);
 
-		cq.setMarketQuote ("SpreadToTsyBmk", new MultiSidedQuote ("MID", 210.));
+		cq.setMarketQuote ("SpreadToTsyBmk", new MultiSidedQuote ("MID", 210., 100000.));
 
 		byte[] abCQ = cq.serialize();
 

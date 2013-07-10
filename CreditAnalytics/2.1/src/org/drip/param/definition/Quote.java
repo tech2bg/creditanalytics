@@ -38,6 +38,7 @@ package org.drip.param.definition;
  */
 
 public abstract class Quote extends org.drip.service.stream.Serializer {
+
 	/**
 	 * Get the quote value for the given side
 	 * 
@@ -47,6 +48,17 @@ public abstract class Quote extends org.drip.service.stream.Serializer {
 	 */
 
 	public abstract double getQuote (
+		final java.lang.String strSide);
+
+	/**
+	 * Get the quote size for the given side
+	 * 
+	 * @param strSide bid/ask/mid
+	 * 
+	 * @return Size
+	 */
+
+	public abstract double getSize (
 		final java.lang.String strSide);
 
 	/**
@@ -65,11 +77,13 @@ public abstract class Quote extends org.drip.service.stream.Serializer {
 	 * 
 	 * @param strSide bid/ask/mid
 	 * @param dblQuote Quote value
+	 * @param dblSize Size
 	 * 
 	 * @return Success (true) or failure (false)
 	 */
 
 	public abstract boolean setSide (
 		final java.lang.String strSide,
-		final double dblQuote);
+		final double dblQuote,
+		final double dblSize);
 }

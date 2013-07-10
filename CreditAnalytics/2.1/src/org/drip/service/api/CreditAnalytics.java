@@ -5507,8 +5507,8 @@ public class CreditAnalytics {
 			org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
 		try {
-			cq.addQuote ("TSYSpread", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYSpread),
-				true);
+			cq.addQuote ("TSYSpread", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYSpread,
+				java.lang.Double.NaN), true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -5589,7 +5589,8 @@ public class CreditAnalytics {
 			org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
 		try {
-			cq.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblYield), true);
+			cq.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblYield,
+				java.lang.Double.NaN), true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

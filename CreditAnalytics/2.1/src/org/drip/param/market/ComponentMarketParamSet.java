@@ -560,9 +560,10 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		org.drip.param.market.ComponentMultiMeasureQuote cq = new
 			org.drip.param.market.ComponentMultiMeasureQuote();
 
-		cq.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.), false);
+		cq.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103., 100000.), false);
 
-		cq.setMarketQuote ("SpreadToTsyBmk", new org.drip.param.market.MultiSidedQuote ("MID", 210.));
+		cq.setMarketQuote ("SpreadToTsyBmk", new org.drip.param.market.MultiSidedQuote ("MID", 210.,
+			100000.));
 
 		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mapTSYQuotes = new
 			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();

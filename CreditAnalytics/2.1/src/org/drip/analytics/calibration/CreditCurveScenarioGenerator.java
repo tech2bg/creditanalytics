@@ -140,7 +140,7 @@ public class CreditCurveScenarioGenerator {
 
 		for (int i = 0; i < iNumInstr; ++i) {
 			if (!_compCalib.bootstrapHazardRate (cc, _aCalibInst[i], i, valParams, dc, dcTSY, dcEDSF,
-				pricerParams, astrCalibMeasure[i], adblQuotes[i], mmFixings, quotingParams, false))
+				pricerParams, astrCalibMeasure[i], adblQuotes[i], mmFixings, quotingParams, bFlat))
 				return null;
 		}
 

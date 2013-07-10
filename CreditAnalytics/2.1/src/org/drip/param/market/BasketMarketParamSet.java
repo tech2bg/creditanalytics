@@ -32,8 +32,7 @@ package org.drip.param.market;
 
 /**
  * This class provides an implementation of BasketMarketParamsRef for a specific scenario. Contains maps
- * 	holding named discount curves, named credit curves, named treasury quote, named component quote, and
- * 	fixings object.
+ * 	holding named discount curves, named credit curves, named component quote, and fixings object.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -41,7 +40,6 @@ package org.drip.param.market;
 public class BasketMarketParamSet extends org.drip.param.definition.BasketMarketParams {
 	private java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve> _mapCC = null;
 	private java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve> _mapDC = null;
-	private java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> _mapCQTSY = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
 		java.lang.Double>> _mmFixings = null;
 
@@ -49,8 +47,8 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();
 
 	/**
-	 * Constructs the BasketMarketParams object from the map of discount curve, the map of credit curve, and
-	 * 	a double map of date/rate index and fixings.
+	 * Constructs the BasketMarketParams object from the map of discount curve, the map of credit curve, a
+	 * 	double map of date/rate index and fixings, and a map of the component quotes.
 	 * 
 	 * @param mapDC Map of discount curve
 	 * @param mapCC Map of Credit curve
@@ -106,7 +104,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split
 			(strSerializedBasketMarketParams, getFieldDelimiter());
 
-		if (null == astrField || 6 > astrField.length)
+		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("BasketMarketParams de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -193,49 +191,10 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		}
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception
-				("BasketMarketParams de-serializer: Cannot locate treasury component quote map");
+			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate fixings");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3])) {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[3],
-				getCollectionRecordDelimiter());
-
-			if (null != astrRecord && 0 != astrRecord.length) {
-				for (int i = 0; i < astrRecord.length; ++i) {
-					if (null == astrRecord[i] || astrRecord[i].isEmpty() ||
-						org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrRecord[i]))
-						continue;
-
-					java.lang.String[] astrKVPair = org.drip.analytics.support.GenericUtil.Split
-						(astrRecord[i], getCollectionKeyValueDelimiter());
-				
-					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
-						astrKVPair[0].isEmpty() ||
-							org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
-								(astrKVPair[0]) || null == astrKVPair[1] || astrKVPair[1].isEmpty() ||
-									org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
-										(astrKVPair[1]))
-						continue;
-
-					org.drip.param.definition.ComponentQuote cq = new
-						org.drip.param.market.ComponentMultiMeasureQuote (astrKVPair[1].getBytes());
-
-					if (null != cq) {
-						if (null == _mapCQTSY)
-							_mapCQTSY = new java.util.HashMap<java.lang.String,
-								org.drip.param.definition.ComponentQuote>();
-
-						_mapCQTSY.put (astrKVPair[0], cq);
-					}
-				}
-			}
-		}
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate fixings");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4])) {
-			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[4],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -280,12 +239,12 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			}
 		}
 
-		if (null == astrField[5] || astrField[5].isEmpty())
+		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception
 				("BasketMarketParams de-serializer: Cannot locate component quote map");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5])) {
-			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[5],
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4])) {
+			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[4],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -380,29 +339,12 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return true;
 	}
 
-	@Override public boolean addTSYQuote (
-		final java.lang.String strName,
-		final org.drip.param.definition.ComponentQuote cqTSY)
-	{
-		_mapCQTSY.put (strName, cqTSY);
-
-		return true;
-	}
-
 	@Override public org.drip.param.definition.ComponentQuote getComponentQuote (
 		final java.lang.String strName)
 	{
 		if (null == strName || strName.isEmpty()) return null;
 
 		return _mapCQComp.get (strName);
-	}
-
-	@Override public org.drip.param.definition.ComponentQuote getTSYQuote (
-		final java.lang.String strName)
-	{
-		if (null == strName || strName.isEmpty()) return null;
-
-		return _mapCQTSY.get (strName);
 	}
 
 	@Override public org.drip.param.definition.ComponentMarketParams getComponentMarketParams (
@@ -413,7 +355,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return new ComponentMarketParamSet (_mapDC.get (compRef.getIRCurveName()), _mapDC.get
 			(compRef.getRatesForwardCurveName()), _mapDC.get (compRef.getTreasuryCurveName()), _mapDC.get
 				(compRef.getEDSFCurveName()), _mapCC.get (compRef.getCreditCurveName()), _mapCQComp.get
-					(compRef.getComponentName()), _mapCQTSY, _mmFixings);
+					(compRef.getComponentName()), _mapCQComp, _mmFixings);
 	}
 
 	@Override public java.lang.String getCollectionKeyValueDelimiter()
@@ -492,32 +434,6 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 			else
 				sb.append (sbMapDC.toString() + getFieldDelimiter());
-		}
-
-		if (null == _mapCQTSY || null == _mapCQTSY.entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
-		else {
-			boolean bFirstEntry = true;
-
-			java.lang.StringBuffer sbMapCQTSY = new java.lang.StringBuffer();
-
-			for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentQuote> me :
-				_mapCQTSY.entrySet()) {
-				if (null == me || null == me.getKey() || me.getKey().isEmpty()) continue;
-
-				if (bFirstEntry)
-					bFirstEntry = false;
-				else
-					sbMapCQTSY.append (getCollectionRecordDelimiter());
-
-				sbMapCQTSY.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
-					(me.getValue().serialize()));
-			}
-
-			if (sbMapCQTSY.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
-			else
-				sb.append (sbMapCQTSY.toString() + getFieldDelimiter());
 		}
 
 		if (null == _mmFixings || null == _mmFixings.entrySet())
@@ -647,9 +563,10 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		org.drip.param.definition.ComponentQuote cq = new org.drip.param.market.ComponentMultiMeasureQuote();
 
-		cq.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.), false);
+		cq.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103., 100000.), false);
 
-		cq.setMarketQuote ("SpreadToTsyBmk", new org.drip.param.market.MultiSidedQuote ("MID", 210.));
+		cq.setMarketQuote ("SpreadToTsyBmk", new org.drip.param.market.MultiSidedQuote ("MID", 210.,
+			100000.));
 
 		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mapTSYQuotes = new
 			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();

@@ -153,6 +153,30 @@ public class CDSBuilder {
 		final double dblCoupon,
 		final java.lang.String strCC)
 	{
+		return CreateSNAC (dtEffective, strTenor, dblCoupon, "USD", strCC, "USD");
+	}
+
+	/**
+	 * Creates an SNAC style CDS contract with full first stub
+	 * 
+	 * @param dtEffective CDS Effective date
+	 * @param strTenor CDS Tenor
+	 * @param dblCoupon SNAC strike coupon
+	 * @param strIR IR Curve name
+	 * @param strCC Credit Curve name
+	 * @param strCalendar Holiday Calendar
+	 * 
+	 * @return CDS instance object
+	 */
+
+	public static final org.drip.product.definition.CreditDefaultSwap CreateSNAC (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String strTenor,
+		final double dblCoupon,
+		final java.lang.String strIR,
+		final java.lang.String strCC,
+		final java.lang.String strCalendar)
+	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
 		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
@@ -160,7 +184,7 @@ public class CDSBuilder {
 		if (null == dtFirstCoupon) return null;
 
 		org.drip.product.definition.CreditDefaultSwap cds = CreateCDS (dtFirstCoupon.subtractTenor ("3M"),
-			dtFirstCoupon.addTenor (strTenor), dblCoupon, "USD", 0.40, strCC, "USD", true);
+			dtFirstCoupon.addTenor (strTenor), dblCoupon, strIR, 0.40, strCC, strCalendar, true);
 
 		cds.setPrimaryCode ("CDS." + strTenor + "." + strCC);
 

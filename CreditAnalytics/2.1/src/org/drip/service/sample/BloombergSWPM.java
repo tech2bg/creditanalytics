@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drip.analytics.creator.DiscountCurveBuilder;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.daycount.DateAdjustParams;
 import org.drip.analytics.definition.DiscountCurve;
 import org.drip.analytics.period.Period;
 import org.drip.math.common.FormatUtil;
@@ -17,6 +18,7 @@ import org.drip.product.creator.CashBuilder;
 import org.drip.product.creator.EDFutureBuilder;
 import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.CalibratableComponent;
+import org.drip.product.definition.RatesComponent;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -85,8 +87,6 @@ public class BloombergSWPM {
 			aCompCalib[i] = CashBuilder.CreateCash (dtEffective,
 				new JulianDate (adblDate[i] = dtEffective.addTenor (astrCashTenor[i]).getJulian()),
 				strCurrency);
-
-			// System.out.println ("CASH = " + aCompCalib[i].getMaturityDate());
 		}
 
 		// EDF Calibration
@@ -125,16 +125,9 @@ public class BloombergSWPM {
 		 * Check: Re-calculate the input rates
 		 */
 
-		for (int i = 0; i < aCompCalib.length; ++i) {
-			double dblYearFract = (aCompCalib[i].getMaturityDate().getJulian() - dc.getStartDate().getJulian()) / 365.25;
-
-			double dblZero = dc.calcImpliedRate (aCompCalib[i].getMaturityDate().getJulian());
-
-			double dblZeroDF = java.lang.Math.exp (-1. * dblZero * dblYearFract);
-
-			System.out.println (aCompCalib[i].getPrimaryCode() + " | " + FormatUtil.FormatDouble (dblZero, 1, 6, 100.)
-				+ " | " + FormatUtil.FormatDouble (dblZeroDF, 1, 6, 1.));
-		}
+		/* for (int i = 0; i < aCompCalib.length; ++i)
+			System.out.println (aCompCalib[i].getPrimaryCode() + " | " + " | " +
+				FormatUtil.FormatDouble (dc.getDF (aCompCalib[i].getMaturityDate()), 1, 6, 1.)); */
 
 		return dc;
 	}
@@ -145,19 +138,19 @@ public class BloombergSWPM {
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtStart = JulianDate.CreateFromYMD (2013, JulianDate.JUNE, 24);
+		JulianDate dtStart = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 9);
 
 		/*
 		 * This part is best modeled by Curve #23 in the SWPM "Curves" tab
 		 */
 
 		String[] astrCashTenor = new String[] {"3M"};
-		double[] adblCashRate = new double[] {0.0027675};
-		double[] adblEDFRate = new double[] {0.0027675, 0.0027675};
-		String[] astrIRSTenor = new String[] {    "3Y",      "4Y",      "5Y",      "6Y",      "7Y",
-				 "8Y",      "9Y",     "10Y",     "11Y",     "12Y",     "15Y",     "20Y",     "30Y"};
-		double[] adblIRSRate = new double[] {0.0125641, 0.0125641, 0.0162899, 0.0194465, 0.0220434,
-			0.0241815, 0.0259419, 0.0274346, 0.0286947, 0.0297873, 0.0319690, 0.0335305, 0.0345367};
+		double[] adblCashRate = new double[] {0.0026910};
+		double[] adblEDFRate = new double[] {0.0026910, 0.0026910};
+		String[] astrIRSTenor = new String[] {    "4Y",      "5Y",      "6Y",
+			     "7Y",	    "8Y",      "9Y",     "10Y",     "11Y",     "12Y",     "15Y",     "20Y"};
+		double[] adblIRSRate = new double[] {0.0126219, 0.0166043, 0.0200334,
+			0.0228450, 0.0250721, 0.0269176, 0.0284823, 0.0298440, 0.0310189, 0.0333593, 0.0351025};
 
 		DiscountCurve dc = BuildBBGRatesCurve (dtStart, astrCashTenor, adblCashRate, adblEDFRate, astrIRSTenor, adblIRSRate, "USD");
 
@@ -165,39 +158,45 @@ public class BloombergSWPM {
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtStart.addDays (2), 0, "", Convention.DR_ACTUAL);
 
-		JulianDate dtEffective = dtStart.addDays (2);
+		JulianDate dtEffective = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 11);
 
-		JulianDate dtMaturity = dtStart.addDays (2).addTenor ("5Y");
+		JulianDate dtMaturity = JulianDate.CreateFromYMD (2018, JulianDate.JULY, 11);
 
-		System.out.println ("Effective: " + dtEffective);
+		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, "USD");
 
-		System.out.println ("Maturity: " + dtMaturity);
+		RatesComponent fixStream = new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
+			0.01660428, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, dap, null, 10000000., "USD", "USD");
 
-		org.drip.product.definition.RatesComponent fixStream = RatesStreamBuilder.CreateFixedStream (dtEffective,
-			dtMaturity, 0.01628993, "USD", "USD");
+		RatesComponent floatStream = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+			dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", "USD-LIBOR", false, null, null,
+				dap, dap, dap, dap, dap, null, null, -10000000., "USD", "USD");
 
-		org.drip.product.definition.RatesComponent floatStream = RatesStreamBuilder.CreateFloatingStream (dtEffective,
-			dtMaturity, 0., "USD", "USD-LIBOR", "USD");
+		System.out.println ("\nFixed Cashflow\n--------");
+
+		for (Period p : fixStream.getCouponPeriod())
+			System.out.println (
+				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (p.getCouponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (p.getCouponDCF(), 0, 2, 166042.8) + FIELD_SEPARATOR
+			);
+
+		System.out.println ("\n\nFloating Cashflow\n--------");
+
+		for (Period p : floatStream.getCouponPeriod())
+			System.out.println (
+				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (p.getCouponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (p.getCouponDCF(), 0, 2, 166042.8) + FIELD_SEPARATOR
+			);
 
 		org.drip.product.rates.IRSComponent swap = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
 
 		Map<String, Double> mapSwapCalc = swap.value (valParams, null, cmp, null);
 
-		System.out.println ("PV: " + mapSwapCalc.get ("CleanPV"));
-
-		System.out.println ("DV01: " + mapSwapCalc.get ("DirtyDV01"));
-
-		System.out.println ("Fair Premium: " + org.drip.math.common.FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 3, 100.));
-
-		System.out.println ("\nCashflow\n--------");
-
-		for (Period p : swap.getCouponPeriod())
-			System.out.println (
-				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR
-			);
+		System.out.println ("Par Cpn: " + org.drip.math.common.FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 4, 100.));
 	}
 }

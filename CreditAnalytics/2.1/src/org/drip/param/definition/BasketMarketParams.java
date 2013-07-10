@@ -101,19 +101,6 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 		final org.drip.param.definition.ComponentQuote cq);
 
 	/**
-	 * Add a named Treasury Quote
-	 * 
-	 * @param strName Treasury Name
-	 * @param cqTSY Treasury Component Quote
-	 * 
-	 * @return TRUE => Successfully added
-	 */
-
-	public abstract boolean addTSYQuote (
-		final java.lang.String strName,
-		final org.drip.param.definition.ComponentQuote cqTSY);
-
-	/**
 	 * Retrieve the Named Component Quote
 	 * 
 	 * @param strName Component Name
@@ -122,17 +109,6 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 	 */
 
 	public abstract org.drip.param.definition.ComponentQuote getComponentQuote (
-		final java.lang.String strName);
-
-	/**
-	 * Retrieve the Named Treasury Quote
-	 * 
-	 * @param strName Treasury Name
-	 * 
-	 * @return Treasury Quote
-	 */
-
-	public abstract org.drip.param.definition.ComponentQuote getTSYQuote (
 		final java.lang.String strName);
 
 	/**

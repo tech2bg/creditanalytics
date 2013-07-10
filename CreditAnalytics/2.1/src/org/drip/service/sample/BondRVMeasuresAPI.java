@@ -199,7 +199,7 @@ public class BondRVMeasuresAPI {
 		for (int i = 0; i < astrTSYTenor.length; ++i) {
 			org.drip.param.market.ComponentMultiMeasureQuote cmmq = new org.drip.param.market.ComponentMultiMeasureQuote();
 
-			cmmq.addQuote ("Yield", new MultiSidedQuote ("mid", adblTSYYield[i]), true);
+			cmmq.addQuote ("Yield", new MultiSidedQuote ("mid", adblTSYYield[i], Double.NaN), true);
 
 			mTSYQuotes.put (astrTSYTenor[i] + "ON", cmmq);
 		}

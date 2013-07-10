@@ -70,9 +70,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || null == pricerParams || null == mktParams || null ==
-			mktParams.getCreditCurve() || null == mktParams.getDiscountCurve())
-			return null;
+		if (null == valParams || null == pricerParams || null == mktParams) return null;
+
+		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
+
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == cc || null == dc) return null;
 
 		long lStart = System.nanoTime();
 
@@ -100,12 +104,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					}
 				}
 
-				double dblSurvProb = java.lang.Double.NaN;
-
-				if (pricerParams._bSurvToPayDate)
-					dblSurvProb = mktParams.getCreditCurve().getSurvival (period.getPayDate());
-				else
-					dblSurvProb = mktParams.getCreditCurve().getSurvival (period.getEndDate());
+				double dblSurvProb = pricerParams._bSurvToPayDate ? cc.getSurvival (period.getPayDate()) :
+					cc.getSurvival (period.getEndDate());
 
 				dblDV01 += 0.01 * period.getCouponDCF() * mktParams.getDiscountCurve().getDF
 					(period.getPayDate()) * dblSurvProb * getNotional (period.getAccrualStartDate(),
@@ -124,17 +124,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 					double dblSubPeriodStart = lp.getStartDate();
 
-					double dblSubPeriodDF = mktParams.getDiscountCurve().getEffectiveDF (dblSubPeriodStart +
-						_crValParams._iDefPayLag, dblSubPeriodEnd + _crValParams._iDefPayLag);
+					double dblSubPeriodDF = dc.getEffectiveDF (dblSubPeriodStart + _crValParams._iDefPayLag,
+						dblSubPeriodEnd + _crValParams._iDefPayLag);
 
 					double dblSubPeriodNotional = getNotional (dblSubPeriodStart, dblSubPeriodEnd);
 
-					double dblSubPeriodSurvival = mktParams.getCreditCurve().getSurvival (dblSubPeriodStart)
-						- mktParams.getCreditCurve().getSurvival (dblSubPeriodEnd);
+					double dblSubPeriodSurvival = cc.getSurvival (dblSubPeriodStart) - cc.getSurvival
+						(dblSubPeriodEnd);
 
-					double dblRec = _crValParams._bUseCurveRec ?
-						mktParams.getCreditCurve().getEffectiveRecovery (dblSubPeriodStart, dblSubPeriodEnd)
-							: _crValParams._dblRecovery;
+					double dblRec = _crValParams._bUseCurveRec ? cc.getEffectiveRecovery (dblSubPeriodStart,
+						dblSubPeriodEnd) : _crValParams._dblRecovery;
 
 					double dblSubPeriodExpLoss = (1 - dblRec) * 100. * dblSubPeriodSurvival *
 						dblSubPeriodNotional;
@@ -157,11 +156,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		double dblCashPayDF = java.lang.Double.NaN;
 
 		try {
-			double dblCashSettle = valParams._dblCashPay;
-
-			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams._dblValue);
-
-			dblCashPayDF = mktParams.getDiscountCurve().getDF (dblCashSettle);
+			dblCashPayDF = dc.getDF (null == _settleParams ? valParams._dblCashPay :
+				_settleParams.cashSettleDate (valParams._dblValue));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -215,7 +211,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		try {
 			mapResult.put (strMeasureSetPrefix + "LossOnInstantaneousDefault", _dblNotional * (1. -
-				mktParams.getCreditCurve().getRecovery (valParams._dblValue)));
+				cc.getRecovery (valParams._dblValue)));
 
 			mapResult.put (strMeasureSetPrefix + "Price", 100. * (1. + (dblPV / _dblNotional / getNotional
 				(valParams._dblValue))));
@@ -242,15 +238,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 				pricerParams, period, period.getEndDate(), mktParams);
 
-		if (null == sLPSub || 0 == sLPSub.size()) return null;
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == sLPSub || 0 == sLPSub.size() || null == dc) return null;
 
 		int iNumParameters = 0;
 		org.drip.math.calculus.WengertJacobian wjPeriodOnDefaultPVDF = null;
 
 		for (org.drip.analytics.period.LossPeriodCurveFactors lpcf : sLPSub) {
-			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF =
-				mktParams.getDiscountCurve().getDFJacobian (0.5 * (lpcf.getStartDate() + lpcf.getEndDate()) +
-					_crValParams._iDefPayLag);
+			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (0.5 *
+				(lpcf.getStartDate() + lpcf.getEndDate()) + _crValParams._iDefPayLag);
 
 			try {
 				if (null == wjPeriodOnDefaultPVDF)
@@ -286,7 +283,9 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 				pricerParams, period, period.getEndDate(), mktParams);
 
-		if (null == sLPSub || 0 == sLPSub.size()) return null;
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == sLPSub || 0 == sLPSub.size() || null == dc) return null;
 
 		PeriodLossMicroJack plmj = null;
 
@@ -298,9 +297,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			double dblPeriodEffectiveDate = 0.5 * (lpcf.getStartDate() + lpcf.getEndDate());
 
-			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF =
-				mktParams.getDiscountCurve().getDFJacobian (dblPeriodEffectiveDate +
-					_crValParams._iDefPayLag);
+			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (dblPeriodEffectiveDate
+				+ _crValParams._iDefPayLag);
 
 			try {
 				dblPeriodNotional = getNotional (lpcf.getStartDate(), lpcf.getEndDate());
@@ -315,8 +313,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 				if (null == plmj) plmj = new PeriodLossMicroJack (wjPeriodPayDFDF.numParameters());
 
-				plmj._dblAccrOnDef01 += dblPeriodIncrementalAccrual * mktParams.getDiscountCurve().getDF
-					(dblPeriodEffectiveDate + _crValParams._iDefPayLag);
+				plmj._dblAccrOnDef01 += dblPeriodIncrementalAccrual * dc.getDF (dblPeriodEffectiveDate +
+					_crValParams._iDefPayLag);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -338,7 +336,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	}
 
 	/**
-	 * Most generic CDS creation functionality
+	 * CDSComponent constructor: Most generic CDS creation functionality
 	 * 
 	 * @param dblEffective Effective Date
 	 * @param dblMaturity Maturity Date
@@ -393,7 +391,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			!org.drip.math.common.NumberUtil.IsValid (dblEffective) ||
 				!org.drip.math.common.NumberUtil.IsValid (dblMaturity) ||
 					!org.drip.math.common.NumberUtil.IsValid (dblCoupon))
-			throw new java.lang.Exception ("Invalid CDS ctr params!");
+			throw new java.lang.Exception ("CDSComponent constructor: Invalid params!");
 
 		_strIR = strIR;
 		_dblCoupon = dblCoupon;
@@ -426,11 +424,11 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	}
 
 	/**
-	 * CreditDefaultSwap de-serialization from input byte array
+	 * CDSComponent de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if CreditDefaultSwap cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if CDSComponent cannot be properly de-serialized
 	 */
 
 	public CDSComponent (
@@ -438,35 +436,35 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Empty state");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditDefaultSwap = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedCreditDefaultSwap || strSerializedCreditDefaultSwap.isEmpty())
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split
 			(strSerializedCreditDefaultSwap, getFieldDelimiter());
 
 		if (null == astrField || 13 > astrField.length)
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate notional");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate IR curve name");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate IR curve name");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
 			_strIR = astrField[2];
@@ -474,7 +472,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_strIR = "";
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate code");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate code");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
 			_strCode = astrField[3];
@@ -483,39 +481,36 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
-			throw new java.lang.Exception
-				("CreditDefaultSwap de-serializer: Cannot locate Apply Acc EOM Adj");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate Apply Acc EOM Adj");
 
 		_bApplyAccEOMAdj = new java.lang.Boolean (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
-			throw new java.lang.Exception
-				("CreditDefaultSwap de-serializer: Cannot locate Apply Cpn EOM Adj");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate Apply Cpn EOM Adj");
 
 		_bApplyCpnEOMAdj = new java.lang.Boolean (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate coupon");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate coupon");
 
 		_dblCoupon = new java.lang.Double (astrField[6]);
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate maturity date");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate maturity date");
 
 		_dblMaturity = new java.lang.Double (astrField[7]);
 
 		if (null == astrField[8] || astrField[8].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate effective date");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate effective date");
 
 		_dblEffective = new java.lang.Double (astrField[8]);
 
 		if (null == astrField[9] || astrField[9].isEmpty())
-			throw new java.lang.Exception
-				("CreditDefaultSwap de-serializer: Cannot locate notional schedule");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate notional schedule");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
 			_notlSchedule = null;
@@ -523,8 +518,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[9].getBytes());
 
 		if (null == astrField[10] || astrField[10].isEmpty())
-			throw new java.lang.Exception
-				("CreditDefaultSwap de-serializer: Cannot locate credit valuation params");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate credit val params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[10]))
 			_crValParams = null;
@@ -533,8 +527,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				(astrField[10].getBytes());
 
 		if (null == astrField[11] || astrField[11].isEmpty())
-			throw new java.lang.Exception
-				("CreditDefaultSwap de-serializer: Cannot locate cash settle params");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate cash settle params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[11]))
 			_settleParams = null;
@@ -542,7 +535,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[11].getBytes());
 
 		if (null == astrField[12] || astrField[12].isEmpty())
-			throw new java.lang.Exception ("CreditDefaultSwap de-serializer: Cannot locate the periods");
+			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate the periods");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[12]))
 			_lPeriods = null;
@@ -610,7 +603,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		throws java.lang.Exception
 	{
 		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Bad date into getNotional");
+			throw new java.lang.Exception ("CDSComponent::getNotional => Bad date");
 
 		return _notlSchedule.getFactor (dblDate);
 	}
@@ -622,7 +615,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	{
 		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
 			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
-			throw new java.lang.Exception ("Bad date into getNotional");
+			throw new java.lang.Exception ("CDSComponent::getNotional => Bad date");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
 	}
@@ -633,7 +626,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate) || null == cc)
-			throw new java.lang.Exception ("Bond.getRecovery: Bad state/inputs");
+			throw new java.lang.Exception ("CDSComponent::getRecovery => Bad inputs");
 
 		return _crValParams._bUseCurveRec ? cc.getRecovery (dblDate) : _crValParams._dblRecovery;
 	}
@@ -646,7 +639,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDateStart) ||
 			!org.drip.math.common.NumberUtil.IsValid (dblDateEnd) || null == cc)
-			throw new java.lang.Exception ("Bond.getRecovery: Bad state/inputs");
+			throw new java.lang.Exception ("CDSComponent::getRecovery: Bad inputs");
 
 		return _crValParams._bUseCurveRec ? cc.getEffectiveRecovery (dblDateStart, dblDateEnd) :
 			_crValParams._dblRecovery;
@@ -682,7 +675,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		double dblOldCoupon = _dblCoupon;
 
 		if (!org.drip.math.common.NumberUtil.IsValid (_dblCoupon = dblCoupon))
-			throw new java.lang.Exception ("Cannot reset coupon with a NaN!");
+			throw new java.lang.Exception ("CDSComponent::resetCoupon => Bad coupon Input!");
 
 		return dblOldCoupon;
 	}
@@ -762,9 +755,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 	{
-		if (null == valParams || null == pricerParams || null == mktParams || null ==
-			mktParams.getDiscountCurve() || null == mktParams.getCreditCurve())
-			return null;
+		if (null == valParams || null == pricerParams || null == mktParams) return null;
+
+		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
+
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == cc || null == dc) return null;
 
 		java.util.List<org.drip.analytics.period.CouponPeriodCurveFactors> lsCP = new
 			java.util.ArrayList<org.drip.analytics.period.CouponPeriodCurveFactors>();
@@ -778,20 +775,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.period.CouponPeriodCurveFactors cp = null;
 
 			try {
-				double dblSurvProbEnd = java.lang.Double.NaN;
+				double dblSurvProbEnd = pricerParams._bSurvToPayDate ? cc.getSurvival (fp.getPayDate()) :
+					cc.getSurvival (fp.getEndDate());
 
 				if (!org.drip.math.common.NumberUtil.IsValid (dblDFStart))
-					dblDFStart = mktParams.getDiscountCurve().getDF (fp.getStartDate());
+					dblDFStart = dc.getDF (fp.getStartDate());
 
 				if (!org.drip.math.common.NumberUtil.IsValid (dblSurvProbStart))
-					dblSurvProbStart = mktParams.getCreditCurve().getSurvival (fp.getStartDate());
+					dblSurvProbStart = cc.getSurvival (fp.getStartDate());
 
-				if (pricerParams._bSurvToPayDate)
-					dblSurvProbEnd = mktParams.getCreditCurve().getSurvival (fp.getPayDate());
-				else
-					dblSurvProbEnd = mktParams.getCreditCurve().getSurvival (fp.getEndDate());
-
-				double dblDFEnd = mktParams.getDiscountCurve().getDF (fp.getPayDate());
+				double dblDFEnd = dc.getDF (fp.getPayDate());
 
 				cp = new org.drip.analytics.period.CouponPeriodCurveFactors (fp.getStartDate(),
 					fp.getEndDate(), fp.getAccrualStartDate(), fp.getAccrualEndDate(), fp.getPayDate(),
@@ -849,32 +842,34 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.analytics.support.GenericUtil.MergeWithMain (mapFairMeasures,
 			org.drip.analytics.support.GenericUtil.PrefixKeys (mapFairMeasures, "Fair"));
 
+		org.drip.param.definition.ComponentQuote cq = mktParams.getComponentQuote();
+
 		if ((null != pricerParams && null != pricerParams._calibParams) || null == mapFairMeasures || null ==
-			mktParams.getComponentQuote())
+			cq)
 			return mapFairMeasures;
 
 		double dblCreditBasis = java.lang.Double.NaN;
 		double dblMarketMeasure = java.lang.Double.NaN;
 		org.drip.analytics.definition.CreditCurve ccMarket = null;
 
-		if (null != mktParams.getComponentQuote().getQuote ("Price"))
-			mapFairMeasures.put ("MarketInputType=Price", dblMarketMeasure =
-				mktParams.getComponentQuote().getQuote ("Price").getQuote ("mid"));
-		else if (null != mktParams.getComponentQuote().getQuote ("CleanPrice"))
-			mapFairMeasures.put ("MarketInputType=CleanPrice", dblMarketMeasure =
-				mktParams.getComponentQuote().getQuote ("CleanPrice").getQuote ("mid"));
-		else if (null != mktParams.getComponentQuote().getQuote ("Upfront"))
-			mapFairMeasures.put ("MarketInputType=Upfront", dblMarketMeasure =
-				mktParams.getComponentQuote().getQuote ("Upfront").getQuote ("mid"));
-		else if (null != mktParams.getComponentQuote().getQuote ("FairPremium"))
-			mapFairMeasures.put ("MarketInputType=FairPremium", dblMarketMeasure =
-				mktParams.getComponentQuote().getQuote ("FairPremium").getQuote ("mid"));
-		else if (null != mktParams.getComponentQuote().getQuote ("PV"))
-			mapFairMeasures.put ("MarketInputType=PV", dblMarketMeasure =
-				mktParams.getComponentQuote().getQuote ("PV").getQuote ("mid"));
-		else if (null != mktParams.getComponentQuote().getQuote ("CleanPV"))
-			mapFairMeasures.put ("MarketInputType=CleanPV", dblMarketMeasure =
-				mktParams.getComponentQuote().getQuote ("CleanPV").getQuote ("mid"));
+		if (null != cq.getQuote ("Price"))
+			mapFairMeasures.put ("MarketInputType=Price", dblMarketMeasure = cq.getQuote ("Price").getQuote
+				("mid"));
+		else if (null != cq.getQuote ("CleanPrice"))
+			mapFairMeasures.put ("MarketInputType=CleanPrice", dblMarketMeasure = cq.getQuote
+				("CleanPrice").getQuote ("mid"));
+		else if (null != cq.getQuote ("Upfront"))
+			mapFairMeasures.put ("MarketInputType=Upfront", dblMarketMeasure = cq.getQuote
+				("Upfront").getQuote ("mid"));
+		else if (null != cq.getQuote ("FairPremium"))
+			mapFairMeasures.put ("MarketInputType=FairPremium", dblMarketMeasure = cq.getQuote
+				("FairPremium").getQuote ("mid"));
+		else if (null != cq.getQuote ("PV"))
+			mapFairMeasures.put ("MarketInputType=PV", dblMarketMeasure = cq.getQuote ("PV").getQuote
+				("mid"));
+		else if (null != cq.getQuote ("CleanPV"))
+			mapFairMeasures.put ("MarketInputType=CleanPV", dblMarketMeasure = cq.getQuote
+				("CleanPV").getQuote ("mid"));
 
 		try {
 			SpreadCalibOP scop = new SpreadCalibrator (this,
@@ -1040,15 +1035,108 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return setstrMeasureNames;
 	}
 
+	@Override public java.util.Map<java.lang.String, java.lang.Double> valueFromQuotedSpread (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final double dblFixCoupon,
+		final double dblQuotedSpread)
+	{
+		if (null == valParams || !org.drip.math.common.NumberUtil.IsValid (dblFixCoupon) ||
+			!org.drip.math.common.NumberUtil.IsValid (dblQuotedSpread))
+			return null;
+
+		double[] adblRestorableCDSCoupon = null;
+		org.drip.analytics.definition.CreditCurve cc = null;
+		org.drip.product.definition.CalibratableComponent[] aComp = null;
+
+		if (null != mktParams) {
+			if (null != (cc = mktParams.getCreditCurve()) && null != (aComp = cc.getCalibComponents())) {
+				int iNumComp = aComp.length;
+
+				if (0 != iNumComp) {
+					adblRestorableCDSCoupon = new double[iNumComp];
+
+					for (int i = 0; i < iNumComp; ++i) {
+						if (null != aComp[i] && aComp[i] instanceof
+							org.drip.product.definition.CreditDefaultSwap) {
+							try {
+								adblRestorableCDSCoupon[i] = aComp[i].getCoupon (valParams._dblValue,
+									mktParams);
+
+								((org.drip.product.definition.CreditDefaultSwap) aComp[i]).resetCoupon
+									(dblFixCoupon);
+							} catch (java.lang.Exception e) {
+								e.printStackTrace();
+
+								return null;
+							}
+						}
+					}
+				}
+			}
+		} else {
+			adblRestorableCDSCoupon = new double[1];
+			adblRestorableCDSCoupon[0] = _dblCoupon;
+			_dblCoupon = dblFixCoupon;
+
+			aComp = new org.drip.product.definition.CalibratableComponent[] {this};
+		}
+
+		int iNumCalibComp = aComp.length;
+		double[] adblQS = new double[iNumCalibComp];
+		org.drip.analytics.definition.CreditCurve ccQS = null;
+		java.lang.String[] astrCalibMeasure = new java.lang.String[iNumCalibComp];
+
+		for (int i = 0; i < iNumCalibComp; ++i) {
+			adblQS[i] = dblQuotedSpread;
+			astrCalibMeasure[i] = "FairPremium";
+		}
+
+		try {
+			if (null == (ccQS = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
+				(getComponentName(), new org.drip.analytics.date.JulianDate (valParams._dblValue), aComp,
+					mktParams.getDiscountCurve(), adblQS, astrCalibMeasure, null != cc ? cc.getRecovery
+						(valParams._dblValue) : 0.4, false)))
+				return null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		java.util.Map<java.lang.String, java.lang.Double> mapPV = value (valParams, pricerParams,
+			org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (mktParams.getDiscountCurve(),
+				ccQS), quotingParams);
+
+		for (int i = 0; i < iNumCalibComp; ++i) {
+			try {
+				((org.drip.product.definition.CreditDefaultSwap) aComp[i]).resetCoupon
+					(adblRestorableCDSCoupon[i]);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return mapPV;
+	}
+
 	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams || null ==
-			mktParams.getDiscountCurve() || null == mktParams.getCreditCurve())
-			return null;
+		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams) return null;
+
+		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
+
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == cc || null == dc) return null;
 
 		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
 			mktParams, quotingParams);
@@ -1061,10 +1149,6 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		try {
 			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = null;
-
-			org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
-
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
 			for (org.drip.analytics.period.Period p : _lPeriods) {
 				double dblPeriodPayDate = p.getPayDate();
@@ -1109,9 +1193,15 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == strQuote || null == mktParams
-			|| null == mktParams.getDiscountCurve() || null == mktParams.getCreditCurve())
+		if (null == valParams || valParams._dblValue >= _dblMaturity || null == strQuote || null ==
+			mktParams)
 			return null;
+
+		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
+
+		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
+		if (null == cc || null == dc) return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote) || "FairPremium".equalsIgnoreCase (strQuote) ||
 			"ParSpread".equalsIgnoreCase (strQuote)) {
@@ -1125,10 +1215,6 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			try {
 				double dblDV01 = 0.;
 				org.drip.math.calculus.WengertJacobian wjFairPremiumDFMicroJack = null;
-
-				org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
-
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
 				for (org.drip.analytics.period.Period p : _lPeriods) {
 					double dblPeriodPayDate = p.getPayDate();
@@ -1194,7 +1280,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				pricerParams, mktParams, quotingParams, calcMeasureValue (valParams, pricerParams, mktParams,
 					quotingParams, "Upfront"));
 
-		if (null == scop) throw new java.lang.Exception ("Cannot calibrate flat spread!");
+		if (null == scop)
+			throw new java.lang.Exception ("CDSComponent::calibFlatSpread => Cannot calibrate flat spread!");
 
 		return scop._dblCalibResult;
 	}
@@ -1216,7 +1303,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		{
 			if (!org.drip.math.common.NumberUtil.IsValid (_dblCalibResult = dblCalibResult) || null ==
 				(_ccCalib = ccCalib))
-				throw new java.lang.Exception ("Invalid inputs into SpreadCalibOP ctr!");
+				throw new java.lang.Exception ("CDSComponent::SpreadCalibOP ctr => Invalid inputs!");
 		}
 	}
 
@@ -1258,7 +1345,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			if (null == (_cds = cds) || (CALIBRATION_TYPE_FLAT_INSTRUMENT_NODE != (_iCalibType = iCalibType)
 				&& CALIBRATION_TYPE_FLAT_CURVE_NODES != iCalibType && CALIBRATION_TYPE_NODE_PARALLEL_BUMP !=
 					iCalibType))
-				throw new java.lang.Exception ("Invalid inputs into SpreadCalibrator");
+				throw new java.lang.Exception ("CDSComponent::SpreadCalibrator ctr => Invalid inputs!");
 		}
 
 		/**
@@ -1281,11 +1368,10 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			final org.drip.param.definition.ComponentMarketParams mktParams,
 			final org.drip.param.valuation.QuotingParams quotingParams,
 			final double dblPriceCalib)
-			throws java.lang.Exception
 		{
 			if (null == valParams || null == pricerParams || null == mktParams  || null ==
 				mktParams.getCreditCurve() || !org.drip.math.common.NumberUtil.IsValid (dblPriceCalib))
-				throw new java.lang.Exception ("calibrateHazardFromPriceNR - bad inputs");
+				return null;
 
 			final org.drip.analytics.definition.CreditCurve ccOld = mktParams.getCreditCurve();
 
@@ -1309,14 +1395,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				}
 			};
 
-			org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent (0.,
-				ofCDSPriceFromFlatSpread).findRoot();
-
-			if (null == rfop || !rfop.containsRoot())
-				throw new java.lang.Exception ("BondComponent.calibrateYieldFromParASW => Cannot get root!");
 
 			try {
-				if (mktParams.setCreditCurve (ccOld)) return new SpreadCalibOP (rfop.getRoot(), ccOld);
+				org.drip.math.solver1D.FixedPointFinderOutput rfop = new
+					org.drip.math.solver1D.FixedPointFinderBrent (0., ofCDSPriceFromFlatSpread).findRoot();
+
+				if (null == rfop || !rfop.containsRoot() && !mktParams.setCreditCurve (ccOld))
+					return new SpreadCalibOP (rfop.getRoot(), ccOld);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -1417,11 +1502,11 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	}
 
 	class PeriodLossMicroJack {
-		public double _dblAccrOnDef01 = 0.;
-		public org.drip.math.calculus.WengertJacobian _wjLossPVMicroJack = null;
-		public org.drip.math.calculus.WengertJacobian _wjAccrOnDef01MicroJack = null;
+		double _dblAccrOnDef01 = 0.;
+		org.drip.math.calculus.WengertJacobian _wjLossPVMicroJack = null;
+		org.drip.math.calculus.WengertJacobian _wjAccrOnDef01MicroJack = null;
 
-		public PeriodLossMicroJack (
+		PeriodLossMicroJack (
 			final int iNumParameters)
 			throws java.lang.Exception
 		{

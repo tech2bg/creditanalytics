@@ -1,6 +1,8 @@
 
 package org.drip.tester.functional;
 
+import org.drip.param.market.ComponentTickQuote;
+
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -282,7 +284,8 @@ public class SerializerTestSuite {
 		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
 			"InterestRateSwap");
 
-		org.drip.param.definition.Quote q = org.drip.param.creator.QuoteBuilder.CreateQuote ("ASK", 103.);
+		org.drip.param.definition.Quote q = org.drip.param.creator.QuoteBuilder.CreateQuote ("ASK", 103.,
+			java.lang.Double.NaN);
 
 		Verify (q.serialize(), org.drip.param.creator.QuoteBuilder.FromByteArray (q.serialize()), "Quote");
 
@@ -291,11 +294,19 @@ public class SerializerTestSuite {
 
 		cq.addQuote ("Price", q, false);
 
-		cq.setMarketQuote ("SpreadToTsyBmk", org.drip.param.creator.QuoteBuilder.CreateQuote ("MID", 210.));
+		cq.setMarketQuote ("SpreadToTsyBmk", org.drip.param.creator.QuoteBuilder.CreateQuote ("MID", 210.,
+			java.lang.Double.NaN));
 
 		byte[] abCQ = cq.serialize();
 
 		Verify (abCQ, org.drip.param.creator.ComponentQuoteBuilder.FromByteArray (abCQ), "ComponentQuote");
+
+		ComponentTickQuote ctq = new ComponentTickQuote ("TESTPRODUCT", cq, "MSIM", "IDC", true);
+
+		byte[] abCTQ = ctq.serialize();
+
+		Verify (abCTQ, org.drip.param.creator.ComponentTickQuoteBuilder.FromByteArray (abCTQ),
+			"ComponentTickQuote");
 
 		byte[] abFxFwd = org.drip.product.creator.FXForwardBuilder.CreateFXForward (cp, dtToday,
 			"18M").serialize();

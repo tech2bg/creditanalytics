@@ -164,8 +164,8 @@ public class EODCurves {
 			org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
 		try {
-			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote),
-				true);
+			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote,
+				java.lang.Double.NaN), true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -188,8 +188,8 @@ public class EODCurves {
 			org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
 		try {
-			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote),
-				true);
+			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote,
+				java.lang.Double.NaN), true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

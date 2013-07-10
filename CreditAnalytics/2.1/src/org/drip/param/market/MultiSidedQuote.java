@@ -39,15 +39,19 @@ package org.drip.param.market;
 
 public class MultiSidedQuote extends org.drip.param.definition.Quote {
 	protected class SidedQuote extends org.drip.service.stream.Serializer {
+		private double _dblSize = java.lang.Double.NaN;
 		private double _dblQuote = java.lang.Double.NaN;
 		private org.drip.analytics.date.DateTime _dt = null;
 
 		public SidedQuote (
-			final double dblQuote)
+			final double dblQuote,
+			final double dblSize)
 			throws java.lang.Exception
 		{
 			if (!org.drip.math.common.NumberUtil.IsValid (_dblQuote = dblQuote))
-				throw new java.lang.Exception ("Quote:SidedQuote cannot take NaN!");
+				throw new java.lang.Exception ("MultiSidedQuote::SidedQuote ctr: Invalid Inputs!");
+
+			_dblSize = dblSize;
 
 			_dt = new org.drip.analytics.date.DateTime();
 		}
@@ -57,41 +61,56 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 			throws java.lang.Exception
 		{
 			if (null == ab || 0 == ab.length)
-				throw new java.lang.Exception ("SidedQuote de-serialize: Invalid byte stream input");
+				throw new java.lang.Exception ("MultiSidedQuote::SidedQuote de-serialize: Invalid input");
 
 			java.lang.String strRawString = new java.lang.String (ab);
 
 			if (null == strRawString || strRawString.isEmpty())
-				throw new java.lang.Exception ("SidedQuote de-serializer: Empty state");
+				throw new java.lang.Exception ("MultiSidedQuote::SidedQuote de-serializer: Empty state");
 
 			java.lang.String strSidedQuote = strRawString.substring (0, strRawString.indexOf
 				(getObjectTrailer()));
 
 			if (null == strSidedQuote || strSidedQuote.isEmpty())
-				throw new java.lang.Exception ("SidedQuote de-serializer: Cannot locate state");
+				throw new java.lang.Exception ("MultiSidedQuote::SidedQuote de-serializer: Invalid state");
 
 			java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split (strSidedQuote,
 				getFieldDelimiter());
 
-			if (null == astrField || 3 > astrField.length)
-				throw new java.lang.Exception ("SidedQuote de-serialize: Invalid number of fields");
+			if (null == astrField || 4 > astrField.length)
+				throw new java.lang.Exception
+					("MultiSidedQuote::SidedQuote de-serialize: Invalid number of fields");
 
 			if (null == astrField[1] || astrField[1].isEmpty() ||
 				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-				throw new java.lang.Exception ("SidedQuote de-serializer: Cannot locate DateTime");
+				throw new java.lang.Exception
+					("MultiSidedQuote::SidedQuote de-serializer: Cannot locate DateTime");
 
 			_dt = new org.drip.analytics.date.DateTime (astrField[1].getBytes());
 
 			if (null == astrField[2] || astrField[2].isEmpty() ||
 				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-				throw new java.lang.Exception ("SidedQuote de-serializer: Cannot locate Quote");
+				throw new java.lang.Exception
+					("MultiSidedQuote::SidedQuote de-serializer: Cannot locate Quote");
 
 			_dblQuote = new java.lang.Double (astrField[2]);
+
+			if (null == astrField[3] || astrField[3].isEmpty() ||
+				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
+				throw new java.lang.Exception
+					("MultiSidedQuote::SidedQuote de-serializer: Cannot locate Size");
+
+			_dblSize = new java.lang.Double (astrField[3]);
 		}
 
 		public double getQuote()
 		{
 			return _dblQuote;
+		}
+
+		public double getSize()
+		{
+			return _dblSize;
 		}
 
 		public org.drip.analytics.date.DateTime getQuoteTime()
@@ -105,6 +124,15 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 			if (!org.drip.math.common.NumberUtil.IsValid (dblQuote)) return false;
 
 			_dblQuote = dblQuote;
+			return true;
+		}
+
+		public boolean setSize (
+			final double dblSize)
+		{
+			if (!org.drip.math.common.NumberUtil.IsValid (dblSize)) return false;
+
+			_dblSize = dblSize;
 			return true;
 		}
 
@@ -123,7 +151,8 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 			java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 			sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + new
-				java.lang.String (_dt.serialize()) + getFieldDelimiter() + _dblQuote);
+				java.lang.String (_dt.serialize()) + getFieldDelimiter() + _dblQuote + getFieldDelimiter() +
+					_dblSize);
 
 			return sb.append (getObjectTrailer()).toString().getBytes();
 		}
@@ -144,7 +173,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		java.util.HashMap<java.lang.String, SidedQuote>();
 
 	/**
-	 * Constructor: Constructs a Quote object from the quote value and the side string.
+	 * MultiSidedQuote Constructor: Constructs a Quote object from the quote value and the side string.
 	 * 
 	 * @param strSide bid/ask/mid
 	 * @param dblQuote Quote Value
@@ -158,17 +187,39 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		throws java.lang.Exception
 	{
 		if (null == strSide || strSide.isEmpty() || !org.drip.math.common.NumberUtil.IsValid (dblQuote))
-			throw new java.lang.Exception ("Quote invalid Quote/Side!");
+			throw new java.lang.Exception ("MultiSidedQuote ctr: Invalid Side/Quote/Size!");
 
-		_mapSidedQuote.put (strSide, new SidedQuote (dblQuote));
+		_mapSidedQuote.put (strSide, new SidedQuote (dblQuote, java.lang.Double.NaN));
 	}
 
 	/**
-	 * Quote de-serialization from input byte array
+	 * MultiSidedQuote Constructor: Constructs a Quote object from the quote size/value and the side string.
+	 * 
+	 * @param strSide bid/ask/mid
+	 * @param dblQuote Quote Value
+	 * @param dblSize Size
+	 * 
+	 * @throws java.lang.Exception Thrown on invalid inputs
+	 */
+
+	public MultiSidedQuote (
+		final java.lang.String strSide,
+		final double dblQuote,
+		final double dblSize)
+		throws java.lang.Exception
+	{
+		if (null == strSide || strSide.isEmpty() || !org.drip.math.common.NumberUtil.IsValid (dblQuote))
+			throw new java.lang.Exception ("MultiSidedQuote ctr: Invalid Side/Quote/Size!");
+
+		_mapSidedQuote.put (strSide, new SidedQuote (dblQuote, dblSize));
+	}
+
+	/**
+	 * MultiSidedQuote de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if Quote cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if MultiSidedQuote cannot be properly de-serialized
 	 */
 
 	public MultiSidedQuote (
@@ -176,24 +227,24 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("Quote de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("MultiSidedQuote de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("Quote de-serializer: Empty state");
+			throw new java.lang.Exception ("MultiSidedQuote de-serializer: Empty state");
 
 		java.lang.String strSerializedQuote = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedQuote || strSerializedQuote.isEmpty())
-			throw new java.lang.Exception ("Quote de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("MultiSidedQuote de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split (strSerializedQuote,
 			getFieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("Quote de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("MultiSidedQuote de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]).doubleValue();
 
@@ -230,6 +281,14 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		return _mapSidedQuote.get (strSide).getQuote();
 	}
 
+	@Override public double getSize (
+		final java.lang.String strSide)
+	{
+		if (null == strSide || strSide.isEmpty()) return java.lang.Double.NaN;
+
+		return _mapSidedQuote.get (strSide).getSize();
+	}
+
 	@Override public org.drip.analytics.date.DateTime getQuoteTime (
 		final java.lang.String strSide)
 	{
@@ -240,13 +299,14 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 
 	@Override public boolean setSide (
 		final java.lang.String strSide,
-		final double dblQuote)
+		final double dblQuote,
+		final double dblSize)
 	{
 		if (null != strSide && !strSide.isEmpty() && !org.drip.math.common.NumberUtil.IsValid (dblQuote))
 			return false;
 
 		try {
-			_mapSidedQuote.put (strSide, new SidedQuote (dblQuote));
+			_mapSidedQuote.put (strSide, new SidedQuote (dblQuote, dblSize));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -325,7 +385,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		org.drip.param.definition.Quote q = new MultiSidedQuote ("ASK", 103.);
+		org.drip.param.definition.Quote q = new MultiSidedQuote ("ASK", 103., 100000.);
 
 		byte[] abQuote = q.serialize();
 

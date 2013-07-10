@@ -478,7 +478,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		org.drip.param.market.ComponentMultiMeasureQuote cqTSY2ON = new
 			org.drip.param.market.ComponentMultiMeasureQuote();
 
-		cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.), false);
+		cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.,
+			java.lang.Double.NaN), false);
 
 		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mapTSYQuotes = new
 			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();
@@ -499,7 +500,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		org.drip.param.market.ComponentMultiMeasureQuote cqBond = new
 			org.drip.param.market.ComponentMultiMeasureQuote();
 
-		cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100.), true);
+		cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100.,
+			java.lang.Double.NaN), true);
 
 		try {
 			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, cqBond,

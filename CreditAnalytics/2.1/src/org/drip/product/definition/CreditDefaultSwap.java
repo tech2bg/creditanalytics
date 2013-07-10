@@ -57,6 +57,7 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param mktParams ComponentMarketParams
+	 * @param quotingParams Quoting Parameters
 	 * 
 	 * @return Calibrated flat spread
 	 * 
@@ -69,4 +70,25 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 		throws java.lang.Exception;
+
+	/**
+	 * Value the CDS from the Quoted Spread
+	 * 
+	 * @param valParams ValuationParams
+	 * @param pricerParams PricerParams
+	 * @param mktParams ComponentMarketParams
+	 * @param quotingParams Quoting Parameters
+	 * @param dblFixCoupon Fix Coupon
+	 * @param dblQuotedSpread Quoted Spread
+	 * 
+	 * @return The Value Map
+	 */
+
+	public abstract java.util.Map<java.lang.String, java.lang.Double> valueFromQuotedSpread (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final double dblFixCoupon,
+		final double dblQuotedSpread);
 }

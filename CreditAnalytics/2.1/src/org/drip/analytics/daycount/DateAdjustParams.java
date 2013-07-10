@@ -155,7 +155,7 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		return Convention.RollDate (dblDate, _iRollMode, _strCalendar);
+		return org.drip.analytics.daycount.Convention.RollDate (dblDate, _iRollMode, _strCalendar);
 	}
 
 	public static final void main (

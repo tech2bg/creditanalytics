@@ -157,42 +157,48 @@ public class StaticBACurves {
 			org.drip.param.definition.ComponentQuote cq2YON =
 				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
-			cq2YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.02), true);
+			cq2YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.02,
+				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("2YON", cq2YON);
 
 			org.drip.param.definition.ComponentQuote cq3YON =
 				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
-			cq3YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.025), true);
+			cq3YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.025,
+				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("3YON", cq3YON);
 
 			org.drip.param.definition.ComponentQuote cq5YON =
 				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
-			cq5YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.03), true);
+			cq5YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.03,
+				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("5YON", cq5YON);
 
 			org.drip.param.definition.ComponentQuote cq7YON =
 				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
-			cq7YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0325), true);
+			cq7YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0325,
+				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("7YON", cq7YON);
 
 			org.drip.param.definition.ComponentQuote cq10YON =
 				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
-			cq10YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0375), true);
+			cq10YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0375,
+				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("10YON", cq10YON);
 
 			org.drip.param.definition.ComponentQuote cq30YON =
 				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
-			cq30YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.04), true);
+			cq30YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.04,
+				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("30YON", cq30YON);
 
@@ -200,11 +206,11 @@ public class StaticBACurves {
 				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
 
 			org.drip.param.definition.Quote qPxBRA_5_00_21 = org.drip.param.creator.QuoteBuilder.CreateQuote
-				("bid", 0.74);
+				("bid", 0.74, java.lang.Double.NaN);
 
-			qPxBRA_5_00_21.setSide ("mid", 0.75);
+			qPxBRA_5_00_21.setSide ("mid", 0.75, java.lang.Double.NaN);
 
-			qPxBRA_5_00_21.setSide ("ask", 0.76);
+			qPxBRA_5_00_21.setSide ("ask", 0.76, java.lang.Double.NaN);
 
 			cqBRA_5_00_21.addQuote ("Price", qPxBRA_5_00_21, true);
 

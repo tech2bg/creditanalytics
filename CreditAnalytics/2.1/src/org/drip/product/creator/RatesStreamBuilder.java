@@ -59,9 +59,17 @@ public class RatesStreamBuilder {
 		final java.lang.String strCalendar)
 	{
 		try {
+			org.drip.analytics.daycount.DateAdjustParams dap = new
+				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
+					strCalendar);
+
 			return new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
+				dblCoupon, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null, null, 100.,
+					strIR, strCalendar);
+
+			/* return new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
 				dblCoupon, 2, "30/360", "30/360", false, null, null, null, null, null, null, null, null,
-					100., strIR, strCalendar);
+					100., strIR, strCalendar); */
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -92,9 +100,17 @@ public class RatesStreamBuilder {
 		final java.lang.String strCalendar)
 	{
 		try {
+			org.drip.analytics.daycount.DateAdjustParams dap = new
+				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
+					strCalendar);
+
 			return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", strFloatingRateIndex, false, null, null,
-					null, null, null, null, null, null, null, -100., strIR, strCalendar);
+					dap, dap, dap, dap, null, null, null, -100., strIR, strCalendar);
+
+			/* return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+				dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", strFloatingRateIndex, false, null, null,
+					null, null, null, null, null, null, null, -100., strIR, strCalendar); */
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

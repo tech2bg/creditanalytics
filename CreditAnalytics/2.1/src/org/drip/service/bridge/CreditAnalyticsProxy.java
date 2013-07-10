@@ -382,7 +382,8 @@ public class CreditAnalyticsProxy {
 			org.drip.param.market.ComponentMultiMeasureQuote();
 
 		try {
-			cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.), false);
+			cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.,
+				java.lang.Double.NaN), false);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -409,8 +410,8 @@ public class CreditAnalyticsProxy {
 			org.drip.param.market.ComponentMultiMeasureQuote();
 
 		try {
-			cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100. - dblDownShift),
-				false);
+			cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100. - dblDownShift,
+				java.lang.Double.NaN), false);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

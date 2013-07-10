@@ -35,9 +35,12 @@ package org.drip.math.sample;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RootFinderSample {
+public class RootFinder {
+
 	/*
 	 * Sample illustrating the Invocation of the Newton-Raphson Open Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeNewton (
@@ -65,6 +68,8 @@ public class RootFinderSample {
 
 	/*
 	 * Sample illustrating the Invocation of the Bisection Bracketing Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeBisection (
@@ -93,6 +98,8 @@ public class RootFinderSample {
 
 	/*
 	 * Sample illustrating the Invocation of the False Position Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeFalsePosition (
@@ -121,6 +128,8 @@ public class RootFinderSample {
 
 	/*
 	 * Sample illustrating the Invocation of the Quadratic Interpolation Bracketing Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeQuadraticInterpolation (
@@ -149,6 +158,8 @@ public class RootFinderSample {
 
 	/*
 	 * Sample illustrating the Invocation of the Inverse Quadratic Interpolation Bracketing Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeInverseQuadraticInterpolation (
@@ -177,6 +188,8 @@ public class RootFinderSample {
 
 	/*
 	 * Sample illustrating the Invocation of the Ridder Bracketing Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeRidder (
@@ -205,6 +218,8 @@ public class RootFinderSample {
 
 	/*
 	 * Sample illustrating the Invocation of the Brent's Bracketing Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeBrent (
@@ -232,6 +247,8 @@ public class RootFinderSample {
 
 	/*
 	 * Sample illustrating the Invocation of the Zheng's Bracketing Method
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
 	private static final void InvokeZheng (

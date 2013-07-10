@@ -129,14 +129,16 @@ public class BloombergCDSW {
 		final String[] astrTenor,
 		final DiscountCurve dc,
 		final double dblRecovery,
-		final String strCCName)
+		final String strCCName,
+		final double dblStrike,
+		final boolean bFlat)
 		throws Exception
 	{
 		String[] astrCalibMeasure = new String[adblQuote.length];
 		CreditDefaultSwap[] aCDS = new CreditDefaultSwap[adblQuote.length];
 
 		for (int i = 0; i < astrTenor.length; ++i) {
-			aCDS[i] = CDSBuilder.CreateSNAC (dtStart, astrTenor[i], 0.01, strCCName);
+			aCDS[i] = CDSBuilder.CreateSNAC (dtStart, astrTenor[i], dblStrike, strCCName);
 
 			astrCalibMeasure[i] = "FairPremium";
 		}
@@ -145,8 +147,14 @@ public class BloombergCDSW {
 		 * Build the credit curve from the CDS instruments and the fair premium
 		 */
 
-		return CreditScenarioCurveBuilder.CreateCreditCurve (strCCName, dtStart, aCDS, dc,
-			adblQuote, astrCalibMeasure, dblRecovery, false);
+		CreditCurve cc = CreditScenarioCurveBuilder.CreateCreditCurve (strCCName, dtStart, aCDS, dc,
+			adblQuote, astrCalibMeasure, dblRecovery, bFlat);
+
+		for (int i = 0; i < astrTenor.length; ++i)
+			System.out.println (aCDS[i].getMaturityDate() + " | " + org.drip.math.common.FormatUtil.FormatDouble
+				(1. - cc.getSurvival (aCDS[i].getMaturityDate()), 0, 4, 1.));
+
+		return cc;
 	}
 
 	private static CreditDefaultSwap CreateCDS (
@@ -204,6 +212,8 @@ public class BloombergCDSW {
 				FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
 			);
+
+		System.out.println ("Upfront From QS: " + cds.valueFromQuotedSpread (valParams, pricerParams, cmp, null, 0.01, 100.).get ("Upfront"));
 	}
 
 	public static void main (
@@ -212,18 +222,18 @@ public class BloombergCDSW {
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 26);
+		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 7, 9);
 
-		JulianDate dtValue = JulianDate.CreateFromYMD (2013, 6, 27);
+		JulianDate dtValue = JulianDate.CreateFromYMD (2013, 7, 9);
 
-		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
+		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 12);
 
 		String[] astrCashTenor = new String[] {   "1M",     "2M",     "3M",     "6M",    "12M"};
-		double[] adblCashRate = new double[] {0.001944, 0.002354, 0.002761, 0.004234, 0.007012};
+		double[] adblCashRate = new double[] {0.001928, 0.002355, 0.002686, 0.004104, 0.006942};
 		String[] astrIRSTenor = new String[] {   "2Y",     "3Y",     "4Y",     "5Y",     "6Y",     "7Y",
 				"8Y",     "9Y",    "10Y",    "12Y",    "15Y",    "20Y",    "25Y",    "30Y"};
-		double[] adblIRSRate = new double[] {0.005775, 0.008930, 0.012950, 0.016705, 0.019960, 0.022620,
-			0.024765, 0.026575, 0.028130, 0.030530, 0.032720, 0.034280, 0.034975, 0.035360};
+		double[] adblIRSRate = new double[] {0.005360, 0.008770, 0.012880, 0.016990, 0.020460, 0.023250,
+			0.025515, 0.027330, 0.028890, 0.031390, 0.033680, 0.035415, 0.036190, 0.036575};
 
 		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
 			adblIRSRate, 0., "USD");
@@ -231,9 +241,9 @@ public class BloombergCDSW {
 		String[] astrCDSTenor = new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"};
 		double[] adblCDSParSpread = new double[] {100., 100., 100., 100., 100., 100., 100., 100.};
 
-		CreditCurve cc = CreateCreditCurveFromCDS (dtCurve, adblCDSParSpread, astrCDSTenor, dc, 0.4, "CORP");
+		CreditCurve cc = CreateCreditCurveFromCDS (dtCurve, adblCDSParSpread, astrCDSTenor, dc, 0.4, "CORP", 0.01, true);
 
-		CreditDefaultSwap cds = CreateCDS (dtCurve, "5Y", 0.05, "KOR");
+		CreditDefaultSwap cds = CreateCDS (dtCurve, "5Y", 0.01, "KOR");
 
 		PriceCDS (cds, new ValuationParams (dtValue, dtSettle, "USD"), dc, cc, 10.e06);
 	}

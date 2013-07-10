@@ -22,6 +22,7 @@ import org.drip.product.creator.CashBuilder;
 import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.credit.*;
 import org.drip.product.definition.*;
+import org.drip.product.params.FactorSchedule;
 
 /*
  * Credit Analytics API Imports
@@ -199,6 +200,48 @@ public class BondBasketAPI {
 			null);
 	}
 
+	/*
+	 * Sample demonstrating creation of the principal factor schedule from date and factor array
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final FactorSchedule MakeFSPrincipal()
+		throws Exception
+	{
+		double[] adblDate = new double[5];
+		double[] adblFactor = new double[] {1., 1.0, 1.0, 1.0, 1.0};
+		// double[] adblFactor = new double[] {1., 0.9, 0.8, 0.7, 0.6};
+
+		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
+
+		for (int i = 0; i < 5; ++i)
+			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+
+		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
+	}
+
+	/*
+	 * Sample demonstrating creation of the coupon factor schedule from date and factor array
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final FactorSchedule MakeFSCoupon()
+		throws Exception
+	{
+		double[] adblDate = new double[5];
+		double[] adblFactor = new double[] {1., 1.0, 1.0, 1.0, 1.0};
+		// double[] adblFactor = new double[] {1., 0.9, 0.8, 0.7, 0.6};
+
+		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
+
+		for (int i = 0; i < 5; ++i)
+			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+
+		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
+	}
+
 	/**
 	 * Sample demonstrating the creation/usage of the bond basket API
 	 * 
@@ -282,8 +325,20 @@ public class BondBasketAPI {
                 null,                       // Principal Schedule
                 null);
 
-		BasketProduct bb = new BondBasket ("TurtlePower", new org.drip.product.definition.Bond[] {bond1, bond2, bond3},
-                new double[] {0.7, 0.5, 0.8}, org.drip.analytics.date.JulianDate.Today(), 1.);
+		BondComponent bond4 = BondBuilder.CreateSimpleFloater ( // Simple Floating Rate Bond
+				"FLOATER1",		// Name
+				"USD",			// Currency
+				"DRIPRI",		// Rate Index
+				0.01,			// Floating Spread
+				2,				// Coupon Frequency
+				"30/360",		// Day Count
+				JulianDate.CreateFromYMD (2008, 9, 21), // Effective
+				JulianDate.CreateFromYMD (2023, 9, 20),	// Maturity
+				MakeFSPrincipal(),		// Principal Schedule
+				MakeFSCoupon());		// Coupon Schedule
+
+		BasketProduct bb = new BondBasket ("TurtlePower", new org.drip.product.definition.Bond[] {bond1, bond2, bond3, bond4},
+                new double[] {0.1, 0.2, 0.3, 0.4}, org.drip.analytics.date.JulianDate.Today(), 1.);
 
 		/*
 		 * Verify - Simple Bond Basket Serializer
@@ -335,7 +390,7 @@ public class BondBasketAPI {
 
 		System.out.println ("Fair Duration:    " + FormatUtil.FormatDouble (mapResult.get ("FairDuration"), 0, 2, 10000.));
 
-		System.out.println ("Accrued:          " + FormatUtil.FormatDouble (mapResult.get ("Accrued"), 0, 2, 100.));
+		System.out.println ("Accrued:          " + FormatUtil.FormatDouble (mapResult.get ("Accrued"), 1, 2, 100.));
 	}
 
 	public static final void main (

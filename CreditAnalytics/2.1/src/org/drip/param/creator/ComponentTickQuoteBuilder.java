@@ -7,7 +7,6 @@ package org.drip.param.creator;
 
 /*!
  * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
  * 		developers - http://www.credit-trader.org
@@ -30,53 +29,40 @@ package org.drip.param.creator;
  */
 
 /**
- * This class contains the baseline quote builder object. It contains static functions that build
- * 		2 sided quotes of different types.
+ * This class contains the baseline component tick quote builder object. It contains static functions that
+ * 		builds component quotes from the different inputs.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class QuoteBuilder {
+public class ComponentTickQuoteBuilder {
 
 	/**
-	 * Constructor: Constructs a Quote object from the quote value and the side string.
+	 * Constructor: Constructs an Empty Component Quote instance.
 	 * 
-	 * @param strSide bid/ask/mid
-	 * @param dblQuote Quote Value
-	 * @param dblSize Size
-	 * 
-	 * @return Quote Instance
+	 * @return ComponentQuote Instance
 	 */
 
-	public static final org.drip.param.definition.Quote CreateQuote (
-		final java.lang.String strSide,
-		final double dblQuote,
-		final double dblSize)
+	public static final org.drip.param.market.ComponentTickQuote CreateComponentTickQuote()
 	{
-		try {
-			return new org.drip.param.market.MultiSidedQuote (strSide, dblQuote, dblSize);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return new org.drip.param.market.ComponentTickQuote();
 	}
 
 	/**
-	 * Create a Quote Instance from the byte array
+	 * Create a Component Quote Instance from the byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @return Quote Instance
+	 * @return ComponentQuote Instance
 	 */
 
-	public static final org.drip.param.definition.Quote FromByteArray (
+	public static final org.drip.param.market.ComponentTickQuote FromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.param.market.MultiSidedQuote (ab);
+			return new org.drip.param.market.ComponentTickQuote (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
