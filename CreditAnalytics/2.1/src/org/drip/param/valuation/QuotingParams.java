@@ -6,6 +6,7 @@ package org.drip.param.valuation;
  */
 
 /*!
+ * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
@@ -36,6 +37,7 @@ package org.drip.param.valuation;
  */
 
 public class QuotingParams extends org.drip.service.stream.Serializer {
+
 	/**
 	 * Yield Quoting day count
 	 */

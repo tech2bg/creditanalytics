@@ -1,8 +1,6 @@
 
 package org.drip.tester.functional;
 
-import org.drip.param.market.ComponentTickQuote;
-
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -284,6 +282,41 @@ public class SerializerTestSuite {
 		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
 			"InterestRateSwap");
 
+		org.drip.product.rates.FixedStream[] aFixedStream = new org.drip.product.rates.FixedStream[3];
+		org.drip.product.rates.FloatingStream[] aFloatStream = new org.drip.product.rates.FloatingStream[3];
+
+		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
+			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
+
+		aFixedStream[0] = new org.drip.product.rates.FixedStream (dtToday.getJulian(), dtToday.addTenor
+			("3Y").getJulian(), 0.03, 2, "Act/360", "30/360", false, null, null, dap, dap, dap, dap, null,
+				null, 100., "ABC", "DEF");
+
+		aFixedStream[1] = new org.drip.product.rates.FixedStream (dtToday.getJulian(), dtToday.addTenor
+			("5Y").getJulian(), 0.05, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null,
+				null, 100., "GHI", "JKL");
+
+		aFixedStream[2] = new org.drip.product.rates.FixedStream (dtToday.getJulian(), dtToday.addTenor
+			("7Y").getJulian(), 0.07, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null,
+				null, 100., "MNO", "PQR");
+
+		aFloatStream[0] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
+			("3Y").getJulian(), 0.03, 4, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
+				null, null, null, -100., "ABC", "DEF");
+
+		aFloatStream[1] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
+			("5Y").getJulian(), 0.05, 4, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
+				null, null, null, -100., "ABC", "DEF");
+
+		aFloatStream[2] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
+			("7Y").getJulian(), 0.07, 1, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
+				null, null, null, -100., "ABC", "DEF");
+
+		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
+			aFloatStream).serialize();
+
+		Verify (abRB, new org.drip.product.rates.RatesBasket (abRB), "RatesBasket");
+
 		org.drip.param.definition.Quote q = org.drip.param.creator.QuoteBuilder.CreateQuote ("ASK", 103.,
 			java.lang.Double.NaN);
 
@@ -301,7 +334,8 @@ public class SerializerTestSuite {
 
 		Verify (abCQ, org.drip.param.creator.ComponentQuoteBuilder.FromByteArray (abCQ), "ComponentQuote");
 
-		ComponentTickQuote ctq = new ComponentTickQuote ("TESTPRODUCT", cq, "MSIM", "IDC", true);
+		org.drip.param.market.ComponentTickQuote ctq = new org.drip.param.market.ComponentTickQuote
+			("TESTPRODUCT", cq, "MSIM", "IDC", true);
 
 		byte[] abCTQ = ctq.serialize();
 
@@ -770,6 +804,17 @@ public class SerializerTestSuite {
 			false).serialize();
 
 		Verify (abQP, new org.drip.param.valuation.QuotingParams (abQP), "QuotingParams");
+
+		byte[] abYQ = new org.drip.param.quoting.YieldInterpreter ("30/360", 2, true, null,
+			"DKK").serialize();
+
+		Verify (abYQ, new org.drip.param.quoting.YieldInterpreter (abYQ), "YieldInterpreter");
+
+		byte[] abQSI = new org.drip.param.quoting.QuotedSpreadInterpreter
+			(org.drip.param.quoting.QuotedSpreadInterpreter.SNAC_CDS, 100.).serialize();
+
+		Verify (abQSI, new org.drip.param.quoting.QuotedSpreadInterpreter (abQSI),
+			"QuotedSpreadInterpreter");
 
 		byte[] abVP = org.drip.param.valuation.ValuationParams.CreateValParams (dtToday, 2, "DKK",
 			3).serialize();

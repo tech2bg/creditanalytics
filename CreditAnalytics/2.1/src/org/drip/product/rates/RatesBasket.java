@@ -36,7 +36,8 @@ package org.drip.product.rates;
 
 public class RatesBasket extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
-	private org.drip.product.definition.RatesComponent[] _aComp = null;
+	private org.drip.product.rates.FixedStream[] _aCompFixedStream = null;
+	private org.drip.product.rates.FloatingStream[] _aCompFloatStream = null;
 
 	@Override protected int measureAggregationType (
 		final java.lang.String strMeasureName)
@@ -111,18 +112,21 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 	 * RatesBasket constructor
 	 * 
 	 * @param strName Basket Name
-	 * @param aComp Basket Rates Components
+	 * @param aCompFixedStream Array of Fixed Stream Components
+	 * @param aCompFloatStream Array of Float Stream Components
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public RatesBasket (
 		final java.lang.String strName,
-		final org.drip.product.definition.RatesComponent[] aComp)
+		final org.drip.product.rates.FixedStream[] aCompFixedStream,
+		final org.drip.product.rates.FloatingStream[] aCompFloatStream)
 		throws java.lang.Exception
 	{
-		if (null == (_strName = strName) || _strName.isEmpty() || null == (_aComp = aComp) || 0 ==
-			_aComp.length)
+		if (null == (_strName = strName) || _strName.isEmpty() || null == (_aCompFixedStream =
+			aCompFixedStream) || 0 == _aCompFixedStream.length || null == (_aCompFloatStream =
+				aCompFloatStream) || 0 == _aCompFloatStream.length)
 			throw new java.lang.Exception ("RatesBasket ctr => Invalid Inputs");
 	}
 
@@ -155,7 +159,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split
 			(strSerializedRatesBasket, getFieldDelimiter());
 
-		if (null == astrField || 3 > astrField.length)
+		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("RatesBasket de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -165,21 +169,102 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		else
 			_strName = astrField[1];
 
-		java.lang.String[] astrComp = org.drip.analytics.support.GenericUtil.Split (astrField[2],
+		java.lang.String[] astrCompFixedStream = org.drip.analytics.support.GenericUtil.Split (astrField[2],
 			getCollectionRecordDelimiter());
 
-		if (null == astrComp || 0 == astrComp.length)
-			throw new java.lang.Exception ("RatesBasket de-serializer: Cannot locate component array");
+		if (null == astrCompFixedStream || 0 == astrCompFixedStream.length)
+			throw new java.lang.Exception
+				("RatesBasket de-serializer: Cannot locate fixed stream component array");
 
-		_aComp = new org.drip.product.definition.RatesComponent[astrComp.length];
+		_aCompFixedStream = new org.drip.product.rates.FixedStream[astrCompFixedStream.length];
 
-		for (int i = 0; i < astrComp.length; ++i) {
-			if (null == astrComp[i] || astrComp[i].isEmpty() ||
-				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrComp[i]))
-				throw new java.lang.Exception ("RatesBasket de-serializer: Cannot locate component #" + i);
+		for (int i = 0; i < astrCompFixedStream.length; ++i) {
+			if (null == astrCompFixedStream[i] || astrCompFixedStream[i].isEmpty() ||
+				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrCompFixedStream[i]))
+				throw new java.lang.Exception
+					("RatesBasket de-serializer: Cannot locate fixed stream component #" + i);
 
-			// _aComp[i] = new CDSComponent (astrComp[i].getBytes());
+			_aCompFixedStream[i] = new org.drip.product.rates.FixedStream
+				(astrCompFixedStream[i].getBytes());
 		}
+
+		java.lang.String[] astrCompFloatStream = org.drip.analytics.support.GenericUtil.Split (astrField[3],
+			getCollectionRecordDelimiter());
+
+		if (null == astrCompFloatStream || 0 == astrCompFloatStream.length)
+			throw new java.lang.Exception
+				("RatesBasket de-serializer: Cannot locate float stream component array");
+
+		_aCompFloatStream = new org.drip.product.rates.FloatingStream[astrCompFloatStream.length];
+
+		for (int i = 0; i < astrCompFloatStream.length; ++i) {
+			if (null == astrCompFloatStream[i] || astrCompFloatStream[i].isEmpty() ||
+				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrCompFloatStream[i]))
+				throw new java.lang.Exception
+					("RatesBasket de-serializer: Cannot locate floating stream component #" + i);
+
+			_aCompFloatStream[i] = new org.drip.product.rates.FloatingStream
+				(astrCompFloatStream[i].getBytes());
+		}
+	}
+
+	@Override public java.lang.String getName()
+	{
+		return _strName;
+	}
+
+	@Override public org.drip.product.definition.Component[] getComponents()
+	{
+		int iNumFixedComp = (null == _aCompFixedStream ? 0 : _aCompFixedStream.length);
+		int iNumFloatComp = (null == _aCompFloatStream ? 0 : _aCompFloatStream.length);
+
+		org.drip.product.definition.Component[] aComp = new
+			org.drip.product.definition.Component[iNumFixedComp + iNumFloatComp];
+
+		for (int i = 0; i < iNumFixedComp; ++i)
+			aComp[i] = _aCompFixedStream[i];
+
+		for (int i = 0; i < iNumFloatComp; ++i)
+			aComp[iNumFixedComp + i] = _aCompFloatStream[i];
+
+		return aComp;
+	}
+
+	/**
+	 * Retrieve the array of the fixed stream components
+	 * 
+	 * @return The array of the fixed stream components
+	 */
+
+	public org.drip.product.rates.FixedStream[] getFixedStreamComponents()
+	{
+		return _aCompFixedStream;
+	}
+
+	/**
+	 * Retrieve the array of the float stream components
+	 * 
+	 * @return The array of the float stream components
+	 */
+
+	public org.drip.product.rates.FloatingStream[] getFloatStreamComponents()
+	{
+		return _aCompFloatStream;
+	}
+
+	@Override public java.lang.String getFieldDelimiter()
+	{
+		return "#";
+	}
+
+	@Override public java.lang.String getCollectionRecordDelimiter()
+	{
+		return "@";
+	}
+
+	@Override public java.lang.String getObjectTrailer()
+	{
+		return ":";
 	}
 
 	@Override public byte[] serialize()
@@ -193,28 +278,52 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		else
 			sb.append (_strName + getFieldDelimiter());
 
-		if (null == _aComp || 0 == _aComp.length)
+		if (null == _aCompFixedStream || 0 == _aCompFixedStream.length)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
-			java.lang.StringBuffer sbComp = new java.lang.StringBuffer();
+			java.lang.StringBuffer sbFixStream = new java.lang.StringBuffer();
 
-			for (org.drip.product.definition.Component comp : _aComp) {
-				if (null == comp || !(comp instanceof org.drip.product.definition.RatesComponent)) continue;
+			for (org.drip.product.rates.FixedStream fixStream : _aCompFixedStream) {
+				if (null == fixStream) continue;
 
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbComp.append (getCollectionRecordDelimiter());
+					sbFixStream.append (getCollectionRecordDelimiter());
 
-				sbComp.append (new java.lang.String (comp.serialize()));
+				sbFixStream.append (new java.lang.String (fixStream.serialize()));
 			}
 
-			if (sbComp.toString().isEmpty())
+			if (sbFixStream.toString().isEmpty())
 				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 			else
-				sb.append (sbComp.toString() + getFieldDelimiter());
+				sb.append (sbFixStream.toString() + getFieldDelimiter());
+		}
+
+		if (null == _aCompFloatStream || 0 == _aCompFloatStream.length)
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else {
+			boolean bFirstEntry = true;
+
+			java.lang.StringBuffer sbFloatStream = new java.lang.StringBuffer();
+
+			for (org.drip.product.rates.FloatingStream floatStream : _aCompFloatStream) {
+				if (null == floatStream) continue;
+
+				if (bFirstEntry)
+					bFirstEntry = false;
+				else
+					sbFloatStream.append (getCollectionRecordDelimiter());
+
+				sbFloatStream.append (new java.lang.String (floatStream.serialize()));
+			}
+
+			if (sbFloatStream.toString().isEmpty())
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			else
+				sb.append (sbFloatStream.toString() + getFieldDelimiter());
 		}
 
 		return sb.append (getObjectTrailer()).toString().getBytes();
@@ -223,7 +332,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 	@Override public org.drip.service.stream.Serializer deserialize (
 		final byte[] ab) {
 		try {
-			return null;
+			return new RatesBasket (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -231,33 +340,52 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		return null;
 	}
 
-	@Override public java.lang.String getName()
+	public static void main (
+		final java.lang.String[] astrArgs)
+		throws java.lang.Exception
 	{
-		return _strName;
-	}
+		org.drip.analytics.daycount.Convention.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
 
-	@Override public org.drip.product.definition.Component[] getComponents()
-	{
-		return _aComp;
-	}
+		org.drip.analytics.date.JulianDate dtEffective = org.drip.analytics.date.JulianDate.Today();
 
-	@Override public java.util.Set<java.lang.String> getComponentIRCurveNames()
-	{
-		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
+		org.drip.product.rates.FixedStream[] aFixedStream = new org.drip.product.rates.FixedStream[3];
+		org.drip.product.rates.FloatingStream[] aFloatStream = new org.drip.product.rates.FloatingStream[3];
 
-		for (int i = 0; i < _aComp.length; ++i)
-			sIR.add (_aComp[i].getIRCurveName());
+		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
+			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
-		return sIR;
-	}
+		aFixedStream[0] = new org.drip.product.rates.FixedStream (dtEffective.getJulian(),
+			dtEffective.addTenor ("3Y").getJulian(), 0.03, 2, "Act/360", "30/360", false, null, null, dap,
+				dap, dap, dap, null, null, 100., "ABC", "DEF");
 
-	@Override public java.util.Set<java.lang.String> getComponentCreditCurveNames()
-	{
-		java.util.Set<java.lang.String> sCC = new java.util.HashSet<java.lang.String>();
+		aFixedStream[1] = new org.drip.product.rates.FixedStream (dtEffective.getJulian(),
+			dtEffective.addTenor ("5Y").getJulian(), 0.05, 2, "30/360", "30/360", false, null, null, dap,
+				dap, dap, dap, null, null, 100., "GHI", "JKL");
 
-		for (int i = 0; i < _aComp.length; ++i)
-			sCC.add (_aComp[i].getCreditCurveName());
+		aFixedStream[2] = new org.drip.product.rates.FixedStream (dtEffective.getJulian(),
+			dtEffective.addTenor ("7Y").getJulian(), 0.07, 2, "30/360", "30/360", false, null, null, dap,
+				dap, dap, dap, null, null, 100., "MNO", "PQR");
 
-		return sCC;
+		aFloatStream[0] = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+			dtEffective.addTenor ("3Y").getJulian(), 0.03, 4, "Act/360", "Act/360", "RI", false, null, null,
+				dap, dap, dap, dap, null, null, null, -100., "ABC", "DEF");
+
+		aFloatStream[1] = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+			dtEffective.addTenor ("5Y").getJulian(), 0.05, 4, "Act/360", "Act/360", "RI", false, null, null,
+				dap, dap, dap, dap, null, null, null, -100., "ABC", "DEF");
+
+		aFloatStream[2] = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+			dtEffective.addTenor ("7Y").getJulian(), 0.07, 1, "Act/360", "Act/360", "RI", false, null, null,
+				dap, dap, dap, dap, null, null, null, -100., "ABC", "DEF");
+
+		RatesBasket rb = new RatesBasket ("SAMRB", aFixedStream, aFloatStream);
+
+		byte[] abRB = rb.serialize();
+
+		System.out.println (new java.lang.String (abRB));
+
+		RatesBasket rbDeser = (RatesBasket) rb.deserialize (abRB);
+
+		System.out.println (new java.lang.String (rbDeser.serialize()));
 	}
 }

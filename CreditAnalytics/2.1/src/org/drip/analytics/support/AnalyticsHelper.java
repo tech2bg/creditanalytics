@@ -57,7 +57,8 @@ public class AnalyticsHelper {
 	{
 		boolean bPeriodDone = false;
 
-		double dblSubPeriodStart = period.getStartDate();
+		double dblSubPeriodStart = period.getStartDate() < valParams._dblValue ? valParams._dblValue :
+			period.getStartDate();
 
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLP = new
 			java.util.ArrayList<org.drip.analytics.period.LossPeriodCurveFactors>();
@@ -68,9 +69,6 @@ public class AnalyticsHelper {
 			if (dblSubPeriodEnd < valParams._dblValue) return null;
 
 			try {
-				double dblAdjSubPeriodStart = dblSubPeriodStart < valParams._dblValue ? valParams._dblValue :
-					dblSubPeriodStart;
-
 				if (dblSubPeriodEnd >= period.getEndDate()) {
 					bPeriodDone = true;
 
@@ -78,10 +76,10 @@ public class AnalyticsHelper {
 				}
 
 				org.drip.analytics.period.LossPeriodCurveFactors lp =
-					org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblAdjSubPeriodStart,
-						dblSubPeriodEnd, period.getAccrualDCF (0.5 * (dblAdjSubPeriodStart +
-							dblSubPeriodEnd)), comp.getNotional (dblAdjSubPeriodStart, dblSubPeriodEnd),
-								comp.getRecovery (dblAdjSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
+					org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblSubPeriodStart,
+						dblSubPeriodEnd, period.getAccrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
+							comp.getNotional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
+								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
 									comp.getCRValParams()._iDefPayLag);
 
 				if (null != lp) sLP.add (lp);
@@ -114,7 +112,8 @@ public class AnalyticsHelper {
 
 		if (period.getEndDate() < valParams._dblValue) return null;
 
-		double dblSubPeriodStart = period.getStartDate();
+		double dblSubPeriodStart = period.getStartDate() < valParams._dblValue ? valParams._dblValue :
+			period.getStartDate();
 
 		int iDayStep = (int) ((period.getEndDate() - dblSubPeriodStart) / (iPeriodUnit));
 
@@ -127,9 +126,6 @@ public class AnalyticsHelper {
 			if (dblSubPeriodEnd < valParams._dblValue) return null;
 
 			try {
-				double dblAdjSubPeriodStart = dblSubPeriodStart < valParams._dblValue ? valParams._dblValue :
-					dblSubPeriodStart;
-
 				if (dblSubPeriodEnd >= dblPeriodEndDate) {
 					bPeriodDone = true;
 
@@ -137,10 +133,10 @@ public class AnalyticsHelper {
 				}
 
 				org.drip.analytics.period.LossPeriodCurveFactors lp =
-					org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblAdjSubPeriodStart,
-						dblSubPeriodEnd, period.getAccrualDCF (0.5 * (dblAdjSubPeriodStart +
-							dblSubPeriodEnd)), comp.getNotional (dblAdjSubPeriodStart, dblSubPeriodEnd),
-								comp.getRecovery (dblAdjSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
+					org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblSubPeriodStart,
+						dblSubPeriodEnd, period.getAccrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
+							comp.getNotional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
+								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
 									comp.getCRValParams()._iDefPayLag);
 
 				if (null != lp) sLP.add (lp);
@@ -800,7 +796,7 @@ public class AnalyticsHelper {
 					dblWorkoutDate)
 			return null;
 
-		double dblPeriodEndDate = period.getEndDate() > dblWorkoutDate ? period.getEndDate() :
+		double dblPeriodEndDate = period.getEndDate() < dblWorkoutDate ? period.getEndDate() :
 			dblWorkoutDate;
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP ==

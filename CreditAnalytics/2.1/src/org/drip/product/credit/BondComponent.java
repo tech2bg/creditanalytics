@@ -11852,9 +11852,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			mapMeasures.put ("FairParSpread", dblParSpread);
 		} else {
-			double dblZeroDiscountMargin = (mapMeasures.get ("FairDirtyPV") - mapMeasures.get ("FairParPV") -
-				mapMeasures.get ("FairIndexCouponPV") - mapMeasures.get ("FairPrincipalPV")) /
-					mapMeasures.get ("FairDirtyDV01");
+			double dblCleanIndexCouponPV = mapMeasures.containsKey ("FairRiskyCleanIndexCouponPV") ?
+				mapMeasures.get ("FairRiskyCleanIndexCouponPV") : mapMeasures.get
+					("FairRisklessCleanIndexCouponPV");
+
+			double dblZeroDiscountMargin = (mapMeasures.get ("FairCleanPV") - mapMeasures.get ("FairParPV") -
+				dblCleanIndexCouponPV - mapMeasures.get ("FairPrincipalPV")) / mapMeasures.get
+					("FairCleanDV01");
 
 			mapMeasures.put ("ZeroDiscountMargin", dblZeroDiscountMargin);
 
@@ -12000,9 +12004,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketParSpread", dblParSpread);
 			} else {
+				double dblCleanIndexCouponPV = mapMeasures.containsKey ("FairRiskyCleanIndexCouponPV") ?
+					mapMeasures.get ("FairRiskyCleanIndexCouponPV") : mapMeasures.get
+						("FairRisklessCleanIndexCouponPV");
+
 				double dblZeroDiscountMargin = (mapMeasures.get ("Price") - mapMeasures.get ("FairParPV") -
-					mapMeasures.get ("FairIndexCouponPV") - mapMeasures.get ("FairPrincipalPV")) /
-						mapMeasures.get ("FairCleanDV01");
+					dblCleanIndexCouponPV - mapMeasures.get ("FairPrincipalPV")) / mapMeasures.get
+						("FairCleanDV01");
 
 				mapMeasures.put ("ZeroDiscountMargin", dblZeroDiscountMargin);
 

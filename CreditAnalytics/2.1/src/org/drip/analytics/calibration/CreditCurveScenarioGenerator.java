@@ -42,6 +42,41 @@ package org.drip.analytics.calibration;
  */
 
 public class CreditCurveScenarioGenerator {
+	class TranslatedQuoteMeasure {
+		java.lang.String _strMeasure = "";
+		double _dblQuote = java.lang.Double.NaN;
+
+		TranslatedQuoteMeasure (
+			final java.lang.String strMeasure,
+			final double dblQuote)
+		{
+			_dblQuote = dblQuote;
+			_strMeasure = strMeasure;
+		}
+	}
+
+	private final TranslatedQuoteMeasure translateQuoteMeasure (
+		final org.drip.product.definition.CalibratableComponent comp,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.definition.CreditCurve cc,
+		final java.lang.String strMeasure,
+		final double dblQuote)
+	{
+		if (!(comp instanceof org.drip.product.definition.CreditDefaultSwap) ||
+			(!"FlatSpread".equalsIgnoreCase (strMeasure) && !"QuotedSpread".equalsIgnoreCase (strMeasure)))
+			return new TranslatedQuoteMeasure (strMeasure, dblQuote);
+
+		java.util.Map<java.lang.String, java.lang.Double> mapQSMeasures =
+			((org.drip.product.definition.CreditDefaultSwap) comp).valueFromQuotedSpread (valParams,
+				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
+					null, 0.01, dblQuote);
+
+		return new TranslatedQuoteMeasure ("Upfront", null == mapQSMeasures ? null : mapQSMeasures.get
+			("Upfront"));
+	}
+
 	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
 
 	private org.drip.analytics.calibration.CurveCalibrator _compCalib = new
@@ -139,8 +174,19 @@ public class CreditCurveScenarioGenerator {
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
 
 		for (int i = 0; i < iNumInstr; ++i) {
+			TranslatedQuoteMeasure tqm = translateQuoteMeasure (_aCalibInst[i], valParams, pricerParams, dc,
+				cc, astrCalibMeasure[i], adblQuotes[i]);
+
+			if (null == tqm) return null;
+
+			/* System.out.println ("\tIN => " + _aCalibInst[i].getMaturityDate() + " | " + astrCalibMeasure[i] +
+				" | " + adblQuotes[i]);
+
+			System.out.println ("\tOUT => " + _aCalibInst[i].getMaturityDate() + " | " + tqm._strMeasure +
+				" | " + tqm._dblQuote); */
+
 			if (!_compCalib.bootstrapHazardRate (cc, _aCalibInst[i], i, valParams, dc, dcTSY, dcEDSF,
-				pricerParams, astrCalibMeasure[i], adblQuotes[i], mmFixings, quotingParams, bFlat))
+				pricerParams, tqm._strMeasure, tqm._dblQuote, mmFixings, quotingParams, bFlat))
 				return null;
 		}
 

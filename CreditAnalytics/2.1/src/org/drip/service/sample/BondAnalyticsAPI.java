@@ -380,6 +380,16 @@ public class BondAnalyticsAPI {
 
 			ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "", Convention.DR_ACTUAL);
 
+			ComponentQuote cquote = ComponentQuoteBuilder.CreateComponentQuote();
+
+			Quote q = QuoteBuilder.CreateQuote ("mid", 0.05, Double.NaN);
+
+			cquote.addQuote ("Yield", q, true);
+
+			cmp.setComponentQuote (cquote);
+
+			aBond[i].value (valParams, null, cmp, null);
+
 			System.out.println ("\n" + aBond[i].getComponentName() + " Valuation OP: " + aBond[i].value (valParams, null, cmp, null));
 
 			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].calcPriceFromYield

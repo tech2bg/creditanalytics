@@ -80,10 +80,10 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		long lStart = System.nanoTime();
 
-		double dblDV01 = 0.;
 		double dblLossPV = 0.;
 		double dblExpLoss = 0.;
 		double dblAccrued01 = 0.;
+		double dblDirtyDV01 = 0.;
 		double dblLossNoRecPV = 0.;
 		double dblExpLossNoRec = 0.;
 		boolean bFirstPeriod = true;
@@ -107,9 +107,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				double dblSurvProb = pricerParams._bSurvToPayDate ? cc.getSurvival (period.getPayDate()) :
 					cc.getSurvival (period.getEndDate());
 
-				dblDV01 += 0.01 * period.getCouponDCF() * mktParams.getDiscountCurve().getDF
-					(period.getPayDate()) * dblSurvProb * getNotional (period.getAccrualStartDate(),
-						period.getEndDate());
+				dblDirtyDV01 += 0.01 * period.getCouponDCF() * dc.getDF (period.getPayDate()) * dblSurvProb *
+					getNotional (period.getAccrualStartDate(), period.getEndDate());
 
 				java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
 					org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
@@ -135,7 +134,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					double dblRec = _crValParams._bUseCurveRec ? cc.getEffectiveRecovery (dblSubPeriodStart,
 						dblSubPeriodEnd) : _crValParams._dblRecovery;
 
-					double dblSubPeriodExpLoss = (1 - dblRec) * 100. * dblSubPeriodSurvival *
+					double dblSubPeriodExpLoss = (1. - dblRec) * 100. * dblSubPeriodSurvival *
 						dblSubPeriodNotional;
 					double dblSubPeriodExpLossNoRec = 100. * dblSubPeriodSurvival * dblSubPeriodNotional;
 					dblLossPV += dblSubPeriodExpLoss * dblSubPeriodDF;
@@ -143,7 +142,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					dblExpLoss += dblSubPeriodExpLoss;
 					dblExpLossNoRec += dblSubPeriodExpLossNoRec;
 
-					dblDV01 += 0.01 * lp.getAccrualDCF() * dblSubPeriodSurvival * dblSubPeriodDF *
+					dblDirtyDV01 += 0.01 * lp.getAccrualDCF() * dblSubPeriodSurvival * dblSubPeriodDF *
 						dblSubPeriodNotional;
 				}
 			}
@@ -164,59 +163,59 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			return null;
 		}
 
-		dblDV01 /= dblCashPayDF;
 		dblLossPV /= dblCashPayDF;
+		dblDirtyDV01 /= dblCashPayDF;
 		dblLossNoRecPV /= dblCashPayDF;
 		double dblNotlFactor = _dblNotional * 0.01;
-		double dblCleanDV01 = dblDV01 - dblAccrued01;
-		double dblPV = dblDV01 * 10000. * _dblCoupon - dblLossPV;
-		double dblCleanPV = (dblDV01 - dblAccrued01) * 10000. *_dblCoupon - dblLossPV;
+		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
+		double dblPV = dblDirtyDV01 * 10000. * _dblCoupon - dblLossPV;
+		double dblCleanPV = dblCleanDV01 * 10000. * _dblCoupon - dblLossPV;
 
 		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.TreeMap<java.lang.String,
 			java.lang.Double>();
 
-		mapResult.put (strMeasureSetPrefix + "PV", dblPV * dblNotlFactor);
+		mapResult.put (strMeasureSetPrefix + "AccrualDays", dblAccrualDays);
 
-		mapResult.put (strMeasureSetPrefix + "DV01", dblDV01 * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "DirtyDV01", dblDV01 * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "DirtyPV", dblPV * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "LossPV", dblLossPV * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "LossNoRecPV", dblLossNoRecPV * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "ExpLoss", dblExpLoss * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "ExpLossNoRec", dblExpLossNoRec * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "CleanPV", dblCleanPV * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "Upfront", dblCleanPV * dblNotlFactor);
-
-		mapResult.put (strMeasureSetPrefix + "ParSpread", dblLossPV / dblCleanDV01);
-
-		mapResult.put (strMeasureSetPrefix + "FairPremium", dblLossPV / dblCleanDV01);
+		mapResult.put (strMeasureSetPrefix + "Accrued", dblAccrued01 * _dblCoupon * dblNotlFactor);
 
 		mapResult.put (strMeasureSetPrefix + "Accrued01", dblAccrued01 * dblNotlFactor);
 
 		mapResult.put (strMeasureSetPrefix + "CleanDV01", dblCleanDV01 * dblNotlFactor);
 
-		mapResult.put (strMeasureSetPrefix + "PremiumPV", dblDV01 * _dblCoupon * dblNotlFactor);
+		mapResult.put (strMeasureSetPrefix + "CleanPV", dblCleanPV * dblNotlFactor);
 
-		mapResult.put (strMeasureSetPrefix + "Accrued", dblAccrued01 * _dblCoupon * dblNotlFactor);
+		mapResult.put (strMeasureSetPrefix + "DV01", dblDirtyDV01 * dblNotlFactor);
 
-		mapResult.put (strMeasureSetPrefix + "AccrualDays", dblAccrualDays);
+		mapResult.put (strMeasureSetPrefix + "DirtyDV01", dblDirtyDV01 * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "DirtyPV", dblPV * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "ExpLoss", dblExpLoss * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "ExpLossNoRec", dblExpLossNoRec * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "FairPremium", dblLossPV / dblCleanDV01);
+
+		mapResult.put (strMeasureSetPrefix + "LossNoRecPV", dblLossNoRecPV * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "LossPV", dblLossPV * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "ParSpread", dblLossPV / dblCleanDV01);
+
+		mapResult.put (strMeasureSetPrefix + "PremiumPV", dblDirtyDV01 * _dblCoupon * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "PV", dblPV * dblNotlFactor);
+
+		mapResult.put (strMeasureSetPrefix + "Upfront", dblCleanPV * dblNotlFactor);
 
 		try {
+			mapResult.put (strMeasureSetPrefix + "CleanPrice", 100. * (1. + (dblCleanPV / _dblNotional /
+					getNotional (valParams._dblValue))));
+
 			mapResult.put (strMeasureSetPrefix + "LossOnInstantaneousDefault", _dblNotional * (1. -
 				cc.getRecovery (valParams._dblValue)));
 
-			mapResult.put (strMeasureSetPrefix + "Price", 100. * (1. + (dblPV / _dblNotional / getNotional
-				(valParams._dblValue))));
-
-			mapResult.put (strMeasureSetPrefix + "CleanPrice", 100. * (1. + (dblCleanPV / _dblNotional /
+			mapResult.put (strMeasureSetPrefix + "Price", 100. * (1. + (dblCleanPV / _dblNotional /
 				getNotional (valParams._dblValue))));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1047,15 +1046,21 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			!org.drip.math.common.NumberUtil.IsValid (dblQuotedSpread))
 			return null;
 
-		double[] adblRestorableCDSCoupon = null;
+		org.drip.product.definition.CalibratableComponent[] aComp = new
+			org.drip.product.definition.CalibratableComponent[] {this};
 		org.drip.analytics.definition.CreditCurve cc = null;
-		org.drip.product.definition.CalibratableComponent[] aComp = null;
+		double[] adblRestorableCDSCoupon = new double[1];
+		adblRestorableCDSCoupon[0] = _dblCoupon;
+		_dblCoupon = dblFixCoupon;
 
 		if (null != mktParams) {
-			if (null != (cc = mktParams.getCreditCurve()) && null != (aComp = cc.getCalibComponents())) {
-				int iNumComp = aComp.length;
+			org.drip.product.definition.CalibratableComponent[] aMktComp = null;
+
+			if (null != (cc = mktParams.getCreditCurve()) && null != (aMktComp = cc.getCalibComponents())) {
+				int iNumComp = aMktComp.length;
 
 				if (0 != iNumComp) {
+					aComp = aMktComp;
 					adblRestorableCDSCoupon = new double[iNumComp];
 
 					for (int i = 0; i < iNumComp; ++i) {
@@ -1076,12 +1081,6 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					}
 				}
 			}
-		} else {
-			adblRestorableCDSCoupon = new double[1];
-			adblRestorableCDSCoupon[0] = _dblCoupon;
-			_dblCoupon = dblFixCoupon;
-
-			aComp = new org.drip.product.definition.CalibratableComponent[] {this};
 		}
 
 		int iNumCalibComp = aComp.length;
