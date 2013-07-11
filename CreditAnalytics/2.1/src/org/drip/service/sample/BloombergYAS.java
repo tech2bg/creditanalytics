@@ -58,6 +58,12 @@ import org.drip.service.api.CreditAnalytics;
 public class BloombergYAS {
 	private static final String FIELD_SEPARATOR = "    ";
 
+	/*
+	 * Sample demonstrating creation of rates curve from cash/futures/swaps
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static DiscountCurve BuildRatesCurveFromInstruments (
 		final JulianDate dtStart,
 		final String[] astrCashTenor,
@@ -179,6 +185,12 @@ public class BloombergYAS {
 			null);
 	}
 
+	/*
+	 * Sample demonstrating creation of treasury quotes map
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> MakeTSYQuotes (
 		final String[] astrTSYTenor,
 		final double[] adblTSYYield)
@@ -197,6 +209,12 @@ public class BloombergYAS {
 
 		return mTSYQuotes;
 	}
+
+	/*
+	 * Sample demonstrating generation of all the YAS measures
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
 
 	public static final void BondPricerSample()
 		throws Exception

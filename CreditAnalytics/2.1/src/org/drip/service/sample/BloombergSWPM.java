@@ -138,38 +138,47 @@ public class BloombergSWPM {
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtStart = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 9);
+		JulianDate dtStart = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 11);
 
 		/*
 		 * This part is best modeled by Curve #23 in the SWPM "Curves" tab
 		 */
 
 		String[] astrCashTenor = new String[] {"3M"};
-		double[] adblCashRate = new double[] {0.0026910};
-		double[] adblEDFRate = new double[] {0.0026910, 0.0026910};
+		double[] adblCashRate = new double[] {0.0026810};
+		double[] adblEDFRate = new double[] {0.0026810, 0.0026810};
 		String[] astrIRSTenor = new String[] {    "4Y",      "5Y",      "6Y",
 			     "7Y",	    "8Y",      "9Y",     "10Y",     "11Y",     "12Y",     "15Y",     "20Y"};
-		double[] adblIRSRate = new double[] {0.0126219, 0.0166043, 0.0200334,
-			0.0228450, 0.0250721, 0.0269176, 0.0284823, 0.0298440, 0.0310189, 0.0333593, 0.0351025};
+		double[] adblIRSRate = new double[] {0.0119802, 0.0158492, 0.0192739,
+			0.0221449, 0.0244588, 0.0264071, 0.028057, 0.0293805, 0.0306474, 0.0330706, 0.0349158};
 
 		DiscountCurve dc = BuildBBGRatesCurve (dtStart, astrCashTenor, adblCashRate, adblEDFRate, astrIRSTenor, adblIRSRate, "USD");
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.MakeDiscountCMP (dc);
+		JulianDate dtEffective = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 15);
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtStart.addDays (2), 0, "", Convention.DR_ACTUAL);
-
-		JulianDate dtEffective = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 11);
-
-		JulianDate dtMaturity = JulianDate.CreateFromYMD (2018, JulianDate.JULY, 11);
+		JulianDate dtMaturity = JulianDate.CreateFromYMD (2018, JulianDate.JULY, 15);
 
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, "USD");
 
 		RatesComponent fixStream = new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-			0.01660428, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, dap, null, 10000000., "USD", "USD");
+			0.01584922, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, dap, null, 10.e+06, "USD", "USD");
 
 		RatesComponent floatStream = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", "USD-LIBOR", false, null, null,
-				dap, dap, dap, dap, dap, null, null, -10000000., "USD", "USD");
+			dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", "USD-LIBOR-3M", false, null, null,
+				dap, dap, dap, dap, dap, null, null, -10.e+06, "USD", "USD");
+
+		java.util.Map<java.lang.String, java.lang.Double> mapIndexFixing = new java.util.HashMap<java.lang.String, java.lang.Double>();
+
+		mapIndexFixing.put ("USD-LIBOR-3M", 0.0026810);
+
+		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>> mmFixings =
+			new java.util.HashMap<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>();
+
+		mmFixings.put (dtEffective, mapIndexFixing);
+
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
+
+		ValuationParams valParams = ValuationParams.CreateValParams (dtStart.addDays (2), 0, "", Convention.DR_ACTUAL);
 
 		System.out.println ("\nFixed Cashflow\n--------");
 
@@ -179,7 +188,7 @@ public class BloombergSWPM {
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.getCouponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getCouponDCF(), 0, 2, 166042.8) + FIELD_SEPARATOR
+				FormatUtil.FormatDouble (p.getCouponDCF(), 0, 2, 158492.2) + FIELD_SEPARATOR
 			);
 
 		System.out.println ("\n\nFloating Cashflow\n--------");

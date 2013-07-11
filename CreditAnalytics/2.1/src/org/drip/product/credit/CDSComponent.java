@@ -168,8 +168,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		dblLossNoRecPV /= dblCashPayDF;
 		double dblNotlFactor = _dblNotional * 0.01;
 		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
-		double dblPV = dblDirtyDV01 * 10000. * _dblCoupon - dblLossPV;
 		double dblCleanPV = dblCleanDV01 * 10000. * _dblCoupon - dblLossPV;
+		double dblDirtyPV = dblDirtyDV01 * 10000. * _dblCoupon - dblLossPV;
 
 		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.TreeMap<java.lang.String,
 			java.lang.Double>();
@@ -188,7 +188,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		mapResult.put (strMeasureSetPrefix + "DirtyDV01", dblDirtyDV01 * dblNotlFactor);
 
-		mapResult.put (strMeasureSetPrefix + "DirtyPV", dblPV * dblNotlFactor);
+		mapResult.put (strMeasureSetPrefix + "DirtyPV", dblDirtyPV * dblNotlFactor);
 
 		mapResult.put (strMeasureSetPrefix + "ExpLoss", dblExpLoss * dblNotlFactor);
 
@@ -204,13 +204,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		mapResult.put (strMeasureSetPrefix + "PremiumPV", dblDirtyDV01 * _dblCoupon * dblNotlFactor);
 
-		mapResult.put (strMeasureSetPrefix + "PV", dblPV * dblNotlFactor);
+		mapResult.put (strMeasureSetPrefix + "PV", dblDirtyPV * dblNotlFactor);
 
 		mapResult.put (strMeasureSetPrefix + "Upfront", dblCleanPV * dblNotlFactor);
 
 		try {
 			mapResult.put (strMeasureSetPrefix + "CleanPrice", 100. * (1. + (dblCleanPV / _dblNotional /
-					getNotional (valParams._dblValue))));
+				getNotional (valParams._dblValue))));
+
+			mapResult.put (strMeasureSetPrefix + "DirtyPrice", 100. * (1. + (dblDirtyPV / _dblNotional /
+				getNotional (valParams._dblValue))));
 
 			mapResult.put (strMeasureSetPrefix + "LossOnInstantaneousDefault", _dblNotional * (1. -
 				cc.getRecovery (valParams._dblValue)));

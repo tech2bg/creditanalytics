@@ -35,6 +35,8 @@ package org.drip.product.rates;
  */
 
 public class FloatingStream extends org.drip.product.definition.RatesComponent {
+	private static final boolean s_bBlog = false;
+
 	private double _dblNotional = 100.;
 	private double _dblSpread = 0.0001;
 	private java.lang.String _strIR = "";
@@ -510,6 +512,17 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				return null;
 			}
 
+			if (s_bBlog) {
+				try {
+					System.out.println (new org.drip.analytics.date.JulianDate (period.getResetDate()) + " ["
+						+ new org.drip.analytics.date.JulianDate (period.getStartDate()) + "->" + new
+							org.drip.analytics.date.JulianDate (period.getEndDate()) + "] => " +
+								org.drip.math.common.FormatUtil.FormatDouble (dblFloatingRate, 1, 4, 100.));
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+				}
+			}
+
 			dblDirtyDV01 += dblDirtyPeriodDV01;
 			dblDirtyFloatingPV += dblDirtyPeriodDV01 * dblFloatingRate;
 		}
@@ -532,7 +545,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		dblDirtyFloatingPV /= dblCashPayDF;
 		double dblNotlFactor = _dblNotional * 0.01;
 		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
-		double dblCleanFloatingPV = dblDirtyFloatingPV - dblAccrued01 * dblResetRate;
+		double dblCleanFloatingPV = dblDirtyFloatingPV - dblAccrued01 * (dblResetRate + _dblSpread);
 
 		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.HashMap<java.lang.String,
 			java.lang.Double>();

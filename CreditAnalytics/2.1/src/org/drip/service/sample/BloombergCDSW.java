@@ -70,6 +70,12 @@ import org.drip.math.common.FormatUtil;
 public class BloombergCDSW {
 	private static final java.lang.String FIELD_SEPARATOR = "   ";
 
+	/*
+	 * Sample demonstrating creation of discount curve from cash/futures/swaps
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static DiscountCurve BuildRatesCurveFromInstruments (
 		final JulianDate dtStart,
 		final String[] astrCashTenor,
@@ -120,6 +126,12 @@ public class BloombergCDSW {
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 
+	/*
+	 * Sample demonstrating creation of credit curve from CDS instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static CreditCurve CreateCreditCurveFromCDS (
 		final JulianDate dtStart,
 		final double[] adblQuote,
@@ -137,7 +149,7 @@ public class BloombergCDSW {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			aCDS[i] = CDSBuilder.CreateSNAC (dtStart, astrTenor[i], dblStrike, strCCName);
 
-			astrCalibMeasure[i] = "QuotedSpread";
+			astrCalibMeasure[i] = "FairPremium";
 			adblQuote[i] += dblBump;
 		}
 
@@ -156,6 +168,12 @@ public class BloombergCDSW {
 		return cc;
 	}
 
+	/*
+	 * Sample demonstrating display of survival probability at the calibration instrument maturities
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final void DisplayInstrumentMaturitySurvival (
 		final CreditCurve cc)
 		throws java.lang.Exception
@@ -170,6 +188,12 @@ public class BloombergCDSW {
 					(aCDS[i].getMaturityDate()), 0, 4, 1.));
 	}
 
+	/*
+	 * Sample demonstrating the creation of a CDS
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static CreditDefaultSwap CreateCDS (
 		final JulianDate dtStart,
 		final String strTenor,
@@ -179,41 +203,88 @@ public class BloombergCDSW {
 		return CDSBuilder.CreateSNAC (dtStart, strTenor, dblCoupon, strCCName);
 	}
 
+	/*
+	 * Sample demonstrating the generation of the full set of CDSW measure
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	public static void main (
 		final String[] astrArgs)
 		throws Exception
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 7, 10);
+		JulianDate dtCurve = JulianDate.Today();
 
-		JulianDate dtValue = JulianDate.CreateFromYMD (2013, 7, 11);
+		JulianDate dtValue = dtCurve.addDays (1);
 
-		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 15);
+		JulianDate dtSettle = dtValue.addBusDays (2, "USD");
 
+		/*
+		 * Model the USD ISDA Standard Curve
+		 */
+
+		double dblRecovery = 0.4;
 		double dblNotional = -10.e+06;
 		String[] astrCashTenor = new String[] {   "1M",     "2M",     "3M",     "6M",    "12M"};
-		double[] adblCashRate = new double[] {0.001928, 0.002360, 0.002691, 0.004084, 0.006917};
+		double[] adblCashRate = new double[] {0.001921, 0.002350, 0.002691, 0.004084, 0.006937};
 		String[] astrIRSTenor = new String[] {   "2Y",     "3Y",     "4Y",     "5Y",     "6Y",     "7Y",
 				"8Y",     "9Y",    "10Y",    "12Y",    "15Y",    "20Y",    "25Y",    "30Y"};
-		double[] adblIRSRate = new double[] {0.005350, 0.008615, 0.012705, 0.016995, 0.020130, 0.022965,
-			0.025210, 0.027040, 0.028570, 0.031145, 0.033465, 0.035170, 0.035990, 0.036300};
+		double[] adblIRSRate = new double[] {0.005410, 0.008715, 0.012870, 0.017005, 0.020485, 0.023320,
+			0.025580, 0.027415, 0.028975, 0.031525, 0.033870, 0.035590, 0.036365, 0.036735};
+
+		/*
+		 * Build the USD ISDA Standard Curve
+		 */
 
 		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
 			adblIRSRate, 0., "USD");
 
-		String[] astrCDSTenor = new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"};
-		double[] adblCDSParSpread = new double[] {100., 100., 100., 100., 100., 100., 100., 100.};
+		/*
+		 * Build the CDS Instrument Quotes
+		 */
 
-		CreditCurve cc = CreateCreditCurveFromCDS (dtCurve, adblCDSParSpread, astrCDSTenor, dc, 0.4, "CORP", 0.01, 0.);
+		String[] astrCDSTenor = new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"};
+		double[] adblCDSParSpread = new double[] {36., 66., 85., 101., 122., 146., 178., 193.};
+
+		/*
+		 * Build the Base Credit Curve
+		 */
+
+		CreditCurve cc = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, dc, dblRecovery, "CORP", 0.01, 0.);
+
+		/*
+		 * Display Survival Probability to the instrument maturities
+		 */
 
 		DisplayInstrumentMaturitySurvival (cc);
 
-		CreditDefaultSwap cds = CreateCDS (dtValue, "5Y", 0.01, "KOR");
+		/*
+		 * Create the CDS to price
+		 */
+
+		CreditDefaultSwap cds = CreateCDS (dtValue, "7Y", 0.05, "KOR");
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtSettle, "USD");
 
 		PricerParams pricerParams = PricerParams.MakeStdPricerParams();
+
+		System.out.println ("\n---- Valuation Details ----");
+
+		System.out.println ("Trade Date   : " + dtCurve);
+
+		System.out.println ("Cash Settle  : " + dtSettle);
+
+		System.out.println ("\n---- CDS Details ----");
+
+		System.out.println ("Effective    : " + cds.getEffectiveDate());
+
+		System.out.println ("Maturity     : " + cds.getMaturityDate());
+
+		/*
+		 * Generate the base CDS Measures
+		 */
 
 		Map<String, Double> mapBaseMeasures = cds.value (
 			valParams,
@@ -221,36 +292,35 @@ public class BloombergCDSW {
 			ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
 			null);
 
+		double dblAccrued = mapBaseMeasures.get ("Accrued") * 100. * dblNotional;
+
 		double dblBaseDirtyPV = mapBaseMeasures.get ("DirtyPV");
+
+		double dblPrincipal = mapBaseMeasures.get ("Upfront") * 0.01 * dblNotional;
 
 		System.out.println ("\n---- CDS Measures ----");
 
-		System.out.println ("Accrued      : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("Accrued"), 1, 0, 100. * dblNotional));
+		System.out.println ("Price        : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("Price"), 1, 3, 1.));
+
+		System.out.println ("Principal    : " + FormatUtil.FormatDouble (dblPrincipal, 1, 0, 1.));
+
+		System.out.println ("Accrued      : " + FormatUtil.FormatDouble (dblAccrued, 1, 0, 1.));
 
 		System.out.println ("Accrual Days : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("AccrualDays"), 1, 0, 1.));
 
-		System.out.println ("Coupon DV01  : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("DV01"), 1, 0, 0.01 * dblNotional));
-
-		System.out.println ("Price        : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("Price"), 1, 3, 1.));
-
-		System.out.println ("Principal    : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("Upfront"), 1, 0, 1.));
+		System.out.println ("Cash Amount  : " + FormatUtil.FormatDouble (dblAccrued + dblPrincipal, 1, 0, 1.));
 
 		System.out.println ("Repl Spread  : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("FairPremium"), 1, 4, 1.));
 
-		DiscountCurve dc01Bump = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
-			adblIRSRate, 0.0001, "USD");
+		/*
+		 * Build the Bumped 01 Credit Curve
+		 */
 
-		Map<String, Double> mapRatesFlat01Measures = cds.value (
-			valParams,
-			pricerParams,
-			ComponentMarketParamsBuilder.MakeCreditCMP (dc01Bump, cc),
-			null);
+		CreditCurve cc01Bump = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, dc, dblRecovery, "CORP", 0.01, 1.);
 
-		double dblRatesFlat01DirtyPV = mapRatesFlat01Measures.get ("DirtyPV");
-
-		System.out.println ("IR01         : " + FormatUtil.FormatDouble (dblRatesFlat01DirtyPV - dblBaseDirtyPV, 1, 0, 0.01 * dblNotional));
-
-		CreditCurve cc01Bump = CreateCreditCurveFromCDS (dtCurve, adblCDSParSpread, astrCDSTenor, dc, 0.4, "CORP", 0.01, 1.);
+		/*
+		 * Generate the 1 bp flat Credit Curve bumped  Measures
+		 */
 
 		Map<String, Double> mapCreditFlat01Measures = cds.value (
 			valParams,
@@ -261,6 +331,27 @@ public class BloombergCDSW {
 		double dblCreditFlat01DirtyPV = mapCreditFlat01Measures.get ("DirtyPV");
 
 		System.out.println ("CS01         : " + FormatUtil.FormatDouble (dblCreditFlat01DirtyPV - dblBaseDirtyPV, 1, 0, 0.01 * dblNotional));
+
+		/*
+		 * Build the Bumped 01 Rates Curve
+		 */
+
+		DiscountCurve dc01Bump = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor,
+			adblIRSRate, 0.0001, "USD");
+
+		/*
+		 * Generate the 1 bp flat Rates Curve bumped  Measures
+		 */
+
+		Map<String, Double> mapRatesFlat01Measures = cds.value (
+			valParams,
+			pricerParams,
+			ComponentMarketParamsBuilder.MakeCreditCMP (dc01Bump, cc),
+			null);
+
+		double dblRatesFlat01DirtyPV = mapRatesFlat01Measures.get ("DirtyPV");
+
+		System.out.println ("IR01         : " + FormatUtil.FormatDouble (dblRatesFlat01DirtyPV - dblBaseDirtyPV, 1, 0, 0.01 * dblNotional));
 
 		/*
 		 * Generates and displays the coupon period details for the bonds
