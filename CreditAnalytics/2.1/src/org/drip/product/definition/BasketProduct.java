@@ -583,7 +583,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
 	{
-		java.util.Set<org.drip.analytics.period.Period> setPeriod =
+		java.util.Set<org.drip.analytics.period.CouponPeriod> setPeriod =
 			org.drip.analytics.support.AnalyticsHelper.AggregateComponentPeriods (getComponents());
 
 		if (null == setPeriod || 0 == setPeriod.size()) return null;
@@ -591,9 +591,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
 			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
 
-		for (org.drip.analytics.period.Period p : setPeriod) {
-			if (null != p && p instanceof org.drip.analytics.period.CouponPeriod)
-				lsCouponPeriod.add ((org.drip.analytics.period.CouponPeriod) p);
+		for (org.drip.analytics.period.CouponPeriod p : setPeriod) {
+			if (null != p) lsCouponPeriod.add (p);
 		}
 
 		return lsCouponPeriod;
@@ -674,7 +673,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 				if (MEASURE_AGGREGATION_TYPE_CUMULATIVE == measureAggregationType (strKey))
 					mapBasketOP.put (strKey, (null == dblCompValue ? 0. : dblCompValue) + (null ==
 						dblBasketValue ? 0. : dblBasketValue));
-				else if (MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE == measureAggregationType (strKey))
+				else if (MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE == measureAggregationType (strKey) &&
+					null != adblWeight)
 					mapBasketOP.put (strKey, (null == dblCompValue ? 0. : adblWeight[i] * dblCompValue) +
 						(null == dblBasketValue ? 0. : dblBasketValue));
 				else if (MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE == measureAggregationType (strKey))

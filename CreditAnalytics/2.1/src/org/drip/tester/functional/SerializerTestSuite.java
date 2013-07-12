@@ -774,20 +774,21 @@ public class SerializerTestSuite {
 
 		Verify (abPricer, new org.drip.param.pricer.PricerParams (abPricer), "PricerParams");
 
-		java.util.List<org.drip.analytics.period.Period> lPeriods = new
-			java.util.ArrayList<org.drip.analytics.period.Period>();
+		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
 
 		int i = 5;
 
 		while (0 != i--) {
-			lPeriods.add (new org.drip.analytics.period.Period (dblStart, dblStart + 180, dblStart, dblStart
-				+ 180, dblStart + 180, 0.5));
+			lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
+				dblStart, dblStart + 180, dblStart + 180, dblStart, 2, 0.5, "30/360", false, "30/360",
+					false, java.lang.Double.NaN, "ZAR"));
 
 			dblStart += 180.;
 		}
 
-		org.drip.product.params.PeriodSet bfpgp = new
-			org.drip.product.params.PeriodSet (1., "Act/360", 2, lPeriods);
+		org.drip.product.params.PeriodSet bfpgp = new org.drip.product.params.PeriodSet (1., "Act/360", 2,
+			lsCouponPeriod);
 
 		bfpgp.validate();
 

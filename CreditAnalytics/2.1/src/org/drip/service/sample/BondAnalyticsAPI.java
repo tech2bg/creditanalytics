@@ -68,6 +68,12 @@ import org.drip.math.common.FormatUtil;
 public class BondAnalyticsAPI {
 	private static final String FIELD_SEPARATOR = "    ";
 
+	/*
+	 * Sample demonstrating building of rates curve from cash/future/swaps
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static DiscountCurve BuildRatesCurveFromInstruments (
 		final JulianDate dtStart,
 		final String[] astrCashTenor,
@@ -88,25 +94,29 @@ public class BondAnalyticsAPI {
 
 		// Cash Calibration
 
+		JulianDate dtCashEffective = dtStart.addBusDays (1, strCurrency);
+
 		for (int i = 0; i < astrCashTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, strCurrency),
-				new JulianDate (adblDate[i] = dtStart.addBusDays (2, strCurrency).addTenor (astrCashTenor[i]).getJulian()),
+			aCompCalib[i] = CashBuilder.CreateCash (dtCashEffective,
+				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
 				strCurrency);
 		}
 
 		// IRS Calibration
+
+		JulianDate dtIRSEffective = dtStart.addBusDays (2, strCurrency);
 
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtStart.addBusDays (2, strCurrency),
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtStart.addBusDays (2, strCurrency).addTenor (astrIRSTenor[i]).getJulian()),
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
 				0., strCurrency, strIndex, strCurrency);
 		}
 

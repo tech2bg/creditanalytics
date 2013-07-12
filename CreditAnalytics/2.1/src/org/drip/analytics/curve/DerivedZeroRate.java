@@ -92,7 +92,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 	 * @param strDCZC Zero Curve Day Count
 	 * @param strCalendarZC Zero Curve Calendar
 	 * @param bApplyEOMAdjZC Zero Coupon EOM Adjustment Flag
-	 * @param lsPeriod List of bond coupon periods
+	 * @param lsCouponPeriod List of bond coupon periods
 	 * @param dblWorkoutDate Work-out date
 	 * @param dblCashPayDate Cash-Pay Date
 	 * @param dc Discount Curve
@@ -107,7 +107,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final java.lang.String strDCZC,
 		final java.lang.String strCalendarZC,
 		final boolean bApplyEOMAdjZC,
-		final java.util.List<org.drip.analytics.period.Period> lsPeriod,
+		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod,
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.definition.DiscountCurve dc,
@@ -115,7 +115,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
-		if (null == (_dc = dc) || null == lsPeriod || 0 == lsPeriod.size() ||
+		if (null == (_dc = dc) || null == lsCouponPeriod || 0 == lsCouponPeriod.size() ||
 			!org.drip.math.common.NumberUtil.IsValid (dblWorkoutDate) ||
 				!org.drip.math.common.NumberUtil.IsValid (dblCashPayDate) ||
 					!org.drip.math.common.NumberUtil.IsValid (dblZCBump))
@@ -134,7 +134,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 			bApplyCpnEOMAdj = quotingParams._bYieldApplyEOMAdj;
 		}
 
-		for (org.drip.analytics.period.Period period : lsPeriod)
+		for (org.drip.analytics.period.CouponPeriod period : lsCouponPeriod)
 			updateMapEntries (period.getPayDate(), iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
 
 		updateMapEntries (dblWorkoutDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);

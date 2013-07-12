@@ -71,8 +71,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				private org.drip.analytics.definition.DiscountCurve _dc = null;
 				private org.drip.analytics.date.JulianDate _dtPeriodStart = null;
 
-				private java.util.List<org.drip.analytics.period.Period> _lsPeriod = new
-					java.util.ArrayList<org.drip.analytics.period.Period>();
+				private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = new
+					java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
 
 				@Override public boolean preRegression()
 				{
@@ -108,8 +108,9 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						double dblEnd = dtEnd.getJulian();
 
 						try {
-							_lsPeriod.add (new org.drip.analytics.period.Period (dblStart, dblEnd, dblStart,
-								dblEnd, dblEnd, 0.5));
+							_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart,
+								dblEnd, dblStart, dblEnd, dblEnd, dblStart, 2, 0.5, "30/360", false,
+									"30/360", false, java.lang.Double.NaN, "ZAR"));
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 
@@ -126,7 +127,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				{
 					try {
 						if (null == (_zc = org.drip.analytics.creator.ZeroCurveBuilder.CreateZeroCurve (2,
-							"30/360", _dc.getCurrency(), true, _lsPeriod, _dtPeriodStart.getJulian(),
+							"30/360", _dc.getCurrency(), true, _lsCouponPeriod, _dtPeriodStart.getJulian(),
 								_dtStart.addDays (2).getJulian(), _dc, null, s_dblZSpread)))
 							return false;
 					} catch (java.lang.Exception e) {

@@ -125,8 +125,8 @@ public class RatesAnalyticsAPI {
 		throws Exception
 	{
 		int NUM_DC_INSTR = 30;
-		double adblDate[] = new double[NUM_DC_INSTR];
 		double adblRate[] = new double[NUM_DC_INSTR];
+		double adblMaturity[] = new double[NUM_DC_INSTR];
 		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
@@ -135,19 +135,21 @@ public class RatesAnalyticsAPI {
 
 		// First 7 instruments - cash calibration
 
-		adblDate[0] = dtStart.addBusDays (1, "USD").getJulian(); // ON
+		JulianDate dtCashEffective = dtStart.addBusDays (1, "USD");
 
-		adblDate[1] = dtStart.addBusDays (2, "USD").getJulian(); // 1D (TN)
+		adblMaturity[0] = dtCashEffective.addBusDays (1, "USD").getJulian(); // ON
 
-		adblDate[2] = dtStart.addBusDays (7, "USD").getJulian(); // 1W
+		adblMaturity[1] = dtCashEffective.addBusDays (2, "USD").getJulian(); // 1D (TN)
 
-		adblDate[3] = dtStart.addBusDays (14, "USD").getJulian(); // 2W
+		adblMaturity[2] = dtCashEffective.addBusDays (7, "USD").getJulian(); // 1W
 
-		adblDate[4] = dtStart.addBusDays (30, "USD").getJulian(); // 1M
+		adblMaturity[3] = dtCashEffective.addBusDays (14, "USD").getJulian(); // 2W
 
-		adblDate[5] = dtStart.addBusDays (60, "USD").getJulian(); // 2M
+		adblMaturity[4] = dtCashEffective.addBusDays (30, "USD").getJulian(); // 1M
 
-		adblDate[6] = dtStart.addBusDays (90, "USD").getJulian(); // 3M
+		adblMaturity[5] = dtCashEffective.addBusDays (60, "USD").getJulian(); // 2M
+
+		adblMaturity[6] = dtCashEffective.addBusDays (90, "USD").getJulian(); // 3M
 
 		/*
 		 * Cash Rate Quotes
@@ -165,14 +167,13 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addBusDays (2, "USD"), // Effective
-				new JulianDate (adblDate[i]).addBusDays (2, "USD"), // Maturity
+			aCompCalib[i] = CashBuilder.CreateCash (dtCashEffective, // Effective
+				new JulianDate (adblMaturity[i]).addBusDays (2, "USD"), // Maturity
 				"USD");
 		}
 
 		// Next 8 instruments - EDF calibration
 
-		org.drip.analytics.date.JulianDate dtEDFStart = dtStart;
 		adblCompCalibValue[7] = .0027;
 		adblCompCalibValue[8] = .0032;
 		adblCompCalibValue[9] = .0041;
@@ -185,44 +186,46 @@ public class RatesAnalyticsAPI {
 		CalibratableComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {
+			adblRate[i + 7] = 0.01;
 			aCompCalib[i + 7] = aEDF[i];
 			astrCalibMeasure[i + 7] = "Rate";
-			adblRate[i + 7] = 0.01;
 
-			adblDate[i + 7] = dtEDFStart.addDays ((i + 1) * 91).getJulian();
+			adblMaturity[i + 7] = aEDF[i].getMaturityDate().getJulian();
 		}
 
 		// Final 15 instruments - IRS calibration
 
-		adblDate[15] = dtStart.addBusDays ((int)(365.25 * 4 + 2), "USD").getJulian(); // 4Y
+		JulianDate dtIRSEffective = dtStart.addBusDays (2, "USD");
 
-		adblDate[16] = dtStart.addBusDays ((int)(365.25 * 5 + 2), "USD").getJulian(); // 5Y
+		adblMaturity[15] = dtIRSEffective.addTenor ("4Y").getJulian();
 
-		adblDate[17] = dtStart.addBusDays ((int)(365.25 * 6 + 2), "USD").getJulian(); // 6Y
+		adblMaturity[16] = dtIRSEffective.addTenor ("5Y").getJulian();
 
-		adblDate[18] = dtStart.addBusDays ((int)(365.25 * 7 + 2), "USD").getJulian(); // 7Y
+		adblMaturity[17] = dtIRSEffective.addTenor ("6Y").getJulian();
 
-		adblDate[19] = dtStart.addBusDays ((int)(365.25 * 8 + 2), "USD").getJulian(); // 8Y
+		adblMaturity[18] = dtIRSEffective.addTenor ("7Y").getJulian();
 
-		adblDate[20] = dtStart.addBusDays ((int)(365.25 * 9 + 2), "USD").getJulian(); // 9Y
+		adblMaturity[19] = dtIRSEffective.addTenor ("8Y").getJulian();
 
-		adblDate[21] = dtStart.addBusDays ((int)(365.25 * 10 + 2), "USD").getJulian(); // 10Y
+		adblMaturity[20] = dtIRSEffective.addTenor ("9Y").getJulian();
 
-		adblDate[22] = dtStart.addBusDays ((int)(365.25 * 11 + 2), "USD").getJulian(); // 11Y
+		adblMaturity[21] = dtIRSEffective.addTenor ("10Y").getJulian();
 
-		adblDate[23] = dtStart.addBusDays ((int)(365.25 * 12 + 2), "USD").getJulian(); // 12Y
+		adblMaturity[22] = dtIRSEffective.addTenor ("11Y").getJulian();
 
-		adblDate[24] = dtStart.addBusDays ((int)(365.25 * 15 + 2), "USD").getJulian(); // 15Y
+		adblMaturity[23] = dtIRSEffective.addTenor ("12Y").getJulian();
 
-		adblDate[25] = dtStart.addBusDays ((int)(365.25 * 20 + 2), "USD").getJulian(); // 20Y
+		adblMaturity[24] = dtIRSEffective.addTenor ("15Y").getJulian();
 
-		adblDate[26] = dtStart.addBusDays ((int)(365.25 * 25 + 2), "USD").getJulian(); // 25Y
+		adblMaturity[25] = dtIRSEffective.addTenor ("20Y").getJulian();
 
-		adblDate[27] = dtStart.addBusDays ((int)(365.25 * 30 + 2), "USD").getJulian(); // 30Y
+		adblMaturity[26] = dtIRSEffective.addTenor ("25Y").getJulian();
 
-		adblDate[28] = dtStart.addBusDays ((int)(365.25 * 40 + 2), "USD").getJulian(); // 40Y
+		adblMaturity[27] = dtIRSEffective.addTenor ("30Y").getJulian();
 
-		adblDate[29] = dtStart.addBusDays ((int)(365.25 * 50 + 2), "USD").getJulian(); // 50Y
+		adblMaturity[28] = dtIRSEffective.addTenor ("40Y").getJulian();
+
+		adblMaturity[29] = dtIRSEffective.addTenor ("50Y").getJulian();
 
 		adblCompCalibValue[15] = .0166;
 		adblCompCalibValue[16] = .0206;
@@ -244,7 +247,8 @@ public class RatesAnalyticsAPI {
 			astrCalibMeasure[i + 15] = "Rate";
 			adblRate[i + 15] = 0.01;
 
-			aCompCalib[i + 15] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new JulianDate (adblDate[i + 15]),
+			aCompCalib[i + 15] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+				new JulianDate (adblMaturity[i + 15]),
 				0., "USD", "USD-LIBOR-6M", "USD");
 		}
 
@@ -288,8 +292,8 @@ public class RatesAnalyticsAPI {
 		throws Exception
 	{
 		int NUM_CASH_INSTR = 7;
-		double adblDate[] = new double[NUM_CASH_INSTR];
 		double adblRate[] = new double[NUM_CASH_INSTR];
+		double adblMaturity[] = new double[NUM_CASH_INSTR];
 		String astrCalibMeasure[] = new String[NUM_CASH_INSTR];
 		double adblCompCalibValue[] = new double[NUM_CASH_INSTR];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_CASH_INSTR];
@@ -298,19 +302,21 @@ public class RatesAnalyticsAPI {
 
 		// First 7 instruments - cash calibration
 
-		adblDate[0] = dtStart.addBusDays (1, "USD").getJulian(); // ON
+		JulianDate dtCashEffective = dtStart.addBusDays (1, "USD");
 
-		adblDate[1] = dtStart.addBusDays (2, "USD").getJulian(); // 1D (TN)
+		adblMaturity[0] = dtCashEffective.addBusDays (1, "USD").getJulian(); // ON
 
-		adblDate[2] = dtStart.addBusDays (7, "USD").getJulian(); // 1W
+		adblMaturity[1] = dtCashEffective.addBusDays (2, "USD").getJulian(); // 1D (TN)
 
-		adblDate[3] = dtStart.addBusDays (14, "USD").getJulian(); // 2W
+		adblMaturity[2] = dtCashEffective.addBusDays (7, "USD").getJulian(); // 1W
 
-		adblDate[4] = dtStart.addBusDays (30, "USD").getJulian(); // 1M
+		adblMaturity[3] = dtCashEffective.addBusDays (14, "USD").getJulian(); // 2W
 
-		adblDate[5] = dtStart.addBusDays (60, "USD").getJulian(); // 2M
+		adblMaturity[4] = dtCashEffective.addBusDays (30, "USD").getJulian(); // 1M
 
-		adblDate[6] = dtStart.addBusDays (90, "USD").getJulian(); // 3M
+		adblMaturity[5] = dtCashEffective.addBusDays (60, "USD").getJulian(); // 2M
+
+		adblMaturity[6] = dtCashEffective.addBusDays (90, "USD").getJulian(); // 3M
 
 		/*
 		 * Cash Rate Quotes
@@ -328,7 +334,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtStart.addDays (2), new JulianDate (adblDate[i]), "USD");
+			aCompCalib[i] = CashBuilder.CreateCash (dtCashEffective, new JulianDate (adblMaturity[i]), "USD");
 		}
 
 		/*
@@ -358,8 +364,8 @@ public class RatesAnalyticsAPI {
 		throws Exception
 	{
 		int NUM_DC_INSTR = 8;
-		double adblDate[] = new double[NUM_DC_INSTR];
 		double adblRate[] = new double[NUM_DC_INSTR];
+		double adblMaturity[] = new double[NUM_DC_INSTR];
 		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
@@ -368,7 +374,6 @@ public class RatesAnalyticsAPI {
 
 		// Next 8 instruments - EDF calibration
 
-		org.drip.analytics.date.JulianDate dtEDFStart = dtStart;
 		adblCompCalibValue[0] = .0027;
 		adblCompCalibValue[1] = .0032;
 		adblCompCalibValue[2] = .0041;
@@ -385,7 +390,7 @@ public class RatesAnalyticsAPI {
 			aCompCalib[i] = aEDF[i];
 			astrCalibMeasure[i] = "Rate";
 
-			adblDate[i] = dtEDFStart.addDays ((i + 1) * 91).getJulian();
+			adblMaturity[i + 7] = aEDF[i].getMaturityDate().getJulian();
 		}
 
 		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
@@ -411,8 +416,8 @@ public class RatesAnalyticsAPI {
 		throws Exception
 	{
 		int NUM_DC_INSTR = 15;
-		double adblDate[] = new double[NUM_DC_INSTR];
 		double adblRate[] = new double[NUM_DC_INSTR];
+		double adblMaturity[] = new double[NUM_DC_INSTR];
 		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
@@ -421,35 +426,38 @@ public class RatesAnalyticsAPI {
 
 		// Final 15 instruments - IRS calibration
 
-		adblDate[0] = dtStart.addBusDays ((int)(365.25 * 4 + 2), "USD").getJulian(); // 4Y
 
-		adblDate[1] = dtStart.addBusDays ((int)(365.25 * 5 + 2), "USD").getJulian(); // 5Y
+		JulianDate dtIRSEffective = dtStart.addBusDays (2, "USD");
 
-		adblDate[2] = dtStart.addBusDays ((int)(365.25 * 6 + 2), "USD").getJulian(); // 6Y
+		adblMaturity[0] = dtIRSEffective.addTenor ("4Y").getJulian();
 
-		adblDate[3] = dtStart.addBusDays ((int)(365.25 * 7 + 2), "USD").getJulian(); // 7Y
+		adblMaturity[1] = dtIRSEffective.addTenor ("5Y").getJulian();
 
-		adblDate[4] = dtStart.addBusDays ((int)(365.25 * 8 + 2), "USD").getJulian(); // 8Y
+		adblMaturity[2] = dtIRSEffective.addTenor ("6Y").getJulian();
 
-		adblDate[5] = dtStart.addBusDays ((int)(365.25 * 9 + 2), "USD").getJulian(); // 9Y
+		adblMaturity[3] = dtIRSEffective.addTenor ("7Y").getJulian();
 
-		adblDate[6] = dtStart.addBusDays ((int)(365.25 * 10 + 2), "USD").getJulian(); // 10Y
+		adblMaturity[4] = dtIRSEffective.addTenor ("8Y").getJulian();
 
-		adblDate[7] = dtStart.addBusDays ((int)(365.25 * 11 + 2), "USD").getJulian(); // 11Y
+		adblMaturity[5] = dtIRSEffective.addTenor ("9Y").getJulian();
 
-		adblDate[8] = dtStart.addBusDays ((int)(365.25 * 12 + 2), "USD").getJulian(); // 12Y
+		adblMaturity[6] = dtIRSEffective.addTenor ("10Y").getJulian();
 
-		adblDate[9] = dtStart.addBusDays ((int)(365.25 * 15 + 2), "USD").getJulian(); // 15Y
+		adblMaturity[7] = dtIRSEffective.addTenor ("11Y").getJulian();
 
-		adblDate[10] = dtStart.addBusDays ((int)(365.25 * 20 + 2), "USD").getJulian(); // 20Y
+		adblMaturity[8] = dtIRSEffective.addTenor ("12Y").getJulian();
 
-		adblDate[11] = dtStart.addBusDays ((int)(365.25 * 25 + 2), "USD").getJulian(); // 25Y
+		adblMaturity[9] = dtIRSEffective.addTenor ("15Y").getJulian();
 
-		adblDate[12] = dtStart.addBusDays ((int)(365.25 * 30 + 2), "USD").getJulian(); // 30Y
+		adblMaturity[10] = dtIRSEffective.addTenor ("20Y").getJulian();
 
-		adblDate[13] = dtStart.addBusDays ((int)(365.25 * 40 + 2), "USD").getJulian(); // 40Y
+		adblMaturity[11] = dtIRSEffective.addTenor ("25Y").getJulian();
 
-		adblDate[14] = dtStart.addBusDays ((int)(365.25 * 50 + 2), "USD").getJulian(); // 50Y
+		adblMaturity[12] = dtIRSEffective.addTenor ("30Y").getJulian();
+
+		adblMaturity[13] = dtIRSEffective.addTenor ("40Y").getJulian();
+
+		adblMaturity[14] = dtIRSEffective.addTenor ("50Y").getJulian();
 
 		adblCompCalibValue[0] = .0166;
 		adblCompCalibValue[1] = .0206;
@@ -471,8 +479,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = RatesStreamBuilder.CreateIRS (dtStart.addDays (2), new JulianDate (adblDate[i]), 0.,
-				"USD", "USD-LIBOR-6M", "USD");
+			aCompCalib[i] = RatesStreamBuilder.CreateIRS (dtIRSEffective, new JulianDate (adblMaturity[i]), 0., "USD", "USD-LIBOR-6M", "USD");
 		}
 
 		/*

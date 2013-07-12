@@ -44,7 +44,7 @@ public class ZeroCurveBuilder {
 	 * @param strDCZC Zero Curve Day Count
 	 * @param strCalendarZC Zero Curve Calendar
 	 * @param bApplyEOMAdjZC Zero Coupon EOM Adjustment Flag
-	 * @param lsPeriod List of bond coupon periods
+	 * @param lsCouponPeriod List of bond coupon periods
 	 * @param dblWorkoutDate Work-out date
 	 * @param dblCashPayDate Cash-Pay Date
 	 * @param dc Discount Curve
@@ -59,7 +59,7 @@ public class ZeroCurveBuilder {
 		final java.lang.String strDCZC,
 		final java.lang.String strCalendarZC,
 		final boolean bApplyEOMAdjZC,
-		final java.util.List<org.drip.analytics.period.Period> lsPeriod,
+		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod,
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.definition.DiscountCurve dc,
@@ -68,7 +68,7 @@ public class ZeroCurveBuilder {
 	{
 		try {
 			return new org.drip.analytics.curve.DerivedZeroRate (iFreqZC, strDCZC, strCalendarZC,
-				bApplyEOMAdjZC, lsPeriod, dblWorkoutDate, dblCashPayDate, dc, quotingParams, dblZCBump);
+				bApplyEOMAdjZC, lsCouponPeriod, dblWorkoutDate, dblCashPayDate, dc, quotingParams, dblZCBump);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

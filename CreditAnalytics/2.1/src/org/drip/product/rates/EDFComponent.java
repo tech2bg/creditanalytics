@@ -359,7 +359,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.Period> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
 	{
 		return null;
 	}

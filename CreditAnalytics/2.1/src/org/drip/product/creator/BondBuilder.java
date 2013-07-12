@@ -269,8 +269,8 @@ public class BondBuilder {
 				adt.length != adblPrincipal.length || null == dtEffective || 0 == iFreq)
 			return null;
 
-		java.util.List<org.drip.analytics.period.Period> lPeriods = new
-			java.util.ArrayList<org.drip.analytics.period.Period>();
+		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
 
 		double dblTotalPrincipal = 0.;
 		double[] adblDate = new double[adt.length];
@@ -318,12 +318,9 @@ public class BondBuilder {
 			}
 
 			try {
-				if (bIsPrincipalPayDown)
-					lPeriods.add (new org.drip.analytics.period.Period (dblPeriodStart, adblDate[i],
-						dblPeriodStart, adblDate[i], adblDate[i], 1. / iFreq));
-				else
-					lPeriods.add (new org.drip.analytics.period.Period (dblPeriodStart, adblDate[i],
-						dblPeriodStart, adblDate[i], adblDate[i], 1. / iFreq));
+				lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblPeriodStart, adblDate[i],
+					dblPeriodStart, adblDate[i], adblDate[i], dblPeriodStart, iFreq, 1. / iFreq, "30/360",
+						false, "30/360", false, java.lang.Double.NaN, ""));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -334,7 +331,7 @@ public class BondBuilder {
 		}
 
 		org.drip.product.params.PeriodSet bfpgp = new org.drip.product.params.PeriodSet
-			(dtEffective.getJulian(), strDC, iFreq, lPeriods);
+			(dtEffective.getJulian(), strDC, iFreq, lsCouponPeriod);
 
 		if (!bfpgp.validate()) {
 			System.out.println ("Could not validate bfpgp!");

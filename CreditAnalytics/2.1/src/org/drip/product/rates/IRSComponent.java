@@ -232,7 +232,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			dtFloatFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.Period> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
 	{
 		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixStream.getCouponPeriod(),
 			_floatStream.getCouponPeriod());

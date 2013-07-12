@@ -168,13 +168,13 @@ public class PeriodGenerator extends PeriodSet {
 					+ " ...");
 
 		if (0 == _iFreq) {
-			if (null == (_lPeriods = org.drip.analytics.period.CouponPeriod.GetSinglePeriod (_dblEffective,
-				_dblMaturity, _strCalendar)))
+			if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GetSinglePeriod
+				(_dblEffective, _dblMaturity, _strCalendar)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
-				if (null == (_lPeriods = org.drip.analytics.period.CouponPeriod.GeneratePeriodsForward (
-						_dblEffective, // Effective
+				if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GeneratePeriodsForward
+						(_dblEffective, // Effective
 -						_dblMaturity, // Maturity
 						_dapEffective, // Effective DAP
 						_dapMaturity, // Maturity DAP
@@ -191,11 +191,11 @@ public class PeriodGenerator extends PeriodSet {
 						_bApplyAccEOMAdj,
 						true,
 						_strCalendar))
-						|| 0 == _lPeriods.size())
+						|| 0 == _lsCouponPeriod.size())
 						return false;
 			} else {
-				if (null == (_lPeriods = org.drip.analytics.period.CouponPeriod.GeneratePeriodsBackward (
-					_dblEffective, // Effective
+				if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GeneratePeriodsBackward
+					(_dblEffective, // Effective
 					_dblMaturity, // Maturity
 					_dapEffective, // Effective DAP
 					_dapMaturity, // Maturity DAP
@@ -214,23 +214,23 @@ public class PeriodGenerator extends PeriodSet {
 					true, // Merge the first 2 Periods - create a long stub?
 					true,
 					_strCalendar))
-					|| 0 == _lPeriods.size())
+					|| 0 == _lsCouponPeriod.size())
 					return false;
 			}
 		}
 
 		if (org.drip.math.common.NumberUtil.IsValid (_dblFirstCouponDate))
-			_lPeriods.get (0).setPayDate (_dblFirstCouponDate);
+			_lsCouponPeriod.get (0).setPayDate (_dblFirstCouponDate);
 
 		if (org.drip.math.common.NumberUtil.IsValid (_dblInterestAccrualStart))
-			_lPeriods.get (0).setAccrualStartDate (_dblInterestAccrualStart);
+			_lsCouponPeriod.get (0).setAccrualStartDate (_dblInterestAccrualStart);
 
 		return true;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.Period> getPeriods()
+	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getPeriods()
 	{
-		return _lPeriods;
+		return _lsCouponPeriod;
 	}
 
 	public static void main (

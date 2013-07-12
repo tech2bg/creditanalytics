@@ -77,15 +77,15 @@ public class BloombergSWPM {
 
 		// Cash Calibration
 
+		JulianDate dtCashEffective = dtStart.addBusDays (1, strCurrency);
+
 		for (int i = 0; i < astrCashTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i];
 
-			JulianDate dtEffective = dtStart.addBusDays (2, strCurrency);
-
-			aCompCalib[i] = CashBuilder.CreateCash (dtEffective,
-				new JulianDate (adblDate[i] = dtEffective.addTenor (astrCashTenor[i]).getJulian()),
+			aCompCalib[i] = CashBuilder.CreateCash (dtCashEffective,
+				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
 				strCurrency);
 		}
 
@@ -102,15 +102,15 @@ public class BloombergSWPM {
 
 		// IRS Calibration
 
+		JulianDate dtIRSEffective = dtStart.addBusDays (2, strCurrency);
+
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + adblEDFRate.length + astrCashTenor.length] = "Rate";
 			adblRate[i + adblEDFRate.length + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + adblEDFRate.length + astrCashTenor.length] = adblIRSRate[i];
 
-			JulianDate dtEffective = dtStart.addBusDays (2, strCurrency);
-
-			aCompCalib[i + adblEDFRate.length + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtEffective.addTenor (astrIRSTenor[i]).getJulian()),
+			aCompCalib[i + adblEDFRate.length + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
 				0., strCurrency, strIndex, strCurrency);
 		}
 

@@ -1409,7 +1409,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.Period> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
 	{
 		if (null == _periodParams) return null;
 
