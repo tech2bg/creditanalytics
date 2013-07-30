@@ -87,7 +87,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("CreditAnalyticsRequest de-serializer: Cannot locate comp params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_comp = null;
 		else
 			_comp = new org.drip.product.credit.BondComponent (astrField[2].getBytes());
@@ -96,7 +96,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("CreditAnalyticsRequest de-serializer: Cannot locate valuation params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_valParams = null;
 		else
 			_valParams = new org.drip.param.valuation.ValuationParams (astrField[3].getBytes());
@@ -105,7 +105,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("CreditAnalyticsRequest de-serializer: Cannot locate pricer params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_pricerParams = null;
 		else
 			_pricerParams = new org.drip.param.pricer.PricerParams (astrField[4].getBytes());
@@ -114,7 +114,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("CreditAnalyticsRequest de-serializer: Cannot locate component market params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			_cmp = null;
 		else
 			_cmp = new org.drip.param.market.ComponentMarketParamSet (astrField[5].getBytes());
@@ -123,7 +123,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("CreditAnalyticsRequest de-serializer: Cannot locate Quoting params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_quotingParams = null;
 		else
 			_quotingParams = new org.drip.param.valuation.QuotingParams (astrField[6].getBytes());
@@ -333,14 +333,15 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			adblDate[i] = dblStart + 365. * (i + 1);
 		}
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put ("USD-LIBOR-6M", 0.0402);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
@@ -481,19 +482,20 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.,
 			java.lang.Double.NaN), false);
 
-		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mapTSYQuotes = new
-			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
+			= new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cqTSY2ON);
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 

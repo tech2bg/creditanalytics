@@ -94,7 +94,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate Primary Tsy Bmk");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_strBmkPrimary = "";
 		else
 			_strBmkPrimary = astrField[1];
@@ -102,7 +102,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate CUSIP");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_astrSecBmk = null;
 		else {
 			_astrSecBmk = org.drip.analytics.support.GenericUtil.Split (astrField[2],
@@ -110,7 +110,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 
 			if (null == _astrSecBmk || 0 == _astrSecBmk.length) {
 				for (int i = 0; i < _astrSecBmk.length; ++i) {
-					if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (_astrSecBmk[i]))
+					if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (_astrSecBmk[i]))
 						_astrSecBmk[i] = null;
 				}
 			}

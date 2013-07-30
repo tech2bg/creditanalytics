@@ -59,7 +59,7 @@ import org.drip.math.common.FormatUtil;
  * @author Lakshmi Krishnamurthy
  */
 
-public class TreasuryCurve {
+public class TreasuryCurveAPI {
 
 	/*
 	 * Sample demonstrating creation of simple fixed coupon treasury bond

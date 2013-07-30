@@ -153,13 +153,13 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FXCurve de-serializer: Cannot locate spot date");
 
 		_dblSpotDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("FXCurve de-serializer: Cannot locate FX spot");
 
 		_dblFXSpot = new java.lang.Double (astrField[2]);
@@ -169,7 +169,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		java.util.List<java.lang.Double> lsdblBasis = new java.util.ArrayList<java.lang.Double>();
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("FXCurve de-serializer: Cannot decode state");
 
 		if (!org.drip.analytics.support.GenericUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
@@ -190,7 +190,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		}
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("FXCurve de-serializer: Cannot decode state");
 
 		java.util.List<java.lang.Boolean> lsb = new java.util.ArrayList<java.lang.Boolean>();
@@ -205,7 +205,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 			_abIsPIP[i] = lsb.get (i);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("FXCurve de-serializer: Cannot decode currency pair");
 
 		_cp = new org.drip.product.params.CurrencyPair (astrField[5].getBytes());

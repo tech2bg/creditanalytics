@@ -109,21 +109,21 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
 				("CurrencySet de-serializer: Cannot locate Trade Currency");
 
 		_strTradeCurrency = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
 				("CurrencySet de-serializer: Cannot locate Coupon Currency");
 
 		_strCouponCurrency = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
 				("CurrencySet de-serializer: Cannot locate Redemption Currency");
 

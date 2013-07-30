@@ -335,7 +335,7 @@ public class ConfigLoader {
 	 * @return Map of the holiday calendars
 	 */
 
-	public static java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale>
+	public static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
 		LoadHolidayCalendars (
 			final java.lang.String strConfigFile)
 		{
@@ -347,8 +347,8 @@ public class ConfigLoader {
 
 		if (null == lhNYB) return null;
 
-		java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale> mapHols = new
-			java.util.HashMap<java.lang.String, org.drip.analytics.holiday.Locale>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>();
 
 		mapHols.put ("NYB", lhNYB);
 
@@ -410,12 +410,12 @@ public class ConfigLoader {
 	 * @return Map of the holiday calendars
 	 */
 
-	public static final java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale>
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
 		LoadHolidayCalendarsFromDB (
 			final java.lang.String strConfigFile)
 	{
-		java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale> mapHols = new
-			java.util.HashMap<java.lang.String, org.drip.analytics.holiday.Locale>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>();
 
 		java.sql.Statement stmt = OracleInit (strConfigFile);
 
@@ -470,7 +470,7 @@ public class ConfigLoader {
 	{
 		java.lang.String strConfigFile = "c:\\Lakshmi\\java\\BondAnal\\Config.xml";
 
-		java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale> mapHols =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols =
 			LoadHolidayCalendars (strConfigFile);
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.analytics.holiday.Locale> me :

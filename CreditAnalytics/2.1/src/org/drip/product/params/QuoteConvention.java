@@ -135,7 +135,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
 				("MarketConvention de-serializer: Cannot locate first settle date");
 
@@ -144,13 +144,13 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("MarketConvention de-serializer: Cannot locate Calculation Type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strCalculationType = "";
 		else
 			_strCalculationType = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
 				("MarketConvention de-serializer: Cannot locate first redemption value");
 
@@ -160,7 +160,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 			throw new java.lang.Exception
 				("MarketConvention de-serializer: Cannot locate Quoting Convention");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_quotingParams = null;
 		else
 			_quotingParams = new org.drip.param.valuation.QuotingParams (astrField[4].getBytes());
@@ -169,7 +169,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 			throw new java.lang.Exception
 				("MarketConvention de-serializer: Cannot locate settle params value");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			_settleParams = null;
 		else
 			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[5].getBytes());

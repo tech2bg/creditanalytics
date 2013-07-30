@@ -76,7 +76,7 @@ public class Weekend extends org.drip.service.stream.Serializer {
 		java.lang.String strWH = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
 
 		if (null == strWH || strWH.isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (strWH))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (strWH))
 			throw new java.lang.Exception ("WeekendHoliday de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.analytics.support.GenericUtil.Split (strWH,
@@ -89,7 +89,7 @@ public class Weekend extends org.drip.service.stream.Serializer {
 
 		java.util.List<java.lang.Integer> lsi = new java.util.ArrayList<java.lang.Integer>();
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]) ||
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]) ||
 			!org.drip.analytics.support.GenericUtil.IntegerListFromString (lsi, astrField[1],
 				getCollectionRecordDelimiter()))
 			throw new java.lang.Exception ("WeekendHoliday de-serializer: Cannot decode state");

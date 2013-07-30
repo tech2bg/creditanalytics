@@ -99,13 +99,13 @@ public class Fixed extends Base {
 			throw new java.lang.Exception ("FixedHoliday de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FixedHoliday de-serializer: Cannot locate day");
 
 		_iDay = new java.lang.Integer (astrField[1]).intValue();
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("FixedHoliday de-serializer: Cannot locate month");
 
 		_iMonth = new java.lang.Integer (astrField[2]).intValue();

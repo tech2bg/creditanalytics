@@ -368,25 +368,25 @@ public class CDXRefData {
 
 			bw.write ("public class CDXRefDataHolder {\n\tpublic ");
 
-			bw.write ("static java.util.Map<java.lang.String, org.drip.product.creator.CDXRefDataBuilder> ");
+			bw.write ("static org.drip.analytics.support.CaseInsensitiveMap<org.drip.product.creator.CDXRefDataBuilder> ");
 
 			bw.write ("_mapCDXRefData\n\t\t= new ");
 
-			bw.write ("java.util.HashMap<java.lang.String, org.drip.product.creator.CDXRefDataBuilder>();");
+			bw.write ("org.drip.analytics.support.AnalyticsHelper.CaseInsensitiveMap<org.drip.product.creator.CDXRefDataBuilder>();");
 
-			bw.write ("\n\n\tpublic static java.util.Map<java.lang.String, ");
+			bw.write ("\n\n\tpublic static org.drip.analytics.support.CaseInsensitiveMap<");
 
 			bw.write ("java.util.Map<org.drip.analytics.date.JulianDate,\n\t\tjava.lang.Integer>> ");
 
-			bw.write ("_mmCDXRDBFirstCouponSeries = new java.util.TreeMap<java.lang.String,\n\t\t\t");
+			bw.write ("_mmCDXRDBFirstCouponSeries = new org.drip.analytics.support.CaseInsensitiveMap<\n\t\t\t");
 
 			bw.write ("java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Integer>>();\n\n\t");
 
-			bw.write ("public static java.util.Map<java.lang.String, java.util.Map<java.lang.Integer,");
+			bw.write ("public static org.drip.analytics.support.CaseInsensitiveMap<java.util.Map<java.lang.Integer,");
 
 			bw.write ("\n\t\torg.drip.analytics.date.JulianDate>> _mmCDXRDBSeriesFirstCoupon = new ");
 
-			bw.write ("java.util.TreeMap<java.lang.String,\n\t\t\t");
+			bw.write ("org.drip.analytics.support.CaseInsensitiveMap<\n\t\t\t");
 
 			bw.write ("java.util.Map<java.lang.Integer, org.drip.analytics.date.JulianDate>>();\n\n\t");
 

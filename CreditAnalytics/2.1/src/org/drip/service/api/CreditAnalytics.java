@@ -39,12 +39,14 @@ package org.drip.service.api;
 public class CreditAnalytics {
 	private static java.sql.Statement s_stmt = null;
 
-	private static final java.util.Map<java.lang.String, org.drip.product.definition.Bond> _mapBondCache =
-		new java.util.HashMap<java.lang.String, org.drip.product.definition.Bond>();
+	private static final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.definition.Bond>
+		_mapBondCache = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.definition.Bond>();
 
-	private static final java.util.Map<java.lang.String, org.drip.product.creator.BondRefDataBuilder>
-		_mapBondRefDataCache = new java.util.HashMap<java.lang.String,
-			org.drip.product.creator.BondRefDataBuilder>();
+	private static final
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.creator.BondRefDataBuilder>
+			_mapBondRefDataCache = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.creator.BondRefDataBuilder>();
 
 	private static final org.drip.product.definition.Bond GetBondFromCache (
 		final java.lang.String strBondId)
@@ -345,7 +347,7 @@ public class CreditAnalytics {
 	 * @return The set of on-the-run treasury identifier strings
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.String> GetOnTheRunTSYSet (
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> GetOnTheRunTSYSet (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		return null;
@@ -359,8 +361,9 @@ public class CreditAnalytics {
 	 * @return The set of on-the-run treasury identifiers and their yields
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> GetEODOnTheRunTSYSetYield (
-		final org.drip.analytics.date.JulianDate dtEOD)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		GetEODOnTheRunTSYSetYield (
+			final org.drip.analytics.date.JulianDate dtEOD)
 	{
 		return null;
 	}
@@ -374,10 +377,11 @@ public class CreditAnalytics {
 	 * @return Double map containing the set of on-the-run treasury identifiers and yields for a set of dates
 	 */
 
-	public static final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> GetOnTheRunTSYSetYield (
-			final org.drip.analytics.date.JulianDate dtStart,
-			final org.drip.analytics.date.JulianDate dtEnd)
+	public static final java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			GetOnTheRunTSYSetYield (
+				final org.drip.analytics.date.JulianDate dtStart,
+				final org.drip.analytics.date.JulianDate dtEnd)
 	{
 		return null;
 	}
@@ -705,14 +709,15 @@ public class CreditAnalytics {
 	{
 		if (null == dtEOD || null == strName || strName.isEmpty() || null == s_stmt) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put (strName + "-LIBOR-6M", 0.0042);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (dtEOD.addDays (2), mIndexFixings);
 
@@ -1088,7 +1093,7 @@ public class CreditAnalytics {
 	 * @return Map of the EOD CDS measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> GetEODCDSMeasures (
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> GetEODCDSMeasures (
 		final org.drip.product.definition.CreditDefaultSwap cds,
 		final org.drip.analytics.date.JulianDate dtEOD)
 	{
@@ -1120,7 +1125,7 @@ public class CreditAnalytics {
 	 * @return Map of live measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> GetLiveCDSMeasures (
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> GetLiveCDSMeasures (
 		final org.drip.product.definition.CreditDefaultSwap cds)
 	{
 		if (null == cds) return null;
@@ -1321,8 +1326,8 @@ public class CreditAnalytics {
 	 * @return The fixings object map
 	 */
 
-	public static final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> CreateFixingsObject (
+	public static final java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> CreateFixingsObject (
 			final org.drip.product.credit.BondComponent bond,
 			final org.drip.analytics.date.JulianDate dtValue, final double dblFix)
 	{
@@ -5402,10 +5407,11 @@ public class CreditAnalytics {
 	 * @return Map representing the bond measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> BondEODMeasuresFromPrice (
-		final java.lang.String strBondId,
-		final org.drip.analytics.date.JulianDate dtEOD,
-		final double dblPrice)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		BondEODMeasuresFromPrice (
+			final java.lang.String strBondId,
+			final org.drip.analytics.date.JulianDate dtEOD,
+			final double dblPrice)
 	{
 		if (null == strBondId || strBondId.isEmpty() || null == dtEOD || java.lang.Double.isNaN (dblPrice))
 			return null;
@@ -5465,9 +5471,10 @@ public class CreditAnalytics {
 	 * @return Map representing the bond measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> BondLiveMeasuresFromPrice (
-		final java.lang.String strBondId,
-		final double dblPrice)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		BondLiveMeasuresFromPrice (
+			final java.lang.String strBondId,
+			final double dblPrice)
 	{
 		return BondEODMeasuresFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
 	}
@@ -5482,10 +5489,11 @@ public class CreditAnalytics {
 	 * @return Map representing the bond measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> BondEODMeasuresFromTSYSpread (
-		final java.lang.String strBondId,
-		final org.drip.analytics.date.JulianDate dtEOD,
-		final double dblTSYSpread)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		BondEODMeasuresFromTSYSpread (
+			final java.lang.String strBondId,
+			final org.drip.analytics.date.JulianDate dtEOD,
+			final double dblTSYSpread)
 	{
 		if (null == strBondId || strBondId.isEmpty() || null == dtEOD || java.lang.Double.isNaN
 			(dblTSYSpread))
@@ -5547,9 +5555,10 @@ public class CreditAnalytics {
 	 * @return Map representing the bond measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> BondLiveMeasuresFromTSYSpread (
-		final java.lang.String strBondId,
-		final double dblTSYSpread)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		BondLiveMeasuresFromTSYSpread (
+			final java.lang.String strBondId,
+			final double dblTSYSpread)
 	{
 		return BondEODMeasuresFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
 			dblTSYSpread);
@@ -5565,10 +5574,11 @@ public class CreditAnalytics {
 	 * @return Map representing the bond measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> BondEODMeasuresFromYield (
-		final java.lang.String strBondId,
-		final org.drip.analytics.date.JulianDate dtEOD,
-		final double dblYield)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		BondEODMeasuresFromYield (
+			final java.lang.String strBondId,
+			final org.drip.analytics.date.JulianDate dtEOD,
+			final double dblYield)
 	{
 		if (null == strBondId || strBondId.isEmpty() || null == dtEOD || java.lang.Double.isNaN (dblYield))
 			return null;
@@ -5629,9 +5639,10 @@ public class CreditAnalytics {
 	 * @return Map representing the bond measures
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.Double> BondLiveMeasuresFromYield (
-		final java.lang.String strBondId,
-		final double dblYield)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		BondLiveMeasuresFromYield (
+			final java.lang.String strBondId,
+			final double dblYield)
 	{
 		return BondEODMeasuresFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
 	}

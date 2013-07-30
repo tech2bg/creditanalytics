@@ -646,19 +646,19 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate name");
 
 		_strName = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
 
 		java.lang.String[] astrBondRecord = org.drip.analytics.support.GenericUtil.Split (astrField[3],
@@ -678,7 +678,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		}
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
 
 		java.lang.String[] astrWeightRecord = org.drip.analytics.support.GenericUtil.Split (astrField[4],
@@ -698,7 +698,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		}
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate effective date");
 
 		_dtEffective = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[5]));
@@ -884,21 +884,21 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			adblDate[i] = dblStart + 365. * (i + 1);
 		}
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put ("USD-LIBOR-6M", 0.0402);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
-		org.drip.product.params.PeriodGenerator bpgp = new
-			org.drip.product.params.PeriodGenerator (dblStart + 3653., dblStart, dblStart + 3653.,
-				dblStart + 182., dblStart, 2, "30/360", "30/360", null, null, null, null, null, null, null,
-					null, "IGNORE", false, "USD");
+		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
+			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
+				null, null, null, null, null, null, null, "IGNORE", false, "USD");
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");

@@ -8,8 +8,9 @@ package org.drip.service.sample;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.definition.*;
-import org.drip.param.market.MultiSidedQuote;
+import org.drip.param.market.*;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
 
@@ -18,6 +19,8 @@ import org.drip.product.definition.*;
  */
 
 import org.drip.analytics.creator.*;
+import org.drip.analytics.output.BondRVMeasures;
+import org.drip.math.common.FormatUtil;
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
 import org.drip.product.credit.BondComponent;
@@ -192,16 +195,15 @@ public class BondRVMeasuresAPI {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> MakeTSYQuotes (
+	private static final CaseInsensitiveTreeMap<ComponentQuote> MakeTSYQuotes (
 		final String[] astrTSYTenor,
 		final double[] adblTSYYield)
 		throws Exception
 	{
-		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mTSYQuotes = new
-			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();
+		CaseInsensitiveTreeMap<ComponentQuote> mTSYQuotes = new CaseInsensitiveTreeMap<ComponentQuote>();
 
 		for (int i = 0; i < astrTSYTenor.length; ++i) {
-			org.drip.param.market.ComponentMultiMeasureQuote cmmq = new org.drip.param.market.ComponentMultiMeasureQuote();
+			ComponentMultiMeasureQuote cmmq = new ComponentMultiMeasureQuote();
 
 			cmmq.addQuote ("Yield", new MultiSidedQuote ("mid", adblTSYYield[i], Double.NaN), true);
 
@@ -218,54 +220,40 @@ public class BondRVMeasuresAPI {
 	 */
 
 	private static final boolean PrintRVMeasures (
-		final java.lang.String strPrefix,
-		final org.drip.analytics.output.BondRVMeasures rv)
+		final String strPrefix,
+		final BondRVMeasures rv)
 	{
 		if (null == rv) return false;
 
-		System.out.println (strPrefix + "ASW: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblAssetSwapSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "ASW: " + FormatUtil.FormatDouble (rv._dblAssetSwapSpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Bond Basis: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblBondBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Bond Basis: " + FormatUtil.FormatDouble (rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Convexity: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblConvexity, 0, 2, 1000000.));
+		System.out.println (strPrefix + "Convexity: " + FormatUtil.FormatDouble (rv._dblConvexity, 0, 2, 1000000.));
 
-		System.out.println (strPrefix + "Credit Basis: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblCreditBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Credit Basis: " + FormatUtil.FormatDouble (rv._dblCreditBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Discount Margin: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblDiscountMargin, 0, 0, 10000.));
+		System.out.println (strPrefix + "Discount Margin: " + FormatUtil.FormatDouble (rv._dblDiscountMargin, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "G Spread: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblGSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "G Spread: " + FormatUtil.FormatDouble (rv._dblGSpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "I Spread: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblISpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "I Spread: " + FormatUtil.FormatDouble (rv._dblISpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Macaulay Duration: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblMacaulayDuration, 0, 2, 1.));
+		System.out.println (strPrefix + "Macaulay Duration: " + FormatUtil.FormatDouble (rv._dblMacaulayDuration, 0, 2, 1.));
 
-		System.out.println (strPrefix + "Modified Duration: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblModifiedDuration, 0, 2, 10000.));
+		System.out.println (strPrefix + "Modified Duration: " + FormatUtil.FormatDouble (rv._dblModifiedDuration, 0, 2, 10000.));
 
-		System.out.println (strPrefix + "OAS: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblOASpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "OAS: " + FormatUtil.FormatDouble (rv._dblOASpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "PECS: " + org.drip.math.common.FormatUtil.FormatDouble (rv._dblPECS,
-			0, 0, 10000.));
+		System.out.println (strPrefix + "PECS: " + FormatUtil.FormatDouble (rv._dblPECS, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Price: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblPrice, 0, 3, 100.));
+		System.out.println (strPrefix + "Price: " + FormatUtil.FormatDouble (rv._dblPrice, 0, 3, 100.));
 
-		System.out.println (strPrefix + "TSY Spread: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblTSYSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "TSY Spread: " + FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.));
 
 		try {
-			System.out.println (strPrefix + "Workout Date: " + new org.drip.analytics.date.JulianDate
-				(rv._wi._dblDate));
-		} catch (java.lang.Exception e) {
+			System.out.println (strPrefix + "Workout Date: " + new JulianDate (rv._wi._dblDate));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -273,20 +261,15 @@ public class BondRVMeasuresAPI {
 
 		System.out.println (strPrefix + "Workout Type: " + rv._wi._iWOType);
 
-		System.out.println (strPrefix + "Workout Yield: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._wi._dblYield, 0, 3, 100.));
+		System.out.println (strPrefix + "Workout Yield: " + FormatUtil.FormatDouble (rv._wi._dblYield, 0, 3, 100.));
 
-		System.out.println (strPrefix + "Yield01: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblYield01, 0, 2, 10000.));
+		System.out.println (strPrefix + "Yield01: " + FormatUtil.FormatDouble (rv._dblYield01, 0, 2, 10000.));
 
-		System.out.println (strPrefix + "Yield Basis: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblBondBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Yield Basis: " + FormatUtil.FormatDouble (rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Yield Spread: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblBondBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Yield Spread: " + FormatUtil.FormatDouble (rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Z Spread: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._dblZSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "Z Spread: " + FormatUtil.FormatDouble (rv._dblZSpread, 0, 0, 10000.));
 
 		return true;
 	}

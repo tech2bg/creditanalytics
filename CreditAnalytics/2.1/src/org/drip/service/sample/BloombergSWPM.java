@@ -1,6 +1,7 @@
 
 package org.drip.service.sample;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drip.analytics.creator.DiscountCurveBuilder;
@@ -9,6 +10,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.daycount.DateAdjustParams;
 import org.drip.analytics.definition.DiscountCurve;
 import org.drip.analytics.period.Period;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.math.common.FormatUtil;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
 import org.drip.param.creator.RatesScenarioCurveBuilder;
@@ -19,6 +21,7 @@ import org.drip.product.creator.EDFutureBuilder;
 import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.CalibratableComponent;
 import org.drip.product.definition.RatesComponent;
+import org.drip.product.rates.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -57,6 +60,12 @@ import org.drip.service.api.CreditAnalytics;
 public class BloombergSWPM {
 	private static final String FIELD_SEPARATOR = "    ";
 
+	/*
+	 * Sample demonstrating creation of discount curve from rates instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static DiscountCurve BuildBBGRatesCurve (
 		final JulianDate dtStart,
 		final String[] astrCashTenor,
@@ -64,6 +73,7 @@ public class BloombergSWPM {
 		final double[] adblEDFRate,
 		final String[] astrIRSTenor,
 		final double[] adblIRSRate,
+		final double dblBump,
 		final String strCurrency)
 		throws Exception
 	{
@@ -82,7 +92,7 @@ public class BloombergSWPM {
 		for (int i = 0; i < astrCashTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
-			adblCompCalibValue[i] = adblCashRate[i];
+			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
 			aCompCalib[i] = CashBuilder.CreateCash (dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
@@ -97,7 +107,7 @@ public class BloombergSWPM {
 			aCompCalib[astrCashTenor.length + i] = aEDF[i];
 			astrCalibMeasure[astrCashTenor.length + i] = "Rate";
 			adblRate[astrCashTenor.length + i] = java.lang.Double.NaN;
-			adblCompCalibValue[astrCashTenor.length + i] = adblEDFRate[i];
+			adblCompCalibValue[astrCashTenor.length + i] = adblEDFRate[i] + dblBump;
 		}
 
 		// IRS Calibration
@@ -107,7 +117,7 @@ public class BloombergSWPM {
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + adblEDFRate.length + astrCashTenor.length] = "Rate";
 			adblRate[i + adblEDFRate.length + astrCashTenor.length] = java.lang.Double.NaN;
-			adblCompCalibValue[i + adblEDFRate.length + astrCashTenor.length] = adblIRSRate[i];
+			adblCompCalibValue[i + adblEDFRate.length + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
 			aCompCalib[i + adblEDFRate.length + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
@@ -138,49 +148,147 @@ public class BloombergSWPM {
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtStart = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 11);
+		JulianDate dtValue = JulianDate.Today();
+
+		JulianDate dtSettle = dtValue.addBusDays (2, "USD");
+
+		System.out.println ("\n---- Valuation Details ----\n");
+
+		System.out.println ("Trade Date  : " + dtValue);
+
+		System.out.println ("Settle Date : " + dtSettle);
 
 		/*
-		 * This part is best modeled by Curve #23 in the SWPM "Curves" tab
+		 * Model the discount curve instrument quotes. Best pulled from Curves #23/#47 in the BBG SWPM "Curves" tab
 		 */
 
+		double dblCoupon = 0.01526297;
+		double dblFixing = 0.0026500;
+		double dblNotional = 10.e+06;
 		String[] astrCashTenor = new String[] {"3M"};
-		double[] adblCashRate = new double[] {0.0026810};
-		double[] adblEDFRate = new double[] {0.0026810, 0.0026810};
+		double[] adblCashRate = new double[] {0.0026500};
+		double[] adblEDFRate = new double[] {0.0026500, 0.0026500};
 		String[] astrIRSTenor = new String[] {    "4Y",      "5Y",      "6Y",
 			     "7Y",	    "8Y",      "9Y",     "10Y",     "11Y",     "12Y",     "15Y",     "20Y"};
-		double[] adblIRSRate = new double[] {0.0119802, 0.0158492, 0.0192739,
-			0.0221449, 0.0244588, 0.0264071, 0.028057, 0.0293805, 0.0306474, 0.0330706, 0.0349158};
+		double[] adblIRSRate = new double[] {0.0114126, 0.0152630, 0.0186897,
+			0.0215577, 0.0239010, 0.0258410, 0.0275078, 0.0288980, 0.0301306, 0.0326011, 0.0345342};
 
-		DiscountCurve dc = BuildBBGRatesCurve (dtStart, astrCashTenor, adblCashRate, adblEDFRate, astrIRSTenor, adblIRSRate, "USD");
+		/*
+		 * Build the Discount Curve
+		 */
 
-		JulianDate dtEffective = JulianDate.CreateFromYMD (2013, JulianDate.JULY, 15);
+		DiscountCurve dc = BuildBBGRatesCurve (dtValue, astrCashTenor, adblCashRate, adblEDFRate, astrIRSTenor, adblIRSRate, 0., "USD");
 
-		JulianDate dtMaturity = JulianDate.CreateFromYMD (2018, JulianDate.JULY, 15);
+		JulianDate dtEffective = dtValue.addBusDays (2, "USD");
+
+		JulianDate dtMaturity = dtEffective.addTenor ("5Y");
+
+		/*
+		 * Build the Fixed Receive Stream
+		 */
 
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, "USD");
 
-		RatesComponent fixStream = new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-			0.01584922, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, dap, null, 10.e+06, "USD", "USD");
+		RatesComponent fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
+			dblCoupon, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, dap, null, dblNotional, "USD", "USD");
 
-		RatesComponent floatStream = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+		/*
+		 * Build the Floating Pay Stream
+		 */
+
+		RatesComponent floatStream = new FloatingStream (dtEffective.getJulian(),
 			dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", "USD-LIBOR-3M", false, null, null,
-				dap, dap, dap, dap, dap, null, null, -10.e+06, "USD", "USD");
+				dap, dap, dap, dap, dap, null, null, -dblNotional, "USD", "USD");
 
-		java.util.Map<java.lang.String, java.lang.Double> mapIndexFixing = new java.util.HashMap<java.lang.String, java.lang.Double>();
+		/*
+		 * Build the Swap from the fixed and the floating streams
+		 */
 
-		mapIndexFixing.put ("USD-LIBOR-3M", 0.0026810);
+		IRSComponent swap = new IRSComponent (fixStream, floatStream);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>> mmFixings =
-			new java.util.HashMap<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>();
+		System.out.println ("\n---- Swap Details ----\n");
+
+		System.out.println ("Effective: " + dtEffective);
+
+		System.out.println ("Maturity:  " + dtMaturity);
+
+		/*
+		 * Set up the base market parameters, including base discount curves and the base fixings
+		 */
+
+		CaseInsensitiveTreeMap<Double> mapIndexFixing = new CaseInsensitiveTreeMap<Double>();
+
+		mapIndexFixing.put ("USD-LIBOR-3M", dblFixing);
+
+		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mmFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
 
 		mmFixings.put (dtEffective, mapIndexFixing);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtStart.addDays (2), 0, "", Convention.DR_ACTUAL);
+		/*
+		 * Set up the valuation parameters
+		 */
 
-		System.out.println ("\nFixed Cashflow\n--------");
+		ValuationParams valParams = new ValuationParams (dtValue, dtSettle, "USD");
+
+		/*
+		 * Generate the base scenario measures for the swap
+		 */
+
+		CaseInsensitiveTreeMap<Double> mapSwapCalc = swap.value (valParams, null, cmp, null);
+
+		double dblBasePV = mapSwapCalc.get ("PV");
+
+		System.out.println ("\n---- Swap Output Measures ----\n");
+
+		System.out.println ("Par Cpn      : " + FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 5, 100.));
+
+		System.out.println ("Fixed DV01   : " + FormatUtil.FormatDouble (mapSwapCalc.get ("FixedDV01"), 0, 0, 0.0000001 * dblNotional));
+
+		/*
+		 * Set up the fixings bumped market parameters - these use base discount curve and the bumped fixing
+		 */
+
+		mapIndexFixing.put ("USD-LIBOR-3M", dblFixing + 0.0001);
+
+		mmFixings.put (dtEffective, mapIndexFixing);
+
+		ComponentMarketParams cmpFixingsBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
+
+		/*
+		 * Generate the fixing bumped scenario measures for the swap
+		 */
+
+		CaseInsensitiveTreeMap<Double> mapSwapFixingsBumpedCalc = swap.value (valParams, null, cmpFixingsBumped, null);
+
+		System.out.println ("Fixings DV01 : " + FormatUtil.FormatDouble (mapSwapFixingsBumpedCalc.get ("PV") - dblBasePV, 0, 0, 0.001 * dblNotional));
+
+		/*
+		 * Set up the rate flat bumped market parameters - these use the bumped base discount curve and the base fixing
+		 */
+
+		DiscountCurve dcBumped = BuildBBGRatesCurve (dtValue, astrCashTenor, adblCashRate, adblEDFRate, astrIRSTenor, adblIRSRate, 0.0001, "USD");
+
+		mapIndexFixing.put ("USD-LIBOR-3M", dblFixing - 0.0001);
+
+		mmFixings.put (dtEffective, mapIndexFixing);
+
+		ComponentMarketParams cmpRateBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcBumped, null, null, null, null, null, mmFixings);
+
+		/*
+		 * Generate the rate flat bumped scenario measures for the swap
+		 */
+
+		CaseInsensitiveTreeMap<Double> mapSwapRateBumpedCalc = swap.value (valParams, null, cmpRateBumped, null);
+
+		System.out.println ("PV01         : " + FormatUtil.FormatDouble (mapSwapRateBumpedCalc.get ("PV") - dblBasePV, 0, 0, 0.001 * dblNotional));
+
+		/*
+		 * Generate the Swap's fixed cash flows
+		 */
+
+		System.out.println ("\n---- Fixed Cashflow ----\n");
 
 		for (Period p : fixStream.getCouponPeriod())
 			System.out.println (
@@ -188,24 +296,21 @@ public class BloombergSWPM {
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.getCouponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getCouponDCF(), 0, 2, 158492.2) + FIELD_SEPARATOR
+				FormatUtil.FormatDouble (p.getCouponDCF(), 0, 2, dblCoupon * dblNotional) + FIELD_SEPARATOR
 			);
 
-		System.out.println ("\n\nFloating Cashflow\n--------");
+		/*
+		 * Generate the Swap's floating cash flows
+		 */
+
+		System.out.println ("\n---- Floating Cashflow ----\n");
 
 		for (Period p : floatStream.getCouponPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getCouponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getCouponDCF(), 0, 2, 166042.8) + FIELD_SEPARATOR
+				FormatUtil.FormatDouble (p.getCouponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR
 			);
-
-		org.drip.product.rates.IRSComponent swap = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
-
-		Map<String, Double> mapSwapCalc = swap.value (valParams, null, cmp, null);
-
-		System.out.println ("Par Cpn: " + org.drip.math.common.FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 4, 100.));
 	}
 }

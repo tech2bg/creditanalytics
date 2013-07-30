@@ -139,27 +139,27 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 			throw new java.lang.Exception
 				("NotionalSetting de-serializer: Cannot locate principal schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_fsPrincipalOutstanding = FactorSchedule.CreateBulletSchedule();
 		else
 			_fsPrincipalOutstanding = new FactorSchedule (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
 				("NotionalSetting de-serializer: Cannot locate principal notional");
 
 		_dblNotional = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
 				("NotionalSetting de-serializer: Cannot locate Price Off Original Notional flag");
 
 		_bPriceOffOriginalNotional = new java.lang.Boolean (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception
 				("NotionalSetting de-serializer: Cannot locate Period amortization proxy mode");
 

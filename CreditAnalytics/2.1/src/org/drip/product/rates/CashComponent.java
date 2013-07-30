@@ -77,7 +77,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 	}
 
-	@Override protected java.util.Map<java.lang.String, java.lang.Double> calibMeasures (
+	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -121,7 +121,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		// double dblVersion = new java.lang.Double (astrField[0]).doubleValue();
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[1]);
@@ -129,7 +129,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate IR curve name");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strIR = astrField[2];
 		else
 			_strIR = "";
@@ -137,7 +137,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate cash code");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strCode = astrField[3];
 		else
 			_strCode = "";
@@ -145,7 +145,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate day count convention");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strDC = astrField[4];
 		else
 			_strDC = "";
@@ -153,19 +153,19 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate Calendar");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strCalendar = astrField[5];
 		else
 			_strCalendar = "";
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate maturity date");
 
 		_dblMaturity = new java.lang.Double (astrField[6]);
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate effective date");
 
 		_dblEffective = new java.lang.Double (astrField[7]);
@@ -173,7 +173,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate notional schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_notlSchedule = null;
 		else
 			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[8].getBytes());
@@ -181,7 +181,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("Cash de-serializer: Cannot locate cash settle params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_settleParams = null;
 		else
 			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[9].getBytes());
@@ -310,7 +310,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		return _settleParams;
 	}
 
-	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -324,8 +324,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 		long lStart = System.nanoTime();
 
-		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.HashMap<java.lang.String,
-			java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		try {
 			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
@@ -336,19 +336,19 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.getDF (dblCashSettle);
 
-			mapResult.put ("PV", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
+			mapResult.put ("pv", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
 				_dblMaturity));
 
-			mapResult.put ("Price", 100. * dblAdjustedAnnuity);
+			mapResult.put ("price", 100. * dblAdjustedAnnuity);
 
-			mapResult.put ("Rate", ((1. / dblUnadjustedAnnuity) - 1.) /
+			mapResult.put ("rate", ((1. / dblUnadjustedAnnuity) - 1.) /
 				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
 					false, _dblMaturity, null, _strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
-		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
+		mapResult.put ("calctime", (System.nanoTime() - lStart) * 1.e-09);
 
 		return mapResult;
 	}
@@ -379,8 +379,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			return null;
 
 		try {
-			java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
-				mktParams, quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+				pricerParams, mktParams, quotingParams);
 
 			if (null == mapMeasures) return null;
 

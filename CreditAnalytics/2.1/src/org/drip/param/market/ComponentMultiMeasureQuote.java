@@ -42,8 +42,8 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 	private java.lang.String _strMarketQuoteField = "";
 	private org.drip.param.definition.Quote _mktQuote = null;
 
-	private java.util.Map<java.lang.String, org.drip.param.definition.Quote> _mapQuotes = new
-		java.util.HashMap<java.lang.String, org.drip.param.definition.Quote>();
+	org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.Quote> _mapQuotes = new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.Quote>();
 
 	/**
 	 * Constructs an empty component quote from the component
@@ -90,19 +90,19 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate market quote");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_mktQuote = new MultiSidedQuote (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate market quote field");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strMarketQuoteField = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate map of quotes");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3])) {
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[3],
 				getCollectionRecordDelimiter());
 
@@ -115,7 +115,8 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() || null == astrKVPair[1] || astrKVPair[1].isEmpty() ||
-							NULL_SER_STRING.equals (astrKVPair[0]) || NULL_SER_STRING.equals (astrKVPair[1]))
+							NULL_SER_STRING.equalsIgnoreCase (astrKVPair[0]) ||
+								NULL_SER_STRING.equalsIgnoreCase (astrKVPair[1]))
 						continue;
 
 					_mapQuotes.put (astrKVPair[0], new org.drip.param.market.MultiSidedQuote

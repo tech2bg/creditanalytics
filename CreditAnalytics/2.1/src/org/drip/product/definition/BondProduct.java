@@ -150,8 +150,8 @@ public interface BondProduct {
 	 */
 
 	public abstract boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings
 	);
 
 	/**
@@ -160,8 +160,8 @@ public interface BondProduct {
 	 * @return Bond fixings
 	 */
 
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> getFixings();
+	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> getFixings();
 
 	/**
 	 * Sets the Bond's Market Convention

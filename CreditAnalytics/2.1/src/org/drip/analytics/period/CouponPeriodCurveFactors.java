@@ -140,63 +140,63 @@ public class CouponPeriodCurveFactors extends Period {
 				("CouponPeriodCurveFactors de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate full coupon rate");
 
 		_dblFullCouponRate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate start notional");
 
 		_dblStartNotional = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate end notional");
 
 		_dblEndNotional = new java.lang.Double (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate start survival");
 
 		_dblStartSurvival = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate end survival");
 
 		_dblEndSurvival = new java.lang.Double (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate start DF");
 
 		_dblStartDF = new java.lang.Double (astrField[6]);
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate end DF");
 
 		_dblEndDF = new java.lang.Double (astrField[7]);
 
 		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate floater spread");
 
 		_dblSpread = new java.lang.Double (astrField[8]);
 
 		if (null == astrField[9] || astrField[9].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			throw new java.lang.Exception
 				("CouponPeriodCurveFactors de-serializer: Cannot locate index rate");
 

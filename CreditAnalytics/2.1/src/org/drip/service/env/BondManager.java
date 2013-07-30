@@ -40,15 +40,17 @@ public class BondManager {
 	private static final boolean s_bBlog = false;
 	private static final boolean s_bLoadEOS = true;
 
-	private static java.util.Map<java.lang.String, java.lang.Double> s_mapBondMarks = new
-		java.util.HashMap<java.lang.String, java.lang.Double>();
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> s_mapBondMarks = new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-	private static java.util.Map<java.lang.String, org.drip.product.credit.BondComponent> s_mapBonds = new
-		java.util.HashMap<java.lang.String, org.drip.product.credit.BondComponent>();
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.credit.BondComponent>
+		s_mapBonds = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.credit.BondComponent>();
 
-	private static java.util.Map<java.lang.String, java.util.SortedMap<java.lang.Double, java.lang.String>>
-		s_mapTickerMatCUSIP = new java.util.HashMap<java.lang.String, java.util.SortedMap<java.lang.Double,
-			java.lang.String>>();
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.SortedMap<java.lang.Double,
+		java.lang.String>> s_mapTickerMatCUSIP = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.SortedMap<java.lang.Double,
+				java.lang.String>>();
 
 	private static final boolean AppendField (
 		final java.lang.StringBuilder sb,
@@ -312,13 +314,14 @@ public class BondManager {
 	 * @return The BondOutput object
 	 */
 
-	public static java.util.Map<java.lang.String, org.drip.analytics.output.BondRVMeasures> CalcBondMeasures
-		(final java.lang.String strBondDescription,
-		final org.drip.product.definition.Bond bond,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.MarketParams mpc,
-		final double dblBidPrice,
-		final double dblAskPrice)
+	public static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures>
+		CalcBondMeasures
+			(final java.lang.String strBondDescription,
+			final org.drip.product.definition.Bond bond,
+			final org.drip.param.valuation.ValuationParams valParams,
+			final org.drip.param.definition.MarketParams mpc,
+			final double dblBidPrice,
+			final double dblAskPrice)
 	{
 		if (null == strBondDescription || strBondDescription.isEmpty() || null == bond || null == valParams
 			|| null == mpc || java.lang.Double.isNaN (dblBidPrice) || java.lang.Double.isNaN (dblAskPrice))
@@ -328,8 +331,8 @@ public class BondManager {
 
 		if (null == mktParams) return null;
 
-		java.util.Map<java.lang.String, org.drip.analytics.output.BondRVMeasures> mapBMRV = new
-			java.util.HashMap<java.lang.String, org.drip.analytics.output.BondRVMeasures>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures> mapBMRV = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures>();
 
 		org.drip.param.valuation.WorkoutInfo wiAsk = bond.calcExerciseYieldFromPrice (valParams, mktParams,
 			null, dblAskPrice);
@@ -361,7 +364,7 @@ public class BondManager {
 	 * @return The BondOutput
 	 */
 
-	public static java.util.Map<java.lang.String, org.drip.analytics.output.BondRVMeasures>
+	public static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures>
 		CalcBondAnalyticsFromPrice (
 			final java.lang.String strCUSIPIn,
 			final org.drip.param.definition.MarketParams mpc,
@@ -1620,13 +1623,13 @@ public class BondManager {
 
 			bw.write ("\n\tpublic static final ");
 
-			bw.write ("java.util.Map<java.lang.String, org.drip.product.credit.Bond> CreateBondSetStatic\n");
+			bw.write ("org.drip.analytics.support.CaseInsensitiveMap<org.drip.product.credit.Bond> CreateBondSetStatic\n");
 
 			bw.write ("\t\t(final org.drip.param.definition.MarketParams mpc) {\n");
 
-			bw.write ("\t\tjava.util.Map<java.lang.String, org.drip.product.credit.Bond> mapBondCache = ");
+			bw.write ("\t\torg.drip.analytics.support.CaseInsensitiveMap<org.drip.product.credit.Bond> mapBondCache = ");
 
-			bw.write ("new\n\t\t\tjava.util.HashMap<java.lang.String, org.drip.product.credit.Bond>();\n\n");
+			bw.write ("new\n\t\t\torg.drip.analytics.support.CaseInsensitiveMap<org.drip.product.credit.Bond>();\n\n");
 
 			java.sql.ResultSet rs = stmt.executeQuery
 				("SELECT * FROM BondValData order by Ticker, Maturity");

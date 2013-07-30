@@ -84,7 +84,7 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 	 * @return The Value Map
 	 */
 
-	public abstract java.util.Map<java.lang.String, java.lang.Double> valueFromQuotedSpread (
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> valueFromQuotedSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,

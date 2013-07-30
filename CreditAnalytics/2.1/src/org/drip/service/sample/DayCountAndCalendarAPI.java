@@ -55,6 +55,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class DayCountAndCalendarAPI {
+
 	/**
 	 * Sample demonstrating the calendar API
 	 * 

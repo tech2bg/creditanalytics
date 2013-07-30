@@ -158,7 +158,7 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("PricerParams de-serializer: Cannot locate unit size");
 
 		_iUnitSize = new java.lang.Integer (astrField[1]);
@@ -166,20 +166,20 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("PricerParams de-serializer: Cannot locate calib params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_calibParams = null;
 		else
 			_calibParams = new org.drip.param.definition.CalibrationParams (astrField[2].getBytes());
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
 				("PricerParams de-serializer: Cannot locate survival to pay date flag");
 
 		_bSurvToPayDate = new java.lang.Boolean (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception
 				("PricerParams de-serializer: Cannot locate discretization scheme");
 

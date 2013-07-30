@@ -245,7 +245,7 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		if (null == astrField[16] || astrField[16].isEmpty())
 			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Work-out info");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[16]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[16]))
 			_wi = null;
 		else
 			_wi = new org.drip.param.valuation.WorkoutInfo (astrField[16].getBytes());
@@ -321,11 +321,11 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 	 * @return Map of the RV measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> toMap (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> toMap (
 		final java.lang.String strPrefix)
 	{
-		java.util.Map<java.lang.String, java.lang.Double> mapRVMeasures = new
-			java.util.TreeMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapRVMeasures = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapRVMeasures.put (strPrefix + "AssetSwapSpread", _dblAssetSwapSpread);
 

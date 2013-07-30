@@ -38,7 +38,7 @@ package org.drip.product.definition;
  */
 
 public abstract class CalibratableComponent extends org.drip.product.definition.Component {
-	protected abstract java.util.Map<java.lang.String, java.lang.Double> calibMeasures (
+	protected abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,

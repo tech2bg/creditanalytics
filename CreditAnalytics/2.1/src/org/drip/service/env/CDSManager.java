@@ -143,10 +143,11 @@ public class CDSManager {
 		long lStart = System.nanoTime();
 
 		for (int i = 0; i < aCDS.length; ++i) {
-			java.util.Map<java.lang.String, java.lang.Double> mapCalc = aCDS[1].value (valParams,
-				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-					(mpc.getScenCMP (aCDS[i], "Base").getDiscountCurve(), null, null, cc, null, null, null),
-						null);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc = aCDS[1].value
+				(valParams, pricerParams,
+					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+						(mpc.getScenCMP (aCDS[i], "Base").getDiscountCurve(), null, null, cc, null, null,
+							null), null);
 
 			if (null == mapCalc) {
 				System.out.println ("CDS Calc for " + strSPN + " and " + aCDS[1].getComponentName() +

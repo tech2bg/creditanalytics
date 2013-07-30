@@ -68,7 +68,7 @@ public class CreditCurveScenarioGenerator {
 			(!"FlatSpread".equalsIgnoreCase (strMeasure) && !"QuotedSpread".equalsIgnoreCase (strMeasure)))
 			return new TranslatedQuoteMeasure (strMeasure, dblQuote);
 
-		java.util.Map<java.lang.String, java.lang.Double> mapQSMeasures =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQSMeasures =
 			((org.drip.product.definition.CreditDefaultSwap) comp).valueFromQuotedSpread (valParams,
 				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
 					null, 0.01, dblQuote);
@@ -136,8 +136,8 @@ public class CreditCurveScenarioGenerator {
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat)
 	{
@@ -179,12 +179,6 @@ public class CreditCurveScenarioGenerator {
 
 			if (null == tqm) return null;
 
-			/* System.out.println ("\tIN => " + _aCalibInst[i].getMaturityDate() + " | " + astrCalibMeasure[i] +
-				" | " + adblQuotes[i]);
-
-			System.out.println ("\tOUT => " + _aCalibInst[i].getMaturityDate() + " | " + tqm._strMeasure +
-				" | " + tqm._dblQuote); */
-
 			if (!_compCalib.bootstrapHazardRate (cc, _aCalibInst[i], i, valParams, dc, dcTSY, dcEDSF,
 				pricerParams, tqm._strMeasure, tqm._dblQuote, mmFixings, quotingParams, bFlat))
 				return null;
@@ -225,8 +219,8 @@ public class CreditCurveScenarioGenerator {
 		final double dblBump,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat)
 	{
@@ -274,28 +268,29 @@ public class CreditCurveScenarioGenerator {
 	 * @return Tenor named map of tenor bumped credit curves
 	 */
 
-	public java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve> createTenorCCMap (
-		final java.lang.String strName,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
-		final double[] adblQuotes,
-		final double dblBump,
-		final double dblRecovery,
-		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
-		final boolean bFlat)
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+		createTenorCCMap (
+			final java.lang.String strName,
+			final org.drip.param.valuation.ValuationParams valParams,
+			final org.drip.analytics.definition.DiscountCurve dc,
+			final org.drip.analytics.definition.DiscountCurve dcTSY,
+			final org.drip.analytics.definition.DiscountCurve dcEDSF,
+			final double[] adblQuotes,
+			final double dblBump,
+			final double dblRecovery,
+			final java.lang.String[] astrCalibMeasure,
+			final java.util.Map<org.drip.analytics.date.JulianDate,
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+			final org.drip.param.valuation.QuotingParams quotingParams,
+			final boolean bFlat)
 	{
 		if (null == strName || null == valParams || null == dc || null == adblQuotes || null ==
 			astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length || _aCalibInst.length !=
 				astrCalibMeasure.length || !org.drip.math.common.NumberUtil.IsValid (dblRecovery))
 			return null;
 
-		java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve> mapTenorCC = new
-			java.util.HashMap<java.lang.String, org.drip.analytics.definition.CreditCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapTenorCC =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		for (int i = 0; i < _aCalibInst.length; ++i) {
 			org.drip.analytics.definition.CreditCurve cc = null;

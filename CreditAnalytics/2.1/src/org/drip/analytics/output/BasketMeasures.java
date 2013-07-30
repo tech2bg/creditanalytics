@@ -50,120 +50,131 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 	 * Map of the base measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> _mBase = null;
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mBase = null;
 
 	/**
 	 * Map of the parallel IR delta measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> _mFlatIRDelta = null;
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatIRDelta = null;
 
 	/**
 	 * Map of the parallel IR gamma measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> _mFlatIRGamma = null;
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatIRGamma = null;
 
 	/**
 	 * Map of the parallel RR delta measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> _mFlatRRDelta = null;
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatRRDelta = null;
 
 	/**
 	 * Map of the parallel RR gamma measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> _mFlatRRGamma = null;
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatRRGamma = null;
 
 	/**
 	 * Map of the parallel credit delta measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> _mFlatCreditDelta = null;
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatCreditDelta = null;
 
 	/**
 	 * Map of the parallel credit gamma measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> _mFlatCreditGamma = null;
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatCreditGamma = null;
 
 	/**
 	 * Map of the component IR delta measure map
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmIRDelta =
-		null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmIRDelta = null;
 
 	/**
 	 * Map of the component IR gamma measure map
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmIRGamma =
-		null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmIRGamma = null;
 
 	/**
 	 * Map of the component credit delta measure map
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmCreditDelta
-		= null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmCreditDelta = null;
 
 	/**
 	 * Map of the component credit gamma measure map
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmCreditGamma
-		= null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmCreditGamma = null;
 
 	/**
 	 * Map of the component RR delta measure map
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmRRDelta =
-		null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmRRDelta = null;
 
 	/**
 	 * Map of the component RR gamma measure map
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmRRGamma =
-		null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmRRGamma = null;
 
 	/**
 	 * Triple Map of the component, IR tenor, measure, and delta value
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-		java.lang.Double>>> _mmmIRTenorDelta = null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			_mmmIRTenorDelta = null;
 
 	/**
 	 * Triple Map of the component, IR tenor, measure, and gamma value
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-		java.lang.Double>>> _mmmIRTenorGamma = null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			_mmmIRTenorGamma = null;
 
 	/**
 	 * Triple Map of the component, credit tenor, measure, and delta value
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-		java.lang.Double>>> _mmmCreditTenorDelta = null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			_mmmCreditTenorDelta = null;
 
 	/**
 	 * Triple Map of the component, credit tenor, measure, and gamma value
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-		java.lang.Double>>> _mmmCreditTenorGamma = null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			_mmmCreditTenorGamma = null;
 
 	/**
 	 * Map of the custom scenario measure map
 	 */
 
-	public java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmCustom =
-		null;
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmCustom = null;
 
 	/**
 	 * Empty constructor - all members initialized to NaN or null
@@ -489,7 +500,7 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 	}
 
 	private static final void Set2DMapValues (
-		final java.util.Map<java.lang.String, java.lang.Double> map2D,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> map2D,
 		final double dblPV,
 		final double dblFairPremium)
 	{
@@ -499,19 +510,21 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 	}
 
 	private static final void Set3DMapValues (
-		final java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> map3D,
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				map3D,
 		final double dblPV,
 		final double dblFairPremium)
 	{
-		java.util.Map<java.lang.String, java.lang.Double> mapIRScenario1Y = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRScenario1Y = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		Set2DMapValues (mapIRScenario1Y, dblPV, dblFairPremium);
 
 		map3D.put ("1Y", mapIRScenario1Y);
 
-		java.util.Map<java.lang.String, java.lang.Double> mapIRScenario2Y = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRScenario2Y = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		Set2DMapValues (mapIRScenario2Y, dblPV, dblFairPremium);
 
@@ -520,19 +533,21 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 
 	private static final void SetCustom3DMapValues (
 		final java.lang.String strCustomSetName,
-		final java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> map3D,
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				map3D,
 		final double dblPV,
 		final double dblFairPremium)
 	{
-		java.util.Map<java.lang.String, java.lang.Double> mapIRScenario1Y = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRScenario1Y = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		Set2DMapValues (mapIRScenario1Y, dblPV, dblFairPremium);
 
 		map3D.put ("1Y", mapIRScenario1Y);
 
-		java.util.Map<java.lang.String, java.lang.Double> mapIRScenario2Y = new
-				java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRScenario2Y = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		Set2DMapValues (mapIRScenario2Y, dblPV, dblFairPremium);
 
@@ -540,20 +555,23 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 	}
 
 	private static final void Set4DMapValues (
-		final java.util.Map<java.lang.String,
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>> map4D,
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+				map4D,
 		final double dblPV,
 		final double dblFairPremium)
 	{
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> mapARGComp1Y = new
-			java.util.HashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapARGComp1Y = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		Set3DMapValues (mapARGComp1Y, dblPV, dblFairPremium);
 
 		map4D.put ("ARG", mapARGComp1Y);
 
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> mapBRAComp1Y = new
-			java.util.HashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapBRAComp1Y = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		Set3DMapValues (mapBRAComp1Y, dblPV, dblFairPremium);
 
@@ -568,63 +586,70 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 
 		bo._dblCalcTime = 433.7;
 
-		Set2DMapValues (bo._mBase = new java.util.HashMap<java.lang.String, java.lang.Double>(), 0.3601,
-			537.500);
+		Set2DMapValues (bo._mBase = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
+			0.3601, 537.500);
 
-		Set2DMapValues (bo._mFlatRRDelta = new java.util.HashMap<java.lang.String, java.lang.Double>(),
-			0.0015, 0.020);
+		Set2DMapValues (bo._mFlatRRDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.0015, 0.020);
 
-		Set2DMapValues (bo._mFlatRRGamma = new java.util.HashMap<java.lang.String, java.lang.Double>(),
-			0.0006, 0.003);
+		Set2DMapValues (bo._mFlatRRGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.0006, 0.003);
 
-		Set2DMapValues (bo._mFlatIRDelta = new java.util.HashMap<java.lang.String, java.lang.Double>(),
-			-0.0007, 0.006);
+		Set2DMapValues (bo._mFlatIRDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), -0.0007, 0.006);
 
-		Set2DMapValues (bo._mFlatIRGamma = new java.util.HashMap<java.lang.String, java.lang.Double>(),
-			-0.0001, 0.001);
+		Set2DMapValues (bo._mFlatIRGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), -0.0001, 0.001);
 
-		Set2DMapValues (bo._mFlatCreditDelta = new java.util.HashMap<java.lang.String, java.lang.Double>(),
-			-0.0118, 1.023);
+		Set2DMapValues (bo._mFlatCreditDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), -0.0118, 1.023);
 
-		Set2DMapValues (bo._mFlatCreditGamma = new java.util.HashMap<java.lang.String, java.lang.Double>(),
-			-0.0004, 0.014);
+		Set2DMapValues (bo._mFlatCreditGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), -0.0004, 0.014);
 
-		Set3DMapValues (bo._mmIRDelta = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.lang.Double>>(), -0.00003751, 0.000002262);
-
-		Set3DMapValues (bo._mmIRGamma = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.lang.Double>>(), -0.00003751, 0.000002262);
-
-		Set3DMapValues (bo._mmCreditDelta = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.lang.Double>>(), -0.00003751, 0.000002262);
-
-		Set3DMapValues (bo._mmCreditGamma = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.lang.Double>>(), -0.00003751, 0.000002262);
-
-		Set3DMapValues (bo._mmRRDelta = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.lang.Double>>(), -0.00003751, 0.000002262);
-
-		Set3DMapValues (bo._mmRRGamma = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.lang.Double>>(), -0.00003751, 0.000002262);
-
-		Set4DMapValues (bo._mmmIRTenorDelta = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>>(),
+		Set3DMapValues (bo._mmIRDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>(),
 				-0.00003751, 0.000002262);
 
-		Set4DMapValues (bo._mmmIRTenorGamma = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>>(),
+		Set3DMapValues (bo._mmIRGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>(),
 				-0.00003751, 0.000002262);
 
-		Set4DMapValues (bo._mmmCreditTenorDelta = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>>(),
+		Set3DMapValues (bo._mmCreditDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>(),
 				-0.00003751, 0.000002262);
 
-		Set4DMapValues (bo._mmmCreditTenorGamma = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>>(),
+		Set3DMapValues (bo._mmCreditGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>(),
 				-0.00003751, 0.000002262);
 
-		SetCustom3DMapValues ("CSW10PC", bo._mmCustom = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, java.lang.Double>>(), -0.00003468, 0.000000952);
+		Set3DMapValues (bo._mmRRDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>(),
+				-0.00003751, 0.000002262);
+
+		Set3DMapValues (bo._mmRRGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>(),
+				-0.00003751, 0.000002262);
+
+		Set4DMapValues (bo._mmmIRTenorDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>(),
+				-0.00003751, 0.000002262);
+
+		Set4DMapValues (bo._mmmIRTenorGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>(),
+				-0.00003751, 0.000002262);
+
+		Set4DMapValues (bo._mmmCreditTenorDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>(),
+				-0.00003751, 0.000002262);
+
+		Set4DMapValues (bo._mmmCreditTenorGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>(),
+				-0.00003751, 0.000002262);
+
+		SetCustom3DMapValues ("CSW10PC", bo._mmCustom = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>(),
+				-0.00003468, 0.000000952);
 
 		byte abBO[] = bo.serialize();
 

@@ -42,6 +42,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class BondStaticAPI {
+
 	/**
 	 * Sample demonstrating the retrieval of the bond's static fields
 	 * 

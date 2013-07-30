@@ -41,14 +41,14 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	org.drip.product.definition.ComponentMarketParamRef {
 	protected double getMeasure (
 		final java.lang.String strMeasure,
-		final java.util.Map<java.lang.String, java.lang.Double> mapCalc)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)
 		throws java.lang.Exception
 	{
 		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
 			throw new java.lang.Exception ("Invalid params into Component.getMeasure!");
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
-			if (null != me.getKey() && me.getKey().equals (strMeasure)) return me.getValue();
+			if (null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure)) return me.getValue();
 		}
 
 		throw new java.lang.Exception (strMeasure + " not a valid measure!");
@@ -177,7 +177,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	 * @return Map of measure name and value
 	 */
 
-	public abstract java.util.Map<java.lang.String, java.lang.Double> value (
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -246,11 +246,12 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 			return null;
 
 		if (null != mpc.getScenCMP (this, "FlatCreditBumpUp")) {
-			java.util.Map<java.lang.String, java.lang.Double> mapCreditBumpUp = value (valParams,
-				pricerParams, mpc.getScenCMP (this, "FlatCreditBumpUp"), quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCreditBumpUp = value
+				(valParams, pricerParams, mpc.getScenCMP (this, "FlatCreditBumpUp"), quotingParams);
 
 			if (null != mapCreditBumpUp && null != mapCreditBumpUp.entrySet()) {
-				compOp._mFlatCreditDelta = new java.util.HashMap<java.lang.String, java.lang.Double>();
+				compOp._mFlatCreditDelta = new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCreditBumpUp.entrySet())
 				{
@@ -261,12 +262,12 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 				}
 
 				if (null != mpc.getScenCMP (this, "FlatCreditBumpDn")) {
-					java.util.Map<java.lang.String, java.lang.Double> mapCreditBumpDn = value (valParams,
-						pricerParams, mpc.getScenCMP (this, "FlatCreditBumpDn"), quotingParams);
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCreditBumpDn = value
+						(valParams, pricerParams, mpc.getScenCMP (this, "FlatCreditBumpDn"), quotingParams);
 
 					if (null != mapCreditBumpUp && null != mapCreditBumpDn.entrySet()) {
-						compOp._mFlatCreditGamma = new java.util.HashMap<java.lang.String,
-							java.lang.Double>();
+						compOp._mFlatCreditGamma = new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 						for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 							mapCreditBumpDn.entrySet()) {
@@ -281,10 +282,10 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		}
 
 		if (null != mpc.getScenCMP (this, "RRBumpUp")) {
-			java.util.Map<java.lang.String, java.lang.Double> mapRRBumpUp = value (valParams, pricerParams,
-				mpc.getScenCMP (this, "RRBumpUp"), quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapRRBumpUp = value (valParams,
+				pricerParams, mpc.getScenCMP (this, "RRBumpUp"), quotingParams);
 
-			compOp._mRRDelta = new java.util.HashMap<java.lang.String, java.lang.Double>();
+			compOp._mRRDelta = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 			if (null != mapRRBumpUp && null != mapRRBumpUp.entrySet()) {
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapRRBumpUp.entrySet()) {
@@ -294,11 +295,12 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 				}
 
 				if (null != mpc.getScenCMP (this, "RRBumpDn")) {
-					java.util.Map<java.lang.String, java.lang.Double> mapRRBumpDn = value (valParams,
-						pricerParams, mpc.getScenCMP (this, "RRBumpDn"), quotingParams);
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapRRBumpDn = value
+						(valParams, pricerParams, mpc.getScenCMP (this, "RRBumpDn"), quotingParams);
 
 					if (null != mapRRBumpDn && null != mapRRBumpDn.entrySet()) {
-						compOp._mRRGamma = new java.util.HashMap<java.lang.String, java.lang.Double>();
+						compOp._mRRGamma = new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 						for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 							mapRRBumpDn.entrySet()) {
@@ -313,11 +315,11 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		}
 
 		if (null != mpc.getScenCMP (this, "IRCreditBumpUp")) {
-			java.util.Map<java.lang.String, java.lang.Double> mapIRBumpUp = value (valParams, pricerParams,
-				mpc.getScenCMP (this, "IRCreditBumpUp"), quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRBumpUp = value (valParams,
+				pricerParams, mpc.getScenCMP (this, "IRCreditBumpUp"), quotingParams);
 
 			if (null != mapIRBumpUp && null != mapIRBumpUp.entrySet()) {
-				compOp._mFlatIRDelta = new java.util.HashMap<java.lang.String, java.lang.Double>();
+				compOp._mFlatIRDelta = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapIRBumpUp.entrySet()) {
 					if (null == me || null == me.getKey()) continue;
@@ -326,11 +328,12 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 				}
 
 				if (null != mpc.getScenCMP (this, "IRCreditBumpDn")) {
-					java.util.Map<java.lang.String, java.lang.Double> mapIRBumpDn = value (valParams,
-						pricerParams, mpc.getScenCMP (this, "IRCreditBumpDn"), quotingParams);
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRBumpDn = value
+						(valParams, pricerParams, mpc.getScenCMP (this, "IRCreditBumpDn"), quotingParams);
 
 					if (null != mapIRBumpDn && null != mapIRBumpDn.entrySet()) {
-						compOp._mFlatIRGamma = new java.util.HashMap<java.lang.String, java.lang.Double>();
+						compOp._mFlatIRGamma = new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 						for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 							mapIRBumpDn.entrySet()) {
@@ -345,24 +348,24 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		}
 
 		if (null != mpc.getCreditTenorCMP (this, true)) {
-			compOp._mmTenorCreditDelta = new java.util.HashMap<java.lang.String,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+			compOp._mmTenorCreditDelta = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-			java.util.Map<java.lang.String, org.drip.param.definition.ComponentMarketParams> mapCCTenorUpCMP
-				= mpc.getCreditTenorCMP (this, true);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+				mapCCTenorUpCMP = mpc.getCreditTenorCMP (this, true);
 
 			if (null != mapCCTenorUpCMP && null != mapCCTenorUpCMP.entrySet()) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
 					meTenorUpMP : mapCCTenorUpCMP.entrySet()) {
 					if (null == meTenorUpMP || null == meTenorUpMP.getValue()) continue;
 
-					java.util.Map<java.lang.String, java.lang.Double> mapCCTenorUp = value (valParams,
-						pricerParams, meTenorUpMP.getValue(), quotingParams);
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCTenorUp = value
+						(valParams, pricerParams, meTenorUpMP.getValue(), quotingParams);
 
 					if (null == mapCCTenorUp || null == mapCCTenorUp.entrySet()) continue;
 
-					java.util.HashMap<java.lang.String, java.lang.Double> mapCalcUp = new
-						java.util.HashMap<java.lang.String, java.lang.Double>();
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalcUp = new
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						mapCCTenorUp.entrySet()) {
@@ -375,10 +378,10 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 				}
 
 				if (null != mpc.getCreditTenorCMP (this, false)) {
-					compOp._mmTenorCreditGamma = new java.util.HashMap<java.lang.String,
-						java.util.Map<java.lang.String, java.lang.Double>>();
+					compOp._mmTenorCreditGamma = new
+						org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-					java.util.Map<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 						mapCCTenorDnCMP = mpc.getCreditTenorCMP (this, false);
 
 					if (null != mapCCTenorDnCMP && null != mapCCTenorDnCMP.entrySet()) {
@@ -387,16 +390,16 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 								mapCCTenorDnCMP.entrySet()) {
 							if (null == meTenorDnMP || null == meTenorDnMP.getValue()) continue;
 
-							java.util.Map<java.lang.String, java.lang.Double> mapCCTenorDn = value
-								(valParams, pricerParams, meTenorDnMP.getValue(), quotingParams);
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCTenorDn =
+								value (valParams, pricerParams, meTenorDnMP.getValue(), quotingParams);
 
 							if (null == mapCCTenorDn || null == mapCCTenorDn.entrySet()) continue;
 
-							java.util.HashMap<java.lang.String, java.lang.Double> mapCalcDn = new
-								java.util.HashMap<java.lang.String, java.lang.Double>();
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalcDn = new
+									org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 							for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-									mapCCTenorDn.entrySet()) {
+								mapCCTenorDn.entrySet()) {
 								if (null == me || null == me.getKey()) continue;
 
 								mapCalcDn.put (me.getKey(), me.getValue() - compOp._mBase.get (me.getKey()) +
@@ -411,22 +414,22 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		}
 
 		if (null != mpc.getIRTenorCMP (this, true)) {
-			compOp._mmTenorIRDelta = new java.util.HashMap<java.lang.String, java.util.Map<java.lang.String,
-				java.lang.Double>>();
+			compOp._mmTenorIRDelta = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-			java.util.Map<java.lang.String, org.drip.param.definition.ComponentMarketParams> mapIRTenorUpCMP
-				= mpc.getIRTenorCMP (this, true);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+				mapIRTenorUpCMP = mpc.getIRTenorCMP (this, true);
 
 			if (null != mapIRTenorUpCMP && null != mapIRTenorUpCMP.entrySet()) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
 					meTenorUpMP : mapIRTenorUpCMP.entrySet()) {
-					java.util.Map<java.lang.String, java.lang.Double> mapCCTenorUp = value (valParams,
-						pricerParams, meTenorUpMP.getValue(), quotingParams);
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCTenorUp = value
+						(valParams, pricerParams, meTenorUpMP.getValue(), quotingParams);
 
 					if (null == mapCCTenorUp || null == mapCCTenorUp.entrySet()) continue;
 
-					java.util.HashMap<java.lang.String, java.lang.Double> mapCalcUp = new
-						java.util.HashMap<java.lang.String, java.lang.Double>();
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalcUp = new
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						mapCCTenorUp.entrySet()) {
@@ -440,21 +443,21 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 			}
 
 			if (null != mpc.getIRTenorCMP (this, false)) {
-				compOp._mmTenorIRGamma = new java.util.HashMap<java.lang.String,
-					java.util.Map<java.lang.String, java.lang.Double>>();
+				compOp._mmTenorIRGamma = new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-				java.util.Map<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 					mapIRTenorDnCMP = mpc.getIRTenorCMP (this, false);
 
 				if (null != mapIRTenorDnCMP & null != mapIRTenorDnCMP.entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.param.definition.ComponentMarketParams> meTenorDnMP :
 							mapIRTenorDnCMP.entrySet()) {
-						java.util.Map<java.lang.String, java.lang.Double> mapCCTenorDn = value (valParams,
-							pricerParams, meTenorDnMP.getValue(), quotingParams);
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCTenorDn = value
+							(valParams, pricerParams, meTenorDnMP.getValue(), quotingParams);
 
-						java.util.HashMap<java.lang.String, java.lang.Double> mapCalcDn = new
-							java.util.HashMap<java.lang.String, java.lang.Double>();
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalcDn = new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 						if (null == mapCalcDn || null == mapCalcDn.entrySet()) continue;
 
@@ -492,13 +495,13 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	 * @return Custom Scenarios Measures output set
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> calcCustomScenarioMeasures (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calcCustomScenarioMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,
 		final java.lang.String strCustomScenName,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		java.util.Map<java.lang.String, java.lang.Double> mapBaseOP)
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseOP)
 	{
 		if (null == strCustomScenName || strCustomScenName.isEmpty() || null == valParams || null == mpc ||
 			null == mpc.getScenCMP (this, strCustomScenName))
@@ -512,13 +515,13 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 			if (null == (mapBaseOP = value (valParams, pricerParams, cmpBase, quotingParams))) return null;
 		}
 
-		java.util.Map<java.lang.String, java.lang.Double> mapCustomOP = value (valParams, pricerParams,
-			mpc.getScenCMP (this, strCustomScenName), quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCustomOP = value (valParams,
+			pricerParams, mpc.getScenCMP (this, strCustomScenName), quotingParams);
 
 		if (null == mapCustomOP) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapCustomOPDelta = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCustomOPDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		if (null != mapCustomOP && null != mapCustomOP.entrySet()) {
 			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCustomOP.entrySet()) {

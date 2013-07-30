@@ -115,23 +115,26 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Cannot locate Product ID");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_strProductID = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
 				("ComponentTickQuote de-serializer: Cannot locate Component Quote");
 
 		_cq = new org.drip.param.market.ComponentMultiMeasureQuote (astrField[2].getBytes());
 
-		if (null != astrField[3] && !org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (null != astrField[3] && !org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
+			(astrField[3]))
 			_strSource = astrField[3];
 
-		if (null != astrField[4] && !org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (null != astrField[4] && !org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
+			(astrField[4]))
 			_strCounterParty = astrField[4];
 
-		if (null != astrField[5] && !org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+		if (null != astrField[5] && !org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
+			(astrField[5]))
 			_bIsMark = new java.lang.Boolean (astrField[5]);
 	}
 

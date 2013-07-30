@@ -107,25 +107,25 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate FXForward Code");
 
 		_strCode = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("FXForward de-serializer: Cannot locate Effective Date");
 
 		_dblEffective = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("FXForward de-serializer: Cannot locate Maturity Date");
 
 		_dblMaturity = new java.lang.Double (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("FXForward de-serializer: Cannot locate Currency Pair");
 
 		_ccyPair = new org.drip.product.params.CurrencyPair (astrField[4].getBytes());
@@ -223,7 +223,7 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 			dblFXSpot, dblMarketFXFwdPrice, bBasisOnDenom);
 	}
 
-	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.definition.DiscountCurve dcNum,
 		final org.drip.analytics.definition.DiscountCurve dcDenom,
@@ -233,8 +233,8 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 			(dblFXSpot))
 			return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapRes = new java.util.HashMap<java.lang.String,
-			java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapRes = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		try {
 			mapRes.put ("FXFWD", implyFXForward (valParams, dcNum, dcDenom, dblFXSpot, false));

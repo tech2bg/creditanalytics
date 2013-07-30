@@ -49,11 +49,14 @@ public class BasketMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.BasketMarketParams CreateBasketMarketParams (
-		final java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve> mapDC,
-		final java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve> mapCC,
-		final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mapCQComp,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+			mapDC,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+			mapCC,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mapCQComp,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		try {
 			return new org.drip.param.market.BasketMarketParamSet (mapDC, mapCC, mapCQComp, mmFixings);

@@ -61,6 +61,7 @@ import org.drip.math.common.FormatUtil;
  */
 
 public class RatesAnalyticsAPI {
+
 	/**
 	 * Sample API demonstrating the creation/usage of discount curve
 	 * 
@@ -288,6 +289,12 @@ public class RatesAnalyticsAPI {
 		}
 	}
 
+	/*
+	 * Sample demonstrating creation of discount curve from cash instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	public static void DiscountCurveFromCash()
 		throws Exception
 	{
@@ -298,7 +305,7 @@ public class RatesAnalyticsAPI {
 		double adblCompCalibValue[] = new double[NUM_CASH_INSTR];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_CASH_INSTR];
 
-		JulianDate dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6);
+		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
 
 		// First 7 instruments - cash calibration
 
@@ -360,6 +367,12 @@ public class RatesAnalyticsAPI {
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
 
+	/*
+	 * Sample demonstrating creation of discount cure from EDF instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	public static void DiscountCurveFromEDF()
 		throws Exception
 	{
@@ -370,7 +383,7 @@ public class RatesAnalyticsAPI {
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
 
-		JulianDate dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6);
+		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
 
 		// Next 8 instruments - EDF calibration
 
@@ -407,10 +420,16 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		org.drip.math.calculus.WengertJacobian wjPVDF = dc.compPVDFJacobian (dtStart);
+		WengertJacobian wjPVDF = dc.compPVDFJacobian (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
+
+	/*
+	 * Sample demonstrating creation of discount cure from swap instruments
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
 
 	public static void DiscountCurveFromIRS()
 		throws Exception
@@ -422,10 +441,9 @@ public class RatesAnalyticsAPI {
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
 
-		JulianDate dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6);
+		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
 
 		// Final 15 instruments - IRS calibration
-
 
 		JulianDate dtIRSEffective = dtStart.addBusDays (2, "USD");
 
@@ -500,12 +518,12 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		org.drip.math.calculus.WengertJacobian wjQuoteDF = dc.compQuoteDFJacobian (dtStart);
+		WengertJacobian wjQuoteDF = dc.compQuoteDFJacobian (dtStart);
 
 		System.out.println ("Quote/DF Micro Jack[04/06/11]=" + (null == wjQuoteDF ? null :
 			wjQuoteDF.displayString()));
 
-		org.drip.math.calculus.WengertJacobian wjPVDF = dc.compPVDFJacobian (dtStart);
+		WengertJacobian wjPVDF = dc.compPVDFJacobian (dtStart);
 
 		System.out.println ("PV/Zero Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}

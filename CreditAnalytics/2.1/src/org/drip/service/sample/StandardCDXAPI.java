@@ -12,6 +12,7 @@ import java.util.*;
  */
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.product.definition.*;
 
 /*
@@ -89,7 +90,7 @@ public class StandardCDXAPI {
 		 * Descriptions of all the built-in CDX names
 		 */
 
-		Map<String, String> mapCDXDescr = StandardCDXManager.GetCDXDescriptions();
+		CaseInsensitiveTreeMap<String> mapCDXDescr = StandardCDXManager.GetCDXDescriptions();
 
 		/*
 		 * Construct the on-the run CDX.EM 5Y corresponding to T - 1Y

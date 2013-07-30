@@ -109,7 +109,7 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate Lag");
 
 		_iLag = new java.lang.Integer (astrField[1]);
@@ -123,7 +123,7 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 			_strCalendar = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate Adj mode");
 
 		_iAdjustMode = new java.lang.Integer (astrField[3]);

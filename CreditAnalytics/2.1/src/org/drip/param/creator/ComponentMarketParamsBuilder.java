@@ -143,9 +143,10 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
-		final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mTSYQuotes,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mTSYQuotes,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		try {
 			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, compQuote,
@@ -179,9 +180,10 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
-		final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mTSYQuotes,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mTSYQuotes,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		try {
 			return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, dcTSY, dcEDSF, cc,

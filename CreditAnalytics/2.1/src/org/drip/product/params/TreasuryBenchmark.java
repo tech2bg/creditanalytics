@@ -113,7 +113,7 @@ public class TreasuryBenchmark extends org.drip.service.stream.Serializer implem
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("TreasuryBenchmark de-serializer: Cannot locate tsy params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_tsyBmkSet = null;
 		else
 			_tsyBmkSet = new TsyBmkSet (astrField[1].getBytes());
@@ -122,7 +122,7 @@ public class TreasuryBenchmark extends org.drip.service.stream.Serializer implem
 			throw new java.lang.Exception
 				("TreasuryBenchmark de-serializer: Cannot locate IR TSY curve name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strIRTSY = "";
 		else
 			_strIRTSY = astrField[2];
@@ -131,7 +131,7 @@ public class TreasuryBenchmark extends org.drip.service.stream.Serializer implem
 			throw new java.lang.Exception
 				("TreasuryBenchmark de-serializer: Cannot locate IR EDSF curve name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strIREDSF = "";
 		else
 			_strIREDSF = astrField[3];

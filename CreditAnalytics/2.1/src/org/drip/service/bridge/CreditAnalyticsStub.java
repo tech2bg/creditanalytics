@@ -1,8 +1,6 @@
 
 package org.drip.service.bridge;
 
-import org.drip.param.valuation.WorkoutInfo;
-
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -110,7 +108,8 @@ public class CreditAnalyticsStub {
 
 		if (!org.drip.math.common.NumberUtil.IsValid (dblAskPrice)) return null;
 
-		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null, dblAskPrice);
+		org.drip.param.valuation.WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null,
+			dblAskPrice);
 
 		return null == wi ? null : bond.standardMeasures (valParams, null, cmp, null, wi, dblAskPrice);
 	}

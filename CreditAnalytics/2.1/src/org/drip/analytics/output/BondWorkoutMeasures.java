@@ -37,6 +37,7 @@ package org.drip.analytics.output;
  */
 
 public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
+
 	/**
 	 * Clean Credit Risky Bond Coupon Measures
 	 */
@@ -249,7 +250,7 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("BondWorkoutMeasures de-serializer: Cannot locate credit risky clean BCM");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_bcmCreditRiskyClean = null;
 		else
 			_bcmCreditRiskyClean = new org.drip.analytics.output.BondCouponMeasures
@@ -259,7 +260,7 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("BondWorkoutMeasures de-serializer: Cannot locate credit risky dirty BCM");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_bcmCreditRiskyDirty = null;
 		else
 			_bcmCreditRiskyDirty = new org.drip.analytics.output.BondCouponMeasures
@@ -269,7 +270,7 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("BondWorkoutMeasures de-serializer: Cannot locate credit riskless clean BCM");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_bcmCreditRisklessClean = null;
 		else
 			_bcmCreditRisklessClean = new org.drip.analytics.output.BondCouponMeasures
@@ -279,7 +280,7 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("BondWorkoutMeasures de-serializer: Cannot locate credit riskless dirty BCM");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_bcmCreditRisklessDirty = null;
 		else
 			_bcmCreditRisklessDirty = new org.drip.analytics.output.BondCouponMeasures
@@ -411,11 +412,11 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 	 * @return Map of the measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> toMap (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> toMap (
 		final java.lang.String strPrefix)
 	{
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = new
-			java.util.TreeMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapMeasures.put (strPrefix + "Accrued", _dblAccrued01 * _dblFirstCouponRate);
 

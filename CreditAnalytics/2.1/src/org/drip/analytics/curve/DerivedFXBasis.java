@@ -143,7 +143,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		java.util.List<java.lang.Double> lsdblBasis = new java.util.ArrayList<java.lang.Double>();
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("FXBasis de-serializer: Cannot decode state");
 
 		if (!org.drip.analytics.support.GenericUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
@@ -164,7 +164,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		}
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("FXBasis de-serializer: Cannot locate currency pair");
 
 		_cp = new org.drip.product.params.CurrencyPair (astrField[5].getBytes());

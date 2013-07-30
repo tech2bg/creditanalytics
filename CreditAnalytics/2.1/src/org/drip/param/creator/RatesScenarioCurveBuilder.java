@@ -92,10 +92,11 @@ public class RatesScenarioCurveBuilder {
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings)
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
-		org.drip.param.definition.RatesScenarioCurve irsg = FromIRCSG (strCurrency, strBootstrapMode, aCalibInst);
+		org.drip.param.definition.RatesScenarioCurve irsg = FromIRCSG (strCurrency, strBootstrapMode,
+			aCalibInst);
 
 		if (null == irsg || !irsg.cookScenarioDC (org.drip.param.valuation.ValuationParams.CreateValParams
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, null, adblQuotes, 0.,

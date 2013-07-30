@@ -66,8 +66,8 @@ public class RegressionEngine {
 	protected java.util.Set<org.drip.regression.core.RegressorSet> _setRS = new
 		java.util.HashSet<org.drip.regression.core.RegressorSet>();
 
-	protected java.util.Map<java.lang.String, org.drip.regression.core.UnitRegressionStat> _mapURS = new
-		java.util.TreeMap<java.lang.String, org.drip.regression.core.UnitRegressionStat>();
+	org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.regression.core.UnitRegressionStat> _mapURS = new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.regression.core.UnitRegressionStat>();
 
 	private boolean executeRegressionSet (
 		final org.drip.regression.core.RegressorSet rs)

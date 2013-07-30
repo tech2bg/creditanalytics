@@ -58,12 +58,12 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	}
 
 	class FlatDeltaGammaMeasureMap {
-		java.util.Map<java.lang.String, java.lang.Double> _mapDelta = null;
-		java.util.Map<java.lang.String, java.lang.Double> _mapGamma = null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapDelta = null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapGamma = null;
 
 		FlatDeltaGammaMeasureMap (
-			final java.util.Map<java.lang.String, java.lang.Double> mapDelta,
-			final java.util.Map<java.lang.String, java.lang.Double> mapGamma)
+			final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapDelta,
+			final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapGamma)
 		{
 			_mapDelta = mapDelta;
 			_mapGamma = mapGamma;
@@ -71,12 +71,18 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	}
 
 	class TenorDeltaGammaMeasureMap {
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmDelta = null;
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmGamma = null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmDelta = null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mmGamma = null;
 
 		TenorDeltaGammaMeasureMap (
-			final java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> mmDelta,
-			final java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> mmGamma)
+			final
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+					mmDelta,
+			final
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+					mmGamma)
 		{
 			_mmDelta = mmDelta;
 			_mmGamma = mmGamma;
@@ -84,16 +90,18 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	}
 
 	class ComponentFactorTenorDeltaGammaMeasureMap {
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-			java.lang.Double>>> _mmmDelta = null;
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-			java.lang.Double>>> _mmmGamma = null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			_mmmDelta = null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			_mmmGamma = null;
 
 		ComponentFactorTenorDeltaGammaMeasureMap (
-			final java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-				java.util.Map<java.lang.String, java.lang.Double>>> mmmDelta,
-			final java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-				java.util.Map<java.lang.String, java.lang.Double>>> mmmGamma)
+			final
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+					mmmDelta,
+			final
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+					mmmGamma)
 		{
 			_mmmDelta = mmmDelta;
 			_mmmGamma = mmmGamma;
@@ -106,12 +114,12 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final org.drip.param.definition.BasketMarketParams bmpUp,
 		final org.drip.param.definition.BasketMarketParams bmpDown,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final java.util.Map<java.lang.String, java.lang.Double> mapBaseMeasures)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures)
 	{
 		if (null == bmpUp) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapUpMeasures = value (valParams, pricerParams,
-			bmpUp, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapUpMeasures = value (valParams,
+			pricerParams, bmpUp, quotingParams);
 
 		if (null == mapUpMeasures || 0 == mapUpMeasures.size()) return null;
 
@@ -120,8 +128,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (null == mapUpMeasuresES) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapDeltaMeasures = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapDeltaMeasures = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> meUp : mapUpMeasuresES) {
 			if (null == meUp) continue;
@@ -139,8 +147,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (null == bmpDown) return new FlatDeltaGammaMeasureMap (mapDeltaMeasures, null);
 
-		java.util.Map<java.lang.String, java.lang.Double> mapDownMeasures = value (valParams, pricerParams,
-			bmpDown, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapDownMeasures = value (valParams,
+			pricerParams, bmpDown, quotingParams);
 
 		if (null == mapDownMeasures || 0 == mapDownMeasures.size())
 			return new FlatDeltaGammaMeasureMap (mapDeltaMeasures, null);
@@ -150,8 +158,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (null == mapDownMeasuresES) return new FlatDeltaGammaMeasureMap (mapDeltaMeasures, null);
 
-		java.util.Map<java.lang.String, java.lang.Double> mapGammaMeasures = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapGammaMeasures = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> meDown : mapDownMeasuresES) {
 			if (null == meDown) continue;
@@ -176,10 +184,12 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	private TenorDeltaGammaMeasureMap accumulateTenorDeltaGammaMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapTenorUpBMP,
-		final java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapTenorDownBMP,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapTenorUpBMP,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapTenorDownBMP,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final java.util.Map<java.lang.String, java.lang.Double> mapBaseMeasures,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures,
 		final ComponentCurve compCurve)
 	{
 		if (null == mapTenorUpBMP || 0 == mapTenorUpBMP.size()) return null;
@@ -189,8 +199,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (null == mapESTenorUpBMP || 0 == mapESTenorUpBMP.size()) return null;
 
-		java.util.Map<java.lang.String, FlatDeltaGammaMeasureMap> mapTenorDGMM = new
-			java.util.HashMap<java.lang.String, FlatDeltaGammaMeasureMap>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<FlatDeltaGammaMeasureMap> mapTenorDGMM = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<FlatDeltaGammaMeasureMap>();
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.BasketMarketParams> meTenorUpBMP
 			: mapESTenorUpBMP) {
@@ -234,11 +244,13 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (0 == mapTenorDGMM.size()) return null;
 
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> mmDelta = new
-			java.util.HashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mmDelta = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> mmGamma = new
-			java.util.HashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mmGamma = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		for (java.util.Map.Entry<java.lang.String, FlatDeltaGammaMeasureMap> meTenorDGMM :
 			mapTenorDGMM.entrySet()) {
@@ -261,11 +273,14 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	private ComponentFactorTenorDeltaGammaMeasureMap accumulateComponentWiseTenorDeltaGammaMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapComponentBMP,
-		final java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapTenorUpBMP,
-		final java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapTenorDownBMP,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapComponentBMP,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapTenorUpBMP,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapTenorDownBMP,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final java.util.Map<java.lang.String, java.lang.Double> mapBaseMeasures)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures)
 	{
 		if (null == mapComponentBMP || 0 == mapComponentBMP.size()) return null;
 
@@ -274,8 +289,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (null == mapESComponentBMP || 0 == mapESComponentBMP.size()) return null;
 
-		java.util.Map<java.lang.String, TenorDeltaGammaMeasureMap> mapComponentTenorDGMM = new
-			java.util.HashMap<java.lang.String, TenorDeltaGammaMeasureMap>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<TenorDeltaGammaMeasureMap> mapComponentTenorDGMM = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<TenorDeltaGammaMeasureMap>();
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.BasketMarketParams>
 			meComponentBMP : mapESComponentBMP) {
@@ -295,13 +310,13 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (0 == mapComponentTenorDGMM.size()) return null;
 
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-			java.lang.Double>>> mmmCompRatesDelta = new java.util.HashMap<java.lang.String,
-				java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			mmmCompRatesDelta = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>();
 
-		java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-			java.lang.Double>>> mmmCompRatesGamma = new java.util.HashMap<java.lang.String,
-				java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			mmmCompRatesGamma = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>();
 
 		for (java.util.Map.Entry<java.lang.String, TenorDeltaGammaMeasureMap> meCompTenorDGMM :
 			mapComponentTenorDGMM.entrySet()) {
@@ -323,14 +338,15 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	protected double getMeasure (
 		final java.lang.String strMeasure,
-		final java.util.Map<java.lang.String, java.lang.Double> mapCalc)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)
 		throws java.lang.Exception
 	{
 		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
 			throw new java.lang.Exception ("BasketProduct::getMeasure => Invalid Params");
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
-			if (null != me && null != me.getKey() && me.getKey().equals (strMeasure)) return me.getValue();
+			if (null != me && null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure))
+				return me.getValue();
 		}
 
 		throw new java.lang.Exception ("BasketProduct::getMeasure => " + strMeasure +
@@ -631,7 +647,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 * @return Map of measure name and value
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> value (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.BasketMarketParams bmp,
@@ -639,8 +655,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	{
 		long lStart = System.nanoTime();
 
-		java.util.Map<java.lang.String, java.lang.Double> mapBasketOP = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBasketOP = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		org.drip.product.definition.Component[] aComp = getComponents();
 
@@ -649,8 +665,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i) {
-			java.util.Map<java.lang.String, java.lang.Double> mapCompOP = aComp[i].value (valParams,
-				pricerParams, bmp.getComponentMarketParams (aComp[i]), quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCompOP = aComp[i].value
+				(valParams, pricerParams, bmp.getComponentMarketParams (aComp[i]), quotingParams);
 
 			if (null == mapCompOP || 0 == mapCompOP.size()) continue;
 
@@ -762,10 +778,10 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		if (null != dgmmRecovery && null != (bkop._mFlatRRDelta = dgmmRates._mapDelta))
 			bkop._mFlatRRGamma = dgmmRates._mapGamma;
 
-		java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapBMPIRTenorUp =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams> mapBMPIRTenorUp =
 			mpc.getIRBumpBMP (this, true);
 
-		java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapBMPIRTenorDown =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams> mapBMPIRTenorDown =
 			mpc.getIRBumpBMP (this, false);
 
 		TenorDeltaGammaMeasureMap mapDGMMRatesTenor = accumulateTenorDeltaGammaMeasures (valParams,
@@ -776,11 +792,11 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 			bkop._mmIRGamma = mapDGMMRatesTenor._mmGamma;
 		}
 
-		java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapBMPCreditTenorUp =
-			mpc.getCreditBumpBMP (this, true);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapBMPCreditTenorUp = mpc.getCreditBumpBMP (this, true);
 
-		java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams> mapBMPCreditTenorDown =
-			mpc.getCreditBumpBMP (this, false);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapBMPCreditTenorDown = mpc.getCreditBumpBMP (this, false);
 
 		TenorDeltaGammaMeasureMap mapDGMMCreditComp = accumulateTenorDeltaGammaMeasures (valParams,
 			pricerParams, mapBMPCreditTenorUp, mapBMPCreditTenorDown, quotingParams, bkop._mBase, null);
@@ -822,13 +838,13 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		return bkop;
 	}
 
-	public java.util.Map<java.lang.String, java.lang.Double> calcCustomScenarioMeasures (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calcCustomScenarioMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,
 		final java.lang.String strCustomScenName,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		java.util.Map<java.lang.String, java.lang.Double> mapBase)
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBase)
 	{
 		if (null == valParams || null == mpc) return null;
 
@@ -845,13 +861,13 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (null == bmpScen) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapScenMeasures = value (valParams, pricerParams,
-			bmpScen, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapScenMeasures = value (valParams,
+			pricerParams, bmpScen, quotingParams);
 
 		if (null == mapScenMeasures || null != mapScenMeasures.entrySet()) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapOP = new java.util.HashMap<java.lang.String,
-			java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapScenMeasures.entrySet()) {
 			if (null == me || null == me.getKey()) continue;

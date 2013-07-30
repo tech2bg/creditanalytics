@@ -98,13 +98,13 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("DateAdjustParams de-serializer: Cannot locate roll mode");
 
 		_iRollMode = new java.lang.Integer (astrField[1]).intValue();
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("DateAdjustParams de-serializer: Cannot locate calendar");
 
 		_strCalendar = astrField[2];

@@ -36,8 +36,8 @@ package org.drip.regression.core;
  */
 
 public class RegressionRunDetail {
-	private java.util.Map<java.lang.String, java.lang.String> _mapNVDetails = new
-		java.util.TreeMap<java.lang.String, java.lang.String>();
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapNVDetails = new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 	/**
 	 * Empty constructor: Regression detail fields will be initialized
@@ -71,7 +71,7 @@ public class RegressionRunDetail {
 	 * @return The Field Map
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.String> getFieldMap()
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> getFieldMap()
 	{
 		return _mapNVDetails;
 	}

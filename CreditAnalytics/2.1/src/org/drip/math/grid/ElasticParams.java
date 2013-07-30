@@ -35,7 +35,7 @@ package org.drip.math.grid;
  */
 
 public class ElasticParams {
-	private java.util.Map<java.lang.String, java.lang.Double> _mapParams = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapParams = null;
 
 	/**
 	 * Empty ElasticParams constructor
@@ -43,7 +43,7 @@ public class ElasticParams {
 
 	public ElasticParams()
 	{
-		_mapParams = new java.util.HashMap<java.lang.String, java.lang.Double>();
+		_mapParams = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 	}
 
 	/**

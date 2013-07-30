@@ -293,13 +293,13 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate coupon");
 
 		_dblCoupon = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[2]);
@@ -307,25 +307,25 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate Name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strName = "";
 		else
 			_strName = astrField[3];
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate maturity date");
 
 		_dblMaturity = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate effective date");
 
 		_dblEffective = new java.lang.Double (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component array");
 
 		java.lang.String[] astrCDS = org.drip.analytics.support.GenericUtil.Split (astrField[6],
@@ -347,7 +347,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate notional schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 		else
 			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[7].getBytes());
@@ -355,7 +355,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate periods");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_lPeriods = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[8],
@@ -376,7 +376,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		}
 
 		if (null == astrField[9] || astrField[9].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component weights");
 
 		java.lang.String[] astrWeights = org.drip.analytics.support.GenericUtil.Split (astrField[9],

@@ -166,8 +166,9 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		return _mapDF.size();
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> getCalibFixings()
+	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			getCalibFixings()
 	{
 		return _dc.getCalibFixings();
 	}
@@ -300,7 +301,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure, final java.util.Map<org.drip.analytics.date.JulianDate,
-			java.util.Map<java.lang.String, java.lang.Double>> mmFixing,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
 		 _dc.setInstrCalibInputs (valParam, aCalibInst, adblCalibQuote, astrCalibMeasure, mmFixing,

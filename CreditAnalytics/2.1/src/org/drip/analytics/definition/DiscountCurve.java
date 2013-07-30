@@ -55,7 +55,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure, final java.util.Map<org.drip.analytics.date.JulianDate,
-			java.util.Map<java.lang.String, java.lang.Double>> mmFixing,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing,
 		final org.drip.param.valuation.QuotingParams quotingParams);
 
 	/**
@@ -229,8 +229,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The fixings object
 	 */
 
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> getCalibFixings();
+	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> getCalibFixings();
 
 	/**
 	 * Calculate the Jacobian of PV at the given date for each component in the calibration set to the DF
@@ -740,14 +740,15 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			(dtStart, new org.drip.analytics.date.JulianDate (dblDate), 0., strCurrency, strIndex,
 				strCurrency);
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put (strIndex, 0.);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (dtStart, mIndexFixings);
 
@@ -785,14 +786,15 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			(dtStart, new org.drip.analytics.date.JulianDate (dblDate), 0., strCurrency, strIndex,
 				strCurrency);
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put (strIndex, 0.);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (dtStart, mIndexFixings);
 
@@ -800,7 +802,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			(this, null, null, null, null, null, null, mmFixings);
 
 		return irs.calcMeasureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
-			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "DV01");
+			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
 	}
 
 	/**

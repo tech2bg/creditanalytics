@@ -52,11 +52,11 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
-	private java.util.Map<java.lang.String, java.lang.Double> _mapQuote = null;
-	private java.util.Map<java.lang.String, java.lang.String> _mapMeasure = null;
 	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
-	private java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> _mmFixing = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
+	private java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 
 	private PolynomialSplineDF (
 		final org.drip.analytics.date.JulianDate dtStart,
@@ -161,13 +161,13 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("PolynomialSplineDF de-serializer: Cannot locate start state");
 
 		_dblStartDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("PolynomialSplineDF de-serializer: Cannot locate currency");
 
 		_strCurrency = astrField[2];
@@ -177,7 +177,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		java.util.List<java.lang.Double> lsdblRate = new java.util.ArrayList<java.lang.Double>();
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("PolynomialSplineDF de-serializer: Cannot decode state");
 
 		if (!org.drip.analytics.support.GenericUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate,
@@ -209,8 +209,9 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		return _adblDate.length;
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> getCalibFixings()
+	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			getCalibFixings()
 	{
 		return _mmFixing;
 	}
@@ -234,7 +235,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure, final java.util.Map<org.drip.analytics.date.JulianDate,
-			java.util.Map<java.lang.String, java.lang.Double>> mmFixing,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
 		_valParam = valParam;
@@ -245,9 +246,9 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 
 		if (null == (_aCalibInst = aCalibInst) || 0 == _aCalibInst.length) return;
 
-		_mapQuote = new java.util.HashMap<java.lang.String, java.lang.Double>();
+		_mapQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		_mapMeasure = new java.util.HashMap<java.lang.String, java.lang.String>();
+		_mapMeasure = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 		for (int i = 0; i < _aCalibInst.length; ++i) {
 			_mapMeasure.put (_aCalibInst[i].getPrimaryCode(), astrCalibMeasure[i]);

@@ -39,8 +39,8 @@ package org.drip.analytics.support;
 public class AnalyticsHelper {
 	private static final boolean s_bBlog = false;
 
-	private static final java.util.Map<java.lang.String, java.lang.String> s_mapIRSwitch = new
-		java.util.HashMap<java.lang.String, java.lang.String>();
+	private static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> s_mapIRSwitch = new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 	private static final java.util.Map<java.lang.Integer, java.lang.String> s_mapDCBBGCode = new
 		java.util.HashMap<java.lang.Integer, java.lang.String>();
@@ -729,8 +729,8 @@ public class AnalyticsHelper {
 	 * @return Map representing the fixing
 	 */
 	
-	public static final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> CreateFixingsObject (
+	public static final java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> CreateFixingsObject (
 			final org.drip.product.definition.Bond bond,
 			final org.drip.analytics.date.JulianDate dtValue,
 			final double dblFix)
@@ -754,14 +754,15 @@ public class AnalyticsHelper {
 
 		if (null == strIndex || strIndex.isEmpty()) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapFixing = new java.util.HashMap<java.lang.String,
-			java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapFixing.put (strIndex, dblFix);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mapReset = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapReset = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mapReset.put (dtReset, mapFixing);
 

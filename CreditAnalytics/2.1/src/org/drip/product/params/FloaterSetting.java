@@ -118,19 +118,19 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate rate index");
 
 		_strRateIndex = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate float spread");
 
 		_dblFloatSpread = new java.lang.Double (astrField[2]).doubleValue();
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate current coupon");
 
 		_dblCurrentCoupon = new java.lang.Double (astrField[3]).doubleValue();
@@ -138,7 +138,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate float day count");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strFloatDayCount = "";
 		else
 			_strFloatDayCount = astrField[4];

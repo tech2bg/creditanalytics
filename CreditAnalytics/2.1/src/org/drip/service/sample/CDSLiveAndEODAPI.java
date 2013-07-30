@@ -13,6 +13,7 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.*;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.product.definition.*;
 
 /*
@@ -57,6 +58,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class CDSLiveAndEODAPI {
+
 	/**
 	 * Sample API demonstrating the creation/usage of the credit curve API
 	 * 
@@ -140,7 +142,7 @@ public class CDSLiveAndEODAPI {
 		 * Calculate the EOD CDS measures
 		 */
 
-		Map<String, Double> mapEODCDSMeasures = CreditAnalytics.GetEODCDSMeasures (cds, dtEOD);
+		CaseInsensitiveTreeMap<Double> mapEODCDSMeasures = CreditAnalytics.GetEODCDSMeasures (cds, dtEOD);
 
 		/*
 		 * Display the EOD CDS measures

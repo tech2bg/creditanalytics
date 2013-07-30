@@ -119,7 +119,7 @@ public class Static extends Base {
 			throw new java.lang.Exception ("StaticHoliday de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("StaticHoliday de-serializer: Cannot locate static holiday date");
 
 		_dblDate = new java.lang.Double (astrField[1]).doubleValue();

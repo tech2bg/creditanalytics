@@ -2211,7 +2211,7 @@ public class CreditAnalyticsTestSuite {
 		org.drip.product.definition.CreditDefaultSwap cds = org.drip.product.creator.CDSBuilder.CreateSNAC
 			(org.drip.analytics.date.JulianDate.Today(), "5Y", 0.1, "813796");
 
-		java.util.Map<java.lang.String, java.lang.Double> mapEODCDSMeasures =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapEODCDSMeasures =
 			org.drip.service.api.CreditAnalytics.GetEODCDSMeasures (cds, dtEOD);
 
 		if (s_bEODCDSMeasures) {
@@ -2793,7 +2793,7 @@ public class CreditAnalyticsTestSuite {
 		bmp.addDC ("USD", org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
 			0.04));
 
-		java.util.Map<java.lang.String, java.lang.Double> mapResult = null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = null;
 
 		try {
 			mapResult = bb.value (org.drip.param.valuation.ValuationParams.CreateValParams (dtToday, 0,
@@ -3006,7 +3006,7 @@ public class CreditAnalyticsTestSuite {
 		java.util.Set<java.lang.String> setstrCDXNames =
 			org.drip.service.env.StandardCDXManager.GetCDXNames();
 
-		java.util.Map<java.lang.String, java.lang.String> mapCDXDescr =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCDXDescr =
 			org.drip.service.env.StandardCDXManager.GetCDXDescriptions();
 
 		org.drip.product.definition.BasketProduct bpPresetOTR =

@@ -50,11 +50,12 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 	private org.drip.analytics.definition.CreditCurve _ccRecoveryUp = null;
 	private org.drip.analytics.definition.CreditCurve _ccRecoveryDn = null;
 	private org.drip.analytics.calibration.CreditCurveScenarioGenerator _ccsg = null;
-	private java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve> _mapCustomCC = null;
-	private java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve> _mapTenorCCBumpUp =
-		null;
-	private java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve> _mapTenorCCBumpDn =
-		null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+		_mapCustomCC = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+		_mapTenorCCBumpUp = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+		_mapTenorCCBumpDn = null;
 
 	/**
 	 * Constructs CreditCurveScenarioContainer from the array of calibration instruments, the coupon bump
@@ -89,8 +90,8 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat,
 		final int iCCScenario)
@@ -181,8 +182,8 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat,
 		final org.drip.param.definition.NodeTweakParams ntpDC,
@@ -220,8 +221,8 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		}
 
 		if (null == _mapCustomCC)
-			_mapCustomCC = new java.util.HashMap<java.lang.String,
-				org.drip.analytics.definition.CreditCurve>();
+			_mapCustomCC = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		org.drip.analytics.definition.CreditCurve ccCustom = (org.drip.analytics.definition.CreditCurve)
 			ccBaseCustom.createTweakedCurve (ntpCC);
@@ -259,13 +260,13 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		return _ccRecoveryDn;
 	}
 
-	@Override public java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve>
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 		getTenorCCBumpUp()
 	{
 		return _mapTenorCCBumpUp;
 	}
 
-	@Override public java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve>
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 		getTenorCCBumpDn()
 	{
 		return _mapTenorCCBumpDn;

@@ -85,10 +85,12 @@ public class Convention {
 	private static final int INIT_FROM_HOLS_SOURCE = 4;
 
 	private static int s_iInitHols = INIT_FROM_HOLS_SOURCE;
-	private static java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale> s_mapLocHols = null;
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
+		s_mapLocHols = null;
 
-	private static java.util.Map<java.lang.String, org.drip.analytics.daycount.DCFCalculator> s_mapDCCalc =
-		new java.util.HashMap<java.lang.String, org.drip.analytics.daycount.DCFCalculator>();
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.daycount.DCFCalculator>
+		s_mapDCCalc = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.daycount.DCFCalculator>();
 
 	private static final boolean UpdateDCCalcMap (
 		final org.drip.analytics.daycount.DCFCalculator dcfCalc)
@@ -130,7 +132,7 @@ public class Convention {
 
 	private static final boolean AddLH (
 		final org.drip.analytics.holset.LocationHoliday lh,
-		final java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale> mapHols)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols)
 	{
 		if (null == lh || null == mapHols) return false;
 
@@ -145,11 +147,11 @@ public class Convention {
 		return true;
 	}
 
-	private static final java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale>
+	private static final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
 		SetHolsFromSource()
 	{
-		java.util.Map<java.lang.String, org.drip.analytics.holiday.Locale> mapHols = new
-			java.util.HashMap<java.lang.String, org.drip.analytics.holiday.Locale>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>();
 
 		AddLH (new org.drip.analytics.holset.AEDHoliday(), mapHols);
 
@@ -686,7 +688,7 @@ public class Convention {
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Cannot a NaN date for holiday!");
 
-		return isLocSpecificHoliday ((null == strCalendar || strCalendar.isEmpty() || "".equals
+		return isLocSpecificHoliday ((null == strCalendar || strCalendar.isEmpty() || "".equalsIgnoreCase
 			(strCalendar)) ? "USD" : strCalendar, dblDate, iHolType);
 	}
 

@@ -117,13 +117,13 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 			_strYieldDC = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate Yield Frequency");
 
 		_iYieldFrequency = new java.lang.Integer (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate spread quote flag");
 
 		_bSpreadQuoted = new java.lang.Boolean (astrField[3]);
@@ -137,7 +137,7 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 			_strYieldCalendar = astrField[4];
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate apply EOM flag");
 
 		_bYieldApplyEOMAdj = new java.lang.Boolean (astrField[5]).booleanValue();

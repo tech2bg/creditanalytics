@@ -16,6 +16,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.output.ExerciseInfo;
 import org.drip.analytics.period.*;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.definition.*;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
@@ -123,21 +124,21 @@ public class BondLiveAndEODAPI {
 		// String strISIN = "US78442GGV23"; // Long dated floater
 		// String strISIN = "US44180Y2046"; // Plain old fixed coupon
 
-		Map<String, Double> mapPriceMeasures = CreditAnalytics.BondEODMeasuresFromPrice (strISIN, dtEOD, 1.);
+		CaseInsensitiveTreeMap<Double> mapPriceMeasures = CreditAnalytics.BondEODMeasuresFromPrice (strISIN, dtEOD, 1.);
 
 		System.out.println ("\n--------------\nPrice Measures\n--------------");
 
 		for (Map.Entry<String, Double> me : mapPriceMeasures.entrySet())
 			System.out.println (me.getKey() + "=" + me.getValue());
 
-		Map<String, Double> mapTSYSpreadMeasures = CreditAnalytics.BondEODMeasuresFromTSYSpread (strISIN, dtEOD, 0.0486);
+		CaseInsensitiveTreeMap<Double> mapTSYSpreadMeasures = CreditAnalytics.BondEODMeasuresFromTSYSpread (strISIN, dtEOD, 0.0486);
 
 		System.out.println ("\n---------------\nSpread Measures\n---------------");
 
 		for (Map.Entry<String, Double> me : mapTSYSpreadMeasures.entrySet())
 			System.out.println (me.getKey() + "=" + me.getValue());
 
-		Map<String, Double> mapYieldMeasures = CreditAnalytics.BondEODMeasuresFromYield (strISIN, dtEOD, 0.0749);
+		CaseInsensitiveTreeMap<Double> mapYieldMeasures = CreditAnalytics.BondEODMeasuresFromYield (strISIN, dtEOD, 0.0749);
 
 		System.out.println ("\n--------------\nYield Measures\n--------------");
 

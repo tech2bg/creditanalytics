@@ -2,18 +2,13 @@
 package org.drip.service.sample;
 
 /*
- * Generic Imports
- */
-
-import java.util.Map;
-
-/*
  * Credit Product Imports
  */
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.DiscountCurve;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.definition.*;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
@@ -341,8 +336,8 @@ public class BondBasketAPI {
 				MakeFSPrincipal(),		// Principal Schedule
 				MakeFSCoupon());		// Coupon Schedule
 
-		BasketProduct bb = new BondBasket ("TurtlePower", new org.drip.product.definition.Bond[] {bond1, bond2, bond3, bond4},
-                new double[] {0.1, 0.2, 0.3, 0.4}, org.drip.analytics.date.JulianDate.Today(), 1.);
+		BasketProduct bb = new BondBasket ("TurtlePower", new Bond[] {bond1, bond2, bond3, bond4},
+			new double[] {0.1, 0.2, 0.3, 0.4}, JulianDate.Today(), 1.);
 
 		/*
 		 * Verify - Simple Bond Basket Serializer
@@ -350,11 +345,11 @@ public class BondBasketAPI {
 
 		byte[] abBB = bb.serialize();
 
-		System.out.println ("Before: " + new java.lang.String (abBB));
+		System.out.println ("Before: " + new String (abBB));
 
 		BasketProduct bbAfter = new BondBasket (abBB);
 
-		System.out.println ("After: " + new java.lang.String (bbAfter.serialize()));
+		System.out.println ("After: " + new String (bbAfter.serialize()));
 
 		/*
 		 * Create the basket market parameters and add the named discount curve and the treasury curves to it.
@@ -378,7 +373,7 @@ public class BondBasketAPI {
 		 * Generate the bond basket measures from the valuation, the pricer, and the market parameters
 		 */
 
-		Map<String, Double> mapResult = bb.value (valParams, pricerParams, bmp, null);
+		CaseInsensitiveTreeMap<Double> mapResult = bb.value (valParams, pricerParams, bmp, null);
 
 		System.out.println ("Clean Price:      " + FormatUtil.FormatDouble (mapResult.get ("CleanPrice"), 0, 2, 100.));
 

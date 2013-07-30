@@ -296,34 +296,34 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
 				("EmbeddedOptionSchedule de-serializer: Cannot locate notice period");
 
 		_iNoticePeriod = new java.lang.Integer (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("EmbeddedOptionSchedule de-serializer: Cannot locate Put flag");
 
 		_bIsPut = new java.lang.Boolean (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
 				("EmbeddedOptionSchedule de-serializer: Cannot locate fix-to-float-on-exercise flag");
 
 		_bFixToFloatOnExercise = new java.lang.Boolean (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception
 				("EmbeddedOptionSchedule de-serializer: Cannot locate fix-to-float-on-exercise flag");
 
 		_dblFixToFloatSpread = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception
 				("EmbeddedOptionSchedule de-serializer: Cannot locate fix-to-float exercise date");
 
@@ -333,13 +333,13 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception
 				("EmbeddedOptionSchedule de-serializer: Cannot locate float index");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_strFloatIndex = "";
 		else
 			_strFloatIndex = astrField[6];
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			throw new java.lang.Exception ("EmbeddedOptionSchedule de-serializer: Cannot decode state");
 
 		java.util.List<java.lang.Double> lsdblDate = new java.util.ArrayList<java.lang.Double>();

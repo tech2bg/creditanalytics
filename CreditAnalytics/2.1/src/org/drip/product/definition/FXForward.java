@@ -145,7 +145,7 @@ public abstract class FXForward extends org.drip.service.stream.Serializer {
 	 * @return Map containing measure names and values
 	 */
 
-	public abstract java.util.Map<java.lang.String, java.lang.Double> value (
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.definition.DiscountCurve dcNum,
 		final org.drip.analytics.definition.DiscountCurve dcDenom,

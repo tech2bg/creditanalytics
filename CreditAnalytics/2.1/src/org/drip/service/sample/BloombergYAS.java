@@ -9,6 +9,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.period.Period;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.math.common.FormatUtil;
 import org.drip.param.definition.*;
 import org.drip.param.market.MultiSidedQuote;
@@ -22,6 +23,7 @@ import org.drip.product.params.EmbeddedOptionSchedule;
 
 import org.drip.analytics.creator.*;
 import org.drip.param.creator.*;
+import org.drip.param.market.*;
 import org.drip.product.creator.*;
 import org.drip.product.credit.BondComponent;
 import org.drip.service.api.CreditAnalytics;
@@ -195,16 +197,15 @@ public class BloombergYAS {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> MakeTSYQuotes (
+	private static final CaseInsensitiveTreeMap<ComponentQuote> MakeTSYQuotes (
 		final String[] astrTSYTenor,
 		final double[] adblTSYYield)
 		throws Exception
 	{
-		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mTSYQuotes = new
-			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();
+		CaseInsensitiveTreeMap<ComponentQuote> mTSYQuotes = new CaseInsensitiveTreeMap<ComponentQuote>();
 
 		for (int i = 0; i < astrTSYTenor.length; ++i) {
-			org.drip.param.market.ComponentMultiMeasureQuote cmmq = new org.drip.param.market.ComponentMultiMeasureQuote();
+			ComponentMultiMeasureQuote cmmq = new ComponentMultiMeasureQuote();
 
 			cmmq.addQuote ("Yield", new MultiSidedQuote ("mid", adblTSYYield[i], Double.NaN), true);
 
@@ -307,49 +308,49 @@ public class BloombergYAS {
 
 		double dblConvexity = bond.calcConvexityFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
 
-		System.out.println ("Price          : " + org.drip.math.common.FormatUtil.FormatDouble (dblPrice, 1, 3, 100.));
+		System.out.println ("Price          : " + FormatUtil.FormatDouble (dblPrice, 1, 3, 100.));
 
-		System.out.println ("Yield          : " + org.drip.math.common.FormatUtil.FormatDouble (wi._dblYield, 1, 3, 100.));
+		System.out.println ("Yield          : " + FormatUtil.FormatDouble (wi._dblYield, 1, 3, 100.));
 
-		System.out.println ("Workout Date   : " + new org.drip.analytics.date.JulianDate (wi._dblDate));
+		System.out.println ("Workout Date   : " + new JulianDate (wi._dblDate));
 
-		System.out.println ("Workout Factor : " + org.drip.math.common.FormatUtil.FormatDouble (wi._dblExerciseFactor, 1, 2, 100.));
+		System.out.println ("Workout Factor : " + FormatUtil.FormatDouble (wi._dblExerciseFactor, 1, 2, 100.));
 
 		System.out.println ("\n--SPREAD AND YIELD CALCULATIONS--\n");
 
-		System.out.println ("TSY Spread : " + org.drip.math.common.FormatUtil.FormatDouble (dblTSYSpread, 1, 0, 10000.));
+		System.out.println ("TSY Spread : " + FormatUtil.FormatDouble (dblTSYSpread, 1, 0, 10000.));
 
-		System.out.println ("G Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblGSpread, 1, 0, 10000.));
+		System.out.println ("G Spread   : " + FormatUtil.FormatDouble (dblGSpread, 1, 0, 10000.));
 
-		System.out.println ("I Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblISpread, 1, 0, 10000.));
+		System.out.println ("I Spread   : " + FormatUtil.FormatDouble (dblISpread, 1, 0, 10000.));
 
-		System.out.println ("Z Spread   : " + org.drip.math.common.FormatUtil.FormatDouble (dblZSpread, 1, 0, 10000.));
+		System.out.println ("Z Spread   : " + FormatUtil.FormatDouble (dblZSpread, 1, 0, 10000.));
 
-		System.out.println ("ASW        : " + org.drip.math.common.FormatUtil.FormatDouble (dblASW, 1, 0, 10000.));
+		System.out.println ("ASW        : " + FormatUtil.FormatDouble (dblASW, 1, 0, 10000.));
 
-		System.out.println ("OAS        : " + org.drip.math.common.FormatUtil.FormatDouble (dblOAS, 1, 0, 10000.));
+		System.out.println ("OAS        : " + FormatUtil.FormatDouble (dblOAS, 1, 0, 10000.));
 
 		System.out.println ("\n--RISK--\n");
 
-		System.out.println ("Modified Duration : " + org.drip.math.common.FormatUtil.FormatDouble (dblModDur, 1, 2, 10000.));
+		System.out.println ("Modified Duration : " + FormatUtil.FormatDouble (dblModDur, 1, 2, 10000.));
 
-		System.out.println ("Macaulay Duration : " + org.drip.math.common.FormatUtil.FormatDouble (dblMacDur, 1, 2, 1.));
+		System.out.println ("Macaulay Duration : " + FormatUtil.FormatDouble (dblMacDur, 1, 2, 1.));
 
-		System.out.println ("Risk              : " + org.drip.math.common.FormatUtil.FormatDouble (dblYield01 * 10000., 1, 2, 1.));
+		System.out.println ("Risk              : " + FormatUtil.FormatDouble (dblYield01 * 10000., 1, 2, 1.));
 
-		System.out.println ("Convexity         : " + org.drip.math.common.FormatUtil.FormatDouble (dblConvexity, 1, 2, 1000000.));
+		System.out.println ("Convexity         : " + FormatUtil.FormatDouble (dblConvexity, 1, 2, 1000000.));
 
-		System.out.println ("DV01              : " + org.drip.math.common.FormatUtil.FormatDouble (dblYield01 * dblNotional, 1, 0, 1.));
+		System.out.println ("DV01              : " + FormatUtil.FormatDouble (dblYield01 * dblNotional, 1, 0, 1.));
 
 		System.out.println ("\n--INVOICE--\n");
 
-		System.out.println ("Face      : " + org.drip.math.common.FormatUtil.FormatDouble (dblNotional, 1, 0, 1.));
+		System.out.println ("Face      : " + FormatUtil.FormatDouble (dblNotional, 1, 0, 1.));
 
-		System.out.println ("Principal : " + org.drip.math.common.FormatUtil.FormatDouble (dblPrice * dblNotional, 1, 2, 1.));
+		System.out.println ("Principal : " + FormatUtil.FormatDouble (dblPrice * dblNotional, 1, 2, 1.));
 
-		System.out.println ("Accrued   : " + org.drip.math.common.FormatUtil.FormatDouble (dblAccrued * dblNotional, 1, 2, 1.));
+		System.out.println ("Accrued   : " + FormatUtil.FormatDouble (dblAccrued * dblNotional, 1, 2, 1.));
 
-		System.out.println ("Total     : " + org.drip.math.common.FormatUtil.FormatDouble ((dblPrice + dblAccrued) * dblNotional, 1, 2, 1.));
+		System.out.println ("Total     : " + FormatUtil.FormatDouble ((dblPrice + dblAccrued) * dblNotional, 1, 2, 1.));
 
 		System.out.println ("\nCashflow\n--------");
 

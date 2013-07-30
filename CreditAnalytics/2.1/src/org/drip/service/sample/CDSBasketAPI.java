@@ -2,18 +2,13 @@
 package org.drip.service.sample;
 
 /*
- * Generic Imports
- */
-
-import java.util.Map;
-
-/*
  * Credit Product Imports
  */
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.definition.*;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
@@ -240,22 +235,21 @@ public class CDSBasketAPI {
 		 * Create the CDS basket from the component CDS and their weights
 		 */
 
-		org.drip.product.definition.CreditDefaultSwap aCDS[] = new
-			org.drip.product.definition.CreditDefaultSwap[6];
+		CreditDefaultSwap aCDS[] = new CreditDefaultSwap[6];
 
-		aCDS[0] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "CHN");
+		aCDS[0] = CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "CHN");
 
-		aCDS[1] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "IND");
+		aCDS[1] = CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "IND");
 
-		aCDS[2] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "BRA");
+		aCDS[2] = CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "BRA");
 
-		aCDS[3] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "RUS");
+		aCDS[3] = CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "RUS");
 
-		aCDS[4] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "KOR");
+		aCDS[4] = CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "KOR");
 
-		aCDS[5] = org.drip.product.creator.CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "TUR");
+		aCDS[5] = CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "TUR");
 
-		org.drip.product.definition.BasketProduct bds = new CDSBasket (aCDS[0].getEffectiveDate(), aCDS[0].getMaturityDate(),
+		BasketProduct bds = new CDSBasket (aCDS[0].getEffectiveDate(), aCDS[0].getMaturityDate(),
 			0.01, aCDS, new double[] {1., 2., 3., 4., 5., 6.}, "BRIC");
 
 		/*
@@ -270,7 +264,7 @@ public class CDSBasketAPI {
 		 * Generate the CDS basket measures from the valuation, the pricer, and the market parameters
 		 */
 
-		Map<String, Double> mapResult = bds.value (valParams, pricerParams, bmp, null);
+		CaseInsensitiveTreeMap<Double> mapResult = bds.value (valParams, pricerParams, bmp, null);
 
 		System.out.println ("Accrued:      " + FormatUtil.FormatDouble (mapResult.get ("Accrued"), 0, 2, 100.));
 

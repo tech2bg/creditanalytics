@@ -123,7 +123,7 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 			_strCDSContractType = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Cannot locate Yield Frequency");
 
 		_dblCouponStrike = new java.lang.Double (astrField[2]);

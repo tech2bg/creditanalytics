@@ -227,11 +227,11 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 	 * @return Map of the measures
 	 */
 
-	public java.util.Map<java.lang.String, java.lang.Double> toMap (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> toMap (
 		final java.lang.String strPrefix)
 	{
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = new
-			java.util.TreeMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapMeasures.put (strPrefix + "DV01", _dblDV01);
 

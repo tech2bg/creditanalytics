@@ -33,16 +33,20 @@ package org.drip.product.creator;
  */
 
 public class CDXRefDataHolder {
-	public static java.util.Map<java.lang.String, org.drip.product.params.CDXRefDataParams> _mapCDXRefData
-		= new java.util.HashMap<java.lang.String, org.drip.product.params.CDXRefDataParams>();
+	public static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.CDXRefDataParams>
+		_mapCDXRefData  = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.CDXRefDataParams>();
 
-	public static java.util.Map<java.lang.String, java.util.Map<org.drip.analytics.date.JulianDate,
-		java.lang.Integer>> _mmCDXRDBFirstCouponSeries = new java.util.TreeMap<java.lang.String,
-			java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Integer>>();
+	public static
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+			java.lang.Integer>> _mmCDXRDBFirstCouponSeries = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+					java.lang.Integer>>();
 
-	public static java.util.Map<java.lang.String, java.util.Map<java.lang.Integer,
-		org.drip.analytics.date.JulianDate>> _mmCDXRDBSeriesFirstCoupon = new java.util.TreeMap<java.lang.String,
-			java.util.Map<java.lang.Integer, org.drip.analytics.date.JulianDate>>();
+	public static org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<java.lang.Integer,
+		org.drip.analytics.date.JulianDate>> _mmCDXRDBSeriesFirstCoupon = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<java.lang.Integer,
+				org.drip.analytics.date.JulianDate>>();
 
 	private static final boolean UpdateCDXRefDataMap (
 		final java.lang.String strCDXName,

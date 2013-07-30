@@ -77,8 +77,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	private org.drip.product.params.CouponSetting _cpnParams = null;
 	private org.drip.product.params.NotionalSetting _notlParams = null;
 	private org.drip.product.params.FloaterSetting _fltParams = null;
-	private java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> _mmFixings = null;
 	private org.drip.product.params.CurrencySet _ccyParams = null;
 	private org.drip.product.params.IdentifierSet _idParams = null;
 	private org.drip.product.params.QuoteConvention _mktConv = null;
@@ -86,6 +84,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	private org.drip.product.params.CreditSetting _crValParams = null;
 	private org.drip.product.params.TerminationSetting _cfteParams = null;
 	private org.drip.product.params.PeriodSet _periodParams = null;
+	private java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
 	/*
 	 * Bond EOS Params
@@ -274,13 +274,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	private double getIndexRate (
 		final double dblValue,
 		final org.drip.analytics.definition.DiscountCurve dc,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmMarketFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmMarketFixings,
 		final org.drip.analytics.period.Period period)
 		throws java.lang.Exception
 	{
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mmFixings = _mmFixings;
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = _mmFixings;
 
 		if (null == mmFixings) mmFixings = mmMarketFixings;
 
@@ -565,7 +565,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	public java.util.Map<java.lang.String, java.lang.Double> standardRVMeasureMap (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> standardRVMeasureMap (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -584,7 +584,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return bmRV.toMap (strPrefix);
 	}
 
-	private java.util.Map<java.lang.String, java.lang.Double> calcFairMeasureSet (
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calcFairMeasureSet (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -595,7 +595,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == bwmFair) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = bwmFair.toMap ("");
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = bwmFair.toMap ("");
 
 		double dblPrice = (null == bwmFair._bcmCreditRiskyClean || java.lang.Double.isNaN
 			(bwmFair._bcmCreditRiskyClean._dblPV)) ? bwmFair._bcmCreditRisklessClean._dblPV :
@@ -619,7 +619,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	private java.util.Map<java.lang.String, java.lang.Double> calcMarketMeasureSet (
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calcMarketMeasureSet (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -627,9 +627,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.valuation.WorkoutInfo wiMarket)
 	{
 		try {
-			java.util.Map<java.lang.String, java.lang.Double> mapMeasures = standardRVMeasureMap (valParams,
-				pricerParams, mktParams, quotingParams, wiMarket, calcPriceFromYield (valParams, mktParams,
-					quotingParams, wiMarket._dblDate, wiMarket._dblExerciseFactor, wiMarket._dblYield), "");
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures =
+				standardRVMeasureMap (valParams, pricerParams, mktParams, quotingParams, wiMarket,
+					calcPriceFromYield (valParams, mktParams, quotingParams, wiMarket._dblDate,
+						wiMarket._dblExerciseFactor, wiMarket._dblYield), "");
 
 			org.drip.analytics.support.GenericUtil.MergeWithMain (mapMeasures,
 				org.drip.analytics.support.GenericUtil.PrefixKeys (mapMeasures, "Market"));
@@ -657,7 +658,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	@Override protected java.util.Map<java.lang.String, java.lang.Double> calibMeasures (
+	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -668,8 +669,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		double dblExerciseDate = getMaturityDate().getJulian();
 
-		java.util.Map<java.lang.String, java.lang.Double> mapCalibMeasures = new
-			java.util.TreeMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalibMeasures = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		if (null != pricerParams._calibParams._wi) {
 			dblExerciseDate = pricerParams._calibParams._wi._dblDate;
@@ -837,7 +838,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate tsy params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_tsyParams = null;
 		else
 			_tsyParams = new org.drip.product.params.TreasuryBenchmark (astrField[1].getBytes());
@@ -845,7 +846,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate cpn params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_cpnParams = null;
 		else
 			_cpnParams = new org.drip.product.params.CouponSetting (astrField[2].getBytes());
@@ -853,7 +854,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate notional params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_notlParams = null;
 		else
 			_notlParams = new org.drip.product.params.NotionalSetting (astrField[3].getBytes());
@@ -861,7 +862,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate floater params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_fltParams = null;
 		else
 			_fltParams = new org.drip.product.params.FloaterSetting (astrField[4].getBytes());
@@ -869,7 +870,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate fixings");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5])) {
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5])) {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[5],
 				getCollectionRecordDelimiter());
 
@@ -901,12 +902,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 					if (null == getFixings())
 						_mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-							java.util.Map<java.lang.String, java.lang.Double>>();
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-					java.util.Map<java.lang.String, java.lang.Double> map2D = getFixings().get
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> map2D = getFixings().get
 						(astrKeySet[0]);
 
-					if (null == map2D) map2D = new java.util.HashMap<java.lang.String, java.lang.Double>();
+					if (null == map2D)
+						map2D = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 					map2D.put (astrKeySet[1], new java.lang.Double (astrKVPair[1]));
 
@@ -919,7 +921,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[6] || astrField[6].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate currency params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_ccyParams = null;
 		else
 			_ccyParams = new org.drip.product.params.CurrencySet (astrField[6].getBytes());
@@ -927,7 +929,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Identifier params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			_idParams = null;
 		else
 			_idParams = new org.drip.product.params.IdentifierSet (astrField[7].getBytes());
@@ -935,7 +937,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond IR Valuation params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_mktConv = null;
 		else
 			_mktConv = new org.drip.product.params.QuoteConvention (astrField[8].getBytes());
@@ -943,7 +945,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond IR Valuation params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_irValParams = null;
 		else
 			_irValParams = new org.drip.product.params.RatesSetting (astrField[9].getBytes());
@@ -951,7 +953,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[10] || astrField[10].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Credit Valuation params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[10]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[10]))
 			_crValParams = null;
 		else
 			_crValParams = new org.drip.product.params.CreditSetting (astrField[10].getBytes());
@@ -959,7 +961,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[11] || astrField[11].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Termination params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[11]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
 			_cfteParams = null;
 		else
 			_cfteParams = new org.drip.product.params.TerminationSetting (astrField[11].getBytes());
@@ -967,7 +969,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[12] || astrField[12].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond Period params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[12]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[12]))
 			_periodParams = null;
 		else
 			_periodParams = new org.drip.product.params.PeriodSet (astrField[12].getBytes());
@@ -975,7 +977,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[13] || astrField[13].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond EOS Put params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[13]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[13]))
 			_eosPut = null;
 		else
 			_eosPut = new org.drip.product.params.EmbeddedOptionSchedule (astrField[13].getBytes());
@@ -983,7 +985,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == astrField[14] || astrField[14].isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate bond EOS Call params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[14]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[14]))
 			_eosCall = null;
 		else
 			_eosCall = new org.drip.product.params.EmbeddedOptionSchedule (astrField[14].getBytes());
@@ -1125,16 +1127,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	}
 
 	@Override public boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings)
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		_mmFixings = mmFixings;
 		return true;
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>>
-		getFixings()
+	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			getFixings()
 	{
 		return _mmFixings;
 	}
@@ -11822,7 +11824,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -11831,16 +11833,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == valParams || null == mktParams || null == mktParams.getDiscountCurve()) return null;
 
 		if (null != pricerParams && null != pricerParams._calibParams) {
-			java.util.Map<java.lang.String, java.lang.Double> mapCalibMeasures = calibMeasures (valParams,
-				pricerParams, mktParams, quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalibMeasures = calibMeasures
+				(valParams, pricerParams, mktParams, quotingParams);
 
 			if (null != mapCalibMeasures && mapCalibMeasures.containsKey
 				(pricerParams._calibParams._strMeasure))
 				return mapCalibMeasures;
 		}
 
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = calcFairMeasureSet (valParams,
-			pricerParams, mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = calcFairMeasureSet
+			(valParams, pricerParams, mktParams, quotingParams);
 
 		if (null == mapMeasures || null == mktParams.getComponentQuote()) return mapMeasures;
 
@@ -11993,7 +11995,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		if (null != wiMarket) {
-			java.util.Map<java.lang.String, java.lang.Double> mapWorkoutMeasures = calcMarketMeasureSet
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapWorkoutMeasures = calcMarketMeasureSet
 				(valParams, pricerParams, mktParams, quotingParams, wiMarket);
 
 			if (null == _fltParams) {
@@ -12033,8 +12035,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 						(valParams, pricerParams, cmpMarket, wiMarket._dblDate, wiMarket._dblExerciseFactor);
 
 					if (null != bwmMarket) {
-						java.util.Map<java.lang.String, java.lang.Double> mapMarketMeasures = bwmMarket.toMap
-							("");
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMarketMeasures =
+							bwmMarket.toMap ("");
 
 						org.drip.analytics.support.GenericUtil.MergeWithMain (mapMarketMeasures,
 							org.drip.analytics.support.GenericUtil.PrefixKeys (mapMarketMeasures, "Market"));
@@ -12765,8 +12767,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			java.lang.StringBuffer sbFixings = new java.lang.StringBuffer();
 
-			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-				java.lang.Double>> meOut : getFixings().entrySet()) {
+			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meOut :
+					getFixings().entrySet()) {
 				if (null == meOut || null == meOut.getValue() || null == meOut.getValue().entrySet())
 					continue;
 
@@ -12885,14 +12888,15 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			adblDate[i] = dblStart + 365. * (i + 1);
 		}
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put ("USD-LIBOR-6M", 0.0402);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 

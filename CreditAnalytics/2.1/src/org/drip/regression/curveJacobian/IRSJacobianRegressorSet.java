@@ -54,8 +54,8 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 				org.drip.math.calculus.WengertJacobian aWJComp[] = null;
 				org.drip.analytics.definition.DiscountCurve dcIRS = null;
 				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
-				java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-					java.lang.Double>> mmFixings = null;
+				java.util.Map<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null;
 
 				@Override public boolean preRegression() {
 					int NUM_DC_INSTR = 15;
@@ -130,14 +130,14 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 						}
 					}
 
-					java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-						java.util.HashMap<java.lang.String, java.lang.Double>();
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 					mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
 
 					(mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-						java.util.Map<java.lang.String, java.lang.Double>>()).put (dtStart.addDays (2),
-							mIndexFixings);
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>()).put
+							(dtStart.addDays (2), mIndexFixings);
 
 					return null != (dcIRS =
 						org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",

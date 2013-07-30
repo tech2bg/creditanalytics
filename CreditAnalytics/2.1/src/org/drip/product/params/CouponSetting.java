@@ -127,13 +127,13 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate perpetual flag");
 
 		_fsCoupon = new FactorSchedule (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon");
 
 		_dblCoupon = new java.lang.Double (astrField[2]);
@@ -144,13 +144,13 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 		_strCouponType = astrField[3];
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon ceiling");
 
 		_dblCouponCeiling = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon floor");
 
 		_dblCouponFloor = new java.lang.Double (astrField[5]);

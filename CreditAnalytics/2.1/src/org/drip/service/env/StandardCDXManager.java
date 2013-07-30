@@ -38,20 +38,23 @@ package org.drip.service.env;
  */
 
 public class StandardCDXManager {
-	private static java.util.Map<java.lang.String, org.drip.product.definition.BasketProduct> _mapStandardCDX =
-		new java.util.HashMap<java.lang.String, org.drip.product.definition.BasketProduct>();
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.definition.BasketProduct>
+		_mapStandardCDX = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.definition.BasketProduct>();
 
-	private static java.util.Map<java.lang.String, org.drip.product.params.StandardCDXParams>
-		_mapStandardCDXParams = new java.util.HashMap<java.lang.String,
-			org.drip.product.params.StandardCDXParams>();
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.StandardCDXParams>
+		_mapStandardCDXParams = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.StandardCDXParams>();
 
-	private static java.util.Map<java.lang.String, java.util.Map<org.drip.analytics.date.JulianDate,
-		java.lang.Integer>> _mmIndexFirstCouponSeries = new java.util.TreeMap<java.lang.String,
-			java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Integer>>();
+	private static
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+			java.lang.Integer>> _mmIndexFirstCouponSeries = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+					java.lang.Integer>>();
 
-	private static java.util.Map<java.lang.String, java.util.Map<java.lang.Integer,
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<java.lang.Integer,
 		org.drip.analytics.date.JulianDate>> _mmIndexSeriesFirstCoupon = new
-			java.util.TreeMap<java.lang.String, java.util.Map<java.lang.Integer,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<java.lang.Integer,
 				org.drip.analytics.date.JulianDate>>();
 
 	private static final boolean SetupStandardCDXParams()
@@ -870,10 +873,11 @@ public class StandardCDXManager {
 	 * @return Name/description map for all the pre-set CDS indices
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.String> GetPresetCDXDescriptions()
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>
+		GetPresetCDXDescriptions()
 	{
-		java.util.Map<java.lang.String, java.lang.String> mapCDXDescr = new
-			java.util.TreeMap<java.lang.String, java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCDXDescr = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.product.params.StandardCDXParams> meCDXRefData :
 			_mapStandardCDXParams.entrySet())
@@ -888,10 +892,11 @@ public class StandardCDXManager {
 	 * @return Name/description map for all the pre-loaded CDS indices
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.String> GetPreLoadedCDXDescriptions()
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>
+		GetPreLoadedCDXDescriptions()
 	{
-		java.util.Map<java.lang.String, java.lang.String> mapCDXDescr = new
-			java.util.TreeMap<java.lang.String, java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCDXDescr = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.product.params.CDXRefDataParams> meCDXRefData :
 			org.drip.product.creator.CDXRefDataHolder._mapCDXRefData.entrySet())
@@ -906,10 +911,10 @@ public class StandardCDXManager {
 	 * @return Name/description map for all the CDS indices
 	 */
 
-	public static final java.util.Map<java.lang.String, java.lang.String> GetCDXDescriptions()
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> GetCDXDescriptions()
 	{
-		java.util.Map<java.lang.String, java.lang.String> mapCDXDescr = new
-			java.util.TreeMap<java.lang.String, java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCDXDescr = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 		mapCDXDescr.putAll (GetPreLoadedCDXDescriptions());
 

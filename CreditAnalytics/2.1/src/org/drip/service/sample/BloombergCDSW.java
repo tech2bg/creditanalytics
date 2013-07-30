@@ -2,12 +2,6 @@
 package org.drip.service.sample;
 
 /*
- * Generic imports
- */
-
-import java.util.*;
-
-/*
  * Credit Products imports
  */
 
@@ -15,6 +9,7 @@ import org.drip.analytics.creator.DiscountCurveBuilder;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.period.*;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
@@ -161,15 +156,8 @@ public class BloombergCDSW {
 		 * Build the credit curve from the CDS instruments and the fair premium
 		 */
 
-		CreditCurve cc = CreditScenarioCurveBuilder.CreateCreditCurve (strCCName, dtStart, aCDS, dc,
-			adblQuote, astrCalibMeasure, dblRecovery, false);
-
-		/* for (int i = 0; i < astrTenor.length; ++i)
-			System.out.println (aCDS[i].getMaturityDate() + " | " + adblQuote[i] + " | " +
-				org.drip.math.common.FormatUtil.FormatDouble (1. - cc.getSurvival
-					(aCDS[i].getMaturityDate()), 0, 4, 1.)); */
-
-		return cc;
+		return CreditScenarioCurveBuilder.CreateCreditCurve (strCCName, dtStart, aCDS, dc, adblQuote,
+			astrCalibMeasure, dblRecovery, false);
 	}
 
 	/*
@@ -189,7 +177,7 @@ public class BloombergCDSW {
 		for (int i = 0; i < aCDS.length; ++i)
 			System.out.println (aCDS[i].getMaturityDate() + " | " + adblQuote[i] + " | " +
 				org.drip.math.common.FormatUtil.FormatDouble (1. - cc.getSurvival
-					(aCDS[i].getMaturityDate()), 0, 4, 1.));
+					(aCDS[i].getMaturityDate()), 1, 3, 1.));
 	}
 
 	/*
@@ -223,7 +211,7 @@ public class BloombergCDSW {
 
 		JulianDate dtValue = dtCurve.addDays (1);
 
-		JulianDate dtSettle = dtValue.addBusDays (2, "USD");
+		JulianDate dtSettle = dtValue.addBusDays (3, "USD");
 
 		/*
 		 * Model the USD ISDA Standard Curve
@@ -232,11 +220,11 @@ public class BloombergCDSW {
 		double dblRecovery = 0.4;
 		double dblNotional = -10.e+06;
 		String[] astrCashTenor = new String[] {   "1M",     "2M",     "3M",     "6M",    "12M"};
-		double[] adblCashRate = new double[] {0.001921, 0.002350, 0.002691, 0.004084, 0.006937};
+		double[] adblCashRate = new double[] {0.001864, 0.002289, 0.002638, 0.003965, 0.006759};
 		String[] astrIRSTenor = new String[] {   "2Y",     "3Y",     "4Y",     "5Y",     "6Y",     "7Y",
 				"8Y",     "9Y",    "10Y",    "12Y",    "15Y",    "20Y",    "25Y",    "30Y"};
-		double[] adblIRSRate = new double[] {0.005410, 0.008715, 0.012870, 0.017005, 0.020485, 0.023320,
-			0.025580, 0.027415, 0.028975, 0.031525, 0.033870, 0.035590, 0.036365, 0.036735};
+		double[] adblIRSRate = new double[] {0.004750, 0.007700, 0.011600, 0.015425, 0.018900, 0.021760,
+			0.024105, 0.026095, 0.027750, 0.030400, 0.032890, 0.034855, 0.035805, 0.036345};
 
 		/*
 		 * Build the USD ISDA Standard Curve
@@ -250,7 +238,7 @@ public class BloombergCDSW {
 		 */
 
 		String[] astrCDSTenor = new String[] {"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"};
-		double[] adblCDSParSpread = new double[] {36., 66., 85., 101., 122., 146., 178., 193.};
+		double[] adblCDSParSpread = new double[] {60., 68., 88., 102., 121., 138., 168., 188.};
 
 		/*
 		 * Build the Base Credit Curve
@@ -268,7 +256,7 @@ public class BloombergCDSW {
 		 * Create the CDS to price
 		 */
 
-		CreditDefaultSwap cds = CreateCDS (dtValue, "7Y", 0.05, "KOR");
+		CreditDefaultSwap cds = CreateCDS (dtValue, "6Y", 0.05, "MS");
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtSettle, "USD");
 
@@ -290,7 +278,7 @@ public class BloombergCDSW {
 		 * Generate the base CDS Measures
 		 */
 
-		Map<String, Double> mapBaseMeasures = cds.value (
+		CaseInsensitiveTreeMap<Double> mapBaseMeasures = cds.value (
 			valParams,
 			pricerParams,
 			ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
@@ -304,7 +292,7 @@ public class BloombergCDSW {
 
 		System.out.println ("\n---- CDS Measures ----");
 
-		System.out.println ("Price        : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("Price"), 1, 3, 1.));
+		System.out.println ("Price        : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("Price"), 1, 2, 1.));
 
 		System.out.println ("Principal    : " + FormatUtil.FormatDouble (dblPrincipal, 1, 0, 1.));
 
@@ -326,7 +314,7 @@ public class BloombergCDSW {
 		 * Generate the 1 bp flat Credit Curve bumped  Measures
 		 */
 
-		Map<String, Double> mapCreditFlat01Measures = cds.value (
+		CaseInsensitiveTreeMap<Double> mapCreditFlat01Measures = cds.value (
 			valParams,
 			pricerParams,
 			ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc01Bump),
@@ -347,7 +335,7 @@ public class BloombergCDSW {
 		 * Generate the 1 bp flat Rates Curve bumped  Measures
 		 */
 
-		Map<String, Double> mapRatesFlat01Measures = cds.value (
+		CaseInsensitiveTreeMap<Double> mapRatesFlat01Measures = cds.value (
 			valParams,
 			pricerParams,
 			ComponentMarketParamsBuilder.MakeCreditCMP (dc01Bump, cc),

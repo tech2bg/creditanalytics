@@ -116,7 +116,7 @@ public class CreditAnalyticsResponse extends org.drip.service.stream.Serializer 
 			throw new java.lang.Exception
 				("CreditAnalyticsResponse de-serializer: Cannot locate pricer params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_abMeasure = null;
 		else
 			_abMeasure = astrField[4].getBytes();

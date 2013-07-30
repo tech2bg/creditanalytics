@@ -169,8 +169,8 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		}
 	};
 
-	private java.util.Map<java.lang.String, SidedQuote> _mapSidedQuote = new
-		java.util.HashMap<java.lang.String, SidedQuote>();
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<SidedQuote> _mapSidedQuote = new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<SidedQuote>();
 
 	/**
 	 * MultiSidedQuote Constructor: Constructs a Quote object from the quote value and the side string.
@@ -255,7 +255,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				if (null == _mapSidedQuote)
-					_mapSidedQuote = new java.util.HashMap<java.lang.String, SidedQuote>();
+					_mapSidedQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<SidedQuote>();
 
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;

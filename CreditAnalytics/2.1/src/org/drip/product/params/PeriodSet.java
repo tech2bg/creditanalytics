@@ -148,13 +148,13 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate frequency");
 
 		_iFreq = new java.lang.Integer (astrField[1]).intValue();
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
 				("PeriodSet de-serializer: Cannot locate Coupon EOM Adj flag");
 
@@ -163,7 +163,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate Coupon DC");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strCouponDC = "";
 		else
 			_strCouponDC = astrField[3];
@@ -171,7 +171,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate accrual DC");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strAccrualDC = "";
 		else
 			_strAccrualDC = astrField[4];
@@ -180,25 +180,25 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception
 				("PeriodSet de-serializer: Cannot locate maturity type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			_strMaturityType = "";
 		else
 			_strMaturityType = astrField[5];
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate maturity");
 
 		_dblMaturity = new java.lang.Double (astrField[6]).doubleValue();
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate eff date");
 
 		_dblEffective = new java.lang.Double (astrField[7]).doubleValue();
 
 		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			throw new java.lang.Exception
 				("PeriodSet de-serializer: Cannot locate final maturity");
 
@@ -207,7 +207,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate the coupon periods");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_lsCouponPeriod = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[9],

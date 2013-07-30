@@ -75,9 +75,10 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				private org.drip.product.definition.CalibratableComponent _aCompCalib[] = new
 					org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
 
-				java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-					java.lang.Double>> _mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-						java.util.Map<java.lang.String, java.lang.Double>>();
+				java.util.Map<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = new
+						java.util.HashMap<org.drip.analytics.date.JulianDate,
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 				@Override public boolean preRegression()
 				{
@@ -208,8 +209,8 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						}
 					}
 
-					java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-						java.util.HashMap<java.lang.String, java.lang.Double>();
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 					mIndexFixings.put (_strCurrency + "-LIBOR-6M", 0.0042);
 

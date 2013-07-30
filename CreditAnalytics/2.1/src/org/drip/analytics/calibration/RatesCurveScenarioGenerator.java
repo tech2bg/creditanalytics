@@ -112,8 +112,8 @@ public class RatesCurveScenarioGenerator {
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
@@ -194,8 +194,8 @@ public class RatesCurveScenarioGenerator {
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
 		if (null == _aCalibInst || 0 == _aCalibInst.length || null == adblQuotes || null == astrCalibMeasure
@@ -242,16 +242,17 @@ public class RatesCurveScenarioGenerator {
 	 * @return Tenor map of tenor bumped discount curves
 	 */
 
-	public java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve> createTenorIRCurveMap
-		(final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
-		final double[] adblQuotes,
-		final double dblBump,
-		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		createTenorIRCurveMap (
+			final org.drip.param.valuation.ValuationParams valParams,
+			final org.drip.analytics.definition.DiscountCurve dcTSY,
+			final org.drip.analytics.definition.DiscountCurve dcEDSF,
+			final double[] adblQuotes,
+			final double dblBump,
+			final java.lang.String[] astrCalibMeasure,
+			final java.util.Map<org.drip.analytics.date.JulianDate,
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+			final org.drip.param.valuation.QuotingParams quotingParams)
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
 			_aCalibInst.length != astrCalibMeasure.length || null == valParams ||
@@ -261,8 +262,9 @@ public class RatesCurveScenarioGenerator {
 			return null;
 		}
 
-		java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve> mapTenorDC = new
-			java.util.HashMap<java.lang.String, org.drip.analytics.definition.DiscountCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve> mapTenorDC
+			= new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
 
 		for (int i = 0; i < _aCalibInst.length; ++i) {
 			double[] adblTenorQuotes = new double [_aCalibInst.length];

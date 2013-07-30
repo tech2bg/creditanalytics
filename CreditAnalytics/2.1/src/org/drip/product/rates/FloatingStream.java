@@ -50,7 +50,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
 
-	@Override protected java.util.Map<java.lang.String, java.lang.Double> calibMeasures (
+	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -181,13 +181,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		// double dblVersion = new java.lang.Double (astrField[0]).doubleValue();
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[1]).doubleValue();
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate coupon");
 
 		_dblSpread = new java.lang.Double (astrField[2]).doubleValue();
@@ -195,7 +195,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate IR curve name");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strIR = astrField[3];
 		else
 			_strIR = "";
@@ -203,31 +203,31 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate code");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strCode = astrField[4];
 		else
 			_strCode = "";
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate Apply Acc EOM Adj");
 
 		_bApplyAccEOMAdj = new java.lang.Boolean (astrField[5]).booleanValue();
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate Apply Cpn EOM Adj");
 
 		_bApplyCpnEOMAdj = new java.lang.Boolean (astrField[6]).booleanValue();
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate maturity date");
 
 		_dblMaturity = new java.lang.Double (astrField[7]).doubleValue();
 
 		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate effective date");
 
 		_dblEffective = new java.lang.Double (astrField[8]).doubleValue();
@@ -235,7 +235,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate rate index");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_strFloatingRateIndex = astrField[9];
 		else
 			_strFloatingRateIndex = "";
@@ -243,7 +243,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[10] || astrField[10].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate notional schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[10]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[10]))
 			_notlSchedule = null;
 		else
 			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[10].getBytes());
@@ -251,7 +251,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[11] || astrField[11].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate cash settle params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[11]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
 			_settleParams = null;
 		else
 			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[11].getBytes());
@@ -259,7 +259,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[12] || astrField[12].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate the periods");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[12]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[12]))
 			_lsCouponPeriod = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[12],
@@ -367,14 +367,15 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == currentPeriod)
 			throw new java.lang.Exception ("FloatingStream::getCoupon => Invalid Inputs");
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mapFixings = mktParams.getFixings();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
+				mktParams.getFixings();
 
 		if (null != mapFixings) {
 			double dblCurrentResetDate = currentPeriod.getResetDate();
 
 			if (org.drip.math.common.NumberUtil.IsValid (dblCurrentResetDate)) {
-				java.util.Map<java.lang.String, java.lang.Double> mapIndexFixing = mapFixings.get (new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIndexFixing = mapFixings.get (new
 					org.drip.analytics.date.JulianDate (dblCurrentResetDate));
 
 				if (null != mapIndexFixing) {
@@ -450,7 +451,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return _settleParams;
 	}
 
-	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -464,10 +465,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		long lStart = System.nanoTime();
 
+		double dblFixing01 = 0.;
 		double dblAccrued01 = 0.;
 		double dblDirtyDV01 = 0.;
 		boolean bFirstPeriod = true;
 		double dblDirtyFloatingPV = 0.;
+		double dblCashPayDF = java.lang.Double.NaN;
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 
@@ -497,9 +500,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 							org.drip.analytics.date.JulianDate (period.getResetDate())).get
 								(_strFloatingRateIndex);
 
-					if (period.getStartDate() < valParams._dblValue)
-						dblAccrued01 = period.getAccrualDCF (valParams._dblValue) * 0.01 * getNotional
-							(period.getAccrualStartDate(), valParams._dblValue);
+					dblFixing01 = period.getAccrualDCF (valParams._dblValue) * 0.01 * getNotional
+						(period.getAccrualStartDate(), valParams._dblValue);
+
+					if (period.getStartDate() < valParams._dblValue) dblAccrued01 = dblFixing01;
 
 					dblResetDate = period.getResetDate();
 				} else
@@ -528,8 +532,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			dblDirtyFloatingPV += dblDirtyPeriodDV01 * dblFloatingRate;
 		}
 
-		double dblCashPayDF = java.lang.Double.NaN;
-
 		try {
 			double dblCashSettle = valParams._dblCashPay;
 
@@ -548,14 +550,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
 		double dblCleanFloatingPV = dblDirtyFloatingPV - dblAccrued01 * (dblResetRate + _dblSpread);
 
-		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.HashMap<java.lang.String,
-			java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapResult.put ("ResetDate", dblResetDate);
 
 		mapResult.put ("ResetRate", dblResetRate);
 
 		mapResult.put ("Accrued01", dblAccrued01 * dblNotlFactor);
+
+		mapResult.put ("Fixing01", dblFixing01 * dblNotlFactor);
 
 		mapResult.put ("FloatAccrued", dblAccrued01 * (dblResetRate + _dblSpread) * dblNotlFactor);
 
@@ -632,6 +636,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		setstrMeasureNames.add ("FairPremium");
 
+		setstrMeasureNames.add ("Fixing01");
+
 		setstrMeasureNames.add ("FloatAccrued");
 
 		setstrMeasureNames.add ("ParRate");
@@ -661,8 +667,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			mktParams.getDiscountCurve())
 			return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
-			mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+			pricerParams, mktParams, quotingParams);
 
 		if (null == mapMeasures) return null;
 
@@ -731,8 +737,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote) || "SwapRate".equalsIgnoreCase (strQuote)) {
-			java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
-				mktParams, quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+				pricerParams, mktParams, quotingParams);
 
 			if (null == mapMeasures) return null;
 

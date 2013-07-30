@@ -160,7 +160,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return TSY Benchmark Quotes
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote>
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 		getTSYBenchmarkQuotes();
 
 	/**
@@ -169,8 +169,8 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return The Fixings Object
 	 */
 
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> getFixings();
+	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> getFixings();
 
 	/**
 	 * (Re)-sets the Fixings
@@ -181,6 +181,6 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 */
 
 	public abstract boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings);
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings);
 }

@@ -120,7 +120,8 @@ public abstract class MarketParams {
 	 */
 
 	public abstract boolean setTSYQuotes (
-		final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mapCQTSY);
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mapCQTSY);
 
 	/**
 	 * Gets the named Treasury Quote Map corresponding to the desired benchmark
@@ -139,7 +140,8 @@ public abstract class MarketParams {
 	 * @return Named Treasury Quote Map
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> getTSYQuotes();
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+		getTSYQuotes();
 
 	/**
 	 * Adds the fixing for the given rate index and the given date
@@ -175,8 +177,9 @@ public abstract class MarketParams {
 	 * @return The fixings Map
 	 */
 
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> getFixings();
+	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			getFixings();
 
 	/**
 	 * Adds the component quote
@@ -211,7 +214,8 @@ public abstract class MarketParams {
 	 */
 
 	public abstract boolean addCompQuotes (
-		final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mCompQuotes);
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mCompQuotes);
 
 	/**
 	 * Retrieves the quote for the given component
@@ -230,7 +234,7 @@ public abstract class MarketParams {
 	 * @return mCompQuotes Map of Component Quotes
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote>
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 		getCompQuotes();
 
 	/**
@@ -303,10 +307,11 @@ public abstract class MarketParams {
 	 * @return Map of the tenor IR bumped ComponentMarketParams
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.ComponentMarketParams>
-		getIRTenorCMP (
-			final org.drip.product.definition.Component comp,
-			final boolean bBumpUp);
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			getIRTenorCMP (
+				final org.drip.product.definition.Component comp,
+				final boolean bBumpUp);
 
 	/**
 	 * Gets the map of tenor credit bumped ComponentMarketParams corresponding to the component
@@ -317,10 +322,11 @@ public abstract class MarketParams {
 	 * @return Map of the tenor credit bumped ComponentMarketParams
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.ComponentMarketParams>
-		getCreditTenorCMP (
-			final org.drip.product.definition.Component comp,
-			final boolean bBumpUp);
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			getCreditTenorCMP (
+				final org.drip.product.definition.Component comp,
+				final boolean bBumpUp);
 
 	/**
 	 * Get the BasketMarketParams for the given basket product and the scenario
@@ -344,10 +350,11 @@ public abstract class MarketParams {
 	 * @return Map of the IR Tenor bumped curves
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams>
-		getIRBumpBMP (
-			final org.drip.product.definition.BasketProduct bp,
-			final boolean bBump);
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			getIRBumpBMP (
+				final org.drip.product.definition.BasketProduct bp,
+				final boolean bBump);
 
 	/**
 	 * Get the map of credit Tenor bumped curves for the given BasketProduct
@@ -358,10 +365,11 @@ public abstract class MarketParams {
 	 * @return Map of the credit Tenor bumped curves
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams>
-		getCreditBumpBMP (
-			final org.drip.product.definition.BasketProduct bp,
-			final boolean bBump);
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			getCreditBumpBMP (
+				final org.drip.product.definition.BasketProduct bp,
+				final boolean bBump);
 
 	/**
 	 * Get the map of Recovery Tenor bumped curves for the given BasketProduct
@@ -372,10 +380,11 @@ public abstract class MarketParams {
 	 * @return Map of the Recovery Tenor bumped curves
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.BasketMarketParams>
-		getRecoveryBumpBMP (
-			final org.drip.product.definition.BasketProduct bp,
-			final boolean bBump);
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			getRecoveryBumpBMP (
+				final org.drip.product.definition.BasketProduct bp,
+				final boolean bBump);
 
 	/**
 	 * Get the double map of IR Tenor bumped curves for each IR curve for the given BasketProduct
@@ -386,10 +395,11 @@ public abstract class MarketParams {
 	 * @return Double Map of the IR Tenor bumped BasketMarketParams
 	 */
 
-	public abstract java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-		org.drip.param.definition.BasketMarketParams>> getIRTenorBumpBMP (
-			final org.drip.product.definition.BasketProduct bp,
-			final boolean bBump);
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>>
+			getIRTenorBumpBMP (
+				final org.drip.product.definition.BasketProduct bp,
+				final boolean bBump);
 
 	/**
 	 * Get the double map of credit Tenor bumped curves for each credit curve for the given BasketProduct
@@ -400,10 +410,11 @@ public abstract class MarketParams {
 	 * @return Double Map of the credit Tenor bumped BasketMarketParams
 	 */
 
-	public abstract java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-		org.drip.param.definition.BasketMarketParams>> getCreditTenorBumpBMP (
-			final org.drip.product.definition.BasketProduct bp,
-			final boolean bBump);
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>>
+			getCreditTenorBumpBMP (
+				final org.drip.product.definition.BasketProduct bp,
+				final boolean bBump);
 
 	/**
 	 * Retrieves the map of IRCurveScenarioContainer
@@ -411,7 +422,9 @@ public abstract class MarketParams {
 	 * @return Map of IRCurveScenarioContainer
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.RatesScenarioCurve> getIRSG();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.RatesScenarioCurve>
+			getIRSG();
 
 	/**
 	 * Retrieves the map of org.drip.param.definition.CreditScenarioCurve
@@ -419,5 +432,7 @@ public abstract class MarketParams {
 	 * @return Map of org.drip.param.definition.CreditScenarioCurve
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.param.definition.CreditScenarioCurve> getCCSG();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.CreditScenarioCurve>
+			getCCSG();
 }

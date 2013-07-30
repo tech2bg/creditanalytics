@@ -80,14 +80,15 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	 * Map of Treasury Benchmark Quotes
 	 */
 
-	private java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> _mTSYQuotes = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+		_mTSYQuotes = null;
 
 	/*
 	 * Double map of date/rate index and fixings
 	 */
 
-	private java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> _mmFixings = null;
+	private java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
 	/**
 	 * Creates a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
@@ -111,9 +112,10 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
-		final java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mTSYQuotes,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mTSYQuotes,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		_cc = cc;
 		_dc = dc;
@@ -163,14 +165,14 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception
 				("ComponentMarketParams de-serializer: Cannot locate credit curve");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_cc = org.drip.analytics.creator.CreditCurveBuilder.FromByteArray (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
 				("ComponentMarketParams de-serializer: Cannot locate discount curve");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_dc = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[2].getBytes(),
 				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
@@ -178,7 +180,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception
 				("ComponentMarketParams de-serializer: Cannot locate forward curve");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_dcForward = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[3].getBytes(),
 				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
@@ -186,7 +188,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception
 				("ComponentMarketParams de-serializer: Cannot locate TSY discount curve");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_dcTSY = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[4].getBytes(),
 				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
@@ -194,7 +196,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception
 				("ComponentMarketParams de-serializer: Cannot locate EDSF discount curve");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			_dcEDSF = org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (astrField[5].getBytes(),
 				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
@@ -202,13 +204,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception
 				("ComponentMarketParams de-serializer: Cannot locate component quote");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_compQuote = new org.drip.param.market.ComponentMultiMeasureQuote (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate fixings");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7])) {
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7])) {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[7],
 				getCollectionRecordDelimiter());
 
@@ -240,11 +242,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 					if (null == _mmFixings)
 						_mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-							java.util.Map<java.lang.String, java.lang.Double>>();
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-					java.util.Map<java.lang.String, java.lang.Double> map2D = _mmFixings.get (astrKeySet[0]);
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> map2D = _mmFixings.get
+						(astrKeySet[0]);
 
-					if (null == map2D) map2D = new java.util.HashMap<java.lang.String, java.lang.Double>();
+					if (null == map2D)
+						map2D = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 					map2D.put (astrKeySet[1], new java.lang.Double (astrKVPair[1]));
 
@@ -257,7 +261,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate TSY quotes");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8])) {
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8])) {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[8],
 				getCollectionRecordDelimiter());
 
@@ -279,8 +283,8 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 						continue;
 
 					if (null == _mTSYQuotes)
-						_mTSYQuotes = new java.util.HashMap<java.lang.String,
-							org.drip.param.definition.ComponentQuote>();
+						_mTSYQuotes = new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 					_mTSYQuotes.put (astrKVPair[0], new org.drip.param.market.ComponentMultiMeasureQuote
 						(astrKVPair[1].getBytes()));
@@ -386,21 +390,21 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote>
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 		getTSYBenchmarkQuotes()
 	{
 		return _mTSYQuotes;
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> getFixings()
+	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> getFixings()
 	{
 		return _mmFixings;
 	}
 
 	@Override public boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings)
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		_mmFixings = mmFixings;
 		return true;
@@ -449,8 +453,9 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 			java.lang.StringBuffer sbFixings = new java.lang.StringBuffer();
 
-			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-				java.lang.Double>> meOut : _mmFixings.entrySet()) {
+			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meOut :
+					_mmFixings.entrySet()) {
 				if (null == meOut || null == meOut.getValue() || null == meOut.getValue().entrySet())
 					continue;
 
@@ -565,19 +570,21 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		cq.setMarketQuote ("SpreadToTsyBmk", new org.drip.param.market.MultiSidedQuote ("MID", 210.,
 			100000.));
 
-		java.util.Map<java.lang.String, org.drip.param.definition.ComponentQuote> mapTSYQuotes = new
-			java.util.HashMap<java.lang.String, org.drip.param.definition.ComponentQuote>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
+			= new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cq);
 
-		java.util.Map<java.lang.String, java.lang.Double> mIndexFixings = new
-			java.util.HashMap<java.lang.String, java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String, java.lang.Double>>
-			mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				java.util.Map<java.lang.String, java.lang.Double>>();
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 

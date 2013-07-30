@@ -129,13 +129,13 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 		// double dblVersion = new java.lang.Double (astrField[0]).doubleValue();
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate calib measure");
 
 		_strMeasure = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate calib type");
 
 		_iType = new java.lang.Integer (astrField[2]).intValue();
@@ -143,7 +143,7 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate work-out info");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_wi = null;
 		else
 			_wi = new org.drip.param.valuation.WorkoutInfo (astrField[3].getBytes());

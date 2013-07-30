@@ -56,6 +56,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class RatesLiveAndEODAPI {
+
 	/**
 	 * Sample API demonstrating the creation/usage of rates curve
 	 * 

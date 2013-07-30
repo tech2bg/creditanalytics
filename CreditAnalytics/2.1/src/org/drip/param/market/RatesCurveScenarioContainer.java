@@ -45,9 +45,12 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 	private org.drip.analytics.definition.DiscountCurve _dcBumpUp = null;
 	private org.drip.analytics.definition.DiscountCurve _dcBumpDn = null;
 	private org.drip.analytics.calibration.RatesCurveScenarioGenerator _irsg = null;
-	private java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve> _mapCustomDC = null;
-	private java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve> _mapDCBumpUp = null;
-	private java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve> _mapDCBumpDn = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		_mapCustomDC = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		_mapDCBumpUp = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		_mapDCBumpDn = null;
 
 	/**
 	 * Constructs an IRCurveScenarioContainer instance from the corresponding IRCurveScenarioGenerator
@@ -72,8 +75,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final int iDCMode)
 	{
@@ -139,8 +142,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.param.definition.NodeTweakParams ntpTSY,
 		final org.drip.param.definition.NodeTweakParams ntpEDSF,
@@ -175,8 +178,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 		}
 
 		if (null == _mapCustomDC)
-			_mapCustomDC = new java.util.HashMap<java.lang.String,
-				org.drip.analytics.definition.DiscountCurve>();
+			_mapCustomDC = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
 
 		org.drip.analytics.definition.DiscountCurve dcCustom = (org.drip.analytics.definition.DiscountCurve)
 			dcBaseCustom.createTweakedCurve (ntpDC);
@@ -204,14 +207,16 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 		return _dcBumpDn;
 	}
 
-	@Override public java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve>
-		getTenorDCBumpUp()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+			getTenorDCBumpUp()
 	{
 		return _mapDCBumpUp;
 	}
 
-	@Override public java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve>
-		getTenorDCBumpDn()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+			getTenorDCBumpDn()
 	{
 		return _mapDCBumpDn;
 	}

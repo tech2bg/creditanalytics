@@ -56,8 +56,8 @@ public class CurveCalibrator {
 		private org.drip.param.valuation.ValuationParams _valParams = null;
 		private org.drip.analytics.definition.DiscountCurve _dcEDSF = null;
 		private org.drip.param.valuation.QuotingParams _quotingParams = null;
-		private java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> _mmFixings = null;
+		private java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
 		public CreditCurveCalibrator (
 			org.drip.analytics.definition.CreditCurve cc,
@@ -70,8 +70,8 @@ public class CurveCalibrator {
 			final org.drip.param.pricer.PricerParams pricerParamsIn,
 			final java.lang.String strMeasure,
 			final double dblCalibValue,
-			final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-				java.lang.Double>> mmFixings,
+			final java.util.Map<org.drip.analytics.date.JulianDate,
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 			final org.drip.param.valuation.QuotingParams quotingParams,
 			final boolean bFlat)
 			throws java.lang.Exception
@@ -129,8 +129,8 @@ public class CurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final double dblCalibLeftSlope)
 		throws java.lang.Exception
@@ -164,8 +164,8 @@ public class CurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 		throws java.lang.Exception
 	{
@@ -208,8 +208,8 @@ public class CurveCalibrator {
 		final org.drip.param.pricer.PricerParams pricerParamsIn,
 		final java.lang.String strMeasure,
 		final double dblCalibValue,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat)
 	{
@@ -244,8 +244,8 @@ public class CurveCalibrator {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String strMeasure,
 		final double dblCalibValue,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat,
 		final double dblSearchStart)
@@ -290,8 +290,8 @@ public class CurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat)
 	{
@@ -327,8 +327,8 @@ public class CurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat)
 	{

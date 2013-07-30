@@ -109,7 +109,7 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 			_strDC = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("YieldInterpreter de-serializer: Cannot locate Yield Frequency");
 
 		_iFreq = new java.lang.Integer (astrField[2]);
@@ -123,7 +123,7 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 			_strCalendar = astrField[3];
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("YieldInterpreter de-serializer: Cannot locate apply EOM flag");
 
 		_bApplyEOMAdj = new java.lang.Boolean (astrField[4]);

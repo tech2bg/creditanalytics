@@ -794,7 +794,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate ISIN");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[1]))
 			_strISIN = "";
 		else
 			_strISIN = astrField[1];
@@ -802,7 +802,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate CUSIP");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[2]))
 			_strCUSIP = "";
 		else
 			_strCUSIP = astrField[2];
@@ -810,7 +810,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate BBG ID");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[3]))
 			_strBBGID = "";
 		else
 			_strBBGID = astrField[3];
@@ -819,7 +819,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate issuer category");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[4]))
 			_strIssuerCategory = "";
 		else
 			_strIssuerCategory = astrField[4];
@@ -827,7 +827,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate ticker");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[5]))
 			_strTicker = "";
 		else
 			_strTicker = astrField[5];
@@ -835,7 +835,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[6] || astrField[6].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Series");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[6]))
 			_strSeries = "";
 		else
 			_strSeries = astrField[6];
@@ -843,7 +843,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[7]))
 			_strName = "";
 		else
 			_strName = astrField[7];
@@ -851,7 +851,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate short name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[8]))
 			_strShortName = "";
 		else
 			_strShortName = astrField[8];
@@ -860,7 +860,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate issuer industry");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[9]))
 			_strIssuerIndustry = "";
 		else
 			_strIssuerIndustry = astrField[9];
@@ -868,7 +868,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[10] || astrField[10].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate coupon type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[10]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[10]))
 			_strCouponType = "";
 		else
 			_strCouponType = astrField[10];
@@ -876,7 +876,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[11] || astrField[11].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate maturity type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[11]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[11]))
 			_strMaturityType = "";
 		else
 			_strMaturityType = astrField[11];
@@ -885,7 +885,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate calculation type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[12]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[12]))
 			_strCalculationType = "";
 		else
 			_strCalculationType = astrField[12];
@@ -893,7 +893,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[13] || astrField[13].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate DayCount Code");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[13]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[13]))
 			_strDayCountCode = "";
 		else
 			_strDayCountCode = astrField[13];
@@ -902,7 +902,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate market issue type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[14]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[14]))
 			_strMarketIssueType = "";
 		else
 			_strMarketIssueType = astrField[14];
@@ -911,7 +911,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate issue country code");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[15]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[15]))
 			_strIssueCountryCode = "";
 		else
 			_strIssueCountryCode = astrField[15];
@@ -919,7 +919,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[16] || astrField[16].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue country");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[16]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[16]))
 			_strIssueCountry = "";
 		else
 			_strIssueCountry = astrField[16];
@@ -928,39 +928,39 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate issue collateral type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[17]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[17]))
 			_strCollateralType = "";
 		else
 			_strCollateralType = astrField[17];
 
 		if (null == astrField[18] || astrField[18].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[18]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[18]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue amount");
 
 		_dblIssueAmount = new java.lang.Double (astrField[18]);
 
 		if (null == astrField[19] || astrField[19].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[19]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[19]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate outstanding amount");
 
 		_dblOutstandingAmount = new java.lang.Double (astrField[19]);
 
 		if (null == astrField[20] || astrField[20].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[20]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[20]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate minimum piece");
 
 		_dblMinimumPiece = new java.lang.Double (astrField[20]);
 
 		if (null == astrField[21] || astrField[21].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[21]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[21]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate minimum increment");
 
 		_dblMinimumIncrement = new java.lang.Double (astrField[21]);
 
 		if (null == astrField[22] || astrField[22].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[22]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[22]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate par amount");
 
 		_dblParAmount = new java.lang.Double (astrField[22]);
@@ -969,7 +969,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate issue lead manager");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[23]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[23]))
 			_strLeadManager = "";
 		else
 			_strLeadManager = astrField[23];
@@ -978,13 +978,13 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate issue Exchange Code");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[24]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[24]))
 			_strExchangeCode = "";
 		else
 			_strExchangeCode = astrField[24];
 
 		if (null == astrField[25] || astrField[25].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[25]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[25]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate redemption value");
 
@@ -993,7 +993,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[26] || astrField[26].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate announce date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[26]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[26]))
 			_dtAnnounce = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[26]));
 		else
 			_dtAnnounce = null;
@@ -1002,7 +1002,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate first settle date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[27]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[27]))
 			_dtFirstSettle = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[27]));
 		else
 			_dtFirstSettle = null;
@@ -1011,7 +1011,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate first coupon date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[28]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[28]))
 			_dtFirstCoupon = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[28]));
 		else
 			_dtFirstCoupon = null;
@@ -1020,7 +1020,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate interest accrual start date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[29]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[29]))
 			_dtInterestAccrualStart = new org.drip.analytics.date.JulianDate (new java.lang.Double
 				(astrField[29]));
 		else
@@ -1029,7 +1029,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[30] || astrField[30].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[30]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[30]))
 			_dtIssue = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[30]));
 		else
 			_dtIssue = null;
@@ -1038,26 +1038,26 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate next coupon date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[31]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[31]))
 			_dtNextCouponDate = new org.drip.analytics.date.JulianDate (new java.lang.Double
 				(astrField[31]));
 		else
 			_dtNextCouponDate = null;
 
 		if (null == astrField[32] || astrField[32].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[32]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[32]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate callable flag");
 
 		_bIsCallable = new java.lang.Boolean (astrField[32]);
 
 		if (null == astrField[33] || astrField[33].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[33]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[33]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate putable flag");
 
 		_bIsPutable = new java.lang.Boolean (astrField[33]);
 
 		if (null == astrField[34] || astrField[34].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[34]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[34]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate sinkable flag");
 
 		_bIsSinkable = new java.lang.Boolean (astrField[34]);
@@ -1065,7 +1065,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[35] || astrField[35].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate BBG Parent");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[35]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[35]))
 			_strBBGParent = "";
 		else
 			_strBBGParent = astrField[35];
@@ -1074,7 +1074,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Country Of Incorporation");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[36]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[36]))
 			_strCountryOfIncorporation = "";
 		else
 			_strCountryOfIncorporation = astrField[36];
@@ -1083,7 +1083,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate industry sector");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[37]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[37]))
 			_strIndustrySector = "";
 		else
 			_strIndustrySector = astrField[37];
@@ -1091,7 +1091,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[38] || astrField[38].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Industry Group");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[38]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[38]))
 			_strIndustryGroup = "";
 		else
 			_strIndustryGroup = astrField[38];
@@ -1100,7 +1100,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Industry Subgroup");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[39]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[39]))
 			_strIndustrySubgroup = "";
 		else
 			_strIndustrySubgroup = astrField[39];
@@ -1109,7 +1109,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Country Of Guarantor");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[40]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[40]))
 			_strCountryOfGuarantor = "";
 		else
 			_strCountryOfGuarantor = astrField[40];
@@ -1118,7 +1118,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Country Of Domicile");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[41]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[41]))
 			_strCountryOfDomicile = "";
 		else
 			_strCountryOfDomicile = astrField[41];
@@ -1126,7 +1126,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[42] || astrField[42].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Description");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[42]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[42]))
 			_strDescription = "";
 		else
 			_strDescription = astrField[42];
@@ -1134,7 +1134,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[43] || astrField[43].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Security Type");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[43]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[43]))
 			_strSecurityType = "";
 		else
 			_strSecurityType = astrField[43];
@@ -1143,7 +1143,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate prev coupon date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[44]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[44]))
 			_dtPrevCouponDate = new org.drip.analytics.date.JulianDate (new java.lang.Double
 				(astrField[44]).doubleValue());
 		else
@@ -1152,7 +1152,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[45] || astrField[45].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate BBG Unique ID");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[45]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[45]))
 			_strBBGUniqueID = "";
 		else
 			_strBBGUniqueID = astrField[45];
@@ -1161,27 +1161,27 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Long Company Name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[46]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[46]))
 			_strLongCompanyName = "";
 		else
 			_strLongCompanyName = astrField[46];
 
 		if (null == astrField[47] || astrField[47].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[47]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[47]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate structured note flag");
 
 		_bIsStructuredNote = new java.lang.Boolean (astrField[47]);
 
 		if (null == astrField[48] || astrField[48].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[48]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[48]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate unit traded flag");
 
 		_bIsUnitTraded = new java.lang.Boolean (astrField[48]);
 
 		if (null == astrField[49] || astrField[49].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[49]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[49]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Reversible Convertible flag");
 
@@ -1190,7 +1190,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[50] || astrField[50].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate redemption ccy");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[50]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[50]))
 			_strRedemptionCurrency = "";
 		else
 			_strRedemptionCurrency = astrField[50];
@@ -1198,7 +1198,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[51] || astrField[51].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate coupon ccy");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[51]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[51]))
 			_strCouponCurrency = "";
 		else
 			_strCouponCurrency = astrField[51];
@@ -1206,26 +1206,26 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[52] || astrField[52].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate trade ccy");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[52]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[52]))
 			_strTradeCurrency = "";
 		else
 			_strTradeCurrency = astrField[52];
 
 		if (null == astrField[53] || astrField[53].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[53]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[53]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate bearer flag");
 
 		_bIsBearer = new java.lang.Boolean (astrField[53]);
 
 		if (null == astrField[54] || astrField[54].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[54]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[54]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate registered flag");
 
 		_bIsRegistered = new java.lang.Boolean (astrField[54]);
 
 		if (null == astrField[55] || astrField[55].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[55]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[55]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Has Been Called flag");
 
@@ -1234,7 +1234,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[56] || astrField[56].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issuer");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[56]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[56]))
 			_strIssuer = "";
 		else
 			_strIssuer = astrField[56];
@@ -1243,7 +1243,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate penultimate coupon date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[57]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[57]))
 			_dtPenultimateCouponDate = new org.drip.analytics.date.JulianDate (new java.lang.Double
 				(astrField[57]));
 		else
@@ -1253,25 +1253,25 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate float coupon convention");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[58]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[58]))
 			_strFloatCouponConvention = "";
 		else
 			_strFloatCouponConvention = astrField[58];
 
 		if (null == astrField[59] || astrField[59].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[59]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[59]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate current coupon");
 
 		_dblCurrentCoupon = new java.lang.Double (astrField[59]);
 
 		if (null == astrField[60] || astrField[60].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[60]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[60]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate floater flag");
 
 		_bIsFloater = new java.lang.Boolean (astrField[60]);
 
 		if (null == astrField[61] || astrField[61].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[61]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[61]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate trade status flag");
 
@@ -1281,7 +1281,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate CDR Country Code");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[62]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[62]))
 			_strCDRCountryCode = "";
 		else
 			_strCDRCountryCode = astrField[62];
@@ -1290,7 +1290,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate CDR Settle Code");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[63]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[63]))
 			_strCDRSettleCode = "";
 		else
 			_strCDRSettleCode = astrField[63];
@@ -1299,32 +1299,32 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate final maturity date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[64]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[64]))
 			_dtFinalMaturity = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[64]));
 		else
 			_dtFinalMaturity = null;
 
 		if (null == astrField[65] || astrField[65].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[65]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[65]))
 			throw new java.lang.Exception
 				("BondRefDataBuilder de-serializer: Cannot locate Private Placement Flag");
 
 		_bIsPrivatePlacement = new java.lang.Boolean (astrField[65]);
 
 		if (null == astrField[66] || astrField[66].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[66]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[66]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Perpetual Flag");
 
 		_bIsPerpetual = new java.lang.Boolean (astrField[66]);
 
 		if (null == astrField[67] || astrField[67].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[67]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[67]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Defaulted Flag");
 
 		_bIsDefaulted = new java.lang.Boolean (astrField[67]);
 
 		if (null == astrField[68] || astrField[68].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[68]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[68]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate float spread");
 
 		_dblFloatSpread = new java.lang.Double (astrField[68]);
@@ -1332,7 +1332,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[69] || astrField[69].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Rate Index");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[69]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[69]))
 			_strRateIndex = "";
 		else
 			_strRateIndex = astrField[69];
@@ -1340,7 +1340,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[70] || astrField[70].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Moody's");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[70]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[70]))
 			_strMoody = "";
 		else
 			_strMoody = astrField[70];
@@ -1348,7 +1348,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[71] || astrField[71].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate SnP");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[71]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[71]))
 			_strSnP = "";
 		else
 			_strSnP = astrField[71];
@@ -1356,7 +1356,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[72] || astrField[72].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Fitch");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[72]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[72]))
 			_strFitch = "";
 		else
 			_strFitch = astrField[72];
@@ -1364,7 +1364,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[73] || astrField[73].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Snr/Sub");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[73]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[73]))
 			_strSnrSub = "";
 		else
 			_strSnrSub = astrField[73];
@@ -1372,19 +1372,19 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[74] || astrField[74].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issuer SPN");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[74]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[74]))
 			_strIssuerSPN = "";
 		else
 			_strIssuerSPN = astrField[74];
 
 		if (null == astrField[75] || astrField[75].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[75]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[75]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue price");
 
 		_dblIssuePrice = new java.lang.Double (astrField[75]);
 
 		if (null == astrField[76] || astrField[76].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[76]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[76]))
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate coupon");
 
 		_dblCoupon = new java.lang.Double (astrField[76]);
@@ -1392,7 +1392,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == astrField[77] || astrField[77].isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate maturity date");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[77]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[77]))
 			_dtMaturity = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[77]));
 		else
 			_dtMaturity = null;

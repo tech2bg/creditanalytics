@@ -92,8 +92,8 @@ public abstract class RatesScenarioCurve {
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final int iDCMode);
 
@@ -124,8 +124,8 @@ public abstract class RatesScenarioCurve {
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.param.definition.NodeTweakParams ntpTSY,
 		final org.drip.param.definition.NodeTweakParams ntpEDSF,
@@ -161,8 +161,9 @@ public abstract class RatesScenarioCurve {
 	 * @return The map of the tenor Bump Up Discount Curve
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve>
-		getTenorDCBumpUp();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+			getTenorDCBumpUp();
 
 	/**
 	 * Return the map of the tenor Bump Down Discount Curve
@@ -170,6 +171,7 @@ public abstract class RatesScenarioCurve {
 	 * @return The map of the tenor Bump Down Discount Curve
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.analytics.definition.DiscountCurve>
-		getTenorDCBumpDn();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+			getTenorDCBumpDn();
 }

@@ -54,7 +54,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
 
-	@Override protected java.util.Map<java.lang.String, java.lang.Double> calibMeasures (
+	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -63,7 +63,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return null;
 	}
 
-	private java.util.Map<java.lang.String, java.lang.Double> calcMeasureSet (
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calcMeasureSet (
 		final java.lang.String strMeasureSetPrefix,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -87,6 +87,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		double dblLossNoRecPV = 0.;
 		double dblExpLossNoRec = 0.;
 		boolean bFirstPeriod = true;
+		double dblCashPayDF = java.lang.Double.NaN;
 		double dblAccrualDays = java.lang.Double.NaN;
 
 		try {
@@ -152,8 +153,6 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			return null;
 		}
 
-		double dblCashPayDF = java.lang.Double.NaN;
-
 		try {
 			dblCashPayDF = dc.getDF (null == _settleParams ? valParams._dblCashPay :
 				_settleParams.cashSettleDate (valParams._dblValue));
@@ -171,8 +170,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		double dblCleanPV = dblCleanDV01 * 10000. * _dblCoupon - dblLossPV;
 		double dblDirtyPV = dblDirtyDV01 * 10000. * _dblCoupon - dblLossPV;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.TreeMap<java.lang.String,
-			java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapResult.put (strMeasureSetPrefix + "AccrualDays", dblAccrualDays);
 
@@ -460,7 +459,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[1]);
@@ -468,7 +467,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate IR curve name");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strIR = astrField[2];
 		else
 			_strIR = "";
@@ -476,37 +475,37 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate code");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strCode = astrField[3];
 		else
 			_strCode = "";
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate Apply Acc EOM Adj");
 
 		_bApplyAccEOMAdj = new java.lang.Boolean (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[5]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate Apply Cpn EOM Adj");
 
 		_bApplyCpnEOMAdj = new java.lang.Boolean (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[6]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate coupon");
 
 		_dblCoupon = new java.lang.Double (astrField[6]);
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[7]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate maturity date");
 
 		_dblMaturity = new java.lang.Double (astrField[7]);
 
 		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[8]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate effective date");
 
 		_dblEffective = new java.lang.Double (astrField[8]);
@@ -514,7 +513,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate notional schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[9]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_notlSchedule = null;
 		else
 			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[9].getBytes());
@@ -522,7 +521,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == astrField[10] || astrField[10].isEmpty())
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate credit val params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[10]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[10]))
 			_crValParams = null;
 		else
 			_crValParams = new org.drip.product.params.CreditSetting
@@ -531,7 +530,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == astrField[11] || astrField[11].isEmpty())
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate cash settle params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[11]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
 			_settleParams = null;
 		else
 			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[11].getBytes());
@@ -539,7 +538,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == astrField[12] || astrField[12].isEmpty())
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate the periods");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[12]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[12]))
 			_lsCouponPeriod = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.analytics.support.GenericUtil.Split (astrField[12],
@@ -831,14 +830,14 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return sLP;
 	}
 
-	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		java.util.Map<java.lang.String, java.lang.Double> mapFairMeasures = calcMeasureSet ("", valParams,
-			pricerParams, mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFairMeasures = calcMeasureSet ("",
+			valParams, pricerParams, mktParams, quotingParams);
 
 		if (null == mapFairMeasures) return null;
 
@@ -904,7 +903,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			}
 		}
 
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = mapFairMeasures;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = mapFairMeasures;
 
 		if (null != ccMarket) {
 			org.drip.param.definition.ComponentMarketParams cmpMarket =
@@ -914,8 +913,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 						mktParams.getTSYBenchmarkQuotes(), mktParams.getFixings());
 
 			if (null != cmpMarket) {
-				java.util.Map<java.lang.String, java.lang.Double> mapMarketMeasures = calcMeasureSet ("",
-					valParams, pricerParams, cmpMarket, quotingParams);
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMarketMeasures =
+					calcMeasureSet ("", valParams, pricerParams, cmpMarket, quotingParams);
 
 				if (null != mapMarketMeasures) {
 					org.drip.analytics.support.GenericUtil.MergeWithMain (mapMarketMeasures,
@@ -1038,7 +1037,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return setstrMeasureNames;
 	}
 
-	@Override public java.util.Map<java.lang.String, java.lang.Double> valueFromQuotedSpread (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> valueFromQuotedSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -1109,9 +1108,9 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			return null;
 		}
 
-		java.util.Map<java.lang.String, java.lang.Double> mapPV = value (valParams, pricerParams,
-			org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (mktParams.getDiscountCurve(),
-				ccQS), quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapPV = value (valParams,
+			pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
+				(mktParams.getDiscountCurve(), ccQS), quotingParams);
 
 		for (int i = 0; i < iNumCalibComp; ++i) {
 			try {
@@ -1141,8 +1140,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		if (null == cc || null == dc) return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
-			mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+			pricerParams, mktParams, quotingParams);
 
 		if (null == mapMeasures) return null;
 
@@ -1208,8 +1207,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		if ("Rate".equalsIgnoreCase (strQuote) || "FairPremium".equalsIgnoreCase (strQuote) ||
 			"ParSpread".equalsIgnoreCase (strQuote)) {
-			java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
-				mktParams, quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+				pricerParams, mktParams, quotingParams);
 
 			if (null == mapMeasures) return null;
 

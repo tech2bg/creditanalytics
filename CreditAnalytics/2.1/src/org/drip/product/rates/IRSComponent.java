@@ -41,7 +41,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	private org.drip.product.definition.RatesComponent _fixStream = null;
 	private org.drip.product.definition.RatesComponent _floatStream = null;
 
-	@Override protected java.util.Map<java.lang.String, java.lang.Double> calibMeasures (
+	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -105,7 +105,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Cannot locate fixed stream");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_fixStream = null;
 		else
 			_fixStream = new org.drip.product.rates.FixedStream (astrField[1].getBytes());
@@ -113,7 +113,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Cannot locate floating stream");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_floatStream = null;
 		else
 			_floatStream = new org.drip.product.rates.FloatingStream (astrField[2].getBytes());
@@ -243,7 +243,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _fixStream.getCashSettleParams();
 	}
 
-	@Override public java.util.Map<java.lang.String, java.lang.Double> value (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -251,18 +251,18 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	{
 		long lStart = System.nanoTime();
 
-		java.util.Map<java.lang.String, java.lang.Double> mapFixStreamResult = _fixStream.value (valParams,
-			pricerParams, mktParams, quotingParams);
-
-		java.util.Map<java.lang.String, java.lang.Double> mapFloatStreamResult = _floatStream.value
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixStreamResult = _fixStream.value
 			(valParams, pricerParams, mktParams, quotingParams);
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatStreamResult =
+			_floatStream.value (valParams, pricerParams, mktParams, quotingParams);
 
 		if (null == mapFixStreamResult || 0 == mapFixStreamResult.size() || null == mapFloatStreamResult || 0
 			== mapFloatStreamResult.size())
 			return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapResult = new java.util.HashMap<java.lang.String,
-			java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapResult.put ("ResetDate", mapFloatStreamResult.get ("ResetDate"));
 
@@ -274,17 +274,27 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		double dblCleanPV = mapFixStreamResult.get ("CleanPV") + mapFloatStreamResult.get ("CleanPV");
 
-		mapResult.put ("Accrued01", mapFixStreamResult.get ("Accrued01"));
+		mapResult.put ("FixAccrued01", mapFixStreamResult.get ("Accrued01"));
 
 		mapResult.put ("FixAccrued", mapFixStreamResult.get ("FixAccrued"));
 
+		mapResult.put ("FloatAccrued01", mapFloatStreamResult.get ("Accrued01"));
+
 		mapResult.put ("FloatAccrued", mapFloatStreamResult.get ("FloatAccrued"));
 
-		mapResult.put ("DV01", mapFixStreamResult.get ("DV01"));
+		mapResult.put ("FixedDV01", mapFixStreamResult.get ("DV01"));
 
-		mapResult.put ("CleanDV01", dblFixedCleanDV01);
+		mapResult.put ("CleanFixedDV01", dblFixedCleanDV01);
 
-		mapResult.put ("DirtyDV01", mapFixStreamResult.get ("DirtyDV01"));
+		mapResult.put ("DirtyFixedDV01", mapFixStreamResult.get ("DirtyDV01"));
+
+		mapResult.put ("FloatDV01", mapFloatStreamResult.get ("DV01"));
+
+		mapResult.put ("CleanFloatingDV01", mapFloatStreamResult.get ("CleanDV01"));
+
+		mapResult.put ("DirtyFloatingDV01", mapFloatStreamResult.get ("DirtyDV01"));
+
+		mapResult.put ("Fixing01", mapFloatStreamResult.get ("Fixing01"));
 
 		mapResult.put ("CleanFixedPV", mapFixStreamResult.get ("CleanFixedPV"));
 
@@ -343,13 +353,13 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
-		setstrMeasureNames.add ("Accrued01");
-
 		setstrMeasureNames.add ("CalcTime");
 
-		setstrMeasureNames.add ("CleanDV01");
+		setstrMeasureNames.add ("CleanFixedDV01");
 
 		setstrMeasureNames.add ("CleanFixedPV");
+
+		setstrMeasureNames.add ("CleanFloatingDV01");
 
 		setstrMeasureNames.add ("CleanFloatingPV");
 
@@ -357,21 +367,31 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		setstrMeasureNames.add ("CleanPV");
 
-		setstrMeasureNames.add ("DirtyDV01");
+		setstrMeasureNames.add ("DirtyFixedDV01");
 
 		setstrMeasureNames.add ("DirtyFixedPV");
+
+		setstrMeasureNames.add ("DirtyFloatingDV01");
 
 		setstrMeasureNames.add ("DirtyFloatingPV");
 
 		setstrMeasureNames.add ("DirtyPV");
 
-		setstrMeasureNames.add ("DV01");
-
 		setstrMeasureNames.add ("FairPremium");
 
 		setstrMeasureNames.add ("FixAccrued");
 
+		setstrMeasureNames.add ("FixAccrued01");
+
+		setstrMeasureNames.add ("FixedDV01");
+
+		setstrMeasureNames.add ("Fixing01");
+
 		setstrMeasureNames.add ("FloatAccrued");
+
+		setstrMeasureNames.add ("FloatAccrued01");
+
+		setstrMeasureNames.add ("FloatDV01");
 
 		setstrMeasureNames.add ("ParRate");
 
@@ -402,8 +422,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			null == mktParams.getDiscountCurve())
 			return null;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
-			mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+			pricerParams, mktParams, quotingParams);
 
 		if (null == mapMeasures) return null;
 
@@ -472,8 +492,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote) || "SwapRate".equalsIgnoreCase (strQuote)) {
-			java.util.Map<java.lang.String, java.lang.Double> mapMeasures = value (valParams, pricerParams,
-				mktParams, quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+				pricerParams, mktParams, quotingParams);
 
 			if (null == mapMeasures) return null;
 

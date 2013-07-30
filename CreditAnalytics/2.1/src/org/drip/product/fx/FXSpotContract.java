@@ -97,13 +97,13 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FXSpot de-serializer: Cannot locate Spot Date");
 
 		_dblSpotDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("FXSpot de-serializer: Cannot locate Currency Pair");
 
 		_ccyPair = new org.drip.product.params.CurrencyPair (astrField[2].getBytes());

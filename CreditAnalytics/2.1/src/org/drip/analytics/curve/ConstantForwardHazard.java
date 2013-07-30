@@ -52,16 +52,16 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
-	private java.util.Map<java.lang.String, java.lang.Double> _mapQuote = null;
-	private java.util.Map<java.lang.String, java.lang.String> _mapMeasure = null;
-	private java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-		java.lang.Double>> _mmFixing = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
+	private java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 
 	private boolean _bFlat = false;
+	private org.drip.param.pricer.PricerParams _pricerParam = null;
 	private org.drip.analytics.definition.DiscountCurve _dc = null;
 	private org.drip.analytics.definition.DiscountCurve _dcTSY = null;
 	private org.drip.analytics.definition.DiscountCurve _dcEDSF = null;
-	private org.drip.param.pricer.PricerParams _pricerParam = null;
 
 	private org.drip.analytics.definition.CreditCurve createFromBaseNTP (
 		final org.drip.param.definition.NodeTweakParams ntp)
@@ -169,11 +169,11 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("CreditCurve de-serializer: Cannot locate curve name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (_strName = astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (_strName = astrField[1]))
 			_strName = "";
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[2]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("CreditCurve de-serializer: Cannot locate start date");
 
 		_dblStartDate = new java.lang.Double (astrField[2]);
@@ -183,7 +183,7 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 		java.util.List<java.lang.Double> lsdblHazardRate = new java.util.ArrayList<java.lang.Double>();
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[3]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("CreditCurve de-serializer: Cannot decode hazard state");
 
 		if (!org.drip.analytics.support.GenericUtil.KeyValueListFromStringArray (lsdblHazardDate,
@@ -209,7 +209,7 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 		java.util.List<java.lang.Double> lsdblRecoveryRate = new java.util.ArrayList<java.lang.Double>();
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[4]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("CreditCurve de-serializer: Cannot decode recovery state");
 
 		if (!org.drip.analytics.support.GenericUtil.KeyValueListFromStringArray (lsdblRecoveryDate,
@@ -266,8 +266,8 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixing,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
 		_dc = dc;
@@ -282,9 +282,9 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 		_adblCalibQuote = adblCalibQuote;
 		_astrCalibMeasure = astrCalibMeasure;
 
-		_mapQuote = new java.util.HashMap<java.lang.String, java.lang.Double>();
+		_mapQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		_mapMeasure = new java.util.HashMap<java.lang.String, java.lang.String>();
+		_mapMeasure = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 		for (int i = 0; i < aCalibInst.length; ++i) {
 			_mapMeasure.put (_aCalibInst[i].getPrimaryCode(), astrCalibMeasure[i]);

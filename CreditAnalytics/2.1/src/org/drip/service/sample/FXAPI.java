@@ -67,6 +67,7 @@ import org.drip.math.common.FormatUtil;
  */
 
 public class FXAPI {
+
 	/**
 	 * Sample demonstrating the creation/usage of the FX API
 	 * 

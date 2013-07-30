@@ -204,7 +204,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot decode state");
 
 		java.util.List<java.lang.Double> lsdblDate = new java.util.ArrayList<java.lang.Double>();

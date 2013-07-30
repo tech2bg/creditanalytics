@@ -123,7 +123,7 @@ public class RegressionRunOutput {
 
 		sb.append ("\t\t" + _strRegressionScenarioName + ".Success=").append (_bStatus).append ("\n");
 
-		java.util.Map<java.lang.String, java.lang.String> mapDetails = _rnvd.getFieldMap();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapDetails = _rnvd.getFieldMap();
 
 		if (null != mapDetails && 0 != mapDetails.size() && null != mapDetails.entrySet()) {
 			for (java.util.Map.Entry<java.lang.String, java.lang.String> me : mapDetails.entrySet()) {

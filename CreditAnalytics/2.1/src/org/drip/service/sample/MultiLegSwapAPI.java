@@ -2,12 +2,6 @@
 package org.drip.service.sample;
 
 /*
- * Generic Imports
- */
-
-import java.util.Map;
-
-/*
  * Credit Analytics Imports
  */
 
@@ -15,6 +9,7 @@ import org.drip.analytics.creator.DiscountCurveBuilder;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.definition.DiscountCurve;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 
 /*
  * Credit Product Imports
@@ -179,7 +174,6 @@ public class MultiLegSwapAPI {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-
 	private static final void MultiLegSwapSample()
 		throws Exception
 	{
@@ -220,7 +214,7 @@ public class MultiLegSwapAPI {
 		 * Value the Rates Basket
 		 */
 
-		Map<String, Double> mapRBResults = rb.value (valParams, null, bmp, null);
+		CaseInsensitiveTreeMap<Double> mapRBResults = rb.value (valParams, null, bmp, null);
 
 		System.out.println (mapRBResults);
 	}

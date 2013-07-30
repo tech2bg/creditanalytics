@@ -110,8 +110,8 @@ public abstract class CreditScenarioCurve {
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat,
 		final int iCCScenario);
@@ -149,8 +149,8 @@ public abstract class CreditScenarioCurve {
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate, java.util.Map<java.lang.String,
-			java.lang.Double>> mmFixings,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat,
 		final org.drip.param.definition.NodeTweakParams ntpDC,
@@ -204,7 +204,7 @@ public abstract class CreditScenarioCurve {
 	 * @return The Tenor Bumped up credit curve Map
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve>
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 		getTenorCCBumpUp();
 
 	/**
@@ -213,6 +213,6 @@ public abstract class CreditScenarioCurve {
 	 * @return The Tenor Bumped Down credit curve Map
 	 */
 
-	public abstract java.util.Map<java.lang.String, org.drip.analytics.definition.CreditCurve>
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 		getTenorCCBumpDn();
 }

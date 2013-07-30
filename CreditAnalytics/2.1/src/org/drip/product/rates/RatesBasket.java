@@ -164,7 +164,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equals (astrField[1]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_strName = "";
 		else
 			_strName = astrField[1];
