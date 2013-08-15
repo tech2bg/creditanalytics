@@ -1,0 +1,216 @@
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 6979 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 1885 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 29675 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 238 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 363 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 1332 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 199 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 376 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 1348 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 205 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 335 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 1052 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 220 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 232 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 919 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 166 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 198 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 781 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 97 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 159 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 781 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 97 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 191 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 797 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 96 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 207 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 782 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderNewton starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderNewton=> 85 (mu-s): 1 / 1 succeeded.
+	org.drip.math.solver1D.FixedPointFinderNewton ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderCompound starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderCompound=> 213 (mu-s): 2 / 2 succeeded.
+	org.drip.math.solver1D.FixedPointFinderCompound ends at Wed Aug 14 22:44:13 EDT 2013
+
+	org.drip.math.solver1D.FixedPointFinderPrimitive starts at Wed Aug 14 22:44:13 EDT 2013
+	org.drip.math.solver1D.FixedPointFinderPrimitive=> 771 (mu-s): 5 / 5 succeeded.
+	org.drip.math.solver1D.FixedPointFinderPrimitive ends at Wed Aug 14 22:44:13 EDT 2013
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder.Stat.ExecTimeMean=132
+	org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder.Stat.ExecTimeMaximum=1372
+	org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder.Stat.ExecTimeMinimum=81
+	org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder.Stat.ExecTimeVariance=42
+	org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder.Stat.InitializationDelay=1240
+	org.drip.math.solver1d.fixedpointfindercompound.brentfixedpointfinder.Stat.ExecTimeList=[1372, 184, 177, 208, 116, 98, 81, 112, 106, 108]
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder.Stat.ExecTimeMean=120
+	org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder.Stat.ExecTimeMaximum=513
+	org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder.Stat.ExecTimeMinimum=78
+	org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder.Stat.ExecTimeVariance=39
+	org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder.Stat.InitializationDelay=393
+	org.drip.math.solver1d.fixedpointfindercompound.zhengfixedpointfinder.Stat.ExecTimeList=[513, 179, 199, 127, 116, 100, 78, 79, 101, 105]
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder.Stat.ExecTimeMean=155
+	org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder.Stat.ExecTimeMaximum=6979
+	org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder.Stat.ExecTimeMinimum=85
+	org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder.Stat.ExecTimeVariance=58
+	org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder.Stat.InitializationDelay=6824
+	org.drip.math.solver1d.fixedpointfindernewton.newtonfixedpointfinder.Stat.ExecTimeList=[6979, 238, 199, 205, 220, 166, 97, 97, 96, 85]
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder.Stat.ExecTimeMean=165
+	org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder.Stat.ExecTimeMaximum=612
+	org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder.Stat.ExecTimeMinimum=103
+	org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder.Stat.ExecTimeVariance=46
+	org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder.Stat.InitializationDelay=447
+	org.drip.math.solver1d.fixedpointfinderprimitive.bisectionfixedpointfinder.Stat.ExecTimeList=[612, 230, 248, 176, 187, 137, 137, 133, 103, 134]
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder.Stat.ExecTimeMean=117
+	org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder.Stat.ExecTimeMaximum=361
+	org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder.Stat.ExecTimeMinimum=71
+	org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder.Stat.ExecTimeVariance=46
+	org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder.Stat.InitializationDelay=244
+	org.drip.math.solver1d.fixedpointfinderprimitive.falsepositionfixedpointfinder.Stat.ExecTimeList=[361, 231, 161, 106, 121, 92, 94, 95, 85, 71]
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder.Stat.ExecTimeMean=112
+	org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder.Stat.ExecTimeMaximum=266
+	org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder.Stat.ExecTimeMinimum=65
+	org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder.Stat.ExecTimeVariance=48
+	org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder.Stat.InitializationDelay=154
+	org.drip.math.solver1d.fixedpointfinderprimitive.inversequadraticfixedpointfinder.Stat.ExecTimeList=[266, 191, 204, 131, 77, 65, 88, 85, 84, 91]
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder.Stat.ExecTimeMean=165
+	org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder.Stat.ExecTimeMaximum=27932
+	org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder.Stat.ExecTimeMinimum=105
+	org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder.Stat.ExecTimeVariance=52
+	org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder.Stat.InitializationDelay=27767
+	org.drip.math.solver1d.fixedpointfinderprimitive.quadraticfixedpointfinder.Stat.ExecTimeList=[27932, 251, 262, 181, 146, 133, 139, 137, 136, 105]
+
+
+--------
+Stats for org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder
+--------
+	org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder.Stat.NumRuns=10
+	org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder.Stat.ExecTimeMean=390
+	org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder.Stat.ExecTimeMaximum=504
+	org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder.Stat.ExecTimeMinimum=323
+	org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder.Stat.ExecTimeVariance=48
+	org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder.Stat.InitializationDelay=114
+	org.drip.math.solver1d.fixedpointfinderprimitive.ridderfixedpointfinder.Stat.ExecTimeList=[504, 429, 473, 458, 388, 354, 323, 347, 374, 370]
+
