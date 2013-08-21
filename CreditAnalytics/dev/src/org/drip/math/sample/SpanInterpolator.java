@@ -244,12 +244,14 @@ public class SpanInterpolator {
 		AbstractUnivariate rsc = new RationalShapeControl (dblShapeControllerTension);
 
 		/*
-		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), without constraint
+		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
+		 * 	roughness penalty derivative, and without constraint
 		 */
 
 		int iK = 2;
+		int iRoughnessPenaltyDerivativeOrder= 2;
 
-		SegmentInelasticParams segParams = new SegmentInelasticParams (iK, null);
+		SegmentInelasticParams segParams = new SegmentInelasticParams (iK, iRoughnessPenaltyDerivativeOrder, null);
 
 		System.out.println (" \n---------- \n BERNSTEIN POLYNOMIAL \n ---------- \n");
 

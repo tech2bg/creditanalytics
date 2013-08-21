@@ -54,7 +54,7 @@ public abstract class Serializer {
 	 * Serialization Version - ALWAYS prepend this on all derived classes
 	 */
 
-	public static final double VERSION = 2.2;
+	public static final double VERSION = 2.3;
 
 	/**
 	 * Returns the Collection Multi-level Key Delimiter String

@@ -45,8 +45,8 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 	private double[][] _aadblF = null;
 	private double[][] _aadblFInv = null;
 	private org.drip.math.calculus.WengertJacobian _wjMicro = null;
-	private org.drip.math.spline.SegmentInelasticParams _segParams = null;
 	private org.drip.math.function.AbstractUnivariate[] _aAUBasis = null;
+	private org.drip.math.spline.SegmentInelasticParams _segParams = null;
 	private org.drip.math.function.AbstractUnivariate _auShapeControl = null;
 
 	protected double[] _adblCoeff = null;
@@ -126,14 +126,14 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 		final double dblYRight)
 	{
 		try {
-			if (0 == _segParams.getCk()) return calibrate (y (0.), null, dblYRight);
+			if (0 == _segParams.getCk()) return calibrate (y (0.), null, dblYRight, null);
 
 			double[] adblLeftDeriv = new double[_segParams.getCk()];
 
 			for (int i = 0; i < _segParams.getCk(); ++i)
 				adblLeftDeriv[i] = derivative (0., i);
 
-			return calibrate (y (0.), adblLeftDeriv, dblYRight);
+			return calibrate (y (0.), adblLeftDeriv, dblYRight, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -277,16 +277,18 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 	@Override public boolean calibrate (
 		final double dblYLeft,
 		final double[] adblLeftDeriv,
-		final double dblYRight)
+		final double dblYRight,
+		final double[] adblRightDeriv)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblYLeft) || !org.drip.math.common.NumberUtil.IsValid
 			(dblYRight))
 			return false;
 
-		int iNumDeriv = 0;
+		int iNumLeftDeriv = 0;
 		int iNumCoeff = _adblCoeff.length;
 		double[] adblRHS = new double[iNumCoeff];
 		_aadblF = new double[iNumCoeff][iNumCoeff];
+		int iNumRightDeriv = null == adblRightDeriv ? 0 : adblRightDeriv.length;
 
 		int iCk = _segParams.getCk();
 
@@ -294,8 +296,8 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 
 		int iNumConstraint = null == lc ? 0 : lc.size();
 
-		if (null == adblLeftDeriv || 0 == (iNumDeriv = adblLeftDeriv.length)) {
-			if (0 != iCk || 2 != iNumCoeff) return false;
+		if ((null == adblLeftDeriv || 0 == (iNumLeftDeriv = adblLeftDeriv.length)) && 2 == iNumCoeff) {
+			if (0 != iCk) return false;
 
 			_aadblF[0][0] = 1.;
 			_aadblF[0][1] = 0.;
@@ -310,7 +312,7 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 			return null != lss && null != (_aadblFInv = lss.getTransformedMatrix());
 		}
 
-		if (iCk != iNumDeriv) return false;
+		if (iCk > iNumLeftDeriv || iNumCoeff < 2 + iNumConstraint + iCk + iNumRightDeriv) return false;
 
 		for (int j = 0; j < iNumCoeff; ++j) {
 			if (j < 2)
@@ -319,6 +321,8 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 				adblRHS[j] = lc.getValue (j - 2);
 			else if (j < 2 + iNumConstraint + iCk)
 				adblRHS[j] = adblLeftDeriv[j - 2 - iNumConstraint];
+			else if (j < 2 + iNumConstraint + iCk + iNumRightDeriv)
+				adblRHS[j] = adblRightDeriv[j - 2 - iNumConstraint - iCk];
 			else
 				adblRHS[j] = 0.;
 		}
@@ -332,9 +336,12 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 						_aadblF[l][i] = lc.getValue (l - 2, i);
 					else if (l < 2 + iNumConstraint + iCk)
 						_aadblF[l][i] = _aAUBasis[i].calcDerivative (0., l - 1 - iNumConstraint);
+					else if (l < 2 + iNumConstraint + iCk + iNumRightDeriv)
+						_aadblF[l][i] = _aAUBasis[i].calcDerivative (1., l - 1 - iNumConstraint - iCk);
 					else
 						_aadblF[l][i] = org.drip.math.calculus.Integrator.Boole (new
-							CrossBasisDerivativeProduct (iCk, _aAUBasis[i], _aAUBasis[l]), 0., 1.);
+							CrossBasisDerivativeProduct (_segParams.getRoughnessPenaltyDerivativeOrder(),
+								_aAUBasis[i], _aAUBasis[l]), 0., 1.);
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -392,7 +399,7 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 				}
 			}
 
-			return calibrate (segPrev.calcValue (dblXLeft), adblDeriv, dblY1);
+			return calibrate (segPrev.calcValue (dblXLeft), adblDeriv, dblY1, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

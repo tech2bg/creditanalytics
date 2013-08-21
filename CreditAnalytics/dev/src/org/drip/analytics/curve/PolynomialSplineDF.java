@@ -125,7 +125,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 			org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
 				org.drip.math.grid.SegmentControlParams (org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.math.spline.PolynomialBasisSetParams (2), new
-						org.drip.math.spline.SegmentInelasticParams (0, null), null),
+						org.drip.math.spline.SegmentInelasticParams (0, 2, null), null),
 							org.drip.math.grid.Span.SET_ITEP | org.drip.math.grid.Span.CALIBRATE_SPAN);
 	}
 

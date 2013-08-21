@@ -29,14 +29,15 @@ package org.drip.math.spline;
  */
 
 /**
- * SegmentInelasticParams implements basis per-segment elastics parameter set. Currently it contains Ck and
- *  the segment specific constraints.
+ * SegmentInelasticParams implements basis per-segment elastics parameter set. Currently it contains Ck, the
+ *  roughness penalty derivative order, and the segment specific constraints.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class SegmentInelasticParams {
 	private int _iCk = -1;
+	private int _iRoughnessPenaltyDerivativeOrder = -1;
 	private org.drip.math.spline.SegmentConstraint _lc = null;
 
 	/**
@@ -51,7 +52,7 @@ public class SegmentInelasticParams {
 		final org.drip.math.spline.SegmentConstraint lc)
 	{
 		try {
-			return new SegmentInelasticParams (2, null);
+			return new SegmentInelasticParams (2, 2, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -63,6 +64,7 @@ public class SegmentInelasticParams {
 	 * ElasticParams constructor
 	 * 
 	 * @param iCk Continuity Order
+	 * @param iRoughnessPenaltyDerivativeOrder Roughness Penalty Derivative Order
 	 * @param lc Segment Linear Constraint
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
@@ -70,11 +72,25 @@ public class SegmentInelasticParams {
 
 	public SegmentInelasticParams (
 		final int iCk,
+		final int iRoughnessPenaltyDerivativeOrder,
 		final org.drip.math.spline.SegmentConstraint lc)
 		throws java.lang.Exception
 	{
 		_lc = lc;
-		_iCk = iCk;
+
+		if (0 > (_iCk = iCk) || 0 >= (_iRoughnessPenaltyDerivativeOrder = iRoughnessPenaltyDerivativeOrder))
+			throw new java.lang.Exception ("SegmentInelasticParams ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Roughness Penalty Derivative Order
+	 * 
+	 * @return The Roughness Penalty Derivative Order
+	 */
+
+	public int getRoughnessPenaltyDerivativeOrder()
+	{
+		return _iRoughnessPenaltyDerivativeOrder;
 	}
 
 	/**

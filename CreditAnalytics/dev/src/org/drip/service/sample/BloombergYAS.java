@@ -224,9 +224,9 @@ public class BloombergYAS {
 	public static final void BondPricerSample()
 		throws Exception
 	{
-		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
+		JulianDate dtCurve = JulianDate.Today();
 
-		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
+		JulianDate dtSettle = dtCurve.addBusDays (3, "USD");
 
 		double dblNotional = 1000000.;
 		String[] astrCashTenor = new String[] {"3M"};
@@ -255,11 +255,11 @@ public class BloombergYAS {
 		BondComponent bond = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				"TEST",			// Name
 				"USD",			// Currency
-				0.0875,			// Bond Coupon
+				0.054,			// Bond Coupon
 				2, 				// Frequency
 				"30/360",		// Day Count
-				JulianDate.CreateFromYMD (2010, 3, 17), // Effective
-				JulianDate.CreateFromYMD (2015, 4, 1),	// Maturity
+				JulianDate.CreateFromYMD (2011, 4, 21), // Effective
+				JulianDate.CreateFromYMD (2021, 4, 15),	// Maturity
 				null,		// Principal Schedule
 				null);
 
@@ -280,9 +280,17 @@ public class BloombergYAS {
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, dcTSY, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
+		System.out.println ("\n---- Valuation Details ----");
+
+		System.out.println ("Trade Date   : " + dtCurve);
+
+		System.out.println ("Cash Settle  : " + dtSettle);
+
+		System.out.println ("\n--------");
+
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);
 
-		double dblPrice = 1.1025;
+		double dblPrice = 0.97828;
 
 		double dblAccrued = bond.calcAccrued (valParams._dblValue, cmp);
 

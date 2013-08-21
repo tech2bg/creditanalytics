@@ -177,7 +177,7 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 		_csi = new org.drip.math.grid.Span (_adblDate, new org.drip.math.grid.SegmentControlParams
 			(org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION, new
 				org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
-					org.drip.math.spline.SegmentInelasticParams (2, null), null));
+					org.drip.math.spline.SegmentInelasticParams (2, 2, null), null));
 	}
 
 	/**
@@ -214,7 +214,7 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 			org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new org.drip.math.grid.SegmentControlParams
 				(org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION, new
 					org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
-						org.drip.math.spline.SegmentInelasticParams (2, null), null),
+						org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
 							org.drip.math.grid.Span.SET_ITEP)))
 			throw new java.lang.Exception ("HyperbolicTensionForwardRate ctr: Cannot construct CSI!");
 	}
@@ -738,7 +738,7 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 					org.drip.math.grid.SegmentControlParams
 						(org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION, new
 								org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
-									org.drip.math.spline.SegmentInelasticParams (2, null), null),
+									org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
 										org.drip.math.grid.Span.SET_ITEP)))
 				return true;
 		} catch (java.lang.Exception e) {

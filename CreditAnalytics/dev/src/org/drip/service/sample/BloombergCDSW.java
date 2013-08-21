@@ -135,6 +135,7 @@ public class BloombergCDSW {
 		final JulianDate dtStart,
 		final double[] adblQuote,
 		final String[] astrTenor,
+		final String strMeasure,
 		final DiscountCurve dc,
 		final double dblRecovery,
 		final String strCCName,
@@ -148,7 +149,7 @@ public class BloombergCDSW {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			aCDS[i] = CDSBuilder.CreateSNAC (dtStart, astrTenor[i], dblStrike, strCCName);
 
-			astrCalibMeasure[i] = "FairPremium";
+			astrCalibMeasure[i] = strMeasure;
 			adblQuote[i] += dblBump;
 		}
 
@@ -157,7 +158,7 @@ public class BloombergCDSW {
 		 */
 
 		return CreditScenarioCurveBuilder.CreateCreditCurve (strCCName, dtStart, aCDS, dc, adblQuote,
-			astrCalibMeasure, dblRecovery, false);
+			astrCalibMeasure, dblRecovery, "QuotedSpread".equals (strMeasure));
 	}
 
 	/*
@@ -244,7 +245,7 @@ public class BloombergCDSW {
 		 * Build the Base Credit Curve
 		 */
 
-		CreditCurve cc = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, dc, dblRecovery, "CORP", 0.01, 0.);
+		CreditCurve cc = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, "FairPremium", dc, dblRecovery, "CORP", 0.01, 0.);
 
 		/*
 		 * Display Survival Probability to the instrument maturities
@@ -290,7 +291,7 @@ public class BloombergCDSW {
 
 		double dblPrincipal = mapBaseMeasures.get ("Upfront") * 0.01 * dblNotional;
 
-		System.out.println ("\n---- CDS Measures ----");
+		System.out.println ("\n---- Base CDS Measures ----");
 
 		System.out.println ("Price        : " + FormatUtil.FormatDouble (mapBaseMeasures.get ("Price"), 1, 2, 1.));
 
@@ -308,7 +309,7 @@ public class BloombergCDSW {
 		 * Build the Bumped 01 Credit Curve
 		 */
 
-		CreditCurve cc01Bump = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, dc, dblRecovery, "CORP", 0.01, 1.);
+		CreditCurve cc01Bump = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, "FairPremium", dc, dblRecovery, "CORP", 0.01, 1.);
 
 		/*
 		 * Generate the 1 bp flat Credit Curve bumped  Measures
@@ -351,7 +352,7 @@ public class BloombergCDSW {
 
 		System.out.println ("\n---- CDS Coupon Flows ----");
 
-		for (Period p : cds.getCouponPeriod())
+		for (CouponPeriod p : cds.getCouponPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
@@ -360,5 +361,23 @@ public class BloombergCDSW {
 				FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
 			);
+
+		/*
+		 * Generate the Quoted Spread Based CDS Measures
+		 */
+
+		CaseInsensitiveTreeMap<Double> mapQSMeasures = cds.valueFromQuotedSpread (
+			valParams,
+			pricerParams,
+			ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
+			null,
+			0.05,
+			208.);
+
+		System.out.println ("\n---- Quoted Spread CDS Measures ----");
+
+		System.out.println ("QS Price     : " + FormatUtil.FormatDouble (mapQSMeasures.get ("Price"), 1, 2, 1.));
+
+		System.out.println ("QS Repl Spd  : " + FormatUtil.FormatDouble (mapQSMeasures.get ("FairPremium"), 1, 4, 1.));
 	}
 }

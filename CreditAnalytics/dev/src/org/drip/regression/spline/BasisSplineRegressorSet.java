@@ -83,8 +83,16 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 					_strRegressionScenario, 2, 0));
 
 			_setRegressors.add
+				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N3Ck0",
+					_strRegressionScenario, 3, 0));
+
+			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N3Ck1",
 					_strRegressionScenario, 3, 1));
+
+			_setRegressors.add
+				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N4Ck0",
+					_strRegressionScenario, 4, 0));
 
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N4Ck1",
@@ -93,6 +101,10 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N4Ck2",
 					_strRegressionScenario, 4, 2));
+
+			_setRegressors.add
+				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N5Ck0",
+					_strRegressionScenario, 5, 0));
 
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N5Ck1",
@@ -105,6 +117,10 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N5Ck3",
 					_strRegressionScenario, 5, 3));
+
+			_setRegressors.add
+				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N6Ck0",
+					_strRegressionScenario, 6, 0));
 
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N6Ck1",
@@ -121,6 +137,10 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N6Ck4",
 					_strRegressionScenario, 6, 4));
+
+			_setRegressors.add
+				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N7Ck0",
+					_strRegressionScenario, 7, 0));
 
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreatePolynomialSplineRegressor ("N7Ck1",
@@ -157,6 +177,10 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 			_setRegressors.add
 				(org.drip.regression.spline.BasisSplineRegressor.CreateBernsteinPolynomialSplineRegressor
 					("Bern_N4Ck2", _strRegressionScenario, 4, 2));
+
+			_setRegressors.add
+				(org.drip.regression.spline.HermiteBasisSplineRegressor.CreateHermiteSplineRegressor
+					("Hermite_N4Ck1", _strRegressionScenario, 4, 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

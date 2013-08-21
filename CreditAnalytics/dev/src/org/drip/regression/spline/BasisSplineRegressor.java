@@ -32,7 +32,7 @@ package org.drip.regression.spline;
 /**
  * BasisSplineRegressor implements the custom basis spline regressor for the given basis spline. As part of
  *  the regression run, it executes the following:
- *  - Calibrate and compute the left and he right Jacobian.
+ *  - Calibrate and compute the left and the right Jacobian.
  *  - Reset right node and re-run calibration.
  *  - Compute an intermediate value Jacobian.
  *
@@ -191,7 +191,7 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 		return null;
 	}
 
-	private BasisSplineRegressor (
+	protected BasisSplineRegressor (
 		final java.lang.String strName,
 		final java.lang.String strScenarioName,
 		final org.drip.math.function.AbstractUnivariate[] aAU,
@@ -200,11 +200,8 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	{
 		super (strName, strScenarioName);
 
-		if (null == (_strName = strName) || _strName.isEmpty())
-			throw new java.lang.Exception ("BasisSplineRegressor ctr: Invalid Input");
-
 		org.drip.math.spline.SegmentInelasticParams segParams = new
-			org.drip.math.spline.SegmentInelasticParams (iCk, null);
+			org.drip.math.spline.SegmentInelasticParams (iCk, 2, null);
 
 		org.drip.math.function.AbstractUnivariate rsc = new org.drip.math.function.RationalShapeControl (1.);
 
@@ -222,9 +219,9 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	@Override public boolean execRegression()
 	{
 		try {
-			return null != (_wjLeft = _seg1.calibrateJacobian (25., 0., 20.25)) && null !=
-				(_wjRight = _seg2.calibrateJacobian (_seg1, 16.)) && _seg2.calibrate (_seg1,
-					14.) && null != (_wjValue = _seg2.calcValueJacobian (5.));
+			return null != (_wjLeft = _seg1.calibrateJacobian (25., 0., 20.25)) && null != (_wjRight =
+				_seg2.calibrateJacobian (_seg1, 16.)) && _seg2.calibrate (_seg1, 14.) && null != (_wjValue =
+					_seg2.calcValueJacobian (5.));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

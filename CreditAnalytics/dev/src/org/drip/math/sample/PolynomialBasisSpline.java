@@ -34,8 +34,8 @@ import org.drip.math.spline.*;
  */
 
 /**
- * PolynomialBasisSpline implements Samples for the Construction and the usage of polynomial basis spline
- * 	functions. It demonstrates the following:
+ * PolynomialBasisSpline implements Samples for the Construction and the usage of polynomial (both regular
+ * 	and Hermite) basis spline functions. It demonstrates the following:
  * 	- Control the polynomial segment using the rational shape controller, the appropriate Ck, and the basis
  * 		function.
  * 	- Demonstrate the variational shape optimization behavior.
@@ -61,6 +61,7 @@ public class PolynomialBasisSpline {
 	private static final void TestPolynomialSpline (
 		final int iNumBasis,
 		final int iCk,
+		final int iRoughnessPenaltyDerivativeOrder,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
@@ -71,7 +72,7 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		SegmentInelasticParams segParams = new SegmentInelasticParams (iCk, null);
+		SegmentInelasticParams segParams = new SegmentInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder, null);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
@@ -134,6 +135,91 @@ public class PolynomialBasisSpline {
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.calcValueJacobian (dblX).displayString());
 	}
 
+	/*
+	 * This sample demonstrates the following specifically for the Ck Hermite Splines, which are calibrated
+	 *  using left and right node values, along with their derivatives:
+	 * 
+	 * 	- Construction of two segments, 1 and 2.
+	 *  - Calibration of the segments to the left and the right node values
+	 *  - Extraction of the segment Jacobians and segment monotonicity
+	 *  - Interpolate point value and the Jacobian
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void TestC1HermiteSpline (
+		final int iNumBasis,
+		final int iCk,
+		final int iRoughnessPenaltyDerivativeOrder,
+		final AbstractUnivariate rsc)
+		throws Exception
+	{
+		System.out.println (" ------------------------------ \n     HERMITE POLYNOMIAL n = " + iNumBasis +
+			"; Ck = " + iCk + "\n ------------------------------ \n");
+
+		/*
+		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
+		 */
+
+		SegmentInelasticParams segParams = new SegmentInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder, null);
+
+		/*
+		 * Create the basis parameter set from the number of basis functions, and construct the basis
+		 */
+
+		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
+
+		AbstractUnivariate[] aAU = SegmentBasisSetBuilder.PolynomialBasisSet (polybsbp);
+
+		/*
+		 * Construct the left and the right segments
+		 */
+
+		Segment seg1 = SegmentBasisSetBuilder.CreateCk (0.0, 1.0, aAU, rsc, segParams);
+
+		Segment seg2 = SegmentBasisSetBuilder.CreateCk (1.0, 2.0, aAU, rsc, segParams);
+
+		/*
+		 * Calibrate the left segment using the node values, and compute the segment Jacobian
+		 */
+
+		seg1.calibrate (1., new double[] {1.}, 4., new double[] {6.});
+
+		System.out.println ("\tY[" + 0.0 + "]: " + seg1.calcValue (0.0));
+
+		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcValue (1.0));
+
+		System.out.println ("Segment 1 Head: " + seg1.calcJacobian().displayString());
+
+		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
+
+		/*
+		 * Calibrate the right segment using the node values, and compute the segment Jacobian
+		 */
+
+		seg2.calibrate (4., new double[] {6.}, 15., new double[] {17.});
+
+		System.out.println ("\tY[" + 1.0 + "]: " + seg2.calcValue (1.0));
+
+		System.out.println ("\tY[" + 2.0 + "]: " + seg2.calcValue (2.0));
+
+		System.out.println ("Segment 2 Regular Jacobian: " + seg2.calcJacobian().displayString());
+
+		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
+
+		seg2.calibrate (seg1, 14.);
+
+		/*
+		 * Interpolate the segment value at the given variate, and compute the corresponding Jacobian
+		 */
+
+		double dblX = 2.0;
+
+		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcValue (dblX));
+
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.calcValueJacobian (dblX).displayString());
+	}
+
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -147,39 +233,63 @@ public class PolynomialBasisSpline {
 		AbstractUnivariate rsc = new RationalShapeControl (dblShapeControllerTension);
 
 		/*
+		 * Set to 2nd order Roughness Penalty Derivative Order.
+		 */
+
+		int iRoughnessPenaltyDerivativeOrder = 2;
+
+		/*
 		 * Test the polynomial spline across different polynomial degrees and Ck's
 		 */
 
-		TestPolynomialSpline (2, 0, rsc);
+		TestPolynomialSpline (2, 0, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (3, 1, rsc);
+		TestPolynomialSpline (3, 0, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (4, 1, rsc);
+		TestPolynomialSpline (3, 1, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (4, 2, rsc);
+		TestPolynomialSpline (4, 0, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (5, 1, rsc);
+		TestPolynomialSpline (4, 1, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (5, 2, rsc);
+		TestPolynomialSpline (4, 2, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (5, 3, rsc);
+		TestPolynomialSpline (5, 0, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (6, 1, rsc);
+		TestPolynomialSpline (5, 1, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (6, 2, rsc);
+		TestPolynomialSpline (5, 2, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (6, 3, rsc);
+		TestPolynomialSpline (5, 3, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (6, 4, rsc);
+		TestPolynomialSpline (6, 0, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (7, 1, rsc);
+		TestPolynomialSpline (6, 1, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (7, 2, rsc);
+		TestPolynomialSpline (6, 2, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (7, 3, rsc);
+		TestPolynomialSpline (6, 3, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (7, 4, rsc);
+		TestPolynomialSpline (6, 4, iRoughnessPenaltyDerivativeOrder, rsc);
 
-		TestPolynomialSpline (7, 5, rsc);
+		TestPolynomialSpline (7, 0, iRoughnessPenaltyDerivativeOrder, rsc);
+
+		TestPolynomialSpline (7, 1, iRoughnessPenaltyDerivativeOrder, rsc);
+
+		TestPolynomialSpline (7, 2, iRoughnessPenaltyDerivativeOrder, rsc);
+
+		TestPolynomialSpline (7, 3, iRoughnessPenaltyDerivativeOrder, rsc);
+
+		TestPolynomialSpline (7, 4, iRoughnessPenaltyDerivativeOrder, rsc);
+
+		TestPolynomialSpline (7, 5, iRoughnessPenaltyDerivativeOrder, rsc);
+
+		/*
+		 * Test the C1 Hermite spline
+		 */
+
+		System.out.println (" -------------------- \n Ck HERMITE \n -------------------- \n");
+
+		TestC1HermiteSpline (4, 1, iRoughnessPenaltyDerivativeOrder, rsc);
 	}
 }

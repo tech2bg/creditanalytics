@@ -162,16 +162,16 @@ public class BloombergSWPM {
 		 * Model the discount curve instrument quotes. Best pulled from Curves #23/#47 in the BBG SWPM "Curves" tab
 		 */
 
-		double dblCoupon = 0.01526297;
-		double dblFixing = 0.0026500;
+		double dblCoupon = 0.01745756;
+		double dblFixing = 0.0026410;
 		double dblNotional = 10.e+06;
 		String[] astrCashTenor = new String[] {"3M"};
-		double[] adblCashRate = new double[] {0.0026500};
-		double[] adblEDFRate = new double[] {0.0026500, 0.0026500};
+		double[] adblCashRate = new double[] {0.0026410};
+		double[] adblEDFRate = new double[] {0.0026410, 0.0026410};
 		String[] astrIRSTenor = new String[] {    "4Y",      "5Y",      "6Y",
 			     "7Y",	    "8Y",      "9Y",     "10Y",     "11Y",     "12Y",     "15Y",     "20Y"};
-		double[] adblIRSRate = new double[] {0.0114126, 0.0152630, 0.0186897,
-			0.0215577, 0.0239010, 0.0258410, 0.0275078, 0.0288980, 0.0301306, 0.0326011, 0.0345342};
+		double[] adblIRSRate = new double[] {0.0133440, 0.0174576, 0.0210107,
+			0.0239764, 0.0263425, 0.0282876, 0.0299189, 0.0312560, 0.0324536, 0.0348415, 0.0367341};
 
 		/*
 		 * Build the Discount Curve
@@ -262,7 +262,11 @@ public class BloombergSWPM {
 
 		CaseInsensitiveTreeMap<Double> mapSwapFixingsBumpedCalc = swap.value (valParams, null, cmpFixingsBumped, null);
 
-		System.out.println ("Fixings DV01 : " + FormatUtil.FormatDouble (mapSwapFixingsBumpedCalc.get ("PV") - dblBasePV, 0, 0, 0.001 * dblNotional));
+		double dblFixingsDV01 = mapSwapFixingsBumpedCalc.get ("PV") - dblBasePV;
+
+		System.out.println ("Fixings DV01 : " + FormatUtil.FormatDouble (dblFixingsDV01, 0, 0, 0.001 * dblNotional));
+
+		System.out.println ("Total DV01   : " + FormatUtil.FormatDouble (mapSwapCalc.get ("FixedDV01") * 0.0001 + dblFixingsDV01, 0, 0, 0.001 * dblNotional));
 
 		/*
 		 * Set up the rate flat bumped market parameters - these use the bumped base discount curve and the base fixing

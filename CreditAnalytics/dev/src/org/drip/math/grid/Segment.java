@@ -132,6 +132,7 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	 * @param dblLeftValue Left Value
 	 * @param adblLeftLocalDeriv Array of Left Local Derivatives
 	 * @param dblRightValue Right Value
+	 * @param adblRightLocalDeriv Array of Left Local Derivatives
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
@@ -139,7 +140,8 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	public abstract boolean calibrate (
 		final double dblLeftValue,
 		final double[] adblLeftLocalDeriv,
-		final double dblRightValue);
+		final double dblRightValue,
+		final double[] adblRightLocalDeriv);
 
 	/**
 	 * Calibrate the coefficients from the prior Segment and the right node value
@@ -329,7 +331,7 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblLeftSlope)) return false;
 
-		return calibrate (dblLeftValue, derivArrayFromSlope (dblLeftSlope), dblRightValue);
+		return calibrate (dblLeftValue, derivArrayFromSlope (dblLeftSlope), dblRightValue, null);
 	}
 
 	/**
@@ -338,6 +340,7 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	 * @param dblLeftValue Left Value
 	 * @param adblLeftDeriv Array of Left Derivatives
 	 * @param dblRightValue Right Value
+	 * @param adblRightDeriv Array of Right Derivatives
 	 * 
 	 * @return The Jacobian
 	 */
@@ -345,9 +348,10 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	public org.drip.math.calculus.WengertJacobian calibrateJacobian (
 		final double dblLeftValue,
 		final double[] adblLeftDeriv,
-		final double dblRightValue)
+		final double dblRightValue,
+		final double[] adblRightDeriv)
 	{
-		if (!calibrate (dblLeftValue, adblLeftDeriv, dblRightValue)) return null;
+		if (!calibrate (dblLeftValue, adblLeftDeriv, dblRightValue, adblRightDeriv)) return null;
 
 		return calcJacobian();
 	}

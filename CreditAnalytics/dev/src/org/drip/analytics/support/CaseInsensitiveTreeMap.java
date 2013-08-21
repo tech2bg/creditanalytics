@@ -47,18 +47,21 @@ package org.drip.analytics.support;
     @Override public V get (
     	final java.lang.Object objKey)
     {
-    	return null == objKey ? null : super.get (((java.lang.String) objKey).toLowerCase());
+    	return null == objKey || !(objKey instanceof java.lang.String) ? null : super.get
+    		(((java.lang.String) objKey).toLowerCase());
     }
 
     @Override public boolean containsKey (
     	final java.lang.Object objKey)
     {
-    	return null == objKey ? null : super.containsKey (((java.lang.String) objKey).toLowerCase());
+    	return null == objKey || !(objKey instanceof java.lang.String) ? null : super.containsKey
+    		(((java.lang.String) objKey).toLowerCase());
     }
 
     @Override public V remove (
     	final java.lang.Object objKey)
     {
-    	return null == objKey ? null : super.remove (((java.lang.String) objKey).toLowerCase());
+    	return null == objKey || !(objKey instanceof java.lang.String) ? null : super.remove
+    		(((java.lang.String) objKey).toLowerCase());
     }
 }

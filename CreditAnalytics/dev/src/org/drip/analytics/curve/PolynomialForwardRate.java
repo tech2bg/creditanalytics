@@ -185,7 +185,7 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 			org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
 				org.drip.math.grid.SegmentControlParams (org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.math.spline.PolynomialBasisSetParams (4), new
-						org.drip.math.spline.SegmentInelasticParams (2, null), null),
+						org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
 							org.drip.math.grid.Span.SET_ITEP)))
 			throw new java.lang.Exception ("PolynomialForwardRate ctr: Cannot construct CSI!");
 	}
@@ -679,7 +679,7 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 				dblValue, org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
 					org.drip.math.grid.SegmentControlParams (org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL,
 						new org.drip.math.spline.PolynomialBasisSetParams (4), new
-							org.drip.math.spline.SegmentInelasticParams (2, null), null),
+							org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
 								org.drip.math.grid.Span.SET_ITEP)))
 				return true;
 		} catch (java.lang.Exception e) {
