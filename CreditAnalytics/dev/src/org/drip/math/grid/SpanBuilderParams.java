@@ -29,20 +29,20 @@ package org.drip.math.grid;
  */
 
 /**
- * SegmentControlParams holds the parameters the guide the creation/behavior of the segment. It holds the
+ * SpanBuilderParams holds the parameters the guide the creation/behavior of the segment. It holds the
  *  segment elastic/inelastic parameters and the named basis function set.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentControlParams {
+public class SpanBuilderParams {
 	private java.lang.String _strBasisSpline = "";
 	private org.drip.math.spline.BasisSetParams _bsbp = null;
 	private org.drip.math.spline.SegmentInelasticParams _segParams = null;
 	private org.drip.math.function.AbstractUnivariate _auShapeControl = null;
 
 	/**
-	 * SpanParams constructor
+	 * SpanBuilderParams constructor
 	 * 
 	 * @param strBasisSpline Named Segment Basis Spline
 	 * @param bsbp Segment Basis Set Construction Parameters
@@ -52,7 +52,7 @@ public class SegmentControlParams {
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public SegmentControlParams (
+	public SpanBuilderParams (
 		final java.lang.String strBasisSpline,
 		final org.drip.math.spline.BasisSetParams bsbp,
 		final org.drip.math.spline.SegmentInelasticParams segParams,
@@ -61,7 +61,7 @@ public class SegmentControlParams {
 	{
 		if (null == (_strBasisSpline = strBasisSpline) || null == (_bsbp = bsbp) || null == (_segParams =
 			segParams))
-			throw new java.lang.Exception ("SpanParams ctr => Invalid Inputs");
+			throw new java.lang.Exception ("SpanBuilderParams ctr => Invalid Inputs");
 
 		_auShapeControl = auShapeControl;
 	}

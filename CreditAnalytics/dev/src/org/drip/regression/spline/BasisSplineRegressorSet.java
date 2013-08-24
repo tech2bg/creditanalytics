@@ -51,6 +51,8 @@ package org.drip.regression.spline;
  * - #18: Exponential Tension Spline, n = 4 basis functions, Tension = 1., and Ck = 2.
  * - #19: Hyperbolic Tension Spline, n = 4 basis functions, Tension = 1., and Ck = 2.
  * - #20: Kaklis-Pandelis Tension Spline, n = 4 basis functions, KP = 2, and Ck = 2.
+ * - #21: C1 Hermite Local Spline, n = 4 basis functions, and Ck = 1.
+ * - #21: Hermite Local Spline with Local, Catmull-Rom, and Cardinal Knots, n = 4 basis functions, and Ck = 1.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -181,6 +183,14 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 			_setRegressors.add
 				(org.drip.regression.spline.HermiteBasisSplineRegressor.CreateHermiteSplineRegressor
 					("Hermite_N4Ck1", _strRegressionScenario, 4, 1));
+
+			_setRegressors.add (new org.drip.regression.spline.LocalControlBasisSplineRegressor
+				("Hermite_CatmullRom_Cardinal_N4Ck1", _strRegressionScenario,
+					org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+						org.drip.math.spline.PolynomialBasisSetParams (4), 1));
+
+			_setRegressors.add (new org.drip.regression.spline.LagrangePolynomialSpanRegressor
+				("Lagrange_Polynomial_Span", _strRegressionScenario));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

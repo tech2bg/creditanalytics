@@ -48,9 +48,9 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 	private double[] _adblDate = null;
 	private double[] _adblCalibQuote = null;
 	private java.lang.String _strCurrency = "";
-	private org.drip.math.grid.Span _csi = null;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private java.lang.String[] _astrCalibMeasure = null;
+	private org.drip.math.grid.MultiSegmentSpan _csi = null;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
@@ -139,7 +139,7 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double[] adblDate,
-		final org.drip.math.grid.Span csi)
+		final org.drip.math.grid.MultiSegmentSpan csi)
 		throws java.lang.Exception
 	{
 		_csi = csi;
@@ -174,10 +174,11 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 		for (int i = 0; i < _adblDate.length; ++i)
 			_adblDate[i] = adblDate[i];
 
-		_csi = new org.drip.math.grid.Span (_adblDate, new org.drip.math.grid.SegmentControlParams
-			(org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION, new
-				org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
-					org.drip.math.spline.SegmentInelasticParams (2, 2, null), null));
+		_csi = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (_adblDate, new
+			org.drip.math.grid.SpanBuilderParams
+				(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new
+					org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
+						org.drip.math.spline.SegmentInelasticParams (2, 2, null), null));
 	}
 
 	/**
@@ -210,12 +211,11 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 		for (int i = 0; i < _adblDate.length; ++i)
 			_adblDate[i] = adblDate[i];
 
-		if (null == (_csi = org.drip.math.grid.Span.CreateCalibratedSpanInterpolator (adblDate, adblEndRate,
-			org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new org.drip.math.grid.SegmentControlParams
-				(org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION, new
+		if (null == (_csi = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (adblDate, new
+			org.drip.math.grid.SpanBuilderParams
+				(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new
 					org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
-						org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
-							org.drip.math.grid.Span.SET_ITEP)))
+						org.drip.math.spline.SegmentInelasticParams (2, 2, null), null))))
 			throw new java.lang.Exception ("HyperbolicTensionForwardRate ctr: Cannot construct CSI!");
 	}
 
@@ -733,13 +733,11 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 		if (!org.drip.math.common.NumberUtil.IsValid (dblValue)) return false;
 
 		try {
-			if (null != (_csi = org.drip.math.grid.Span.CreateCalibratedSpanInterpolator (_adblDate,
-				dblValue, org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
-					org.drip.math.grid.SegmentControlParams
-						(org.drip.math.grid.Span.BASIS_SPLINE_HYPERBOLIC_TENSION, new
-								org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
-									org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
-										org.drip.math.grid.Span.SET_ITEP)))
+			if (null != (_csi = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (_adblDate,
+				new org.drip.math.grid.SpanBuilderParams
+					(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new
+						org.drip.math.spline.ExponentialTensionBasisSetParams (1.), new
+							org.drip.math.spline.SegmentInelasticParams (2, 2, null), null))))
 				return true;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -836,11 +834,6 @@ public class HyperbolicTensionForwardRate extends org.drip.analytics.definition.
 		}
 
 		return null;
-	}
-
-	@Override public java.lang.String displayString()
-	{
-		return _csi.displayDerivatives();
 	}
 
 	@Override public boolean buildInterpolator()

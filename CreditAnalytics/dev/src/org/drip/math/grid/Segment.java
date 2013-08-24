@@ -73,7 +73,8 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	protected Segment (
 		final double dblLeft,
 		final double dblRight)
-		throws java.lang.Exception {
+		throws java.lang.Exception
+	{
 		super (dblLeft, dblRight);
 	}
 
@@ -127,21 +128,19 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	public abstract int numParameters();
 
 	/**
-	 * Calibrate the coefficients from the boundary values and the left derivatives set
+	 * Calibrate the coefficients from the left and the right segment edge parameters
 	 * 
-	 * @param dblLeftValue Left Value
-	 * @param adblLeftLocalDeriv Array of Left Local Derivatives
-	 * @param dblRightValue Right Value
-	 * @param adblRightLocalDeriv Array of Left Local Derivatives
+	 * @param sepLeft Left Segment Edge Parameters
+	 * @param sepRight Right Segment Edge Parameters
+	 * @param bSEPLocal Flag indicating whether the calibration parameters are strictly local
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
 
 	public abstract boolean calibrate (
-		final double dblLeftValue,
-		final double[] adblLeftLocalDeriv,
-		final double dblRightValue,
-		final double[] adblRightLocalDeriv);
+		final org.drip.math.grid.SegmentEdgeParams sepLeft,
+		final org.drip.math.grid.SegmentEdgeParams sepRight,
+		final boolean bSEPLocal);
 
 	/**
 	 * Calibrate the coefficients from the prior Segment and the right node value
@@ -315,6 +314,26 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	}
 
 	/**
+	 * Calibrate the base coefficients and their Jacobians
+	 * 
+	 * @param sepLeft Left Segment Edge Parameters
+	 * @param sepRight Right Segment Edge Parameters
+	 * @param bSEPLocal Flag indicating whether the calibration parameters are strictly local
+	 * 
+	 * @return The Jacobian
+	 */
+
+	public org.drip.math.calculus.WengertJacobian calibrateJacobian (
+		final org.drip.math.grid.SegmentEdgeParams sepLeft,
+		final org.drip.math.grid.SegmentEdgeParams sepRight,
+		final boolean bSEPLocal)
+	{
+		if (!calibrate (sepLeft, sepRight, bSEPLocal)) return null;
+
+		return calcJacobian();
+	}
+
+	/**
 	 * Calibrate the coefficients from the boundary values and the left slope
 	 * 
 	 * @param dblLeftValue Left Value
@@ -331,29 +350,14 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblLeftSlope)) return false;
 
-		return calibrate (dblLeftValue, derivArrayFromSlope (dblLeftSlope), dblRightValue, null);
-	}
+		try {
+			return calibrate (new org.drip.math.grid.SegmentEdgeParams (dblLeftValue, derivArrayFromSlope
+				(dblLeftSlope)), new org.drip.math.grid.SegmentEdgeParams (dblRightValue, null), false);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
 
-	/**
-	 * Calibrate the base coefficients and their Jacobians
-	 * 
-	 * @param dblLeftValue Left Value
-	 * @param adblLeftDeriv Array of Left Derivatives
-	 * @param dblRightValue Right Value
-	 * @param adblRightDeriv Array of Right Derivatives
-	 * 
-	 * @return The Jacobian
-	 */
-
-	public org.drip.math.calculus.WengertJacobian calibrateJacobian (
-		final double dblLeftValue,
-		final double[] adblLeftDeriv,
-		final double dblRightValue,
-		final double[] adblRightDeriv)
-	{
-		if (!calibrate (dblLeftValue, adblLeftDeriv, dblRightValue, adblRightDeriv)) return null;
-
-		return calcJacobian();
+		return false;
 	}
 
 	/**

@@ -312,25 +312,6 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return true;
 	}
 
-	@Override public java.lang.String displayString()
-	{
-		try {
-			java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-			for (int i = 0; i < _adblDate.length; ++i) {
-				if (0 != i) sb.append (" | ");
-
-				sb.append (new org.drip.analytics.date.JulianDate (_adblDate[i]) + "=" + _adblFXBasis[i]);
-			}
-
-			return sb.toString();
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	@Override public double[] getCompQuotes()
 	{
 		return null;

@@ -649,25 +649,6 @@ public class ConstantForwardRate extends org.drip.analytics.definition.DiscountC
 		return false;
 	}
 
-	@Override public java.lang.String displayString()
-	{
-		try {
-			java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-			for (int i = 0; i < _adblRate.length; ++i) {
-				if (0 != i) sb.append (" | ");
-
-				sb.append (new org.drip.analytics.date.JulianDate (_adblNode[i]) + "=" + _adblRate[i]);
-			}
-
-			return sb.toString();
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	public static void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception

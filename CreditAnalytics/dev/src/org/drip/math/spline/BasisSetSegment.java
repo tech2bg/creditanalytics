@@ -41,7 +41,7 @@ package org.drip.math.spline;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentCk extends org.drip.math.grid.Segment {
+public class BasisSetSegment extends org.drip.math.grid.Segment {
 	private double[][] _aadblF = null;
 	private double[][] _aadblFInv = null;
 	private org.drip.math.calculus.WengertJacobian _wjMicro = null;
@@ -101,7 +101,7 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 		return dblY;
 	}
 
-	protected SegmentCk (
+	protected BasisSetSegment (
 		final double dblLeft,
 		final double dblRight,
 		final org.drip.math.function.AbstractUnivariate[] aAUBasis,
@@ -112,28 +112,31 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 		super (dblLeft, dblRight);
 
 		if (null == (_aAUBasis = aAUBasis) || null == (_segParams = segParams))
-			throw new java.lang.Exception ("SegmentCk ctr: Invalid Basis Functions!");
+			throw new java.lang.Exception ("CalibratableSegment ctr: Invalid Basis Functions!");
 
 		int iNumBasis = _aAUBasis.length;
 		_auShapeControl = auShapeControl;
 		_adblCoeff = new double[iNumBasis];
 
 		if (0 >= iNumBasis || _segParams.getCk() > iNumBasis - 2)
-			throw new java.lang.Exception ("SegmentCk ctr: Invalid inputs!");
+			throw new java.lang.Exception ("CalibratableSegment ctr: Invalid inputs!");
 	}
 
 	protected boolean y1 (
 		final double dblYRight)
 	{
 		try {
-			if (0 == _segParams.getCk()) return calibrate (y (0.), null, dblYRight, null);
+			if (0 == _segParams.getCk())
+				return calibrate (new org.drip.math.grid.SegmentEdgeParams (y (0.), null), new
+					org.drip.math.grid.SegmentEdgeParams (dblYRight, null), false);
 
 			double[] adblLeftDeriv = new double[_segParams.getCk()];
 
 			for (int i = 0; i < _segParams.getCk(); ++i)
 				adblLeftDeriv[i] = derivative (0., i);
 
-			return calibrate (y (0.), adblLeftDeriv, dblYRight, null);
+			return calibrate (new org.drip.math.grid.SegmentEdgeParams (y (0.), adblLeftDeriv), new
+				org.drip.math.grid.SegmentEdgeParams (dblYRight, null), false);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -259,8 +262,9 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 		if (0 == iOrder) return y (dblX);
 
 		if (_segParams.getCk() < iOrder && (0. == dblPoint || 1. == dblPoint))
-			throw new java.lang.Exception ("SegmentCk::calcOrderedDerivative => Segment Discontinuous: C" +
-				_segParams.getCk() + " less than deriv order " + iOrder + " at segment edges!");
+			throw new java.lang.Exception
+				("CalibratableSegment::calcOrderedDerivative => Segment Discontinuous: C" +
+					_segParams.getCk() + " less than deriv order " + iOrder + " at segment edges!");
 
 		double dblDeriv = derivative (dblX, iOrder);
 
@@ -275,29 +279,39 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 	}
 
 	@Override public boolean calibrate (
-		final double dblYLeft,
-		final double[] adblLeftDeriv,
-		final double dblYRight,
-		final double[] adblRightDeriv)
+		final org.drip.math.grid.SegmentEdgeParams sepLeft,
+		final org.drip.math.grid.SegmentEdgeParams sepRight,
+		final boolean bSEPLocal)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblYLeft) || !org.drip.math.common.NumberUtil.IsValid
-			(dblYRight))
-			return false;
-
-		int iNumLeftDeriv = 0;
-		int iNumCoeff = _adblCoeff.length;
-		double[] adblRHS = new double[iNumCoeff];
-		_aadblF = new double[iNumCoeff][iNumCoeff];
-		int iNumRightDeriv = null == adblRightDeriv ? 0 : adblRightDeriv.length;
+		if (null == sepLeft || null == sepRight) return false;
 
 		int iCk = _segParams.getCk();
+
+		double dblYLeft = sepLeft.getY();
+
+		double dblYRight = sepRight.getY();
+
+		double[] adblLeftDeriv = sepLeft.getDeriv();
+
+		double[] adblRightDeriv = sepRight.getDeriv();
 
 		org.drip.math.spline.SegmentConstraint lc = _segParams.getLinearConstraint();
 
 		int iNumConstraint = null == lc ? 0 : lc.size();
 
-		if ((null == adblLeftDeriv || 0 == (iNumLeftDeriv = adblLeftDeriv.length)) && 2 == iNumCoeff) {
-			if (0 != iCk) return false;
+		if (!org.drip.math.common.NumberUtil.IsValid (dblYLeft) || !org.drip.math.common.NumberUtil.IsValid
+			(dblYRight))
+			return false;
+
+		int iNumCoeff = _adblCoeff.length;
+		double[] adblRHS = new double[iNumCoeff];
+		_aadblF = new double[iNumCoeff][iNumCoeff];
+		int iNumLeftDeriv = null == adblLeftDeriv ? 0 : adblLeftDeriv.length;
+		int iNumRightDeriv = null == adblRightDeriv ? 0 : adblRightDeriv.length;
+		int iNumLeftDerivToParse = bSEPLocal ? iNumLeftDeriv : iCk;
+
+		if ((null == adblLeftDeriv || 0 == iNumLeftDeriv) && 2 == iNumCoeff) {
+			if (0 != iNumLeftDerivToParse) return false;
 
 			_aadblF[0][0] = 1.;
 			_aadblF[0][1] = 0.;
@@ -312,17 +326,19 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 			return null != lss && null != (_aadblFInv = lss.getTransformedMatrix());
 		}
 
-		if (iCk > iNumLeftDeriv || iNumCoeff < 2 + iNumConstraint + iCk + iNumRightDeriv) return false;
+		if (iNumLeftDerivToParse > iNumLeftDeriv || iNumCoeff < 2 + iNumConstraint + iNumLeftDerivToParse +
+			iNumRightDeriv)
+			return false;
 
 		for (int j = 0; j < iNumCoeff; ++j) {
 			if (j < 2)
 				adblRHS[j] = 0 == j ? dblYLeft : dblYRight;
 			else if (j < 2 + iNumConstraint)
 				adblRHS[j] = lc.getValue (j - 2);
-			else if (j < 2 + iNumConstraint + iCk)
+			else if (j < 2 + iNumConstraint + iNumLeftDerivToParse)
 				adblRHS[j] = adblLeftDeriv[j - 2 - iNumConstraint];
-			else if (j < 2 + iNumConstraint + iCk + iNumRightDeriv)
-				adblRHS[j] = adblRightDeriv[j - 2 - iNumConstraint - iCk];
+			else if (j < 2 + iNumConstraint + iNumLeftDerivToParse + iNumRightDeriv)
+				adblRHS[j] = adblRightDeriv[j - 2 - iNumConstraint - iNumLeftDerivToParse];
 			else
 				adblRHS[j] = 0.;
 		}
@@ -334,10 +350,11 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 						_aadblF[l][i] = _aAUBasis[i].evaluate (l);
 					else if (l < 2 + iNumConstraint)
 						_aadblF[l][i] = lc.getValue (l - 2, i);
-					else if (l < 2 + iNumConstraint + iCk)
+					else if (l < 2 + iNumConstraint + iNumLeftDerivToParse)
 						_aadblF[l][i] = _aAUBasis[i].calcDerivative (0., l - 1 - iNumConstraint);
-					else if (l < 2 + iNumConstraint + iCk + iNumRightDeriv)
-						_aadblF[l][i] = _aAUBasis[i].calcDerivative (1., l - 1 - iNumConstraint - iCk);
+					else if (l < 2 + iNumConstraint + iNumLeftDerivToParse + iNumRightDeriv)
+						_aadblF[l][i] = _aAUBasis[i].calcDerivative (1., l - 1 - iNumConstraint -
+							iNumLeftDerivToParse);
 					else
 						_aadblF[l][i] = org.drip.math.calculus.Integrator.Boole (new
 							CrossBasisDerivativeProduct (_segParams.getRoughnessPenaltyDerivativeOrder(),
@@ -399,7 +416,8 @@ public class SegmentCk extends org.drip.math.grid.Segment {
 				}
 			}
 
-			return calibrate (segPrev.calcValue (dblXLeft), adblDeriv, dblY1, null);
+			return calibrate (new org.drip.math.grid.SegmentEdgeParams (segPrev.calcValue (dblXLeft),
+				adblDeriv), new org.drip.math.grid.SegmentEdgeParams (dblY1, null), false);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

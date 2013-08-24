@@ -99,14 +99,6 @@ public interface Curve {
 		final double dblValue);
 
 	/**
-	 * Get the display String - mostly for informational purposes
-	 * 
-	 * @return Stringified node=rate pairs
-	 */
-
-	public abstract java.lang.String displayString();
-
-	/**
 	 * Retrieve all the calibration quotes
 	 * 
 	 * @return Array of the calibration quotes

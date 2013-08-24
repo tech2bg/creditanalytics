@@ -898,12 +898,14 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			adblDate[i] = aCalibComp[i].getMaturityDate().getJulian();
 		}
 
-		org.drip.math.grid.Span span = org.drip.math.grid.Span.CreateCalibratedSpanInterpolator (adblDate,
-			adblQuote, org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
-				org.drip.math.grid.SegmentControlParams (org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (2), new
-						org.drip.math.spline.SegmentInelasticParams (0, 2, null), null),
-							org.drip.math.grid.Span.SET_ITEP | org.drip.math.grid.Span.CALIBRATE_SPAN);
+		org.drip.math.grid.MultiSegmentSpan span =
+			org.drip.math.grid.SpanBuilder.CreateCalibratedSpanInterpolator (adblDate, adblQuote,
+				org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, new
+					org.drip.math.grid.SpanBuilderParams
+						(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+							org.drip.math.spline.PolynomialBasisSetParams (2), new
+								org.drip.math.spline.SegmentInelasticParams (0, 2, null), null),
+									org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
 
 		if (null == span)
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Cannot create Interp Span");

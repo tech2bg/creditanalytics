@@ -249,11 +249,6 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		return _dc.setFlatValue (dblValue);
 	}
 
-	@Override public  java.lang.String displayString()
-	{
-		return _dc.displayString();
-	}
-
 	@Override public double[] getCompQuotes()
 	{
 		return _dc.getCompQuotes();

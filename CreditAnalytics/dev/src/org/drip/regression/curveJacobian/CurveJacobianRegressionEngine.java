@@ -59,9 +59,9 @@ public class CurveJacobianRegressionEngine extends org.drip.regression.core.Regr
 	{
 		if (!super.initRegressionEnv()) return false;
 
-		org.drip.analytics.support.Logger.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
+		org.drip.analytics.support.Logger.Init ("c:\\DRIP\\CreditAnalytics\\Config.xml");
 
-		org.drip.analytics.daycount.Convention.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
+		org.drip.analytics.daycount.Convention.Init ("c:\\DRIP\\CreditAnalytics\\Config.xml");
 
 		return true;
 	}

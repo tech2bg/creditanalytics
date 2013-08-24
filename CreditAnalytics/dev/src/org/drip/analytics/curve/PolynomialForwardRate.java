@@ -48,9 +48,9 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 	private double[] _adblDate = null;
 	private double[] _adblCalibQuote = null;
 	private java.lang.String _strCurrency = "";
-	private org.drip.math.grid.Span _csi = null;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private java.lang.String[] _astrCalibMeasure = null;
+	private org.drip.math.grid.MultiSegmentSpan _csi = null;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
@@ -139,7 +139,7 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double[] adblDate,
-		final org.drip.math.grid.Span csi)
+		final org.drip.math.grid.MultiSegmentSpan csi)
 		throws java.lang.Exception
 	{
 		_csi = csi;
@@ -181,12 +181,10 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 		for (int i = 0; i < _adblDate.length; ++i)
 			_adblDate[i] = adblDate[i];
 
-		if (null == (_csi = org.drip.math.grid.Span.CreateCalibratedSpanInterpolator (adblDate, adblEndRate,
-			org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
-				org.drip.math.grid.SegmentControlParams (org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (4), new
-						org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
-							org.drip.math.grid.Span.SET_ITEP)))
+		if (null == (_csi = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (adblDate, new
+			org.drip.math.grid.SpanBuilderParams (org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+				org.drip.math.spline.PolynomialBasisSetParams (4), new
+					org.drip.math.spline.SegmentInelasticParams (2, 2, null), null))))
 			throw new java.lang.Exception ("PolynomialForwardRate ctr: Cannot construct CSI!");
 	}
 
@@ -675,12 +673,11 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 		if (!org.drip.math.common.NumberUtil.IsValid (dblValue)) return false;
 
 		try {
-			if (null != (_csi = org.drip.math.grid.Span.CreateCalibratedSpanInterpolator (_adblDate,
-				dblValue, org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
-					org.drip.math.grid.SegmentControlParams (org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL,
-						new org.drip.math.spline.PolynomialBasisSetParams (4), new
-							org.drip.math.spline.SegmentInelasticParams (2, 2, null), null),
-								org.drip.math.grid.Span.SET_ITEP)))
+			if (null != (_csi = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (_adblDate,
+				new org.drip.math.grid.SpanBuilderParams
+					(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+						org.drip.math.spline.PolynomialBasisSetParams (4), new
+							org.drip.math.spline.SegmentInelasticParams (2, 2, null), null))))
 				return true;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -782,11 +779,6 @@ public class PolynomialForwardRate extends org.drip.analytics.definition.Discoun
 	@Override public boolean buildInterpolator()
 	{
 		return false;
-	}
-
-	@Override public java.lang.String displayString()
-	{
-		return _csi.displayDerivatives();
 	}
 
 	public static void main (

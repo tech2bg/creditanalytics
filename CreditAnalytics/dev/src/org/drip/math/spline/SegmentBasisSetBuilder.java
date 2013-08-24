@@ -255,7 +255,7 @@ public class SegmentBasisSetBuilder {
 	 * @return Instance of Ck
 	 */
 
-	public static final org.drip.math.spline.SegmentCk CreateCk (
+	public static final org.drip.math.spline.BasisSetSegment CreateCk (
 		final double dblX0,
 		final double dblX1,
 		final org.drip.math.function.AbstractUnivariate[] aAUBasis,
@@ -263,7 +263,7 @@ public class SegmentBasisSetBuilder {
 		final org.drip.math.spline.SegmentInelasticParams segParams)
 	{
 		try {
-			return new org.drip.math.spline.SegmentCk (dblX0, dblX1, aAUBasis, auShapeControl, segParams);
+			return new org.drip.math.spline.BasisSetSegment (dblX0, dblX1, aAUBasis, auShapeControl, segParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

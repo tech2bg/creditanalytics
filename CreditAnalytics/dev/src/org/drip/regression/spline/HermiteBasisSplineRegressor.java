@@ -97,18 +97,15 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
 
-	@Override public boolean preRegression()
-	{
-		return true;
-	}
-
 	@Override public boolean execRegression()
 	{
 		try {
-			return null != (_wjLeft = _seg1.calibrateJacobian (1., new double[] {1.}, 4., new double[] {6.}))
-				&& null != (_wjRight = _seg2.calibrateJacobian (4., new double[] {6.}, 15., new double[]
-					{17.})) && _seg2.calibrate (_seg1, 14.) && null != (_wjValue = _seg2.calcValueJacobian
-						(1.5));
+			return null != (_wjLeft = _seg1.calibrateJacobian (new org.drip.math.grid.SegmentEdgeParams (1.,
+				new double[] {1.}), new org.drip.math.grid.SegmentEdgeParams (4., new double[] {6.}), true))
+					&& null != (_wjRight = _seg2.calibrateJacobian (new org.drip.math.grid.SegmentEdgeParams
+						(4., new double[] {6.}), new org.drip.math.grid.SegmentEdgeParams (15., new double[]
+							{17.}), true)) && _seg2.calibrate (_seg1, 14.) && null != (_wjValue =
+								_seg2.calcValueJacobian (1.5));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

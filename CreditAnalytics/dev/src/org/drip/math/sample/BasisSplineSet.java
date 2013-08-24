@@ -3,7 +3,7 @@ package org.drip.math.sample;
 
 import org.drip.math.calculus.WengertJacobian;
 import org.drip.math.function.*;
-import org.drip.math.grid.Segment;
+import org.drip.math.grid.*;
 import org.drip.math.spline.*;
 
 /*
@@ -248,7 +248,10 @@ public class BasisSplineSet {
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = seg1.calibrateJacobian (1., new double[] {1.}, 4., new double[] {6.});
+		WengertJacobian wj1 = seg1.calibrateJacobian (
+			new SegmentEdgeParams (1., new double[] {1.}), // SEP Left
+			new SegmentEdgeParams (4., new double[] {6.}), // SEP Right
+			false); // Non-local Calibration
 
 		System.out.println ("\tY[" + 0.0 + "]: " + seg1.calcValue (0.0));
 
@@ -264,7 +267,10 @@ public class BasisSplineSet {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = seg2.calibrateJacobian (4., new double[] {6.}, 15., new double[] {17.});
+		WengertJacobian wj2 = seg2.calibrateJacobian (
+			new SegmentEdgeParams (4., new double[] {6.}), // SEP Left
+			new SegmentEdgeParams (15., new double[] {17.}), // SEP Right
+			false); // Non-local Calibration
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg2.calcValue (1.0));
 

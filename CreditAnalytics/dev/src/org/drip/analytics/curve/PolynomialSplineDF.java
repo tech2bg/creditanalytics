@@ -48,10 +48,10 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 	private double[] _adblDate = null;
 	private double[] _adblCalibQuote = null;
 	private java.lang.String _strCurrency = "";
-	private org.drip.math.grid.Span _csi = null;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private java.lang.String[] _astrCalibMeasure = null;
 	private double _dblLeftNodeDF = java.lang.Double.NaN;
+	private org.drip.math.grid.MultiSegmentSpan _csi = null;
 	private double _dblLeftNodeDFSlope = java.lang.Double.NaN;
 	private double _dblLeftFlatForwardRate = java.lang.Double.NaN;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
@@ -67,7 +67,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double[] adblDate,
-		final org.drip.math.grid.Span csi)
+		final org.drip.math.grid.MultiSegmentSpan csi)
 		throws java.lang.Exception
 	{
 		_csi = csi;
@@ -121,12 +121,12 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (adblDF[adblDF.length - 1]) /
 			(_adblDate[_adblDate.length - 1] - _dblStartDate);
 
-		_csi = org.drip.math.grid.Span.CreateCalibratedSpanInterpolator (adblDate, adblDF,
-			org.drip.math.grid.Span.SPLINE_BOUNDARY_MODE_NATURAL, new
-				org.drip.math.grid.SegmentControlParams (org.drip.math.grid.Span.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (2), new
+		_csi = org.drip.math.grid.SpanBuilder.CreateCalibratedSpanInterpolator (adblDate, adblDF,
+			org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, new
+				org.drip.math.grid.SpanBuilderParams (org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL,
+					new org.drip.math.spline.PolynomialBasisSetParams (2), new
 						org.drip.math.spline.SegmentInelasticParams (0, 2, null), null),
-							org.drip.math.grid.Span.SET_ITEP | org.drip.math.grid.Span.CALIBRATE_SPAN);
+							org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
 	}
 
 	/**
@@ -646,11 +646,6 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		}
 
 		return null;
-	}
-
-	@Override public java.lang.String displayString()
-	{
-		return _csi.displayDerivatives();
 	}
 
 	@Override public boolean buildInterpolator()
