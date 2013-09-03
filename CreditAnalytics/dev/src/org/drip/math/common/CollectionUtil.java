@@ -40,7 +40,7 @@ package org.drip.math.common;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MapUtil {
+public class CollectionUtil {
 
 	/**
 	 * Prefix the keys in the input map, and return them in a new map
@@ -477,5 +477,28 @@ public class MapUtil {
 		if (0 == map4D.size()) return null;
 
 		return map4D;
+	}
+
+	/**
+	 * Populate an array of derivatives using the input slope (and setting the other to zero)
+	 * 
+	 * @param iNumDerivs Number of Derivatives to be populated
+	 * @param dblSlope Slope
+	 * 
+	 * @return Array of derivatives
+	 */
+
+	public static final double[] DerivArrayFromSlope (
+		final int iNumDerivs,
+		final double dblSlope)
+	{
+		if (0 >= iNumDerivs || !org.drip.math.common.NumberUtil.IsValid (dblSlope)) return null;
+
+		double[] adblDeriv = new double[iNumDerivs];
+
+		for (int i = 0; i < iNumDerivs; ++i)
+			adblDeriv[i] = (0 == i) ? dblSlope : 0.;
+
+		return adblDeriv;
 	}
 }

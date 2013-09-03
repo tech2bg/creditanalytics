@@ -60,13 +60,13 @@ public class SpanInterpolator {
 	 * @return Polynomial Segment Control Parameters
 	 */
 
-	public static final SpanBuilderParams PolynomialSegmentControlParams (
+	public static final SegmentBuilderParams PolynomialSegmentControlParams (
 		final int iNumBasis,
 		final SegmentInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SpanBuilderParams (SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
+		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
 	}
 
 	/**
@@ -81,13 +81,13 @@ public class SpanInterpolator {
 	 * @return Bernstein Polynomial Segment Control Parameters
 	 */
 
-	public static final SpanBuilderParams BernsteinPolynomialSegmentControlParams (
+	public static final SegmentBuilderParams BernsteinPolynomialSegmentControlParams (
 		final int iNumBasis,
 		final SegmentInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SpanBuilderParams (SpanBuilder.BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
+		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
 	}
 
 	/**
@@ -102,13 +102,13 @@ public class SpanInterpolator {
 	 * @return Exponential Tension Segment Control Parameters
 	 */
 
-	public static final SpanBuilderParams ExponentialTensionSegmentControlParams (
+	public static final SegmentBuilderParams ExponentialTensionSegmentControlParams (
 		final double dblTension,
 		final SegmentInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SpanBuilderParams (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
+		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
 	}
 
 	/**
@@ -123,13 +123,13 @@ public class SpanInterpolator {
 	 * @return Hyperbolic Tension Segment Control Parameters
 	 */
 
-	public static final SpanBuilderParams HyperbolicTensionSegmentControlParams (
+	public static final SegmentBuilderParams HyperbolicTensionSegmentControlParams (
 		final double dblTension,
 		final SegmentInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SpanBuilderParams (SpanBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
+		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
 	}
 
 	/**
@@ -144,13 +144,13 @@ public class SpanInterpolator {
 	 * @return Kaklis-Pandelis Segment Control Parameters
 	 */
 
-	public static final SpanBuilderParams KaklisPandelisSegmentControlParams (
+	public static final SegmentBuilderParams KaklisPandelisSegmentControlParams (
 		final int iKPTensionDegree,
 		final SegmentInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SpanBuilderParams (SpanBuilder.BASIS_SPLINE_KAKLIS_PANDELIS, new KaklisPandelisBasisSetParams (iKPTensionDegree), segParams, rsc);
+		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_KAKLIS_PANDELIS, new KaklisPandelisBasisSetParams (iKPTensionDegree), segParams, rsc);
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class SpanInterpolator {
 	 * 
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
-	 * @param segControlParams The Segment Control Parameters
+	 * @param sbp The Segment Builder Parameters
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -170,11 +170,20 @@ public class SpanInterpolator {
 	public static final void BasisSplineSpanTest (
 		final double[] adblX,
 		final double[] adblY,
-		final SpanBuilderParams segControlParams)
+		final SegmentBuilderParams sbp)
 		throws Exception
 	{
 		double dblX = 1.;
 		double dblXMax = 10.;
+
+		/*
+		 * Array of Segment Builder Parameters - one per segment
+		 */
+
+		SegmentBuilderParams[] aSBP = new SegmentBuilderParams[adblX.length - 1]; 
+
+		for (int i = 0; i < adblX.length - 1; ++i)
+			aSBP[i] = sbp;
 
 		/*
 		 * Construct a Span instance 
@@ -184,7 +193,7 @@ public class SpanInterpolator {
 			adblX, // predictors
 			adblY, // responses
 			MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, // Boundary Condition - Natural
-			segControlParams, // Basis Spline construction control parameters
+			aSBP, // Basis Segment Builder parameters
 			SingleSegmentSpan.CALIBRATE_SPAN); // Calibrate the Span predictors to the responses
 
 		/*
@@ -278,17 +287,26 @@ public class SpanInterpolator {
 
 		int iNumBasis = 4;
 
-		SpanBuilderParams sbp = new SpanBuilderParams (
+		SegmentBuilderParams sbp = new SegmentBuilderParams (
 			SpanBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialBasisSetParams (iNumBasis),
 			segParams,
 			rsc);
 
-		/* 
-		 * - 2) Construct the Span
+		/*
+		 *	- 2a) Set the array of Segment Builder Parameters - one per segment
 		 */
 
-		MultiSegmentSpan span = SpanBuilder.CreateUncalibratedSpanInterpolator (adblX, sbp);
+		SegmentBuilderParams[] aSBP = new SegmentBuilderParams[adblX.length - 1]; 
+
+		for (int i = 0; i < adblX.length - 1; ++i)
+			aSBP[i] = sbp;
+
+		/* 
+		 * - 2b) Construct the Span
+		 */
+
+		MultiSegmentSpan span = SpanBuilder.CreateUncalibratedSpanInterpolator (adblX, aSBP);
 
 		SegmentEdgeParams[] aSEPLeft = new SegmentEdgeParams[adblY.length - 1];
 		SegmentEdgeParams[] aSEPRight = new SegmentEdgeParams[adblY.length - 1];
@@ -307,7 +325,7 @@ public class SpanInterpolator {
 		 * - 4) Calibrate the Span and compute the Jacobian
 		 */
 
-		System.out.println ("Span Setup Succeeded: " + span.setup (aSEPLeft, aSEPRight,
+		System.out.println ("Span Setup Succeeded: " + span.setup (aSEPLeft, aSEPRight, null,
 			SingleSegmentSpan.CALIBRATE_SPAN | SingleSegmentSpan.CALIBRATE_JACOBIAN));
 
 		double dblX = 0.;
@@ -405,7 +423,7 @@ public class SpanInterpolator {
 	{
 		SingleSegmentSpan lps = new LagrangePolynomialSpan (new double[] {-2., -1., 2., 5.});
 
-		System.out.println ("Setup: " + lps.setup (new double[] {0.25, 0.25, 12.25, 42.25}, "", SingleSegmentSpan.CALIBRATE_SPAN));
+		System.out.println ("Setup: " + lps.setup (0.25, new double[] {0.25, 0.25, 12.25, 42.25}, "", SingleSegmentSpan.CALIBRATE_SPAN));
 
 		System.out.println ("Value = " + lps.calcValue (2.16));
 

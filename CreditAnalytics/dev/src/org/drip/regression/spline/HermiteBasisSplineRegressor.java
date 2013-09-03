@@ -1,6 +1,5 @@
 
 package org.drip.regression.spline;
-
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -100,12 +99,13 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	@Override public boolean execRegression()
 	{
 		try {
-			return null != (_wjLeft = _seg1.calibrateJacobian (new org.drip.math.grid.SegmentEdgeParams (1.,
-				new double[] {1.}), new org.drip.math.grid.SegmentEdgeParams (4., new double[] {6.}), true))
-					&& null != (_wjRight = _seg2.calibrateJacobian (new org.drip.math.grid.SegmentEdgeParams
-						(4., new double[] {6.}), new org.drip.math.grid.SegmentEdgeParams (15., new double[]
-							{17.}), true)) && _seg2.calibrate (_seg1, 14.) && null != (_wjValue =
-								_seg2.calcValueJacobian (1.5));
+			return null != (_wjLeft = _seg1.calibrateJacobian (new
+				org.drip.math.spline.SegmentCalibrationParams (new double[] {0., 1.}, new double[] {1., 4.},
+					new double[] {1.}, new double[] {6.}, null))) && null != (_wjRight =
+						_seg2.calibrateJacobian (new org.drip.math.spline.SegmentCalibrationParams (new
+							double[] {0., 1.}, new double[] {4., 15.}, new double[] {6.}, new double[] {17.},
+								null))) && _seg2.calibrate (_seg1, 14.) && null != (_wjValue =
+									_seg2.calcValueJacobian (1.5));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

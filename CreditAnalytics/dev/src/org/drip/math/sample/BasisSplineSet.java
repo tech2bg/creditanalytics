@@ -249,9 +249,16 @@ public class BasisSplineSet {
 		 */
 
 		WengertJacobian wj1 = seg1.calibrateJacobian (
-			new SegmentEdgeParams (1., new double[] {1.}), // SEP Left
-			new SegmentEdgeParams (4., new double[] {6.}), // SEP Right
-			false); // Non-local Calibration
+			new SegmentCalibrationParams (
+				new double[] {0., 1.}, // Left/Right X
+				new double[] {1., 4.}, // Left/Right Y
+				new double[] {1.}, // Left Deriv
+				new double[] {6.}, // Right Deriv
+				null)); // Constraints
+
+		// WengertJacobian wj1 = seg1.calibrateJacobian (
+			// new SegmentEdgeParams (1., new double[] {1.}), // SEP Left
+			// new SegmentEdgeParams (4., new double[] {6.})); // SEP Right
 
 		System.out.println ("\tY[" + 0.0 + "]: " + seg1.calcValue (0.0));
 
@@ -268,9 +275,16 @@ public class BasisSplineSet {
 		 */
 
 		WengertJacobian wj2 = seg2.calibrateJacobian (
-			new SegmentEdgeParams (4., new double[] {6.}), // SEP Left
-			new SegmentEdgeParams (15., new double[] {17.}), // SEP Right
-			false); // Non-local Calibration
+			new SegmentCalibrationParams (
+				new double[] {0., 1.}, // Left/Right X
+				new double[] {4., 15.}, // Left/Right Y
+				new double[] {6.}, // Left Deriv
+				new double[] {17.}, // Right Deriv
+				null)); // Constraints
+
+		// WengertJacobian wj2 = seg2.calibrateJacobian (
+			// new SegmentEdgeParams (4., new double[] {6.}), // SEP Left
+			// new SegmentEdgeParams (15., new double[] {17.})); // SEP Right
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg2.calcValue (1.0));
 

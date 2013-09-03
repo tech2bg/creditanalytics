@@ -478,10 +478,10 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 
 		mapMeasures.put (strPrefix + "RecoveryPV", _dblRecoveryPV);
 
-		org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessDirty.toMap (strPrefix +
+		org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessDirty.toMap (strPrefix +
 			"RisklessDirty"));
 
-		org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessClean.toMap (strPrefix +
+		org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessClean.toMap (strPrefix +
 			"RisklessClean"));
 
 		if (null != _bcmCreditRiskyDirty) {
@@ -513,10 +513,10 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 
 			mapMeasures.put (strPrefix + "PV", _bcmCreditRiskyClean._dblPV);
 
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyDirty.toMap (strPrefix +
+			org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyDirty.toMap (strPrefix +
 				"RiskyDirty"));
 
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyClean.toMap (strPrefix +
+			org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyClean.toMap (strPrefix +
 				"RiskyClean"));
 		}
 

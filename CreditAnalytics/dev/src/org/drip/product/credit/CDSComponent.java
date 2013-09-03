@@ -841,7 +841,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		if (null == mapFairMeasures) return null;
 
-		org.drip.math.common.MapUtil.MergeWithMain (mapFairMeasures, org.drip.math.common.MapUtil.PrefixKeys
+		org.drip.math.common.CollectionUtil.MergeWithMain (mapFairMeasures, org.drip.math.common.CollectionUtil.PrefixKeys
 			(mapFairMeasures, "Fair"));
 
 		org.drip.param.definition.ComponentQuote cq = mktParams.getComponentQuote();
@@ -917,10 +917,10 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					calcMeasureSet ("", valParams, pricerParams, cmpMarket, quotingParams);
 
 				if (null != mapMarketMeasures) {
-					org.drip.math.common.MapUtil.MergeWithMain (mapMarketMeasures,
-						org.drip.math.common.MapUtil.PrefixKeys (mapMarketMeasures, "Market"));
+					org.drip.math.common.CollectionUtil.MergeWithMain (mapMarketMeasures,
+						org.drip.math.common.CollectionUtil.PrefixKeys (mapMarketMeasures, "Market"));
 
-					org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, mapMarketMeasures);
+					org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, mapMarketMeasures);
 				}
 			}
 		}

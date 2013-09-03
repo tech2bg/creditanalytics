@@ -602,13 +602,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				bwmFair._bcmCreditRiskyClean._dblPV;
 
 		try {
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, standardRVMeasureMap (valParams,
+			org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, standardRVMeasureMap (valParams,
 				pricerParams, mktParams, quotingParams, new org.drip.param.valuation.WorkoutInfo
 					(getMaturityDate().getJulian(), calcYieldFromPrice (valParams, mktParams, quotingParams,
 						dblPrice / getNotional (valParams._dblValue)), 1.,
 							org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY), dblPrice, ""));
 
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, org.drip.math.common.MapUtil.PrefixKeys
+			org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, org.drip.math.common.CollectionUtil.PrefixKeys
 				(mapMeasures, "Fair"));
 
 			return mapMeasures;
@@ -632,7 +632,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					calcPriceFromYield (valParams, mktParams, quotingParams, wiMarket._dblDate,
 						wiMarket._dblExerciseFactor, wiMarket._dblYield), "");
 
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, org.drip.math.common.MapUtil.PrefixKeys
+			org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, org.drip.math.common.CollectionUtil.PrefixKeys
 				(mapMeasures, "Market"));
 
 			return mapMeasures;
@@ -12019,7 +12019,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				mapMeasures.put ("MarketZeroDiscountMargin", dblZeroDiscountMargin);
 			}
 
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, mapWorkoutMeasures);
+			org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, mapWorkoutMeasures);
 
 			if (null != mapMeasures.get ("FairYield") && !java.lang.Double.isNaN (wiMarket._dblYield)) {
 				org.drip.param.definition.ComponentMarketParams cmpMarket =
@@ -12038,10 +12038,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMarketMeasures
 							= bwmMarket.toMap ("");
 
-						org.drip.math.common.MapUtil.MergeWithMain (mapMarketMeasures,
-							org.drip.math.common.MapUtil.PrefixKeys (mapMarketMeasures, "Market"));
+						org.drip.math.common.CollectionUtil.MergeWithMain (mapMarketMeasures,
+							org.drip.math.common.CollectionUtil.PrefixKeys (mapMarketMeasures, "Market"));
 
-						org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, mapMarketMeasures);
+						org.drip.math.common.CollectionUtil.MergeWithMain (mapMeasures, mapMarketMeasures);
 					}
 				}
 			}

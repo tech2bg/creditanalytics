@@ -99,21 +99,32 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		if (null == adblDate || 0 == adblDate.length || null == adblRate || adblDate.length !=
 			adblRate.length || null == dtStart || null == (_strCurrency = strCurrency) ||
 				_strCurrency.isEmpty())
-			throw new java.lang.Exception ("Invalid inputs into PolynomialSplineDF constructor");
+			throw new java.lang.Exception
+				("PolynomialSplineDF ctr: Invalid inputs into PolynomialSplineDF constructor");
 
 		_dblStartDate = dtStart.getJulian();
 
+		org.drip.math.grid.SegmentBuilderParams sbp = new org.drip.math.grid.SegmentBuilderParams
+			(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+				org.drip.math.spline.PolynomialBasisSetParams (2), new
+					org.drip.math.spline.SegmentInelasticParams (0, 2, null), null);
+
 		_adblDate = new double[adblDate.length];
 		double[] adblDF = new double[adblDate.length];
+		org.drip.math.grid.SegmentBuilderParams[] aSBP = new
+			org.drip.math.grid.SegmentBuilderParams[adblDate.length - 1];
 
 		for (int i = 0; i < _adblDate.length; ++i) {
 			_adblDate[i] = adblDate[i];
 
 			if (0 == i)
 				adblDF[0] = java.lang.Math.exp (adblRate[0] * (_dblStartDate - _adblDate[0]) / 365.25);
-			else
+			else {
+				aSBP[i - 1] = sbp;
+
 				adblDF[i] = java.lang.Math.exp (adblRate[i] * (_adblDate[i - 1] - _adblDate[i]) / 365.25) *
 					adblDF[i - 1];
+			}
 		}
 
 		_dblLeftFlatForwardRate = -365.25 * java.lang.Math.log (adblDF[0]) / (_adblDate[0] - _dblStartDate);
@@ -122,11 +133,8 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 			(_adblDate[_adblDate.length - 1] - _dblStartDate);
 
 		_csi = org.drip.math.grid.SpanBuilder.CreateCalibratedSpanInterpolator (adblDate, adblDF,
-			org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, new
-				org.drip.math.grid.SpanBuilderParams (org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL,
-					new org.drip.math.spline.PolynomialBasisSetParams (2), new
-						org.drip.math.spline.SegmentInelasticParams (0, 2, null), null),
-							org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
+			org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, aSBP,
+				org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
 	}
 
 	/**

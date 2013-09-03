@@ -97,11 +97,19 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 	{
 		super (strName, strScenarioName);
 
-		if (null == (_span = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (new double[]
-			{0.00, 1.00,  2.00,  3.00,  4.00}, new org.drip.math.grid.SpanBuilderParams (strBasisSpline, bsp,
-				new org.drip.math.spline.SegmentInelasticParams (iCk, 1, null), new
-					org.drip.math.function.RationalShapeControl (1.)))))
-		throw new java.lang.Exception ("LocalControlBasisSplineRegressor ctr: Cannot Cnstruct Span!");
+		double[] adblX = new double[] {0.00, 1.00,  2.00,  3.00,  4.00};
+		int iNumSegment = adblX.length - 1;
+		org.drip.math.grid.SegmentBuilderParams[] aSBP = new
+			org.drip.math.grid.SegmentBuilderParams[iNumSegment];
+
+		for (int i = 0; i < iNumSegment; ++i)
+			aSBP[i] = new org.drip.math.grid.SegmentBuilderParams (strBasisSpline, bsp, new
+				org.drip.math.spline.SegmentInelasticParams (iCk, 1, null), new
+					org.drip.math.function.RationalShapeControl (1.));
+
+		if (null == (_span = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (adblX,
+			aSBP)))
+			throw new java.lang.Exception ("LocalControlBasisSplineRegressor ctr: Cannot Cnstruct Span!");
 	}
 
 	@Override public boolean preRegression()
@@ -128,7 +136,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			}
 		}
 
-		return _span.setup (aSEPLeft, aSEPRight, org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN |
+		return _span.setup (aSEPLeft, aSEPRight, null, org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN |
 			org.drip.math.grid.SingleSegmentSpan.CALIBRATE_JACOBIAN);
 	}
 

@@ -183,10 +183,12 @@ public class PolynomialBasisSpline {
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		seg1.calibrate (
-			new SegmentEdgeParams (1., new double[] {1.}), // Left SEP
-			new SegmentEdgeParams (4., new double[] {6.}), // Right SEP
-			false); // SEPs Not Local
+		seg1.calibrate (new SegmentCalibrationParams (
+			new double[] {0., 1.}, // Segment Calibration Nodes
+			new double[] {1., 4.}, // Segment Calibration Values
+			new double[] {1.}, // Segment Left Derivative
+			new double[] {6.}, // Segment Left Derivative
+			null)); // Segment Constraint
 
 		System.out.println ("\tY[" + 0.0 + "]: " + seg1.calcValue (0.0));
 
@@ -200,10 +202,12 @@ public class PolynomialBasisSpline {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		seg2.calibrate (
-			new SegmentEdgeParams (4., new double[] {6.}), // Left SEP
-			new SegmentEdgeParams (15., new double[] {17.}), // Right SEP
-			false); // SEPs Not Local
+		seg2.calibrate (new SegmentCalibrationParams (
+			new double[] {0., 1.}, // Segment Calibration Nodes
+			new double[] {4., 15.}, // Segment Calibration Values
+			new double[] {6.}, // Segment Left Derivative
+			new double[] {17.}, // Segment Left Derivative
+			null)); // Segment Constraint
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg2.calcValue (1.0));
 

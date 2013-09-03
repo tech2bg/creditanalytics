@@ -58,7 +58,7 @@ public class LagrangePolynomialSpanRegressor extends org.drip.regression.core.Un
 
 	@Override public boolean preRegression()
 	{
-		return _sss.setup (new double[] {1., 2., 3., 4.}, "",
+		return _sss.setup (1., new double[] {1., 2., 3., 4.}, "",
 			org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
 	}
 

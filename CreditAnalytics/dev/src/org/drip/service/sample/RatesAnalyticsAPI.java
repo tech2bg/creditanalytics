@@ -55,7 +55,7 @@ import org.drip.math.common.FormatUtil;
  */
 
 /**
- * RatesAnalyticsAPIcontains a demo of the Rates Analytics API Usage. It shows the following:
+ * RatesAnalyticsAPI contains a demo of the Rates Analytics API Usage. It shows the following:
  * 	- Build a discount curve using: cash instruments only, EDF instruments only, IRS instruments only, or all
  * 		of them strung together.
  * 	- Re-calculate the component input measure quotes from the calibrated discount curve object.

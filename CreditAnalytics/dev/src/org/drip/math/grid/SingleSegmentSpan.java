@@ -29,9 +29,9 @@ package org.drip.math.grid;
  */
 
 /**
- * Span is the interface that exposes functionality that spans multiple segments. Its derived instances hold
- * 	the ordered segment sequence, the segment control parameters, and, if available, the spanning Jacobian.
- *  Span exports the following group of functionality:
+ * SingleSegmentSpan is the interface that exposes functionality that spans multiple segments. Its derived
+ * 	instances hold the ordered segment sequence, the segment control parameters, and, if available, the
+ * 	spanning Jacobian. SingleSegmentSpan exports the following group of functionality:
  * 	- Construct adjoining segment sequences in accordance with the segment control parameters
  * 	- Calibrate according to a varied set of (i.e., NATURAL/FINANCIAL) boundary conditions
  * 	- Interpolate both the value, the ordered derivatives, and the Jacobian at the given ordinate
@@ -59,17 +59,10 @@ public interface SingleSegmentSpan {
 	public static final int CALIBRATE_JACOBIAN = 2;
 
 	/**
-	 * Retrieve the Span Builder Parameters
-	 * 
-	 * @return The Span Builder Parameters
-	 */
-
-	public abstract org.drip.math.grid.SpanBuilderParams getSpanBuilderParams();
-
-	/**
 	 * Sets up (i.e., calibrates) the individual segment in the span to the target node values.
 	 * 
-	 * @param adblY Target Node values
+	 * @param dblYLeading Span Left-most Y
+	 * @param adblYRight Segment Right Node Y
 	 * @param strCalibrationMode Calibration Mode (i.e., the calibration boundary condition)
 	 * @param iSetupMode Set up Mode (Fully calibrate the Span, or calibrate Span plus compute Jacobian)
 	 * 
@@ -77,7 +70,8 @@ public interface SingleSegmentSpan {
 	 */
 
 	public abstract boolean setup (
-		final double[] adblY,
+		final double dblYLeading,
+		final double[] adblYRight,
 		final java.lang.String strCalibrationMode,
 		final int iSetupMode);
 
@@ -125,7 +119,8 @@ public interface SingleSegmentSpan {
 	 * @throws java.lang.Exception Thrown if the Segment monotone Type could not be estimated
 	 */
 
-	public abstract boolean isLocallyMonotone() throws java.lang.Exception;
+	public abstract boolean isLocallyMonotone()
+		throws java.lang.Exception;
 
 	/**
 	 * Verify whether the segment and spline mini-max behavior matches
@@ -164,4 +159,33 @@ public interface SingleSegmentSpan {
 	public abstract boolean resetNode (
 		final int iNodeIndex,
 		final double dblNodeValue);
+
+	/**
+	 * Reset the given node with the given constraint
+	 * 
+	 * @param iNodeIndex Node whose value is set
+	 * @param snwc The Constraint
+	 * 
+	 * @return TRUE => If the calibration succeeds
+	 */
+
+	public abstract boolean resetNode (
+		final int iNodeIndex,
+		final org.drip.math.spline.SegmentNodeWeightConstraint snwc);
+
+	/**
+	 * Return the Left Edge
+	 * 
+	 * @return The Left Edge
+	 */
+
+	public abstract double getLeftEdge();
+
+	/**
+	 * Return the Right Edge
+	 * 
+	 * @return The Right Edge
+	 */
+
+	public abstract double getRightEdge();
 }

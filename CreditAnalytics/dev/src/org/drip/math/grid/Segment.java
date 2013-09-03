@@ -55,21 +55,6 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 
 	public static final int RIGHT_NODE_VALUE_PARAMETER_INDEX = 1;
 
-	private double[] derivArrayFromSlope (
-		final double dblSlope)
-	{
-		int iNumDerivs = numParameters() - 2;
-
-		if (0 >= iNumDerivs) return null;
-
-		double[] adblDeriv = new double[iNumDerivs];
-
-		for (int i = 0; i < iNumDerivs; ++i)
-			adblDeriv[i] = (0 == i) ? dblSlope : 0.;
-
-		return adblDeriv;
-	}
-
 	protected Segment (
 		final double dblLeft,
 		final double dblRight)
@@ -110,7 +95,6 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 		final int iOrder)
 		throws java.lang.Exception;
 
-
 	/**
 	 * Retrieve the number of Basis Functions
 	 * 
@@ -128,19 +112,15 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	public abstract int numParameters();
 
 	/**
-	 * Calibrate the coefficients from the left and the right segment edge parameters
+	 * Calibrate the segment from the Calibration Parameters
 	 * 
-	 * @param sepLeft Left Segment Edge Parameters
-	 * @param sepRight Right Segment Edge Parameters
-	 * @param bSEPLocal Flag indicating whether the calibration parameters are strictly local
+	 * @param scp Segment Calibration Parameters
 	 * 
-	 * @return TRUE => If the calibration succeeds
+	 * @return TRUE => Segment Successfully Calibrated
 	 */
 
 	public abstract boolean calibrate (
-		final org.drip.math.grid.SegmentEdgeParams sepLeft,
-		final org.drip.math.grid.SegmentEdgeParams sepRight,
-		final boolean bSEPLocal);
+		final org.drip.math.spline.SegmentCalibrationParams scp);
 
 	/**
 	 * Calibrate the coefficients from the prior Segment and the right node value
@@ -154,6 +134,19 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	public abstract boolean calibrate (
 		final Segment segPrev,
 		final double dblRightValue);
+
+	/**
+	 * Calibrate the coefficients from the prior Segment and the Constraint
+	 * 
+	 * @param segPrev Prior Segment
+	 * @param snwc The Segment Constraint
+	 * 
+	 * @return TRUE => If the calibration succeeds
+	 */
+
+	public abstract boolean calibrate (
+		final Segment segPrev,
+		final org.drip.math.spline.SegmentNodeWeightConstraint snwc);
 
 	/**
 	 * Calculate the ordered derivative for the node
@@ -318,19 +311,14 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 	 * 
 	 * @param sepLeft Left Segment Edge Parameters
 	 * @param sepRight Right Segment Edge Parameters
-	 * @param bSEPLocal Flag indicating whether the calibration parameters are strictly local
 	 * 
 	 * @return The Jacobian
 	 */
 
 	public org.drip.math.calculus.WengertJacobian calibrateJacobian (
-		final org.drip.math.grid.SegmentEdgeParams sepLeft,
-		final org.drip.math.grid.SegmentEdgeParams sepRight,
-		final boolean bSEPLocal)
+		final org.drip.math.spline.SegmentCalibrationParams scp)
 	{
-		if (!calibrate (sepLeft, sepRight, bSEPLocal)) return null;
-
-		return calcJacobian();
+		return calibrate (scp) ? calcJacobian() : null;
 	}
 
 	/**
@@ -348,11 +336,47 @@ public abstract class Segment extends org.drip.math.grid.Inelastics {
 		final double dblLeftSlope,
 		final double dblRightValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblLeftSlope)) return false;
+		if (!org.drip.math.common.NumberUtil.IsValid (dblLeftValue) ||
+			!org.drip.math.common.NumberUtil.IsValid (dblLeftSlope) ||
+				!org.drip.math.common.NumberUtil.IsValid (dblRightValue))
+			return false;
 
 		try {
-			return calibrate (new org.drip.math.grid.SegmentEdgeParams (dblLeftValue, derivArrayFromSlope
-				(dblLeftSlope)), new org.drip.math.grid.SegmentEdgeParams (dblRightValue, null), false);
+			return calibrate (new org.drip.math.spline.SegmentCalibrationParams (new double[] {0., 1.}, new
+				double[] {dblLeftValue, dblRightValue},
+					org.drip.math.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
+						dblLeftSlope), null, null));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Calibrate the coefficients from the left boundary value, the left slope, and the right constraint
+	 * 
+	 * @param dblLeftValue Left Value
+	 * @param dblLeftSlope Left Slope
+	 * @param snwcRight Right Constraint
+	 * 
+	 * @return TRUE => If the calibration succeeds
+	 */
+
+	public boolean calibrate (
+		final double dblLeftValue,
+		final double dblLeftSlope,
+		final org.drip.math.spline.SegmentNodeWeightConstraint snwcRight)
+	{
+		if (!org.drip.math.common.NumberUtil.IsValid (dblLeftValue) ||
+			!org.drip.math.common.NumberUtil.IsValid (dblLeftSlope) || null == snwcRight)
+			return false;
+
+		try {
+			return calibrate (new org.drip.math.spline.SegmentCalibrationParams (new double[] {0.}, new
+				double[] {dblLeftValue}, org.drip.math.common.CollectionUtil.DerivArrayFromSlope
+					(numParameters() - 2, dblLeftSlope), null, new
+						org.drip.math.spline.SegmentNodeWeightConstraint[] {snwcRight}));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -35,7 +35,7 @@ package org.drip.math.grid;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SpanBuilderParams {
+public class SegmentBuilderParams {
 	private java.lang.String _strBasisSpline = "";
 	private org.drip.math.spline.BasisSetParams _bsbp = null;
 	private org.drip.math.spline.SegmentInelasticParams _segParams = null;
@@ -52,7 +52,7 @@ public class SpanBuilderParams {
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public SpanBuilderParams (
+	public SegmentBuilderParams (
 		final java.lang.String strBasisSpline,
 		final org.drip.math.spline.BasisSetParams bsbp,
 		final org.drip.math.spline.SegmentInelasticParams segParams,

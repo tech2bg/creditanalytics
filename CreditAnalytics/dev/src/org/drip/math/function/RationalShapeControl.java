@@ -74,7 +74,7 @@ public class RationalShapeControl extends org.drip.math.function.AbstractUnivari
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		if (3 <= iOrder) return 0.;
+		if (3 <= iOrder) return super.calcDerivative (dblX, iOrder);
 
 		double dblD2BetaDX2 = -2. * _dblLambda;
 		double dblDBetaDX = _dblLambda * (1. - 2. * dblX);

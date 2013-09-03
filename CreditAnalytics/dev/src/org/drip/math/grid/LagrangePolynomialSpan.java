@@ -131,43 +131,14 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 		}
 	}
 
-	/**
-	 * Retrieve the Span Builder Parameters
-	 * 
-	 * @return The Span Builder Parameters
-	 */
-
-	@Override public org.drip.math.grid.SpanBuilderParams getSpanBuilderParams()
-	{
-		return null;
-	}
-
-	/**
-	 * Sets up (i.e., calibrates) the individual segment in the span to the target node values.
-	 * 
-	 * @param adblY Target Node values
-	 * @param iSetupMode Set up Mode (Fully calibrate the Span, or calibrate Span plus compute Jacobian)
-	 * 
-	 * @return TRUE => Set up was successful
-	 */
-
 	@Override public boolean setup (
+		final double dblYLeading,
 		final double[] adblY,
 		final java.lang.String strCalibrationMode,
 		final int iSetupMode)
 	{
 		return null != (_adblY = adblY) && _adblY.length == _adblX.length;
 	}
-
-	/**
-	 * Calculates the interpolated value at the given input point
-	 * 
-	 * @param dblX Input point
-	 * 
-	 * @return Interpolated output
-	 * 
-	 * @throws java.lang.Exception Thrown if the interpolation did not succeed
-	 */
 
 	@Override public double calcValue (
 		final double dblX)
@@ -195,14 +166,6 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 
 		return dblValue;
 	}
-
-	/**
-	 * Calculates the Jacobian to the inputs at the given input point
-	 * 
-	 * @param dblX Input point
-	 * 
-	 * @return Jacobian to the inputs
-	 */
 
 	@Override public org.drip.math.calculus.WengertJacobian calcValueJacobian (
 		final double dblX)
@@ -237,9 +200,10 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 			try {
 				LagrangePolynomialSpan lps = new LagrangePolynomialSpan (_adblX);
 
-				if (!lps.setup (adblYBumped, "", org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN) ||
-					!wj.accumulatePartialFirstDerivative (0, i, (lps.calcValue (dblX) - dblBase) /
-						dblDeltaY))
+				if (!lps.setup (adblYBumped[0], adblYBumped, "",
+					org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN) ||
+						!wj.accumulatePartialFirstDerivative (0, i, (lps.calcValue (dblX) - dblBase) /
+							dblDeltaY))
 					return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -250,14 +214,6 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 
 		return wj;
 	}
-
-	/**
-	 * Identifies the monotone type for the segment underlying the given input point
-	 * 
-	 * @param dblX Input point
-	 * 
-	 * @return Segment monotone Type
-	 */
 
 	@Override public org.drip.math.grid.SegmentMonotonocity monotoneType (
 		final double dblX)
@@ -340,14 +296,6 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 		return null;
 	}
 
-	/**
-	 * Indicates if all the comprising segments are monotone
-	 * 
-	 * @return TRUE => Fully locally monotonic
-	 * 
-	 * @throws java.lang.Exception Thrown if the Segment monotone Type could not be estimated
-	 */
-
 	@Override public boolean isLocallyMonotone()
 		throws java.lang.Exception
 	{
@@ -356,16 +304,6 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 
 		return null != sm && org.drip.math.grid.SegmentMonotonocity.MONOTONIC == sm.type();
 	}
-
-	/**
-	 * Verify whether the segment and spline mini-max behavior matches
-	 * 
-	 * @param adblYIn Input Y array points
-	 * 
-	 * @return TRUE => Span is co-monotonic with the input points
-	 * 
-	 * @throws java.lang.Exception Thrown if the Segment monotone Type could not be estimated
-	 */
 
 	@Override public boolean isCoMonotone (
 		final double[] adblYIn)
@@ -415,14 +353,6 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 		return true;
 	}
 
-	/**
-	 * Is the given X a knot location
-	 * 
-	 * @param dblX Knot X
-	 * 
-	 * @return TRUE => Given Location corresponds to a Knot
-	 */
-
 	@Override public boolean isKnot (
 		final double dblX)
 	{
@@ -439,15 +369,6 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 		return false;
 	}
 
-	/**
-	 * Reset the given node with the given value
-	 * 
-	 * @param iNodeIndex Node whose value is set
-	 * @param dblY New Y
-	 * 
-	 * @return TRUE => If the calibration succeeds
-	 */
-
 	@Override public boolean resetNode (
 		final int iNodeIndex,
 		final double dblY)
@@ -458,5 +379,22 @@ public class LagrangePolynomialSpan implements org.drip.math.grid.SingleSegmentS
 
 		_adblY[iNodeIndex] = dblY;
 		return true;
+	}
+
+	@Override public boolean resetNode (
+		final int iNodeIndex,
+		final org.drip.math.spline.SegmentNodeWeightConstraint snwc)
+	{
+		return false;
+	}
+
+	@Override public double getLeftEdge()
+	{
+		return _adblX[0];
+	}
+
+	@Override public double getRightEdge()
+	{
+		return _adblX[_adblX.length - 1];
 	}
 }

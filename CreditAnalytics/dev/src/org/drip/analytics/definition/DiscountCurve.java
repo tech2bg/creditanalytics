@@ -880,8 +880,15 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (null == aCalibComp)
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Components not available");
 
+		org.drip.math.grid.SegmentBuilderParams sbp = new org.drip.math.grid.SegmentBuilderParams
+			(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+				org.drip.math.spline.PolynomialBasisSetParams (2), new
+					org.drip.math.spline.SegmentInelasticParams (0, 2, null), null);
+
 		int iNumComponent = aCalibComp.length;
 		double[] adblDate = new double[iNumComponent];
+		org.drip.math.grid.SegmentBuilderParams[] aSBP = new
+			org.drip.math.grid.SegmentBuilderParams[iNumComponent - 1];
 
 		if (0 == iNumComponent)
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Components not available");
@@ -892,6 +899,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Quotes not available");
 
 		for (int i = 0; i < iNumComponent; ++i) {
+			if (0 != i) aSBP[i - 1] = sbp;
+
 			if (null == aCalibComp[i])
 				throw new java.lang.Exception ("DiscountCurve.interpMeasure => Cannot locate a component");
 
@@ -899,13 +908,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		}
 
 		org.drip.math.grid.MultiSegmentSpan span =
-			org.drip.math.grid.SpanBuilder.CreateCalibratedSpanInterpolator (adblDate, adblQuote,
-				org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, new
-					org.drip.math.grid.SpanBuilderParams
-						(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
-							org.drip.math.spline.PolynomialBasisSetParams (2), new
-								org.drip.math.spline.SegmentInelasticParams (0, 2, null), null),
-									org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
+			org.drip.math.grid.SpanBuilder.CreateCalibratedSpanInterpolator (adblDate, adblQuote, 
+				org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, aSBP,
+					org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
 
 		if (null == span)
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Cannot create Interp Span");

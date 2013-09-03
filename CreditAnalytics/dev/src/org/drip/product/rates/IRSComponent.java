@@ -552,6 +552,54 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	@Override public java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>
+		getCalibratableCashFlow (
+			final org.drip.param.valuation.ValuationParams valParams,
+			final java.lang.String strMeasure,
+			final double dblQuote)
+	{
+		if (null == valParams || null == strMeasure || !"ParSpread".equalsIgnoreCase (strMeasure) ||
+			!"FairPremium".equalsIgnoreCase (strMeasure) || !org.drip.math.common.NumberUtil.IsValid
+				(dblQuote))
+			return null;
+
+		java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> mapCF = new
+			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
+
+		if (null != _fixStream) {
+			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> mapFixedCF =
+				_fixStream.getCalibratableCashFlow (valParams, "DV01", 0.);
+
+			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate, java.lang.Double> meFixed :
+				mapFixedCF.entrySet()) {
+				org.drip.analytics.date.JulianDate dtCalibration = meFixed.getKey();
+
+				if (mapFixedCF.containsKey (dtCalibration))
+					mapCF.put (dtCalibration, mapFixedCF.get (dtCalibration) + meFixed.getValue() *
+						dblQuote);
+				else
+					mapCF.put (dtCalibration, meFixed.getValue() * dblQuote);
+			}
+		}
+
+		if (null != _floatStream) {
+			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> mapFloatCF =
+				_floatStream.getCalibratableCashFlow (valParams, strMeasure, dblQuote);
+
+			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate, java.lang.Double> meFloat :
+				mapFloatCF.entrySet()) {
+				org.drip.analytics.date.JulianDate dtCalibration = meFloat.getKey();
+
+				if (mapFloatCF.containsKey (dtCalibration))
+					mapCF.put (dtCalibration, mapFloatCF.get (dtCalibration) + meFloat.getValue());
+				else
+					mapCF.put (dtCalibration, meFloat.getValue());
+			}
+		}
+
+		return mapCF;
+	}
+
 	@Override public java.lang.String getFieldDelimiter()
 	{
 		return "{";

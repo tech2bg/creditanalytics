@@ -38,21 +38,21 @@ package org.drip.math.spline;
 public class SegmentInelasticParams {
 	private int _iCk = -1;
 	private int _iRoughnessPenaltyDerivativeOrder = -1;
-	private org.drip.math.spline.SegmentConstraint _lc = null;
+	private org.drip.math.spline.SegmentNodeWeightConstraint[] _aSNWC = null;
 
 	/**
 	 * Create the C2 Segment Elastic Parameters
 	 * 
-	 * @param lc Segment Fixed Nodal Constraint
+	 * @param aSNWC Array of Segment Constraints
 	 * 
 	 * @return SegmentElasticParams instance
 	 */
 
 	public static final SegmentInelasticParams MakeC2SegmentElasticParams (
-		final org.drip.math.spline.SegmentConstraint lc)
+		final org.drip.math.spline.SegmentNodeWeightConstraint[] aSNWC)
 	{
 		try {
-			return new SegmentInelasticParams (2, 2, null);
+			return new SegmentInelasticParams (2, 2, aSNWC);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -65,7 +65,7 @@ public class SegmentInelasticParams {
 	 * 
 	 * @param iCk Continuity Order
 	 * @param iRoughnessPenaltyDerivativeOrder Roughness Penalty Derivative Order
-	 * @param lc Segment Linear Constraint
+	 * @param aSNWC Array of Segment Constraints
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -73,10 +73,10 @@ public class SegmentInelasticParams {
 	public SegmentInelasticParams (
 		final int iCk,
 		final int iRoughnessPenaltyDerivativeOrder,
-		final org.drip.math.spline.SegmentConstraint lc)
+		final org.drip.math.spline.SegmentNodeWeightConstraint[] aSNWC)
 		throws java.lang.Exception
 	{
-		_lc = lc;
+		_aSNWC = aSNWC;
 
 		if (0 > (_iCk = iCk) || 0 >= (_iRoughnessPenaltyDerivativeOrder = iRoughnessPenaltyDerivativeOrder))
 			throw new java.lang.Exception ("SegmentInelasticParams ctr: Invalid Inputs");
@@ -105,13 +105,13 @@ public class SegmentInelasticParams {
 	}
 
 	/**
-	 * Retrieve the Linear Constraint
+	 * Retrieve the Array of Linear Constraints
 	 * 
-	 * @return The Linear Constraint
+	 * @return Array of Linear Constraints
 	 */
 
-	public org.drip.math.spline.SegmentConstraint getLinearConstraint()
+	public org.drip.math.spline.SegmentNodeWeightConstraint[] getLinearConstraint()
 	{
-		return _lc;
+		return _aSNWC;
 	}
 }

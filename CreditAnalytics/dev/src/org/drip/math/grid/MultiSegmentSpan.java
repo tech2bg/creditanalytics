@@ -59,6 +59,14 @@ public interface MultiSegmentSpan extends org.drip.math.grid.SingleSegmentSpan {
 	public static final java.lang.String SPLINE_BOUNDARY_MODE_FINANCIAL = "Financial";
 
 	/**
+	 * Retrieve the Span Builder Parameters
+	 * 
+	 * @return The Span Builder Parameters
+	 */
+
+	public abstract org.drip.math.grid.SegmentBuilderParams[] getSegmentBuilderParams();
+
+	/**
 	 * Retrieve the Span Segments
 	 * 
 	 * @return The Span Segments
@@ -67,12 +75,15 @@ public interface MultiSegmentSpan extends org.drip.math.grid.SingleSegmentSpan {
 	public abstract org.drip.math.grid.Segment[] getSegments();
 
 	/**
-	 * Sets up (i.e., calibrates) the individual segment in the span to the target segment edge parameters.
+	 * Sets up (i.e., calibrates) the individual segment in the span to the target segment edge parameters
+	 * 	and any constraints.
 	 * 
 	 * @param aSEPLeft Array of Left Segment Edge Parameters
 	 * @param aSEPRight Array of Left Segment Edge Parameters
+	 * @param aaSNWC Double Array of Constraints - Outer Index corresponds to Segment Index, and the Inner
+	 * 		Index to Constraint Array within each Segment
 	 * @param iSetupMode Set up Mode (i.e., set up ITEP only, or fully calibrate the Span, or calibrate Span
-	 * 	plus compute Jacobian)
+	 * 		plus compute Jacobian)
 	 * 
 	 * @return TRUE => Set up was successful
 	 */
@@ -80,6 +91,7 @@ public interface MultiSegmentSpan extends org.drip.math.grid.SingleSegmentSpan {
 	public abstract boolean setup (
 		final org.drip.math.grid.SegmentEdgeParams[] aSEPLeft,
 		final org.drip.math.grid.SegmentEdgeParams[] aSEPRight,
+		final org.drip.math.spline.SegmentNodeWeightConstraint[][] aaSNWC,
 		final int iSetupMode);
 
 	/**
@@ -121,4 +133,32 @@ public interface MultiSegmentSpan extends org.drip.math.grid.SingleSegmentSpan {
 	public abstract double calcTailDerivative (
 		final int iOrder)
 		throws java.lang.Exception;
+
+	/**
+	 * Checks if the point is inside the span range
+	 * 
+	 * @param dblX Input point
+	 * 
+	 * @return TRUE => Point is inside the span range
+	 */
+
+	public abstract boolean isInRange (
+		final double dblX);
+
+	/**
+	 * Sets up (i.e., calibrates) the individual segment in the span to the target node constraints.
+	 * 
+	 * @param dblYLeading Span Left-most Y
+	 * @param aSNWC Array of Segment Node Weight Constraints
+	 * @param strCalibrationMode Calibration Mode (i.e., the calibration boundary condition)
+	 * @param iSetupMode Set up Mode (Fully calibrate the Span, or calibrate Span plus compute Jacobian)
+	 * 
+	 * @return TRUE => Set up was successful
+	 */
+
+	public abstract boolean setup (
+		final double dblYLeading,
+		final org.drip.math.spline.SegmentNodeWeightConstraint[] aSNWC,
+		final java.lang.String strCalibrationMode,
+		final int iSetupMode);
 }
