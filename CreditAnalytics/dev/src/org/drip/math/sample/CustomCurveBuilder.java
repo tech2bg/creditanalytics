@@ -63,6 +63,40 @@ import org.drip.math.spline.*;
 public class CustomCurveBuilder {
 
 	/**
+	 * Sample API demonstrating the creation of the segment builder parameters based on exponential tension spline.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final SegmentBuilderParams MakeExponentialTensionSBP (
+		final double dblTension)
+		throws Exception
+	{
+		return new SegmentBuilderParams (
+			SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
+			new ExponentialTensionBasisSetParams (dblTension), // Segment Tension Parameter Value
+			new SegmentInelasticParams (2, 2, null), // Ck = 2; Roughness penalty (if necessary) order: 2
+			new RationalShapeControl (0.0)); // Univariate Rational Shape Controller
+	}
+
+	/**
+	 * Sample API demonstrating the creation of the segment builder parameters based on polynomial spline.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	public static final SegmentBuilderParams MakePolynomialSBP (
+		final int iNumDegree)
+		throws Exception
+	{
+		return new SegmentBuilderParams (
+			SpanBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
+			new PolynomialBasisSetParams (iNumDegree + 1), // Polynomial of degree (i.e, cubic would be 3+1; 4 basis functions - 1 "intercept")
+			new SegmentInelasticParams (2, 2, null), // Ck = 2; Roughness penalty (if necessary) order: 2
+			new RationalShapeControl (0.0)); // Univariate Rational Shape Controller
+	}
+
+	/**
 	 * Sample API demonstrating the creation of the segment builder parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -202,8 +236,13 @@ public class CustomCurveBuilder {
 
 	/**
 	 * Sample Function illustrating the construction of the discount curve off of swap cash flows and
-	 *  detailed segment level controls for the swap instruments.
+	 *  detailed segment level controls for the swap instruments.Further, the Segment Builder Parameters
+	 *  for the cash/swap bridging regime shown here illustrate using an exponential/hyperbolic spline with
+	 *  very high tension (100000.) to "stitch" the cash regime with the swaps regime.
 	 * 
+	 * Each of the respective regimes have their own tension settings, so the "high" tension
+	 *  ensures that there is no propagation of derivatives and therefore high locality.
+	 *  
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
@@ -211,11 +250,7 @@ public class CustomCurveBuilder {
 		MultiSegmentSpan span)
 		throws Exception
 	{
-		/*
-		 * Set the Segment Builder Parameters. This may be set on a segment-by-segment basis.
-		 */
-
-		SegmentBuilderParams sbp = MakeSBP (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION);
+		boolean bFirstNode = true;
 
 		/*
 		 * Iterate through the swap instruments and their quotes.
@@ -244,6 +279,12 @@ public class CustomCurveBuilder {
 
 			if (null == span) {
 				/*
+				 * Set the Segment Builder Parameters. This may be set on a segment-by-segment basis.
+				 */
+
+				SegmentBuilderParams sbp = MakeSBP (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION);
+
+				/*
 				 * Start off with a single segment span, with the corresponding Builder Parameters
 				 */
 
@@ -252,7 +293,7 @@ public class CustomCurveBuilder {
 					new SegmentBuilderParams[] {sbp});
 
 				/*
-				 * Set up the span up by carrying out a "Natural Boundary" Spline Calibration
+				 * Set the span up by carrying out a "Natural Boundary" Spline Calibration
 				 */
 
 				span.setup (1.,
@@ -261,11 +302,29 @@ public class CustomCurveBuilder {
 					SingleSegmentSpan.CALIBRATE_SPAN);
 			} else {
 				/*
+				 * The Segment Builder Parameters shown here illustrate using an exponential/hyperbolic
+				 *  spline with very high tension (100000.) to "stitch" the cash regime with the swaps
+				 *  regime.
+				 *  
+				 * Each of the respective regimes have their own tension settings, so the "high" tension
+				 *  ensures that there is no propagation of derivatives and therefore high locality.
+				 */
+
+				SegmentBuilderParams sbpLocal = null;
+
+				if (bFirstNode) {
+					bFirstNode = false;
+
+					sbpLocal = MakeExponentialTensionSBP (100000.);
+				} else
+					sbpLocal = MakeExponentialTensionSBP (1.);
+
+				/*
 				 * If not the head segment, just append the exclusive swap instrument segment to the tail of
 				 * 	the current span state, using the constraint generated from the swap cash flow.
 				 */
 
-				span = org.drip.math.grid.SpanBuilder.AppendSegment (span, dblTenorInYears, snwc, sbp);
+				span = org.drip.math.grid.SpanBuilder.AppendSegment (span, dblTenorInYears, snwc, sbpLocal);
 			}
 		}
 
@@ -386,8 +445,8 @@ public class CustomCurveBuilder {
 		final String[] astrArgs)
 		throws Exception
 	{
-		BuildCashCurve();
+		MultiSegmentSpan spanCash = BuildCashCurve();
 
-		BuildSwapCurve (null);
+		BuildSwapCurve (spanCash);
 	}
 }

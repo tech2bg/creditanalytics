@@ -346,8 +346,8 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		double[] adblCalibQuoteShifted = new double[_adblCalibQuote.length];
 
 		try {
-			org.drip.analytics.calibration.CurveCalibrator calibrator = new
-				org.drip.analytics.calibration.CurveCalibrator();
+			org.drip.analytics.calibration.NonlinearCurveCalibrator calibrator = new
+				org.drip.analytics.calibration.NonlinearCurveCalibrator();
 
 			for (int i = 0; i < _adblCalibQuote.length; ++i)
 				calibrator.calibrateIRNode (dc, null, null, _aCalibInst[i], i, _valParam,

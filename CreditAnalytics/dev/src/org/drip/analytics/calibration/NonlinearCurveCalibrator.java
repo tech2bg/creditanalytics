@@ -44,7 +44,7 @@ package org.drip.analytics.calibration;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CurveCalibrator {
+public class NonlinearCurveCalibrator {
 	class CreditCurveCalibrator extends org.drip.math.function.AbstractUnivariate {
 		private int _iInstr = -1;
 		private boolean _bFlat = false;
@@ -195,7 +195,7 @@ public class CurveCalibrator {
 	 * Constructs an empty CurveCalibrator
 	 */
 
-	public CurveCalibrator()
+	public NonlinearCurveCalibrator()
 	{
 	}
 

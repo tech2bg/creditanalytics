@@ -12440,6 +12440,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
+	@Override public org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm)
+	{
+		return null;
+	}
+
 	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,

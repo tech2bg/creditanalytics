@@ -552,52 +552,38 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>
-		getCalibratableCashFlow (
-			final org.drip.param.valuation.ValuationParams valParams,
-			final java.lang.String strMeasure,
-			final double dblQuote)
+	@Override public org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || null == strMeasure || !"ParSpread".equalsIgnoreCase (strMeasure) ||
-			!"FairPremium".equalsIgnoreCase (strMeasure) || !org.drip.math.common.NumberUtil.IsValid
-				(dblQuote))
+		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == lsmm ||
+			!org.drip.analytics.calibration.LatentStateMetricMeasure.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+				(lsmm.getLatentState()))
 			return null;
 
-		java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> mapCF = new
-			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
+		if (org.drip.analytics.calibration.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			(lsmm.getQuantificationMetric())) {
+			if ("Rate".equalsIgnoreCase (lsmm.getManifestMeasure()) || "SwapRate".equalsIgnoreCase
+				(lsmm.getManifestMeasure()) || "ParRate".equalsIgnoreCase (lsmm.getManifestMeasure()) ||
+					"FairPremium".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+				org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
+					org.drip.analytics.calibration.PredictorResponseLinearConstraint();
 
-		if (null != _fixStream) {
-			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> mapFixedCF =
-				_fixStream.getCalibratableCashFlow (valParams, "DV01", 0.);
+				for (org.drip.analytics.period.CouponPeriod period : _fixStream.getCouponPeriod()) {
+					if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
+						period.getCouponDCF() * lsmm.getMeasureQuoteValue()))
+						return null;
+				}
 
-			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate, java.lang.Double> meFixed :
-				mapFixedCF.entrySet()) {
-				org.drip.analytics.date.JulianDate dtCalibration = meFixed.getKey();
-
-				if (mapFixedCF.containsKey (dtCalibration))
-					mapCF.put (dtCalibration, mapFixedCF.get (dtCalibration) + meFixed.getValue() *
-						dblQuote);
-				else
-					mapCF.put (dtCalibration, meFixed.getValue() * dblQuote);
+				return prlc.addPredictorResponseWeight (valParams._dblValue, -1.) &&
+					prlc.addPredictorResponseWeight (getMaturityDate().getJulian(), 1.) ? prlc : null;
 			}
 		}
 
-		if (null != _floatStream) {
-			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> mapFloatCF =
-				_floatStream.getCalibratableCashFlow (valParams, strMeasure, dblQuote);
-
-			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate, java.lang.Double> meFloat :
-				mapFloatCF.entrySet()) {
-				org.drip.analytics.date.JulianDate dtCalibration = meFloat.getKey();
-
-				if (mapFloatCF.containsKey (dtCalibration))
-					mapCF.put (dtCalibration, mapFloatCF.get (dtCalibration) + meFloat.getValue());
-				else
-					mapCF.put (dtCalibration, meFloat.getValue());
-			}
-		}
-
-		return mapCF;
+		return null;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()

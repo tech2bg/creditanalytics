@@ -1258,6 +1258,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return null;
 	}
 
+	@Override public org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm)
+	{
+		return null;
+	}
+
 	/**
 	 * Calibrates the CDS's flat spread from the calculated up-front points
 	 * 

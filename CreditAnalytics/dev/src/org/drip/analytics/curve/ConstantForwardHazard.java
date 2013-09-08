@@ -379,8 +379,8 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 		ConstantForwardHazard cc = null;
 		double[] adblCalibQuote = new double[_adblCalibQuote.length];
 
-		org.drip.analytics.calibration.CurveCalibrator calibrator = new
-			org.drip.analytics.calibration.CurveCalibrator();
+		org.drip.analytics.calibration.NonlinearCurveCalibrator calibrator = new
+			org.drip.analytics.calibration.NonlinearCurveCalibrator();
 
 		try {
 			cc = new ConstantForwardHazard (_dblStartDate, _strName, _adblHazardRate, _adblHazardDate,
@@ -423,8 +423,8 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 
 		org.drip.analytics.definition.CreditCurve cc = null;
 
-		org.drip.analytics.calibration.CurveCalibrator calibrator = new
-			org.drip.analytics.calibration.CurveCalibrator();
+		org.drip.analytics.calibration.NonlinearCurveCalibrator calibrator = new
+			org.drip.analytics.calibration.NonlinearCurveCalibrator();
 
 		try {
 			if (bSingleNode)
@@ -563,8 +563,8 @@ public class ConstantForwardHazard extends org.drip.analytics.definition.CreditC
 
 				org.drip.analytics.definition.CreditCurve cc = null;
 
-				org.drip.analytics.calibration.CurveCalibrator calibrator = new
-					org.drip.analytics.calibration.CurveCalibrator();
+				org.drip.analytics.calibration.NonlinearCurveCalibrator calibrator = new
+					org.drip.analytics.calibration.NonlinearCurveCalibrator();
 
 				try {
 					if (cntp._bSingleNodeCalib)

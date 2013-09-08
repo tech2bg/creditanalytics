@@ -50,8 +50,8 @@ public class RatesCurveScenarioGenerator {
 	private java.lang.String _strBootstrapMode =
 		org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD;
 
-	private org.drip.analytics.calibration.CurveCalibrator _compCalib = new
-		org.drip.analytics.calibration.CurveCalibrator();
+	private org.drip.analytics.calibration.NonlinearCurveCalibrator _compCalib = new
+		org.drip.analytics.calibration.NonlinearCurveCalibrator();
 
 	/**
 	 * Constructs a CreditCurveScenarioGenerator instance from the calibratable instrument array

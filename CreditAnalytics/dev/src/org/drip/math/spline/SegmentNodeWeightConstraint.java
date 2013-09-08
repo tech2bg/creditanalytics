@@ -59,7 +59,7 @@ public class SegmentNodeWeightConstraint {
 	public static final int KNOT_RIGHT_OF_CONSTRAINT = 2;
 
 	/**
-	 * Indicator specifying that the knot beaks the constraint ordinates
+	 * Indicator specifying that the knot breaks the constraint ordinates
 	 */
 
 	public static final int KNOT_BREAKS_CONSTRAINT = 4;

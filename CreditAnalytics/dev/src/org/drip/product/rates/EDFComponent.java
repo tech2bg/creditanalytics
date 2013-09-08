@@ -530,6 +530,57 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	@Override public org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm)
+	{
+		if (null == valParams || valParams._dblValue >= _dblMaturity || null == lsmm ||
+			!org.drip.analytics.calibration.LatentStateMetricMeasure.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+				(lsmm.getLatentState()))
+			return null;
+
+		if (org.drip.analytics.calibration.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			(lsmm.getQuantificationMetric())) {
+			try {
+				if ("Price".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+					org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
+						org.drip.analytics.calibration.PredictorResponseLinearConstraint();
+
+					return prlc.addPredictorResponseWeight (_dblMaturity, -1.) &&
+						prlc.addPredictorResponseWeight (_dblEffective, 0.01 * lsmm.getMeasureQuoteValue())
+							&& prlc.setValue (0.) ? prlc : null;
+				}
+
+				if ("PV".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+					org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
+						org.drip.analytics.calibration.PredictorResponseLinearConstraint();
+
+					return prlc.addPredictorResponseWeight (_dblMaturity, -1.) &&
+						prlc.addPredictorResponseWeight (_dblEffective, lsmm.getMeasureQuoteValue()) &&
+							prlc.setValue (0.) ? prlc : null;
+				}
+
+				if ("Rate".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+					org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
+						org.drip.analytics.calibration.PredictorResponseLinearConstraint();
+
+					return prlc.addPredictorResponseWeight (_dblMaturity, -1.) &&
+						prlc.addPredictorResponseWeight (_dblEffective, 1. / (1. +
+							lsmm.getMeasureQuoteValue() * org.drip.analytics.daycount.Convention.YearFraction
+								(_dblEffective, _dblMaturity, _strDC, false, _dblMaturity, null,
+									_strCalendar))) && prlc.setValue (0.) ? prlc : null;
+				}
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
+
 	@Override public byte[] serialize()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();

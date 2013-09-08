@@ -123,58 +123,23 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 		final org.drip.param.valuation.QuotingParams quotingParams);
 
 	/**
-	 * Return the cash flow that are to be used for the calibration. The default implementation is for a
-	 * 	single stream component.
+	 * Generate the Calibratable Linearized Predictor/Response Constraints for the Component from the Market
+	 *  Inputs. The Constraints here typically correspond to Date/Cash Flow pairs and the corresponding PV.
 	 * 
 	 * @param valParams Valuation Parameters
-	 * @param strMeasure Measure Name
-	 * @param dblQuote Quote To be calibrated
+	 * @param pricerParams Pricer Parameters
+	 * @param mktParams Component Market Parameters
+	 * @param quotingParams Component Quoting Parameters
+	 * @param lsmm The Latent State Metric and the Component Measure
 	 * 
-	 * @return The Ordered Cash Flow Tree Map
+	 * @return The Calibratable Linearized Predictor/Response Constraints (Date/Cash Flow pairs and the
+	 * 	corresponding PV)
 	 */
 
-	public java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> getCalibratableCashFlow (
+	public abstract org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final java.lang.String strMeasure,
-		final double dblQuote)
-	{
-		if (null == valParams || null == strMeasure || !"PV".equalsIgnoreCase (strMeasure) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblQuote))
-			return null;
-
-		java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double> mapCF = new
-			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
-
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCoupon = getCouponPeriod();
-
-		if (null == lsCoupon || 0 == lsCoupon.size()) {
-			try {
-				mapCF.put (new org.drip.analytics.date.JulianDate (valParams._dblValue), dblQuote);
-
-				mapCF.put (getMaturityDate(), getInitialNotional());
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-
-			return mapCF;
-		}
-
-		for (org.drip.analytics.period.CouponPeriod cpnPeriod : lsCoupon) {
-			double dblPayDate = cpnPeriod.getPayDate();
-
-			try {
-				mapCF.put (new org.drip.analytics.date.JulianDate (cpnPeriod.getPayDate()), getNotional
-					(dblPayDate) * getCoupon (getEffectiveDate().getJulian(), null) *
-						cpnPeriod.getCouponDCF() * getInitialNotional());
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
-		return mapCF;
-	}
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm);
 }
