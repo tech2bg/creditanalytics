@@ -1,5 +1,5 @@
 
-package org.drip.math.spline;
+package org.drip.math.segment;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,30 +29,26 @@ package org.drip.math.spline;
  */
 
 /**
- * SegmentInelasticParams implements basis per-segment elastics parameter set. Currently it contains Ck, the
- *  roughness penalty derivative order, and the segment specific constraints.
+ * DesignInelasticParams implements basis per-segment inelastic parameter set. Currently it contains Ck and
+ *  roughness penalty derivative order.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentInelasticParams {
+public class DesignInelasticParams {
 	private int _iCk = -1;
 	private int _iRoughnessPenaltyDerivativeOrder = -1;
-	private org.drip.math.spline.SegmentNodeWeightConstraint[] _aSNWC = null;
 
 	/**
-	 * Create the C2 Segment Elastic Parameters
+	 * Create the C2 Design Inelastic Params
 	 * 
-	 * @param aSNWC Array of Segment Constraints
-	 * 
-	 * @return SegmentElasticParams instance
+	 * @return DesignInelasticParams instance
 	 */
 
-	public static final SegmentInelasticParams MakeC2SegmentElasticParams (
-		final org.drip.math.spline.SegmentNodeWeightConstraint[] aSNWC)
+	public static final DesignInelasticParams MakeC2DesignInelasticParams()
 	{
 		try {
-			return new SegmentInelasticParams (2, 2, aSNWC);
+			return new DesignInelasticParams (2, 2);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -61,25 +57,21 @@ public class SegmentInelasticParams {
 	}
 
 	/**
-	 * ElasticParams constructor
+	 * DesignInelasticParams constructor
 	 * 
 	 * @param iCk Continuity Order
 	 * @param iRoughnessPenaltyDerivativeOrder Roughness Penalty Derivative Order
-	 * @param aSNWC Array of Segment Constraints
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public SegmentInelasticParams (
+	public DesignInelasticParams (
 		final int iCk,
-		final int iRoughnessPenaltyDerivativeOrder,
-		final org.drip.math.spline.SegmentNodeWeightConstraint[] aSNWC)
+		final int iRoughnessPenaltyDerivativeOrder)
 		throws java.lang.Exception
 	{
-		_aSNWC = aSNWC;
-
 		if (0 > (_iCk = iCk) || 0 >= (_iRoughnessPenaltyDerivativeOrder = iRoughnessPenaltyDerivativeOrder))
-			throw new java.lang.Exception ("SegmentInelasticParams ctr: Invalid Inputs");
+			throw new java.lang.Exception ("DesignInelasticParams ctr: Invalid Inputs");
 	}
 
 	/**
@@ -102,16 +94,5 @@ public class SegmentInelasticParams {
 	public int getCk()
 	{
 		return _iCk;
-	}
-
-	/**
-	 * Retrieve the Array of Linear Constraints
-	 * 
-	 * @return Array of Linear Constraints
-	 */
-
-	public org.drip.math.spline.SegmentNodeWeightConstraint[] getLinearConstraint()
-	{
-		return _aSNWC;
 	}
 }

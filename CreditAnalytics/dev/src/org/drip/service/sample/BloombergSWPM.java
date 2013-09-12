@@ -158,13 +158,14 @@ public class BloombergSWPM {
 
 		System.out.println ("Settle Date : " + dtSettle);
 
+		double dblCoupon = 0.01745756;
+		double dblFixing = 0.0026410;
+		double dblNotional = 10.e+06;
+
 		/*
 		 * Model the discount curve instrument quotes. Best pulled from Curves #23/#47 in the BBG SWPM "Curves" tab
 		 */
 
-		double dblCoupon = 0.01745756;
-		double dblFixing = 0.0026410;
-		double dblNotional = 10.e+06;
 		String[] astrCashTenor = new String[] {"3M"};
 		double[] adblCashRate = new double[] {0.0026410};
 		double[] adblEDFRate = new double[] {0.0026410, 0.0026410};

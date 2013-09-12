@@ -51,7 +51,7 @@ package org.drip.math.spline;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentBasisSetBuilder {
+public class BasisSetBuilder {
 
 	/**
 	 * This function implements the elastic coefficients for the segment using tension exponential basis
@@ -73,12 +73,10 @@ public class SegmentBasisSetBuilder {
 	{
 		if (null == etbsbp) return null;
 
-		double dblTension = etbsbp.getTension();
-
-		if (!org.drip.math.common.NumberUtil.IsValid (dblTension)) return null;
+		double dblTension = etbsbp.tension();
 
 		try {
-			return new org.drip.math.function.AbstractUnivariate[] { new org.drip.math.function.Polynomial
+			return new org.drip.math.function.AbstractUnivariate[] {new org.drip.math.function.Polynomial
 				(0), new org.drip.math.function.Polynomial (1), new
 					org.drip.math.function.ExponentialTension (java.lang.Math.E, dblTension), new
 						org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblTension)};
@@ -109,9 +107,7 @@ public class SegmentBasisSetBuilder {
 	{
 		if (null == etbsbp) return null;
 
-		double dblTension = etbsbp.getTension();
-
-		if (!org.drip.math.common.NumberUtil.IsValid (dblTension)) return null;
+		double dblTension = etbsbp.tension();
 
 		try {
 			return new org.drip.math.function.AbstractUnivariate[] {new org.drip.math.function.Polynomial
@@ -127,8 +123,8 @@ public class SegmentBasisSetBuilder {
 	}
 
 	/**
-	 * This class implements the elastic coefficients for the segment using polynomial basis splines inside -
-	 * 		[0,...,1) - Globally [x_0,...,x_1):
+	 * This function implements the elastic coefficients for the segment using polynomial basis splines
+	 * 		inside [0,...,1) - Globally [x_0,...,x_1):
 	 * 
 	 * 			y = Sum (A_i*x^i) i = 0,...,n (0 and n inclusive)
 	 * 
@@ -146,9 +142,7 @@ public class SegmentBasisSetBuilder {
 	{
 		if (null == polybsbp) return null;
 
-		int iNumBasis = polybsbp.getNumBasis();
-
-		if (0 >= iNumBasis) return null;
+		int iNumBasis = polybsbp.numBasis();
 
 		org.drip.math.function.AbstractUnivariate[] aAU = new
 			org.drip.math.function.AbstractUnivariate[iNumBasis];
@@ -166,7 +160,7 @@ public class SegmentBasisSetBuilder {
 	}
 
 	/**
-	 * This class implements the elastic coefficients for the segment using Bernstein polynomial basis
+	 * This function implements the elastic coefficients for the segment using Bernstein polynomial basis
 	 * 	splines inside - [0,...,1) - Globally [x_0,...,x_1):
 	 * 
 	 * 			y = Sum (A_i*B^i(x)) i = 0,...,n (0 and n inclusive)
@@ -187,9 +181,7 @@ public class SegmentBasisSetBuilder {
 	{
 		if (null == polybsbp) return null;
 
-		int iNumBasis = polybsbp.getNumBasis();
-
-		if (0 >= iNumBasis) return null;
+		int iNumBasis = polybsbp.numBasis();
 
 		org.drip.math.function.AbstractUnivariate[] aAU = new
 			org.drip.math.function.AbstractUnivariate[iNumBasis];
@@ -229,41 +221,13 @@ public class SegmentBasisSetBuilder {
 				org.drip.math.function.UnivariateReflection (auLinearPoly);
 
 			org.drip.math.function.AbstractUnivariate auKaklisPandelisPolynomial = new
-				org.drip.math.function.Polynomial (kpbsbp.getPolynomialTensionDegree());
+				org.drip.math.function.Polynomial (kpbsbp.polynomialTensionDegree());
 
 			return new org.drip.math.function.AbstractUnivariate[] {auReflectedLinearPoly, auLinearPoly, new
 				org.drip.math.function.UnivariateConvolution (auLinearPoly, new
 					org.drip.math.function.UnivariateReflection (auKaklisPandelisPolynomial)), new
 						org.drip.math.function.UnivariateConvolution (auKaklisPandelisPolynomial,
 							auReflectedLinearPoly)};
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Build the Ck instance from the Basis Set
-	 * 
-	 * @param dblX0 Left Ordinate
-	 * @param dblX1 Right Ordinate
-	 * @param aAUBasis Basis Set AU functions
-	 * @param auShapeControl Shape Control Basis Function
-	 * @param segParams Segment Elastic Parameters
-	 * 
-	 * @return Instance of Ck
-	 */
-
-	public static final org.drip.math.spline.BasisSetSegment CreateCk (
-		final double dblX0,
-		final double dblX1,
-		final org.drip.math.function.AbstractUnivariate[] aAUBasis,
-		final org.drip.math.function.AbstractUnivariate auShapeControl,
-		final org.drip.math.spline.SegmentInelasticParams segParams)
-	{
-		try {
-			return new org.drip.math.spline.BasisSetSegment (dblX0, dblX1, aAUBasis, auShapeControl, segParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

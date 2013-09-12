@@ -3,7 +3,7 @@ package org.drip.math.sample;
 
 import org.drip.math.calculus.WengertJacobian;
 import org.drip.math.function.*;
-import org.drip.math.grid.*;
+import org.drip.math.segment.*;
 import org.drip.math.spline.*;
 
 /*
@@ -65,7 +65,7 @@ public class BasisSplineSet {
 
 		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
 
-		return SegmentBasisSetBuilder.PolynomialBasisSet (polybsbp);
+		return BasisSetBuilder.PolynomialBasisSet (polybsbp);
 	}
 
 	/*
@@ -85,7 +85,7 @@ public class BasisSplineSet {
 
 		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
 
-		return SegmentBasisSetBuilder.BernsteinPolynomialBasisSet (polybsbp);
+		return BasisSetBuilder.BernsteinPolynomialBasisSet (polybsbp);
 	}
 
 	/*
@@ -105,7 +105,7 @@ public class BasisSplineSet {
 
 		ExponentialTensionBasisSetParams etbsbp = new ExponentialTensionBasisSetParams (dblTension);
 
-		return SegmentBasisSetBuilder.ExponentialTensionBasisSet (etbsbp);
+		return BasisSetBuilder.ExponentialTensionBasisSet (etbsbp);
 	}
 
 	/*
@@ -125,7 +125,7 @@ public class BasisSplineSet {
 
 		ExponentialTensionBasisSetParams etbsbp = new ExponentialTensionBasisSetParams (dblTension);
 
-		return SegmentBasisSetBuilder.HyperbolicTensionBasisSet (etbsbp);
+		return BasisSetBuilder.HyperbolicTensionBasisSet (etbsbp);
 	}
 
 	/*
@@ -145,7 +145,7 @@ public class BasisSplineSet {
 
 		KaklisPandelisBasisSetParams kpbpsp = new KaklisPandelisBasisSetParams (iPolynomialTensionDegree);
 
-		return SegmentBasisSetBuilder.KaklisPandelisBasisSet (kpbpsp);
+		return BasisSetBuilder.KaklisPandelisBasisSet (kpbpsp);
 	}
 
 	/*
@@ -162,22 +162,22 @@ public class BasisSplineSet {
 	private static final void TestSpline (
 		final AbstractUnivariate[] aAU,
 		final AbstractUnivariate rsc,
-		final SegmentInelasticParams segParams)
+		final DesignInelasticParams segParams)
 		throws Exception
 	{
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		Segment seg1 = SegmentBasisSetBuilder.CreateCk (1.0, 1.5, aAU, rsc, segParams);
+		PredictorResponse seg1 = PredictorResponseBasisSpline.Create (1.0, 1.5, aAU, rsc, segParams);
 
-		Segment seg2 = SegmentBasisSetBuilder.CreateCk (1.5, 2.0, aAU, rsc, segParams);
+		PredictorResponse seg2 = PredictorResponseBasisSpline.Create (1.5, 2.0, aAU, rsc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = seg1.calibrateJacobian (25., 0., 20.25);
+		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcValue (1.));
 
@@ -185,7 +185,7 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
-		System.out.println ("Segment 1 Head: " + seg1.calcJacobian().displayString());
+		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
@@ -193,7 +193,7 @@ public class BasisSplineSet {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = seg2.calibrateJacobian (seg1, 16.);
+		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16.);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + seg2.calcValue (1.5));
 
@@ -201,7 +201,7 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
-		System.out.println ("Segment 2 Regular Jacobian: " + seg2.calcJacobian().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
@@ -215,7 +215,7 @@ public class BasisSplineSet {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.calcValueJacobian (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}
 
 	/*
@@ -233,23 +233,23 @@ public class BasisSplineSet {
 	private static final void TestC1HermiteSpline (
 		final AbstractUnivariate[] aAU,
 		final AbstractUnivariate rsc,
-		final SegmentInelasticParams segParams)
+		final DesignInelasticParams segParams)
 		throws Exception
 	{
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		Segment seg1 = SegmentBasisSetBuilder.CreateCk (0.0, 1.0, aAU, rsc, segParams);
+		PredictorResponse seg1 = PredictorResponseBasisSpline.Create (0.0, 1.0, aAU, rsc, segParams);
 
-		Segment seg2 = SegmentBasisSetBuilder.CreateCk (1.0, 2.0, aAU, rsc, segParams);
+		PredictorResponse seg2 = PredictorResponseBasisSpline.Create (1.0, 2.0, aAU, rsc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = seg1.calibrateJacobian (
-			new SegmentCalibrationParams (
+		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (
+			new CalibrationParams (
 				new double[] {0., 1.}, // Left/Right X
 				new double[] {1., 4.}, // Left/Right Y
 				new double[] {1.}, // Left Deriv
@@ -266,7 +266,7 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
-		System.out.println ("Segment 1 Head: " + seg1.calcJacobian().displayString());
+		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
@@ -274,8 +274,8 @@ public class BasisSplineSet {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = seg2.calibrateJacobian (
-			new SegmentCalibrationParams (
+		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (
+			new CalibrationParams (
 				new double[] {0., 1.}, // Left/Right X
 				new double[] {4., 15.}, // Left/Right Y
 				new double[] {6.}, // Left Deriv
@@ -292,7 +292,7 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
-		System.out.println ("Segment 2 Regular Jacobian: " + seg2.calcJacobian().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
@@ -306,7 +306,7 @@ public class BasisSplineSet {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.calcValueJacobian (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}
 
 	public static final void main (
@@ -329,7 +329,7 @@ public class BasisSplineSet {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		SegmentInelasticParams segParams = new SegmentInelasticParams (iK, iRoughnessPenaltyDerivativeOrder, null);
+		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Test the polynomial spline
@@ -377,6 +377,6 @@ public class BasisSplineSet {
 
 		System.out.println (" -------------------- \n C1 HERMITE \n -------------------- \n");
 
-		TestC1HermiteSpline (CreatePolynomialSpline(), rsc, new SegmentInelasticParams (1, iRoughnessPenaltyDerivativeOrder, null));
+		TestC1HermiteSpline (CreatePolynomialSpline(), rsc, new DesignInelasticParams (1, iRoughnessPenaltyDerivativeOrder));
 	}
 }

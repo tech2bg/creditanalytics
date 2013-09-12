@@ -40,14 +40,14 @@ package org.drip.regression.spline;
  */
 
 public class LocalControlBasisSplineRegressor extends org.drip.regression.core.UnitRegressionExecutor {
-	private org.drip.math.grid.MultiSegmentSpan _span = null;
-	private org.drip.math.grid.MultiSegmentSpan _spanHermiteInsert = null;
-	private org.drip.math.grid.MultiSegmentSpan _spanCardinalInsert = null;
-	private org.drip.math.grid.MultiSegmentSpan _spanCatmullRomInsert = null;
+	private org.drip.math.grid.MultiSegmentRegime _span = null;
+	private org.drip.math.grid.MultiSegmentRegime _spanHermiteInsert = null;
+	private org.drip.math.grid.MultiSegmentRegime _spanCardinalInsert = null;
+	private org.drip.math.grid.MultiSegmentRegime _spanCatmullRomInsert = null;
 
 	private final boolean DumpRNVD (
 		final java.lang.String strSpanName,
-		final org.drip.math.grid.MultiSegmentSpan span,
+		final org.drip.math.grid.MultiSegmentRegime span,
 		final org.drip.regression.core.RegressionRunDetail rnvd)
 	{
 		double dblX = 0.;
@@ -56,7 +56,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 		while (dblX <= dblXMax) {
 			try {
 				if (!rnvd.set (getName() + "_" + strSpanName + "_" + dblX,
-					org.drip.math.common.FormatUtil.FormatDouble (span.calcValue (dblX), 1, 2, 1.) + " | " +
+					org.drip.math.common.FormatUtil.FormatDouble (span.response (dblX), 1, 2, 1.) + " | " +
 						span.monotoneType (dblX)))
 					return false;
 			} catch (java.lang.Exception e) {
@@ -65,7 +65,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 				return false;
 			}
 
-			if (!rnvd.set (getName() + "_" + strSpanName + "_" + dblX + "_Jack", span.calcValueJacobian
+			if (!rnvd.set (getName() + "_" + strSpanName + "_" + dblX + "_Jack", span.jackDResponseDResponseInput
 				(dblX).displayString()))
 				return false;
 
@@ -99,16 +99,16 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 
 		double[] adblX = new double[] {0.00, 1.00,  2.00,  3.00,  4.00};
 		int iNumSegment = adblX.length - 1;
-		org.drip.math.grid.SegmentBuilderParams[] aSBP = new
-			org.drip.math.grid.SegmentBuilderParams[iNumSegment];
+		org.drip.math.segment.PredictorResponseBuilderParams[] aSBP = new
+			org.drip.math.segment.PredictorResponseBuilderParams[iNumSegment];
 
 		for (int i = 0; i < iNumSegment; ++i)
-			aSBP[i] = new org.drip.math.grid.SegmentBuilderParams (strBasisSpline, bsp, new
-				org.drip.math.spline.SegmentInelasticParams (iCk, 1, null), new
+			aSBP[i] = new org.drip.math.segment.PredictorResponseBuilderParams (strBasisSpline, bsp, new
+				org.drip.math.segment.DesignInelasticParams (iCk, 1), new
 					org.drip.math.function.RationalShapeControl (1.));
 
-		if (null == (_span = org.drip.math.grid.SpanBuilder.CreateUncalibratedSpanInterpolator (adblX,
-			aSBP)))
+		if (null == (_span = org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeInterpolator
+			("SPLINE_REGIME", adblX, aSBP)))
 			throw new java.lang.Exception ("LocalControlBasisSplineRegressor ctr: Cannot Cnstruct Span!");
 	}
 
@@ -117,17 +117,17 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 		double[] adblY = new double[] {1.00, 4.00, 15.00, 40.00, 85.00};
 		double[] adblDYDX = new double[] {1.00, 6.00, 17.00, 34.00, 57.00};
 
-		org.drip.math.grid.SegmentEdgeParams[] aSEPLeft = new
-			org.drip.math.grid.SegmentEdgeParams[adblY.length - 1];
-		org.drip.math.grid.SegmentEdgeParams[] aSEPRight = new
-			org.drip.math.grid.SegmentEdgeParams[adblY.length - 1];
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aSEPLeft = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[adblY.length - 1];
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aSEPRight = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[adblY.length - 1];
 
 		for (int i = 0; i < adblY.length - 1; ++i) {
 			try {
-				aSEPLeft[i] = new org.drip.math.grid.SegmentEdgeParams (adblY[i], new double[]
+				aSEPLeft[i] = new org.drip.math.segment.PredictorOrdinateResponseDerivative (adblY[i], new double[]
 					{adblDYDX[i]});
 
-				aSEPRight[i] = new org.drip.math.grid.SegmentEdgeParams (adblY[i + 1], new double[]
+				aSEPRight[i] = new org.drip.math.segment.PredictorOrdinateResponseDerivative (adblY[i + 1], new double[]
 					{adblDYDX[i + 1]});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -136,16 +136,15 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			}
 		}
 
-		return _span.setup (aSEPLeft, aSEPRight, null, org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN |
-			org.drip.math.grid.SingleSegmentSpan.CALIBRATE_JACOBIAN);
+		return _span.setup (aSEPLeft, aSEPRight, null, org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE_JACOBIAN);
 	}
 
 	@Override public boolean execRegression()
 	{
 		try {
-			if (null == (_spanHermiteInsert = org.drip.math.grid.SpanBuilder.InsertKnot (_span, 2.5, new
-				org.drip.math.grid.SegmentEdgeParams (27.5, new double[] {25.5}), new
-					org.drip.math.grid.SegmentEdgeParams (27.5, new double[] {25.5}))))
+			if (null == (_spanHermiteInsert = org.drip.math.grid.RegimeModifier.InsertKnot (_span, 2.5, new
+				org.drip.math.segment.PredictorOrdinateResponseDerivative (27.5, new double[] {25.5}), new
+					org.drip.math.segment.PredictorOrdinateResponseDerivative (27.5, new double[] {25.5}))))
 				return false;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -153,11 +152,11 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			return false;
 		}
 
-		if (null == (_spanCardinalInsert = org.drip.math.grid.SpanBuilder.InsertCardinalKnot (_span, 2.5,
+		if (null == (_spanCardinalInsert = org.drip.math.grid.RegimeModifier.InsertCardinalKnot (_span, 2.5,
 			0.)))
 			return false;
 
-		return null != (_spanCatmullRomInsert = org.drip.math.grid.SpanBuilder.InsertCatmullRomKnot (_span,
+		return null != (_spanCatmullRomInsert = org.drip.math.grid.RegimeModifier.InsertCatmullRomKnot (_span,
 			2.5));
 	}
 

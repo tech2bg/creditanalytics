@@ -566,9 +566,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		if (org.drip.analytics.calibration.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
-			if ("Rate".equalsIgnoreCase (lsmm.getManifestMeasure()) || "SwapRate".equalsIgnoreCase
-				(lsmm.getManifestMeasure()) || "ParRate".equalsIgnoreCase (lsmm.getManifestMeasure()) ||
-					"FairPremium".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+			if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
 				org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
 					org.drip.analytics.calibration.PredictorResponseLinearConstraint();
 

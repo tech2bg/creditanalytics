@@ -880,15 +880,15 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (null == aCalibComp)
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Components not available");
 
-		org.drip.math.grid.SegmentBuilderParams sbp = new org.drip.math.grid.SegmentBuilderParams
-			(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+		org.drip.math.segment.PredictorResponseBuilderParams sbp = new org.drip.math.segment.PredictorResponseBuilderParams
+			(org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
 				org.drip.math.spline.PolynomialBasisSetParams (2), new
-					org.drip.math.spline.SegmentInelasticParams (0, 2, null), null);
+					org.drip.math.segment.DesignInelasticParams (0, 2), null);
 
 		int iNumComponent = aCalibComp.length;
 		double[] adblDate = new double[iNumComponent];
-		org.drip.math.grid.SegmentBuilderParams[] aSBP = new
-			org.drip.math.grid.SegmentBuilderParams[iNumComponent - 1];
+		org.drip.math.segment.PredictorResponseBuilderParams[] aSBP = new
+			org.drip.math.segment.PredictorResponseBuilderParams[iNumComponent - 1];
 
 		if (0 == iNumComponent)
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Components not available");
@@ -907,14 +907,15 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			adblDate[i] = aCalibComp[i].getMaturityDate().getJulian();
 		}
 
-		org.drip.math.grid.MultiSegmentSpan span =
-			org.drip.math.grid.SpanBuilder.CreateCalibratedSpanInterpolator (adblDate, adblQuote, 
-				org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, aSBP,
-					org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
+		org.drip.math.grid.MultiSegmentRegime span =
+			org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeInterpolator ("DISC_CURVE_REGIME",
+				adblDate, adblQuote, aSBP, new org.drip.math.grid.RegimeCalibrationSetting
+					(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL,
+						org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
 
 		if (null == span)
 			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Cannot create Interp Span");
 
-		return span.calcValue (dblDate);
+		return span.response (dblDate);
 	}
 }

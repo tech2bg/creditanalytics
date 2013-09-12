@@ -42,8 +42,8 @@ package org.drip.regression.spline;
 public class LagrangePolynomialSpanRegressor extends org.drip.regression.core.UnitRegressionExecutor {
 	private boolean _bLocallyMonotone = false;
 	private double _dblValue = java.lang.Double.NaN;
-	private org.drip.math.grid.SingleSegmentSpan _sss = null;
-	private org.drip.math.grid.SegmentMonotonocity _sm = null;
+	private org.drip.math.grid.SingleSegmentRegime _sss = null;
+	private org.drip.math.segment.Monotonocity _sm = null;
 	private org.drip.math.calculus.WengertJacobian _wj = null;
 
 	public LagrangePolynomialSpanRegressor (
@@ -53,19 +53,26 @@ public class LagrangePolynomialSpanRegressor extends org.drip.regression.core.Un
 	{
 		super (strName, strScenarioName);
 
-		_sss = new org.drip.math.grid.LagrangePolynomialSpan (new double[] {1., 2., 3., 4.});
+		_sss = new org.drip.math.grid.LagrangePolynomialRegime (new double[] {1., 2., 3., 4.});
 	}
 
 	@Override public boolean preRegression()
 	{
-		return _sss.setup (1., new double[] {1., 2., 3., 4.}, "",
-			org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
+		try {
+			return _sss.setup (1., new double[] {1., 2., 3., 4.}, new org.drip.math.grid.RegimeCalibrationSetting
+				(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_FLOATING,
+					org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	@Override public boolean execRegression()
 	{
 		try {
-			if (!org.drip.math.common.NumberUtil.IsValid (_dblValue = _sss.calcValue (2.16))) return false;
+			if (!org.drip.math.common.NumberUtil.IsValid (_dblValue = _sss.response (2.16))) return false;
 
 			_bLocallyMonotone = _sss.isLocallyMonotone();
 		} catch (java.lang.Exception e) {
@@ -74,7 +81,7 @@ public class LagrangePolynomialSpanRegressor extends org.drip.regression.core.Un
 			return false;
 		}
 
-		if (null == (_wj = _sss.calcValueJacobian (2.16))) return false;
+		if (null == (_wj = _sss.jackDResponseDResponseInput (2.16))) return false;
 
 		return null != (_sm = _sss.monotoneType (2.16));
 	}

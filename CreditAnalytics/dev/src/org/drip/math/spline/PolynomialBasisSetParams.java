@@ -60,7 +60,7 @@ public class PolynomialBasisSetParams implements org.drip.math.spline.BasisSetPa
 	 * @return The Number of Spline Basis Functions in the Set
 	 */
 
-	public int getNumBasis()
+	public int numBasis()
 	{
 		return _iNumBasis;
 	}

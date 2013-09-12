@@ -1,5 +1,5 @@
 
-package org.drip.math.grid;
+package org.drip.math.segment;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -35,7 +35,7 @@ package org.drip.math.grid;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentMonotonocity {
+public class Monotonocity {
 
 	/**
 	 * MONOTONIC
@@ -70,24 +70,23 @@ public class SegmentMonotonocity {
 	private int _iMonotoneType = -1;
 
 	/**
-	 * SegmentMonotonocity constructor
+	 * Monotonocity constructor
 	 * 
 	 * @param iMonotoneType One of the valid monotone types
 	 * 
 	 * @throws java.lang.Exception Thrown if the input monotone type is invalid
 	 */
 
-	public SegmentMonotonocity (
+	public Monotonocity (
 		final int iMonotoneType)
 		throws java.lang.Exception
 	{
-		if (org.drip.math.grid.SegmentMonotonocity.MONOTONIC != (_iMonotoneType = iMonotoneType) &&
-			org.drip.math.grid.SegmentMonotonocity.NON_MONOTONIC != _iMonotoneType &&
-				org.drip.math.grid.SegmentMonotonocity.MINIMA != _iMonotoneType &&
-					org.drip.math.grid.SegmentMonotonocity.MAXIMA != _iMonotoneType &&
-						org.drip.math.grid.SegmentMonotonocity.INFLECTION != _iMonotoneType)
-			throw new java.lang.Exception ("SegmentMonotonocity ctr: Unknown monotone type " +
-				_iMonotoneType);
+		if (org.drip.math.segment.Monotonocity.MONOTONIC != (_iMonotoneType = iMonotoneType) &&
+			org.drip.math.segment.Monotonocity.NON_MONOTONIC != _iMonotoneType &&
+				org.drip.math.segment.Monotonocity.MINIMA != _iMonotoneType &&
+					org.drip.math.segment.Monotonocity.MAXIMA != _iMonotoneType &&
+						org.drip.math.segment.Monotonocity.INFLECTION != _iMonotoneType)
+			throw new java.lang.Exception ("Monotonocity ctr: Unknown monotone type " + _iMonotoneType);
 	}
 
 	/**
@@ -103,14 +102,14 @@ public class SegmentMonotonocity {
 
 	@Override public java.lang.String toString()
 	{
-		if (org.drip.math.grid.SegmentMonotonocity.NON_MONOTONIC == _iMonotoneType) return "NON_MONOTIC";
+		if (org.drip.math.segment.Monotonocity.NON_MONOTONIC == _iMonotoneType) return "NON_MONOTONIC";
 
-		if (org.drip.math.grid.SegmentMonotonocity.MONOTONIC == _iMonotoneType) return "MONOTONIC";
+		if (org.drip.math.segment.Monotonocity.MONOTONIC == _iMonotoneType) return "MONOTONIC    ";
 
-		if (org.drip.math.grid.SegmentMonotonocity.MINIMA == _iMonotoneType) return "MINIMA";
+		if (org.drip.math.segment.Monotonocity.MINIMA == _iMonotoneType) return "MINIMA       ";
 
-		if (org.drip.math.grid.SegmentMonotonocity.MAXIMA == _iMonotoneType) return "MAXIMA";
+		if (org.drip.math.segment.Monotonocity.MAXIMA == _iMonotoneType) return "MAXIMA       ";
 
-		return "INFLECTION";
+		return "INFLECTION   ";
 	}
 }

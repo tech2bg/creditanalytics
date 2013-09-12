@@ -40,8 +40,8 @@ package org.drip.regression.spline;
 
 public class HermiteBasisSplineRegressor extends org.drip.regression.spline.BasisSplineRegressor {
 	private java.lang.String _strName = "";
-	private org.drip.math.grid.Segment _seg1 = null;
-	private org.drip.math.grid.Segment _seg2 = null;
+	private org.drip.math.segment.PredictorResponse _seg1 = null;
+	private org.drip.math.segment.PredictorResponse _seg2 = null;
 	private org.drip.math.calculus.WengertJacobian _wjLeft = null;
 	private org.drip.math.calculus.WengertJacobian _wjRight = null;
 	private org.drip.math.calculus.WengertJacobian _wjValue = null;
@@ -65,7 +65,7 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	{
 		try {
 			org.drip.math.function.AbstractUnivariate[] aAU =
-				org.drip.math.spline.SegmentBasisSetBuilder.PolynomialBasisSet (new
+				org.drip.math.spline.BasisSetBuilder.PolynomialBasisSet (new
 					org.drip.math.spline.PolynomialBasisSetParams (iNumBasis));
 
 			return null == aAU ? null : new HermiteBasisSplineRegressor (strName, strScenarioName, aAU, iCk);
@@ -85,27 +85,27 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	{
 		super (strName, strScenarioName, aAU, iCk);
 
-		org.drip.math.spline.SegmentInelasticParams segParams = new
-			org.drip.math.spline.SegmentInelasticParams (iCk, 1, null);
+		org.drip.math.segment.DesignInelasticParams segParams = new
+			org.drip.math.segment.DesignInelasticParams (iCk, 1);
 
 		org.drip.math.function.AbstractUnivariate rsc = new org.drip.math.function.RationalShapeControl (1.);
 
-		if (null == (_seg1 = org.drip.math.spline.SegmentBasisSetBuilder.CreateCk (0.0, 1.0, aAU, rsc,
-			segParams)) || null == (_seg2 = org.drip.math.spline.SegmentBasisSetBuilder.CreateCk (1.0, 2.0,
-				aAU, rsc, segParams)))
+		if (null == (_seg1 = org.drip.math.segment.PredictorResponseBasisSpline.Create (0.0, 1.0, aAU, rsc,
+			segParams)) || null == (_seg2 = org.drip.math.segment.PredictorResponseBasisSpline.Create (1.0,
+				2.0, aAU, rsc, segParams)))
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
 
 	@Override public boolean execRegression()
 	{
 		try {
-			return null != (_wjLeft = _seg1.calibrateJacobian (new
-				org.drip.math.spline.SegmentCalibrationParams (new double[] {0., 1.}, new double[] {1., 4.},
+			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (new
+				org.drip.math.segment.CalibrationParams (new double[] {0., 1.}, new double[] {1., 4.},
 					new double[] {1.}, new double[] {6.}, null))) && null != (_wjRight =
-						_seg2.calibrateJacobian (new org.drip.math.spline.SegmentCalibrationParams (new
+						_seg2.jackDCoeffDEdgeParams (new org.drip.math.segment.CalibrationParams (new
 							double[] {0., 1.}, new double[] {4., 15.}, new double[] {6.}, new double[] {17.},
 								null))) && _seg2.calibrate (_seg1, 14.) && null != (_wjValue =
-									_seg2.calcValueJacobian (1.5));
+									_seg2.jackDResponseDEdgeParams (1.5));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -123,7 +123,7 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 			if (!rnvd.set (_strName + "_Seg1_Jack", _wjLeft.displayString()));
 
-			if (!rnvd.set (_strName + "_Seg1_Head_Jack", _seg1.calcJacobian().displayString()));
+			if (!rnvd.set (_strName + "_Seg1_Head_Jack", _seg1.jackDCoeffDEdgeParams().displayString()));
 
 			if (!rnvd.set (_strName + "_Seg1_Monotone", _seg1.monotoneType().toString()));
 
@@ -133,7 +133,7 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 			if (!rnvd.set (_strName + "_Seg2_Jack", _wjRight.displayString()));
 
-			if (!rnvd.set (_strName + "_Seg2_Head_Jack", _seg2.calcJacobian().displayString()));
+			if (!rnvd.set (_strName + "_Seg2_Head_Jack", _seg2.jackDCoeffDEdgeParams().displayString()));
 
 			if (!rnvd.set (_strName + "_Seg2_Monotone", _seg2.monotoneType().toString()));
 

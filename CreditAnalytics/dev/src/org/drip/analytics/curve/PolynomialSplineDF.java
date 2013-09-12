@@ -51,7 +51,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 	private double _dblStartDate = java.lang.Double.NaN;
 	private java.lang.String[] _astrCalibMeasure = null;
 	private double _dblLeftNodeDF = java.lang.Double.NaN;
-	private org.drip.math.grid.MultiSegmentSpan _csi = null;
+	private org.drip.math.grid.MultiSegmentRegime _csi = null;
 	private double _dblLeftNodeDFSlope = java.lang.Double.NaN;
 	private double _dblLeftFlatForwardRate = java.lang.Double.NaN;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
@@ -67,7 +67,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double[] adblDate,
-		final org.drip.math.grid.MultiSegmentSpan csi)
+		final org.drip.math.grid.MultiSegmentRegime csi)
 		throws java.lang.Exception
 	{
 		_csi = csi;
@@ -104,15 +104,15 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 
 		_dblStartDate = dtStart.getJulian();
 
-		org.drip.math.grid.SegmentBuilderParams sbp = new org.drip.math.grid.SegmentBuilderParams
-			(org.drip.math.grid.SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new
+		org.drip.math.segment.PredictorResponseBuilderParams sbp = new org.drip.math.segment.PredictorResponseBuilderParams
+			(org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
 				org.drip.math.spline.PolynomialBasisSetParams (2), new
-					org.drip.math.spline.SegmentInelasticParams (0, 2, null), null);
+					org.drip.math.segment.DesignInelasticParams (0, 2), null);
 
 		_adblDate = new double[adblDate.length];
 		double[] adblDF = new double[adblDate.length];
-		org.drip.math.grid.SegmentBuilderParams[] aSBP = new
-			org.drip.math.grid.SegmentBuilderParams[adblDate.length - 1];
+		org.drip.math.segment.PredictorResponseBuilderParams[] aSBP = new
+			org.drip.math.segment.PredictorResponseBuilderParams[adblDate.length - 1];
 
 		for (int i = 0; i < _adblDate.length; ++i) {
 			_adblDate[i] = adblDate[i];
@@ -132,9 +132,10 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (adblDF[adblDF.length - 1]) /
 			(_adblDate[_adblDate.length - 1] - _dblStartDate);
 
-		_csi = org.drip.math.grid.SpanBuilder.CreateCalibratedSpanInterpolator (adblDate, adblDF,
-			org.drip.math.grid.MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, aSBP,
-				org.drip.math.grid.SingleSegmentSpan.CALIBRATE_SPAN);
+		_csi = org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeInterpolator ("POLY_SPLINE_DF_REGIME",
+			adblDate, adblDF, aSBP, new org.drip.math.grid.RegimeCalibrationSetting
+				(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL,
+					org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
 	}
 
 	/**
@@ -238,7 +239,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 	public double getCalibrationMetric()
 		throws java.lang.Exception
 	{
-		return _csi.calcTailDerivative (2);
+		return _csi.calcRightEdgeDerivative (2);
 	}
 
 	@Override public void setInstrCalibInputs (
@@ -441,7 +442,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		if (dblDate <= _adblDate[0])
 			return java.lang.Math.exp (-1. * _dblLeftFlatForwardRate * (dblDate - _dblStartDate) / 365.25);
 
-		return dblDate <= _adblDate[_adblDate.length - 1] ? _csi.calcValue (dblDate) : java.lang.Math.exp
+		return dblDate <= _adblDate[_adblDate.length - 1] ? _csi.response (dblDate) : java.lang.Math.exp
 			(-1. * _dblRightFlatForwardRate * (dblDate - _dblStartDate) / 365.25);
 	}
 
@@ -478,7 +479,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 			}
 		}
 
-		if (dblDate <= _adblDate[_adblDate.length - 1]) return _csi.calcValueJacobian (dblDate);
+		if (dblDate <= _adblDate[_adblDate.length - 1]) return _csi.jackDResponseDResponseInput (dblDate);
 
 		try {
 			return wj.accumulatePartialFirstDerivative (0, _adblDate.length - 1, (dblDate - _dblStartDate) /
@@ -553,7 +554,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 
 		if (_adblDate.length - 1 == iNodeIndex) {
 			try {
-				_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (_csi.calcValue
+				_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (_csi.response
 					(_adblDate[iNodeIndex])) / (_adblDate[iNodeIndex] - _dblStartDate);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

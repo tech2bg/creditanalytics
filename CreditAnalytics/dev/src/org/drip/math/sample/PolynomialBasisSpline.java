@@ -3,7 +3,7 @@ package org.drip.math.sample;
 
 import org.drip.math.calculus.WengertJacobian;
 import org.drip.math.function.*;
-import org.drip.math.grid.*;
+import org.drip.math.segment.*;
 import org.drip.math.spline.*;
 
 /*
@@ -72,7 +72,7 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		SegmentInelasticParams segParams = new SegmentInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder, null);
+		DesignInelasticParams segParams = new DesignInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
@@ -80,21 +80,21 @@ public class PolynomialBasisSpline {
 
 		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
 
-		AbstractUnivariate[] aAU = SegmentBasisSetBuilder.PolynomialBasisSet (polybsbp);
+		AbstractUnivariate[] aAU = BasisSetBuilder.PolynomialBasisSet (polybsbp);
 
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		Segment seg1 = SegmentBasisSetBuilder.CreateCk (1.0, 1.5, aAU, rsc, segParams);
+		PredictorResponse seg1 = PredictorResponseBasisSpline.Create (1.0, 1.5, aAU, rsc, segParams);
 
-		Segment seg2 = SegmentBasisSetBuilder.CreateCk (1.5, 2.0, aAU, rsc, segParams);
+		PredictorResponse seg2 = PredictorResponseBasisSpline.Create (1.5, 2.0, aAU, rsc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = seg1.calibrateJacobian (25., 0., 20.25);
+		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcValue (1.));
 
@@ -102,7 +102,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
-		System.out.println ("Segment 1 Head: " + seg1.calcJacobian().displayString());
+		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
@@ -110,7 +110,7 @@ public class PolynomialBasisSpline {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = seg2.calibrateJacobian (seg1, 16.);
+		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16.);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + seg2.calcValue (1.5));
 
@@ -118,7 +118,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
-		System.out.println ("Segment 2 Regular Jacobian: " + seg2.calcJacobian().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
@@ -132,7 +132,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.calcValueJacobian (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}
 
 	/*
@@ -161,7 +161,7 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		SegmentInelasticParams segParams = new SegmentInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder, null);
+		DesignInelasticParams segParams = new DesignInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
@@ -169,21 +169,21 @@ public class PolynomialBasisSpline {
 
 		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
 
-		AbstractUnivariate[] aAU = SegmentBasisSetBuilder.PolynomialBasisSet (polybsbp);
+		AbstractUnivariate[] aAU = BasisSetBuilder.PolynomialBasisSet (polybsbp);
 
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		Segment seg1 = SegmentBasisSetBuilder.CreateCk (0.0, 1.0, aAU, rsc, segParams);
+		PredictorResponse seg1 = PredictorResponseBasisSpline.Create (0.0, 1.0, aAU, rsc, segParams);
 
-		Segment seg2 = SegmentBasisSetBuilder.CreateCk (1.0, 2.0, aAU, rsc, segParams);
+		PredictorResponse seg2 = PredictorResponseBasisSpline.Create (1.0, 2.0, aAU, rsc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		seg1.calibrate (new SegmentCalibrationParams (
+		seg1.calibrate (new CalibrationParams (
 			new double[] {0., 1.}, // Segment Calibration Nodes
 			new double[] {1., 4.}, // Segment Calibration Values
 			new double[] {1.}, // Segment Left Derivative
@@ -194,7 +194,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcValue (1.0));
 
-		System.out.println ("Segment 1 Head: " + seg1.calcJacobian().displayString());
+		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
@@ -202,7 +202,7 @@ public class PolynomialBasisSpline {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		seg2.calibrate (new SegmentCalibrationParams (
+		seg2.calibrate (new CalibrationParams (
 			new double[] {0., 1.}, // Segment Calibration Nodes
 			new double[] {4., 15.}, // Segment Calibration Values
 			new double[] {6.}, // Segment Left Derivative
@@ -213,7 +213,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\tY[" + 2.0 + "]: " + seg2.calcValue (2.0));
 
-		System.out.println ("Segment 2 Regular Jacobian: " + seg2.calcJacobian().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
@@ -227,7 +227,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.calcValueJacobian (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}
 
 	public static final void main (

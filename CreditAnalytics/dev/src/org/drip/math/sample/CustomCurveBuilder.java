@@ -14,6 +14,9 @@ import java.util.*;
 import org.drip.math.common.FormatUtil;
 import org.drip.math.function.RationalShapeControl;
 import org.drip.math.grid.*;
+import org.drip.math.segment.DesignInelasticParams;
+import org.drip.math.segment.PredictorResponseBuilderParams;
+import org.drip.math.segment.ResponseValueConstraint;
 import org.drip.math.spline.*;
 
 /*
@@ -68,14 +71,14 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final SegmentBuilderParams MakeExponentialTensionSBP (
+	private static final PredictorResponseBuilderParams MakeExponentialTensionSBP (
 		final double dblTension)
 		throws Exception
 	{
-		return new SegmentBuilderParams (
-			SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
+		return new PredictorResponseBuilderParams (
+			RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
 			new ExponentialTensionBasisSetParams (dblTension), // Segment Tension Parameter Value
-			new SegmentInelasticParams (2, 2, null), // Ck = 2; Roughness penalty (if necessary) order: 2
+			new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 			new RationalShapeControl (0.0)); // Univariate Rational Shape Controller
 	}
 
@@ -85,14 +88,14 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final SegmentBuilderParams MakePolynomialSBP (
+	public static final PredictorResponseBuilderParams MakePolynomialSBP (
 		final int iNumDegree)
 		throws Exception
 	{
-		return new SegmentBuilderParams (
-			SpanBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
+		return new PredictorResponseBuilderParams (
+			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 			new PolynomialBasisSetParams (iNumDegree + 1), // Polynomial of degree (i.e, cubic would be 3+1; 4 basis functions - 1 "intercept")
-			new SegmentInelasticParams (2, 2, null), // Ck = 2; Roughness penalty (if necessary) order: 2
+			new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 			new RationalShapeControl (0.0)); // Univariate Rational Shape Controller
 	}
 
@@ -102,22 +105,22 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final SegmentBuilderParams MakeSBP (
+	private static final PredictorResponseBuilderParams MakeSBP (
 		final String strBasisSpline)
 		throws Exception
 	{
-		if (strBasisSpline.equalsIgnoreCase (SpanBuilder.BASIS_SPLINE_POLYNOMIAL)) // Polynomial Basis Spline
-			return new SegmentBuilderParams (
-				SpanBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
+		if (strBasisSpline.equalsIgnoreCase (RegimeBuilder.BASIS_SPLINE_POLYNOMIAL)) // Polynomial Basis Spline
+			return new PredictorResponseBuilderParams (
+				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 				new PolynomialBasisSetParams (4), // Polynomial of order 3 (i.e, cubic - 4 basis functions - 1 "intercept")
-				new SegmentInelasticParams (2, 2, null), // Ck = 2; Roughness penalty (if necessary) order: 2
+				new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 				new RationalShapeControl (0.0)); // Univariate Rational Shape Controller
 
-		if (strBasisSpline.equalsIgnoreCase (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)) // Exponential Tension Basis Spline
-			return new SegmentBuilderParams (
-				SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
+		if (strBasisSpline.equalsIgnoreCase (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)) // Exponential Tension Basis Spline
+			return new PredictorResponseBuilderParams (
+				RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
 				new ExponentialTensionBasisSetParams (1.), // Segment Tension Parameter Value = 1.
-				new SegmentInelasticParams (2, 2, null), // Ck = 2; Roughness penalty (if necessary) order: 2
+				new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 				new RationalShapeControl (0.0)); // Univariate Rational Shape Controller
 
 		return null;
@@ -154,9 +157,9 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final SegmentNodeWeightConstraint GenerateSegmentConstraint (
+	private static final ResponseValueConstraint GenerateSegmentConstraint (
 		final TreeMap<Double, Double> mapCF,
-		final MultiSegmentSpan spanDF)
+		final MultiSegmentRegime spanDF)
 		throws Exception
 	{
 		double dblValue = 0.;
@@ -168,8 +171,8 @@ public class CustomCurveBuilder {
 		for (Map.Entry<Double, Double> me : mapCF.entrySet()) {
 			double dblTime = me.getKey();
 
-			if (null != spanDF && spanDF.isInRange (dblTime))
-				dblValue += spanDF.calcValue (dblTime) * me.getValue();
+			if (null != spanDF && spanDF.in (dblTime))
+				dblValue += spanDF.response (dblTime) * me.getValue();
 			else {
 				lsTime.add (me.getKey());
 
@@ -188,7 +191,7 @@ public class CustomCurveBuilder {
 			adblNodeWeight[i] = lsWeight.get (i);
 		}
 
-		return new SegmentNodeWeightConstraint (adblNode, adblNodeWeight, -dblValue);
+		return new ResponseValueConstraint (adblNode, adblNodeWeight, -dblValue);
 	}
 
 	/**
@@ -246,8 +249,9 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final void BuildSwapCurve (
-		MultiSegmentSpan span)
+	private static final MultiSegmentRegime BuildSwapCurve (
+		MultiSegmentRegime span,
+		final RegimeCalibrationSetting ss)
 		throws Exception
 	{
 		boolean bFirstNode = true;
@@ -271,7 +275,7 @@ public class CustomCurveBuilder {
 			 * Convert the Cash flow into a DRIP segment constraint using the "prior" curve span
 			 */
 
-			SegmentNodeWeightConstraint snwc = GenerateSegmentConstraint (mapCF, span);
+			ResponseValueConstraint snwc = GenerateSegmentConstraint (mapCF, span);
 
 			/*
 			 * If it is the head segment, create a span instance for the discount curve.
@@ -282,24 +286,23 @@ public class CustomCurveBuilder {
 				 * Set the Segment Builder Parameters. This may be set on a segment-by-segment basis.
 				 */
 
-				SegmentBuilderParams sbp = MakeSBP (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION);
+				PredictorResponseBuilderParams sbp = MakeSBP (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION);
 
 				/*
 				 * Start off with a single segment span, with the corresponding Builder Parameters
 				 */
 
-				span = SpanBuilder.CreateUncalibratedSpanInterpolator (
+				span = RegimeBuilder.CreateUncalibratedRegimeInterpolator ("SWAP",
 					new double[] {0., dblTenorInYears},
-					new SegmentBuilderParams[] {sbp});
+					new PredictorResponseBuilderParams[] {sbp});
 
 				/*
 				 * Set the span up by carrying out a "Natural Boundary" Spline Calibration
 				 */
 
 				span.setup (1.,
-					new SegmentNodeWeightConstraint[] {snwc},
-					MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL,
-					SingleSegmentSpan.CALIBRATE_SPAN);
+					new ResponseValueConstraint[] {snwc},
+					ss);
 			} else {
 				/*
 				 * The Segment Builder Parameters shown here illustrate using an exponential/hyperbolic
@@ -310,7 +313,7 @@ public class CustomCurveBuilder {
 				 *  ensures that there is no propagation of derivatives and therefore high locality.
 				 */
 
-				SegmentBuilderParams sbpLocal = null;
+				PredictorResponseBuilderParams sbpLocal = null;
 
 				if (bFirstNode) {
 					bFirstNode = false;
@@ -324,19 +327,11 @@ public class CustomCurveBuilder {
 				 * 	the current span state, using the constraint generated from the swap cash flow.
 				 */
 
-				span = org.drip.math.grid.SpanBuilder.AppendSegment (span, dblTenorInYears, snwc, sbpLocal);
+				span = org.drip.math.grid.RegimeModifier.AppendSegment (span, dblTenorInYears, snwc, sbpLocal, ss);
 			}
 		}
 
-		/*
-		 * Display the DF, the monotonicity, and the convexity.
-		 */
-
-		for (double dblX = 0.; dblX <= 50.; dblX += 1.)
-			System.out.println ("Discount Factor[" +
-				FormatUtil.FormatDouble (dblX, 2, 0, 1.) + "Y] = " +
-				FormatUtil.FormatDouble (span.calcValue (dblX), 1, 6, 1.) + " | " +
-				span.monotoneType (dblX));
+		return span;
 	}
 
 	/**
@@ -387,19 +382,20 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final MultiSegmentSpan BuildCashCurve()
+	private static final MultiSegmentRegime BuildCashCurve (
+		final RegimeCalibrationSetting ss)
 		throws Exception
 	{
 		/*
 		 * For the head segment, create a calibrated span instance for the discount curve.
 		 */
 
-		MultiSegmentSpan span = SpanBuilder.CreateCalibratedSpanInterpolator (
+		MultiSegmentRegime spanCash = RegimeBuilder.CreateCalibratedRegimeInterpolator (
+			"CASH",
 			new double[] {0., 0.002778}, // t0 and t1 for the segment
 			new double[] {1., 0.999996}, // the corresponding discount factors
-			MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, // "Natural" Spline Boundary Condition
-			new SegmentBuilderParams[] {MakeSBP (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)}, // Exponential Tension Basis Spline
-			SingleSegmentSpan.CALIBRATE_SPAN); // Calibrate the full Span
+			new PredictorResponseBuilderParams[] {MakeSBP (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)}, // Exponential Tension Basis Spline
+			ss); // "Natural" Spline Boundary Condition + Calibrate the full Span
 
 		/*
 		 * Construct the discount curve by iterating through the cash instruments and their discount
@@ -411,42 +407,62 @@ public class CustomCurveBuilder {
 
 			double dblDF = meCashDFQuote.getValue(); // Discount Factor
 
-			System.out.println ("Adding Cash Node [" +
-				FormatUtil.FormatDouble (dblTenorInYears, 1, 6, 1.) + ", " +
-				FormatUtil.FormatDouble (dblDF, 1, 6, 1.) + "]");
-
 			/*
 			 * Insert the instrument/quote as a "knot" entity into the span. Given the "natural" spline
 			 */
 
-			span = SpanBuilder.InsertKnot (span, dblTenorInYears, dblDF);
+			spanCash = RegimeModifier.InsertKnot (spanCash, dblTenorInYears, dblDF, ss);
 		}
 
-		double dblX = 0.;
-		double dblXShift = 0.1 * 2.25;
-
-		/*
-		 * Display the DF, the monotonicity, and the convexity.
-		 */
-
-		while (dblX <= 2.25) {
-			System.out.println ("\tDF[" +
-				FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] => " +
-				FormatUtil.FormatDouble (span.calcValue (dblX), 1, 6, 1.) + " | " +
-				span.monotoneType (dblX));
-
-			dblX += dblXShift;
-		}
-
-		return span;
+		return spanCash;
 	}
 
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
 	{
-		MultiSegmentSpan spanCash = BuildCashCurve();
+		MultiSegmentRegime spanNaturalCash = BuildCashCurve (new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
 
-		BuildSwapCurve (spanCash);
+		MultiSegmentRegime spanFinancialCash = BuildCashCurve (new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_FINANCIAL, RegimeCalibrationSetting.CALIBRATE));
+
+		double dblXShift = 0.1 * (spanNaturalCash.getRightPredictorOrdinateEdge() - spanNaturalCash.getLeftPredictorOrdinateEdge());
+
+		System.out.println ("\n\t\t\t----------------     <====>  ------------------");
+
+		System.out.println ("\t\t\tNATURAL BOUNDARY     <====>  FINANCIAL BOUNDARY");
+
+		System.out.println ("\t\t\t----------------     <====>  ------------------\n");
+
+		/*
+		 * Display the DF, the monotonicity, and the convexity for the cash instruments.
+		 */
+
+		for (double dblX = spanNaturalCash.getLeftPredictorOrdinateEdge(); dblX <= spanNaturalCash.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
+			System.out.println ("Cash DF[" +
+				FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "Y] => " +
+				FormatUtil.FormatDouble (spanNaturalCash.response (dblX), 1, 6, 1.) + " | " +
+				spanNaturalCash.monotoneType (dblX) + "  <====>  " +
+				FormatUtil.FormatDouble (spanFinancialCash.response (dblX), 1, 6, 1.) + " | " +
+				spanNaturalCash.monotoneType (dblX));
+
+		System.out.println ("\n");
+
+		MultiSegmentRegime spanNaturalSwap = BuildSwapCurve (spanNaturalCash, new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
+
+		MultiSegmentRegime spanFinancialSwap = BuildSwapCurve (spanNaturalCash, new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_FINANCIAL, RegimeCalibrationSetting.CALIBRATE));
+
+		/*
+		 * Display the DF, the monotonicity, and the convexity for the swaps.
+		 */
+
+		dblXShift = 0.05 * (spanNaturalSwap.getRightPredictorOrdinateEdge() - spanNaturalSwap.getLeftPredictorOrdinateEdge());
+
+		for (double dblX = spanNaturalSwap.getLeftPredictorOrdinateEdge(); dblX <= spanNaturalSwap.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
+			System.out.println ("Swap DF   [" +
+				FormatUtil.FormatDouble (dblX, 2, 0, 1.) + "Y] => " +
+				FormatUtil.FormatDouble (spanNaturalSwap.response (dblX), 1, 6, 1.) + " | " +
+				spanNaturalSwap.monotoneType (dblX) + "  <====>  " +
+				FormatUtil.FormatDouble (spanFinancialSwap.response (dblX), 1, 6, 1.) + " | " +
+				spanFinancialSwap.monotoneType (dblX));
 	}
 }

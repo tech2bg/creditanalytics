@@ -4,6 +4,9 @@ package org.drip.math.sample;
 import org.drip.math.common.FormatUtil;
 import org.drip.math.function.*;
 import org.drip.math.grid.*;
+import org.drip.math.segment.DesignInelasticParams;
+import org.drip.math.segment.PredictorOrdinateResponseDerivative;
+import org.drip.math.segment.PredictorResponseBuilderParams;
 import org.drip.math.spline.*;
 
 /*
@@ -60,13 +63,13 @@ public class SpanInterpolator {
 	 * @return Polynomial Segment Control Parameters
 	 */
 
-	public static final SegmentBuilderParams PolynomialSegmentControlParams (
+	public static final PredictorResponseBuilderParams PolynomialSegmentControlParams (
 		final int iNumBasis,
-		final SegmentInelasticParams segParams,
+		final DesignInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
+		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
 	}
 
 	/**
@@ -81,13 +84,13 @@ public class SpanInterpolator {
 	 * @return Bernstein Polynomial Segment Control Parameters
 	 */
 
-	public static final SegmentBuilderParams BernsteinPolynomialSegmentControlParams (
+	public static final PredictorResponseBuilderParams BernsteinPolynomialSegmentControlParams (
 		final int iNumBasis,
-		final SegmentInelasticParams segParams,
+		final DesignInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
+		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rsc);
 	}
 
 	/**
@@ -102,13 +105,13 @@ public class SpanInterpolator {
 	 * @return Exponential Tension Segment Control Parameters
 	 */
 
-	public static final SegmentBuilderParams ExponentialTensionSegmentControlParams (
+	public static final PredictorResponseBuilderParams ExponentialTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentInelasticParams segParams,
+		final DesignInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
+		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
 	}
 
 	/**
@@ -123,13 +126,13 @@ public class SpanInterpolator {
 	 * @return Hyperbolic Tension Segment Control Parameters
 	 */
 
-	public static final SegmentBuilderParams HyperbolicTensionSegmentControlParams (
+	public static final PredictorResponseBuilderParams HyperbolicTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentInelasticParams segParams,
+		final DesignInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
+		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rsc);
 	}
 
 	/**
@@ -144,13 +147,13 @@ public class SpanInterpolator {
 	 * @return Kaklis-Pandelis Segment Control Parameters
 	 */
 
-	public static final SegmentBuilderParams KaklisPandelisSegmentControlParams (
+	public static final PredictorResponseBuilderParams KaklisPandelisSegmentControlParams (
 		final int iKPTensionDegree,
-		final SegmentInelasticParams segParams,
+		final DesignInelasticParams segParams,
 		final AbstractUnivariate rsc)
 		throws Exception
 	{
-		return new SegmentBuilderParams (SpanBuilder.BASIS_SPLINE_KAKLIS_PANDELIS, new KaklisPandelisBasisSetParams (iKPTensionDegree), segParams, rsc);
+		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_KAKLIS_PANDELIS, new KaklisPandelisBasisSetParams (iKPTensionDegree), segParams, rsc);
 	}
 
 	/**
@@ -170,7 +173,7 @@ public class SpanInterpolator {
 	public static final void BasisSplineSpanTest (
 		final double[] adblX,
 		final double[] adblY,
-		final SegmentBuilderParams sbp)
+		final PredictorResponseBuilderParams sbp)
 		throws Exception
 	{
 		double dblX = 1.;
@@ -180,7 +183,7 @@ public class SpanInterpolator {
 		 * Array of Segment Builder Parameters - one per segment
 		 */
 
-		SegmentBuilderParams[] aSBP = new SegmentBuilderParams[adblX.length - 1]; 
+		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
 
 		for (int i = 0; i < adblX.length - 1; ++i)
 			aSBP[i] = sbp;
@@ -189,21 +192,22 @@ public class SpanInterpolator {
 		 * Construct a Span instance 
 		 */
 
-		MultiSegmentSpan span = SpanBuilder.CreateCalibratedSpanInterpolator (
+		MultiSegmentRegime span = RegimeBuilder.CreateCalibratedRegimeInterpolator (
+			"SPLINE_REGIME",
 			adblX, // predictors
 			adblY, // responses
-			MultiSegmentSpan.SPLINE_BOUNDARY_MODE_NATURAL, // Boundary Condition - Natural
 			aSBP, // Basis Segment Builder parameters
-			SingleSegmentSpan.CALIBRATE_SPAN); // Calibrate the Span predictors to the responses
+			new RegimeCalibrationSetting // Boundary Condition - Natural + Calibrate the Span predictors to the responses
+				(RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
 
 		/*
 		 * Interpolate, compute the segment-by-segment monotonicity and the Span Jacobian
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (span.calcValue (dblX), 1, 2, 1.) + " | " + span.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (span.response (dblX), 1, 2, 1.) + " | " + span.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + span.calcValueJacobian (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + span.jackDResponseDResponseInput (dblX).displayString());
 
 			dblX += 1.;
 		}
@@ -212,7 +216,10 @@ public class SpanInterpolator {
 		 * Construct a new Span instance by inserting a pair of of predictor/response knots
 		 */
 
-		MultiSegmentSpan spanInsert = SpanBuilder.InsertKnot (span, 9., 10.);
+		MultiSegmentRegime spanInsert = RegimeModifier.InsertKnot (span,
+			9.,
+			10.,
+			new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
 
 		dblX = 1.;
 
@@ -221,7 +228,7 @@ public class SpanInterpolator {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (spanInsert.calcValue (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (spanInsert.response (dblX), 1, 2, 1.)
 				+ " | " + spanInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -277,7 +284,7 @@ public class SpanInterpolator {
 		int iK = 1;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		SegmentInelasticParams segParams = new SegmentInelasticParams (iK, iRoughnessPenaltyDerivativeOrder, null);
+		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/* 
 		 * Construct the C1 Hermite Polynomial Spline based Span Interpolator by using the following steps:
@@ -287,8 +294,8 @@ public class SpanInterpolator {
 
 		int iNumBasis = 4;
 
-		SegmentBuilderParams sbp = new SegmentBuilderParams (
-			SpanBuilder.BASIS_SPLINE_POLYNOMIAL,
+		PredictorResponseBuilderParams sbp = new PredictorResponseBuilderParams (
+			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialBasisSetParams (iNumBasis),
 			segParams,
 			rsc);
@@ -297,7 +304,7 @@ public class SpanInterpolator {
 		 *	- 2a) Set the array of Segment Builder Parameters - one per segment
 		 */
 
-		SegmentBuilderParams[] aSBP = new SegmentBuilderParams[adblX.length - 1]; 
+		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
 
 		for (int i = 0; i < adblX.length - 1; ++i)
 			aSBP[i] = sbp;
@@ -306,27 +313,26 @@ public class SpanInterpolator {
 		 * - 2b) Construct the Span
 		 */
 
-		MultiSegmentSpan span = SpanBuilder.CreateUncalibratedSpanInterpolator (adblX, aSBP);
+		MultiSegmentRegime span = RegimeBuilder.CreateUncalibratedRegimeInterpolator ("SPLINE_REGIME", adblX, aSBP);
 
-		SegmentEdgeParams[] aSEPLeft = new SegmentEdgeParams[adblY.length - 1];
-		SegmentEdgeParams[] aSEPRight = new SegmentEdgeParams[adblY.length - 1];
+		PredictorOrdinateResponseDerivative[] aSEPLeft = new PredictorOrdinateResponseDerivative[adblY.length - 1];
+		PredictorOrdinateResponseDerivative[] aSEPRight = new PredictorOrdinateResponseDerivative[adblY.length - 1];
 
 		 /* 
 		  * - 3) Set up the left and the local control Parameters
 		  */
 
 		for (int i = 0; i < adblY.length - 1; ++i) {
-			aSEPLeft[i] = new SegmentEdgeParams (adblY[i], new double[] {adblDYDX[i]});
+			aSEPLeft[i] = new PredictorOrdinateResponseDerivative (adblY[i], new double[] {adblDYDX[i]});
 
-			aSEPRight[i] = new SegmentEdgeParams (adblY[i + 1], new double[] {adblDYDX[i + 1]});
+			aSEPRight[i] = new PredictorOrdinateResponseDerivative (adblY[i + 1], new double[] {adblDYDX[i + 1]});
 		}
 
 		/* 
 		 * - 4) Calibrate the Span and compute the Jacobian
 		 */
 
-		System.out.println ("Span Setup Succeeded: " + span.setup (aSEPLeft, aSEPRight, null,
-			SingleSegmentSpan.CALIBRATE_SPAN | SingleSegmentSpan.CALIBRATE_JACOBIAN));
+		System.out.println ("Span Setup Succeeded: " + span.setup (aSEPLeft, aSEPRight, null, RegimeCalibrationSetting.CALIBRATE));
 
 		double dblX = 0.;
 		double dblXMax = 4.;
@@ -336,10 +342,10 @@ public class SpanInterpolator {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (span.calcValue (dblX), 1, 2, 1.) + " | " +
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (span.response (dblX), 1, 2, 1.) + " | " +
 				span.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + span.calcValueJacobian (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + span.jackDResponseDResponseInput (dblX).displayString());
 
 			dblX += 0.5;
 		}
@@ -352,16 +358,16 @@ public class SpanInterpolator {
 		 * - 3) Compute the interpolated segment value and the motonicity across a suitable variate range.
 		 */
 
-		SegmentEdgeParams sepLeftSegmentRightNode = new SegmentEdgeParams (27.5, new double[] {25.5});
+		PredictorOrdinateResponseDerivative sepLeftSegmentRightNode = new PredictorOrdinateResponseDerivative (27.5, new double[] {25.5});
 
-		SegmentEdgeParams sepRightSegmentLeftNode = new SegmentEdgeParams (27.5, new double[] {25.5});
+		PredictorOrdinateResponseDerivative sepRightSegmentLeftNode = new PredictorOrdinateResponseDerivative (27.5, new double[] {25.5});
 
-		MultiSegmentSpan spanInsert = SpanBuilder.InsertKnot (span, 2.5, sepLeftSegmentRightNode, sepRightSegmentLeftNode);
+		MultiSegmentRegime spanInsert = RegimeModifier.InsertKnot (span, 2.5, sepLeftSegmentRightNode, sepRightSegmentLeftNode);
 
 		dblX = 1.;
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (spanInsert.calcValue (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (spanInsert.response (dblX), 1, 2, 1.)
 				+ " | " + spanInsert.monotoneType (dblX));
 
 			dblX += 0.5;
@@ -375,13 +381,13 @@ public class SpanInterpolator {
 		 * - 3) Compute the interpolated segment value and the motonicity across a suitable variate range.
 		 */
 
-		MultiSegmentSpan spanCardinalInsert = SpanBuilder.InsertCardinalKnot (span, 2.5, 0.);
+		MultiSegmentRegime spanCardinalInsert = RegimeModifier.InsertCardinalKnot (span, 2.5, 0.);
 
 		dblX = 1.;
 
 		while (dblX <= dblXMax) {
 			System.out.println ("Cardinal Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble
-				(spanCardinalInsert.calcValue (dblX), 1, 2, 1.) + " | " + spanInsert.monotoneType (dblX));
+				(spanCardinalInsert.response (dblX), 1, 2, 1.) + " | " + spanInsert.monotoneType (dblX));
 
 			dblX += 0.5;
 		}
@@ -394,13 +400,13 @@ public class SpanInterpolator {
 		 * - 3) Compute the interpolated segment value and the motonicity across a suitable variate range.
 		 */
 
-		MultiSegmentSpan spanCatmullRomInsert = SpanBuilder.InsertCatmullRomKnot (span, 2.5);
+		MultiSegmentRegime spanCatmullRomInsert = RegimeModifier.InsertCatmullRomKnot (span, 2.5);
 
 		dblX = 1.;
 
 		while (dblX <= dblXMax) {
 			System.out.println ("Catmull-Rom Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble
-				(spanCatmullRomInsert.calcValue (dblX), 1, 2, 1.) + " | " + spanInsert.monotoneType (dblX));
+				(spanCatmullRomInsert.response (dblX), 1, 2, 1.) + " | " + spanInsert.monotoneType (dblX));
 
 			dblX += 0.5;
 		}
@@ -421,13 +427,13 @@ public class SpanInterpolator {
 	private static final void TestLagrangePolynomialSpan()
 		throws java.lang.Exception
 	{
-		SingleSegmentSpan lps = new LagrangePolynomialSpan (new double[] {-2., -1., 2., 5.});
+		SingleSegmentRegime lps = new LagrangePolynomialRegime (new double[] {-2., -1., 2., 5.});
 
-		System.out.println ("Setup: " + lps.setup (0.25, new double[] {0.25, 0.25, 12.25, 42.25}, "", SingleSegmentSpan.CALIBRATE_SPAN));
+		System.out.println ("Setup: " + lps.setup (0.25, new double[] {0.25, 0.25, 12.25, 42.25}, new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE)));
 
-		System.out.println ("Value = " + lps.calcValue (2.16));
+		System.out.println ("Value = " + lps.response (2.16));
 
-		System.out.println ("Value Jacobian = " + lps.calcValueJacobian (2.16).displayString());
+		System.out.println ("Value Jacobian = " + lps.jackDResponseDResponseInput (2.16).displayString());
 
 		System.out.println ("Value Monotone Type: " + lps.monotoneType (2.16));
 
@@ -466,7 +472,7 @@ public class SpanInterpolator {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder= 2;
 
-		SegmentInelasticParams segParams = new SegmentInelasticParams (iK, iRoughnessPenaltyDerivativeOrder, null);
+		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
 
 		System.out.println (" \n---------- \n BERNSTEIN POLYNOMIAL \n ---------- \n");
 

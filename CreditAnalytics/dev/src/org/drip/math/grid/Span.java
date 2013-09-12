@@ -1,5 +1,5 @@
 
-package org.drip.math.spline;
+package org.drip.math.grid;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,39 +29,39 @@ package org.drip.math.spline;
  */
 
 /**
- * KaklisPandelisBasisSetParams implements per-segment parameters for the Kaklis Pandelis basis set -
- *  currently it only holds the polynomial tension degree.
+ * Span implements a Collection of Regimes. Typical Span consists functional Regimes coupled together by
+ *  Transition Regimes.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class KaklisPandelisBasisSetParams implements org.drip.math.spline.BasisSetParams {
-	private int _iPolynomialTensionDegree = -1;
+public class Span {
+	private java.util.List<org.drip.math.grid.MultiSegmentRegime> _lsRegime = new
+		java.util.ArrayList<org.drip.math.grid.MultiSegmentRegime>();
 
 	/**
-	 * KaklisPandelisBasisSetParams constructor
-	 * 
-	 * @param iPolynomialTensionDegree Segment Polynomial Tension Degree
-	 * 
-	 * @throws java.lang.Exception
+	 * Empty Span ctr
 	 */
 
-	public KaklisPandelisBasisSetParams (
-		final int iPolynomialTensionDegree)
-		throws java.lang.Exception
+	public Span()
 	{
-		if (0 >= (_iPolynomialTensionDegree = iPolynomialTensionDegree))
-			throw new java.lang.Exception ("KaklisPandelisBasisSetParams ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Get the Segment Polynomial Tension Degree
+	 * Add a Regime to the Span
 	 * 
-	 * @return The Segment Polynomial Tension Degree
+	 * @param regime Regime to be added
+	 * 
+	 * @return TRUE => Regime added successfully
 	 */
 
-	public int polynomialTensionDegree()
+	public boolean addRegime (
+		final org.drip.math.grid.MultiSegmentRegime regime)
 	{
-		return _iPolynomialTensionDegree;
+		if (null == regime) return false;
+
+		_lsRegime.add (regime);
+
+		return true;
 	}
 }

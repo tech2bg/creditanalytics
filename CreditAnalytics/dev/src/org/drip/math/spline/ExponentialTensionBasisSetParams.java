@@ -60,7 +60,7 @@ public class ExponentialTensionBasisSetParams implements org.drip.math.spline.Ba
 	 * @return The Segment Tension
 	 */
 
-	public double getTension()
+	public double tension()
 	{
 		return _dblTension;
 	}

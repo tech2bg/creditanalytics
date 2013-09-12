@@ -1,5 +1,5 @@
 	
-package org.drip.math.grid;
+package org.drip.math.segment;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,47 +29,46 @@ package org.drip.math.grid;
  */
 
 /**
- * SpanBuilderParams holds the parameters the guide the creation/behavior of the segment. It holds the
+ * PredictorResponseBuilderParams holds the parameters the guide the creation/behavior of the segment. It holds the
  *  segment elastic/inelastic parameters and the named basis function set.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentBuilderParams {
+public class PredictorResponseBuilderParams {
 	private java.lang.String _strBasisSpline = "";
-	private org.drip.math.spline.BasisSetParams _bsbp = null;
-	private org.drip.math.spline.SegmentInelasticParams _segParams = null;
+	private org.drip.math.spline.BasisSetParams _bsp = null;
+	private org.drip.math.segment.DesignInelasticParams _sep = null;
 	private org.drip.math.function.AbstractUnivariate _auShapeControl = null;
 
 	/**
-	 * SpanBuilderParams constructor
+	 * PredictorResponseBuilderParams constructor
 	 * 
 	 * @param strBasisSpline Named Segment Basis Spline
-	 * @param bsbp Segment Basis Set Construction Parameters
-	 * @param segParams Segment Inelastic Parameters
+	 * @param bsp Segment Basis Set Construction Parameters
+	 * @param sep Segment Elastic Parameters
 	 * @param auShapeControl Segment Shape Controller
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public SegmentBuilderParams (
+	public PredictorResponseBuilderParams (
 		final java.lang.String strBasisSpline,
-		final org.drip.math.spline.BasisSetParams bsbp,
-		final org.drip.math.spline.SegmentInelasticParams segParams,
+		final org.drip.math.spline.BasisSetParams bsp,
+		final org.drip.math.segment.DesignInelasticParams sep,
 		final org.drip.math.function.AbstractUnivariate auShapeControl)
 		throws java.lang.Exception
 	{
-		if (null == (_strBasisSpline = strBasisSpline) || null == (_bsbp = bsbp) || null == (_segParams =
-			segParams))
-			throw new java.lang.Exception ("SpanBuilderParams ctr => Invalid Inputs");
+		if (null == (_strBasisSpline = strBasisSpline) || null == (_bsp = bsp) || null == (_sep = sep))
+			throw new java.lang.Exception ("PredictorResponseBuilderParams ctr => Invalid Inputs");
 
 		_auShapeControl = auShapeControl;
 	}
 
 	/**
-	 * Retrieve the Named Segment Basis Spline
+	 * Retrieve the Basis Spline Name
 	 * 
-	 * @return The Named Segment Basis Spline
+	 * @return The Basis Spline Name
 	 */
 
 	public java.lang.String getBasisSpline()
@@ -78,25 +77,25 @@ public class SegmentBuilderParams {
 	}
 
 	/**
-	 * Retrieve the Segment Basis Set Construction Parameters
+	 * Retrieve the Basis Set Parameters
 	 * 
-	 * @return The Segment Basis Set Construction Parameters
+	 * @return The Basis Set Parameters
 	 */
 
 	public org.drip.math.spline.BasisSetParams getBasisSetParams()
 	{
-		return _bsbp;
+		return _bsp;
 	}
 
 	/**
-	 * Retrieve the Segment Inelastic Parameters
+	 * Retrieve the Segment Elastic Parameters
 	 * 
-	 * @return The Segment Inelastic Parameters
+	 * @return The Segment Elastic Parameters
 	 */
 
-	public org.drip.math.spline.SegmentInelasticParams getSegmentInelasticParams()
+	public org.drip.math.segment.DesignInelasticParams getSegmentElasticParams()
 	{
-		return _segParams;
+		return _sep;
 	}
 
 	/**

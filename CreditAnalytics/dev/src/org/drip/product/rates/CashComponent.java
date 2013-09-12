@@ -464,7 +464,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (org.drip.analytics.calibration.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
 			try {
-				if ("Price".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+					java.lang.String[] {"Price"}, false)) {
 					org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
 						org.drip.analytics.calibration.PredictorResponseLinearConstraint();
 
@@ -472,7 +473,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 						lsmm.getMeasureQuoteValue()) ? prlc : null;
 				}
 
-				if ("PV".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+					java.lang.String[] {"PV"}, false)) {
 					org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
 						org.drip.analytics.calibration.PredictorResponseLinearConstraint();
 
@@ -480,7 +482,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 						(lsmm.getMeasureQuoteValue()) ? prlc : null;
 				}
 
-				if ("Rate".equalsIgnoreCase (lsmm.getManifestMeasure())) {
+				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+					java.lang.String[] {"Rate"}, false)) {
 					org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
 						org.drip.analytics.calibration.PredictorResponseLinearConstraint();
 
