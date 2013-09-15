@@ -132,7 +132,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (adblDF[adblDF.length - 1]) /
 			(_adblDate[_adblDate.length - 1] - _dblStartDate);
 
-		_csi = org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeInterpolator ("POLY_SPLINE_DF_REGIME",
+		_csi = org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeEstimator ("POLY_SPLINE_DF_REGIME",
 			adblDate, adblDF, aSBP, new org.drip.math.grid.RegimeCalibrationSetting
 				(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL,
 					org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
@@ -657,7 +657,7 @@ public class PolynomialSplineDF extends org.drip.analytics.definition.DiscountCu
 		return null;
 	}
 
-	@Override public boolean buildInterpolator()
+	@Override public boolean buildEstimator()
 	{
 		return false;
 	}

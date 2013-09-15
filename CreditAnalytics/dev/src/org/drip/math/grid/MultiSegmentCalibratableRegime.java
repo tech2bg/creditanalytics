@@ -34,7 +34,7 @@ package org.drip.math.grid;
  * 	functionality:
  * 	- Construct adjoining segment sequences in accordance with the segment control parameters
  * 	- Calibrate according to a varied set of (i.e., FLOATING/NATURAL/FINANCIAL) boundary conditions
- * 	- Interpolate both the value, the ordered derivatives, and the Jacobian at the given ordinate
+ * 	- Estimate both the value, the ordered derivatives, and the Jacobian at the given ordinate
  * 	- Compute the monotonicity details - segment/span level monotonicity, co-monotonicity, local
  * 		monotonicity.
  * 	- Insert knots
@@ -311,7 +311,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 		return setup (dblLeftMostRegimeResponse, aSNWCRight, rcs);
 	}
 
-	@Override public boolean setup (
+	@Override public boolean setupHermite (
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft,
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight,
 		final org.drip.math.segment.ResponseValueConstraint[][] aaRVC,
@@ -408,36 +408,21 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) || !in (dblPredictorOrdinate))
-			throw new java.lang.Exception ("MultiSegmentCalibratableRegime::calcValue => Invalid inputs!");
-
-		int iIndex = 0;
-		int iNumSegment = _aSegment.length;
-
-		for (int i = 0; i < iNumSegment; ++i) {
-			if (_aSegment[i].left() <= dblPredictorOrdinate && _aSegment[i].right() >= dblPredictorOrdinate) {
-				iIndex = i;
-				break;
-			}
-		}
-
-		return _aSegment[iIndex].calcValue (dblPredictorOrdinate);
+		return _aSegment[containingIndex (dblPredictorOrdinate, true, true)].calcResponse
+			(dblPredictorOrdinate);
 	}
 
 	@Override public org.drip.math.segment.PredictorOrdinateResponseDerivative calcPORD (
 		final double dblPredictorOrdinate)
 	{
-		int iIndex = 0;
-		int iNumSegment = _aSegment.length;
+		int iIndex = -1;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) || !in (dblPredictorOrdinate))
+		try {
+			iIndex = containingIndex (dblPredictorOrdinate, true, true);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
 			return null;
-
-		for (int i = 0; i < iNumSegment; ++i) {
-			if (_aSegment[i].left() <= dblPredictorOrdinate && _aSegment[i].right() >= dblPredictorOrdinate) {
-				iIndex = i;
-				break;
-			}
 		}
 
 		int iCk = _aSBP[iIndex].getSegmentElasticParams().getCk();
@@ -446,11 +431,10 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 
 		try {
 			for (int i = 0; i < iCk; ++i)
-				adblDeriv[i] = _aSegment[iIndex].calcOrderedResponseDerivative (dblPredictorOrdinate, i,
-					false);
+				adblDeriv[i] = _aSegment[iIndex].calcResponseDerivative (dblPredictorOrdinate, i, false);
 
-			return new org.drip.math.segment.PredictorOrdinateResponseDerivative (_aSegment[iIndex].calcValue
-				(dblPredictorOrdinate), adblDeriv);
+			return new org.drip.math.segment.PredictorOrdinateResponseDerivative
+				(_aSegment[iIndex].calcResponse (dblPredictorOrdinate), adblDeriv);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -461,18 +445,14 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	@Override public org.drip.math.calculus.WengertJacobian jackDResponseDResponseInput (
 		final double dblPredictorOrdinate)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) || !in (dblPredictorOrdinate))
+		int iIndex = -1;
+
+		try {
+			iIndex = containingIndex (dblPredictorOrdinate, true, true);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
 			return null;
-
-		int iIndex = 0;
-		int iNumSegment = _aSegment.length;
-
-		for (int i = 0 ; i < iNumSegment; ++i) {
-			if (_aSegment[i].left() <= dblPredictorOrdinate && _aSegment[i].right() >= dblPredictorOrdinate)
-			{
-				iIndex = i;
-				break;
-			}
 		}
 
 		return setDResponseDEdgeResponse (iIndex, _aSegment[iIndex].jackDResponseDEdgeParams
@@ -482,17 +462,17 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	@Override public org.drip.math.segment.Monotonocity monotoneType (
 		final double dblPredictorOrdinate)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) || !in (dblPredictorOrdinate))
+		int iIndex = -1;
+
+		try {
+			iIndex = containingIndex (dblPredictorOrdinate, true, true);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
 			return null;
-
-		int iNumSegment = _aSegment.length;
-
-		for (int i = 0; i < iNumSegment; ++i) {
-			if (_aSegment[i].left() <= dblPredictorOrdinate && _aSegment[i].right() >= dblPredictorOrdinate)
-				return _aSegment[i].monotoneType();
 		}
 
-		return null;
+		return _aSegment[iIndex].monotoneType();
 	}
 
 	@Override public boolean isLocallyMonotone()
@@ -583,7 +563,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	{
 		org.drip.math.segment.PredictorResponse seg = _aSegment[_aSegment.length - 1];
 
-		return seg.calcOrderedResponseDerivative (seg.right(), iOrder, false);
+		return seg.calcResponseDerivative (seg.right(), iOrder, false);
 	}
 
 	@Override public boolean resetNode (
@@ -612,9 +592,13 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 
 	@Override public boolean in (
 		final double dblPredictorOrdinate)
+		throws java.lang.Exception
 	{
-		return org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) && dblPredictorOrdinate >=
-			getLeftPredictorOrdinateEdge() && dblPredictorOrdinate <= getRightPredictorOrdinateEdge();
+		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate))
+			throw new java.lang.Exception ("MultiSegmentCalibratableRegime::in => Invalid inputs");
+
+		return dblPredictorOrdinate >= getLeftPredictorOrdinateEdge() && dblPredictorOrdinate <=
+			getRightPredictorOrdinateEdge();
 	}
 
 	@Override public double getLeftPredictorOrdinateEdge()
@@ -625,5 +609,107 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	@Override public double getRightPredictorOrdinateEdge()
 	{
 		return _aSegment[_aSegment.length - 1].right();
+	}
+
+	@Override public int containingIndex (
+		final double dblPredictorOrdinate,
+		final boolean bIncludeLeft,
+		final boolean bIncludeRight)
+		throws java.lang.Exception
+	{
+		if (!in (dblPredictorOrdinate))
+			throw new java.lang.Exception
+				("MultiSegmentCalibratableRegime::containingIndex => Predictor Ordinate not in the Regime Range");
+
+		int iNumSegment = _aSegment.length;
+
+		for (int i = 0 ; i < iNumSegment; ++i) {
+			boolean bLeftValid = bIncludeLeft ? _aSegment[i].left() <= dblPredictorOrdinate :
+				_aSegment[i].left() < dblPredictorOrdinate;
+
+			boolean bRightValid = bIncludeRight ? _aSegment[i].right() >= dblPredictorOrdinate :
+				_aSegment[i].right() > dblPredictorOrdinate;
+
+			if (bLeftValid && bRightValid) return i;
+		}
+
+		throw new java.lang.Exception
+			("MultiSegmentCalibratableRegime::containingIndex => Cannot locate Containing Index");
+	}
+
+	@Override public MultiSegmentCalibratableRegime clipLeft (
+		final java.lang.String strName,
+		final double dblPredictorOrdinate)
+	{
+		int iNumSegment = _aSegment.length;
+		int iContainingPredictorOrdinateIndex = 0;
+
+		try {
+			iContainingPredictorOrdinateIndex = containingIndex (dblPredictorOrdinate, true, false);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		int iNumClippedSegment = iNumSegment - iContainingPredictorOrdinateIndex;
+		org.drip.math.segment.PredictorResponse[] aPR = new
+			org.drip.math.segment.PredictorResponse[iNumClippedSegment];
+		org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP = new
+			org.drip.math.segment.PredictorResponseBuilderParams[iNumClippedSegment];
+
+		for (int i = 0; i < iNumClippedSegment; ++i) {
+			if (null == (aPR[i] = 0 == i ?
+				_aSegment[iContainingPredictorOrdinateIndex].clipLeftOfPredictorOrdinate
+					(dblPredictorOrdinate) : _aSegment[i + iContainingPredictorOrdinateIndex]))
+				return null;
+
+			aPRBP[i] = _aSBP[i + iContainingPredictorOrdinateIndex];
+		}
+
+		try {
+			return new MultiSegmentCalibratableRegime (strName, aPR, aPRBP);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override public MultiSegmentCalibratableRegime clipRight (
+		final java.lang.String strName,
+		final double dblPredictorOrdinate)
+	{
+		int iContainingPredictorOrdinateIndex = 0;
+
+		try {
+			iContainingPredictorOrdinateIndex = containingIndex (dblPredictorOrdinate, false, true);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.math.segment.PredictorResponse[] aPR = new
+			org.drip.math.segment.PredictorResponse[iContainingPredictorOrdinateIndex + 1];
+		org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP = new
+			org.drip.math.segment.PredictorResponseBuilderParams[iContainingPredictorOrdinateIndex + 1];
+
+		for (int i = 0; i <= iContainingPredictorOrdinateIndex; ++i) {
+			if (null == (aPR[i] = iContainingPredictorOrdinateIndex == i ?
+				_aSegment[iContainingPredictorOrdinateIndex].clipRightOfPredictorOrdinate
+					(dblPredictorOrdinate) : _aSegment[i]))
+				return null;
+
+			aPRBP[i] = _aSBP[i];
+		}
+
+		try {
+			return new MultiSegmentCalibratableRegime (strName, aPR, aPRBP);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

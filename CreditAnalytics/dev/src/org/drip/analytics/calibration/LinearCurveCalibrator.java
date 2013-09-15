@@ -31,15 +31,16 @@ public class LinearCurveCalibrator {
 
 			double dblDate = me.getKey();
 
-			if (null != regimePrev && regimePrev.in (dblDate)) {
-				try {
-					dblValue -= regimePrev.response (dblDate) * me.getValue();
-				} catch (java.lang.Exception e) {
-					e.printStackTrace();
+			try {
+				if (null != regimePrev && regimePrev.in (dblDate)) {
+					try {
+						dblValue -= regimePrev.response (dblDate) * me.getValue();
+					} catch (java.lang.Exception e) {
+						e.printStackTrace();
 
-					return null;
-				}
-			} else if (null != regimeCurrent && regimeCurrent.in (dblDate)) {
+						return null;
+					}
+				} else if (null != regimeCurrent && regimeCurrent.in (dblDate)) {
 					try {
 						dblValue -= regimeCurrent.response (dblDate) * me.getValue();
 					} catch (java.lang.Exception e) {
@@ -47,10 +48,15 @@ public class LinearCurveCalibrator {
 
 						return null;
 					}
-			} else {
-				lsPredictor.add (dblDate);
+				} else {
+					lsPredictor.add (dblDate);
 
-				lsResponseWeight.add (me.getValue());
+					lsResponseWeight.add (me.getValue());
+				}
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
 			}
 		}
 
@@ -90,7 +96,7 @@ public class LinearCurveCalibrator {
 						org.drip.math.function.RationalShapeControl (0.));
 	}
 
-	public org.drip.math.grid.MultiSegmentRegime markovDiscountCurve (
+	public org.drip.math.grid.MultiSegmentRegime singleRegime (
 		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -121,7 +127,7 @@ public class LinearCurveCalibrator {
 			try {
 				if (null == regime) {
 					if (null == (regime =
-						org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeInterpolator ("FULL", new
+						org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeEstimator ("SINGLE", new
 							double[] {valParams._dblValue, aCalibComp[i].getMaturityDate().getJulian()}, new
 								org.drip.math.segment.PredictorResponseBuilderParams[] {_sbpRegular})) ||
 									!regime.setup (1., new org.drip.math.segment.ResponseValueConstraint[]
@@ -142,7 +148,7 @@ public class LinearCurveCalibrator {
 		return regime;
 	}
 
-	public org.drip.math.grid.MultiSegmentRegime regimeFromCashInstruments (
+	public org.drip.math.grid.OverlappingRegimeSpan regimeFromCashInstruments (
 		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -173,7 +179,7 @@ public class LinearCurveCalibrator {
 			try {
 				if (null == regime) {
 					if (null == (regime =
-						org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeInterpolator ("CASH", new
+						org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeEstimator ("CASH", new
 							double[] {valParams._dblValue, aCalibComp[i].getMaturityDate().getJulian()}, new
 								org.drip.math.segment.PredictorResponseBuilderParams[] {_sbpRegular})) ||
 									!regime.setup (1., new org.drip.math.segment.ResponseValueConstraint[]
@@ -191,11 +197,17 @@ public class LinearCurveCalibrator {
 			}
 		}
 
-		return regime;
+		try {
+			return new org.drip.math.grid.OverlappingRegimeSpan (regime);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
-	public org.drip.math.grid.MultiSegmentRegime regimeFromSwapInstruments (
-		final org.drip.math.grid.MultiSegmentRegime regimeCash,
+	public boolean regimeFromSwapInstruments (
+		org.drip.math.grid.OverlappingRegimeSpan span,
 		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -203,49 +215,63 @@ public class LinearCurveCalibrator {
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.analytics.calibration.LatentStateMetricMeasure[] aLSMM)
 	{
-		if (null == aCalibComp || null == valParams || null == aLSMM) return null;
+		if (null == aCalibComp || null == valParams || null == aLSMM) return false;
 
 		int iNumCalibComp = aCalibComp.length;
 		org.drip.math.grid.MultiSegmentRegime regimeSwap = null;
 
-		if (0 == iNumCalibComp || iNumCalibComp != aLSMM.length) return null;
+		org.drip.math.grid.MultiSegmentRegime regimeCash = null == span ? null : span.getRegime ("CASH");
+
+		if (0 == iNumCalibComp || iNumCalibComp != aLSMM.length) return false;
 
 		for (int i = 0; i < iNumCalibComp; ++i) {
-			if (null == aCalibComp[i] || null == aLSMM[i]) return null;
+			if (null == aCalibComp[i] || null == aLSMM[i]) return false;
 
 			org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc =
 				aCalibComp[i].generateCalibPRLC (valParams, pricerParams, cmp, quotingParams, aLSMM[i]);
 
-			if (null == prlc) return null;
+			if (null == prlc) return false;
 
 			org.drip.math.segment.ResponseValueConstraint rvc = GenerateSegmentConstraint (prlc, regimeSwap,
 				regimeCash);
 
-			if (null == rvc) return null;
+			if (null == rvc) return false;
 
 			double dblMaturity = aCalibComp[i].getMaturityDate().getJulian();
 
 			try {
 				if (null == regimeSwap) {
 					if (null == (regimeSwap =
-						org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeInterpolator ("SWAP", new
+						org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeEstimator ("SWAP", new
 							double[] {valParams._dblValue, dblMaturity}, new
 								org.drip.math.segment.PredictorResponseBuilderParams[] {_sbpRegular})) ||
 									!regimeSwap.setup (1., new org.drip.math.segment.ResponseValueConstraint[]
 										{rvc}, _rcs))
-						return null;
+						return false;
 				} else {
 					if (null == (regimeSwap = org.drip.math.grid.RegimeModifier.AppendSegment (regimeSwap,
 						dblMaturity, rvc, _sbpRegular, _rcs)))
-						return null;
+						return false;
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
-				return null;
+				return false;
 			}
 		}
 
-		return regimeSwap;
+		if (null == span) {
+			try {
+				span = new org.drip.math.grid.OverlappingRegimeSpan (regimeSwap);
+
+				return true;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return false;
+			}
+		}
+
+		return span.addRegime (regimeSwap);
 	}
 }

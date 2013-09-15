@@ -29,11 +29,11 @@ package org.drip.math.segment;
  */
 
 /**
- * This abstract class contains the basis spline segment in-elastic ordinates. Interpolating segment spline
+ * This abstract class contains the basis spline segment in-elastic ordinates. Estimate segment spline
  *  functions and their coefficients are implemented/calibrated in the overriding spline classes. It provides
  *  functionality for assessing the various segment attributes:
  *  - Segment Monotonicity
- *  - Interpolated Function Value, the ordered derivative, and the corresponding Jacobian
+ *  - Estimate Function Value, the ordered derivative, and the corresponding Jacobian
  *  - Segment Local/Global Derivative
  *  - Evaluation of the Segment Micro-Jack
  *  - Head / Regular Segment calibration - both of the basis function coefficients and the Jacobian
@@ -65,36 +65,90 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 
 	protected abstract boolean isMonotone();
 
+	protected double[] translateCkFromSegment (
+		final double dblGlobalPredictorOrdinate,
+		final org.drip.math.segment.PredictorResponse prPrev,
+		final int iCk)
+	{
+		double dblOrderedResponseDerivScale = 1.;
+		double[] adblLocalDerivAtLeftOrdinate = new double[iCk];
+
+		double dblGlobalSegmentPredictorWidth = width();
+
+		for (int i = 0; i < iCk; ++i) {
+			dblOrderedResponseDerivScale *= dblGlobalSegmentPredictorWidth;
+
+			try {
+				adblLocalDerivAtLeftOrdinate[i] = prPrev.calcResponseDerivative (dblGlobalPredictorOrdinate,
+					i + 1, false) * dblOrderedResponseDerivScale;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return adblLocalDerivAtLeftOrdinate;
+	}
+
 	/**
-	 * Response given the Predictor Ordinate
+	 * Response given the Local Predictor Ordinate
 	 * 
-	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * @param dblLocalPredictorOrdinate Predictor Ordinate
 	 * 
 	 * @return Response
 	 * 
 	 * @throws java.lang.Exception Thrown if Response Cannot be computed.
 	 */
 
-	public abstract double response (
-		final double dblPredictorOrdinate)
+	protected abstract double localResponse (
+		final double dblLocalPredictorOrdinate)
 		throws java.lang.Exception;
 
 	/**
-	 * nth order Response Derivative at the Predictor Ordinate
+	 * nth order Response Derivative at the Local Predictor Ordinate
 	 * 
-	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * @param dblLocalPredictorOrdinate Local Predictor Ordinate
 	 * @param iOrder Order of the Derivative
 	 * 
-	 * @return nth order Response Derivative at the Predictor Ordinate
+	 * @return nth order Response Derivative at the Local Predictor Ordinate
 	 * 
-	 * @throws java.lang.Exception Thrown if the nth order Response Derivative at the Predictor Ordinate
-	 *  cannot be computed.
+	 * @throws java.lang.Exception Thrown if the nth order Response Derivative at the Local Predictor
+	 *  Ordinate cannot be computed.
 	 */
 
-	public abstract double responseDerivative (
-		final double dblPredictorOrdinate,
+	protected abstract double localResponseDerivative (
+		final double dblLocalPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception;
+
+	/**
+	 * Calculate the Jacobian of the Response to the Edge Parameters at the given Local Predictor Ordinate
+	 * 
+	 * @param dblLocalPredictorOrdinate The Local Predictor Ordinate
+	 * 
+	 * @return The Jacobian of the Response to the Edge Parameters at the given Local Predictor Ordinate
+	 */
+
+	protected abstract org.drip.math.calculus.WengertJacobian localDResponseDEdgeParams (
+		final double dblLocalPredictorOrdinate);
+
+	/**
+	 * Calculate the Jacobian of the Response to the Basis Coefficients at the given Local Predictor Ordinate
+	 * 
+	 * @param dblLocalPredictorOrdinate The Local Predictor Ordinate
+	 * 
+	 * @return The Jacobian of the Response to the Basis Coefficients at the given Local Predictor Ordinate
+	 */
+
+	protected abstract org.drip.math.calculus.WengertJacobian localDResponseDBasisCoeff (
+		final double dblLocalPredictorOrdinate);
+
+	protected abstract PredictorResponse snipLeftOfLocalPredictorOrdinate (
+		final double dblLocalPredictorOrdinate);
+
+	protected abstract PredictorResponse snipRightOfLocalPredictorOrdinate (
+		final double dblLocalPredictorOrdinate);
 
 	/**
 	 * Retrieve the number of Basis Functions
@@ -137,7 +191,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 		final org.drip.math.segment.ResponseValueConstraint rvc);
 
 	/**
-	 * Calibrate the coefficients from the prior Segment and the Response Vakue at the Right Predictor
+	 * Calibrate the coefficients from the prior Segment and the Response Value at the Right Predictor
 	 *  Ordinate
 	 * 
 	 * @param prPrev Prior Predictor/Response Segment
@@ -161,6 +215,23 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	}
 
 	/**
+	 * Calculate the Response Value at the given Predictor Ordinate
+	 * 
+	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * 
+	 * @return The Response Value
+	 * 
+	 * @throws java.lang.Exception Thrown if the calculation did not succeed
+	 */
+
+	public double calcResponse (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception
+	{
+		return localResponse (localize (dblPredictorOrdinate));
+	}
+
+	/**
 	 * Calculate the Ordered Response Derivative at the Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Response Derivative is to be
@@ -173,27 +244,26 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @return Retrieve the Ordered Response Derivative
 	 */
 
-	public abstract double calcOrderedResponseDerivative (
+	public double calcResponseDerivative (
 		final double dblPredictorOrdinate,
 		final int iOrder,
 		final boolean bLocal)
-		throws java.lang.Exception;
-
-	/**
-	 * Calculate the Response Value at the given Predictor Ordinate
-	 * 
-	 * @param dblPredictorOrdinate Predictor Ordinate
-	 * 
-	 * @return The Response Value
-	 * 
-	 * @throws java.lang.Exception Thrown if the calculation did not succeed
-	 */
-
-	public double calcValue (
-		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		return response (localize (dblPredictorOrdinate));
+		double dblLocalPredictorOrdinate = localize (dblPredictorOrdinate);
+
+		if (0 == iOrder) return localResponse (dblLocalPredictorOrdinate);
+
+		double dblOrderedResponseDerivative = localResponseDerivative (dblLocalPredictorOrdinate, iOrder);
+
+		if (bLocal) return dblOrderedResponseDerivative;
+
+		double dblSegmentWidth = width();
+
+		for (int i = 0; i < iOrder; ++i)
+			dblOrderedResponseDerivative /= dblSegmentWidth;
+
+		return dblOrderedResponseDerivative;
 	}
 
 	/**
@@ -212,8 +282,17 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @return The Jacobian of the Response to the Edge Parameters at the given Predictor Ordinate
 	 */
 
-	public abstract org.drip.math.calculus.WengertJacobian jackDResponseDEdgeParams (
-		final double dblPredictorOrdinate);
+	public org.drip.math.calculus.WengertJacobian jackDResponseDEdgeParams (
+		final double dblPredictorOrdinate)
+	{
+		try {
+			return localDResponseDEdgeParams (localize (dblPredictorOrdinate));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	/**
 	 * Calculate the Jacobian of the Response to the Basis Coefficients at the given Predictor Ordinate
@@ -223,8 +302,17 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @return The Jacobian of the Response to the Basis Coefficients at the given Predictor Ordinate
 	 */
 
-	public abstract org.drip.math.calculus.WengertJacobian jackDResponseDBasisCoeff (
-		final double dblPredictorOrdinate);
+	public org.drip.math.calculus.WengertJacobian jackDResponseDBasisCoeff (
+		final double dblPredictorOrdinate)
+	{
+		try {
+			return localDResponseDBasisCoeff (localize (dblPredictorOrdinate));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	/**
 	 * Indicate whether the given segment is monotone. If monotone, may optionally indicate the nature of
@@ -252,7 +340,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 				final double dblX)
 				throws java.lang.Exception
 			{
-				return responseDerivative (dblX, 1);
+				return localResponseDerivative (dblX, 1);
 			}
 
 			@Override public org.drip.math.calculus.Differential calcDifferential (
@@ -263,8 +351,8 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 				try {
 					double dblVariateInfinitesimal = _dc.getVariateInfinitesimal (dblX);
 
-					return new org.drip.math.calculus.Differential (dblVariateInfinitesimal, responseDerivative
-						(dblX, iOrder) * dblVariateInfinitesimal);
+					return new org.drip.math.calculus.Differential (dblVariateInfinitesimal,
+						localResponseDerivative (dblX, iOrder) * dblVariateInfinitesimal);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}
@@ -289,7 +377,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 				return new org.drip.math.segment.Monotonocity
 					(org.drip.math.segment.Monotonocity.MONOTONIC);
 
-			double dbl2ndDeriv = responseDerivative (dblExtremum, 2);
+			double dbl2ndDeriv = localResponseDerivative (dblExtremum, 2);
 
 			if (0. > dbl2ndDeriv)
 				return new org.drip.math.segment.Monotonocity
@@ -429,6 +517,52 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 		}
 
 		return false;
+	}
+
+	/**
+	 * Clip the part of the Segment to the Right of the specified Predictor Ordinate. Retain all other
+	 * 	constraints the same.
+	 * 
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * 
+	 * @return The Clipped Segment
+	 */
+
+	public PredictorResponse clipLeftOfPredictorOrdinate (
+		final double dblPredictorOrdinate)
+	{
+		if (right() == dblPredictorOrdinate) return null;
+
+		try {
+			return snipLeftOfLocalPredictorOrdinate (localize (dblPredictorOrdinate));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Clip the part of the Segment to the Left of the specified Predictor Ordinate. Retain all other
+	 * 	constraints the same.
+	 * 
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * 
+	 * @return The Clipped Segment
+	 */
+
+	public PredictorResponse clipRightOfPredictorOrdinate (
+		final double dblPredictorOrdinate)
+	{
+		if (left() == dblPredictorOrdinate) return null;
+
+		try {
+			return snipRightOfLocalPredictorOrdinate (localize (dblPredictorOrdinate));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	/**

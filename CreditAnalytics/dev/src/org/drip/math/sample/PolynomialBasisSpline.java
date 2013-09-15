@@ -39,7 +39,7 @@ import org.drip.math.spline.*;
  * 	- Control the polynomial segment using the rational shape controller, the appropriate Ck, and the basis
  * 		function.
  * 	- Demonstrate the variational shape optimization behavior.
- * 	- Interpolate the node value and the node value Jacobian with the segment, as well as at the boundaries.
+ * 	- Estimate the node value and the node value Jacobian with the segment, as well as at the boundaries.
  * 	- Calculate the segment monotonicity.
  *
  * @author Lakshmi Krishnamurthy
@@ -53,7 +53,7 @@ public class PolynomialBasisSpline {
 	 * 	- Construction of two segments, 1 and 2.
 	 *  - Calibration of the segments to the left and the right node values
 	 *  - Extraction of the segment Jacobians and segment monotonicity
-	 *  - Interpolate point value and the Jacobian
+	 *  - Estimate point value and the Jacobian
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
@@ -86,9 +86,9 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		PredictorResponse seg1 = PredictorResponseBasisSpline.Create (1.0, 1.5, aAU, rsc, segParams);
+		PredictorResponse seg1 = LocalBasisPredictorResponse.Create (1.0, 1.5, aAU, rsc, segParams);
 
-		PredictorResponse seg2 = PredictorResponseBasisSpline.Create (1.5, 2.0, aAU, rsc, segParams);
+		PredictorResponse seg2 = LocalBasisPredictorResponse.Create (1.5, 2.0, aAU, rsc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
@@ -96,9 +96,9 @@ public class PolynomialBasisSpline {
 
 		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25);
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcValue (1.));
+		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcResponse (1.));
 
-		System.out.println ("\tY[" + 1.5 + "]: " + seg1.calcValue (1.5));
+		System.out.println ("\tY[" + 1.5 + "]: " + seg1.calcResponse (1.5));
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
@@ -112,9 +112,9 @@ public class PolynomialBasisSpline {
 
 		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16.);
 
-		System.out.println ("\tY[" + 1.5 + "]: " + seg2.calcValue (1.5));
+		System.out.println ("\tY[" + 1.5 + "]: " + seg2.calcResponse (1.5));
 
-		System.out.println ("\tY[" + 2. + "]: " + seg2.calcValue (2.));
+		System.out.println ("\tY[" + 2. + "]: " + seg2.calcResponse (2.));
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
@@ -125,12 +125,12 @@ public class PolynomialBasisSpline {
 		seg2.calibrate (seg1, 14.);
 
 		/*
-		 * Interpolate the segment value at the given variate, and compute the corresponding Jacobian
+		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
 		 */
 
 		double dblX = 2.0;
 
-		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcValue (dblX));
+		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcResponse (dblX));
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}
@@ -142,7 +142,7 @@ public class PolynomialBasisSpline {
 	 * 	- Construction of two segments, 1 and 2.
 	 *  - Calibration of the segments to the left and the right node values
 	 *  - Extraction of the segment Jacobians and segment monotonicity
-	 *  - Interpolate point value and the Jacobian
+	 *  - Estimate point value and the Jacobian
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
@@ -175,9 +175,9 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		PredictorResponse seg1 = PredictorResponseBasisSpline.Create (0.0, 1.0, aAU, rsc, segParams);
+		PredictorResponse seg1 = LocalBasisPredictorResponse.Create (0.0, 1.0, aAU, rsc, segParams);
 
-		PredictorResponse seg2 = PredictorResponseBasisSpline.Create (1.0, 2.0, aAU, rsc, segParams);
+		PredictorResponse seg2 = LocalBasisPredictorResponse.Create (1.0, 2.0, aAU, rsc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
@@ -190,9 +190,9 @@ public class PolynomialBasisSpline {
 			new double[] {6.}, // Segment Left Derivative
 			null)); // Segment Constraint
 
-		System.out.println ("\tY[" + 0.0 + "]: " + seg1.calcValue (0.0));
+		System.out.println ("\tY[" + 0.0 + "]: " + seg1.calcResponse (0.0));
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcValue (1.0));
+		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcResponse (1.0));
 
 		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
 
@@ -209,9 +209,9 @@ public class PolynomialBasisSpline {
 			new double[] {17.}, // Segment Left Derivative
 			null)); // Segment Constraint
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg2.calcValue (1.0));
+		System.out.println ("\tY[" + 1.0 + "]: " + seg2.calcResponse (1.0));
 
-		System.out.println ("\tY[" + 2.0 + "]: " + seg2.calcValue (2.0));
+		System.out.println ("\tY[" + 2.0 + "]: " + seg2.calcResponse (2.0));
 
 		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
 
@@ -220,12 +220,12 @@ public class PolynomialBasisSpline {
 		seg2.calibrate (seg1, 14.);
 
 		/*
-		 * Interpolate the segment value at the given variate, and compute the corresponding Jacobian
+		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
 		 */
 
 		double dblX = 2.0;
 
-		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcValue (dblX));
+		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcResponse (dblX));
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}

@@ -644,7 +644,7 @@ public class ConstantForwardRate extends org.drip.analytics.definition.DiscountC
 		return null;
 	}
 
-	@Override public boolean buildInterpolator()
+	@Override public boolean buildEstimator()
 	{
 		return false;
 	}

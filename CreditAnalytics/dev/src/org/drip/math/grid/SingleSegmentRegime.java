@@ -34,7 +34,7 @@ package org.drip.math.grid;
  * 	spanning Jacobian. SingleSegmentRegime exports the following group of functionality:
  * 	- Construct adjoining segment sequences in accordance with the segment control parameters
  * 	- Calibrate according to a varied set of (i.e., NATURAL/FINANCIAL) boundary conditions
- * 	- Interpolate both the value, the ordered derivatives, and the Jacobian at the given ordinate
+ * 	- Estimate both the value, the ordered derivatives, and the Jacobian at the given ordinate
  * 	- Compute the monotonicity details - segment/regime level monotonicity, co-monotonicity, local
  * 		monotonicity.
  * 

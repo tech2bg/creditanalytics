@@ -2625,7 +2625,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == dc) throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
 
-		return getCoupon (dblWorkoutDate, mktParams) - dc.interpMeasure (dblWorkoutDate) + 0.01 *
+		return getCoupon (dblWorkoutDate, mktParams) - dc.estimateMeasure (dblWorkoutDate) + 0.01 *
 			(dblWorkoutFactor - dblPrice) / dc.calcLIBORDV01 (dblWorkoutDate);
 	}
 
@@ -5719,7 +5719,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dcTSY)
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromYield => Invalid inputs");
 
-		return dblYield - dcTSY.interpMeasure (dblWorkoutDate);
+		return dblYield - dcTSY.estimateMeasure (dblWorkoutDate);
 	}
 
 	@Override public double calcGSpreadFromYield (
@@ -6210,7 +6210,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYield => Invalid inputs");
 
-		return dblYield - dc.interpMeasure (dblWorkoutDate);
+		return dblYield - dc.estimateMeasure (dblWorkoutDate);
 	}
 
 	@Override public double calcISpreadFromYield (
@@ -8509,7 +8509,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == dc) throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
 
-		return dblWorkoutFactor - 100. * dc.calcLIBORDV01 (dblWorkoutDate) * (dblASW + dc.interpMeasure
+		return dblWorkoutFactor - 100. * dc.calcLIBORDV01 (dblWorkoutDate) * (dblASW + dc.estimateMeasure
 			(dblWorkoutDate) - getCoupon (dblWorkoutDate, mktParams));
 	}
 
@@ -9863,7 +9863,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dcGovvie)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromGSpread => Invalid Inputs");
 
-		return dcGovvie.interpMeasure (dblWorkoutDate) + dblGSpread;
+		return dcGovvie.estimateMeasure (dblWorkoutDate) + dblGSpread;
 	}
 
 	@Override public double calcYieldFromGSpread (
@@ -9910,7 +9910,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromISpread => Invalid Inputs");
 
-		return dc.interpMeasure (dblWorkoutDate) + dblISpread;
+		return dc.estimateMeasure (dblWorkoutDate) + dblISpread;
 	}
 
 	@Override public double calcYieldFromISpread (

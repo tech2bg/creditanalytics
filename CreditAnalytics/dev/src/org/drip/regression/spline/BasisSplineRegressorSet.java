@@ -185,12 +185,12 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 					("Hermite_N4Ck1", _strRegressionScenario, 4, 1));
 
 			_setRegressors.add (new org.drip.regression.spline.LocalControlBasisSplineRegressor
-				("Hermite_CatmullRom_Cardinal_N4Ck1", _strRegressionScenario,
+				("Hermite_Bessel_CatmullRom_Cardinal_N4Ck1", _strRegressionScenario,
 					org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
 						org.drip.math.spline.PolynomialBasisSetParams (4), 1));
 
-			_setRegressors.add (new org.drip.regression.spline.LagrangePolynomialSpanRegressor
-				("Lagrange_Polynomial_Span", _strRegressionScenario));
+			_setRegressors.add (new org.drip.regression.spline.LagrangePolynomialRegimeRegressor
+				("Lagrange_Polynomial_Regime", _strRegressionScenario));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

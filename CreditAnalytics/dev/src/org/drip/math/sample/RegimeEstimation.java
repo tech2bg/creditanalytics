@@ -37,19 +37,19 @@ import org.drip.math.spline.*;
  */
 
 /**
- * SpanInterpolator demonstrates the Span builder and usage API. It shows the following:
+ * RegimeEstimation demonstrates the Regime builder and usage API. It shows the following:
  * 	- Construction of segment control parameters - polynomial (regular/Bernstein) segment control,
  * 		exponential/hyperbolic tension segment control, Kaklis-Pandelis tension segment control.
  * 	- Control the segment using the rational shape controller, and the appropriate Ck
- * 	- Construct a calibrated span interpolator
- * 	- Insert a knot into the Span
- * 	- Interpolate the node value and the node value Jacobian
- * 	- Calculate the segment/span monotonicity
+ * 	- Construct a calibrated regime Estimator.
+ * 	- Insert a knot into the regime
+ * 	- Estimate the node value and the node value Jacobian
+ * 	- Calculate the segment/regime monotonicity
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SpanInterpolator {
+public class RegimeEstimation {
 
 	/**
 	 * Build Polynomial Segment Control Parameters
@@ -158,10 +158,10 @@ public class SpanInterpolator {
 
 	/**
 	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Interpolate
+	 * 	- Estimate
 	 *  - Compute the segment-by-segment monotonicity
-	 *  - Span Jacobian
-	 *  - Span knot insertion
+	 *  - Regime Jacobian
+	 *  - Regime knot insertion
 	 * 
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
@@ -170,7 +170,7 @@ public class SpanInterpolator {
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
-	public static final void BasisSplineSpanTest (
+	public static final void BasisSplineRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
 		final PredictorResponseBuilderParams sbp)
@@ -189,34 +189,34 @@ public class SpanInterpolator {
 			aSBP[i] = sbp;
 
 		/*
-		 * Construct a Span instance 
+		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime span = RegimeBuilder.CreateCalibratedRegimeInterpolator (
+		MultiSegmentRegime regime = RegimeBuilder.CreateCalibratedRegimeEstimator (
 			"SPLINE_REGIME",
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
-			new RegimeCalibrationSetting // Boundary Condition - Natural + Calibrate the Span predictors to the responses
+			new RegimeCalibrationSetting // Boundary Condition - Natural + Calibrate the Regime predictors to the responses
 				(RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
 
 		/*
-		 * Interpolate, compute the segment-by-segment monotonicity and the Span Jacobian
+		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (span.response (dblX), 1, 2, 1.) + " | " + span.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + span.jackDResponseDResponseInput (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
 			dblX += 1.;
 		}
 
 		/*
-		 * Construct a new Span instance by inserting a pair of of predictor/response knots
+		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
 		 */
 
-		MultiSegmentRegime spanInsert = RegimeModifier.InsertKnot (span,
+		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
 			9.,
 			10.,
 			new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
@@ -224,12 +224,12 @@ public class SpanInterpolator {
 		dblX = 1.;
 
 		/*
-		 * Interpolate, compute the sgement-by-segment monotonicty and the Span Jacobian
+		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (spanInsert.response (dblX), 1, 2, 1.)
-				+ " | " + spanInsert.monotoneType (dblX));
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
 		}
@@ -240,9 +240,9 @@ public class SpanInterpolator {
 	 * 	It does the following:
 	 * 	- Set up the predictor/variates, the shape controller, and the basis spline (in this case polynomial)
 	 *  - Create the left and the right segment edge parameters for each segment
-	 *  - Construct the span interpolator
-	 *  - Verify the Interpolated Value/Jacobian
-	 *  - Insert a Hermite local knot, a Cardinal knot, and a Catmull-Rom knot and examine the interpolated output/Jacobian
+	 *  - Construct the Regime Estimator
+	 *  - Verify the Estimated Value/Jacobian
+	 *  - Insert a Hermite local knot, a Cardinal knot, and a Catmull-Rom knot and examine the Estimated output/Jacobian
 	 * 
 	 * @throws java.lang.Exception Thrown if the test does not succeed
 	 */
@@ -287,9 +287,9 @@ public class SpanInterpolator {
 		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/* 
-		 * Construct the C1 Hermite Polynomial Spline based Span Interpolator by using the following steps:
+		 * Construct the C1 Hermite Polynomial Spline based Regime Estimator by using the following steps:
 		 * 
-		 * - 1) Set up the Span Builder Parameter
+		 * - 1) Set up the Regime Builder Parameter
 		 */
 
 		int iNumBasis = 4;
@@ -310,10 +310,10 @@ public class SpanInterpolator {
 			aSBP[i] = sbp;
 
 		/* 
-		 * - 2b) Construct the Span
+		 * - 2b) Construct the Regime
 		 */
 
-		MultiSegmentRegime span = RegimeBuilder.CreateUncalibratedRegimeInterpolator ("SPLINE_REGIME", adblX, aSBP);
+		MultiSegmentRegime regime = RegimeBuilder.CreateUncalibratedRegimeEstimator ("SPLINE_REGIME", adblX, aSBP);
 
 		PredictorOrdinateResponseDerivative[] aSEPLeft = new PredictorOrdinateResponseDerivative[adblY.length - 1];
 		PredictorOrdinateResponseDerivative[] aSEPRight = new PredictorOrdinateResponseDerivative[adblY.length - 1];
@@ -329,23 +329,23 @@ public class SpanInterpolator {
 		}
 
 		/* 
-		 * - 4) Calibrate the Span and compute the Jacobian
+		 * - 4) Calibrate the Regime and compute the Jacobian
 		 */
 
-		System.out.println ("Span Setup Succeeded: " + span.setup (aSEPLeft, aSEPRight, null, RegimeCalibrationSetting.CALIBRATE));
+		System.out.println ("Regime Setup Succeeded: " + regime.setupHermite (aSEPLeft, aSEPRight, null, RegimeCalibrationSetting.CALIBRATE));
 
 		double dblX = 0.;
 		double dblXMax = 4.;
 
 		/* 
-		 * - 5) Display the interpolated Y and the Span Jacobian across the variates
+		 * - 5) Display the Estimated Y and the Regime Jacobian across the variates
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (span.response (dblX), 1, 2, 1.) + " | " +
-				span.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " +
+				regime.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + span.jackDResponseDResponseInput (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
 			dblX += 0.5;
 		}
@@ -355,20 +355,20 @@ public class SpanInterpolator {
 		 * 
 		 * - 1) Set up the left and the right segment edge parameters
 		 * - 2) Insert the pair of SEP's at the chosen variate node.
-		 * - 3) Compute the interpolated segment value and the motonicity across a suitable variate range.
+		 * - 3) Compute the Estimated segment value and the motonicity across a suitable variate range.
 		 */
 
 		PredictorOrdinateResponseDerivative sepLeftSegmentRightNode = new PredictorOrdinateResponseDerivative (27.5, new double[] {25.5});
 
 		PredictorOrdinateResponseDerivative sepRightSegmentLeftNode = new PredictorOrdinateResponseDerivative (27.5, new double[] {25.5});
 
-		MultiSegmentRegime spanInsert = RegimeModifier.InsertKnot (span, 2.5, sepLeftSegmentRightNode, sepRightSegmentLeftNode);
+		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime, 2.5, sepLeftSegmentRightNode, sepRightSegmentLeftNode);
 
 		dblX = 1.;
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (spanInsert.response (dblX), 1, 2, 1.)
-				+ " | " + spanInsert.monotoneType (dblX));
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 0.5;
 		}
@@ -378,44 +378,44 @@ public class SpanInterpolator {
 		 * 
 		 * - 1) Set up the left and the right segment edge parameters
 		 * - 2) Insert the pair of SEP's at the chosen variate node.
-		 * - 3) Compute the interpolated segment value and the motonicity across a suitable variate range.
+		 * - 3) Compute the Estimated segment value and the motonicity across a suitable variate range.
 		 */
 
-		MultiSegmentRegime spanCardinalInsert = RegimeModifier.InsertCardinalKnot (span, 2.5, 0.);
+		MultiSegmentRegime regimeCardinalInsert = RegimeModifier.InsertCardinalKnot (regime, 2.5, 0.);
 
 		dblX = 1.;
 
 		while (dblX <= dblXMax) {
 			System.out.println ("Cardinal Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble
-				(spanCardinalInsert.response (dblX), 1, 2, 1.) + " | " + spanInsert.monotoneType (dblX));
+				(regimeCardinalInsert.response (dblX), 1, 2, 1.) + " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 0.5;
 		}
 
 		/* 
-		 * We now insert a Catnull-Rom local control knot. The following are the steps:
+		 * We now insert a Catmull-Rom local control knot. The following are the steps:
 		 * 
 		 * - 1) Set up the left and the right segment edge parameters
 		 * - 2) Insert the pair of SEP's at the chosen variate node.
-		 * - 3) Compute the interpolated segment value and the motonicity across a suitable variate range.
+		 * - 3) Compute the Estimated segment value and the motonicity across a suitable variate range.
 		 */
 
-		MultiSegmentRegime spanCatmullRomInsert = RegimeModifier.InsertCatmullRomKnot (span, 2.5);
+		MultiSegmentRegime regimeCatmullRomInsert = RegimeModifier.InsertCatmullRomKnot (regime, 2.5);
 
 		dblX = 1.;
 
 		while (dblX <= dblXMax) {
 			System.out.println ("Catmull-Rom Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble
-				(spanCatmullRomInsert.response (dblX), 1, 2, 1.) + " | " + spanInsert.monotoneType (dblX));
+				(regimeCatmullRomInsert.response (dblX), 1, 2, 1.) + " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 0.5;
 		}
 	}
 
 	/**
-	 * This function demonstrates the construction, the calibration, and the usage of Lagrange Polynomial Span.
+	 * This function demonstrates the construction, the calibration, and the usage of Lagrange Polynomial Regime.
 	 * 	It does the following:
-	 * 	- Set up the predictors and the Lagrange Polynomial Span.
+	 * 	- Set up the predictors and the Lagrange Polynomial Regime.
 	 *  - Calibrate to a target Y array.
 	 *  - Calibrate the value to a target X.
 	 *  - Calibrate the value Jacobian to a target X.
@@ -424,7 +424,7 @@ public class SpanInterpolator {
 	 * @throws java.lang.Exception Thrown if the test does not succeed
 	 */
 
-	private static final void TestLagrangePolynomialSpan()
+	private static final void TestLagrangePolynomialRegime()
 		throws java.lang.Exception
 	{
 		SingleSegmentRegime lps = new LagrangePolynomialRegime (new double[] {-2., -1., 2., 5.});
@@ -438,6 +438,84 @@ public class SpanInterpolator {
 		System.out.println ("Value Monotone Type: " + lps.monotoneType (2.16));
 
 		System.out.println ("Is Locally Monotone: " + lps.isLocallyMonotone());
+	}
+
+	/**
+	 * Perform the following sequence of tests for a given segment control for a predictor/response range
+	 * 	- Estimate
+	 *  - Compute the segment-by-segment monotonicity
+	 *  - Regime Jacobian
+	 *  - Regime knot insertion
+	 * 
+	 * @param adblX The Predictor Array
+	 * @param adblY The Response Array
+	 * @param sbp The Segment Builder Parameters
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
+
+	public static final void BesselHermiteSplineRegimeTest (
+		final double[] adblX,
+		final double[] adblY,
+		final PredictorResponseBuilderParams sbp)
+		throws Exception
+	{
+		double dblX = 1.;
+		double dblXMax = 10.;
+
+		/*
+		 * Array of Segment Builder Parameters - one per segment
+		 */
+
+		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+
+		for (int i = 0; i < adblX.length - 1; ++i)
+			aSBP[i] = sbp;
+
+		/*
+		 * Construct a Regime instance 
+		 */
+
+		MultiSegmentRegime regime = RegimeBuilder.CreateBesselCubicSplineRegime (
+			"BESSEL_REGIME",
+			adblX, // predictors
+			adblY, // responses
+			aSBP, // Basis Segment Builder parameters
+			RegimeCalibrationSetting.CALIBRATE);
+
+		/*
+		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+
+			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
+
+			dblX += 1.;
+		}
+
+		/*
+		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
+		 */
+
+		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
+			9.,
+			10.,
+			new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
+
+		dblX = 1.;
+
+		/*
+		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+				+ " | " + regimeInsert.monotoneType (dblX));
+
+			dblX += 1.;
+		}
 	}
 
 	public static final void main (
@@ -478,36 +556,40 @@ public class SpanInterpolator {
 
 		int iBernPolyNumBasis = 4;
 
-		BasisSplineSpanTest (adblX, adblY, BernsteinPolynomialSegmentControlParams (iBernPolyNumBasis, segParams, rsc));
+		BasisSplineRegimeTest (adblX, adblY, BernsteinPolynomialSegmentControlParams (iBernPolyNumBasis, segParams, rsc));
 
 		System.out.println (" \n---------- \n POLYNOMIAL \n ---------- \n");
 
 		int iPolyNumBasis = 4;
 
-		BasisSplineSpanTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rsc));
+		BasisSplineRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rsc));
 
 		System.out.println (" \n---------- \n EXPONENTIAL TENSION \n ---------- \n");
 
 		double dblTension = 1.;
 
-		BasisSplineSpanTest (adblX, adblY, ExponentialTensionSegmentControlParams (dblTension, segParams, rsc));
+		BasisSplineRegimeTest (adblX, adblY, ExponentialTensionSegmentControlParams (dblTension, segParams, rsc));
 
 		System.out.println (" \n---------- \n HYPERBOLIC TENSION \n ---------- \n");
 
-		BasisSplineSpanTest (adblX, adblY, HyperbolicTensionSegmentControlParams (dblTension, segParams, rsc));
+		BasisSplineRegimeTest (adblX, adblY, HyperbolicTensionSegmentControlParams (dblTension, segParams, rsc));
 
 		System.out.println (" \n---------- \n KAKLIS PANDELIS \n ---------- \n");
 
 		int iKPTensionDegree = 2;
 
-		BasisSplineSpanTest (adblX, adblY, KaklisPandelisSegmentControlParams (iKPTensionDegree, segParams, rsc));
+		BasisSplineRegimeTest (adblX, adblY, KaklisPandelisSegmentControlParams (iKPTensionDegree, segParams, rsc));
 
 		System.out.println (" \n---------- \n HERMITE - CATMULL ROM - CARDINAL \n ---------- \n");
 
 		TestHermiteCatmullRomCardinal();
 
-		System.out.println (" \n---------- \n LAGRANGE POLYNOMIAL SPAN \n ---------- \n");
+		System.out.println (" \n---------- \n LAGRANGE POLYNOMIAL REGIME \n ---------- \n");
 
-		TestLagrangePolynomialSpan();
+		TestLagrangePolynomialRegime();
+
+		System.out.println (" \n---------- \n C1 BESSEL/HERMITE \n ---------- \n");
+
+		BesselHermiteSplineRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rsc));
 	}
 }

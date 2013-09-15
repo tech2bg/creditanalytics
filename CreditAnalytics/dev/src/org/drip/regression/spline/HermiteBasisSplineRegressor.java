@@ -90,8 +90,8 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 		org.drip.math.function.AbstractUnivariate rsc = new org.drip.math.function.RationalShapeControl (1.);
 
-		if (null == (_seg1 = org.drip.math.segment.PredictorResponseBasisSpline.Create (0.0, 1.0, aAU, rsc,
-			segParams)) || null == (_seg2 = org.drip.math.segment.PredictorResponseBasisSpline.Create (1.0,
+		if (null == (_seg1 = org.drip.math.segment.LocalBasisPredictorResponse.Create (0.0, 1.0, aAU, rsc,
+			segParams)) || null == (_seg2 = org.drip.math.segment.LocalBasisPredictorResponse.Create (1.0,
 				2.0, aAU, rsc, segParams)))
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
@@ -117,9 +117,9 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 		final org.drip.regression.core.RegressionRunDetail rnvd)
 	{
 		try {
-			if (!rnvd.set (_strName + "_Seg1_0_0", "" + _seg1.calcValue (0.))) return false;
+			if (!rnvd.set (_strName + "_Seg1_0_0", "" + _seg1.calcResponse (0.))) return false;
 
-			if (!rnvd.set (_strName + "_Seg1_1_0", "" + _seg1.calcValue (1.))) return false;
+			if (!rnvd.set (_strName + "_Seg1_1_0", "" + _seg1.calcResponse (1.))) return false;
 
 			if (!rnvd.set (_strName + "_Seg1_Jack", _wjLeft.displayString()));
 
@@ -127,9 +127,9 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 			if (!rnvd.set (_strName + "_Seg1_Monotone", _seg1.monotoneType().toString()));
 
-			if (!rnvd.set (_strName + "_Seg2_1_0", "" + _seg2.calcValue (1.))) return false;
+			if (!rnvd.set (_strName + "_Seg2_1_0", "" + _seg2.calcResponse (1.))) return false;
 
-			if (!rnvd.set (_strName + "_Seg2_2_0", "" + _seg2.calcValue (2.))) return false;
+			if (!rnvd.set (_strName + "_Seg2_2_0", "" + _seg2.calcResponse (2.))) return false;
 
 			if (!rnvd.set (_strName + "_Seg2_Jack", _wjRight.displayString()));
 

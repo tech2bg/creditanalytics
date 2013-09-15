@@ -78,7 +78,7 @@ public class RegimeBuilder {
 	 * @return Regime instance
 	 */
 
-	public static final org.drip.math.grid.MultiSegmentRegime CreateUncalibratedRegimeInterpolator (
+	public static final org.drip.math.grid.MultiSegmentRegime CreateUncalibratedRegimeEstimator (
 		final java.lang.String strName,
 		final double[] adblPredictorOrdinate,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP)
@@ -104,14 +104,14 @@ public class RegimeBuilder {
 				return null;
 
 			if (BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aSegment[i] = org.drip.math.segment.PredictorResponseBasisSpline.Create
+				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.math.spline.BasisSetBuilder.PolynomialBasisSet
 							((org.drip.math.spline.PolynomialBasisSetParams) aPRBP[i].getBasisSetParams()),
 								aPRBP[i].getShapeController(), aPRBP[i].getSegmentElasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aSegment[i] = org.drip.math.segment.PredictorResponseBasisSpline.Create
+				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.math.spline.BasisSetBuilder.BernsteinPolynomialBasisSet
 							((org.drip.math.spline.PolynomialBasisSetParams) aPRBP[i].getBasisSetParams()),
@@ -119,7 +119,7 @@ public class RegimeBuilder {
 					return null;
 			} else if (org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase
 				(strBasisSpline)) {
-				if (null == (aSegment[i] = org.drip.math.segment.PredictorResponseBasisSpline.Create
+				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.math.spline.BasisSetBuilder.HyperbolicTensionBasisSet
 							((org.drip.math.spline.ExponentialTensionBasisSetParams)
@@ -128,7 +128,7 @@ public class RegimeBuilder {
 					return null;
 			} else if (org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase
 				(strBasisSpline)) {
-				if (null == (aSegment[i] = org.drip.math.segment.PredictorResponseBasisSpline.Create
+				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.math.spline.BasisSetBuilder.ExponentialTensionBasisSet
 							((org.drip.math.spline.ExponentialTensionBasisSetParams)
@@ -137,7 +137,7 @@ public class RegimeBuilder {
 					return null;
 			} else if (org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_KAKLIS_PANDELIS.equalsIgnoreCase
 				(strBasisSpline)) {
-				if (null == (aSegment[i] = org.drip.math.segment.PredictorResponseBasisSpline.Create
+				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.math.spline.BasisSetBuilder.KaklisPandelisBasisSet
 							((org.drip.math.spline.KaklisPandelisBasisSetParams)
@@ -169,14 +169,14 @@ public class RegimeBuilder {
 	 * @return Regime instance
 	 */
 
-	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeInterpolator (
+	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeEstimator (
 		final java.lang.String strName,
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aSBP,
 		final org.drip.math.grid.RegimeCalibrationSetting rcs)
 	{
-		org.drip.math.grid.MultiSegmentRegime regime = CreateUncalibratedRegimeInterpolator (strName,
+		org.drip.math.grid.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aSBP);
 
 		if (null == regime || null == adblResponseValue) return null;
@@ -206,7 +206,7 @@ public class RegimeBuilder {
 	 * @return Regime Instance
 	 */
 
-	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeInterpolator (
+	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeEstimator (
 		final java.lang.String strName,
 		final double[] adblPredictorOrdinate,
 		final double dblRegimeLeftResponseValue,
@@ -214,7 +214,7 @@ public class RegimeBuilder {
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
 		final org.drip.math.grid.RegimeCalibrationSetting rcs)
 	{
-		org.drip.math.grid.MultiSegmentRegime regime = CreateUncalibratedRegimeInterpolator (strName,
+		org.drip.math.grid.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aPRBP);
 
 		return null == regime ? null : regime.setup (dblRegimeLeftResponseValue, aRVC, rcs) ? regime : null;
@@ -234,7 +234,7 @@ public class RegimeBuilder {
 	 * @return Regime Instance
 	 */
 
-	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeInterpolator (
+	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeEstimator (
 		final java.lang.String strName,
 		final double[] adblPredictorOrdinate,
 		final org.drip.math.segment.ResponseValueConstraint rvcRegimeLeft,
@@ -242,7 +242,7 @@ public class RegimeBuilder {
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
 		final org.drip.math.grid.RegimeCalibrationSetting rcs)
 	{
-		org.drip.math.grid.MultiSegmentRegime regime = CreateUncalibratedRegimeInterpolator (strName,
+		org.drip.math.grid.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aPRBP);
 
 		return null == regime ? null : regime.setup (rvcRegimeLeft, aRVC, rcs) ? regime : null;
@@ -260,7 +260,7 @@ public class RegimeBuilder {
 	 * @return Regime Instance
 	 */
 
-	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeInterpolator (
+	public static final org.drip.math.grid.MultiSegmentRegime CreateCalibratedRegimeEstimator (
 		final java.lang.String strName,
 		final double[] adblPredictorOrdinate,
 		final double dblResponseValue,
@@ -285,7 +285,92 @@ public class RegimeBuilder {
 			if (0 != i) aPRBP[i - 1] = prbp;
 		}
 
-		return CreateCalibratedRegimeInterpolator (strName, adblPredictorOrdinate, adblResponseValue, aPRBP,
+		return CreateCalibratedRegimeEstimator (strName, adblPredictorOrdinate, adblResponseValue, aPRBP,
 			rcs);
+	}
+
+	/**
+	 * Create Hermite/Bessel C1 Cubic Spline Regime
+	 * 
+	 * @param strName Regime Name
+	 * @param adblPredictorOrdinate Array of Predictor Ordinates
+	 * @param adblResponseValue Array of Response Values
+	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param iSetupMode Segment Setup Mode
+	 * 
+	 * @return Hermite/Bessel C1 Cubic Spline Regime
+	 */
+
+	public static final org.drip.math.grid.MultiSegmentRegime CreateBesselCubicSplineRegime (
+		final java.lang.String strName,
+		final double[] adblPredictorOrdinate,
+		final double[] adblResponseValue,
+		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final int iSetupMode)
+	{
+		org.drip.math.grid.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
+			adblPredictorOrdinate, aPRBP);
+
+		if (null == regime || null == adblResponseValue) return null;
+
+		int iNumSegment = adblResponseValue.length - 1;
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORD = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment + 1];
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+
+		if (0 == iNumSegment) return null;
+
+		for (int i = 0; i <= iNumSegment; ++i) {
+			double dblDResponseDPredictor = 0.;
+
+			if (0 == i) {
+				dblDResponseDPredictor = (adblPredictorOrdinate[2] + adblPredictorOrdinate[1] - 2. *
+					adblPredictorOrdinate[0]) * (adblResponseValue[1] - adblResponseValue[0]) /
+						(adblPredictorOrdinate[1] - adblPredictorOrdinate[0]);
+				dblDResponseDPredictor -= (adblPredictorOrdinate[1] - adblPredictorOrdinate[0]) *
+					(adblResponseValue[2] - adblResponseValue[1]) / (adblPredictorOrdinate[2] -
+						adblPredictorOrdinate[1]);
+				dblDResponseDPredictor /= (adblPredictorOrdinate[2] - adblPredictorOrdinate[0]);
+			} else if (iNumSegment == i) {
+				dblDResponseDPredictor = (adblPredictorOrdinate[iNumSegment] -
+					adblPredictorOrdinate[iNumSegment - 1]) * (adblResponseValue[iNumSegment - 1] -
+						adblResponseValue[iNumSegment - 2]) / (adblPredictorOrdinate[iNumSegment - 1] -
+							adblPredictorOrdinate[iNumSegment - 2]);
+				dblDResponseDPredictor -= (2. * adblPredictorOrdinate[iNumSegment] -
+					adblPredictorOrdinate[iNumSegment - 1] - adblPredictorOrdinate[iNumSegment - 2]) *
+						(adblResponseValue[iNumSegment] - adblResponseValue[iNumSegment - 1]) /
+							(adblPredictorOrdinate[iNumSegment] - adblPredictorOrdinate[iNumSegment - 1]);
+				dblDResponseDPredictor /= (adblPredictorOrdinate[iNumSegment] -
+					adblPredictorOrdinate[iNumSegment - 2]);
+			} else {
+				dblDResponseDPredictor = (adblPredictorOrdinate[i + 1] - adblPredictorOrdinate[i]) *
+					(adblResponseValue[i] - adblResponseValue[i - 1]) / (adblPredictorOrdinate[i] -
+						adblPredictorOrdinate[i - 1]);
+				dblDResponseDPredictor += (adblPredictorOrdinate[i] - adblPredictorOrdinate[i - 1]) *
+					(adblResponseValue[i + 1] - adblResponseValue[i]) / (adblPredictorOrdinate[i + 1] -
+						adblPredictorOrdinate[i]);
+				dblDResponseDPredictor /= (adblPredictorOrdinate[iNumSegment] -
+					adblPredictorOrdinate[iNumSegment - 2]);
+			}
+
+			try {
+				aPORD[i] = new org.drip.math.segment.PredictorOrdinateResponseDerivative
+					(adblResponseValue[i], new double[] {dblDResponseDPredictor});
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		for (int i = 0; i < iNumSegment; ++i) {
+			aPORDLeft[i] = aPORD[i];
+			aPORDRight[i] = aPORD[i + 1];
+		}
+
+		return regime.setupHermite (aPORDLeft, aPORDRight, null, iSetupMode) ? regime : null;
 	}
 }

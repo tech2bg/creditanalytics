@@ -29,9 +29,9 @@ package org.drip.math.grid;
  */
 
 /**
- * This class implements the regime using the Lagrange Polynomial Interpolator. It provides the following
+ * This class implements the regime using the Lagrange Polynomial Estimator. It provides the following
  * 	functionality:
- * 	- At any location inside the regime calculate the interpolated value and the Jacobian to the input.
+ * 	- At any location inside the regime calculate the estimated value and the Jacobian to the input.
  * 	- Estimate convexity, and if it is co-convex.
  * 	- Estimate monotonicity, if it is co-monotone, and it if is locally monotone.
  *

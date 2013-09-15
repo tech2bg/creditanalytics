@@ -441,7 +441,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return null;
 	}
 
-	@Override public boolean buildInterpolator()
+	@Override public boolean buildEstimator()
 	{
 		return false;
 	}

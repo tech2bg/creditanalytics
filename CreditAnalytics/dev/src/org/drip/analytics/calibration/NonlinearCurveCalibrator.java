@@ -35,7 +35,7 @@ package org.drip.analytics.calibration;
  * 
  * CurveCalibrator employs a set of techniques for achieving this calibration.
  * 	- It bootstraps the nodes in sequence to calibrate the curve.
- * 	- In conjunction with splining interpolation techniques, it may also be used to perform dual sweep
+ * 	- In conjunction with splining estimation techniques, it may also be used to perform dual sweep
  * 		calibration. The inner sweep achieves the calibration of the segment spline parameters, while the
  * 		outer sweep calibrates iteratively for the targeted boundary conditions.
  * 

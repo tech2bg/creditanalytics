@@ -244,7 +244,7 @@ public class WengertJacobian {
 					(_aadblDWengertDParameter[iWengertIndex][iParameterIndex], 1, 4, 1.));
 			}
 
-			sb.append (sbDWengertDParameter).append ("]\n");
+			sb.append (sbDWengertDParameter).append ("]");
 		}
 
 		return sb.toString();

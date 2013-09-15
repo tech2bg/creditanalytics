@@ -859,31 +859,33 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	}
 
 	/**
-	 * Estimates the Interpolated calibrated measure value for the given date
+	 * Estimates the estimated calibrated measure value for the given date
 	 * 
 	 * @param dblDate Date
 	 * 
-	 * @return The Interpolated calibrated measure value
+	 * @return The estimated calibrated measure value
 	 * 
-	 * @throws java.lang.Exception Thrown if the Interpolated calibrated measure value cannot be computed
+	 * @throws java.lang.Exception Thrown if the estimated calibrated measure value cannot be computed
 	 */
 
-	public double interpMeasure (
+	public double estimateMeasure (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Invalid input");
+			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Invalid input");
 
 		org.drip.product.definition.CalibratableComponent[] aCalibComp = getCalibComponents();
 
 		if (null == aCalibComp)
-			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Components not available");
+			throw new java.lang.Exception
+				("DiscountCurve.estimateMeasure => Calib Components not available");
 
-		org.drip.math.segment.PredictorResponseBuilderParams sbp = new org.drip.math.segment.PredictorResponseBuilderParams
-			(org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
-				org.drip.math.spline.PolynomialBasisSetParams (2), new
-					org.drip.math.segment.DesignInelasticParams (0, 2), null);
+		org.drip.math.segment.PredictorResponseBuilderParams sbp = new
+			org.drip.math.segment.PredictorResponseBuilderParams
+				(org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
+					org.drip.math.spline.PolynomialBasisSetParams (2), new
+						org.drip.math.segment.DesignInelasticParams (0, 2), null);
 
 		int iNumComponent = aCalibComp.length;
 		double[] adblDate = new double[iNumComponent];
@@ -891,30 +893,31 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.math.segment.PredictorResponseBuilderParams[iNumComponent - 1];
 
 		if (0 == iNumComponent)
-			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Components not available");
+			throw new java.lang.Exception
+				("DiscountCurve.estimateMeasure => Calib Components not available");
 
 		double[] adblQuote = getCompQuotes();
 
 		if (iNumComponent != adblQuote.length)
-			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Calib Quotes not available");
+			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Calib Quotes not available");
 
 		for (int i = 0; i < iNumComponent; ++i) {
 			if (0 != i) aSBP[i - 1] = sbp;
 
 			if (null == aCalibComp[i])
-				throw new java.lang.Exception ("DiscountCurve.interpMeasure => Cannot locate a component");
+				throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot locate a component");
 
 			adblDate[i] = aCalibComp[i].getMaturityDate().getJulian();
 		}
 
 		org.drip.math.grid.MultiSegmentRegime span =
-			org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeInterpolator ("DISC_CURVE_REGIME",
-				adblDate, adblQuote, aSBP, new org.drip.math.grid.RegimeCalibrationSetting
+			org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeEstimator ("DISC_CURVE_REGIME", adblDate,
+				adblQuote, aSBP, new org.drip.math.grid.RegimeCalibrationSetting
 					(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL,
 						org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
 
 		if (null == span)
-			throw new java.lang.Exception ("DiscountCurve.interpMeasure => Cannot create Interp Span");
+			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot create Interp Span");
 
 		return span.response (dblDate);
 	}

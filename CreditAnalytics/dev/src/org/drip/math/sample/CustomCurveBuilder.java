@@ -14,9 +14,7 @@ import java.util.*;
 import org.drip.math.common.FormatUtil;
 import org.drip.math.function.RationalShapeControl;
 import org.drip.math.grid.*;
-import org.drip.math.segment.DesignInelasticParams;
-import org.drip.math.segment.PredictorResponseBuilderParams;
-import org.drip.math.segment.ResponseValueConstraint;
+import org.drip.math.segment.*;
 import org.drip.math.spline.*;
 
 /*
@@ -48,7 +46,7 @@ import org.drip.math.spline.*;
 
 /**
  * CustomCurveBuilder contains samples that demo how to build a discount curve from purely the cash flows. It
- *  provides for elaborate curve builder control, both at the segment level and at the span level. In
+ *  provides for elaborate curve builder control, both at the segment level and at the Regime level. In
  *  particular, it shows the following:
  * 	- Construct a discount curve from the discount factors available purely from the cash and the euro-dollar
  *  	instruments.
@@ -159,7 +157,7 @@ public class CustomCurveBuilder {
 
 	private static final ResponseValueConstraint GenerateSegmentConstraint (
 		final TreeMap<Double, Double> mapCF,
-		final MultiSegmentRegime spanDF)
+		final MultiSegmentRegime regimeDF)
 		throws Exception
 	{
 		double dblValue = 0.;
@@ -171,8 +169,8 @@ public class CustomCurveBuilder {
 		for (Map.Entry<Double, Double> me : mapCF.entrySet()) {
 			double dblTime = me.getKey();
 
-			if (null != spanDF && spanDF.in (dblTime))
-				dblValue += spanDF.response (dblTime) * me.getValue();
+			if (null != regimeDF && regimeDF.in (dblTime))
+				dblValue += regimeDF.response (dblTime) * me.getValue();
 			else {
 				lsTime.add (me.getKey());
 
@@ -250,7 +248,7 @@ public class CustomCurveBuilder {
 	 */
 
 	private static final MultiSegmentRegime BuildSwapCurve (
-		MultiSegmentRegime span,
+		MultiSegmentRegime regime,
 		final RegimeCalibrationSetting ss)
 		throws Exception
 	{
@@ -272,16 +270,16 @@ public class CustomCurveBuilder {
 			TreeMap<Double, Double> mapCF = SwapCashFlow (dblQuote, 2, dblTenorInYears);
 
 			/*
-			 * Convert the Cash flow into a DRIP segment constraint using the "prior" curve span
+			 * Convert the Cash flow into a DRIP segment constraint using the "prior" curve regime
 			 */
 
-			ResponseValueConstraint snwc = GenerateSegmentConstraint (mapCF, span);
+			ResponseValueConstraint snwc = GenerateSegmentConstraint (mapCF, regime);
 
 			/*
-			 * If it is the head segment, create a span instance for the discount curve.
+			 * If it is the head segment, create a regime instance for the discount curve.
 			 */
 
-			if (null == span) {
+			if (null == regime) {
 				/*
 				 * Set the Segment Builder Parameters. This may be set on a segment-by-segment basis.
 				 */
@@ -289,18 +287,18 @@ public class CustomCurveBuilder {
 				PredictorResponseBuilderParams sbp = MakeSBP (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION);
 
 				/*
-				 * Start off with a single segment span, with the corresponding Builder Parameters
+				 * Start off with a single segment regime, with the corresponding Builder Parameters
 				 */
 
-				span = RegimeBuilder.CreateUncalibratedRegimeInterpolator ("SWAP",
+				regime = RegimeBuilder.CreateUncalibratedRegimeEstimator ("SWAP",
 					new double[] {0., dblTenorInYears},
 					new PredictorResponseBuilderParams[] {sbp});
 
 				/*
-				 * Set the span up by carrying out a "Natural Boundary" Spline Calibration
+				 * Set the regime up by carrying out a "Natural Boundary" Spline Calibration
 				 */
 
-				span.setup (1.,
+				regime.setup (1.,
 					new ResponseValueConstraint[] {snwc},
 					ss);
 			} else {
@@ -324,14 +322,14 @@ public class CustomCurveBuilder {
 
 				/*
 				 * If not the head segment, just append the exclusive swap instrument segment to the tail of
-				 * 	the current span state, using the constraint generated from the swap cash flow.
+				 * 	the current regime state, using the constraint generated from the swap cash flow.
 				 */
 
-				span = org.drip.math.grid.RegimeModifier.AppendSegment (span, dblTenorInYears, snwc, sbpLocal, ss);
+				regime = org.drip.math.grid.RegimeModifier.AppendSegment (regime, dblTenorInYears, snwc, sbpLocal, ss);
 			}
 		}
 
-		return span;
+		return regime;
 	}
 
 	/**
@@ -387,19 +385,19 @@ public class CustomCurveBuilder {
 		throws Exception
 	{
 		/*
-		 * For the head segment, create a calibrated span instance for the discount curve.
+		 * For the head segment, create a calibrated regime instance for the discount curve.
 		 */
 
-		MultiSegmentRegime spanCash = RegimeBuilder.CreateCalibratedRegimeInterpolator (
+		MultiSegmentRegime regimeCash = RegimeBuilder.CreateCalibratedRegimeEstimator (
 			"CASH",
 			new double[] {0., 0.002778}, // t0 and t1 for the segment
 			new double[] {1., 0.999996}, // the corresponding discount factors
 			new PredictorResponseBuilderParams[] {MakeSBP (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)}, // Exponential Tension Basis Spline
-			ss); // "Natural" Spline Boundary Condition + Calibrate the full Span
+			ss); // "Natural" Spline Boundary Condition + Calibrate the full regime
 
 		/*
 		 * Construct the discount curve by iterating through the cash instruments and their discount
-		 * 	factors, and inserting them as "knots" onto the existing span.
+		 * 	factors, and inserting them as "knots" onto the existing regime.
 		 */
 
 		for (Map.Entry<Double, Double> meCashDFQuote : CashDFQuotes().entrySet()) {
@@ -408,24 +406,24 @@ public class CustomCurveBuilder {
 			double dblDF = meCashDFQuote.getValue(); // Discount Factor
 
 			/*
-			 * Insert the instrument/quote as a "knot" entity into the span. Given the "natural" spline
+			 * Insert the instrument/quote as a "knot" entity into the regime. Given the "natural" spline
 			 */
 
-			spanCash = RegimeModifier.InsertKnot (spanCash, dblTenorInYears, dblDF, ss);
+			regimeCash = RegimeModifier.InsertKnot (regimeCash, dblTenorInYears, dblDF, ss);
 		}
 
-		return spanCash;
+		return regimeCash;
 	}
 
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
 	{
-		MultiSegmentRegime spanNaturalCash = BuildCashCurve (new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
+		MultiSegmentRegime regimeNaturalCash = BuildCashCurve (new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
 
-		MultiSegmentRegime spanFinancialCash = BuildCashCurve (new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_FINANCIAL, RegimeCalibrationSetting.CALIBRATE));
+		MultiSegmentRegime regimeFinancialCash = BuildCashCurve (new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_FINANCIAL, RegimeCalibrationSetting.CALIBRATE));
 
-		double dblXShift = 0.1 * (spanNaturalCash.getRightPredictorOrdinateEdge() - spanNaturalCash.getLeftPredictorOrdinateEdge());
+		double dblXShift = 0.1 * (regimeNaturalCash.getRightPredictorOrdinateEdge() - regimeNaturalCash.getLeftPredictorOrdinateEdge());
 
 		System.out.println ("\n\t\t\t----------------     <====>  ------------------");
 
@@ -437,32 +435,32 @@ public class CustomCurveBuilder {
 		 * Display the DF, the monotonicity, and the convexity for the cash instruments.
 		 */
 
-		for (double dblX = spanNaturalCash.getLeftPredictorOrdinateEdge(); dblX <= spanNaturalCash.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
+		for (double dblX = regimeNaturalCash.getLeftPredictorOrdinateEdge(); dblX <= regimeNaturalCash.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
 			System.out.println ("Cash DF[" +
 				FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "Y] => " +
-				FormatUtil.FormatDouble (spanNaturalCash.response (dblX), 1, 6, 1.) + " | " +
-				spanNaturalCash.monotoneType (dblX) + "  <====>  " +
-				FormatUtil.FormatDouble (spanFinancialCash.response (dblX), 1, 6, 1.) + " | " +
-				spanNaturalCash.monotoneType (dblX));
+				FormatUtil.FormatDouble (regimeNaturalCash.response (dblX), 1, 6, 1.) + " | " +
+				regimeNaturalCash.monotoneType (dblX) + "  <====>  " +
+				FormatUtil.FormatDouble (regimeFinancialCash.response (dblX), 1, 6, 1.) + " | " +
+				regimeNaturalCash.monotoneType (dblX));
 
 		System.out.println ("\n");
 
-		MultiSegmentRegime spanNaturalSwap = BuildSwapCurve (spanNaturalCash, new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
+		MultiSegmentRegime regimeNaturalSwap = BuildSwapCurve (regimeNaturalCash, new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
 
-		MultiSegmentRegime spanFinancialSwap = BuildSwapCurve (spanNaturalCash, new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_FINANCIAL, RegimeCalibrationSetting.CALIBRATE));
+		MultiSegmentRegime regimeFinancialSwap = BuildSwapCurve (regimeNaturalCash, new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_FINANCIAL, RegimeCalibrationSetting.CALIBRATE));
 
 		/*
 		 * Display the DF, the monotonicity, and the convexity for the swaps.
 		 */
 
-		dblXShift = 0.05 * (spanNaturalSwap.getRightPredictorOrdinateEdge() - spanNaturalSwap.getLeftPredictorOrdinateEdge());
+		dblXShift = 0.05 * (regimeNaturalSwap.getRightPredictorOrdinateEdge() - regimeNaturalSwap.getLeftPredictorOrdinateEdge());
 
-		for (double dblX = spanNaturalSwap.getLeftPredictorOrdinateEdge(); dblX <= spanNaturalSwap.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
+		for (double dblX = regimeNaturalSwap.getLeftPredictorOrdinateEdge(); dblX <= regimeNaturalSwap.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
 			System.out.println ("Swap DF   [" +
 				FormatUtil.FormatDouble (dblX, 2, 0, 1.) + "Y] => " +
-				FormatUtil.FormatDouble (spanNaturalSwap.response (dblX), 1, 6, 1.) + " | " +
-				spanNaturalSwap.monotoneType (dblX) + "  <====>  " +
-				FormatUtil.FormatDouble (spanFinancialSwap.response (dblX), 1, 6, 1.) + " | " +
-				spanFinancialSwap.monotoneType (dblX));
+				FormatUtil.FormatDouble (regimeNaturalSwap.response (dblX), 1, 6, 1.) + " | " +
+				regimeNaturalSwap.monotoneType (dblX) + "  <====>  " +
+				FormatUtil.FormatDouble (regimeFinancialSwap.response (dblX), 1, 6, 1.) + " | " +
+				regimeFinancialSwap.monotoneType (dblX));
 	}
 }

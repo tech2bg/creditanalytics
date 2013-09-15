@@ -33,7 +33,7 @@ package org.drip.analytics.definition;
 /**
  * Curve implements the interfaces across all curve instances. It exposes the following functionality:
  *  - Set the effective/start date
- *  - Set up calibration run framework (initialize the build run, build the interpolator etc.)
+ *  - Set up calibration run framework (initialize the build run, build the estimator etc.)
  *  - Generate scenario curves from the base curve (flat/parallel/custom)
  *  - Set/retrieve the components and their quotes
  *
@@ -182,10 +182,10 @@ public interface Curve {
 	public abstract org.drip.analytics.date.JulianDate getStartDate();
 
 	/**
-	 * Build the interpolator post the curve sweeping build
+	 * Build the estimator post the curve sweeping build
 	 * 
 	 * @return TRUE => Build-out successful
 	 */
 
-	public boolean buildInterpolator();
+	public boolean buildEstimator();
 }

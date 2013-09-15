@@ -29,39 +29,31 @@ package org.drip.math.grid;
  */
 
 /**
- * Span implements a Collection of Regimes. Typical Span consists functional Regimes coupled together by
- *  Transition Regimes.
+ * NonOverlappingRegimeSpan implements a collection of regimes whose predictor ordinate ranges are strictly
+ * 	non-overlapping (adjacency is allowed). Typical NonOverlappingRegimeSpan consist of functional regimes
+ *  coupled together by transition regimes.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class Span {
+public class NonOverlappingRegimeSpan {
 	private java.util.List<org.drip.math.grid.MultiSegmentRegime> _lsRegime = new
 		java.util.ArrayList<org.drip.math.grid.MultiSegmentRegime>();
 
 	/**
-	 * Empty Span ctr
+	 * NonOverlappingRegimeSpan constructor
+	 * 
+	 * @param regime The Initial Regime in the Span
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public Span()
-	{
-	}
-
-	/**
-	 * Add a Regime to the Span
-	 * 
-	 * @param regime Regime to be added
-	 * 
-	 * @return TRUE => Regime added successfully
-	 */
-
-	public boolean addRegime (
+	public NonOverlappingRegimeSpan (
 		final org.drip.math.grid.MultiSegmentRegime regime)
+		throws java.lang.Exception
 	{
-		if (null == regime) return false;
+		if (null == regime) throw new java.lang.Exception ("NonOverlappingRegimeSpan ctr: Invalid Inputs");
 
 		_lsRegime.add (regime);
-
-		return true;
 	}
 }

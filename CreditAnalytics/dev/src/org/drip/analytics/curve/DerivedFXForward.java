@@ -564,7 +564,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return null;
 	}
 
-	@Override public boolean buildInterpolator()
+	@Override public boolean buildEstimator()
 	{
 		return false;
 	}

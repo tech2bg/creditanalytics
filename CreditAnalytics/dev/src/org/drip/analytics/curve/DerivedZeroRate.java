@@ -404,7 +404,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		return _dc.deserialize (ab);
 	}
 
-	@Override public boolean buildInterpolator()
+	@Override public boolean buildEstimator()
 	{
 		return false;
 	}

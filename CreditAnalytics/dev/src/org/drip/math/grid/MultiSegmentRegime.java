@@ -34,7 +34,7 @@ package org.drip.math.grid;
  *  MultiSegmentRegime exports the following group of functionality:
  * 	- Construct adjoining segment sequences in accordance with the segment control parameters
  * 	- Calibrate according to a varied set of (i.e., NATURAL/FINANCIAL) boundary conditions
- * 	- Interpolate both the value, the ordered derivatives, and the Jacobian at the given ordinate
+ * 	- Estimate both the value, the ordered derivatives, and the Jacobian at the given ordinate
  * 	- Compute the monotonicity details - segment/regime level monotonicity, co-monotonicity, local
  * 		monotonicity.
  * 
@@ -72,7 +72,8 @@ public interface MultiSegmentRegime extends org.drip.math.grid.SingleSegmentRegi
 
 	/**
 	 * Set up (i.e., calibrate) the individual Segment in the Regime to the Target Segment Edge Values and
-	 * 	Constraints.
+	 * 	Constraints. This is also called the Hermite setup - where the segment boundaries are entirely
+	 * 	locally set.
 	 * 
 	 * @param aPORDLeft Array of Left Segment Edge Values
 	 * @param aPORDRight Array of Right Segment Edge Values
@@ -84,7 +85,7 @@ public interface MultiSegmentRegime extends org.drip.math.grid.SingleSegmentRegi
 	 * @return TRUE => Set up was successful
 	 */
 
-	public abstract boolean setup (
+	public abstract boolean setupHermite (
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft,
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight,
 		final org.drip.math.segment.ResponseValueConstraint[][] aaRVC,
@@ -136,9 +137,58 @@ public interface MultiSegmentRegime extends org.drip.math.grid.SingleSegmentRegi
 	 * @param dblPredictorOrdinate Predictor Ordinate
 	 * 
 	 * @return TRUE => Predictor Ordinate is in the Range
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
 	public abstract boolean in (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception;
+
+	/**
+	 * Return the Index for the Segment containing specified Predictor Ordinate
+	 * 
+	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * @param bIncludeLeft TRUE => Less than or equal to the Left Predictor Ordinate
+	 * @param bIncludeRight TRUE => Less than or equal to the Right Predictor Ordinate
+	 * 
+	 * @return Index for the Segment containing specified Predictor Ordinate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public int containingIndex (
+		final double dblPredictorOrdinate,
+		final boolean bIncludeLeft,
+		final boolean bIncludeRight)
+		throws java.lang.Exception;
+
+	/**
+	 * Generate a new Regime by clipping all the Segments to the Left of the specified Predictor Ordinate.
+	 *  Smoothness Constraints will be maintained.
+	 * 
+	 * @param strName Name of the Clipped Regime 
+	 * @param dblPredictorOrdinate Predictor Ordinate Left of which the Clipping is to be applied
+	 * 
+	 * @return The Clipped Regime
+	 */
+
+	public abstract MultiSegmentCalibratableRegime clipLeft (
+		final java.lang.String strName,
+		final double dblPredictorOrdinate);
+
+	/**
+	 * Generate a new Regime by clipping all the Segments to the Right of the specified Predictor Ordinate.
+	 * 	Smoothness Constraints will be maintained.
+	 * 
+	 * @param strName Name of the Clipped Regime 
+	 * @param dblPredictorOrdinate Predictor Ordinate Right of which the Clipping is to be applied
+	 * 
+	 * @return The Clipped Regime
+	 */
+
+	public abstract MultiSegmentCalibratableRegime clipRight (
+		final java.lang.String strName,
 		final double dblPredictorOrdinate);
 
 	/**

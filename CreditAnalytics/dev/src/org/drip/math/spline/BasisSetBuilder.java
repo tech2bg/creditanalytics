@@ -40,7 +40,7 @@ package org.drip.math.spline;
  * This elastic coefficients for the segment using Ck basis splines inside [0,...,1) - Globally
  *  [x_0,...,x_1) are extracted for:
  * 
- * 			y = Interpolator (Ck, x) * ShapeControl (x)
+ * 			y = Estimator (Ck, x) * ShapeControl (x)
  * 
  *		where x is the normalized ordinate mapped as
  * 

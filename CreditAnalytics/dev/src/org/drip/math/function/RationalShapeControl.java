@@ -29,8 +29,8 @@ package org.drip.math.function;
  */
 
 /**
- * RationalShapeControl implements the deterministic rational shape control functionality on top of
- *  interpolating basis splines inside - [0,...,1) - Globally [x_0,...,x_1):
+ * RationalShapeControl implements the deterministic rational shape control functionality on top of the
+ *  estimator basis splines inside - [0,...,1) - Globally [x_0,...,x_1):
  * 
  * 			y = 1 / [1 + lambda * x * (1-x)]
  * 

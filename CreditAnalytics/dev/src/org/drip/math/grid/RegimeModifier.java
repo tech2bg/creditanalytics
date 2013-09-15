@@ -113,7 +113,7 @@ public class RegimeModifier {
 			aPRBPOut[aPRBPOut.length - 1] = aPRBPIn[aPRBPIn.length - 1];
 		}
 
-		return org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeInterpolator (regimeIn.name(),
+		return org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeEstimator (regimeIn.name(),
 			adblPredictorOrdinate, adblResponseValue, aPRBPOut, rcs);
 	}
 
@@ -193,7 +193,7 @@ public class RegimeModifier {
 
 		adblPredictorOrdinateOut[iNumSegmentIn] = aSegment[iNumSegmentIn - 1].right();
 
-		return org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeInterpolator (regimeIn.name(),
+		return org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeEstimator (regimeIn.name(),
 			adblPredictorOrdinateOut, dblRegimeResponseValueLeft, aRVCOut, aPRBPOut, rcs);
 	}
 
@@ -257,12 +257,12 @@ public class RegimeModifier {
 		}
 
 		org.drip.math.grid.MultiSegmentRegime regimeOut =
-			org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeInterpolator (regimeIn.name(),
+			org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeEstimator (regimeIn.name(),
 				adblPredictorOrdinateOut, aPRBPOut);
 
 		if (null == regimeOut) return null;
 
-		return regimeOut.setup (aPORDOutLeft, aPORDOutRight, null,
+		return regimeOut.setupHermite (aPORDOutLeft, aPORDOutRight, null,
 			org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE) ? regimeOut : null;
 	}
 

@@ -121,14 +121,16 @@ public class DiscountCurveBuilderAPI {
 			{0.0013, 0.0017, 0.0017, 0.0018, 0.0020, 0.0023, // Cash Rate
 			0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160}); // EDF Rate
 
-		MultiSegmentRegime regime = lcc.regimeFromCashInstruments (aCashComp,
+		OverlappingRegimeSpan span = lcc.regimeFromCashInstruments (aCashComp,
 			ValuationParams.CreateSpotValParams (dtToday.getJulian()), null, null, null, aCashLSMM);
 
-		for (double dblX = regime.getLeftPredictorOrdinateEdge(); dblX <= regime.getRightPredictorOrdinateEdge(); dblX += 0.1 *
-			(regime.getRightPredictorOrdinateEdge() - regime.getLeftPredictorOrdinateEdge())) {
+		MultiSegmentRegime regimeCash = span.getRegime ("CASH");
+
+		for (double dblX = regimeCash.getLeftPredictorOrdinateEdge(); dblX <= regimeCash.getRightPredictorOrdinateEdge();
+			dblX += 0.1 * (regimeCash.getRightPredictorOrdinateEdge() - regimeCash.getLeftPredictorOrdinateEdge())) {
 			try {
 				System.out.println ("\tDiscount Factor[" + new JulianDate (dblX) + "] = " +
-					FormatUtil.FormatDouble (regime.response (dblX), 1, 8, 1.) + " | " + regime.monotoneType (dblX));
+					FormatUtil.FormatDouble (regimeCash.response (dblX), 1, 8, 1.) + " | " + regimeCash.monotoneType (dblX));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -140,14 +142,16 @@ public class DiscountCurveBuilderAPI {
 		LatentStateMetricMeasure[] aSwapLSMM = LSMMFromQuotes (new double[]
 			{0.0166, 0.0206, 0.0241, 0.0269, 0.0292, 0.0311, 0.0326, 0.0340, 0.0351, 0.0375, 0.0393, 0.0402, 0.0407, 0.0409, 0.0409});
 
-		regime = lcc.regimeFromSwapInstruments (regime, aSwapComp,
+		lcc.regimeFromSwapInstruments (span, aSwapComp,
 			ValuationParams.CreateSpotValParams (dtToday.getJulian()), null, null, null, aSwapLSMM);
 
-		for (double dblX = regime.getLeftPredictorOrdinateEdge(); dblX <= regime.getRightPredictorOrdinateEdge(); dblX += 0.05 *
-			(regime.getRightPredictorOrdinateEdge() - regime.getLeftPredictorOrdinateEdge())) {
+		MultiSegmentRegime regimeSwap = span.getRegime ("SWAP");
+
+		for (double dblX = regimeSwap.getLeftPredictorOrdinateEdge(); dblX <= regimeSwap.getRightPredictorOrdinateEdge();
+			dblX += 0.05 * (regimeSwap.getRightPredictorOrdinateEdge() - regimeSwap.getLeftPredictorOrdinateEdge())) {
 			try {
 				System.out.println ("\t\tDiscount Factor[" + new JulianDate (dblX) + "] = " +
-					FormatUtil.FormatDouble (regime.response (dblX), 1, 8, 1.) + " | " + regime.monotoneType (dblX));
+					FormatUtil.FormatDouble (regimeSwap.response (dblX), 1, 8, 1.) + " | " + regimeSwap.monotoneType (dblX));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}

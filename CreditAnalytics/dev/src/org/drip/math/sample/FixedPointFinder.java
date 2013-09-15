@@ -35,8 +35,8 @@ import org.drip.math.solver1D.*;
  */
 
 /**
- * RootFinder contains a sample illustration of usage of the Root Finder Library. It demonstrates the root
- * 	extraction using the following techniques:
+ * FixedPointFinder contains a sample illustration of usage of the Root Finder Library. It demonstrates the
+ * 	fixed point extraction using the following techniques:
  * 	- Newton-Raphson method
  * 	- Bisection Method
  * 	- False Position
@@ -49,7 +49,7 @@ import org.drip.math.solver1D.*;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RootFinder {
+public class FixedPointFinder {
 
 	/*
 	 * Sample illustrating the Invocation of the Newton-Raphson Open Method

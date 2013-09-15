@@ -43,7 +43,7 @@ public class CalibrationParams {
 	private double[] _adblLeftDeriv = null;
 	private double[] _adblRightDeriv = null;
 	private double[] _adblPredictorOrdinate = null;
-	private org.drip.math.segment.ResponseValueConstraint[] _aPRC = null;
+	private org.drip.math.segment.ResponseValueConstraint[] _aRVC = null;
 
 	/**
 	 * CalibrationParams constructor
@@ -52,7 +52,7 @@ public class CalibrationParams {
 	 * @param adblResponse Array of the Corresponding Responses
 	 * @param adblLeftDeriv Array of the Left Derivative Values
 	 * @param adblRightDeriv Array of the Right Derivative Values
-	 * @param aPRC Array of the Predictor/Response Constraints
+	 * @param aRVC Array of the Response Value Constraints
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are not Valid
 	 */
@@ -62,10 +62,10 @@ public class CalibrationParams {
 		final double[] adblResponse,
 		final double[] adblLeftDeriv,
 		final double[] adblRightDeriv,
-		final org.drip.math.segment.ResponseValueConstraint[] aPRC)
+		final org.drip.math.segment.ResponseValueConstraint[] aRVC)
 		throws java.lang.Exception
 	{
-		_aPRC = aPRC;
+		_aRVC = aRVC;
 		int iNumPredictorOrdinate = 0;
 		_adblResponse = adblResponse;
 		_adblLeftDeriv = adblLeftDeriv;
@@ -140,16 +140,16 @@ public class CalibrationParams {
 		final org.drip.math.function.AbstractUnivariate[] aAUResponseBasis,
 		final org.drip.math.segment.Inelastics inel)
 	{
-		if (null == _aPRC) return null;
+		if (null == _aRVC) return null;
 
-		int iNumConstraint = _aPRC.length;
+		int iNumConstraint = _aRVC.length;
 		org.drip.math.segment.ResponseBasisConstraint[] aSRBC = new
 			org.drip.math.segment.ResponseBasisConstraint[iNumConstraint];
 
 		if (0 == iNumConstraint) return null;
 
 		for (int i = 0; i < iNumConstraint; ++i) {
-			if (null == _aPRC[i] || null == (aSRBC[i] = _aPRC[i].responseBasisConstraint (aAUResponseBasis,
+			if (null == _aRVC[i] || null == (aSRBC[i] = _aRVC[i].responseBasisConstraint (aAUResponseBasis,
 				inel)))
 				return null;
 		}
@@ -253,23 +253,23 @@ public class CalibrationParams {
 			}
 		}
 
-		if (null != _aPRC && 0 != _aPRC.length) {
+		if (null != _aRVC && 0 != _aRVC.length) {
 			java.util.List<org.drip.math.segment.ResponseValueConstraint> lsSPRCLeft = new
 				java.util.ArrayList<org.drip.math.segment.ResponseValueConstraint>();
 
 			java.util.List<org.drip.math.segment.ResponseValueConstraint> lsSPRCRight = new
 				java.util.ArrayList<org.drip.math.segment.ResponseValueConstraint>();
 
-			for (org.drip.math.segment.ResponseValueConstraint prc : _aPRC) {
-				if (null == prc) return null;
+			for (org.drip.math.segment.ResponseValueConstraint rvc : _aRVC) {
+				if (null == rvc) return null;
 
 				try {
 					if (org.drip.math.segment.ResponseValueConstraint.RIGHT_OF_CONSTRAINT ==
-						prc.knotPosition (dblPredictor))
-						lsSPRCLeft.add (prc);
+						rvc.knotPosition (dblPredictor))
+						lsSPRCLeft.add (rvc);
 					else if (org.drip.math.segment.ResponseValueConstraint.LEFT_OF_CONSTRAINT ==
-						prc.knotPosition (dblPredictor))
-						lsSPRCRight.add (prc);
+						rvc.knotPosition (dblPredictor))
+						lsSPRCRight.add (rvc);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -298,9 +298,9 @@ public class CalibrationParams {
 		}
 
 		try {
-			return new CalibrationParams[] {new CalibrationParams (adblLeftPredictor,
-				adblLeftResponse, _adblLeftDeriv, adblDeriv, aSPRCLeft), new CalibrationParams
-					(adblRightPredictor, adblRightResponse, adblDeriv, _adblRightDeriv, aSPRCRight)};
+			return new CalibrationParams[] {new CalibrationParams (adblLeftPredictor, adblLeftResponse,
+				_adblLeftDeriv, adblDeriv, aSPRCLeft), new CalibrationParams (adblRightPredictor,
+					adblRightResponse, adblDeriv, _adblRightDeriv, aSPRCRight)};
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

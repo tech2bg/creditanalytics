@@ -39,14 +39,14 @@ package org.drip.regression.spline;
  * @author Lakshmi Krishnamurthy
  */
 
-public class LagrangePolynomialSpanRegressor extends org.drip.regression.core.UnitRegressionExecutor {
+public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.UnitRegressionExecutor {
 	private boolean _bLocallyMonotone = false;
 	private double _dblValue = java.lang.Double.NaN;
 	private org.drip.math.grid.SingleSegmentRegime _sss = null;
 	private org.drip.math.segment.Monotonocity _sm = null;
 	private org.drip.math.calculus.WengertJacobian _wj = null;
 
-	public LagrangePolynomialSpanRegressor (
+	public LagrangePolynomialRegimeRegressor (
 		final java.lang.String strName,
 		final java.lang.String strScenarioName)
 		throws java.lang.Exception
@@ -59,9 +59,10 @@ public class LagrangePolynomialSpanRegressor extends org.drip.regression.core.Un
 	@Override public boolean preRegression()
 	{
 		try {
-			return _sss.setup (1., new double[] {1., 2., 3., 4.}, new org.drip.math.grid.RegimeCalibrationSetting
-				(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_FLOATING,
-					org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
+			return _sss.setup (1., new double[] {1., 2., 3., 4.}, new
+				org.drip.math.grid.RegimeCalibrationSetting
+					(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_FLOATING,
+						org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
