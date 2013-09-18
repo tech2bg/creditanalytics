@@ -131,6 +131,7 @@ public class CalibrationParams {
 	 * 	corresponding Response Basis Function Realizations
 	 * 
 	 * @param aAUResponseBasis Array of the Response Basis Functions
+	 * @param rssc Shape Controller
 	 * @param inel Inelastics Transformer to convert the Predictor Ordinate Space to Local from Global
 	 * 
 	 * @return Array of the Segment Response Basis Constraints
@@ -138,6 +139,7 @@ public class CalibrationParams {
 
 	public org.drip.math.segment.ResponseBasisConstraint[] getBasisFunctionConstraint (
 		final org.drip.math.function.AbstractUnivariate[] aAUResponseBasis,
+		final org.drip.math.segment.ResponseScalingShapeController rssc,
 		final org.drip.math.segment.Inelastics inel)
 	{
 		if (null == _aRVC) return null;
@@ -150,7 +152,7 @@ public class CalibrationParams {
 
 		for (int i = 0; i < iNumConstraint; ++i) {
 			if (null == _aRVC[i] || null == (aSRBC[i] = _aRVC[i].responseBasisConstraint (aAUResponseBasis,
-				inel)))
+				rssc, inel)))
 				return null;
 		}
 

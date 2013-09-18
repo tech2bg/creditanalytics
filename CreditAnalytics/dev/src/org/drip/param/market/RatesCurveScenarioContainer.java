@@ -46,7 +46,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 	private org.drip.analytics.definition.DiscountCurve _dcBase = null;
 	private org.drip.analytics.definition.DiscountCurve _dcBumpUp = null;
 	private org.drip.analytics.definition.DiscountCurve _dcBumpDn = null;
-	private org.drip.analytics.calibration.RatesCurveScenarioGenerator _irsg = null;
+	private org.drip.state.estimator.RatesCurveScenarioGenerator _irsg = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
 		_mapCustomDC = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
@@ -63,7 +63,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 	 */
 
 	public RatesCurveScenarioContainer (
-		final org.drip.analytics.calibration.RatesCurveScenarioGenerator irsg)
+		final org.drip.state.estimator.RatesCurveScenarioGenerator irsg)
 		throws java.lang.Exception
 	{
 		if (null == (_irsg = irsg))

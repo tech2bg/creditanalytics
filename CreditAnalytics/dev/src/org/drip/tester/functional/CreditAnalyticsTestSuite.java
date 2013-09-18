@@ -515,15 +515,15 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		org.drip.analytics.definition.DiscountCurve dcFromDF =
-			org.drip.analytics.creator.DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", adblDate, adblDF,
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+			org.drip.state.creator.DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", adblDate, adblDF,
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.DiscountCurve dcFromRate =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (dtStart, "EUR", adblDate, adblRate,
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "EUR", adblDate, adblRate,
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.DiscountCurve dcFromFlatRate =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", 0.04);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", 0.04);
 
 		java.util.Set<java.lang.String> setstrTSYCurves =
 			org.drip.service.api.CreditAnalytics.GetEODTSYCurveNames (dt1);
@@ -845,7 +845,7 @@ public class CreditAnalyticsTestSuite {
 	public static final void CreditCurveAPISample()
 	{
 		org.drip.analytics.definition.CreditCurve ccFlatHazard =
-			org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", 0.02, 0.4);
 
 		double[] adblDate = new double[5];
@@ -860,7 +860,7 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		org.drip.analytics.definition.CreditCurve ccFromSurvival =
-			org.drip.analytics.creator.CreditCurveBuilder.FromSurvival (dtStart.getJulian(), "CC", adblDate,
+			org.drip.state.creator.CreditCurveBuilder.FromSurvival (dtStart.getJulian(), "CC", adblDate,
 				adblSurvival, 0.4);
 
 		java.util.Set<java.lang.String> setstrCDSCurves =
@@ -995,11 +995,11 @@ public class CreditAnalyticsTestSuite {
 	public static final void CDSAPISample()
 	{
 		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05);
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", 0.02, 0.4);
 
 		org.drip.product.definition.CreditDefaultSwap cds = org.drip.product.creator.CDSBuilder.CreateSNAC
@@ -1020,9 +1020,9 @@ public class CreditAnalyticsTestSuite {
 
 			for (org.drip.analytics.period.CouponPeriodCurveFactors p : cds.getCouponFlow (valParams,
 				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
-					(org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05),
-							org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard
+							org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 								(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", 0.02, 0.4))))
 			{
 				try {
@@ -1144,14 +1144,14 @@ public class CreditAnalyticsTestSuite {
 				org.drip.analytics.daycount.Convention.DR_ACTUAL);
 
 		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.03);
 
 		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", 0.02,
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", 0.02,
 				0.);
 
 		org.drip.param.valuation.WorkoutInfo wi =
@@ -1288,8 +1288,8 @@ public class CreditAnalyticsTestSuite {
 
 			for (org.drip.analytics.period.CouponPeriodCurveFactors p : bond.getCouponFlow
 				(valParams, pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
-					(org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
-						0.05), org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard
+					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
+						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 							(dtToday.getJulian(), "CC", 0.02, 0.4)))) {
 				try {
 					System.out.println (org.drip.analytics.date.JulianDate.fromJulian
@@ -1474,15 +1474,15 @@ public class CreditAnalyticsTestSuite {
 				("CustomBondFromCF", org.drip.product.creator.BondBuilder.BOND_TYPE_SIMPLE_FROM_CF));
 
 		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.04);
 
 		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.03);
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", 0.01, 0.4);
 
 		for (int i = 0; i < aBond.length; ++i) {
@@ -1656,13 +1656,13 @@ public class CreditAnalyticsTestSuite {
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.05);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.05);
 
 		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", 0.02,
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", 0.02,
 				0.4);
 
 		java.util.List<java.lang.String> lsstrISIN = org.drip.service.api.CreditAnalytics.GetISINsForTicker
@@ -2681,11 +2681,11 @@ public class CreditAnalyticsTestSuite {
 		double dblCreditPrice = java.lang.Double.NaN;
 
 		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "DKK", 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", 0.01, 0.4);
 
 		org.drip.product.credit.BondComponent bond = org.drip.product.creator.BondBuilder.CreateSimpleFixed
@@ -2733,8 +2733,8 @@ public class CreditAnalyticsTestSuite {
 		org.drip.analytics.definition.CreditCurve ccCalib = null;
 
 		try {
-			org.drip.analytics.calibration.CreditCurveScenarioGenerator ccsg = new
-				org.drip.analytics.calibration.CreditCurveScenarioGenerator (aCalibInst);
+			org.drip.state.estimator.CreditCurveScenarioGenerator ccsg = new
+				org.drip.state.estimator.CreditCurveScenarioGenerator (aCalibInst);
 
 			ccCalib = ccsg.createCC ("CC", valParams, dc, null, null, adblQuotes, 0.40, astrCalibMeasure,
 				null, new org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "USD", false),
@@ -2791,7 +2791,7 @@ public class CreditAnalyticsTestSuite {
 		org.drip.param.definition.BasketMarketParams bmp =
 			org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams();
 
-		bmp.addDC ("USD", org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
+		bmp.addDC ("USD", org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
 			0.04));
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = null;
@@ -2856,11 +2856,11 @@ public class CreditAnalyticsTestSuite {
 		java.util.Random rand = new java.util.Random();
 
 		org.drip.analytics.definition.DiscountCurve dcUSD =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05);
 
 		org.drip.analytics.definition.DiscountCurve dcEUR =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "EUR", 0.04);
 
 		double dblFXSpot = 1.40;
@@ -2872,7 +2872,7 @@ public class CreditAnalyticsTestSuite {
 		double dblFXFwdPIP = java.lang.Double.NaN;
 		double dblDCEURBasis = java.lang.Double.NaN;
 		double dblDCUSDBasis = java.lang.Double.NaN;
-		org.drip.analytics.curve.DerivedFXForward fxCurve = null;
+		org.drip.state.manager.DerivedFXForward fxCurve = null;
 
 		for (int i = 0; i < 5; ++i) {
 			abIsPIP[i] = false;
@@ -2903,7 +2903,7 @@ public class CreditAnalyticsTestSuite {
 
 			dblDCUSDBasis = fxfwd.calcDCBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, true);
 
-			fxCurve = new org.drip.analytics.curve.DerivedFXForward (cp,
+			fxCurve = new org.drip.state.manager.DerivedFXForward (cp,
 				org.drip.analytics.date.JulianDate.Today(), dblFXSpot, adblNodes, adblFXFwd, abIsPIP);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
@@ -2929,12 +2929,12 @@ public class CreditAnalyticsTestSuite {
 		org.drip.analytics.definition.FXBasisCurve fxUSDBasisCurve = null;
 
 		try {
-			fxUSDBasisCurve = org.drip.analytics.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp,
+			fxUSDBasisCurve = org.drip.state.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp,
 				org.drip.analytics.date.JulianDate.Today(), dblFXSpot, adblNodes, adblFullUSDBasis, false);
 
 			adblFXFwdFromUSDBasis = fxUSDBasisCurve.getFullFXFwd (valParams, dcEUR, dcUSD, true, false);
 
-			fxEURBasisCurve = org.drip.analytics.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp,
+			fxEURBasisCurve = org.drip.state.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp,
 				org.drip.analytics.date.JulianDate.Today(), dblFXSpot, adblNodes, adblFullEURBasis, false);
 
 			adblFXFwdFromEURBasis = fxEURBasisCurve.getFullFXFwd (valParams, dcEUR, dcUSD, false, false);

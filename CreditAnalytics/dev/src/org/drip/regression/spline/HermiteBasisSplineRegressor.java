@@ -88,11 +88,13 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 		org.drip.math.segment.DesignInelasticParams segParams = new
 			org.drip.math.segment.DesignInelasticParams (iCk, 1);
 
-		org.drip.math.function.AbstractUnivariate rsc = new org.drip.math.function.RationalShapeControl (1.);
+		org.drip.math.segment.ResponseScalingShapeController rssc = new
+			org.drip.math.segment.ResponseScalingShapeController (true, new
+				org.drip.math.function.RationalShapeControl (1.));
 
-		if (null == (_seg1 = org.drip.math.segment.LocalBasisPredictorResponse.Create (0.0, 1.0, aAU, rsc,
+		if (null == (_seg1 = org.drip.math.segment.LocalBasisPredictorResponse.Create (0.0, 1.0, aAU, rssc,
 			segParams)) || null == (_seg2 = org.drip.math.segment.LocalBasisPredictorResponse.Create (1.0,
-				2.0, aAU, rsc, segParams)))
+				2.0, aAU, rssc, segParams)))
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
 

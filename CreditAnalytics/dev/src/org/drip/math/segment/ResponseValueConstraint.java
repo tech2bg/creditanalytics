@@ -159,10 +159,11 @@ public class ResponseValueConstraint {
 	}
 
 	/**
-	 * Convert the Segment Constraint onto Local Predictor Ordinates and the corresponding Response Basis
-	 *  Function Realizations
+	 * Convert the Segment Constraint onto Local Predictor Ordinates, the corresponding Response Basis
+	 *  Function, and the Shape Controller Realizations
 	 * 
 	 * @param aAUResponseBasis Array of the Response Basis Functions
+	 * @param rssc Shape Controller
 	 * @param inel Inelastics transformer to convert coordinate space to Local from Global
 	 * 
 	 * @return The Segment Basis Function Constraint
@@ -170,6 +171,7 @@ public class ResponseValueConstraint {
 
 	public org.drip.math.segment.ResponseBasisConstraint responseBasisConstraint (
 		final org.drip.math.function.AbstractUnivariate[] aAUResponseBasis,
+		final org.drip.math.segment.ResponseScalingShapeController rssc,
 		final org.drip.math.segment.Inelastics inel)
 	{
 		if (null == aAUResponseBasis || null == inel) return null;
@@ -195,10 +197,12 @@ public class ResponseValueConstraint {
 			for (int i = 0; i < iNumResponseBasis; ++i) {
 				adblResponseBasisWeight[i] = 0.;
 
-				for (int j = 0; j < iNumPredictorOrdinate; ++j) {
+				for (int j = 0; j < iNumPredictorOrdinate; ++j)
 					adblResponseBasisWeight[i] += _adblResponseWeight[j] * aAUResponseBasis[i].evaluate
-						(adblLocalPredictorOrdinate[j]);
-				}
+						(adblLocalPredictorOrdinate[j]) * (null == rssc ? 1. :
+							rssc.getShapeController().evaluate (rssc.isLocal() ?
+								adblLocalPredictorOrdinate[j] : inel.delocalize
+									(adblLocalPredictorOrdinate[j])));
 			}
 
 			return new org.drip.math.segment.ResponseBasisConstraint (adblResponseBasisWeight,

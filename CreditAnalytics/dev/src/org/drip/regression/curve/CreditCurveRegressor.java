@@ -94,7 +94,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 						org.drip.analytics.date.JulianDate.MAY, 12)))
 						return false;
 
-					if (null == (_dc = org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(_dtStart, _strCurrency, 0.04)))
 						return false;
 
@@ -130,7 +130,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccFromFlatHazard =
-						org.drip.analytics.creator.CreditCurveBuilder.FromFlatHazard (_dtStart.getJulian(),
+						org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (_dtStart.getJulian(),
 							"CORP", 0.02, 0.4));
 				}
 
@@ -193,7 +193,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccFromSurvival =
-						org.drip.analytics.creator.CreditCurveBuilder.FromSurvival (_dtStart.getJulian(),
+						org.drip.state.creator.CreditCurveBuilder.FromSurvival (_dtStart.getJulian(),
 							"CORP", _adblDate, _adblSurvival, 0.4));
 				}
 
@@ -259,7 +259,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccFromHazard =
-						org.drip.analytics.creator.CreditCurveBuilder.CreateCreditCurve (_dtStart, "CORP",
+						org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (_dtStart, "CORP",
 							_adblDate, _adblHazard, 0.4));
 				}
 
@@ -321,7 +321,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					for (int i = 0; i < _adblQuotes.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = _cc.getNodeDate (i);
+						org.drip.analytics.date.JulianDate dt = _aCalibComp[i].getMaturityDate();
 
 						java.lang.String strCode = _aCalibComp[i].getPrimaryCode();
 
@@ -371,12 +371,13 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					double[] adblQuotes = _cc.getCompQuotes();
+					org.drip.product.definition.CalibratableComponent[] aCalibComp =
+						_cc.getCalibComponents();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
-					for (int i = 0; i < adblQuotes.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = _cc.getNodeDate (i);
+					for (int i = 0; i < aCalibComp.length; ++i) {
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].getMaturityDate();
 
 						double dblBaseHazard = java.lang.Double.NaN;
 						double dblShiftedHazard = java.lang.Double.NaN;
@@ -433,10 +434,13 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 
 					double[] adblQuotesShifted = _ccParallelShifted.getCompQuotes();
 
+					org.drip.product.definition.CalibratableComponent[] aCalibComp =
+						_cc.getCalibComponents();
+
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
-					for (int i = 0; i < adblQuotes.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = _cc.getNodeDate (i);
+					for (int i = 0; i < aCalibComp.length; ++i) {
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].getMaturityDate();
 
 						rnvd.set ("BaseCurveQuote[" + dt + "]", org.drip.math.common.FormatUtil.FormatDouble
 							(adblQuotes[i], 1, 5, 1));
@@ -493,12 +497,13 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					double[] adblQuotes = _cc.getCompQuotes();
+					org.drip.product.definition.CalibratableComponent[] aCalibComp =
+						_cc.getCalibComponents();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
-					for (int i = 0; i < adblQuotes.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = _cc.getNodeDate (i);
+					for (int i = 0; i < aCalibComp.length; ++i) {
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].getMaturityDate();
 
 						double dblBaseHazard = java.lang.Double.NaN;
 						double dblShiftedHazard = java.lang.Double.NaN;

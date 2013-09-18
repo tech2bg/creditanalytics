@@ -180,7 +180,7 @@ public class CreditAnalyticsProxy {
 		mmFixings.put (dtStart.addDays (2), mIndexFixings);
 
 		return org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
-			org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
+			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
 				adblCompCalibValue, astrCalibMeasure, mmFixings);
 	}
 
@@ -369,14 +369,14 @@ public class CreditAnalyticsProxy {
 		org.drip.analytics.definition.DiscountCurve dc = MakeDC (dtStart);
 
 		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", adblDate,
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", adblDate,
 				adblRateTSY,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.DiscountCurve dcEDSF =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", adblDate,
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", adblDate,
 				adblRateEDSF,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.CreditCurve cc = MakeCC (dtStart, dc);
 

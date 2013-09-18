@@ -39,7 +39,7 @@ public class PredictorResponseBuilderParams {
 	private java.lang.String _strBasisSpline = "";
 	private org.drip.math.spline.BasisSetParams _bsp = null;
 	private org.drip.math.segment.DesignInelasticParams _sep = null;
-	private org.drip.math.function.AbstractUnivariate _auShapeControl = null;
+	private org.drip.math.segment.ResponseScalingShapeController _rssc = null;
 
 	/**
 	 * PredictorResponseBuilderParams constructor
@@ -47,7 +47,7 @@ public class PredictorResponseBuilderParams {
 	 * @param strBasisSpline Named Segment Basis Spline
 	 * @param bsp Segment Basis Set Construction Parameters
 	 * @param sep Segment Elastic Parameters
-	 * @param auShapeControl Segment Shape Controller
+	 * @param rssc Segment Shape Controller
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
@@ -56,13 +56,13 @@ public class PredictorResponseBuilderParams {
 		final java.lang.String strBasisSpline,
 		final org.drip.math.spline.BasisSetParams bsp,
 		final org.drip.math.segment.DesignInelasticParams sep,
-		final org.drip.math.function.AbstractUnivariate auShapeControl)
+		final org.drip.math.segment.ResponseScalingShapeController rssc)
 		throws java.lang.Exception
 	{
 		if (null == (_strBasisSpline = strBasisSpline) || null == (_bsp = bsp) || null == (_sep = sep))
 			throw new java.lang.Exception ("PredictorResponseBuilderParams ctr => Invalid Inputs");
 
-		_auShapeControl = auShapeControl;
+		_rssc = rssc;
 	}
 
 	/**
@@ -104,8 +104,8 @@ public class PredictorResponseBuilderParams {
 	 * @return The Segment Shape Controller
 	 */
 
-	public org.drip.math.function.AbstractUnivariate getShapeController()
+	public org.drip.math.segment.ResponseScalingShapeController getShapeController()
 	{
-		return _auShapeControl;
+		return _rssc;
 	}
 }

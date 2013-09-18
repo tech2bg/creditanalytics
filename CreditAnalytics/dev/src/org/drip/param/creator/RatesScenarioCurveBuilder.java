@@ -62,7 +62,7 @@ public class RatesScenarioCurveBuilder {
 
 		try {
 			return new org.drip.param.market.RatesCurveScenarioContainer (new
-				org.drip.analytics.calibration.RatesCurveScenarioGenerator (strCurrency, strBootstrapMode,
+				org.drip.state.estimator.RatesCurveScenarioGenerator (strCurrency, strBootstrapMode,
 					aCalibInst));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

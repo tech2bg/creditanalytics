@@ -36,9 +36,9 @@ package org.drip.math.grid;
  * @author Lakshmi Krishnamurthy
  */
 
-public class NonOverlappingRegimeSpan {
-	private java.util.List<org.drip.math.grid.MultiSegmentRegime> _lsRegime = new
-		java.util.ArrayList<org.drip.math.grid.MultiSegmentRegime>();
+public class NonOverlappingRegimeSpan implements org.drip.math.grid.Span {
+	private java.util.List<org.drip.math.regime.MultiSegmentRegime> _lsRegime = new
+		java.util.ArrayList<org.drip.math.regime.MultiSegmentRegime>();
 
 	/**
 	 * NonOverlappingRegimeSpan constructor
@@ -49,11 +49,76 @@ public class NonOverlappingRegimeSpan {
 	 */
 
 	public NonOverlappingRegimeSpan (
-		final org.drip.math.grid.MultiSegmentRegime regime)
+		final org.drip.math.regime.MultiSegmentRegime regime)
 		throws java.lang.Exception
 	{
 		if (null == regime) throw new java.lang.Exception ("NonOverlappingRegimeSpan ctr: Invalid Inputs");
 
 		_lsRegime.add (regime);
+	}
+
+	@Override public boolean addRegime (
+		final org.drip.math.regime.MultiSegmentRegime regime)
+	{
+		if (null == regime) return false;
+
+		_lsRegime.add (regime);
+
+		return true;
+	}
+
+	@Override public org.drip.math.regime.MultiSegmentRegime getContainingRegime (
+		final double dblPredictorOrdinate)
+	{
+		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
+			try {
+				if (regime.in (dblPredictorOrdinate)) return regime;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return null;
+	}
+
+	@Override public org.drip.math.regime.MultiSegmentRegime getRegime (
+		final java.lang.String strName)
+	{
+		if (null == strName) return null;
+
+		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
+			if (strName.equalsIgnoreCase (regime.name())) return regime;
+		}
+
+		return null;
+	}
+
+	@Override public double calcResponseValue (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception
+	{
+		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
+			if (regime.in (dblPredictorOrdinate)) return regime.response (dblPredictorOrdinate);
+		}
+
+		throw new java.lang.Exception ("NonOverlappingRegimeSpan::calcResponseValue => Cannot Calculate!");
+	}
+
+	@Override public double left() throws java.lang.Exception
+	{
+		if (0 == _lsRegime.size())
+			throw new java.lang.Exception ("NonOverlappingRegimeSpan::left => No valid Regimes found");
+
+		return _lsRegime.get (0).getLeftPredictorOrdinateEdge();
+	}
+
+	@Override public double right() throws java.lang.Exception
+	{
+		if (0 == _lsRegime.size())
+			throw new java.lang.Exception ("NonOverlappingRegimeSpan::right => No valid Regimes found");
+
+		return _lsRegime.get (_lsRegime.size() - 1).getRightPredictorOrdinateEdge();
 	}
 }

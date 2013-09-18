@@ -236,7 +236,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					return null != (_dc =
 						org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (_dtStart,
 							_strCurrency,
-								org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+								org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 						_aCompCalib, _adblCompCalibValue, _astrCalibMeasure, _mmFixings));
 				}
 			});
@@ -252,7 +252,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean execRegression()
 				{
 					return null != (_dcFromFlatRate =
-						org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate (_dtStart,
+						org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (_dtStart,
 							_strCurrency, 0.04));
 				}
 
@@ -316,9 +316,9 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 				@Override public boolean execRegression()
 				{
-					return null != (_dcFromDF = org.drip.analytics.creator.DiscountCurveBuilder.BuildFromDF
+					return null != (_dcFromDF = org.drip.state.creator.DiscountCurveBuilder.BuildFromDF
 						(_dtStart, _strCurrency, _adblDate, _adblDiscountFactorFlatRate,
-							org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD));
+							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD));
 				}
 
 				@Override public boolean postRegression (
@@ -383,9 +383,9 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 				@Override public boolean execRegression()
 				{
-					return null != (_dcFromRates = org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+					return null != (_dcFromRates = org.drip.state.creator.DiscountCurveBuilder.CreateDC
 						(_dtStart, _strCurrency, _adblDate, _adblRate,
-							org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD));
+							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD));
 				}
 
 				@Override public boolean postRegression (
@@ -447,7 +447,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						try {
 							double dblQuote = _dc.getQuote (strCalibCompCode);
 
-							org.drip.analytics.date.JulianDate dt = _dc.getNodeDate (i);
+							org.drip.analytics.date.JulianDate dt = _aCalibComp[i].getMaturityDate();
 
 							rnvd.set ("CompQuote" + "_" + strCalibCompCode + "{" + dt + "}",
 								org.drip.math.common.FormatUtil.FormatDouble (dblQuote, 1, 4, 1));

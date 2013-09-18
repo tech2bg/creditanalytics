@@ -47,7 +47,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 	private double[] _adblResponseBasisCoeff = null;
 	private double[][] _aadblDResponseBasisCoeffDConstraint = null;
 	private org.drip.math.segment.DesignInelasticParams _dip = null;
-	private org.drip.math.function.AbstractUnivariate _auShapeControl = null;
+	private org.drip.math.segment.ResponseScalingShapeController _rssc = null;
 	private org.drip.math.function.AbstractUnivariate[] _aAUResponseBasis = null;
 	private org.drip.math.calculus.WengertJacobian _wjDBasisCoeffDEdgeParams = null;
 
@@ -82,7 +82,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 	 * @param dblLeftPredictorOrdinate Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate Right Predictor Ordinate
 	 * @param aAUResponseBasis Response Basis Set Functions
-	 * @param auShapeControl Shape Control Basis Function
+	 * @param rssc Shape Controller
 	 * @param dip Design Inelastic Parameters
 	 * 
 	 * @return Instance of PredictorResponseBasisSpline
@@ -92,12 +92,12 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.math.function.AbstractUnivariate[] aAUResponseBasis,
-		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final org.drip.math.segment.ResponseScalingShapeController shapeControl,
 		final org.drip.math.segment.DesignInelasticParams dip)
 	{
 		try {
 			return new org.drip.math.segment.LocalBasisPredictorResponse (dblLeftPredictorOrdinate,
-				dblRightPredictorOrdinate, aAUResponseBasis, auShapeControl, dip);
+				dblRightPredictorOrdinate, aAUResponseBasis, shapeControl, dip);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -137,52 +137,64 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 	private double localSpecificBasisDerivative (
 		final double dblLocalPredictorOrdinate,
 		final int iOrder,
-		final int iBasisIndex)
+		final int iBasisFunctionIndex)
 		throws java.lang.Exception
 	{
-		if (null == _auShapeControl)
-			return _aAUResponseBasis[iBasisIndex].calcDerivative (dblLocalPredictorOrdinate, iOrder);
+		if (null == _rssc)
+			return _aAUResponseBasis[iBasisFunctionIndex].calcDerivative (dblLocalPredictorOrdinate, iOrder);
 
 		double dblResponseDerivative = 0.;
 
 		for (int i = 0; i <= iOrder; ++i) {
-			double dblBasisFunctionDeriv = 0 == i ? _aAUResponseBasis[iBasisIndex].evaluate
-				(dblLocalPredictorOrdinate) : _aAUResponseBasis[iBasisIndex].calcDerivative
+			double dblBasisFunctionDeriv = 0 == i ? _aAUResponseBasis[iBasisFunctionIndex].evaluate
+				(dblLocalPredictorOrdinate) : _aAUResponseBasis[iBasisFunctionIndex].calcDerivative
 					(dblLocalPredictorOrdinate, i);
 
 			if (!org.drip.math.common.NumberUtil.IsValid (dblBasisFunctionDeriv))
 				throw new java.lang.Exception
-					("LocalBasisPredictorResponse::responseDerivative => Cannot compute Basis Function Derivative");
+					("LocalBasisPredictorResponse::localSpecificBasisDerivative => Cannot compute Basis Function Derivative");
 
-			double dblShapeControlDeriv = iOrder == i ? _auShapeControl.evaluate (dblLocalPredictorOrdinate) :
-				_auShapeControl.calcDerivative (dblLocalPredictorOrdinate, iOrder - i);
+			double dblShapeControllerPredictorOrdinate = _rssc.isLocal() ? dblLocalPredictorOrdinate :
+				delocalize (dblLocalPredictorOrdinate);
+
+			double dblShapeControlDeriv = iOrder == i ? _rssc.getShapeController().evaluate
+				(dblShapeControllerPredictorOrdinate) : _rssc.getShapeController().calcDerivative
+					(dblShapeControllerPredictorOrdinate, iOrder - i);
 
 			if (!org.drip.math.common.NumberUtil.IsValid (dblShapeControlDeriv))
 				throw new java.lang.Exception
-					("LocalBasisPredictorResponse::responseDerivative => Cannot compute Shape Control Derivative");
+					("LocalBasisPredictorResponse::localSpecificBasisDerivative => Cannot compute Shape Control Derivative");
 
-			dblResponseDerivative += (org.drip.math.common.NumberUtil.NCK (iOrder,  i) *
-				dblBasisFunctionDeriv * dblShapeControlDeriv);
+			double dblShapeControllerDerivScale = 1.;
+
+			if (!_rssc.isLocal()) {
+				for (int j = 0; j < iOrder - i; ++j)
+					dblShapeControllerDerivScale *= width();
+			}
+
+			dblResponseDerivative += (org.drip.math.common.NumberUtil.NCK (iOrder, i) * dblBasisFunctionDeriv
+				* dblShapeControllerDerivScale * dblShapeControlDeriv);
 		}
 
 		return dblResponseDerivative;
 	}
 
 	private boolean calibrate (
-		final double[] adblPredictorOrdinate,
+		final double[] adblLocalPredictorOrdinate,
 		final double[] adblResponse,
-		final double[] adblLeftEdgeDeriv,
-		final double[] adblRightEdgeDeriv,
+		final double[] adblLeftEdgeLocalDeriv,
+		final double[] adblRightEdgeLocalDeriv,
 		final org.drip.math.segment.ResponseBasisConstraint[] aRBC)
 	{
 		int iNumConstraint = null == aRBC ? 0 : aRBC.length;
 		int iNumResponseBasisCoeff = _adblResponseBasisCoeff.length;
-		int iNumLeftDeriv = null == adblLeftEdgeDeriv ? 0 : adblLeftEdgeDeriv.length;
-		int iNumRightDeriv = null == adblRightEdgeDeriv ? 0 : adblRightEdgeDeriv.length;
+		int iNumLeftDeriv = null == adblLeftEdgeLocalDeriv ? 0 : adblLeftEdgeLocalDeriv.length;
+		int iNumRightDeriv = null == adblRightEdgeLocalDeriv ? 0 : adblRightEdgeLocalDeriv.length;
 		double[] adblPredictorResponseConstraintValue = new double[iNumResponseBasisCoeff];
 		double[][] aadblResponseBasisCoeffConstraint = new
 			double[iNumResponseBasisCoeff][iNumResponseBasisCoeff];
-		int iNumPredictorOrdinate = null == adblPredictorOrdinate ? 0 : adblPredictorOrdinate.length;
+		int iNumPredictorOrdinate = null == adblLocalPredictorOrdinate ? 0 :
+			adblLocalPredictorOrdinate.length;
 
 		if (iNumResponseBasisCoeff < iNumPredictorOrdinate + iNumLeftDeriv + iNumRightDeriv + iNumConstraint)
 			return false;
@@ -193,10 +205,10 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 			else if (j < iNumPredictorOrdinate + iNumConstraint)
 				adblPredictorResponseConstraintValue[j] = aRBC[j - iNumPredictorOrdinate].contraintValue();
 			else if (j < iNumPredictorOrdinate + iNumConstraint + iNumLeftDeriv)
-				adblPredictorResponseConstraintValue[j] = adblLeftEdgeDeriv[j - iNumPredictorOrdinate -
+				adblPredictorResponseConstraintValue[j] = adblLeftEdgeLocalDeriv[j - iNumPredictorOrdinate -
 				    iNumConstraint];
 			else if (j < iNumPredictorOrdinate + iNumConstraint + iNumLeftDeriv + iNumRightDeriv)
-				adblPredictorResponseConstraintValue[j] = adblRightEdgeDeriv[j - iNumPredictorOrdinate -
+				adblPredictorResponseConstraintValue[j] = adblRightEdgeLocalDeriv[j - iNumPredictorOrdinate -
 				    iNumConstraint - iNumLeftDeriv];
 			else
 				adblPredictorResponseConstraintValue[j] = 0.;
@@ -214,7 +226,10 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 
 					if (l < iNumPredictorOrdinate)
 						aadblResponseBasisCoeffConstraint[l][i] = _aAUResponseBasis[i].evaluate
-							(adblPredictorOrdinate[l]);
+							(adblLocalPredictorOrdinate[l]) * (null == _rssc ? 1. :
+								_rssc.getShapeController().evaluate (_rssc.isLocal() ?
+									adblLocalPredictorOrdinate[l] : delocalize
+										(adblLocalPredictorOrdinate[l])));
 					else if (l < iNumPredictorOrdinate + iNumConstraint)
 						aadblResponseBasisCoeffConstraint[l][i] = adblCalibBasisConstraintWeight[i];
 					else if (l < iNumPredictorOrdinate + iNumConstraint + iNumLeftDeriv)
@@ -302,7 +317,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.math.function.AbstractUnivariate[] aAUResponseBasis,
-		final org.drip.math.function.AbstractUnivariate auShapeControl,
+		final org.drip.math.segment.ResponseScalingShapeController rssc,
 		final org.drip.math.segment.DesignInelasticParams dip)
 		throws java.lang.Exception
 	{
@@ -311,7 +326,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		if (null == (_aAUResponseBasis = aAUResponseBasis) || null == (_dip = dip))
 			throw new java.lang.Exception ("LocalBasisPredictorResponse ctr: Invalid Basis Functions!");
 
-		_auShapeControl = auShapeControl;
+		_rssc = rssc;
 		int iNumBasis = _aAUResponseBasis.length;
 		_adblResponseBasisCoeff = new double[iNumBasis];
 
@@ -328,26 +343,27 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final double dblLocalPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		return null == _auShapeControl ? basisFunctionResponse (dblLocalPredictorOrdinate) :
-			basisFunctionResponse (dblLocalPredictorOrdinate) * _auShapeControl.evaluate
-				(dblLocalPredictorOrdinate);
+		if (null == _rssc) return basisFunctionResponse (dblLocalPredictorOrdinate);
+
+		return basisFunctionResponse (dblLocalPredictorOrdinate) * _rssc.getShapeController().evaluate
+			(_rssc.isLocal() ? dblLocalPredictorOrdinate : delocalize (dblLocalPredictorOrdinate));
 	}
 
 	@Override protected PredictorResponse snipLeftOfLocalPredictorOrdinate (
 		final double dblLocalPredictorOrdinate)
 	{
 		try {
-			LocalBasisPredictorResponse lbpr = new LocalBasisPredictorResponse (delocalize
-				(dblLocalPredictorOrdinate), right(), _aAUResponseBasis, _auShapeControl, _dip);
+			LocalBasisPredictorResponse lbprLeftSnipped = new LocalBasisPredictorResponse (delocalize
+				(dblLocalPredictorOrdinate), right(), _aAUResponseBasis, _rssc, _dip);
 
 			int iCk = _dip.getCk();
 
-			double[] adblCalibLeftEdgeDeriv = 0 != iCk ? lbpr.translateCkFromSegment (delocalize
+			double[] adblCalibLeftEdgeDeriv = 0 != iCk ? lbprLeftSnipped.translateCkFromSegment (delocalize
 				(dblLocalPredictorOrdinate), this, iCk) : null;
 
-			return lbpr.calibrate (new double[] {0., 1.}, new double[] {localResponse
-				(dblLocalPredictorOrdinate), localResponse (1.)}, adblCalibLeftEdgeDeriv, null, null) ? lbpr
-					: null;
+			return lbprLeftSnipped.calibrate (new double[] {0., 1.}, new double[] {localResponse
+				(dblLocalPredictorOrdinate), localResponse (1.)}, adblCalibLeftEdgeDeriv, null, null) ?
+					lbprLeftSnipped : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -359,16 +375,17 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final double dblLocalPredictorOrdinate)
 	{
 		try {
-			LocalBasisPredictorResponse lbpr = new LocalBasisPredictorResponse (left(), delocalize
-				(dblLocalPredictorOrdinate), _aAUResponseBasis, _auShapeControl, _dip);
+			LocalBasisPredictorResponse lbprRightSnipped = new LocalBasisPredictorResponse (left(),
+				delocalize (dblLocalPredictorOrdinate), _aAUResponseBasis, _rssc, _dip);
 
 			int iCk = _dip.getCk();
 
-			double[] adblCalibLeftEdgeDeriv = 0 != iCk ? lbpr.translateCkFromSegment (left(), this, iCk) :
-				null;
+			double[] adblCalibLeftEdgeDeriv = 0 != iCk ? lbprRightSnipped.translateCkFromSegment (left(),
+				this, iCk) : null;
 
-			return lbpr.calibrate (new double[] {0., 1.}, new double[] {localResponse (0.), localResponse
-				(dblLocalPredictorOrdinate)}, adblCalibLeftEdgeDeriv, null, null) ? lbpr : null;
+			return lbprRightSnipped.calibrate (new double[] {0., 1.}, new double[] {localResponse (0.),
+				localResponse (dblLocalPredictorOrdinate)}, adblCalibLeftEdgeDeriv, null, null) ?
+					lbprRightSnipped : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -381,8 +398,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		if (null == _auShapeControl)
-			return basisFunctionResponseDerivative (dblLocalPredictorOrdinate, iOrder);
+		if (null == _rssc) return basisFunctionResponseDerivative (dblLocalPredictorOrdinate, iOrder);
 
 		double dblResponseDerivative = 0.;
 
@@ -392,17 +408,28 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 
 			if (!org.drip.math.common.NumberUtil.IsValid (dblBasisFunctionDeriv))
 				throw new java.lang.Exception
-					("LocalBasisPredictorResponse::responseDerivative => Cannot compute Basis Function Derivative");
+					("LocalBasisPredictorResponse::localResponseDerivative => Cannot compute Basis Function Derivative");
 
-			double dblShapeControlDeriv = iOrder == i ? _auShapeControl.evaluate (dblLocalPredictorOrdinate) :
-				_auShapeControl.calcDerivative (dblLocalPredictorOrdinate, iOrder - i);
+			double dblShapeControllerPredictorOrdinate = _rssc.isLocal() ? dblLocalPredictorOrdinate :
+				delocalize (dblLocalPredictorOrdinate);
+
+			double dblShapeControlDeriv = iOrder == i ? _rssc.getShapeController().evaluate
+				(dblShapeControllerPredictorOrdinate) : _rssc.getShapeController().calcDerivative
+					(dblShapeControllerPredictorOrdinate, iOrder - i);
 
 			if (!org.drip.math.common.NumberUtil.IsValid (dblShapeControlDeriv))
 				throw new java.lang.Exception
-					("LocalBasisPredictorResponse::responseDerivative => Cannot compute Shape Control Derivative");
+					("LocalBasisPredictorResponse::localResponseDerivative => Cannot compute Shape Control Derivative");
 
-			dblResponseDerivative += (org.drip.math.common.NumberUtil.NCK (iOrder,  i) *
-				dblBasisFunctionDeriv * dblShapeControlDeriv);
+			double dblShapeControllerDerivScale = 1.;
+
+			if (!_rssc.isLocal()) {
+				for (int j = 0; j < iOrder - i; ++j)
+					dblShapeControllerDerivScale *= width();
+			}
+
+			dblResponseDerivative += (org.drip.math.common.NumberUtil.NCK (iOrder, i) * dblBasisFunctionDeriv
+				* dblShapeControllerDerivScale * dblShapeControlDeriv);
 		}
 
 		return dblResponseDerivative;
@@ -514,14 +541,14 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 	}
 
 	/**
-	 * Retrieve the Shape Control
+	 * Retrieve the Shape Controller
 	 * 
-	 * @return The Shape Control
+	 * @return The Shape Controller
 	 */
 
-	public org.drip.math.function.AbstractUnivariate getShapeControl()
+	public org.drip.math.segment.ResponseScalingShapeController getShapeControl()
 	{
-		return _auShapeControl;
+		return _rssc;
 	}
 
 	@Override public int numBasis()
@@ -538,7 +565,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final org.drip.math.segment.CalibrationParams cp)
 	{
 		return null == cp ? false : calibrate (cp.predictorOrdinates(), cp.reponses(), cp.leftDeriv(),
-			cp.rightDeriv(), cp.getBasisFunctionConstraint (_aAUResponseBasis, this));
+			cp.rightDeriv(), cp.getBasisFunctionConstraint (_aAUResponseBasis, _rssc, this));
 	}
 
 	@Override public boolean calibrate (
@@ -562,7 +589,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 
 				return calibrate (new double[] {0.}, new double[] {localResponse (0.)},
 					adblLocalDerivAtLeftOrdinate, null, new org.drip.math.segment.ResponseBasisConstraint[]
-						{rvc.responseBasisConstraint (_aAUResponseBasis, this)});
+						{rvc.responseBasisConstraint (_aAUResponseBasis, _rssc, this)});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -574,7 +601,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 			return calibrate (new double[] {0.}, new double[] {prPrev.localResponse (1.)}, 0 == iCk ? null :
 				translateCkFromSegment (left(), prPrev, iCk), null, new
 					org.drip.math.segment.ResponseBasisConstraint[] {rvc.responseBasisConstraint
-						(_aAUResponseBasis, this)});
+						(_aAUResponseBasis, _rssc, this)});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

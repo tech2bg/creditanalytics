@@ -202,33 +202,33 @@ public class SerializerTestSuite {
 		Verify (abCP, new org.drip.product.params.CurrencyPair (abCP), "CurrencyPair");
 
 		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (dtToday, "ABC", adblDCDate,
-				adblDCRate, org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtToday, "ABC", adblDCDate,
+				adblDCRate, org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		byte[] abDC = dc.serialize();
 
-		Verify (abDC, org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (abDC,
-			org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD),
+		Verify (abDC, org.drip.state.creator.DiscountCurveBuilder.FromByteArray (abDC,
+			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD),
 				"DiscountCurve");
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.CreateCreditCurve (dblStart, "XXS", adblHazardRate,
+			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (dblStart, "XXS", adblHazardRate,
 				adblHazardDate, adblRecoveryRate, adblRecoveryDate, java.lang.Double.NaN);
 
 		byte[] abCC = cc.serialize();
 
-		Verify (abCC, org.drip.analytics.creator.CreditCurveBuilder.FromByteArray (abCC), "CreditCurve");
+		Verify (abCC, org.drip.state.creator.CreditCurveBuilder.FromByteArray (abCC), "CreditCurve");
 
-		byte[] abFxBasis = org.drip.analytics.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp, dtToday,
+		byte[] abFxBasis = org.drip.state.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp, dtToday,
 			53.51, adblFXBasisDate, adblFXBasis, true).serialize();
 
-		Verify (abFxBasis, org.drip.analytics.creator.FXBasisCurveBuilder.FromByteArray (abFxBasis),
+		Verify (abFxBasis, org.drip.state.creator.FXBasisCurveBuilder.FromByteArray (abFxBasis),
 			"FXBasis");
 
-		byte[] abFxCurve = org.drip.analytics.creator.FXForwardCurveBuilder.CreateFXForwardCurve (cp,
+		byte[] abFxCurve = org.drip.state.creator.FXForwardCurveBuilder.CreateFXForwardCurve (cp,
 			dtToday, 53.51, adblFXFwdDate, adblFXFwd, abIsPIP).serialize();
 
-		Verify (abFxCurve, org.drip.analytics.creator.FXForwardCurveBuilder.FromByteArray (abFxCurve),
+		Verify (abFxCurve, org.drip.state.creator.FXForwardCurveBuilder.FromByteArray (abFxCurve),
 			"FXCurve");
 
 		byte[] abAAP = new org.drip.analytics.daycount.ActActDCParams (2, dblStart, dblStart +
@@ -747,14 +747,14 @@ public class SerializerTestSuite {
 		}
 
 		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDCDate, adblRateTSY,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.DiscountCurve dcEDSF =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDCDate, adblRateEDSF,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
 			= new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();

@@ -50,7 +50,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 	private org.drip.analytics.definition.CreditCurve _ccBumpDn = null;
 	private org.drip.analytics.definition.CreditCurve _ccRecoveryUp = null;
 	private org.drip.analytics.definition.CreditCurve _ccRecoveryDn = null;
-	private org.drip.analytics.calibration.CreditCurveScenarioGenerator _ccsg = null;
+	private org.drip.state.estimator.CreditCurveScenarioGenerator _ccsg = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 		_mapCustomCC = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
@@ -78,7 +78,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		if (null == aCalibInst || 0 == aCalibInst.length || !org.drip.math.common.NumberUtil.IsValid
 			(_dblCouponBump = dblCouponBump) || !org.drip.math.common.NumberUtil.IsValid (_dblRecoveryBump =
 				dblRecoveryBump) || null == (_ccsg = new
-					org.drip.analytics.calibration.CreditCurveScenarioGenerator (aCalibInst)))
+					org.drip.state.estimator.CreditCurveScenarioGenerator (aCalibInst)))
 			throw new java.lang.Exception ("CreditCurveScenarioContainer ctr => Invalid Inputs!");
 	}
 

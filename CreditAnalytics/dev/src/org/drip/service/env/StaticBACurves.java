@@ -280,7 +280,7 @@ public class StaticBACurves {
 
 		try {
 			if (!(irscTSY = org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG (strCurrency + "TSY",
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
 						dt.addBusDays (3, strCurrency), strCurrency), null, null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mpc.getFixings(), null, 15)) {
@@ -353,7 +353,7 @@ public class StaticBACurves {
 
 		try {
 			if (!(irsc = org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG (strCurrency + "EDSF",
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
 						dt.addBusDays (3, strCurrency), strCurrency), null, null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mpc.getFixings(), null, 15)) {
@@ -572,7 +572,7 @@ public class StaticBACurves {
 				return false;
 
 			(irsc = org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG (strCurrency,
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
 						dt.addBusDays (3, strCurrency), strCurrency), null, null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mpc.getFixings(), null, 15);

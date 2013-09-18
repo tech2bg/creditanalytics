@@ -2050,7 +2050,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
 
 		try {
-			zc = org.drip.analytics.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams._iFreq,
+			zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams._iFreq,
 				_periodParams._strCouponDC, _ccyParams._strCouponCurrency, _periodParams._bApplyCpnEOMAdj,
 					_periodParams.getPeriods(), dblWorkoutDate, dblCashPayDate, dcBase, null == quotingParams
 						? (null == _mktConv ? null : _mktConv._quotingParams) : quotingParams, dblZCBump);
@@ -12440,12 +12440,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	@Override public org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm)
+		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
 	{
 		return null;
 	}

@@ -54,14 +54,6 @@ public interface Curve {
 		final double dblLeftSlope);
 
 	/**
-	 * Retrieve the number of calibration nodes 
-	 * 
-	 * @return Number of calibration nodes
-	 */
-
-	public abstract int numCalibNodes();
-
-	/**
 	 * Set the Value/Slope at the Node specified by the Index
 	 * 
 	 * @param iIndex Node Index
@@ -112,7 +104,7 @@ public interface Curve {
 	 * @return Array of the calibration measures
 	 */
 
-	public abstract java.lang.String[] getCompMeasures();
+	// public abstract java.lang.String[] getCompMeasures();
 
 	/**
 	 * Retrieve the calibration quote of the given instrument
@@ -123,17 +115,6 @@ public interface Curve {
 	public abstract double getQuote (
 		final java.lang.String strInstr)
 		throws java.lang.Exception;
-
-	/**
-	 * Get the date at the node specified by the index
-	 * 
-	 * @param iIndex node index
-	 * 
-	 * @return Date corresponding to the bootstrap node
-	 */
-
-	public abstract org.drip.analytics.date.JulianDate getNodeDate (
-		final int iIndex);
 
 	/**
 	 * Retrieve all the calibration components
@@ -180,12 +161,4 @@ public interface Curve {
 	 */
 
 	public abstract org.drip.analytics.date.JulianDate getStartDate();
-
-	/**
-	 * Build the estimator post the curve sweeping build
-	 * 
-	 * @return TRUE => Build-out successful
-	 */
-
-	public boolean buildEstimator();
 }

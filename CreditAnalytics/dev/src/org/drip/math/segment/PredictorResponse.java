@@ -66,21 +66,21 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	protected abstract boolean isMonotone();
 
 	protected double[] translateCkFromSegment (
-		final double dblGlobalPredictorOrdinate,
+		final double dblPredictorOrdinate,
 		final org.drip.math.segment.PredictorResponse prPrev,
 		final int iCk)
 	{
-		double dblOrderedResponseDerivScale = 1.;
+		double dblLocalOrderedDerivScale = 1.;
 		double[] adblLocalDerivAtLeftOrdinate = new double[iCk];
 
-		double dblGlobalSegmentPredictorWidth = width();
+		double dblSegmentPredictorWidth = width();
 
 		for (int i = 0; i < iCk; ++i) {
-			dblOrderedResponseDerivScale *= dblGlobalSegmentPredictorWidth;
+			dblLocalOrderedDerivScale *= dblSegmentPredictorWidth;
 
 			try {
-				adblLocalDerivAtLeftOrdinate[i] = prPrev.calcResponseDerivative (dblGlobalPredictorOrdinate,
-					i + 1, false) * dblOrderedResponseDerivScale;
+				adblLocalDerivAtLeftOrdinate[i] = prPrev.calcResponseDerivative (dblPredictorOrdinate, i + 1,
+					false) * dblLocalOrderedDerivScale;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -367,8 +367,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 					(org.drip.math.solver1D.InitializationHeuristics.FromHardSearchEdges (0., 1.));
 
 			if (null == fpop || !fpop.containsRoot())
-				return new org.drip.math.segment.Monotonocity
-					(org.drip.math.segment.Monotonocity.MONOTONIC);
+				return new org.drip.math.segment.Monotonocity (org.drip.math.segment.Monotonocity.MONOTONIC);
 
 			double dblExtremum = fpop.getRoot();
 
@@ -394,7 +393,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 			return new org.drip.math.segment.Monotonocity
 				(org.drip.math.segment.Monotonocity.NON_MONOTONIC);
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 		try {
@@ -531,7 +530,9 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	public PredictorResponse clipLeftOfPredictorOrdinate (
 		final double dblPredictorOrdinate)
 	{
-		if (right() == dblPredictorOrdinate) return null;
+		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) || right() ==
+			dblPredictorOrdinate)
+			return null;
 
 		try {
 			return snipLeftOfLocalPredictorOrdinate (localize (dblPredictorOrdinate));
@@ -554,7 +555,9 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	public PredictorResponse clipRightOfPredictorOrdinate (
 		final double dblPredictorOrdinate)
 	{
-		if (left() == dblPredictorOrdinate) return null;
+		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) || left() ==
+			dblPredictorOrdinate)
+			return null;
 
 		try {
 			return snipRightOfLocalPredictorOrdinate (localize (dblPredictorOrdinate));

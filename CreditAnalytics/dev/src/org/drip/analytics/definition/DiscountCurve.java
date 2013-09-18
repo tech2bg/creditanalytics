@@ -261,7 +261,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compQuoteDFJacobian (
+	/* public org.drip.math.calculus.WengertJacobian compQuoteDFJacobian (
 		final double dblDate)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate)) return null;
@@ -310,7 +310,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		}
 
 		return wjCompQuoteDF;
-	}
+	} */
 
 	/**
 	 * Calculate the Jacobian of Component Quote at the given date for each component in the calibration set
@@ -321,11 +321,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compQuoteDFJacobian (
+	/* public org.drip.math.calculus.WengertJacobian compQuoteDFJacobian (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		return null == dt ? null : compQuoteDFJacobian (dt.getJulian());
-	}
+	} */
 
 	/**
 	 * Calculate the Jacobian of Component Quote at the given date for each component in the calibration set
@@ -336,7 +336,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compQuoteZeroJacobian (
+	/* public org.drip.math.calculus.WengertJacobian compQuoteZeroJacobian (
 		final double dblDate)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate)) return null;
@@ -374,7 +374,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		}
 
 		return null;
-	}
+	} */
 
 	/**
 	 * Calculate the Jacobian of Component Quote at the given date for each component in the calibration set
@@ -385,11 +385,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compQuoteZeroJacobian (
+	/* public org.drip.math.calculus.WengertJacobian compQuoteZeroJacobian (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		return null == dt ? null : compQuoteZeroJacobian (dt.getJulian());
-	}
+	} */
 
 	/**
 	 * Calculate the Jacobian of Component PV at the given date for each component in the calibration set to
@@ -400,7 +400,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compPVQuoteJacobian (
+	/* public org.drip.math.calculus.WengertJacobian compPVQuoteJacobian (
 		final double dblDate)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate)) return null;
@@ -434,7 +434,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		}
 
 		return wjCompPVQuote;
-	}
+	} */
 
 	/**
 	 * Calculate the Jacobian of Component PV at the given date for each component in the calibration set to
@@ -445,11 +445,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compPVQuoteJacobian (
+	/* public org.drip.math.calculus.WengertJacobian compPVQuoteJacobian (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		return null == dt ? null : compPVQuoteJacobian (dt.getJulian());
-	}
+	} */
 
 	/**
 	 * Retrieve the Jacobian for the Forward Rate between the given dates
@@ -476,7 +476,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		if (null == wj2) return null;
 
-		int iNumDFNodes = numCalibNodes();
+		int iNumDFNodes = wj2.numParameters();
 
 		double dblDF1 = java.lang.Double.NaN;
 		double dblDF2 = java.lang.Double.NaN;
@@ -788,9 +788,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		java.lang.String strIndex = strCurrency + "-LIBOR-6M";
 
-		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.RatesStreamBuilder.CreateIRS
-			(dtStart, new org.drip.analytics.date.JulianDate (dblDate), 0., strCurrency, strIndex,
-				strCurrency);
+		org.drip.product.definition.RatesComponent irs =
+			org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtStart, new
+				org.drip.analytics.date.JulianDate (dblDate), 0., strCurrency, strIndex, strCurrency);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
@@ -883,9 +883,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.math.segment.PredictorResponseBuilderParams sbp = new
 			org.drip.math.segment.PredictorResponseBuilderParams
-				(org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (2), new
-						org.drip.math.segment.DesignInelasticParams (0, 2), null);
+				(org.drip.math.regime.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
+					org.drip.math.spline.PolynomialBasisSetParams (4), new
+						org.drip.math.segment.DesignInelasticParams (2, 2), null);
 
 		int iNumComponent = aCalibComp.length;
 		double[] adblDate = new double[iNumComponent];
@@ -910,15 +910,15 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			adblDate[i] = aCalibComp[i].getMaturityDate().getJulian();
 		}
 
-		org.drip.math.grid.MultiSegmentRegime span =
-			org.drip.math.grid.RegimeBuilder.CreateCalibratedRegimeEstimator ("DISC_CURVE_REGIME", adblDate,
-				adblQuote, aSBP, new org.drip.math.grid.RegimeCalibrationSetting
-					(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL,
-						org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
+		org.drip.math.regime.MultiSegmentRegime regime =
+			org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator ("DISC_CURVE_REGIME", adblDate,
+				adblQuote, aSBP, new org.drip.math.regime.RegimeCalibrationSetting
+					(org.drip.math.regime.RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL,
+						org.drip.math.regime.RegimeCalibrationSetting.CALIBRATE));
 
-		if (null == span)
-			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot create Interp Span");
+		if (null == regime)
+			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot create Interp Regime");
 
-		return span.response (dblDate);
+		return regime.response (dblDate);
 	}
 }

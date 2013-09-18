@@ -42,7 +42,7 @@ package org.drip.regression.spline;
 public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.UnitRegressionExecutor {
 	private boolean _bLocallyMonotone = false;
 	private double _dblValue = java.lang.Double.NaN;
-	private org.drip.math.grid.SingleSegmentRegime _sss = null;
+	private org.drip.math.regime.SingleSegmentRegime _sss = null;
 	private org.drip.math.segment.Monotonocity _sm = null;
 	private org.drip.math.calculus.WengertJacobian _wj = null;
 
@@ -53,16 +53,16 @@ public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.
 	{
 		super (strName, strScenarioName);
 
-		_sss = new org.drip.math.grid.LagrangePolynomialRegime (new double[] {1., 2., 3., 4.});
+		_sss = new org.drip.math.regime.LagrangePolynomialRegime (new double[] {1., 2., 3., 4.});
 	}
 
 	@Override public boolean preRegression()
 	{
 		try {
 			return _sss.setup (1., new double[] {1., 2., 3., 4.}, new
-				org.drip.math.grid.RegimeCalibrationSetting
-					(org.drip.math.grid.RegimeCalibrationSetting.BOUNDARY_CONDITION_FLOATING,
-						org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE));
+				org.drip.math.regime.RegimeCalibrationSetting
+					(org.drip.math.regime.RegimeCalibrationSetting.BOUNDARY_CONDITION_FLOATING,
+						org.drip.math.regime.RegimeCalibrationSetting.CALIBRATE));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

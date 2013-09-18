@@ -41,15 +41,15 @@ package org.drip.regression.spline;
  */
 
 public class LocalControlBasisSplineRegressor extends org.drip.regression.core.UnitRegressionExecutor {
-	private org.drip.math.grid.MultiSegmentRegime _regime = null;
-	private org.drip.math.grid.MultiSegmentRegime _regimeBesselHermite = null;
-	private org.drip.math.grid.MultiSegmentRegime _regimeHermiteInsert = null;
-	private org.drip.math.grid.MultiSegmentRegime _regimeCardinalInsert = null;
-	private org.drip.math.grid.MultiSegmentRegime _regimeCatmullRomInsert = null;
+	private org.drip.math.regime.MultiSegmentRegime _regime = null;
+	private org.drip.math.regime.MultiSegmentRegime _regimeBesselHermite = null;
+	private org.drip.math.regime.MultiSegmentRegime _regimeHermiteInsert = null;
+	private org.drip.math.regime.MultiSegmentRegime _regimeCardinalInsert = null;
+	private org.drip.math.regime.MultiSegmentRegime _regimeCatmullRomInsert = null;
 
 	private final boolean DumpRNVD (
 		final java.lang.String strRegimeName,
-		final org.drip.math.grid.MultiSegmentRegime regime,
+		final org.drip.math.regime.MultiSegmentRegime regime,
 		final org.drip.regression.core.RegressionRunDetail rnvd)
 	{
 		double dblX = 0.;
@@ -107,9 +107,10 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 		for (int i = 0; i < iNumSegment; ++i)
 			aSBP[i] = new org.drip.math.segment.PredictorResponseBuilderParams (strBasisSpline, bsp, new
 				org.drip.math.segment.DesignInelasticParams (iCk, 1), new
-					org.drip.math.function.RationalShapeControl (1.));
+					org.drip.math.segment.ResponseScalingShapeController (true, new
+						org.drip.math.function.RationalShapeControl (1.)));
 
-		if (null == (_regime = org.drip.math.grid.RegimeBuilder.CreateUncalibratedRegimeEstimator
+		if (null == (_regime = org.drip.math.regime.RegimeBuilder.CreateUncalibratedRegimeEstimator
 			("SPLINE_REGIME", adblX, aSBP)))
 			throw new java.lang.Exception ("LocalControlBasisSplineRegressor ctr: Cannot Construct Regime!");
 	}
@@ -141,10 +142,11 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 
 		try {
 			prbp = new org.drip.math.segment.PredictorResponseBuilderParams
-				(org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
+				(org.drip.math.regime.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.math.spline.PolynomialBasisSetParams (4), new
 						org.drip.math.segment.DesignInelasticParams (2, 2), new
-							org.drip.math.function.RationalShapeControl (1.));
+							org.drip.math.segment.ResponseScalingShapeController (true, new
+								org.drip.math.function.RationalShapeControl (1.)));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -157,19 +159,19 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 		for (int i = 0; i < adblY.length - 1; ++i)
 			aSBP[i] = prbp;
 
-		if (null == (_regimeBesselHermite = org.drip.math.grid.RegimeBuilder.CreateBesselCubicSplineRegime
+		if (null == (_regimeBesselHermite = org.drip.math.regime.RegimeBuilder.CreateBesselCubicSplineRegime
 			("BESSEL_REGIME", new double[] {0.00, 1.00,  2.00,  3.00,  4.00}, adblY, aSBP,
-				org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE)))
+				org.drip.math.regime.RegimeCalibrationSetting.CALIBRATE)))
 			return false;
 
 		return _regime.setupHermite (aSEPLeft, aSEPRight, null,
-			org.drip.math.grid.RegimeCalibrationSetting.CALIBRATE_JACOBIAN);
+			org.drip.math.regime.RegimeCalibrationSetting.CALIBRATE_JACOBIAN);
 	}
 
 	@Override public boolean execRegression()
 	{
 		try {
-			if (null == (_regimeHermiteInsert = org.drip.math.grid.RegimeModifier.InsertKnot (_regime, 2.5,
+			if (null == (_regimeHermiteInsert = org.drip.math.regime.RegimeModifier.InsertKnot (_regime, 2.5,
 				new org.drip.math.segment.PredictorOrdinateResponseDerivative (27.5, new double[] {25.5}),
 					new org.drip.math.segment.PredictorOrdinateResponseDerivative (27.5, new double[]
 						{25.5}))))
@@ -180,11 +182,11 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			return false;
 		}
 
-		if (null == (_regimeCardinalInsert = org.drip.math.grid.RegimeModifier.InsertCardinalKnot (_regime,
+		if (null == (_regimeCardinalInsert = org.drip.math.regime.RegimeModifier.InsertCardinalKnot (_regime,
 			2.5, 0.)))
 			return false;
 
-		return null != (_regimeCatmullRomInsert = org.drip.math.grid.RegimeModifier.InsertCatmullRomKnot
+		return null != (_regimeCatmullRomInsert = org.drip.math.regime.RegimeModifier.InsertCatmullRomKnot
 			(_regime, 2.5));
 	}
 

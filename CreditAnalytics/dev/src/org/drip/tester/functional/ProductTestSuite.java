@@ -478,7 +478,7 @@ public class ProductTestSuite {
 
 		org.drip.param.definition.RatesScenarioCurve irscUSDTSY =
 			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USDTSY",
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSDTSY.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,
 			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);
@@ -748,7 +748,7 @@ public class ProductTestSuite {
 
 		org.drip.param.definition.RatesScenarioCurve irscUSD =
 			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USD",
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSD.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,
 			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);

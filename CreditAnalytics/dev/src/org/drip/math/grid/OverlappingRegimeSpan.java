@@ -34,9 +34,9 @@ package org.drip.math.grid;
  * @author Lakshmi Krishnamurthy
  */
 
-public class OverlappingRegimeSpan {
-	private java.util.List<org.drip.math.grid.MultiSegmentRegime> _lsRegime = new
-		java.util.ArrayList<org.drip.math.grid.MultiSegmentRegime>();
+public class OverlappingRegimeSpan implements org.drip.math.grid.Span {
+	private java.util.List<org.drip.math.regime.MultiSegmentRegime> _lsRegime = new
+		java.util.ArrayList<org.drip.math.regime.MultiSegmentRegime>();
 
 	/**
 	 * OverlappingRegimeSpan constructor
@@ -47,7 +47,7 @@ public class OverlappingRegimeSpan {
 	 */
 
 	public OverlappingRegimeSpan (
-		final org.drip.math.grid.MultiSegmentRegime regime)
+		final org.drip.math.regime.MultiSegmentRegime regime)
 		throws java.lang.Exception
 	{
 		if (null == regime) throw new java.lang.Exception ("OverlappingRegimeSpan ctr: Invalid Inputs");
@@ -55,16 +55,8 @@ public class OverlappingRegimeSpan {
 		_lsRegime.add (regime);
 	}
 
-	/**
-	 * Add a Regime to the Span
-	 * 
-	 * @param regime Regime to be added
-	 * 
-	 * @return TRUE => Regime added successfully
-	 */
-
-	public boolean addRegime (
-		final org.drip.math.grid.MultiSegmentRegime regime)
+	@Override public boolean addRegime (
+		final org.drip.math.regime.MultiSegmentRegime regime)
 	{
 		if (null == regime) return false;
 
@@ -73,18 +65,10 @@ public class OverlappingRegimeSpan {
 		return true;
 	}
 
-	/**
-	 * Retrieve the first Regime that contains the Predictor Ordinate
-	 * 
-	 * @param dblPredictorOrdinate The Predictor Ordinate
-	 * 
-	 * @return The containing Regime
-	 */
-
-	public org.drip.math.grid.MultiSegmentRegime getContainingRegime (
+	@Override public org.drip.math.regime.MultiSegmentRegime getContainingRegime (
 		final double dblPredictorOrdinate)
 	{
-		for (org.drip.math.grid.MultiSegmentRegime regime : _lsRegime) {
+		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
 			try {
 				if (regime.in (dblPredictorOrdinate)) return regime;
 			} catch (java.lang.Exception e) {
@@ -97,23 +81,82 @@ public class OverlappingRegimeSpan {
 		return null;
 	}
 
-	/**
-	 * Retrieve the Regime by Name
-	 * 
-	 * @param strName The Regime Name
-	 * 
-	 * @return The Regime
-	 */
-
-	public org.drip.math.grid.MultiSegmentRegime getRegime (
+	@Override public org.drip.math.regime.MultiSegmentRegime getRegime (
 		final java.lang.String strName)
 	{
 		if (null == strName) return null;
 
-		for (org.drip.math.grid.MultiSegmentRegime regime : _lsRegime) {
+		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
 			if (strName.equalsIgnoreCase (regime.name())) return regime;
 		}
 
 		return null;
+	}
+
+	@Override public double calcResponseValue (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception
+	{
+		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
+			if (regime.in (dblPredictorOrdinate)) return regime.response (dblPredictorOrdinate);
+		}
+
+		throw new java.lang.Exception ("OverlappingRegimeSpan::calcResponseValue => Cannot Calculate!");
+	}
+
+	@Override public double left() throws java.lang.Exception
+	{
+		if (0 == _lsRegime.size())
+			throw new java.lang.Exception ("OverlappingRegimeSpan::left => No valid Regimes found");
+
+		return _lsRegime.get (0).getLeftPredictorOrdinateEdge();
+	}
+
+	@Override public double right() throws java.lang.Exception
+	{
+		if (0 == _lsRegime.size())
+			throw new java.lang.Exception ("OverlappingRegimeSpan::right => No valid Regimes found");
+
+		return _lsRegime.get (_lsRegime.size() - 1).getRightPredictorOrdinateEdge();
+	}
+
+	/**
+	 * Convert the Overlapping Regime Span to a non-overlapping Regime Span. Overlapping Regimes are clipped
+	 * 	from the Left.
+	 *  
+	 * @return The Non-overlapping Regime Span Instance
+	 */
+
+	public org.drip.math.grid.NonOverlappingRegimeSpan toNonOverlapping()
+	{
+		if (0 == _lsRegime.size()) return null;
+
+		org.drip.math.regime.MultiSegmentRegime regimePrev = null;
+		org.drip.math.grid.NonOverlappingRegimeSpan nors = null;
+
+		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
+			if (null == regime) continue;
+
+			if (null == nors) {
+				try {
+					nors = new org.drip.math.grid.NonOverlappingRegimeSpan (regimePrev = regime);
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			} else {
+				double dblPrevRightPredictorOrdinateEdge = regimePrev.getRightPredictorOrdinateEdge();
+
+				double dblCurrentLeftPredictorOrdinateEdge = regime.getLeftPredictorOrdinateEdge();
+
+				if (dblCurrentLeftPredictorOrdinateEdge >= dblPrevRightPredictorOrdinateEdge)
+					nors.addRegime (regime);
+				else
+					nors.addRegime (regime.clipLeft (regime.name(), dblPrevRightPredictorOrdinateEdge));
+			}
+		}
+
+		return nors;
 	}
 }

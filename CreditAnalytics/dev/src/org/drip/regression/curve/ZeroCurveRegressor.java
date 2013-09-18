@@ -99,9 +99,9 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						adblRate[i] = 0.05 + 0.001 * (NUM_DC_NODES - i);
 					}
 
-					if (null == (_dc = org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (_dtStart,
+					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (_dtStart,
 						"CHF", adblDate, adblRate,
-							org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD)))
+							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD)))
 						return false;
 
 					for (int i = 0; i < NUM_PERIOD_NODES; ++i) {
@@ -130,7 +130,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				@Override public boolean execRegression()
 				{
 					try {
-						if (null == (_zc = org.drip.analytics.creator.ZeroCurveBuilder.CreateZeroCurve (2,
+						if (null == (_zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (2,
 							"30/360", _dc.getCurrency(), true, _lsCouponPeriod, _dtPeriodStart.getJulian(),
 								_dtStart.addDays (2).getJulian(), _dc, null, s_dblZSpread)))
 							return false;

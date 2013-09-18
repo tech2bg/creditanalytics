@@ -186,7 +186,7 @@ public class BasisSplineRegressorSet implements org.drip.regression.core.Regress
 
 			_setRegressors.add (new org.drip.regression.spline.LocalControlBasisSplineRegressor
 				("Hermite_Bessel_CatmullRom_Cardinal_N4Ck1", _strRegressionScenario,
-					org.drip.math.grid.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
+					org.drip.math.regime.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
 						org.drip.math.spline.PolynomialBasisSetParams (4), 1));
 
 			_setRegressors.add (new org.drip.regression.spline.LagrangePolynomialRegimeRegressor

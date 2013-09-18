@@ -117,7 +117,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 
 					try {
 						if (null == (_fxForwardCurve =
-							org.drip.analytics.creator.FXForwardCurveBuilder.CreateFXForwardCurve (_cp,
+							org.drip.state.creator.FXForwardCurveBuilder.CreateFXForwardCurve (_cp,
 								dtToday, _dblFXSpot, _adblNodes, _adblFXFwd, _abIsPIP)))
 							return false;
 					} catch (java.lang.Exception e) {
@@ -148,11 +148,11 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 				{
 					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
-					if (null == (_dcUSD = org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+					if (null == (_dcUSD = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(dtToday, "USD", 0.05)))
 						return false;
 
-					if (null == (_dcEUR = org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+					if (null == (_dcEUR = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(dtToday, "EUR", 0.04)))
 						return false;
 
@@ -221,11 +221,11 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 				{
 					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
-					if (null == (_dcUSD = org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+					if (null == (_dcUSD = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(dtToday, "USD", 0.05)))
 						return false;
 
-					if (null == (_dcEUR = org.drip.analytics.creator.DiscountCurveBuilder.CreateFromFlatRate
+					if (null == (_dcEUR = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(dtToday, "EUR", 0.04)))
 						return false;
 
@@ -276,10 +276,10 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 						org.drip.product.params.CurrencyPair cp = new org.drip.product.params.CurrencyPair
 							("EUR", "USD", "USD", 10000.);
 
-						_fxUSDBasisCurve = org.drip.analytics.creator.FXBasisCurveBuilder.CreateFXBasisCurve
+						_fxUSDBasisCurve = org.drip.state.creator.FXBasisCurveBuilder.CreateFXBasisCurve
 							(cp, dtToday, _dblFXSpot, _adblNodes, _adblFullUSDBasis, false);
 
-						_fxEURBasisCurve = org.drip.analytics.creator.FXBasisCurveBuilder.CreateFXBasisCurve
+						_fxEURBasisCurve = org.drip.state.creator.FXBasisCurveBuilder.CreateFXBasisCurve
 							(cp, dtToday, _dblFXSpot, _adblNodes, _adblFullEURBasis, false);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();

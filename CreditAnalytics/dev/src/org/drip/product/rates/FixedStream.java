@@ -675,12 +675,12 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm)
+		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
 	{
 		return null;
 	}

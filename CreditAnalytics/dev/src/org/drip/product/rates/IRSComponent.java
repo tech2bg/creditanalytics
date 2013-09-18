@@ -552,24 +552,24 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.analytics.calibration.PredictorResponseLinearConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.analytics.calibration.LatentStateMetricMeasure lsmm)
+		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
 	{
 		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == lsmm ||
-			!org.drip.analytics.calibration.LatentStateMetricMeasure.LATENT_STATE_DISCOUNT.equalsIgnoreCase
-				(lsmm.getLatentState()))
+			!org.drip.state.estimator.LatentStateMetricMeasure.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+				(lsmm.getID()))
 			return null;
 
-		if (org.drip.analytics.calibration.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+		if (org.drip.state.estimator.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
 			if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
-				org.drip.analytics.calibration.PredictorResponseLinearConstraint prlc = new
-					org.drip.analytics.calibration.PredictorResponseLinearConstraint();
+				org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
+					org.drip.state.estimator.PredictorResponseLinearConstraint();
 
 				for (org.drip.analytics.period.CouponPeriod period : _fixStream.getCouponPeriod()) {
 					if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
