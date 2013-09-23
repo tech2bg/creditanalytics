@@ -128,7 +128,7 @@ public class SWPM {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, strCurrency,
+		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, strCurrency,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
 		/*

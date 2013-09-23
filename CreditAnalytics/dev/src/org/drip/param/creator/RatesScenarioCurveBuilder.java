@@ -85,7 +85,7 @@ public class RatesScenarioCurveBuilder {
 	 * @return The Calibrated Discount Curve
 	 */
 
-	public static final org.drip.analytics.definition.DiscountCurve CreateDiscountCurve (
+	public static final org.drip.analytics.definition.DiscountCurve NonlinearBuild (
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strCurrency,
 		final java.lang.String strBootstrapMode,
@@ -104,5 +104,28 @@ public class RatesScenarioCurveBuilder {
 			return null;
 
 		return irsg.getDCBase();
+	}
+
+	public static final org.drip.analytics.definition.DiscountCurve LinearBuild (
+		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
+		final org.drip.math.regime.RegimeCalibrationSetting rcs,
+		final org.drip.state.estimator.RegimeBuilderSet[] aRBS,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.valuation.QuotingParams quotingParams)
+	{
+		org.drip.state.estimator.LinearCurveCalibrator lcc = null;
+
+		try {
+			lcc = new org.drip.state.estimator.LinearCurveCalibrator (prbp, rcs);
+
+			return new org.drip.state.manager.DiscountFactorDiscountCurve ("USD", (lcc.calibrateSpan (aRBS,
+				valParams, null, null, null)));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

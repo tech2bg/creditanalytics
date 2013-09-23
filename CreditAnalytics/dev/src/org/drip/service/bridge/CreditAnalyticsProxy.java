@@ -179,7 +179,7 @@ public class CreditAnalyticsProxy {
 
 		mmFixings.put (dtStart.addDays (2), mIndexFixings);
 
-		return org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
+		return org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
 			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
 				adblCompCalibValue, astrCalibMeasure, mmFixings);
 	}

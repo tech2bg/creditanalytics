@@ -127,19 +127,19 @@ public class OverlappingRegimeSpan implements org.drip.math.grid.Span {
 	 * @return The Non-overlapping Regime Span Instance
 	 */
 
-	public org.drip.math.grid.NonOverlappingRegimeSpan toNonOverlapping()
+	public org.drip.math.grid.Span toNonOverlapping()
 	{
 		if (0 == _lsRegime.size()) return null;
 
+		org.drip.math.grid.OverlappingRegimeSpan ors = null;
 		org.drip.math.regime.MultiSegmentRegime regimePrev = null;
-		org.drip.math.grid.NonOverlappingRegimeSpan nors = null;
 
 		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
 			if (null == regime) continue;
 
-			if (null == nors) {
+			if (null == ors) {
 				try {
-					nors = new org.drip.math.grid.NonOverlappingRegimeSpan (regimePrev = regime);
+					ors = new org.drip.math.grid.OverlappingRegimeSpan (regimePrev = regime);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -151,12 +151,12 @@ public class OverlappingRegimeSpan implements org.drip.math.grid.Span {
 				double dblCurrentLeftPredictorOrdinateEdge = regime.getLeftPredictorOrdinateEdge();
 
 				if (dblCurrentLeftPredictorOrdinateEdge >= dblPrevRightPredictorOrdinateEdge)
-					nors.addRegime (regime);
+					ors.addRegime (regime);
 				else
-					nors.addRegime (regime.clipLeft (regime.name(), dblPrevRightPredictorOrdinateEdge));
+					ors.addRegime (regime.clipLeft (regime.name(), dblPrevRightPredictorOrdinateEdge));
 			}
 		}
 
-		return nors;
+		return ors;
 	}
 }

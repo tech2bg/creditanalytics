@@ -373,4 +373,87 @@ public class RegimeBuilder {
 
 		return regime.setupHermite (aPORDLeft, aPORDRight, null, iSetupMode) ? regime : null;
 	}
+
+	/**
+	 * Create Hyman Monotone Preserving Regime
+	 * 
+	 * @param strName Regime Name
+	 * @param adblPredictorOrdinate Array of Predictor Ordinates
+	 * @param adblResponseValue Array of Response Values
+	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param iSetupMode Segment Setup Mode
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * 
+	 * @return Hyman Monotone Preserving Regime
+	 */
+
+	public static final org.drip.math.regime.MultiSegmentRegime CreateHymanMonotoneRegime (
+		final java.lang.String strName,
+		final double[] adblPredictorOrdinate,
+		final double[] adblResponseValue,
+		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final int iSetupMode,
+		final boolean bEliminateSpuriousExtrema)
+	{
+		org.drip.math.regime.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
+			adblPredictorOrdinate, aPRBP);
+
+		if (null == regime || null == adblResponseValue) return null;
+
+		int iNumSegment = adblResponseValue.length - 1;
+		double dblMonotoneSlopePrev = java.lang.Double.NaN;
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORD = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment + 1];
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+
+		if (1 >= iNumSegment) return null;
+
+		for (int i = 0; i <= iNumSegment; ++i) {
+			double dblDResponseDPredictor = 0.;
+			double dblMonotoneSlope = iNumSegment != i ? (adblResponseValue[i + 1] - adblResponseValue[i]) /
+				(adblPredictorOrdinate[i + 1] - adblPredictorOrdinate[i]) : java.lang.Double.NaN;
+
+			if (0 != i && iNumSegment != i) {
+				double dblMonotoneIndicator = dblMonotoneSlopePrev * dblMonotoneSlope;
+
+				if (0. <= dblMonotoneIndicator) {
+					dblDResponseDPredictor = 3. * dblMonotoneIndicator / (java.lang.Math.max
+						(dblMonotoneSlope, dblMonotoneSlopePrev) + 2. * java.lang.Math.min (dblMonotoneSlope,
+							dblMonotoneSlopePrev));
+
+					if (bEliminateSpuriousExtrema) {
+						if (0.  < dblMonotoneSlope)
+							dblDResponseDPredictor = java.lang.Math.min (java.lang.Math.max (0.,
+								dblDResponseDPredictor), java.lang.Math.min (dblMonotoneSlope,
+									dblMonotoneSlopePrev));
+						else
+							dblDResponseDPredictor = java.lang.Math.max (java.lang.Math.min (0.,
+								dblDResponseDPredictor), java.lang.Math.max (dblMonotoneSlope,
+									dblMonotoneSlopePrev));
+					}
+				}
+			}
+
+			try {
+				aPORD[i] = new org.drip.math.segment.PredictorOrdinateResponseDerivative
+					(adblResponseValue[i], new double[] {dblDResponseDPredictor});
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			dblMonotoneSlopePrev = dblMonotoneSlope;
+		}
+
+		for (int i = 0; i < iNumSegment; ++i) {
+			aPORDLeft[i] = aPORD[i];
+			aPORDRight[i] = aPORD[i + 1];
+		}
+
+		return regime.setupHermite (aPORDLeft, aPORDRight, null, iSetupMode) ? regime : null;
+	}
 }

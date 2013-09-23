@@ -145,7 +145,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 							(dtStart.addDays (2), mIndexFixings);
 
 					return null != (dcIRS =
-						org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
+						org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings));
 				}

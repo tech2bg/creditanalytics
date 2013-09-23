@@ -90,7 +90,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 					}
 
 					return null != (dcEDF =
-						org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
+						org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, null));
 				}

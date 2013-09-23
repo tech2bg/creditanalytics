@@ -116,7 +116,7 @@ public class YAS {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		return RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, strCurrency,
+		return RatesScenarioCurveBuilder.NonlinearBuild (dtStart, strCurrency,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 
@@ -182,7 +182,7 @@ public class YAS {
 		for (int i = 0; i < aTSYBond.length; ++i)
 			astrCalibMeasure[i] = "Yield";
 
-		return RatesScenarioCurveBuilder.CreateDiscountCurve (dt,
+		return RatesScenarioCurveBuilder.NonlinearBuild (dt,
 			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aTSYBond,

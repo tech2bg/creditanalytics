@@ -115,7 +115,7 @@ public class RegimeBuilderSet {
 
 		int iNumComp = _aCalibComp.length;
 
-		if (1 >= iNumComp || astrManifestMeasure.length != iNumComp || adblQuote.length != iNumComp)
+		if (1 > iNumComp || astrManifestMeasure.length != iNumComp || adblQuote.length != iNumComp)
 			throw new java.lang.Exception ("RegimeBuilderSet ctr: Invalid Inputs");
 	}
 

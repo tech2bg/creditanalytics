@@ -128,7 +128,7 @@ public class TreasuryCurveAPI {
 		for (int i = 0; i < aTSYBond.length; ++i)
 			astrCalibMeasure[i] = "Yield";
 
-		return RatesScenarioCurveBuilder.CreateDiscountCurve (dt,
+		return RatesScenarioCurveBuilder.NonlinearBuild (dt,
 			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aTSYBond,

@@ -261,7 +261,7 @@ public class RatesAnalyticsAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
+		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
@@ -352,7 +352,7 @@ public class RatesAnalyticsAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
+		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
@@ -410,7 +410,7 @@ public class RatesAnalyticsAPI {
 			adblMaturity[i + 7] = aEDF[i].getMaturityDate().getJulian();
 		}
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
+		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
@@ -508,7 +508,7 @@ public class RatesAnalyticsAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
+		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 

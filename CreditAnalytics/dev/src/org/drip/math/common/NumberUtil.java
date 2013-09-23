@@ -180,6 +180,31 @@ public class NumberUtil {
 	}
 
 	/**
+	 * Bound the input to within (floor, Ceiling), i.e., compute Min (Max (floor, X), Ceiling)
+	 * 
+	 * @param dblX Input Number
+	 * @param dblFloor Floor
+	 * @param dblCeiling Ceiling
+	 * 
+	 * @return Min (Max (floor, X), Ceiling)
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
+
+	public static final double Bound (
+		final double dblX,
+		final double dblFloor,
+		final double dblCeiling)
+		throws java.lang.Exception
+	{
+		if (!IsValid (dblX) || !IsValid (dblFloor)|| !IsValid (dblCeiling) || dblFloor > dblCeiling)
+			throw new java.lang.Exception ("NumberUtil::Bound => Invalid Inputs");
+
+		double dblBound = dblX < dblFloor ? dblFloor : dblX;
+		return dblBound > dblCeiling ? dblCeiling : dblBound;
+	}
+
+	/**
 	 * Print the contents of the 1D array
 	 * 
 	 * @param strName Label Name
