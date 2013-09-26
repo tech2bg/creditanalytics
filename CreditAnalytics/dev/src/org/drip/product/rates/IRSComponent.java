@@ -626,6 +626,28 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	/**
+	 * Retrieve the Fixed Stream
+	 * 
+	 * @return The Fixed Stream
+	 */
+
+	public org.drip.product.definition.RatesComponent getFixedStream()
+	{
+		return _fixStream;
+	}
+
+	/**
+	 * Retrieve the Floating Stream
+	 * 
+	 * @return The Floating Stream
+	 */
+
+	public org.drip.product.definition.RatesComponent getFloatStream()
+	{
+		return _floatStream;
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception

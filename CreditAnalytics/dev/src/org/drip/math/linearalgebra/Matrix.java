@@ -42,7 +42,7 @@ public class Matrix {
 	/**
 	 * Diagonalize the specified row in the source matrix, and apply comparable operations to the target
 	 * 
-	 * @param iQ Row in the Source Matris
+	 * @param iQ Row in the Source Matrix
 	 * @param aadblZ2XJack Source Matrix
 	 * @param aadblZ2YJack Target Matrix
 	 * 
@@ -289,6 +289,8 @@ public class Matrix {
 		}
 
 		return mctOut;
+
+		// return Regularize (mctOut) ? mctOut : null;
 	}
 
 	/**
@@ -385,6 +387,8 @@ public class Matrix {
 
 		if (null == aadblAInv || iSize != aadblAInv.length || iSize != aadblAInv[0].length) return null;
 
+		// return aadblAInv;
+
 		return Product (aadblAInv, aadblZ2YJack);
 	}
 
@@ -394,14 +398,23 @@ public class Matrix {
 		// double[][] aadblA = new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9.01}};
 		// double[][] aadblA = new double[][] {{1, 2, 3}, {4, 5, 5}, {9, 7, 2}};
 		// double[][] aadblA = new double[][] {{1, 1, 1}, {3, 0, 7}, {1, -1, 1}};
-		double[][] aadblA = new double[][] {
+		/* double[][] aadblA = new double[][] {
 			{1. / 6., 0., 0., 0.},
 			{0., 0., 0., 1. / 6.},
 			{-0.5, 0.5, 0., 0.},
 			{1., -2., 1., 0.}
+		}; */
+
+		double[][] aadblA = new double[][] {
+			{1.0000, 0.5000, 0.3333,  0.0000,  0.0000, 0.0000},
+			{0.0000, 0.0000, 0.0000,  1.0000,  0.5000, 0.3333},
+			{1.0000, 1.0000, 1.0000, -1.0000,  0.0000, 0.0000},
+			{0.0000, 0.5000, 2.0000,  0.0000, -0.5000, 0.0000},
+			{0.0000, 1.0000, 0.0000,  0.0000,  0.0000, 0.0000},
+			{0.0000, 0.0000, 0.0000,  0.0000,  0.0000, 1.0000},
 		};
 
-		double[][] aadblAInv = InvertUsingGaussianElimination (aadblA);
+		double[][] aadblAInv = Invert (aadblA, "");
 
 		org.drip.math.common.NumberUtil.Print2DArray ("AINV", aadblAInv, false);
 

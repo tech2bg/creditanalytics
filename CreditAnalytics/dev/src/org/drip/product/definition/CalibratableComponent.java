@@ -142,4 +142,15 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.estimator.LatentStateMetricMeasure lsmm);
+
+	/**
+	 * Return the last Date that is relevant for the Calibration
+	 * 
+	 * @return The Terminal Date
+	 */
+
+	public org.drip.analytics.date.JulianDate terminalDate()
+	{
+		return getMaturityDate();
+	}
 }

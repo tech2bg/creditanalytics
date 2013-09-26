@@ -1158,11 +1158,40 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 
 		if ('w' == chTenor || 'W' == chTenor) return addDays (iTimeUnit * 7);
 
+		if ('l' == chTenor || 'L' == chTenor) return addDays (iTimeUnit * 28);
+
 		if ('m' == chTenor || 'M' == chTenor) return addMonths (iTimeUnit);
 
 		if ('y' == chTenor || 'Y' == chTenor) return addYears (iTimeUnit);
 
 		System.out.println ("Unknown tenor format " + strTenor);
+
+		return null;
+	}
+
+	/**
+	 * Adds the tenor to the JulianDate to create a new business date
+	 * 
+	 * @param strTenor The Tenor
+	 * @param strCalendarSet The Holiday Calendar Set
+	 * 
+	 * @return The new JulianDate
+	 */
+
+	public JulianDate addTenorAndAdjust (
+		final java.lang.String strTenor,
+		final java.lang.String strCalendarSet)
+	{
+		JulianDate dtNew = addTenor (strTenor);
+
+		if (null == dtNew) return null;
+
+		try {
+			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.getJulian(),
+				org.drip.analytics.daycount.Convention.DR_FOLL, strCalendarSet));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
 
 		return null;
 	}

@@ -205,6 +205,83 @@ public class NumberUtil {
 	}
 
 	/**
+	 * Retrieve the Minimum Element in the specified Array
+	 * 
+	 * @param adbl Array of elements
+	 * 
+	 * @return The Minimum Element
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public static final double Minimum (
+		final double[] adbl)
+		throws java.lang.Exception
+	{
+		if (!IsValid (adbl)) throw new java.lang.Exception ("NumberUtil::Minimum => Invalid Inputs");
+
+		double dblMinimum = adbl[0];
+		int iNumElement = adbl.length;
+
+		for (int i = 1; i < iNumElement; ++i)
+			dblMinimum = dblMinimum < adbl[i] ? dblMinimum : adbl[i];
+
+		return dblMinimum;
+	}
+
+	/**
+	 * Retrieve the Maximum Element in the specified Array
+	 * 
+	 * @param adbl Array of elements
+	 * 
+	 * @return The Maximum Element
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public static final double Maximum (
+		final double[] adbl)
+		throws java.lang.Exception
+	{
+		if (!IsValid (adbl)) throw new java.lang.Exception ("NumberUtil::Maximum => Invalid Inputs");
+
+		double dblMaximum = adbl[0];
+		int iNumElement = adbl.length;
+
+		for (int i = 1; i < iNumElement; ++i)
+			dblMaximum = dblMaximum > adbl[i] ? dblMaximum : adbl[i];
+
+		return dblMaximum;
+	}
+
+	/**
+	 * Check if the specified array contains elements all of the same sign
+	 * 
+	 * @param adbl Array of elements
+	 * 
+	 * @return TRUE => Same Sign
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public static final boolean SameSign (
+		final double[] adbl)
+		throws java.lang.Exception
+	{
+		if (!IsValid (adbl)) throw new java.lang.Exception ("NumberUtil::SameSign => Invalid Inputs");
+
+		if (adbl[0] <= 0.) return false;
+
+		int iNumElement = adbl.length;
+
+		for (int i = 1; i < iNumElement; ++i) {
+			if (adbl[0] * adbl[i] <= 0.) return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Print the contents of the 1D array
 	 * 
 	 * @param strName Label Name

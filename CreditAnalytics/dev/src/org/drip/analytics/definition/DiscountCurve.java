@@ -707,16 +707,10 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (dblDt1 < dblStartDate || dblDt2 < dblStartDate)
 			throw new java.lang.Exception ("DiscountCurve.calcLIBOR => Invalid input dates");
 
-		int iFreq = 4;
-
 		double dblYF = org.drip.analytics.daycount.Convention.YearFraction (dblDt1, dblDt2, "Act/360", false,
 			java.lang.Double.NaN, null, "");
 
-		return iFreq * (java.lang.Math.pow (getDF (dblDt1) / getDF (dblDt2), 1. / iFreq / dblYF) - 1.);
-
-		// return 365.25 * ((getDF (dblDt1) / getDF (dblDt2)) - 1) / (dblDt2 - dblDt1);
-
-		// return 365.25 / (dblDt2 - dblDt1) * java.lang.Math.log (getDF (dblDt1) / getDF (dblDt2));
+		return ((getDF (dblDt1) / getDF (dblDt2)) - 1.) / dblYF;
 	}
 
 	/**

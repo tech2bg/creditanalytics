@@ -120,8 +120,9 @@ public class RatesScenarioCurveBuilder {
 		try {
 			lcc = new org.drip.state.estimator.LinearCurveCalibrator (prbp, rcs);
 
-			return new org.drip.state.manager.DiscountFactorDiscountCurve ("USD", (lcc.calibrateSpan (aRBS,
-				valParams, null, null, null)));
+			return new org.drip.state.manager.DiscountFactorDiscountCurve
+				(aRBS[0].getCalibComp()[0].getIRCurveName(), (lcc.calibrateSpan (aRBS, valParams, null, null,
+					null)));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -67,6 +67,165 @@ public class RegimeBuilder {
 
 	public static final java.lang.String BASIS_SPLINE_KAKLIS_PANDELIS = "KaklisPandelis";
 
+	private static final double[] MonotoneSlope (
+		final double[] adblPredictorOrdinate,
+		final double[] adblResponseValue)
+	{
+		int iNumSegment = adblResponseValue.length - 1;
+		double[] adblMonotoneSlope = new double[iNumSegment];
+
+		for (int i = 0; i < iNumSegment; ++i)
+			adblMonotoneSlope[i] = (adblResponseValue[i + 1] - adblResponseValue[i]) /
+				(adblPredictorOrdinate[i + 1] - adblPredictorOrdinate[i]);
+
+		return adblMonotoneSlope;
+	}
+
+	private static final double[] BesselC1 (
+		final double[] adblPredictorOrdinate,
+		final double[] adblResponseValue)
+	{
+		int iNumResponse = adblResponseValue.length;
+		double[] adblEdgeSlope = new double[iNumResponse];
+
+		for (int i = 0; i < iNumResponse; ++i) {
+			if (0 == i) {
+				adblEdgeSlope[i] = (adblPredictorOrdinate[2] + adblPredictorOrdinate[1] - 2. *
+					adblPredictorOrdinate[0]) * (adblResponseValue[1] - adblResponseValue[0]) /
+						(adblPredictorOrdinate[1] - adblPredictorOrdinate[0]);
+				adblEdgeSlope[i] -= (adblPredictorOrdinate[1] - adblPredictorOrdinate[0]) *
+					(adblResponseValue[2] - adblResponseValue[1]) / (adblPredictorOrdinate[2] -
+						adblPredictorOrdinate[1]);
+				adblEdgeSlope[i] /= (adblPredictorOrdinate[2] - adblPredictorOrdinate[0]);
+			} else if (iNumResponse - 1 == i) {
+				adblEdgeSlope[i] = (adblPredictorOrdinate[iNumResponse - 1] -
+					adblPredictorOrdinate[iNumResponse - 2]) * (adblResponseValue[iNumResponse - 2] -
+						adblResponseValue[iNumResponse - 3]) / (adblPredictorOrdinate[iNumResponse - 2] -
+							adblPredictorOrdinate[iNumResponse - 3]);
+				adblEdgeSlope[i] -= (2. * adblPredictorOrdinate[iNumResponse - 1] -
+					adblPredictorOrdinate[iNumResponse - 2] - adblPredictorOrdinate[iNumResponse - 3]) *
+						(adblResponseValue[iNumResponse - 1] - adblResponseValue[iNumResponse - 2]) /
+							(adblPredictorOrdinate[iNumResponse - 1] - adblPredictorOrdinate[iNumResponse - 2]);
+				adblEdgeSlope[i] /= (adblPredictorOrdinate[iNumResponse - 1] -
+					adblPredictorOrdinate[iNumResponse - 3]);
+			} else {
+				adblEdgeSlope[i] = (adblPredictorOrdinate[i + 1] - adblPredictorOrdinate[i]) *
+					(adblResponseValue[i] - adblResponseValue[i - 1]) / (adblPredictorOrdinate[i] -
+						adblPredictorOrdinate[i - 1]);
+				adblEdgeSlope[i] += (adblPredictorOrdinate[i] - adblPredictorOrdinate[i - 1]) *
+					(adblResponseValue[i + 1] - adblResponseValue[i]) / (adblPredictorOrdinate[i + 1] -
+						adblPredictorOrdinate[i]);
+				adblEdgeSlope[i] /= (adblPredictorOrdinate[iNumResponse - 1] -
+					adblPredictorOrdinate[iNumResponse - 3]);
+			}
+		}
+
+		return adblEdgeSlope;
+	}
+
+	private static final double[] Hyman83C1 (
+		final double[] adblPredictorOrdinate,
+		final double[] adblResponseValue,
+		final boolean bEliminateSpuriousExtrema)
+	{
+		int iNumResponse = adblResponseValue.length;
+		double[] adblEdgeSlope = new double[iNumResponse];
+		double dblMonotoneSlopePrev = java.lang.Double.NaN;
+
+		for (int i = 0; i < iNumResponse; ++i) {
+			adblEdgeSlope[i] = 0.;
+			double dblMonotoneSlope = iNumResponse - 1 != i ? (adblResponseValue[i + 1] -
+				adblResponseValue[i]) / (adblPredictorOrdinate[i + 1] - adblPredictorOrdinate[i]) :
+					java.lang.Double.NaN;
+
+			if (0 != i && iNumResponse - 1 != i) {
+				double dblMonotoneIndicator = dblMonotoneSlopePrev * dblMonotoneSlope;
+
+				if (0. <= dblMonotoneIndicator) {
+					adblEdgeSlope[i] = 3. * dblMonotoneIndicator / (java.lang.Math.max (dblMonotoneSlope,
+						dblMonotoneSlopePrev) + 2. * java.lang.Math.min (dblMonotoneSlope,
+							dblMonotoneSlopePrev));
+
+					if (bEliminateSpuriousExtrema) {
+						if (0. < dblMonotoneSlope)
+							adblEdgeSlope[i] = java.lang.Math.min (java.lang.Math.max (0., adblEdgeSlope[i]),
+								java.lang.Math.min (dblMonotoneSlope, dblMonotoneSlopePrev));
+						else
+							adblEdgeSlope[i] = java.lang.Math.max (java.lang.Math.min (0., adblEdgeSlope[i]),
+								java.lang.Math.max (dblMonotoneSlope, dblMonotoneSlopePrev));
+					}
+				}
+			}
+
+			dblMonotoneSlopePrev = dblMonotoneSlope;
+		}
+
+		return adblEdgeSlope;
+	}
+
+	private static final double[] Hyman89C1 (
+		final double[] adblPredictorOrdinate,
+		final double[] adblResponseValue)
+	{
+		int iNumResponse = adblResponseValue.length;
+		double[] adblEdgeSlope = new double[iNumResponse];
+
+		double[] adblBesselC1 = BesselC1 (adblPredictorOrdinate, adblResponseValue);
+
+		double[] adblMonotoneSlope = MonotoneSlope (adblPredictorOrdinate, adblResponseValue);
+
+		for (int i = 0; i < iNumResponse; ++i) {
+			if (i < 2 || i >= iNumResponse - 2)
+				adblEdgeSlope[i] = adblBesselC1[i];
+			else {
+				double dMuMinus = (adblMonotoneSlope[i - 1] * (2. * (adblPredictorOrdinate[i] -
+					adblPredictorOrdinate[i - 1]) + adblPredictorOrdinate[i - 1] -
+						adblPredictorOrdinate[i - 2]) - adblMonotoneSlope[i - 2] * (adblPredictorOrdinate[i]
+							- adblPredictorOrdinate[i - 1])) / (adblPredictorOrdinate[i] -
+								adblPredictorOrdinate[i - 2]);
+				double dMu0 = (adblMonotoneSlope[i - 1] * (adblPredictorOrdinate[i + 1] -
+					adblPredictorOrdinate[i]) + adblMonotoneSlope[i] * (adblPredictorOrdinate[i] -
+						adblPredictorOrdinate[i - 1])) / (adblPredictorOrdinate[i + 1] -
+							adblPredictorOrdinate[i - 1]);
+				double dMuPlus = (adblMonotoneSlope[i] * (2. * (adblPredictorOrdinate[i + 1] -
+					adblPredictorOrdinate[i]) + adblPredictorOrdinate[i + 2] - adblPredictorOrdinate[i + 1])
+						- adblMonotoneSlope[i + 1] * (adblPredictorOrdinate[i + 1] -
+							adblPredictorOrdinate[i])) / (adblPredictorOrdinate[i + 2] -
+								adblPredictorOrdinate[i]);
+
+				try {
+					double dblM = 3 * org.drip.math.common.NumberUtil.Minimum (new double[]
+						{java.lang.Math.abs (adblMonotoneSlope[i - 1]), java.lang.Math.abs
+							(adblMonotoneSlope[i]), java.lang.Math.abs (dMu0), java.lang.Math.abs
+								(dMuPlus)});
+
+					if (!org.drip.math.common.NumberUtil.SameSign (new double[] {dMu0, dMuMinus,
+						adblMonotoneSlope[i - 1] - adblMonotoneSlope[i - 2], adblMonotoneSlope[i] -
+							adblMonotoneSlope[i - 1]}))
+						dblM = java.lang.Math.max (dblM, 1.5 * java.lang.Math.min (java.lang.Math.abs (dMu0),
+							java.lang.Math.abs (dMuMinus)));
+					else if (!org.drip.math.common.NumberUtil.SameSign (new double[] {-dMu0, -dMuPlus,
+						adblMonotoneSlope[i] - adblMonotoneSlope[i - 1], adblMonotoneSlope[i + 1] -
+							adblMonotoneSlope[i]}))
+						dblM = java.lang.Math.max (dblM, 1.5 * java.lang.Math.min (java.lang.Math.abs (dMu0),
+							java.lang.Math.abs (dMuPlus)));
+
+					adblEdgeSlope[i] = 0.;
+
+					if (adblBesselC1[i] * dMu0 > 0.)
+						adblEdgeSlope[i] = adblBesselC1[i] / java.lang.Math.abs (adblBesselC1[i]) *
+							java.lang.Math.min (java.lang.Math.abs (adblBesselC1[i]), dblM);
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+		}
+
+		return adblEdgeSlope;
+	}
+
 	/**
 	 * Create an uncalibrated Regime instance over the specified Predictor Ordinate Array using the specified
 	 * 	Basis Spline Parameters for the Segment.
@@ -313,69 +472,47 @@ public class RegimeBuilder {
 
 		if (null == regime || null == adblResponseValue) return null;
 
-		int iNumSegment = adblResponseValue.length - 1;
-		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORD = new
-			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment + 1];
+		int iNumResponseValue = adblResponseValue.length;
 		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft = new
-			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumResponseValue - 1];
 		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight = new
-			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumResponseValue - 1];
 
-		if (0 == iNumSegment) return null;
+		if (1 >= iNumResponseValue) return null;
 
-		for (int i = 0; i <= iNumSegment; ++i) {
-			double dblDResponseDPredictor = 0.;
+		double[] adblBesselSlope = BesselC1 (adblPredictorOrdinate, adblResponseValue);
 
-			if (0 == i) {
-				dblDResponseDPredictor = (adblPredictorOrdinate[2] + adblPredictorOrdinate[1] - 2. *
-					adblPredictorOrdinate[0]) * (adblResponseValue[1] - adblResponseValue[0]) /
-						(adblPredictorOrdinate[1] - adblPredictorOrdinate[0]);
-				dblDResponseDPredictor -= (adblPredictorOrdinate[1] - adblPredictorOrdinate[0]) *
-					(adblResponseValue[2] - adblResponseValue[1]) / (adblPredictorOrdinate[2] -
-						adblPredictorOrdinate[1]);
-				dblDResponseDPredictor /= (adblPredictorOrdinate[2] - adblPredictorOrdinate[0]);
-			} else if (iNumSegment == i) {
-				dblDResponseDPredictor = (adblPredictorOrdinate[iNumSegment] -
-					adblPredictorOrdinate[iNumSegment - 1]) * (adblResponseValue[iNumSegment - 1] -
-						adblResponseValue[iNumSegment - 2]) / (adblPredictorOrdinate[iNumSegment - 1] -
-							adblPredictorOrdinate[iNumSegment - 2]);
-				dblDResponseDPredictor -= (2. * adblPredictorOrdinate[iNumSegment] -
-					adblPredictorOrdinate[iNumSegment - 1] - adblPredictorOrdinate[iNumSegment - 2]) *
-						(adblResponseValue[iNumSegment] - adblResponseValue[iNumSegment - 1]) /
-							(adblPredictorOrdinate[iNumSegment] - adblPredictorOrdinate[iNumSegment - 1]);
-				dblDResponseDPredictor /= (adblPredictorOrdinate[iNumSegment] -
-					adblPredictorOrdinate[iNumSegment - 2]);
-			} else {
-				dblDResponseDPredictor = (adblPredictorOrdinate[i + 1] - adblPredictorOrdinate[i]) *
-					(adblResponseValue[i] - adblResponseValue[i - 1]) / (adblPredictorOrdinate[i] -
-						adblPredictorOrdinate[i - 1]);
-				dblDResponseDPredictor += (adblPredictorOrdinate[i] - adblPredictorOrdinate[i - 1]) *
-					(adblResponseValue[i + 1] - adblResponseValue[i]) / (adblPredictorOrdinate[i + 1] -
-						adblPredictorOrdinate[i]);
-				dblDResponseDPredictor /= (adblPredictorOrdinate[iNumSegment] -
-					adblPredictorOrdinate[iNumSegment - 2]);
-			}
+		if (null == adblBesselSlope || adblBesselSlope.length != iNumResponseValue) return null;
+
+		for (int i = 0; i < iNumResponseValue; ++i) {
+			org.drip.math.segment.PredictorOrdinateResponseDerivative pord = null;
 
 			try {
-				aPORD[i] = new org.drip.math.segment.PredictorOrdinateResponseDerivative
-					(adblResponseValue[i], new double[] {dblDResponseDPredictor});
+				pord = new org.drip.math.segment.PredictorOrdinateResponseDerivative (adblResponseValue[i],
+					new double[] {adblBesselSlope[i]});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
 				return null;
 			}
-		}
 
-		for (int i = 0; i < iNumSegment; ++i) {
-			aPORDLeft[i] = aPORD[i];
-			aPORDRight[i] = aPORD[i + 1];
+			if (0 == i)
+				aPORDLeft[i] = pord;
+			else if (iNumResponseValue - 1 == i)
+				aPORDRight[i - 1] = pord;
+			else {
+				aPORDLeft[i] = pord;
+				aPORDRight[i - 1] = pord;
+			}
 		}
 
 		return regime.setupHermite (aPORDLeft, aPORDRight, null, iSetupMode) ? regime : null;
 	}
 
 	/**
-	 * Create Hyman Monotone Preserving Regime
+	 * Create Hyman (1983) Monotone Preserving Regime. The reference is:
+	 * 
+	 * 	Accurate Monotonicity Preserving Cubic Interpolation - SIAM J on Numerical Analysis 4 (4), 645-654.
 	 * 
 	 * @param strName Regime Name
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
@@ -384,10 +521,10 @@ public class RegimeBuilder {
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * 
-	 * @return Hyman Monotone Preserving Regime
+	 * @return Hyman (1983) Monotone Preserving Regime
 	 */
 
-	public static final org.drip.math.regime.MultiSegmentRegime CreateHymanMonotoneRegime (
+	public static final org.drip.math.regime.MultiSegmentRegime CreateHyman83MonotoneRegime (
 		final java.lang.String strName,
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
@@ -400,58 +537,103 @@ public class RegimeBuilder {
 
 		if (null == regime || null == adblResponseValue) return null;
 
-		int iNumSegment = adblResponseValue.length - 1;
-		double dblMonotoneSlopePrev = java.lang.Double.NaN;
-		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORD = new
-			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment + 1];
+		int iNumResponseValue = adblResponseValue.length;
 		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft = new
-			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumResponseValue - 1];
 		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight = new
-			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumSegment];
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumResponseValue - 1];
 
-		if (1 >= iNumSegment) return null;
+		if (1 >= iNumResponseValue) return null;
 
-		for (int i = 0; i <= iNumSegment; ++i) {
-			double dblDResponseDPredictor = 0.;
-			double dblMonotoneSlope = iNumSegment != i ? (adblResponseValue[i + 1] - adblResponseValue[i]) /
-				(adblPredictorOrdinate[i + 1] - adblPredictorOrdinate[i]) : java.lang.Double.NaN;
+		double[] adblHyman83Slope = Hyman83C1 (adblPredictorOrdinate, adblResponseValue,
+			bEliminateSpuriousExtrema);
 
-			if (0 != i && iNumSegment != i) {
-				double dblMonotoneIndicator = dblMonotoneSlopePrev * dblMonotoneSlope;
+		if (null == adblHyman83Slope || adblHyman83Slope.length != iNumResponseValue) return null;
 
-				if (0. <= dblMonotoneIndicator) {
-					dblDResponseDPredictor = 3. * dblMonotoneIndicator / (java.lang.Math.max
-						(dblMonotoneSlope, dblMonotoneSlopePrev) + 2. * java.lang.Math.min (dblMonotoneSlope,
-							dblMonotoneSlopePrev));
-
-					if (bEliminateSpuriousExtrema) {
-						if (0.  < dblMonotoneSlope)
-							dblDResponseDPredictor = java.lang.Math.min (java.lang.Math.max (0.,
-								dblDResponseDPredictor), java.lang.Math.min (dblMonotoneSlope,
-									dblMonotoneSlopePrev));
-						else
-							dblDResponseDPredictor = java.lang.Math.max (java.lang.Math.min (0.,
-								dblDResponseDPredictor), java.lang.Math.max (dblMonotoneSlope,
-									dblMonotoneSlopePrev));
-					}
-				}
-			}
+		for (int i = 0; i < iNumResponseValue; ++i) {
+			org.drip.math.segment.PredictorOrdinateResponseDerivative pord = null;
 
 			try {
-				aPORD[i] = new org.drip.math.segment.PredictorOrdinateResponseDerivative
-					(adblResponseValue[i], new double[] {dblDResponseDPredictor});
+				pord = new org.drip.math.segment.PredictorOrdinateResponseDerivative (adblResponseValue[i],
+					new double[] {adblHyman83Slope[i]});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
 				return null;
 			}
 
-			dblMonotoneSlopePrev = dblMonotoneSlope;
+			if (0 == i)
+				aPORDLeft[i] = pord;
+			else if (iNumResponseValue - 1 == i)
+				aPORDRight[i - 1] = pord;
+			else {
+				aPORDLeft[i] = pord;
+				aPORDRight[i - 1] = pord;
+			}
 		}
 
-		for (int i = 0; i < iNumSegment; ++i) {
-			aPORDLeft[i] = aPORD[i];
-			aPORDRight[i] = aPORD[i + 1];
+		return regime.setupHermite (aPORDLeft, aPORDRight, null, iSetupMode) ? regime : null;
+	}
+
+	/**
+	 * Create Hyman (1989) enhancement to the Hyman (1983) Monotone Preserving Regime. The reference is:
+	 * 
+	 * 	Non-negative, monotonic, or convexity preserving cubic and quintic Hermite interpolation -
+	 * 		Mathematics of Computation 52 (186), 471-494.
+	 * 
+	 * @param strName Regime Name
+	 * @param adblPredictorOrdinate Array of Predictor Ordinates
+	 * @param adblResponseValue Array of Response Values
+	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param iSetupMode Segment Setup Mode
+	 * 
+	 * @return Hyman (1989) Monotone Preserving Regime
+	 */
+
+	public static final org.drip.math.regime.MultiSegmentRegime CreateHyman89MonotoneRegime (
+		final java.lang.String strName,
+		final double[] adblPredictorOrdinate,
+		final double[] adblResponseValue,
+		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final int iSetupMode)
+	{
+		org.drip.math.regime.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
+			adblPredictorOrdinate, aPRBP);
+
+		if (null == regime || null == adblResponseValue) return null;
+
+		int iNumResponseValue = adblResponseValue.length;
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumResponseValue - 1];
+		org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight = new
+			org.drip.math.segment.PredictorOrdinateResponseDerivative[iNumResponseValue - 1];
+
+		if (1 >= iNumResponseValue) return null;
+
+		double[] adblHyman89Slope = Hyman89C1 (adblPredictorOrdinate, adblResponseValue);
+
+		if (null == adblHyman89Slope || adblHyman89Slope.length != iNumResponseValue) return null;
+
+		for (int i = 0; i < iNumResponseValue; ++i) {
+			org.drip.math.segment.PredictorOrdinateResponseDerivative pord = null;
+
+			try {
+				pord = new org.drip.math.segment.PredictorOrdinateResponseDerivative (adblResponseValue[i],
+					new double[] {adblHyman89Slope[i]});
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			if (0 == i)
+				aPORDLeft[i] = pord;
+			else if (iNumResponseValue - 1 == i)
+				aPORDRight[i - 1] = pord;
+			else {
+				aPORDLeft[i] = pord;
+				aPORDRight[i - 1] = pord;
+			}
 		}
 
 		return regime.setupHermite (aPORDLeft, aPORDRight, null, iSetupMode) ? regime : null;

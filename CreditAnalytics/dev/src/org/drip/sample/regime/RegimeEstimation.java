@@ -530,7 +530,7 @@ public class RegimeEstimation {
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
-	public static final void BesselHymanMonotoneRegimeTest (
+	public static final void Hyman83HermiteMonotoneRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
 		final PredictorResponseBuilderParams sbp)
@@ -552,13 +552,91 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateHymanMonotoneRegime (
-			"HYMAN_MONOTONE_REGIME",
+		MultiSegmentRegime regime = RegimeBuilder.CreateHyman83MonotoneRegime (
+			"HYMAN83_MONOTONE_REGIME",
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			RegimeCalibrationSetting.CALIBRATE,
 			true); // TRUE => Eliminate Spurious Segment Extrema
+
+		/*
+		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+
+			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
+
+			dblX += 1.;
+		}
+
+		/*
+		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
+		 */
+
+		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
+			9.,
+			10.,
+			new RegimeCalibrationSetting (RegimeCalibrationSetting.BOUNDARY_CONDITION_NATURAL, RegimeCalibrationSetting.CALIBRATE));
+
+		dblX = 1.;
+
+		/*
+		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+				+ " | " + regimeInsert.monotoneType (dblX));
+
+			dblX += 1.;
+		}
+	}
+
+	/**
+	 * Perform the following sequence of tests for a given segment control for a predictor/response range
+	 * 	- Estimate
+	 *  - Compute the segment-by-segment monotonicity
+	 *  - Regime Jacobian
+	 *  - Regime knot insertion
+	 * 
+	 * @param adblX The Predictor Array
+	 * @param adblY The Response Array
+	 * @param sbp The Segment Builder Parameters
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
+
+	public static final void Hyman89HermiteMonotoneRegimeTest (
+		final double[] adblX,
+		final double[] adblY,
+		final PredictorResponseBuilderParams sbp)
+		throws Exception
+	{
+		double dblX = 1.;
+		double dblXMax = 10.;
+
+		/*
+		 * Array of Segment Builder Parameters - one per segment
+		 */
+
+		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+
+		for (int i = 0; i < adblX.length - 1; ++i)
+			aSBP[i] = sbp;
+
+		/*
+		 * Construct a Regime instance 
+		 */
+
+		MultiSegmentRegime regime = RegimeBuilder.CreateHyman89MonotoneRegime (
+			"HYMAN89_MONOTONE_REGIME",
+			adblX, // predictors
+			adblY, // responses
+			aSBP, // Basis Segment Builder parameters
+			RegimeCalibrationSetting.CALIBRATE);
 
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
@@ -669,8 +747,12 @@ public class RegimeEstimation {
 
 		BesselHermiteSplineRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
 
-		System.out.println (" \n---------- \n C1 HYMAN MONOTONE \n ---------- \n");
+		System.out.println (" \n---------- \n C1 HYMAN 1983 MONOTONE \n ---------- \n");
 
-		BesselHymanMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+		Hyman83HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+
+		System.out.println (" \n---------- \n C1 HYMAN 1989 MONOTONE \n ---------- \n");
+
+		Hyman89HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
 	}
 }

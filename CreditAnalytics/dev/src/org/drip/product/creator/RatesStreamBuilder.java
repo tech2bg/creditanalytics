@@ -104,8 +104,8 @@ public class RatesStreamBuilder {
 					strCalendar);
 
 			return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", strFloatingRateIndex, false, null, null,
-					dap, dap, dap, dap, null, null, null, -100., strIR, strCalendar);
+				dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", strFloatingRateIndex, false, null, dap,
+					dap, dap, dap, dap, dap, null, null, -100., strIR, strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -76,8 +76,19 @@ public class LinearAlgebra {
 		double[] adblB = new double[] {14., 5., 22. };
 		double[][] aadblA = new double[][] {{5., 1., 1.}, {1., 5., 1.}, {1., 1., 5.}};
 		double[] adblB = new double[] {12., 17., 22.}; */
-		double[][] aadblA = new double[][] {{1., 0., 0., 0.}, {1., 1., 2.72, 0.37}, {0., 0., 3.19, 0.37}, {0., 0., 1., 0.43}};
-		double[] adblB = new double[] {1., 1., 7., 0.};
+		// double[][] aadblA = new double[][] {{1., 0., 0., 0.}, {1., 1., 2.72, 0.37}, {0., 0., 3.19, 0.37}, {0., 0., 1., 0.43}};
+		// double[] adblB = new double[] {1., 1., 7., 0.};
+		double[][] aadblA = new double[][] {
+				{1.000, 0.500, 0.333,  0.000,  0.000, 0.000},
+				{0.000, 0.000, 0.000,  1.000,  0.500, 0.333},
+				{1.000, 1.000, 1.000, -1.000,  0.000, 0.000},
+				{0.000, 0.500, 2.000,  0.000, -0.500, 0.000},
+				{0.000, 1.000, 0.000,  0.000,  0.000, 0.000},
+				{0.000, 0.000, 0.000,  0.000,  1.000, 0.000},
+		};
+		double[] adblB = new double[] {0.02, 0.026, 0., 0., 0., 0.};
+
+		org.drip.math.common.NumberUtil.Print2DArray ("\tCOEFF", aadblA, false);
 
 		/*
 		 * Solve the Linear System using Gaussian Elimination
@@ -87,7 +98,16 @@ public class LinearAlgebra {
 
 		for (int i = 0; i < lssGaussianElimination.getTransformedRHS().length; ++i)
 			System.out.println ("GaussianElimination[" + i + "] = " + FormatUtil.FormatDouble
-				(lssGaussianElimination.getTransformedRHS()[i], 0, 2, 1.));
+				(lssGaussianElimination.getTransformedRHS()[i], 0, 6, 1.));
+
+		for (int i = 0; i < 6; ++i) {
+			double dblRHS = 0.;
+
+			for (int j = 0; j < 6; ++j)
+				dblRHS += aadblA[i][j] * lssGaussianElimination.getTransformedRHS()[j];
+
+			System.out.println ("RHS[" + i + "]: " + dblRHS);
+		}
 
 		/*
 		 * Solve the Linear System using the Gauss-Seidel method
@@ -102,7 +122,7 @@ public class LinearAlgebra {
 	public static final void main (
 		final String[] astrArgs)
 	{
-		MatrixManipulation();
+		// MatrixManipulation();
 
 		LinearSystemSolver();
 	}

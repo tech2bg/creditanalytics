@@ -104,7 +104,7 @@ public class CouponPeriod extends Period {
 	/** Generates the period list backward starting from the end.
 	 * 
 	 * @param dblEffective Effective date
-	 * @param dblMaturity Maturity date
+	 * @param dblMaturityIn Maturity date
 	 * @param dapEffective Effective date Date Adjust Parameters
 	 * @param dapMaturity Maturity date Date Adjust Parameters
 	 * @param dapPeriodStart Period Start date Date Adjust Parameters
@@ -129,7 +129,7 @@ public class CouponPeriod extends Period {
 
 	public static final java.util.List<CouponPeriod> GeneratePeriodsBackward (
 		final double dblEffective,
-		final double dblMaturity,
+		final double dblMaturityIn,
 		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
 		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
 		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
@@ -149,14 +149,16 @@ public class CouponPeriod extends Period {
 		final java.lang.String strCalendar)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblEffective) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity || 0 ==
+			!org.drip.math.common.NumberUtil.IsValid (dblMaturityIn) || dblEffective >= dblMaturityIn || 0 ==
 				iFreq)
 			return null;
 
-		CouponPeriod periodFirst = null;
-		CouponPeriod periodSecond = null;
+		double dblMaturity = DAPAdjust (dblMaturityIn, dapMaturity);
+
 		boolean bFinalPeriod = true;
 		boolean bGenerationDone = false;
+		CouponPeriod periodFirst = null;
+		CouponPeriod periodSecond = null;
 		double dblPeriodEndDate = dblMaturity;
 		java.lang.String strTenor = (12 / iFreq) + "M";
 		double dblPeriodStartDate = java.lang.Double.NaN;

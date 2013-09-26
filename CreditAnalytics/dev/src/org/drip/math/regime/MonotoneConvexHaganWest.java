@@ -250,7 +250,7 @@ public class MonotoneConvexHaganWest {
 
 		int iNumObservation = _adblObservation.length;
 
-		if (0 >= iNumObservation || iNumObservation + 1 != _adblPredictorOrdinate.length)
+		if (1 >= iNumObservation || iNumObservation + 1 != _adblPredictorOrdinate.length)
 			throw new java.lang.Exception ("MonotoneConvexHaganWest ctr: Invalid Inputs!");
 	}
 

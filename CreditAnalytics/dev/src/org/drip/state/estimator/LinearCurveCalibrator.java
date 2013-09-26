@@ -182,20 +182,20 @@ public class LinearCurveCalibrator {
 
 				if (null == rvc) return null;
 
-				double dblMaturity = aCalibComp[i].getMaturityDate().getJulian();
+				double dblTerminalDate = aCalibComp[i].terminalDate().getJulian();
 
 				try {
 					if (null == regime) {
 						if (null == (regime =
 							org.drip.math.regime.RegimeBuilder.CreateUncalibratedRegimeEstimator
-								(rbs.getName(), new double[] {valParams._dblValue, dblMaturity}, new
+								(rbs.getName(), new double[] {valParams._dblValue, dblTerminalDate}, new
 									org.drip.math.segment.PredictorResponseBuilderParams[] {_prbp})) ||
 										!regime.setup (1., new
 											org.drip.math.segment.ResponseValueConstraint[] {rvc}, _rcs))
 							return null;
 					} else {
 						if (null == (regime = org.drip.math.regime.RegimeModifier.AppendSegment (regime,
-							dblMaturity, rvc, _prbp, _rcs)))
+							dblTerminalDate, rvc, _prbp, _rcs)))
 							return null;
 					}
 				} catch (java.lang.Exception e) {
