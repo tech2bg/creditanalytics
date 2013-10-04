@@ -108,7 +108,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				double dblSurvProb = pricerParams._bSurvToPayDate ? cc.getSurvival (period.getPayDate()) :
 					cc.getSurvival (period.getEndDate());
 
-				dblDirtyDV01 += 0.01 * period.getCouponDCF() * dc.getDF (period.getPayDate()) * dblSurvProb *
+				dblDirtyDV01 += 0.01 * period.getCouponDCF() * dc.df (period.getPayDate()) * dblSurvProb *
 					getNotional (period.getAccrualStartDate(), period.getEndDate());
 
 				java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
@@ -124,7 +124,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 					double dblSubPeriodStart = lp.getStartDate();
 
-					double dblSubPeriodDF = dc.getEffectiveDF (dblSubPeriodStart + _crValParams._iDefPayLag,
+					double dblSubPeriodDF = dc.effectiveDF (dblSubPeriodStart + _crValParams._iDefPayLag,
 						dblSubPeriodEnd + _crValParams._iDefPayLag);
 
 					double dblSubPeriodNotional = getNotional (dblSubPeriodStart, dblSubPeriodEnd);
@@ -154,7 +154,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		}
 
 		try {
-			dblCashPayDF = dc.getDF (null == _settleParams ? valParams._dblCashPay :
+			dblCashPayDF = dc.df (null == _settleParams ? valParams._dblCashPay :
 				_settleParams.cashSettleDate (valParams._dblValue));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -247,7 +247,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.math.calculus.WengertJacobian wjPeriodOnDefaultPVDF = null;
 
 		for (org.drip.analytics.period.LossPeriodCurveFactors lpcf : sLPSub) {
-			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (0.5 *
+			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (0.5 *
 				(lpcf.getStartDate() + lpcf.getEndDate()) + _crValParams._iDefPayLag);
 
 			try {
@@ -298,7 +298,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			double dblPeriodEffectiveDate = 0.5 * (lpcf.getStartDate() + lpcf.getEndDate());
 
-			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (dblPeriodEffectiveDate
+			org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodEffectiveDate
 				+ _crValParams._iDefPayLag);
 
 			try {
@@ -314,7 +314,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 				if (null == plmj) plmj = new PeriodLossMicroJack (wjPeriodPayDFDF.numParameters());
 
-				plmj._dblAccrOnDef01 += dblPeriodIncrementalAccrual * dc.getDF (dblPeriodEffectiveDate +
+				plmj._dblAccrOnDef01 += dblPeriodIncrementalAccrual * dc.df (dblPeriodEffectiveDate +
 					_crValParams._iDefPayLag);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -781,12 +781,12 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					cc.getSurvival (fp.getEndDate());
 
 				if (!org.drip.math.common.NumberUtil.IsValid (dblDFStart))
-					dblDFStart = dc.getDF (fp.getStartDate());
+					dblDFStart = dc.df (fp.getStartDate());
 
 				if (!org.drip.math.common.NumberUtil.IsValid (dblSurvProbStart))
 					dblSurvProbStart = cc.getSurvival (fp.getStartDate());
 
-				double dblDFEnd = dc.getDF (fp.getPayDate());
+				double dblDFEnd = dc.df (fp.getPayDate());
 
 				cp = new org.drip.analytics.period.CouponPeriodCurveFactors (fp.getStartDate(),
 					fp.getEndDate(), fp.getAccrualStartDate(), fp.getAccrualEndDate(), fp.getPayDate(),
@@ -894,9 +894,9 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			try {
 				ccMarket = (org.drip.analytics.definition.CreditCurve)
-					mktParams.getCreditCurve().createTweakedCurve (new
-						org.drip.param.definition.NodeTweakParams
-							(org.drip.param.definition.NodeTweakParams.NODE_FLAT_TWEAK, false,
+					mktParams.getCreditCurve().customTweakManifestMeasure (new
+						org.drip.param.definition.ResponseValueTweakParams
+							(org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK, false,
 								dblCreditBasis));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -1059,7 +1059,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null != mktParams) {
 			org.drip.product.definition.CalibratableComponent[] aMktComp = null;
 
-			if (null != (cc = mktParams.getCreditCurve()) && null != (aMktComp = cc.getCalibComponents())) {
+			if (null != (cc = mktParams.getCreditCurve()) && null != (aMktComp = cc.calibComp())) {
 				int iNumComp = aMktComp.length;
 
 				if (0 != iNumComp) {
@@ -1157,7 +1157,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
 
-				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (dblPeriodPayDate);
+				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 				org.drip.math.calculus.WengertJacobian wjPeriodOnDefaultPVMicroJack =
 					calcPeriodOnDefaultPVDFMicroJack (dblFairPremium, p, valParams, pricerParams, mktParams);
@@ -1223,7 +1223,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
 
-					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (p.getEndDate());
+					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (p.getEndDate());
 
 					PeriodLossMicroJack plmj = calcPeriodLossMicroJack (p, valParams, pricerParams, mktParams);
 
@@ -1236,7 +1236,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					double dblPeriodCoupon01 = getNotional (p.getStartDate(), p.getEndDate()) * p.getCouponDCF()
 						* cc.getSurvival (p.getEndDate());
 
-					dblDV01 += dblPeriodCoupon01 * dc.getDF (p.getPayDate()) + plmj._dblAccrOnDef01;
+					dblDV01 += dblPeriodCoupon01 * dc.df (p.getPayDate()) + plmj._dblAccrOnDef01;
 
 					for (int k = 0; k < wjPeriodPayDFDF.numParameters(); ++k) {
 						double dblPeriodNetLossJack = plmj._wjLossPVMicroJack.getFirstDerivative (0, k) -
@@ -1263,7 +1263,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		return null;
 	}
@@ -1398,9 +1398,10 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 							CALIBRATION_TYPE_FLAT_CURVE_NODES == _iCalibType, java.lang.Double.NaN));
 					else
 						mktParams.setCreditCurve ((org.drip.analytics.definition.CreditCurve)
-							ccOld.createTweakedCurve (new org.drip.param.definition.NodeTweakParams
-								(org.drip.param.definition.NodeTweakParams.NODE_FLAT_TWEAK, false,
-									dblFlatSpread)));
+							ccOld.customTweakManifestMeasure (new
+								org.drip.param.definition.ResponseValueTweakParams
+									(org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK,
+										false, dblFlatSpread)));
 
 					return _cds.calcMeasureValue (valParams, pricerParams, mktParams, quotingParams,
 						"Upfront") - dblPriceCalib;

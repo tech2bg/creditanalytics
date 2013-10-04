@@ -13,8 +13,8 @@ import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableComponent;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.curve.DiscountFactorDiscountCurve;
 import org.drip.state.estimator.*;
-import org.drip.state.manager.DiscountFactorDiscountCurve;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -112,8 +112,8 @@ public class DiscountCurveReconcilerAPI {
 
 		RegimeBuilderSet rbsCash = RegimeBuilderSet.CreateRegimeBuilderSet (
 			"CASH",
-			LatentStateMetricMeasure.LATENT_STATE_DISCOUNT,
-			LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+			DiscountCurve.LATENT_STATE_DISCOUNT,
+			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aCashComp,
 			"Rate",
 			adblCashQuote);
@@ -126,8 +126,8 @@ public class DiscountCurveReconcilerAPI {
 
 		RegimeBuilderSet rbsSwap = RegimeBuilderSet.CreateRegimeBuilderSet (
 			"SWAP",
-			LatentStateMetricMeasure.LATENT_STATE_DISCOUNT,
-			LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+			DiscountCurve.LATENT_STATE_DISCOUNT,
+			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aSwapComp,
 			"Rate",
 			adblSwapQuote);
@@ -156,7 +156,7 @@ public class DiscountCurveReconcilerAPI {
 			dblX += 0.1 * (regimeCash.getRightPredictorOrdinateEdge() - regimeCash.getLeftPredictorOrdinateEdge())) {
 			try {
 				System.out.println ("\tCash [" + new JulianDate (dblX) + "] = " +
-					FormatUtil.FormatDouble (dfdc.getDF (dblX), 1, 8, 1.) + " || " +
+					FormatUtil.FormatDouble (dfdc.df (dblX), 1, 8, 1.) + " || " +
 						ors.getContainingRegime (dblX).name() + " || " +
 							FormatUtil.FormatDouble (regimeCash.response (dblX), 1, 8, 1.) + " | " +
 								regimeCash.monotoneType (dblX));
@@ -173,16 +173,15 @@ public class DiscountCurveReconcilerAPI {
 
 		for (double dblX = regimeSwap.getLeftPredictorOrdinateEdge(); dblX <= regimeSwap.getRightPredictorOrdinateEdge();
 			dblX += 0.05 * (regimeSwap.getRightPredictorOrdinateEdge() - regimeSwap.getLeftPredictorOrdinateEdge())) {
-			try {
 				System.out.println ("\tSwap [" + new JulianDate (dblX) + "] = " +
-					FormatUtil.FormatDouble (dfdc.getDF (dblX), 1, 8, 1.) + " || " +
+					FormatUtil.FormatDouble (dfdc.df (dblX), 1, 8, 1.) + " || " +
 						ors.getContainingRegime (dblX).name() + " || " +
 							FormatUtil.FormatDouble (regimeSwap.response (dblX), 1, 8, 1.) + " | " +
 								regimeSwap.monotoneType (dblX));
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-			}
 		}
+
+		System.out.println ("\tSwap [" + dtToday.addTenor ("60Y") + "] = " +
+			FormatUtil.FormatDouble (dfdc.df (dtToday.addTenor ("60Y")), 1, 8, 1.));
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 

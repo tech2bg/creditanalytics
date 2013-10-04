@@ -150,7 +150,7 @@ public class CreditCurveScenarioGenerator {
 		int iNumInstr = adblQuotes.length;
 		double adblDate[] = new double[iNumInstr];
 		double adblHazardRate[] = new double[iNumInstr];
-		org.drip.analytics.definition.CreditCurve cc = null;
+		org.drip.analytics.definition.ExplicitBootCreditCurve cc = null;
 
 		if (0 == iNumInstr || iNumInstr != astrCalibMeasure.length || iNumInstr != astrCalibMeasure.length)
 			return null;
@@ -163,8 +163,8 @@ public class CreditCurveScenarioGenerator {
 
 		try {
 			cc = org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (new
-				org.drip.analytics.date.JulianDate (valParams._dblValue), strName, adblDate, adblHazardRate,
-					dblRecovery);
+				org.drip.analytics.date.JulianDate (valParams._dblValue), strName, dc.currency(),
+					adblDate, adblHazardRate, dblRecovery);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

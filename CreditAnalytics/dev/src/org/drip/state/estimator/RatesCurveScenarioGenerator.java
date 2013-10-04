@@ -127,7 +127,7 @@ public class RatesCurveScenarioGenerator {
 
 		double adblDates[] = new double[adblQuotes.length];
 		double adblRates[] = new double[adblQuotes.length];
-		org.drip.analytics.definition.DiscountCurve dc = null;
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dc = null;
 
 		for (int i = 0; i < adblQuotes.length; ++i) {
 			adblRates[i] = 0.02;
@@ -167,8 +167,8 @@ public class RatesCurveScenarioGenerator {
 			}
 		}
 
-		dc.setInstrCalibInputs (valParams, _aCalibInst, adblQuotes, astrCalibMeasure, mmFixings,
-			quotingParams);
+		dc.setCCIS (org.drip.analytics.definition.BootCurveConstructionInput.Create (valParams, quotingParams,
+			_aCalibInst, adblQuotes, astrCalibMeasure, mmFixings));
 
 		return dc;
 	}

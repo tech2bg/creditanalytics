@@ -7,7 +7,6 @@ package org.drip.analytics.definition;
 
 /*!
  * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
  * 		developers - http://www.credit-trader.org
@@ -30,34 +29,48 @@ package org.drip.analytics.definition;
  */
 
 /**
- * ZeroCurve exposes the node set containing the zero curve node points. In addition to the discount curve
- * 	functionality that it automatically provides by extension, it provides the functionality to calculate the
- *  zero rate.
+ * In ExplicitBootCurve, the segment boundaries explicitly line up with the instrument maturity boundaries.
+ * 	This feature is exploited in building a boot-strappable curve.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class ZeroCurve extends org.drip.analytics.definition.DiscountCurve {
-
-	protected ZeroCurve (
-		final double dblEpochDate,
-		final java.lang.String strCurrency)
-		throws java.lang.Exception
-	{
-		super (dblEpochDate, strCurrency);
-	}
+public interface ExplicitBootCurve extends org.drip.analytics.definition.Curve {
 
 	/**
-	 * Retrieve the zero rate corresponding to the given date
+	 * Set the Value/Slope at the Node specified by the Index
 	 * 
-	 * @param dblDate Date for which the zero rate is requested
+	 * @param iIndex Node Index
+	 * @param dblValue Node Value
 	 * 
-	 * @return Zero Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the date is not represented in the map
+	 * @return Success (true), failure (false)
 	 */
 
-	public abstract double getZeroRate (
-		final double dblDate)
-		throws java.lang.Exception;
+	public abstract boolean setNodeValue (
+		final int iIndex,
+		final double dblValue);
+
+	/**
+	 * Bump the node value at the node specified the index by the value
+	 * 
+	 * @param iIndex node index
+	 * @param dblValue node bump value
+	 * 
+	 * @return Success (true), failure (false)
+	 */
+
+	public abstract boolean bumpNodeValue (
+		final int iIndex,
+		final double dblValue);
+
+	/**
+	 * Set the flat value across all the nodes
+	 * 
+	 * @param dblValue node value
+	 * 
+	 * @return Success (true), failure (false)
+	 */
+
+	public abstract boolean setFlatValue (
+		final double dblValue);
 }

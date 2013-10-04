@@ -539,29 +539,30 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			adblHazardRate[i] = 0.01 * (i + 1);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcForward =
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dcForward =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblForward,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSF =
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.CreditCurve cc =
+		org.drip.analytics.definition.ExplicitBootCreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve
-				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", adblDate, adblHazardRate, 0.40);
+				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", "USD", adblDate, adblHazardRate,
+					0.40);
 
 		org.drip.param.market.ComponentMultiMeasureQuote cq = new
 			org.drip.param.market.ComponentMultiMeasureQuote();

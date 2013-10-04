@@ -147,15 +147,15 @@ public class RegimeBuilderSet {
 	 * @return The Array of Latent State Metric Measures
 	 */
 
-	public org.drip.state.estimator.LatentStateMetricMeasure[] getLSMM()
+	public org.drip.state.representation.LatentStateMetricMeasure[] getLSMM()
 	{
 		int iNumQuote = _adblQuote.length;
-		org.drip.state.estimator.LatentStateMetricMeasure[] aLSMM = new
-			org.drip.state.estimator.LatentStateMetricMeasure[iNumQuote];
+		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = new
+			org.drip.state.representation.LatentStateMetricMeasure[iNumQuote];
 
 		for (int i = 0; i < iNumQuote; ++i) {
 			try {
-				aLSMM[i] = new org.drip.state.estimator.LatentStateMetricMeasure (_strLatentStateID,
+				aLSMM[i] = new org.drip.state.representation.LatentStateMetricMeasure (_strLatentStateID,
 					_strLatentStateQuantificationMetric, _astrManifestMeasure[i], _adblQuote[i]);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -175,13 +175,13 @@ public class RegimeBuilderSet {
 	 * @return The Instrument's LSMM
 	 */
 
-	public org.drip.state.estimator.LatentStateMetricMeasure getLSMM (
+	public org.drip.state.representation.LatentStateMetricMeasure getLSMM (
 		final int iIndex)
 	{
 		if (iIndex >= _aCalibComp.length) return null;
 
 		try {
-			return new org.drip.state.estimator.LatentStateMetricMeasure (_strLatentStateID,
+			return new org.drip.state.representation.LatentStateMetricMeasure (_strLatentStateID,
 				_strLatentStateQuantificationMetric, _astrManifestMeasure[iIndex], _adblQuote[iIndex]);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

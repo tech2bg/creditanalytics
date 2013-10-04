@@ -857,7 +857,8 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Bump the node (or the given set of nodes) in accordance with the specified tweak parameters
+	 * Tweak the Manifest Measures (gor the given set of nodes) in accordance with the specified tweak
+	 *  parameters
 	 * 
 	 * @param adblQuotesIn Array of quotes to be bumped
 	 * @param ntp NodeTweakParams input
@@ -865,15 +866,16 @@ public class AnalyticsHelper {
 	 * @return Bumped array output
 	 */
 
-	public static final double[] BumpNTPNode (
+	public static final double[] TweakManifestMeasure (
 		final double[] adblQuotesIn,
-		final org.drip.param.definition.NodeTweakParams ntp)
+		final org.drip.param.definition.ResponseValueTweakParams ntp)
 	{
 		if (null == adblQuotesIn || 0 == adblQuotesIn.length || null == ntp) return adblQuotesIn;
 
 		double[] adblQuotesOut = new double[adblQuotesIn.length];
 
-		if (org.drip.param.definition.NodeTweakParams.NODE_FLAT_TWEAK == ntp._iTweakNode) {
+		if (org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK ==
+			ntp._iTweakNode) {
 			for (int i = 0; i < adblQuotesIn.length; ++i) {
 				if (!org.drip.math.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 

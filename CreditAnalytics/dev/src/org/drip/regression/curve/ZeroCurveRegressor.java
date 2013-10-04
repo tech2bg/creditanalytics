@@ -72,7 +72,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				private static final double s_dblZSpread = 0.01;
 
 				private org.drip.analytics.date.JulianDate _dtStart = null;
-				private org.drip.analytics.definition.DiscountCurve _dc = null;
+				private org.drip.analytics.definition.ExplicitBootDiscountCurve _dc = null;
 				private org.drip.analytics.date.JulianDate _dtPeriodStart = null;
 
 				private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = new
@@ -131,7 +131,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				{
 					try {
 						if (null == (_zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (2,
-							"30/360", _dc.getCurrency(), true, _lsCouponPeriod, _dtPeriodStart.getJulian(),
+							"30/360", _dc.currency(), true, _lsCouponPeriod, _dtPeriodStart.getJulian(),
 								_dtStart.addDays (2).getJulian(), _dc, null, s_dblZSpread)))
 							return false;
 					} catch (java.lang.Exception e) {
@@ -173,7 +173,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				{
 					try {
 						for (int i = 0; i < NUM_DF_NODES; ++i)
-							_adblDiscFactor[i] = _zc.getDF (_adblDate[i]);
+							_adblDiscFactor[i] = _zc.df (_adblDate[i]);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 

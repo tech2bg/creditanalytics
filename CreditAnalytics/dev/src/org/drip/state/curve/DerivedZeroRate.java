@@ -1,5 +1,5 @@
 
-package org.drip.state.manager;
+package org.drip.state.curve;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -61,8 +61,8 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
-		double dblYearFraction = org.drip.analytics.daycount.Convention.YearFraction
-			(getStartDate().getJulian(), dblDate, strDC, bApplyCpnEOMAdj, dblDate, null, strCalendar);
+		double dblYearFraction = org.drip.analytics.daycount.Convention.YearFraction (epoch().getJulian(),
+			dblDate, strDC, bApplyCpnEOMAdj, dblDate, null, strCalendar);
 
 		if (!org.drip.math.common.NumberUtil.IsValid (dblYearFraction) || 0. > dblYearFraction) return;
 
@@ -78,7 +78,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 			return;
 		}
 
-		double dblBumpedZeroRate = org.drip.analytics.support.AnalyticsHelper.DF2Yield (iFreq, _dc.getDF
+		double dblBumpedZeroRate = org.drip.analytics.support.AnalyticsHelper.DF2Yield (iFreq, _dc.df
 			(dblDate), dblYearFraction) + dblZCBump;
 
 		_mapDF.put (dt, org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFreq, dblBumpedZeroRate,
@@ -90,7 +90,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 	}
 
 	/**
-	 * ZeroCurve constructor from period, work-out, settle, and quoting parameters
+	 * DerivedZeroRate constructor from period, work-out, settle, and quoting parameters
 	 * 
 	 * @param iFreqZC Zero Curve Frequency
 	 * @param strDCZC Zero Curve Day Count
@@ -119,11 +119,13 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
+		super (dc.epoch().getJulian(), dc.currency());
+
 		if (null == (_dc = dc) || null == lsCouponPeriod || 0 == lsCouponPeriod.size() ||
 			!org.drip.math.common.NumberUtil.IsValid (dblWorkoutDate) ||
 				!org.drip.math.common.NumberUtil.IsValid (dblCashPayDate) ||
 					!org.drip.math.common.NumberUtil.IsValid (dblZCBump))
-			throw new java.lang.Exception ("Invalid date parameters into ZeroCurve!");
+			throw new java.lang.Exception ("DerivedZeroRate ctr => Invalid date parameters!");
 
 		int iFreq = 0 == iFreqZC ? 2 : iFreqZC;
 		boolean bApplyCpnEOMAdj = bApplyEOMAdjZC;
@@ -147,50 +149,45 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 	}
 
 	/**
-	 * DerivedZeroCurve de-serialization from input byte array
+	 * DerivedZeroRate de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if DerivedZeroCurve cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if DerivedZeroRate cannot be properly de-serialized
 	 */
 
 	public DerivedZeroRate (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
+		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEFINIT");
+
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("DerivedZeroCurve de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("DerivedZeroRate de-serializer: Invalid input Byte array");
 
 		_dc = org.drip.state.creator.DiscountCurveBuilder.FromByteArray (ab,
 			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getCalibFixings()
-	{
-		return _dc.getCalibFixings();
-	}
-
-	@Override public double getDF (
+	@Override public double df (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DerivedZeroCurve.getDF got NaN for date");
+			throw new java.lang.Exception ("DerivedZeroCurve::df => got NaN for date");
 
-		if (dblDate <= getStartDate().getJulian()) return 1.;
+		if (dblDate <= epoch().getJulian()) return 1.;
 
 		java.lang.Double objDF = _mapDF.get (new org.drip.analytics.date.JulianDate (dblDate));
 
 		if (null == objDF)
-			throw new java.lang.Exception ("No DF found for date " + new org.drip.analytics.date.JulianDate
-				(dblDate));
+			throw new java.lang.Exception ("DerivedZeroCurve::df => No DF found for date " + new
+				org.drip.analytics.date.JulianDate (dblDate));
 
 		return objDF;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian getDFJacobian (
+	@Override public org.drip.math.calculus.WengertJacobian dfJack (
 		final double dblDate)
 	{
 		try {
@@ -203,7 +200,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 			return null;
 		}
 
-		return _dc.getDFJacobian (dblDate);
+		return _dc.dfJack (dblDate);
 	}
 
 	@Override public double getZeroRate (
@@ -211,169 +208,153 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("ZeroCurve.getZeroRate got NaN for date");
+			throw new java.lang.Exception ("DerivedZeroCurve::getZeroRate => Invalid Date");
 
-		if (dblDate <= getStartDate().getJulian()) return 1.;
+		if (dblDate <= epoch().getJulian()) return 1.;
 
 		java.lang.Double objZeroRate = _mapZeroRate.get (new org.drip.analytics.date.JulianDate (dblDate));
 
 		if (null == objZeroRate)
-			throw new java.lang.Exception ("No Zero Rate found for date " + new
-				org.drip.analytics.date.JulianDate (dblDate));
+			throw new java.lang.Exception ("DerivedZeroCurve::getZeroRate => No Zero Rate found for date " +
+				new org.drip.analytics.date.JulianDate (dblDate));
 
 		return objZeroRate;
 	}
 
-	@Override public boolean setNodeValue (
-		final int iIndex,
-		final double dblValue)
+	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
 	{
-		return _dc.setNodeValue (iIndex, dblValue);
+		return _dc.lsmm();
 	}
 
-	@Override public boolean bumpNodeValue (
-		final int iIndex,
-		final double dblValue)
-	{
-		return _dc.bumpNodeValue (iIndex, dblValue);
-	}
-
-	@Override public boolean setFlatValue (
-		final double dblValue)
-	{
-		return _dc.setFlatValue (dblValue);
-	}
-
-	@Override public double[] getCompQuotes()
-	{
-		return _dc.getCompQuotes();
-	}
-
-	@Override public double getQuote (
+	@Override public double manifestMeasure (
 		final java.lang.String strInstr)
 		throws java.lang.Exception {
-		return _dc.getQuote (strInstr);
+		return _dc.manifestMeasure (strInstr);
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] getCalibComponents()
+	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
 	{
-		return _dc.getCalibComponents();
+		return _dc.calibComp();
 	}
 
-	@Override public java.lang.String getName() {
-		return _dc.getName();
+	@Override public java.lang.String name() {
+		return _dc.name();
 	}
 
-	@Override public org.drip.analytics.definition.Curve createParallelShiftedCurve (
+	@Override public org.drip.analytics.definition.Curve parallelShiftManifestMeasure (
 		final double dblShift) {
-		return _dc.createParallelShiftedCurve (dblShift);
+		return null;
 	}
 
-	@Override public org.drip.analytics.definition.Curve createTweakedCurve (
-		final org.drip.param.definition.NodeTweakParams ntp) {
-		return _dc.createTweakedCurve (ntp);
-	}
-
-	@Override public org.drip.analytics.date.JulianDate getStartDate() {
-		return _dc.getStartDate();
-	}
-
-	@Override public void setInstrCalibInputs (
-		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
-		final double[] adblCalibQuote,
-		final java.lang.String[] astrCalibMeasure, final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing,
-		final org.drip.param.valuation.QuotingParams quotingParams)
-	{
-		 _dc.setInstrCalibInputs (valParam, aCalibInst, adblCalibQuote, astrCalibMeasure, mmFixing,
-			quotingParams);
-	}
-
-	@Override public org.drip.analytics.definition.DiscountCurve createParallelRateShiftedCurve (
+	@Override public org.drip.analytics.definition.Curve shiftManifestMeasure (
+		final int iSpanIndex,
 		final double dblShift)
 	{
-		return _dc.createParallelRateShiftedCurve (dblShift);
+		return null;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve createBasisRateShiftedCurve (
-		final double[] adblDate,
-		final double[] adblBasis)
+	@Override public org.drip.analytics.definition.Curve customTweakManifestMeasure (
+		final org.drip.param.definition.ResponseValueTweakParams mmtp)
 	{
-		return _dc.createBasisRateShiftedCurve (adblDate, adblBasis);
+		return null;
 	}
 
-	@Override public java.lang.String getCurrency()
+	@Override public org.drip.analytics.date.JulianDate epoch()
 	{
-		return _dc.getCurrency();
+		return _dc.epoch();
 	}
 
-	@Override public double getDF (
+	@Override public boolean setCCIS (
+		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+	{
+		 return _dc.setCCIS (ccis);
+	}
+
+	@Override public org.drip.analytics.definition.DiscountCurve parallelShiftQuantificationMetric (
+		final double dblShift)
+	{
+		return (org.drip.analytics.definition.DiscountCurve) _dc.parallelShiftQuantificationMetric
+			(dblShift);
+	}
+
+	@Override public org.drip.analytics.definition.Curve customTweakQuantificationMetric (
+		final org.drip.param.definition.ResponseValueTweakParams rvtp)
+	{
+		return (org.drip.analytics.definition.DiscountCurve) _dc.customTweakQuantificationMetric
+			(rvtp);
+	}
+
+	@Override public java.lang.String currency()
+	{
+		return _dc.currency();
+	}
+
+	@Override public double df (
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
-		return _dc.getDF (dt);
+		return _dc.df (dt);
 	}
 
-	@Override public double getDF (
+	@Override public double df (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
-		return _dc.getDF (strTenor);
+		return _dc.df (strTenor);
 	}
 
-	@Override public double getEffectiveDF (
+	@Override public double effectiveDF (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		return _dc.getEffectiveDF (dblDate1, dblDate2);
+		return _dc.effectiveDF (dblDate1, dblDate2);
 	}
 
-	@Override public double getEffectiveDF (
+	@Override public double effectiveDF (
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2)
 		throws java.lang.Exception
 	{
-		return _dc.getEffectiveDF (dt1, dt2);
+		return _dc.effectiveDF (dt1, dt2);
 	}
 
-	@Override public double getEffectiveDF (
+	@Override public double effectiveDF (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
 	{
-		return _dc.getEffectiveDF (strTenor1, strTenor2);
+		return _dc.effectiveDF (strTenor1, strTenor2);
 	}
 
-	@Override public double calcImpliedRate (
+	@Override public double rate (
 		final double dblDt1,
 		final double dblDt2)
 		throws java.lang.Exception
 	{
-		return _dc.calcImpliedRate (dblDt1, dblDt2);
+		return _dc.rate (dblDt1, dblDt2);
 	}
 
-	@Override public double calcImpliedRate (
+	@Override public double rate (
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		return _dc.calcImpliedRate (dblDate);
+		return _dc.rate (dblDate);
 	}
 
-	@Override public double calcImpliedRate (
+	@Override public double rate (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
-		return _dc.calcImpliedRate (strTenor);
+		return _dc.rate (strTenor);
 	}
 
-	@Override public double calcImpliedRate (
+	@Override public double rate (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
 	{
-		return _dc.calcImpliedRate (strTenor1, strTenor2);
+		return _dc.rate (strTenor1, strTenor2);
 	}
 
 	@Override public byte[] serialize()

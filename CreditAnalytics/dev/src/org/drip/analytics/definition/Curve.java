@@ -40,106 +40,60 @@ package org.drip.analytics.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public interface Curve {
+public interface Curve extends org.drip.state.representation.LatentState {
 
 	/**
-	 * Get the epoch date
+	 * Get the Curve Name
 	 * 
-	 * @return Epoch date
+	 * @return The Curve Name
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getStartDate();
+	public abstract java.lang.String name();
 
 	/**
-	 * Set the Value/Slope at the Node specified by the Index
+	 * Get the Epoch Date
 	 * 
-	 * @param iIndex Node Index
-	 * @param dblValue Node Value
-	 * 
-	 * @return Success (true), failure (false)
+	 * @return The Epoch Date
 	 */
 
-	public abstract boolean setNodeValue (
-		final int iIndex,
-		final double dblValue);
+	public abstract org.drip.analytics.date.JulianDate epoch();
 
 	/**
-	 * Bump the node value at the node specified the index by the value
+	 * Get the Currency
 	 * 
-	 * @param iIndex node index
-	 * @param dblValue node bump value
-	 * 
-	 * @return Success (true), failure (false)
+	 * @return Currency
 	 */
 
-	public abstract boolean bumpNodeValue (
-		final int iIndex,
-		final double dblValue);
+	public abstract java.lang.String currency();
 
 	/**
-	 * Set the flat value across all the nodes
+	 * Set the Curve Construction Input Set Parameters
 	 * 
-	 * @param dblValue node value
+	 * @param ccis The Curve Construction Input Set Parameters
 	 * 
-	 * @return Success (true), failure (false)
+	 * @return TRUE => Inputs successfully Set
 	 */
 
-	public abstract boolean setFlatValue (
-		final double dblValue);
+	public boolean setCCIS (
+		final org.drip.analytics.definition.CurveConstructionInputSet ccis);
 
 	/**
-	 * Retrieve all the calibration quotes
+	 * Retrieve the Calibration Components
 	 * 
-	 * @return Array of the calibration quotes
+	 * @return Array of Calibration Components
 	 */
 
-	public abstract double[] getCompQuotes();
+	public abstract org.drip.product.definition.CalibratableComponent[] calibComp();
 
 	/**
-	 * Retrieve the calibration quote of the given instrument
+	 * Retrieve the Manifest Measure of the given Instrument used to construct the Curve
 	 * 
-	 * @return The calibration quote of the given instrument
+	 * @param strInstrumentCode The Calibration Instrument's Code whose Manifest Measure is sought
+	 * 
+	 * @return The Manifest Measure of the given Instrument used to construct the Curve
 	 */
 
-	public abstract double getQuote (
-		final java.lang.String strInstr)
+	public abstract double manifestMeasure (
+		final java.lang.String strInstrumentCode)
 		throws java.lang.Exception;
-
-	/**
-	 * Retrieve all the calibration components
-	 * 
-	 * @return Array of the calibration components
-	 */
-
-	public abstract org.drip.product.definition.CalibratableComponent[] getCalibComponents();
-
-	/**
-	 * Gets the curve name
-	 * 
-	 * @return Name
-	 */
-
-	public abstract java.lang.String getName();
-
-	/**
-	 * Create a parallel quote shifted  curve
-	 * 
-	 * @param dblShift Parallel shift
-	 * 
-	 * @return Curve
-	 */
-
-	public abstract Curve createParallelShiftedCurve (
-		final double dblShift);
-
-	/**
-	 * Create the curve from the tweaked parameters
-	 * 
-	 * @param ntp Node Tweak Parameters
-	 * 
-	 * @return New Curve instance
-	 */
-
-	public abstract Curve createTweakedCurve (
-		final org.drip.param.definition.NodeTweakParams ntp);
 }

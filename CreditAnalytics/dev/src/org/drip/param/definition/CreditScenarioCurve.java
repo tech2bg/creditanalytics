@@ -154,10 +154,10 @@ public abstract class CreditScenarioCurve {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat,
-		final org.drip.param.definition.NodeTweakParams ntpDC,
-		final org.drip.param.definition.NodeTweakParams ntpTSY,
-		final org.drip.param.definition.NodeTweakParams ntpEDSF,
-		final org.drip.param.definition.NodeTweakParams ntpCC);
+		final org.drip.param.definition.ResponseValueTweakParams ntpDC,
+		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
+		final org.drip.param.definition.ResponseValueTweakParams ntpEDSF,
+		final org.drip.param.definition.ResponseValueTweakParams ntpCC);
 
 	/**
 	 * Return the base credit curve

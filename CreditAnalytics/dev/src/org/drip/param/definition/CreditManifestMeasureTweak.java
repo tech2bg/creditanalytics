@@ -37,7 +37,7 @@ package org.drip.param.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CreditNodeTweakParams extends NodeTweakParams {
+public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 
 	/**
 	 * Tweak Parameter Type of Quote
@@ -93,7 +93,7 @@ public class CreditNodeTweakParams extends NodeTweakParams {
 	 * @param bSingleNodeCalib Flat Calibration using a single node?
 	 */
 
-	public CreditNodeTweakParams (
+	public CreditManifestMeasureTweak (
 		final java.lang.String strTweakParamType,
 		final java.lang.String strTweakMeasureType,
 		final int iTweakNode,
@@ -125,7 +125,7 @@ public class CreditNodeTweakParams extends NodeTweakParams {
 	 * @throws java.lang.Exception Thrown if CreditNodeTweakParams cannot be properly de-serialized
 	 */
 
-	public CreditNodeTweakParams (
+	public CreditManifestMeasureTweak (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
@@ -193,21 +193,5 @@ public class CreditNodeTweakParams extends NodeTweakParams {
 			getFieldDelimiter() + _strTweakMeasureType + getFieldDelimiter() + _bSingleNodeCalib);
 
 		return sb.append (getObjectTrailer()).toString().getBytes();
-	}
-
-	public static void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		CreditNodeTweakParams cntp = new CreditNodeTweakParams ("Quote", "Quote", NODE_FLAT_TWEAK, false,
-			0.1, false);
-
-		byte[] abCNTP = cntp.serialize();
-
-		System.out.println (new java.lang.String (abCNTP));
-
-		CreditNodeTweakParams cntpDeser = new CreditNodeTweakParams (abCNTP);
-
-		System.out.println (new java.lang.String (cntpDeser.serialize()));
 	}
 }

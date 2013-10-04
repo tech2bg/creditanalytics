@@ -171,14 +171,13 @@ public class CDSW {
 		final CreditCurve cc)
 		throws java.lang.Exception
 	{
-		CalibratableComponent[] aCDS = cc.getCalibComponents();
-
-		double[] adblQuote = cc.getCompQuotes();
+		CalibratableComponent[] aCDS = cc.calibComp();
 
 		for (int i = 0; i < aCDS.length; ++i)
-			System.out.println (aCDS[i].getMaturityDate() + " | " + adblQuote[i] + " | " +
-				org.drip.math.common.FormatUtil.FormatDouble (1. - cc.getSurvival
-					(aCDS[i].getMaturityDate()), 1, 3, 1.));
+			System.out.println (
+				aCDS[i].getMaturityDate() + " | " +
+				cc.manifestMeasure(aCDS[i].getPrimaryCode()) + " | " +
+				org.drip.math.common.FormatUtil.FormatDouble (1. - cc.getSurvival (aCDS[i].getMaturityDate()), 1, 3, 1.));
 	}
 
 	/*
@@ -358,7 +357,7 @@ public class CDSW {
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.getCouponDCF(), 1, 2, 0.01 * dblNotional) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
 			);
 

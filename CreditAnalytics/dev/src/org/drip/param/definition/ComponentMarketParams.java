@@ -161,8 +161,9 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return TSY Benchmark Quotes
 	 */
 
-	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
-		getTSYBenchmarkQuotes();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			getTSYBenchmarkQuotes();
 
 	/**
 	 * Retrieves the Fixings

@@ -97,20 +97,16 @@ public class RatesLiveAndEODAPI {
 
 		// Calculate the discount factor to an arbitrary date using the constructed curve.
 
-		System.out.println ("DF (2021, 1, 14): " + dc.getDF (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dc.df (JulianDate.CreateFromYMD (2021, 1, 14)));
 
 		// Retrieve the components whose quotes went into constructing the curve
 
-		CalibratableComponent[] aCC = dc.getCalibComponents();
-
-		// Retrieve the quotes that went into constructing the curve
-
-		double[] adblQuotes = dc.getCompQuotes();
+		CalibratableComponent[] aCC = dc.calibComp();
 
 		// Display the component named codes and the corresponding quotes
 
 		for (int i = 0; i < aCC.length; ++i)
-			System.out.println (aCC[i].getPrimaryCode() + " => " + adblQuotes[i]);
+			System.out.println (aCC[i].getPrimaryCode() + " => " + dc.manifestMeasure (aCC[i].getPrimaryCode()));
 
 		JulianDate dt2 = JulianDate.CreateFromYMD (2012, 1, 17);
 
@@ -127,7 +123,7 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcEOD = meDC.getValue();
 
-			System.out.println (dt + "[IRS.3Y] => " + dcEOD.getQuote ("IRS.3Y"));
+			System.out.println (dt + "[IRS.3Y] => " + dcEOD.manifestMeasure ("IRS.3Y"));
 		}
 
 		/*
@@ -139,16 +135,14 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing Cash curve
 
-		System.out.println ("DF (2021, 1, 14): " + dcCash.getDF (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dcCash.df (JulianDate.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
-		double[] adblCashQuotes = dcCash.getCompQuotes();
-
-		CalibratableComponent[] aCCCash = dcCash.getCalibComponents();
+		CalibratableComponent[] aCCCash = dcCash.calibComp();
 
 		for (int i = 0; i < aCCCash.length; ++i)
-			System.out.println (aCCCash[i].getPrimaryCode() + " => " + (int) (10000. * adblCashQuotes[i]));
+			System.out.println (aCCCash[i].getPrimaryCode() + " => " + (int) (10000. * dcCash.manifestMeasure (aCCCash[i].getPrimaryCode())));
 
 		/*
 		 * Load the cash curves available between the dates for the currency specified.
@@ -163,7 +157,7 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcEOD = meCashDC.getValue();
 
-			System.out.println (dt + "[3M] => " + (int) (10000. * dcEOD.getQuote ("3M")));
+			System.out.println (dt + "[3M] => " + (int) (10000. * dcEOD.manifestMeasure ("3M")));
 		}
 
 		/*
@@ -174,17 +168,16 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing EDF curve
 
-		if (null != dcEDF) System.out.println ("DF (2021, 1, 14): " + dcEDF.getDF (JulianDate.CreateFromYMD (2021, 1, 14)));
+		if (null != dcEDF) System.out.println ("DF (2021, 1, 14): " + dcEDF.df (JulianDate.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
 		if (null != dcEDF) {
-			double[] adblEDFQuotes = dcEDF.getCompQuotes();
-
-			CalibratableComponent[] aCCEDF = dcEDF.getCalibComponents();
+			CalibratableComponent[] aCCEDF = dcEDF.calibComp();
 
 			for (int i = 0; i < aCCEDF.length; ++i)
-				System.out.println (aCCEDF[i].getPrimaryCode() + " => " + (int) (10000. * adblEDFQuotes[i]));
+				System.out.println (aCCEDF[i].getPrimaryCode() + " => " +
+					(int) (10000. * dcEDF.manifestMeasure (aCCEDF[i].getPrimaryCode())));
 		}
 
 		/*
@@ -200,7 +193,7 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcEOD = meEDFDC.getValue();
 
-			System.out.println (dt + "[EDZ3] => " + (int) (10000. * dcEOD.getQuote ("EDZ3")));
+			System.out.println (dt + "[EDZ3] => " + (int) (10000. * dcEOD.manifestMeasure ("EDZ3")));
 		}
 
 		/*
@@ -211,16 +204,15 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing IRS curve
 
-		System.out.println ("DF (2021, 1, 14): " + dcIRS.getDF (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dcIRS.df (JulianDate.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
-		double[] adblIRSQuotes = dcIRS.getCompQuotes();
-
-		CalibratableComponent[] aCCIRS = dcIRS.getCalibComponents();
+		CalibratableComponent[] aCCIRS = dcIRS.calibComp();
 
 		for (int i = 0; i < aCCIRS.length; ++i)
-			System.out.println (aCCIRS[i].getPrimaryCode() + " => " + (int) (10000. * adblIRSQuotes[i]));
+			System.out.println (aCCIRS[i].getPrimaryCode() + " => " +
+				(int) (10000. * dcIRS.manifestMeasure (aCCIRS[i].getPrimaryCode())));
 
 		/*
 		 * Load all the Closing IRS curves available between the dates for the currency specified.
@@ -235,7 +227,7 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcEOD = meIRSDC.getValue();
 
-			System.out.println (dt + "[IRS.3Y] => " + dcEOD.getQuote ("IRS.3Y"));
+			System.out.println (dt + "[IRS.3Y] => " + dcEOD.manifestMeasure ("IRS.3Y"));
 		}
 
 		/*
@@ -255,16 +247,15 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing TSY curve
 
-		System.out.println ("DF (2021, 1, 14): " + dcTSY.getDF (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dcTSY.df (JulianDate.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
-		double[] adblTSYQuotes = dcTSY.getCompQuotes();
-
-		CalibratableComponent[] aCompTSY = dcTSY.getCalibComponents();
+		CalibratableComponent[] aCompTSY = dcTSY.calibComp();
 
 		for (int i = 0; i < aCompTSY.length; ++i)
-			System.out.println (aCompTSY[i].getPrimaryCode() + " => " + (int) (10000. * adblTSYQuotes[i]));
+			System.out.println (aCompTSY[i].getPrimaryCode() + " => " + (int)
+				(10000. * dcTSY.manifestMeasure (aCompTSY[i].getPrimaryCode())));
 
 		/*
 		 * Load all the Closing TSY curves available between the dates for the currency specified.
@@ -279,7 +270,7 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcTSYEOD = meTSYDC.getValue();
 
-			System.out.println (dt + "[5Y] => " + (int) (10000. * dcTSYEOD.getQuote ("5Y")));
+			System.out.println (dt + "[5Y] => " + (int) (10000. * dcTSYEOD.manifestMeasure ("5Y")));
 		}
 	}
 

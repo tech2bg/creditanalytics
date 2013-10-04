@@ -1,5 +1,5 @@
 
-package org.drip.state.manager;
+package org.drip.state.curve;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -50,7 +50,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	private org.drip.product.params.CurrencyPair _cp = null;
 
 	/**
-	 * Constructs an FXBasis instance from the currency pair, FX Spot, and FX basis parameters
+	 * Constructs an DerivedFXBasis instance from the currency pair, FX Spot, and FX basis parameters
 	 * 
 	 * @param cp Currency Pair
 	 * @param dtSpot Spot Date
@@ -74,7 +74,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		if (null == cp || null == dtSpot || !org.drip.math.common.NumberUtil.IsValid (dblFXSpot) || null ==
 			adblDate || 0 == adblDate.length || null == adblFXBasis || 0 == adblFXBasis.length ||
 				adblDate.length != adblFXBasis.length)
-			throw new java.lang.Exception ("Invalid params into FXBasis ctr!");
+			throw new java.lang.Exception ("DerivedFXBasis ctr: Invalid Params");
 
 		_dblSpotDate = dtSpot.getJulian();
 
@@ -86,7 +86,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 		for (int i = 0; i < adblFXBasis.length; ++i) {
 			if (!org.drip.math.common.NumberUtil.IsValid (adblDate[i]) || adblDate[i] <= _dblSpotDate)
-				throw new java.lang.Exception ("Invalid params into FXCurve ctr: Node date " +
+				throw new java.lang.Exception ("DerivedFXBasis ctr: Invalid params: Node date " +
 					org.drip.analytics.date.JulianDate.fromJulian (adblDate[i]) + " before spot " + dtSpot);
 
 			_adblDate[i] = adblDate[i];
@@ -95,11 +95,11 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	}
 
 	/**
-	 * FXBasis de-serialization from input byte array
+	 * DerivedFXBasis de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if FXBasis cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if DerivedFXBasis cannot be properly de-serialized
 	 */
 
 	public DerivedFXBasis (
@@ -107,38 +107,38 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FXBasis de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FXBasis de-serializer: Empty state");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Empty state");
 
 		java.lang.String strFXBasis = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
 
 		if (null == strFXBasis || strFXBasis.isEmpty())
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strFXBasis,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("FXBasis de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot locate spot date");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate spot date");
 
 		_dblSpotDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot locate spot FX");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate spot FX");
 
 		_dblFXSpot = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot locate boot strap flag");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate boot strap flag");
 
 		_bIsFXBasisBootstrapped = new java.lang.Boolean (astrField[3]).booleanValue();
 
@@ -148,14 +148,14 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot decode state");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
 
 		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
 			astrField[4], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot decode state");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
 
 		if (0 == lsdblDate.size() || 0 == lsdblBasis.size() || lsdblDate.size() != lsdblBasis.size())
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot decode state");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
 
 		_adblDate = new double[lsdblDate.size()];
 
@@ -169,7 +169,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("FXBasis de-serializer: Cannot locate currency pair");
+			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate currency pair");
 
 		_cp = new org.drip.product.params.CurrencyPair (astrField[5].getBytes());
 	}
@@ -193,6 +193,11 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	@Override public double getFXSpot()
 	{
 		return _dblFXSpot;
+	}
+
+	@Override public java.lang.String currency()
+	{
+		return _cp.getDenomCcy();
 	}
 
 	@Override public boolean IsBasisBootstrapped()
@@ -223,22 +228,28 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 							org.drip.analytics.date.JulianDate (_adblDate[i]));
 
 				if (null == fxfwd) {
-					System.out.println ("Cannot make fxfwd at maturity " +
+					System.out.println ("DerivedFXBasis::getFullFXFwd => Cannot make fxfwd at maturity " +
 						org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
 
 					return null;
 				}
 
 				if (bBasisOnDenom) {
-					if (_bIsFXBasisBootstrapped)
-						dcBasisAdj.bumpNodeValue (i, _adblFXBasis[i]);
-					else
+					if (_bIsFXBasisBootstrapped) {
+						if (!(dcBasisAdj instanceof org.drip.analytics.definition.ExplicitBootDiscountCurve))
+							return null;
+
+						if (((org.drip.analytics.definition.ExplicitBootDiscountCurve)
+							dcBasisAdj).bumpNodeValue (i, _adblFXBasis[i]))
+							return null;;
+					} else
 						dcBasisAdj = (org.drip.analytics.definition.DiscountCurve)
-							dcDenom.createParallelShiftedCurve (_adblFXBasis[i]);
+							dcDenom.parallelShiftQuantificationMetric (_adblFXBasis[i]);
 
 					if (null == dcBasisAdj) {
-						System.out.println ("Cannot create bootstrapped/full denom curve at node " +
-							org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
+						System.out.println
+							("DerivedFXBasis::getFullFXFwd => Cannot create bootstrapped/full denom curve at node "
+								+ org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
 
 						return null;
 					}
@@ -246,15 +257,21 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 					adblFXFwd[i] = fxfwd.implyFXForward (valParam, dcNum, dcBasisAdj, _dblFXSpot,
 						bFwdAsPIP);
 				} else {
-					if (_bIsFXBasisBootstrapped)
-						dcBasisAdj.bumpNodeValue (i, _adblFXBasis[i]);
-					else
+					if (_bIsFXBasisBootstrapped) {
+						if (!(dcBasisAdj instanceof org.drip.analytics.definition.ExplicitBootDiscountCurve))
+							return null;
+
+						if (((org.drip.analytics.definition.ExplicitBootDiscountCurve)
+							dcBasisAdj).bumpNodeValue (i, _adblFXBasis[i]))
+							return null;;
+					} else
 						dcBasisAdj = (org.drip.analytics.definition.DiscountCurve)
-							dcNum.createParallelShiftedCurve (_adblFXBasis[i]);
+							dcNum.parallelShiftQuantificationMetric (_adblFXBasis[i]);
 
 					if (null == dcBasisAdj) {
-						System.out.println ("Cannot create bootstrapped/full num curve at node " +
-							org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
+						System.out.println
+							("DerivedFXBasis::getFullFXFwd => Cannot create bootstrapped/full num curve at node "
+								+ org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
 
 						return null;
 					}
@@ -272,53 +289,30 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return adblFXFwd;
 	}
 
-	@Override public boolean setNodeValue (
-		final int iIndex,
-		final double dblValue)
-	{
-		if (_adblFXBasis.length <= iIndex) return false;
-
-		_adblFXBasis[iIndex] = dblValue;
-		return true;
-	}
-
-	@Override public boolean bumpNodeValue (
-		final int iIndex,
-		final double dblValue)
-	{
-		if (_adblFXBasis.length <= iIndex) return false;
-
-		_adblFXBasis[iIndex] += dblValue;
-		return true;
-	}
-
-	@Override public boolean setFlatValue (
-		final double dblValue)
-	{
-		for (int i = 0; i < _adblFXBasis.length; ++i)
-			_adblFXBasis[i] = dblValue;
-
-		return true;
-	}
-
-	@Override public double[] getCompQuotes()
+	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
 	{
 		return null;
 	}
 
-	@Override public double getQuote (
+	@Override public double manifestMeasure (
 		final java.lang.String strInstr)
 		throws java.lang.Exception
 	{
 		return java.lang.Double.NaN;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] getCalibComponents()
+	@Override public boolean setCCIS (
+		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+	{
+		return false;
+	}
+
+	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String getName()
+	@Override public java.lang.String name()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
@@ -333,7 +327,19 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return sb.toString();
 	}
 
-	@Override public org.drip.analytics.definition.Curve createParallelShiftedCurve (
+	@Override public org.drip.analytics.definition.Curve parallelShiftQuantificationMetric (
+		final double dblShift)
+	{
+		return null;
+	}
+
+	@Override public org.drip.analytics.definition.Curve customTweakQuantificationMetric (
+		final org.drip.param.definition.ResponseValueTweakParams rvtp)
+	{
+		return null;
+	}
+
+	@Override public org.drip.analytics.definition.Curve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
 		double[] adblFXBasisBumped = new double[_adblFXBasis.length];
@@ -351,13 +357,36 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return null;
 	}
 
-	@Override public org.drip.analytics.definition.Curve createTweakedCurve (
-		final org.drip.param.definition.NodeTweakParams ntp)
+	@Override public org.drip.analytics.definition.Curve shiftManifestMeasure (
+		final int iSpanIndex,
+		final double dblShift)
 	{
-		if (null == ntp) return null;
+		int iNumBasis = _adblFXBasis.length;
 
-		double[] adblFXBasisBumped = org.drip.analytics.support.AnalyticsHelper.BumpNTPNode (_adblFXBasis,
-			ntp);
+		if (iSpanIndex >= iNumBasis || !org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+
+		double[] adblFXBasisBumped = new double[iNumBasis];
+
+		for (int i = 0; i < iNumBasis; ++i)
+			adblFXBasisBumped[i] = _adblFXBasis[i] + (i == iSpanIndex ? dblShift : 0.);
+
+		try {
+			return new DerivedFXBasis (_cp, new org.drip.analytics.date.JulianDate (_dblSpotDate),
+				_dblFXSpot, _adblDate, adblFXBasisBumped, _bIsFXBasisBootstrapped);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override public org.drip.analytics.definition.Curve customTweakManifestMeasure (
+		final org.drip.param.definition.ResponseValueTweakParams mmtp)
+	{
+		if (null == mmtp) return null;
+
+		double[] adblFXBasisBumped = org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure
+			(_adblFXBasis, mmtp);
 
 		if (null == adblFXBasisBumped || 0 == adblFXBasisBumped.length) return null;
 
@@ -371,7 +400,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getStartDate()
+	@Override public org.drip.analytics.date.JulianDate epoch()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblSpotDate);

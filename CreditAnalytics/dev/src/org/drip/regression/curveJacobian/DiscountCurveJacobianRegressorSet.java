@@ -166,7 +166,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						}
 					}
 
-					return null != (wjPVDF = dcIRS.compPVDFJacobian (dtStart));
+					return null != (wjPVDF = dcIRS.compPVDFJack (dtStart));
 				}
 
 				@Override public boolean postRegression (

@@ -368,7 +368,7 @@ public class YAS {
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR
+				FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR
 			);
 	}
 

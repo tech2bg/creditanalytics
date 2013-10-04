@@ -77,7 +77,7 @@ public class ZeroCurveBuilder {
 		final double dblZCBump)
 	{
 		try {
-			return new org.drip.state.manager.DerivedZeroRate (iFreqZC, strDCZC, strCalendarZC,
+			return new org.drip.state.curve.DerivedZeroRate (iFreqZC, strDCZC, strCalendarZC,
 				bApplyEOMAdjZC, lsCouponPeriod, dblWorkoutDate, dblCashPayDate, dc, quotingParams, dblZCBump);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -100,7 +100,7 @@ public class ZeroCurveBuilder {
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.state.manager.DerivedZeroRate (ab);
+			return new org.drip.state.curve.DerivedZeroRate (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

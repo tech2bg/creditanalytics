@@ -104,12 +104,11 @@ public class CDSLiveAndEODAPI {
 		 * Displays the CDS quotes used to construct the closing credit curve
 		 */
 
-		double[] adblCDSQuotes = ccEOD.getCompQuotes();
-
-		CalibratableComponent[] aCompCDS = ccEOD.getCalibComponents();
+		CalibratableComponent[] aCompCDS = ccEOD.calibComp();
 
 		for (int i = 0; i < aCompCDS.length; ++i)
-			System.out.println (aCompCDS[i].getPrimaryCode() + " => " + (int) (adblCDSQuotes[i]));
+			System.out.println (aCompCDS[i].getPrimaryCode() + " => " + (int) (ccEOD.manifestMeasure
+				(aCompCDS[i].getPrimaryCode())));
 
 		/*
 		 * Loads all available credit curves for the given curve ID built from CDS instruments between 2 dates
@@ -127,7 +126,7 @@ public class CDSLiveAndEODAPI {
 
 			CreditCurve ccCOB = meCC.getValue();
 
-			System.out.println (dtME + "[CDS.5Y] => " + (int) (ccCOB.getQuote ("CDS.5Y")));
+			System.out.println (dtME + "[CDS.5Y] => " + (int) (ccCOB.manifestMeasure ("CDS.5Y")));
 		}
 	}
 

@@ -97,8 +97,8 @@ public class RatesAnalyticsAPI {
 
 		JulianDate dt = dtStart.addYears (10);
 
-		System.out.println ("DCFromDF[" + dt.toString() + "]; DF=" + dcFromDF.getDF (dt) + "; Rate=" +
-			dcFromDF.calcImpliedRate ("10Y"));
+		System.out.println ("DCFromDF[" + dt.toString() + "]; DF=" + dcFromDF.df (dt) + "; Rate=" +
+			dcFromDF.rate ("10Y"));
 
 		/*
 		 * Build the discount curve from an array of dates and forward rates
@@ -107,8 +107,8 @@ public class RatesAnalyticsAPI {
 		DiscountCurve dcFromRate = DiscountCurveBuilder.CreateDC (dtStart, "EUR", adblDate, adblRate,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		System.out.println ("DCFromRate[" + dt.toString() + "]; DF=" + dcFromRate.getDF (dt) + "; Rate=" +
-			dcFromRate.calcImpliedRate ("10Y"));
+		System.out.println ("DCFromRate[" + dt.toString() + "]; DF=" + dcFromRate.df (dt) + "; Rate=" +
+			dcFromRate.rate ("10Y"));
 
 		/*
 		 * Build the discount curve from a flat rate
@@ -116,8 +116,8 @@ public class RatesAnalyticsAPI {
 
 		DiscountCurve dcFromFlatRate = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", 0.04);
 
-		System.out.println ("DCFromFlatRate[" + dt.toString() + "]; DF=" + dcFromFlatRate.getDF (dt) +
-			"; Rate=" + dcFromFlatRate.calcImpliedRate ("10Y"));
+		System.out.println ("DCFromFlatRate[" + dt.toString() + "]; DF=" + dcFromFlatRate.df (dt) +
+			"; Rate=" + dcFromFlatRate.rate ("10Y"));
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class RatesAnalyticsAPI {
 		/* for (int i = 0; i < 100; ++i) {
 			org.drip.analytics.date.JulianDate dt = dtStart.addDays (90 * i);
 
-			System.out.println ("DF[" + dt + "] = " + dc.getDF (dt));
+			System.out.println ("DF[" + dt + "] = " + dc.df (dt));
 		} */
 
 		for (int i = 0; i < aCompCalib.length; ++i) {
@@ -366,7 +366,7 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		org.drip.math.calculus.WengertJacobian wjPVDF = dc.compPVDFJacobian (dtStart);
+		org.drip.math.calculus.WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
@@ -424,7 +424,7 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		WengertJacobian wjPVDF = dc.compPVDFJacobian (dtStart);
+		WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
@@ -527,7 +527,7 @@ public class RatesAnalyticsAPI {
 		System.out.println ("Quote/DF Micro Jack[04/06/11]=" + (null == wjQuoteDF ? null :
 			wjQuoteDF.displayString())); */
 
-		WengertJacobian wjPVDF = dc.compPVDFJacobian (dtStart);
+		WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
 
 		System.out.println ("PV/Zero Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}

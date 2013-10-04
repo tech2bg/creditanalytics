@@ -333,10 +333,10 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
 				_settleParams.cashSettleDate (valParams._dblValue);
 
-			double dblUnadjustedAnnuity = dc.getDF (_dblMaturity) / dc.getDF (_dblEffective) / dc.getDF
+			double dblUnadjustedAnnuity = dc.df (_dblMaturity) / dc.df (_dblEffective) / dc.df
 				(dblCashSettle);
 
-			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.getDF (dblCashSettle);
+			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.df (dblCashSettle);
 
 			mapResult.put ("pv", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
 				_dblMaturity));
@@ -390,7 +390,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			org.drip.math.calculus.WengertJacobian wjDFDF = dc.getDFJacobian (_dblMaturity);
+			org.drip.math.calculus.WengertJacobian wjDFDF = dc.dfJack (_dblMaturity);
 
 			if (null == wjDFDF) return null;
 
@@ -427,7 +427,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				org.drip.math.calculus.WengertJacobian wjDF = dc.getDFJacobian (_dblMaturity);
+				org.drip.math.calculus.WengertJacobian wjDF = dc.dfJack (_dblMaturity);
 
 				if (null == wjDF) return null;
 
@@ -436,7 +436,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 				for (int k = 0; k < wjDF.numParameters(); ++k) {
 					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, k, -365.25 / (_dblMaturity -
-						_dblEffective) / dc.getDF (_dblMaturity) * wjDF.getFirstDerivative (0, k)))
+						_dblEffective) / dc.df (_dblMaturity) * wjDF.getFirstDerivative (0, k)))
 						return null;
 				}
 
@@ -454,14 +454,14 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		if (null == valParams || valParams._dblValue >= _dblMaturity || null == lsmm ||
-			!org.drip.state.estimator.LatentStateMetricMeasure.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+			!org.drip.analytics.definition.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
 				(lsmm.getID()))
 			return null;
 
-		if (org.drip.state.estimator.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+		if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
 			try {
 				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new

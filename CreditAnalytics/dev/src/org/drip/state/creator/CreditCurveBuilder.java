@@ -47,15 +47,17 @@ public class CreditCurveBuilder {
 	 * 
 	 * @param dblStartDate Curve epoch date
 	 * @param strName Credit Curve Name
+	 * @param strCurrency Currency
 	 * @param dblHazardRate Curve hazard rate
 	 * @param dblRecovery Curve recovery
 	 * 
 	 * @return CreditCurve instance
 	 */
 
-	public static final org.drip.analytics.definition.CreditCurve FromFlatHazard (
+	public static final org.drip.analytics.definition.ExplicitBootCreditCurve FromFlatHazard (
 		final double dblStartDate,
 		final java.lang.String strName,
+		final java.lang.String strCurrency,
 		final double dblHazardRate,
 		final double dblRecovery)
 	{
@@ -74,8 +76,8 @@ public class CreditCurveBuilder {
 		adblRecoveryDate[0] = dblStartDate;
 
 		try {
-			return new org.drip.state.manager.ForwardHazardCreditCurve (dblStartDate, strName, adblHazard,
-				adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate, strName, strCurrency,
+				adblHazard, adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -88,6 +90,7 @@ public class CreditCurveBuilder {
 	 * 
 	 * @param dblStartDate Start Date
 	 * @param strName Credit Curve Name
+	 * @param strCurrency Currency
 	 * @param adblSurvivalDate Array of dates
 	 * @param adblSurvivalProbability Array of survival probabilities
 	 * @param dblRecovery Recovery
@@ -95,9 +98,10 @@ public class CreditCurveBuilder {
 	 * @return CreditCurve instance
 	 */
 
-	public static final org.drip.analytics.definition.CreditCurve FromSurvival (
+	public static final org.drip.analytics.definition.ExplicitBootCreditCurve FromSurvival (
 		final double dblStartDate,
 		final java.lang.String strName,
+		final java.lang.String strCurrency,
 		final double[] adblSurvivalDate,
 		final double[] adblSurvivalProbability,
 		final double dblRecovery)
@@ -125,8 +129,8 @@ public class CreditCurveBuilder {
 				dblSurvivalBegin = adblSurvivalProbability[i];
 			}
 
-			return new org.drip.state.manager.ForwardHazardCreditCurve (dblStartDate, strName, adblHazard,
-				adblSurvivalDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate, strName, strCurrency,
+				adblHazard, adblSurvivalDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -139,6 +143,7 @@ public class CreditCurveBuilder {
 	 * 
 	 * @param dblStartDate The Curve epoch date
 	 * @param strName Credit Curve Name
+	 * @param strCurrency Currency
 	 * @param dblHazardRate The solo hazard rate
 	 * @param dblHazardDate Date
 	 * @param dblRecovery Recovery
@@ -146,9 +151,10 @@ public class CreditCurveBuilder {
 	 * @return CreditCurve instance
 	 */
 
-	public static final org.drip.analytics.definition.CreditCurve FromHazardNode (
+	public static final org.drip.analytics.definition.ExplicitBootCreditCurve FromHazardNode (
 		final double dblStartDate,
 		final java.lang.String strName,
+		final java.lang.String strCurrency,
 		final double dblHazardRate,
 		final double dblHazardDate,
 		final double dblRecovery)
@@ -169,8 +175,8 @@ public class CreditCurveBuilder {
 		adblRecoveryDate[0] = dblStartDate;
 
 		try {
-			return new org.drip.state.manager.ForwardHazardCreditCurve (dblStartDate, strName, adblHazard,
-				adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate, strName, strCurrency,
+				adblHazard, adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -183,6 +189,7 @@ public class CreditCurveBuilder {
 	 * 
 	 * @param dtStart Curve epoch date
 	 * @param strName Credit Curve Name
+	 * @param strCurrency Currency
 	 * @param adblDate Array of dates
 	 * @param adblHazardRate Array of hazard rates
 	 * @param dblRecovery Recovery
@@ -190,9 +197,10 @@ public class CreditCurveBuilder {
 	 * @return CreditCurve instance
 	 */
 
-	public static final org.drip.analytics.definition.CreditCurve CreateCreditCurve (
+	public static final org.drip.analytics.definition.ExplicitBootCreditCurve CreateCreditCurve (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strName,
+		final java.lang.String strCurrency,
 		final double[] adblDate,
 		final double[] adblHazardRate,
 		final double dblRecovery)
@@ -208,8 +216,8 @@ public class CreditCurveBuilder {
 
 			adblRecoveryDate[0] = dtStart.getJulian();
 
-			return new org.drip.state.manager.ForwardHazardCreditCurve (dtStart.getJulian(), strName,
-				adblHazardRate, adblDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dtStart.getJulian(), strName,
+				strCurrency, adblHazardRate, adblDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -225,13 +233,13 @@ public class CreditCurveBuilder {
 	 * @return The credit curve instance
 	 */
 
-	public static final org.drip.analytics.definition.CreditCurve FromByteArray (
+	public static final org.drip.analytics.definition.ExplicitBootCreditCurve FromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.state.manager.ForwardHazardCreditCurve (ab);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -244,6 +252,7 @@ public class CreditCurveBuilder {
 	 * 
 	 * @param dblStart Curve Epoch date
 	 * @param strName Credit Curve Name
+	 * @param strCurrency Currency
 	 * @param adblHazardRate Matched array of hazard rates
 	 * @param adblHazardDate Matched array of hazard dates
 	 * @param adblRecoveryRate Matched array of recovery rates
@@ -253,9 +262,10 @@ public class CreditCurveBuilder {
 	 * @return CreditCurve instance
 	 */
 
-	public static final org.drip.analytics.definition.CreditCurve CreateCreditCurve (
+	public static final org.drip.analytics.definition.ExplicitBootCreditCurve CreateCreditCurve (
 		final double dblStart,
 		final java.lang.String strName,
+		final java.lang.String strCurrency,
 		final double adblHazardRate[],
 		final double adblHazardDate[],
 		final double[] adblRecoveryRate,
@@ -263,8 +273,8 @@ public class CreditCurveBuilder {
 		final double dblSpecificDefaultDate)
 	{
 		try {
-			return new org.drip.state.manager.ForwardHazardCreditCurve (dblStart, strName, adblHazardRate,
-				adblHazardDate, adblRecoveryRate, adblRecoveryDate, dblSpecificDefaultDate);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStart, strName, strCurrency,
+				adblHazardRate, adblHazardDate, adblRecoveryRate, adblRecoveryDate, dblSpecificDefaultDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

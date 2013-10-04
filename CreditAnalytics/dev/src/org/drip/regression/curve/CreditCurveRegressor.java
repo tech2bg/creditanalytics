@@ -131,7 +131,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				{
 					return null != (_ccFromFlatHazard =
 						org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (_dtStart.getJulian(),
-							"CORP", 0.02, 0.4));
+							"CORP", "USD", 0.02, 0.4));
 				}
 
 				@Override public boolean postRegression (
@@ -194,7 +194,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				{
 					return null != (_ccFromSurvival =
 						org.drip.state.creator.CreditCurveBuilder.FromSurvival (_dtStart.getJulian(),
-							"CORP", _adblDate, _adblSurvival, 0.4));
+							"CORP", "USD", _adblDate, _adblSurvival, 0.4));
 				}
 
 				@Override public boolean postRegression (
@@ -259,7 +259,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccFromHazard =
-						org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (_dtStart, "CORP",
+						org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (_dtStart, "CORP", "USD",
 							_adblDate, _adblHazard, 0.4));
 				}
 
@@ -307,20 +307,17 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("CompAndQuotes",
 				_strRegressionScenario)
 			{
-				private double[] _adblQuotes = null;
 				private org.drip.product.definition.CalibratableComponent[] _aCalibComp = null;
 
 				@Override public boolean execRegression()
 				{
-					return null != (_adblQuotes = _cc.getCompQuotes()) && 0 == _adblQuotes.length && null ==
-						(_aCalibComp = _cc.getCalibComponents()) && 0 == _aCalibComp.length &&
-							_aCalibComp.length != _adblQuotes.length;
+					return null != (_aCalibComp = _cc.calibComp()) && 0 != _aCalibComp.length;
 				}
 
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					for (int i = 0; i < _adblQuotes.length; ++i) {
+					for (int i = 0; i < _aCalibComp.length; ++i) {
 						org.drip.analytics.date.JulianDate dt = _aCalibComp[i].getMaturityDate();
 
 						java.lang.String strCode = _aCalibComp[i].getPrimaryCode();
@@ -328,17 +325,9 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 						if (null == dt || null == strCode || strCode.isEmpty()) return false;
 
 						try {
-							double dblCompQuote = _cc.getQuote (strCode);
-
 							rnvd.set ("CompQuote" + "_" + strCode + "[" + dt + "]",
-								org.drip.math.common.FormatUtil.FormatDouble (dblCompQuote, 1, 4, 1));
-
-							rnvd.set ("NodeQuote" + "_" + strCode + "[" + dt + "]",
-								org.drip.math.common.FormatUtil.FormatDouble (_adblQuotes[i], 1, 4, 1));
-
-							if (!org.drip.math.common.NumberUtil.WithinTolerance (dblCompQuote,
-								_adblQuotes[i]))
-								return false;
+								org.drip.math.common.FormatUtil.FormatDouble (_cc.manifestMeasure
+									(strCode), 1, 4, 1));
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 
@@ -362,7 +351,8 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 
 				@Override public boolean execRegression()
 				{
-					if (null == (_ccParallelShifted = _cc.createParallelHazardShiftedCurve (0.0005)))
+					if (null == (_ccParallelShifted = (org.drip.analytics.definition.CreditCurve)
+						_cc.parallelShiftQuantificationMetric (0.0005)))
 						return false;
 
 					return true;
@@ -372,7 +362,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					org.drip.product.definition.CalibratableComponent[] aCalibComp =
-						_cc.getCalibComponents();
+						_cc.calibComp();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
@@ -424,35 +414,41 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccParallelShifted = (org.drip.analytics.definition.CreditCurve)
-						_cc.createParallelShiftedCurve (5.));
+						_cc.parallelShiftManifestMeasure (5.));
 				}
 
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					double[] adblQuotes = _cc.getCompQuotes();
-
-					double[] adblQuotesShifted = _ccParallelShifted.getCompQuotes();
-
 					org.drip.product.definition.CalibratableComponent[] aCalibComp =
-						_cc.getCalibComponents();
+						_cc.calibComp();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
 						org.drip.analytics.date.JulianDate dt = aCalibComp[i].getMaturityDate();
 
-						rnvd.set ("BaseCurveQuote[" + dt + "]", org.drip.math.common.FormatUtil.FormatDouble
-							(adblQuotes[i], 1, 5, 1));
+						try {
+							rnvd.set ("BaseCurveQuote[" + dt + "]",
+								org.drip.math.common.FormatUtil.FormatDouble (_cc.manifestMeasure
+									(aCalibComp[i].getPrimaryCode()), 1, 5, 1));
 
-						rnvd.set ("ParallelShiftedCurveQuote[" + dt + "]",
-							org.drip.math.common.FormatUtil.FormatDouble (adblQuotesShifted[i], 1, 5, 1));
+							rnvd.set ("ParallelShiftedCurveQuote[" + dt + "]",
+								org.drip.math.common.FormatUtil.FormatDouble
+									(_ccParallelShifted.manifestMeasure (aCalibComp[i].getPrimaryCode()),
+										1, 5, 1));
 
-						dt = dt1;
+							dt = dt1;
 
-						if (!org.drip.math.common.NumberUtil.WithinTolerance (adblQuotes[i] + 5.,
-							adblQuotesShifted[i]))
+							if (!org.drip.math.common.NumberUtil.WithinTolerance (_cc.manifestMeasure
+								(aCalibComp[i].getPrimaryCode()) + 5., _ccParallelShifted.manifestMeasure
+									(aCalibComp[i].getPrimaryCode())))
+								return false;
+						} catch (java.lang.Exception e) {
+							e.printStackTrace();
+
 							return false;
+						}
 					}
 
 					return true;
@@ -469,15 +465,15 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 			{
 				private static final int TWEAKED_NODE = 0;
 
-				private org.drip.param.definition.CreditNodeTweakParams _cntp = null;
+				private org.drip.param.definition.CreditManifestMeasureTweak _cntp = null;
 				private org.drip.analytics.definition.CreditCurve _ccTweakedCurve = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						_cntp = new org.drip.param.definition.CreditNodeTweakParams
-							(org.drip.param.definition.CreditNodeTweakParams.CREDIT_TWEAK_NODE_PARAM_QUOTE,
-								org.drip.param.definition.CreditNodeTweakParams.CREDIT_TWEAK_NODE_MEASURE_QUOTE,
+						_cntp = new org.drip.param.definition.CreditManifestMeasureTweak
+							(org.drip.param.definition.CreditManifestMeasureTweak.CREDIT_TWEAK_NODE_PARAM_QUOTE,
+								org.drip.param.definition.CreditManifestMeasureTweak.CREDIT_TWEAK_NODE_MEASURE_QUOTE,
 							TWEAKED_NODE, true, 0.1, false);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
@@ -491,14 +487,14 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccTweakedCurve = (org.drip.analytics.definition.CreditCurve)
-						_cc.createTweakedCurve (_cntp));
+						_cc.customTweakManifestMeasure (_cntp));
 				}
 
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					org.drip.product.definition.CalibratableComponent[] aCalibComp =
-						_cc.getCalibComponents();
+						_cc.calibComp();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 

@@ -129,9 +129,9 @@ public abstract class RatesScenarioCurve {
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.param.definition.NodeTweakParams ntpTSY,
-		final org.drip.param.definition.NodeTweakParams ntpEDSF,
-		final org.drip.param.definition.NodeTweakParams ntpDC);
+		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
+		final org.drip.param.definition.ResponseValueTweakParams ntpEDSF,
+		final org.drip.param.definition.ResponseValueTweakParams ntpDC);
 
 	/**
 	 * Return the base Discount Curve

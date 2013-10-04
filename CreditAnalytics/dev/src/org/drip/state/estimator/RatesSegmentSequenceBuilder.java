@@ -170,7 +170,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 
 		org.drip.product.definition.CalibratableComponent cc = _rbs.getCalibComp (0);
 
-		org.drip.state.estimator.LatentStateMetricMeasure lsmm = _rbs.getLSMM (0);
+		org.drip.state.representation.LatentStateMetricMeasure lsmm = _rbs.getLSMM (0);
 
 		org.drip.math.segment.ResponseValueConstraint rvcLeading =
 			org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse (_valParams._dblValue, 1.);
@@ -201,7 +201,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
 			org.drip.product.definition.CalibratableComponent cc = _rbs.getCalibComp (iSegment);
 
-			org.drip.state.estimator.LatentStateMetricMeasure lsmm = _rbs.getLSMM (iSegment);
+			org.drip.state.representation.LatentStateMetricMeasure lsmm = _rbs.getLSMM (iSegment);
 
 			if (null == aPR || 1 > aPR.length || null == cc | null == lsmm) return false;
 

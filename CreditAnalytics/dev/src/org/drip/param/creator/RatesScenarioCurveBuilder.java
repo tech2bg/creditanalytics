@@ -116,13 +116,12 @@ public class RatesScenarioCurveBuilder {
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
-		org.drip.state.estimator.LinearCurveCalibrator lcc = null;
-
 		try {
-			lcc = new org.drip.state.estimator.LinearCurveCalibrator (prbp, iCalibrationBoundaryCondition,
-				iCalibrationDetail);
+			org.drip.state.estimator.LinearCurveCalibrator lcc = new
+				org.drip.state.estimator.LinearCurveCalibrator (prbp, iCalibrationBoundaryCondition,
+					iCalibrationDetail);
 
-			return new org.drip.state.manager.DiscountFactorDiscountCurve
+			return new org.drip.state.curve.DiscountFactorDiscountCurve
 				(aRBS[0].getCalibComp()[0].getIRCurveName(), (lcc.calibrateSpan (aRBS, valParams, null, null,
 					null)));
 		} catch (java.lang.Exception e) {

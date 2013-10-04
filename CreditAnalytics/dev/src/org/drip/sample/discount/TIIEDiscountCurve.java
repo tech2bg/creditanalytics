@@ -63,9 +63,7 @@ public class TIIEDiscountCurve {
 	{
 		CalibratableComponent[] aCalibComp = new CalibratableComponent[astrTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
-			System.out.println ("Mat Date: " + dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"));
-
+		for (int i = 0; i < astrTenor.length; ++i)
 			aCalibComp[i] = RatesStreamBuilder.CreateIRS (
 				dtEffective,
 				dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"),
@@ -73,7 +71,6 @@ public class TIIEDiscountCurve {
 				"MXN",
 				"MXN-LIBOR-6M",
 				"MXN");
-		}
 
 		return aCalibComp;
 	}
@@ -94,8 +91,8 @@ public class TIIEDiscountCurve {
 
 		RegimeBuilderSet rbsCash = RegimeBuilderSet.CreateRegimeBuilderSet (
 			"CASH",
-			LatentStateMetricMeasure.LATENT_STATE_DISCOUNT,
-			LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+			DiscountCurve.LATENT_STATE_DISCOUNT,
+			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aCashComp,
 			"Rate",
 			adblCashQuote);
@@ -108,8 +105,8 @@ public class TIIEDiscountCurve {
 
 		RegimeBuilderSet rbsSwap = RegimeBuilderSet.CreateRegimeBuilderSet (
 			"SWAP",
-			LatentStateMetricMeasure.LATENT_STATE_DISCOUNT,
-			LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+			DiscountCurve.LATENT_STATE_DISCOUNT,
+			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aSwapComp,
 			"Rate",
 			adblSwapQuote);

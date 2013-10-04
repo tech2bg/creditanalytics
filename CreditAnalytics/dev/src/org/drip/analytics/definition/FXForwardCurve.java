@@ -45,14 +45,6 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 	org.drip.analytics.definition.Curve {
 
 	/**
-	 * Returns the CurrencyPair
-	 * 
-	 * @return CurrencyPair
-	 */
-
-	public abstract org.drip.product.params.CurrencyPair getCurrencyPair();
-
-	/**
 	 * 
 	 * Returns the Spot Date
 	 * 
@@ -68,6 +60,14 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 	 */
 
 	public abstract double getFXSpot();
+
+	/**
+	 * Returns the CurrencyPair
+	 * 
+	 * @return CurrencyPair
+	 */
+
+	public abstract org.drip.product.params.CurrencyPair getCurrencyPair();
 
 	/**
 	 * Calculates the set of full basis given the input discount curves
@@ -151,7 +151,7 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 	 * @throws java.lang.Exception Thrown if the implied rate cannot be calculated
 	 */
 
-	public abstract double calcImpliedRate (
+	public abstract double rate (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.definition.DiscountCurve dcNum,
 		final org.drip.analytics.definition.DiscountCurve dcDenom,

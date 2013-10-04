@@ -69,8 +69,8 @@ public class LinearCurveCalibrator {
 	 * @param aRBS Array of the Regime Builder Parameters
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
-	 * @param cmp Component Market Parameter
 	 * @param quotingParams Quoting Parameter
+	 * @param cmp Component Market Parameter
 	 * 
 	 * @return Instance of the Discount Curve Span
 	 */
@@ -79,8 +79,8 @@ public class LinearCurveCalibrator {
 		final org.drip.state.estimator.RegimeBuilderSet[] aRBS,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.definition.ComponentMarketParams cmp)
 	{
 		if (null == aRBS || null == valParams) return null;
 

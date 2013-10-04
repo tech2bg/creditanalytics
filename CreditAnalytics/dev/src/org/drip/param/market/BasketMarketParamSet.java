@@ -570,7 +570,8 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve
-				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", adblDate, adblHazardRate, 0.40);
+				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", "USD", adblDate, adblHazardRate,
+					0.40);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();

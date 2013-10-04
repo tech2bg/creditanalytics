@@ -157,26 +157,26 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.param.definition.NodeTweakParams ntpTSY,
-		final org.drip.param.definition.NodeTweakParams ntpEDSF,
-		final org.drip.param.definition.NodeTweakParams ntpDC)
+		final org.drip.param.definition.ResponseValueTweakParams mmtpTSY,
+		final org.drip.param.definition.ResponseValueTweakParams mmtpEDSF,
+		final org.drip.param.definition.ResponseValueTweakParams mmtpDC)
 	{
 		if (null == strCustomName || strCustomName.isEmpty() || null == _irsg || null == adblQuotes || 0 ==
 			adblQuotes.length || null == astrCalibMeasure || 0 == astrCalibMeasure.length ||
-				astrCalibMeasure.length != adblQuotes.length || (null == ntpTSY && null == ntpEDSF && null ==
-					ntpDC)) {
+				astrCalibMeasure.length != adblQuotes.length || (null == mmtpTSY && null == mmtpEDSF && null
+					== mmtpDC)) {
 			if (s_bBlog) System.out.println ("Bad RatesCurveScenarioContainer.cookCustomDC Input params!");
 
 			return false;
 		}
 
 		org.drip.analytics.definition.DiscountCurve dcTSYAdj = (org.drip.analytics.definition.DiscountCurve)
-			dcTSY.createTweakedCurve (ntpTSY);
+			dcTSY.customTweakManifestMeasure (mmtpTSY);
 
 		if (null == dcTSYAdj) dcTSYAdj = dcTSY;
 
 		org.drip.analytics.definition.DiscountCurve dcEDSFAdj = (org.drip.analytics.definition.DiscountCurve)
-			dcEDSF.createTweakedCurve (ntpEDSF);
+			dcEDSF.customTweakManifestMeasure (mmtpEDSF);
 
 		if (null == dcEDSFAdj) dcEDSFAdj = dcEDSF;
 
@@ -194,7 +194,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
 
 		org.drip.analytics.definition.DiscountCurve dcCustom = (org.drip.analytics.definition.DiscountCurve)
-			dcBaseCustom.createTweakedCurve (ntpDC);
+			dcBaseCustom.customTweakManifestMeasure (mmtpDC);
 
 		if (null == dcCustom)
 			_mapCustomDC.put (strCustomName, dcBaseCustom);

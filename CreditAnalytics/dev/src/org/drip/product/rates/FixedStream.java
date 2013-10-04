@@ -425,7 +425,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 							(period.getAccrualStartDate(), valParams._dblValue);
 				}
 
-				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * dc.getDF (dblPeriodPayDate) * getNotional
+				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * getNotional
 					(period.getAccrualStartDate(), period.getEndDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -443,7 +443,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams._dblValue);
 
-			dblCashPayDF = dc.getDF (dblCashSettle);
+			dblCashPayDF = dc.df (dblCashSettle);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -565,16 +565,16 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
 
-				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (dblPeriodPayDate);
+				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-				double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+				double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-				double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+				double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 				if (null == wjPVDFMicroJack)
 					wjPVDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
@@ -635,17 +635,16 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
 
-					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian
-						(dblPeriodPayDate);
+					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-					double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
 						wjSwapRateDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
@@ -680,7 +679,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		return null;
 	}

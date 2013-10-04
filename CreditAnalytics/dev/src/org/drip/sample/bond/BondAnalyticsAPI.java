@@ -355,7 +355,7 @@ public class BondAnalyticsAPI {
 		 * Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), "CC", 0.01, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), "CC", "USD", 0.01, 0.4);
 
 		for (int i = 0; i < aBond.length; ++i) {
 			System.out.println ("\nAcc Start     Acc End     Pay Date      Cpn DCF       Pay01       Surv01");
@@ -372,7 +372,7 @@ public class BondAnalyticsAPI {
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
 				);
 
@@ -493,7 +493,7 @@ public class BondAnalyticsAPI {
 		 * Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), "CC", 0.01, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), "CC", "USD", 0.01, 0.4);
 
 		/*
 		 * Component Market Parameters Container

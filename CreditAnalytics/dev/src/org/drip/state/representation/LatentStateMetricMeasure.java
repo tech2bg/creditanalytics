@@ -1,5 +1,5 @@
 
-package org.drip.state.estimator;
+package org.drip.state.representation;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -39,37 +39,10 @@ package org.drip.state.estimator;
 public class LatentStateMetricMeasure {
 
 	/**
-	 * Discount Latent State
-	 */
-
-	public static final java.lang.String LATENT_STATE_DISCOUNT = "LATENT_STATE_DISCOUNT";
-
-	/**
 	 * Survival Latent State
 	 */
 
 	public static final java.lang.String LATENT_STATE_SURVIVAL = "LATENT_STATE_SURVIVAL";
-
-	/**
-	 * Discount Latent State Quantification Metric - Discount Factor
-	 */
-
-	public static final java.lang.String QUANTIFICATION_METRIC_DISCOUNT_FACTOR =
-		"QUANTIFICATION_METRIC_DISCOUNT_FACTOR";
-
-	/**
-	 * Discount Latent State Quantification Metric - Zero Rate
-	 */
-
-	public static final java.lang.String QUANTIFICATION_METRIC_ZERO_RATE =
-		"QUANTIFICATION_METRIC_ZERO_RATE";
-
-	/**
-	 * Discount Latent State Quantification Metric - Forward Rate
-	 */
-
-	public static final java.lang.String QUANTIFICATION_METRIC_FORWARD_RATE =
-		"QUANTIFICATION_METRIC_FORWARD_RATE";
 
 	/**
 	 * Survival Latent State Quantification Metric - Survival Probability

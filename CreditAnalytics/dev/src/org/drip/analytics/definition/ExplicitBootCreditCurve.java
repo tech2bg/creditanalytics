@@ -30,34 +30,20 @@ package org.drip.analytics.definition;
  */
 
 /**
- * ZeroCurve exposes the node set containing the zero curve node points. In addition to the discount curve
- * 	functionality that it automatically provides by extension, it provides the functionality to calculate the
- *  zero rate.
+ * ExplicitBootCreditCurve exposes the functionality associated with the bootstrapped Credit Curve.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class ZeroCurve extends org.drip.analytics.definition.DiscountCurve {
+public abstract class ExplicitBootCreditCurve extends org.drip.analytics.definition.CreditCurve implements
+	org.drip.analytics.definition.ExplicitBootCurve {
 
-	protected ZeroCurve (
+	protected ExplicitBootCreditCurve (
 		final double dblEpochDate,
+		final java.lang.String strName,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strCurrency);
+		super (dblEpochDate, strName, strCurrency);
 	}
-
-	/**
-	 * Retrieve the zero rate corresponding to the given date
-	 * 
-	 * @param dblDate Date for which the zero rate is requested
-	 * 
-	 * @return Zero Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the date is not represented in the map
-	 */
-
-	public abstract double getZeroRate (
-		final double dblDate)
-		throws java.lang.Exception;
 }

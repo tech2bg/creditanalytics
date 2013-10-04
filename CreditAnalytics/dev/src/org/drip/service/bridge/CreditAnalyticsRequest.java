@@ -465,24 +465,25 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			adblHazardRate[i] = 0.01 * (i + 1);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSF =
+		org.drip.analytics.definition.ExplicitBootDiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.CreditCurve cc =
+		org.drip.analytics.definition.ExplicitBootCreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve
-				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", adblDate, adblHazardRate, 0.40);
+				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", "USD", adblDate, adblHazardRate,
+						0.40);
 
 		org.drip.param.market.ComponentMultiMeasureQuote cqTSY2ON = new
 			org.drip.param.market.ComponentMultiMeasureQuote();
@@ -490,8 +491,9 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.,
 			java.lang.Double.NaN), false);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
-			= new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mapTSYQuotes = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cqTSY2ON);
 

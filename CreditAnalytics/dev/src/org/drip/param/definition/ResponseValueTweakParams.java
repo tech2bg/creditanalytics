@@ -30,25 +30,25 @@ package org.drip.param.definition;
  */
 
 /**
- * NodeTweakParams contains the place holder for the scenario tweak parameters, for either a specific curve
+ * ResponseValueTweakParams contains the place holder for the scenario tweak parameters, for either a specific curve
  *  node, or the entire curve (flat). Parameter bumps can be parallel or proportional.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class NodeTweakParams extends org.drip.service.stream.Serializer {
+public class ResponseValueTweakParams extends org.drip.service.stream.Serializer {
 
 	/**
-	 * Flat Curve tweak constant
+	 * Flat Manifest Measure Tweak Mode
 	 */
 
-	public static final int NODE_FLAT_TWEAK = -1;
+	public static final int MANIFEST_MEASURE_FLAT_TWEAK = -1;
 
 	/**
-	 * Node to be tweaked
+	 * Index of the Instrument whose Manifest Measure is to be Tweaked
 	 */
 
-	public int _iTweakNode = NODE_FLAT_TWEAK;
+	public int _iTweakNode = MANIFEST_MEASURE_FLAT_TWEAK;
 
 	/**
 	 * Is the tweak parallel or proportional
@@ -63,7 +63,7 @@ public class NodeTweakParams extends org.drip.service.stream.Serializer {
 	public double _dblTweakAmount = java.lang.Double.NaN;
 
 	/**
-	 * NodeTweakParams constructor
+	 * ResponseValueTweakParams constructor
 	 * 
 	 * @param iTweakNode Node to be tweaked - Set to NODE_FLAT_TWEAK for flat curve tweak
 	 * @param bIsTweakProportional True => Tweak is proportional, False => parallel
@@ -71,69 +71,72 @@ public class NodeTweakParams extends org.drip.service.stream.Serializer {
 	 * 			tweaks are absolute numbers
 	 */
 
-	public NodeTweakParams (
+	public ResponseValueTweakParams (
 		final int iTweakNode,
 		final boolean bIsTweakProportional,
 		final double dblTweakAmount)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (_dblTweakAmount = dblTweakAmount))
-			throw new java.lang.Exception ("NodeTweakParams ctr => Invalid Inputs");
+			throw new java.lang.Exception ("ResponseValueTweakParams ctr => Invalid Inputs");
 
 		_iTweakNode = iTweakNode;
 		_bIsTweakProportional = bIsTweakProportional;
 	}
 
 	/**
-	 * NodeTweakParams de-serialization from input byte array
+	 * ResponseValueTweakParams de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if NodeTweakParams cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if ResponseValueTweakParams cannot be properly de-serialized
 	 */
 
-	public NodeTweakParams (
+	public ResponseValueTweakParams (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("NodeTweakParams de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception
+				("ResponseValueTweakParams de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("NodeTweakParams de-serializer: Empty state");
+			throw new java.lang.Exception ("ResponseValueTweakParams de-serializer: Empty state");
 
 		java.lang.String strSerializedNodeTweakParams = strRawString.substring (0, strRawString.indexOf
 			(super.getObjectTrailer()));
 
 		if (null == strSerializedNodeTweakParams || strSerializedNodeTweakParams.isEmpty())
-			throw new java.lang.Exception ("NodeTweakParams de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("ResponseValueTweakParams de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedNodeTweakParams,
 			super.getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("NodeTweakParams de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("ResponseValueTweakParams de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("NodeTweakParams de-serializer: Cannot locate tweak node");
+			throw new java.lang.Exception
+				("ResponseValueTweakParams de-serializer: Cannot locate tweak node");
 
 		_iTweakNode = new java.lang.Integer (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("NodeTweakParams de-serializer: Cannot locate tweak amount");
+			throw new java.lang.Exception
+				("ResponseValueTweakParams de-serializer: Cannot locate tweak amount");
 
 		_dblTweakAmount = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
-				("NodeTweakParams de-serializer: Cannot locate is proportional tweak flag");
+				("ResponseValueTweakParams de-serializer: Cannot locate is proportional tweak flag");
 
 		_bIsTweakProportional = new java.lang.Boolean (astrField[3]);
 	}
@@ -152,26 +155,11 @@ public class NodeTweakParams extends org.drip.service.stream.Serializer {
 		final byte[] ab)
 	{
 		try {
-			return new NodeTweakParams (ab);
+			return new ResponseValueTweakParams (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
-	}
-
-	public static void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		NodeTweakParams ntp = new NodeTweakParams (NODE_FLAT_TWEAK, false, 0.1);
-
-		byte[] abNTP = ntp.serialize();
-
-		System.out.println (new java.lang.String (abNTP));
-
-		NodeTweakParams ntpDeser = new NodeTweakParams (abNTP);
-
-		System.out.println (new java.lang.String (ntpDeser.serialize()));
 	}
 }

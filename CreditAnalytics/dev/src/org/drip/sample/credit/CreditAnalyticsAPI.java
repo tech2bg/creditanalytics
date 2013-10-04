@@ -87,7 +87,7 @@ public class CreditAnalyticsAPI {
 		 * Create Credit Curve from flat Hazard Rate
 		 */
 
-		CreditCurve ccFlatHazard = CreditCurveBuilder.FromFlatHazard (dtStart.getJulian(), "CC", 0.02, 0.4);
+		CreditCurve ccFlatHazard = CreditCurveBuilder.FromFlatHazard (dtStart.getJulian(), "CC", "USD", 0.02, 0.4);
 
 		System.out.println ("CCFromFlatHazard[" + dt10Y.toString() + "]; Survival=" +
 			ccFlatHazard.getSurvival ("10Y") + "; Hazard=" + ccFlatHazard.calcHazard ("10Y"));
@@ -106,7 +106,7 @@ public class CreditAnalyticsAPI {
 		 */
 
 		CreditCurve ccFromSurvival = CreditCurveBuilder.FromSurvival
-			(dtStart.getJulian(), "CC", adblDate, adblSurvival, 0.4);
+			(dtStart.getJulian(), "CC", "USD", adblDate, adblSurvival, 0.4);
 
 		System.out.println ("CCFromSurvival[" + dt10Y.toString() + "]; Survival=" +
 			ccFromSurvival.getSurvival ("10Y") + "; Hazard=" + ccFromSurvival.calcHazard ("10Y"));
@@ -208,7 +208,7 @@ public class CreditAnalyticsAPI {
 		 * Flat Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtStart.getJulian(), "CC", 0.02, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtStart.getJulian(), "CC", "USD", 0.02, 0.4);
 
 		/*
 		 * Component Market Parameters built from the Discount and the Credit Curves
@@ -250,7 +250,7 @@ public class CreditAnalyticsAPI {
 				FormatUtil.FormatDouble (p.getIndexRate(), 1, 4, 1.) +	FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.getSpread(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
 			);
 
@@ -270,7 +270,7 @@ public class CreditAnalyticsAPI {
 				FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getEffectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getEffectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEffectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getStartSurvival(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.)
 			);

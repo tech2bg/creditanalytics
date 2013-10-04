@@ -196,10 +196,10 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 	{
 		if (null == valParams || null == dcNum || null == dcDenom || !org.drip.math.common.NumberUtil.IsValid
 			(dblFXSpot))
-			throw new java.lang.Exception ("Invalid params into FXForward.implyFXForward");
+			throw new java.lang.Exception ("Invalid params into FXForward.implyFXForward => " + dcNum);
 
-		double dblFXFwd = dblFXSpot * dcDenom.getDF (_dblMaturity) * dcNum.getDF (valParams._dblCashPay) /
-			dcNum.getDF (_dblMaturity) / dcDenom.getDF (valParams._dblCashPay);
+		double dblFXFwd = dblFXSpot * dcDenom.df (_dblMaturity) * dcNum.df (valParams._dblCashPay) /
+			dcNum.df (_dblMaturity) / dcDenom.df (valParams._dblCashPay);
 
 		if (!bFwdAsPIP) return dblFXFwd;
 		
@@ -278,10 +278,10 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 			throws java.lang.Exception {
 			if (bBasisOnDenom)
 				return _fxfwd.implyFXForward (valParams, dcNum, (org.drip.analytics.definition.DiscountCurve)
-					dcDenom.createParallelShiftedCurve (dblBump), dblFXSpot, false);
+					dcDenom.parallelShiftQuantificationMetric (dblBump), dblFXSpot, false);
 
 			return _fxfwd.implyFXForward (valParams, (org.drip.analytics.definition.DiscountCurve)
-				dcNum.createParallelShiftedCurve (dblBump), dcDenom, dblFXSpot, false);
+				dcNum.parallelShiftQuantificationMetric (dblBump), dcDenom, dblFXSpot, false);
 		}
 
 		/**

@@ -44,14 +44,6 @@ public abstract class FXBasisCurve extends org.drip.service.stream.Serializer im
 	org.drip.analytics.definition.Curve {
 
 	/**
-	 * Returns the currency pair instance
-	 * 
-	 * @return CurrencyPair object instance
-	 */
-
-	public abstract org.drip.product.params.CurrencyPair getCurrencyPair();
-
-	/**
 	 * Returns the Spot Date
 	 * 
 	 * @return Spot Date
@@ -66,6 +58,14 @@ public abstract class FXBasisCurve extends org.drip.service.stream.Serializer im
 	 */
 
 	public abstract double getFXSpot();
+
+	/**
+	 * Returns the currency pair instance
+	 * 
+	 * @return CurrencyPair object instance
+	 */
+
+	public abstract org.drip.product.params.CurrencyPair getCurrencyPair();
 
 	/**
 	 * Returns if the inputs are for bootstrapped FX basis

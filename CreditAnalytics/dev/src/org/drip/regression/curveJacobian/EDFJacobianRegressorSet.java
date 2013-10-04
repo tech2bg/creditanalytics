@@ -111,7 +111,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 						}
 					}
 
-					return null != (wjPVDF = dcEDF.compPVDFJacobian (dtStart));
+					return null != (wjPVDF = dcEDF.compPVDFJack (dtStart));
 				}
 
 				@Override public boolean postRegression (

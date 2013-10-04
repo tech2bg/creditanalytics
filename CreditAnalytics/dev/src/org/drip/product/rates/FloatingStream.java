@@ -390,7 +390,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		if (null == dc) throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
 
-		return dc.calcLIBOR (currentPeriod.getStartDate(), currentPeriod.getEndDate()) + _dblSpread;
+		return dc.libor (currentPeriod.getStartDate(), currentPeriod.getEndDate()) + _dblSpread;
 	}
 
 	@Override public java.lang.String getIRCurveName()
@@ -493,7 +493,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
 							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
 								(period.getResetDate())).get (_strFloatingRateIndex))
-						dblResetRate = dblFloatingRate = dcForward.calcLIBOR (period.getStartDate(),
+						dblResetRate = dblFloatingRate = dcForward.libor (period.getStartDate(),
 							period.getEndDate());
 					else
 						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
@@ -507,9 +507,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 					dblResetDate = period.getResetDate();
 				} else
-					dblFloatingRate = dcForward.calcLIBOR (period.getStartDate(), period.getEndDate());
+					dblFloatingRate = dcForward.libor (period.getStartDate(), period.getEndDate());
 
-				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * mktParams.getDiscountCurve().getDF
+				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * mktParams.getDiscountCurve().df
 					(dblPeriodPayDate) * getNotional (period.getAccrualStartDate(), period.getEndDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -537,7 +537,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams._dblValue);
 
-			dblCashPayDF = mktParams.getDiscountCurve().getDF (dblCashSettle);
+			dblCashPayDF = mktParams.getDiscountCurve().df (dblCashSettle);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -686,16 +686,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
 
-				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (dblPeriodPayDate);
+				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-				double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+				double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-				double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+				double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 				if (null == wjPVDFMicroJack)
 					wjPVDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
@@ -756,17 +756,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
 
-					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian
-						(dblPeriodPayDate);
+					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-					double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
 						wjSwapRateDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
@@ -801,7 +800,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		return null;
 	}

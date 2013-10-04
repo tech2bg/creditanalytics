@@ -163,7 +163,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 						}
 					}
 
-					return null != (wjPVDF = dcIRS.compPVDFJacobian (dtStart));
+					return null != (wjPVDF = dcIRS.compPVDFJack (dtStart));
 				}
 
 				@Override public boolean postRegression (

@@ -102,8 +102,8 @@ public class DiscountCurveBuilderAPI {
 
 		RegimeBuilderSet rbsCash = RegimeBuilderSet.CreateRegimeBuilderSet (
 			"CASH",
-			LatentStateMetricMeasure.LATENT_STATE_DISCOUNT,
-			LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+			DiscountCurve.LATENT_STATE_DISCOUNT,
+			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aCashComp,
 			"Rate",
 			adblCashQuote);
@@ -116,8 +116,8 @@ public class DiscountCurveBuilderAPI {
 
 		RegimeBuilderSet rbsSwap = RegimeBuilderSet.CreateRegimeBuilderSet (
 			"SWAP",
-			LatentStateMetricMeasure.LATENT_STATE_DISCOUNT,
-			LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+			DiscountCurve.LATENT_STATE_DISCOUNT,
+			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aSwapComp,
 			"Rate",
 			adblSwapQuote);

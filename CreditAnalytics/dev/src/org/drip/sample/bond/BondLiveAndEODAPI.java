@@ -161,11 +161,11 @@ public class BondLiveAndEODAPI {
 
 		JulianDate dtToday = JulianDate.Today();
 
-		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.05);
+		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.05);
 
-		DiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", 0.02, 0.4);
+		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02, 0.4);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
 
@@ -286,11 +286,11 @@ public class BondLiveAndEODAPI {
 
 		JulianDate dtToday = JulianDate.Today();
 
-		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.03);
+		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.03);
 
-		DiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", 0.02, 0.);
+		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02, 0.);
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtToday, 0, "", Convention.DR_ACTUAL);
 
@@ -460,7 +460,7 @@ public class BondLiveAndEODAPI {
 					FormatUtil.FormatDouble (p.getIndexRate(), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.getSpread(), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
 				);
 		} else {
@@ -474,7 +474,7 @@ public class BondLiveAndEODAPI {
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.getDF (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
 				);
 		}
@@ -491,7 +491,7 @@ public class BondLiveAndEODAPI {
 				FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getEffectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getEffectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEffectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getStartSurvival(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.)
 			);

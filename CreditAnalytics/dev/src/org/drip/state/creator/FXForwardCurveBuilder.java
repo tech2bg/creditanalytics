@@ -63,7 +63,7 @@ public class FXForwardCurveBuilder {
 			final boolean[] abIsPIP)
 	{
 		try {
-			return new org.drip.state.manager.DerivedFXForward (cp, dtSpot, dblFXSpot, adblDate,
+			return new org.drip.state.curve.DerivedFXForward (cp, dtSpot, dblFXSpot, adblDate,
 				adblFXFwd, abIsPIP);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -86,7 +86,7 @@ public class FXForwardCurveBuilder {
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.state.manager.DerivedFXForward (ab);
+			return new org.drip.state.curve.DerivedFXForward (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

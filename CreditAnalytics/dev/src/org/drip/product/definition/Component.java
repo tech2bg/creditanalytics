@@ -546,7 +546,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		final org.drip.analytics.definition.DiscountCurve dc,
 		final org.drip.math.calculus.WengertJacobian wjPVDFMicroJack)
 	{
-		org.drip.math.calculus.WengertJacobian wjCashSettleDFDF = dc.getDFJacobian (dblSettleDate);
+		org.drip.math.calculus.WengertJacobian wjCashSettleDFDF = dc.dfJack (dblSettleDate);
 
 		if (null == wjCashSettleDFDF) return false;
 
@@ -555,7 +555,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		int iNumParameters = wjCashSettleDFDF.numParameters();
 
 		try {
-			dblDFCashSettle = dc.getDF (dblSettleDate);
+			dblDFCashSettle = dc.df (dblSettleDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

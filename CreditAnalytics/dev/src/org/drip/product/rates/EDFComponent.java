@@ -390,10 +390,10 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
 				_settleParams.cashSettleDate (valParams._dblValue);
 
-			double dblUnadjustedAnnuity = dc.getDF (_dblMaturity) / dc.getDF (_dblEffective) / dc.getDF
+			double dblUnadjustedAnnuity = dc.df (_dblMaturity) / dc.df (_dblEffective) / dc.df
 				(dblCashSettle);
 
-			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.getDF (dblCashSettle);
+			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.df (dblCashSettle);
 
 			mapResult.put ("PV", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
 				_dblMaturity));
@@ -447,13 +447,13 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			double dblDFEffective = dc.getDF (_dblEffective);
+			double dblDFEffective = dc.df (_dblEffective);
 
-			double dblDFMaturity = dc.getDF (getMaturityDate().getJulian());
+			double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-			org.drip.math.calculus.WengertJacobian wjDFEffective = dc.getDFJacobian (_dblEffective);
+			org.drip.math.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
 
-			org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.getDFJacobian
+			org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.dfJack
 				(getMaturityDate().getJulian());
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
@@ -496,13 +496,13 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				double dblDFEffective = dc.getDF (_dblEffective);
+				double dblDFEffective = dc.df (_dblEffective);
 
-				double dblDFMaturity = dc.getDF (getMaturityDate().getJulian());
+				double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-				org.drip.math.calculus.WengertJacobian wjDFEffective = dc.getDFJacobian (_dblEffective);
+				org.drip.math.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
 
-				org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.getDFJacobian
+				org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.dfJack
 					(getMaturityDate().getJulian());
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;
@@ -535,14 +535,14 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.state.estimator.LatentStateMetricMeasure lsmm)
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		if (null == valParams || valParams._dblValue >= _dblMaturity || null == lsmm ||
-			!org.drip.state.estimator.LatentStateMetricMeasure.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+			!org.drip.analytics.definition.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
 				(lsmm.getID()))
 			return null;
 
-		if (org.drip.state.estimator.LatentStateMetricMeasure.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+		if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
 			try {
 				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new

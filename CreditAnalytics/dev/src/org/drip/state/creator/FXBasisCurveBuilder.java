@@ -63,7 +63,7 @@ public class FXBasisCurveBuilder {
 		final boolean bIsFXBasisBootstrapped)
 	{
 		try {
-			return new org.drip.state.manager.DerivedFXBasis (cp, dtSpot, dblFXSpot, adblDate,
+			return new org.drip.state.curve.DerivedFXBasis (cp, dtSpot, dblFXSpot, adblDate,
 				adblFXBasis, bIsFXBasisBootstrapped);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -86,7 +86,7 @@ public class FXBasisCurveBuilder {
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.state.manager.DerivedFXBasis (ab);
+			return new org.drip.state.curve.DerivedFXBasis (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

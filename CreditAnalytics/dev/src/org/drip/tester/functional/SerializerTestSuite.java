@@ -212,8 +212,8 @@ public class SerializerTestSuite {
 				"DiscountCurve");
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (dblStart, "XXS", adblHazardRate,
-				adblHazardDate, adblRecoveryRate, adblRecoveryDate, java.lang.Double.NaN);
+			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (dblStart, "XXS", "USD",
+				adblHazardRate, adblHazardDate, adblRecoveryRate, adblRecoveryDate, java.lang.Double.NaN);
 
 		byte[] abCC = cc.serialize();
 
@@ -789,10 +789,10 @@ public class SerializerTestSuite {
 		Verify (abBMP, org.drip.param.creator.BasketMarketParamsBuilder.FromByteArray (abBMP),
 			"BasketMarketParams");
 
-		byte[] abNTP = new org.drip.param.definition.NodeTweakParams
-			(org.drip.param.definition.NodeTweakParams.NODE_FLAT_TWEAK, false, 0.1).serialize();
+		byte[] abNTP = new org.drip.param.definition.ResponseValueTweakParams
+			(org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK, false, 0.1).serialize();
 
-		Verify (abNTP, new org.drip.param.definition.NodeTweakParams (abNTP), "NodeTweakParams");
+		Verify (abNTP, new org.drip.param.definition.ResponseValueTweakParams (abNTP), "NodeTweakParams");
 
 		byte[] abPricer = new org.drip.param.pricer.PricerParams (7, new
 			org.drip.param.definition.CalibrationParams ("KOOL", 1, new

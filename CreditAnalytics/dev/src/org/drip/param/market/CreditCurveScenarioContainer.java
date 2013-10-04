@@ -197,16 +197,16 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final boolean bFlat,
-		final org.drip.param.definition.NodeTweakParams ntpDC,
-		final org.drip.param.definition.NodeTweakParams ntpTSY,
-		final org.drip.param.definition.NodeTweakParams ntpEDSF,
-		final org.drip.param.definition.NodeTweakParams ntpCC)
+		final org.drip.param.definition.ResponseValueTweakParams mmtpDC,
+		final org.drip.param.definition.ResponseValueTweakParams mmtpTSY,
+		final org.drip.param.definition.ResponseValueTweakParams mmtpEDSF,
+		final org.drip.param.definition.ResponseValueTweakParams mmtpCC)
 	{
 		if (null == strCustomName || strCustomName.isEmpty() || null == _ccsg || null == dc || null ==
 			adblQuotes || 0 == adblQuotes.length || !org.drip.math.common.NumberUtil.IsValid (dblRecovery) ||
 				null == astrCalibMeasure || 0 == astrCalibMeasure.length || astrCalibMeasure.length !=
-					adblQuotes.length || (null == ntpDC && null == ntpTSY && null == ntpEDSF && null ==
-						ntpCC)) {
+					adblQuotes.length || (null == mmtpDC && null == mmtpTSY && null == mmtpEDSF && null ==
+						mmtpCC)) {
 			if (s_bBlog)
 				System.out.println ("CreditCurveScenarioContainer.cookCustomCC => Bad Input params!");
 
@@ -214,13 +214,13 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		}
 
 		org.drip.analytics.definition.DiscountCurve dcAdj = (org.drip.analytics.definition.DiscountCurve)
-			dc.createTweakedCurve (ntpDC);
+			dc.customTweakManifestMeasure (mmtpDC);
 
 		org.drip.analytics.definition.DiscountCurve dcTSYAdj = (org.drip.analytics.definition.DiscountCurve)
-			dcTSY.createTweakedCurve (ntpTSY);
+			dcTSY.customTweakManifestMeasure (mmtpTSY);
 
 		org.drip.analytics.definition.DiscountCurve dcEDSFAdj = (org.drip.analytics.definition.DiscountCurve)
-			dcEDSF.createTweakedCurve (ntpEDSF);
+			dcEDSF.customTweakManifestMeasure (mmtpEDSF);
 
 		org.drip.analytics.definition.CreditCurve ccBaseCustom = _ccsg.createCC (strName, valParams, null ==
 			dcAdj ? dc : dcAdj, null == dcTSYAdj ? dcTSY : dcTSYAdj, null == dcEDSFAdj ? dcEDSF : dcEDSFAdj,
@@ -239,7 +239,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		org.drip.analytics.definition.CreditCurve ccCustom = (org.drip.analytics.definition.CreditCurve)
-			ccBaseCustom.createTweakedCurve (ntpCC);
+			ccBaseCustom.customTweakManifestMeasure (mmtpCC);
 
 		if (null == ccCustom)
 			_mapCustomCC.put (strCustomName, ccBaseCustom);

@@ -100,12 +100,12 @@ public class CDSManager {
 
 		org.drip.param.definition.CreditScenarioCurve ccsg = mpc.getCCSG().get (strSPN);
 
-		if (null == ccsg.getCCBase() || null == ccsg.getCCBase().getCalibComponents()) return false;
+		if (null == ccsg.getCCBase() || null == ccsg.getCCBase().calibComp()) return false;
 
 		org.drip.analytics.definition.CreditCurve cc = ccsg.getCCBase();
 
 		org.drip.product.definition.CreditDefaultSwap[] aCDS =
-			(org.drip.product.definition.CreditDefaultSwap[]) cc.getCalibComponents();
+			(org.drip.product.definition.CreditDefaultSwap[]) cc.calibComp();
 
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);

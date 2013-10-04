@@ -127,7 +127,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 						}
 					}
 
-					return null != (wjPVDF = dcCash.compPVDFJacobian (dtStart));
+					return null != (wjPVDF = dcCash.compPVDFJack (dtStart));
 				}
 
 				@Override public boolean postRegression (

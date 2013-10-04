@@ -52,7 +52,7 @@ public class NonlinearCurveCalibrator {
 		private java.lang.String _strMeasure = "";
 		private double _dblCalibValue = java.lang.Double.NaN;
 		private org.drip.product.definition.Component _comp = null;
-		private org.drip.analytics.definition.CreditCurve _cc = null;
+		private org.drip.analytics.definition.ExplicitBootCreditCurve _cc = null;
 		private org.drip.analytics.definition.DiscountCurve _dc = null;
 		private org.drip.param.pricer.PricerParams _pricerParams = null;
 		private org.drip.analytics.definition.DiscountCurve _dcTSY = null;
@@ -63,7 +63,7 @@ public class NonlinearCurveCalibrator {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
 		public CreditCurveCalibrator (
-			org.drip.analytics.definition.CreditCurve cc,
+			org.drip.analytics.definition.ExplicitBootCreditCurve cc,
 			final org.drip.product.definition.Component comp,
 			final int iInstr,
 			final org.drip.param.valuation.ValuationParams valParams,
@@ -113,7 +113,7 @@ public class NonlinearCurveCalibrator {
 	}
 
 	private static final boolean SetNode (
-		final org.drip.analytics.definition.Curve curve,
+		final org.drip.analytics.definition.ExplicitBootCurve curve,
 		final int iInstr,
 		final boolean bFlat,
 		final double dblValue)
@@ -124,7 +124,7 @@ public class NonlinearCurveCalibrator {
 	}
 
 	private double calcCalibrationMetric (
-		final org.drip.state.manager.NonlinearDiscountFactorDiscountCurve dc,
+		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve dc,
 		final org.drip.analytics.definition.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
@@ -161,7 +161,7 @@ public class NonlinearCurveCalibrator {
 	}
 
 	private double calibrateIRCurve (
-		final org.drip.state.manager.NonlinearDiscountFactorDiscountCurve dc,
+		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve dc,
 		final org.drip.analytics.definition.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
@@ -225,7 +225,7 @@ public class NonlinearCurveCalibrator {
 	 */
 
 	public boolean bootstrapHazardRate (
-		org.drip.analytics.definition.CreditCurve cc,
+		org.drip.analytics.definition.ExplicitBootCreditCurve cc,
 		final org.drip.product.definition.Component comp,
 		final int iInstr,
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -285,7 +285,7 @@ public class NonlinearCurveCalibrator {
 	 */
 
 	public double calibrateIRNode (
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.definition.ExplicitBootDiscountCurve dc,
 		final org.drip.analytics.definition.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component comp,
@@ -353,7 +353,7 @@ public class NonlinearCurveCalibrator {
 	 */
 
 	public boolean bootstrapInterestRateSequence (
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.definition.ExplicitBootDiscountCurve dc,
 		final org.drip.analytics.definition.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
@@ -406,7 +406,7 @@ public class NonlinearCurveCalibrator {
 	 */
 
 	public boolean bootstrapNonlinearInterestRateSequence (
-		final org.drip.state.manager.NonlinearDiscountFactorDiscountCurve nldfdc,
+		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve nldfdc,
 		final org.drip.analytics.definition.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
