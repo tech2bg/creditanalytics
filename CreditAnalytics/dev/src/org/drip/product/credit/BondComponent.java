@@ -12527,10 +12527,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			};
 
 			org.drip.math.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.math.solver1D.FixedPointFinderNewton (0., ofYieldToPrice).findRoot();
+				org.drip.math.solver1D.FixedPointFinderNewton (0., ofYieldToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot()) {
-				rfop = new org.drip.math.solver1D.FixedPointFinderBrent (0., ofYieldToPrice).findRoot();
+				rfop = new org.drip.math.solver1D.FixedPointFinderBrent (0., ofYieldToPrice, true).findRoot();
 
 				if (null == rfop || !rfop.containsRoot())
 					throw new java.lang.Exception
@@ -12579,7 +12579,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			};
 
 			org.drip.math.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.math.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice).findRoot();
+				org.drip.math.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception
@@ -12623,7 +12623,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			};
 
 			org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent (0.,
-				ofZSpreadToPrice).findRoot();
+				ofZSpreadToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception
@@ -12670,8 +12670,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				}
 			};
 
-			org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent (0.,
-				ofZSpreadToPrice).findRoot();
+			org.drip.math.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.math.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception
@@ -12714,8 +12714,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				}
 			};
 
-			org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent (0.,
-				ofCreditBasisToPrice).findRoot();
+			org.drip.math.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.math.solver1D.FixedPointFinderBrent (0., ofCreditBasisToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception

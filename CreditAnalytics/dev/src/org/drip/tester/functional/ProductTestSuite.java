@@ -500,7 +500,7 @@ public class ProductTestSuite {
 			System.out.println ("\n\n------------------\nTesting Base TSY DC Curve\n--------\n");
 
 			for (int i = 0; i < aCompCalib.length; ++i) {
-				System.out.println ("TSYRate[" + i + "] = " + dcBaseTSY.rate
+				System.out.println ("TSYRate[" + i + "] = " + dcBaseTSY.zero
 					(aCompCalib[i].getMaturityDate().getJulian()));
 
 				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].calcMeasureValue

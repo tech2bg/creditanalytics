@@ -36,7 +36,7 @@ package org.drip.math.segment;
  */
 
 public class PredictorOrdinateResponseDerivative {
-	private double _dblResponse = java.lang.Double.NaN;
+	private double _dblResponseValue = java.lang.Double.NaN;
 	private double[] _adblDResponseDPredictorOrdinate = null;
 
 	/**
@@ -70,13 +70,13 @@ public class PredictorOrdinateResponseDerivative {
 						adblEdgeDResponseDPredictorOrdinateB.length))
 			return null;
 
-		double dblAggregatedEdgeResponse = 0.5 * (1. - dblCardinalTension) * (pordA.response() +
-			pordB.response());
+		double dblAggregatedEdgeResponseValue = 0.5 * (1. - dblCardinalTension) * (pordA.responseValue() +
+			pordB.responseValue());
 
 		if (null == adblEdgeDResponseDPredictorOrdinateA || null == adblEdgeDResponseDPredictorOrdinateB || 0
 			== iNumDeriv) {
 			try {
-				return new PredictorOrdinateResponseDerivative (dblAggregatedEdgeResponse, null);
+				return new PredictorOrdinateResponseDerivative (dblAggregatedEdgeResponseValue, null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -91,7 +91,7 @@ public class PredictorOrdinateResponseDerivative {
 				(adblEdgeDResponseDPredictorOrdinateA[i] + adblEdgeDResponseDPredictorOrdinateB[i]);
 
 		try {
-			return new PredictorOrdinateResponseDerivative (dblAggregatedEdgeResponse,
+			return new PredictorOrdinateResponseDerivative (dblAggregatedEdgeResponseValue,
 				adblEdgeDResponseDPredictorOrdinate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -103,32 +103,32 @@ public class PredictorOrdinateResponseDerivative {
 	/**
 	 * PredictorOrdinateResponseDerivative constructor
 	 * 
-	 * @param dblResponse Edge Response Value
+	 * @param dblResponseValue Edge Response Value
 	 * @param adblDResponseDPredictorOrdinate Array of ordered Edge Derivatives
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public PredictorOrdinateResponseDerivative (
-		final double dblResponse,
+		final double dblResponseValue,
 		final double[] adblDResponseDPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblResponse = dblResponse))
+		if (!org.drip.math.common.NumberUtil.IsValid (_dblResponseValue = dblResponseValue))
 			throw new java.lang.Exception ("PredictorOrdinateResponseDerivative ctr: Ivalid Inputs!");
 
 		_adblDResponseDPredictorOrdinate = adblDResponseDPredictorOrdinate;
 	}
 
 	/**
-	 * Retrieve the Response
+	 * Retrieve the Response Value
 	 * 
-	 * @return The Response
+	 * @return The Response Value
 	 */
 
-	public double response()
+	public double responseValue()
 	{
-		return _dblResponse;
+		return _dblResponseValue;
 	}
 
 	/**

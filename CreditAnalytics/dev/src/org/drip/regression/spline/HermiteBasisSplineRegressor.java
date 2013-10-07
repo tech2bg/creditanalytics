@@ -119,9 +119,9 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 		final org.drip.regression.core.RegressionRunDetail rnvd)
 	{
 		try {
-			if (!rnvd.set (_strName + "_Seg1_0_0", "" + _seg1.calcResponse (0.))) return false;
+			if (!rnvd.set (_strName + "_Seg1_0_0", "" + _seg1.responseValue (0.))) return false;
 
-			if (!rnvd.set (_strName + "_Seg1_1_0", "" + _seg1.calcResponse (1.))) return false;
+			if (!rnvd.set (_strName + "_Seg1_1_0", "" + _seg1.responseValue (1.))) return false;
 
 			if (!rnvd.set (_strName + "_Seg1_Jack", _wjLeft.displayString()));
 
@@ -129,9 +129,9 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 			if (!rnvd.set (_strName + "_Seg1_Monotone", _seg1.monotoneType().toString()));
 
-			if (!rnvd.set (_strName + "_Seg2_1_0", "" + _seg2.calcResponse (1.))) return false;
+			if (!rnvd.set (_strName + "_Seg2_1_0", "" + _seg2.responseValue (1.))) return false;
 
-			if (!rnvd.set (_strName + "_Seg2_2_0", "" + _seg2.calcResponse (2.))) return false;
+			if (!rnvd.set (_strName + "_Seg2_2_0", "" + _seg2.responseValue (2.))) return false;
 
 			if (!rnvd.set (_strName + "_Seg2_Jack", _wjRight.displayString()));
 

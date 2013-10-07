@@ -101,10 +101,8 @@ public class MonotoneConvexHaganWest {
 			_dblResponseZScoreRight = dblResponseZScoreRight;
 			_dblPredictorOrdinateLeft = dblPredictorOrdinateLeft;
 			_dblPredictorOrdinateRight = dblPredictorOrdinateRight;
-
-			if (_dblResponseZScoreLeft != _dblResponseZScoreRight)
-				_dblEta = (_dblResponseZScoreRight + 2. * _dblResponseZScoreLeft) / (_dblResponseZScoreRight
-					- _dblResponseZScoreLeft);
+			_dblEta = _dblResponseZScoreLeft != _dblResponseZScoreRight ? (_dblResponseZScoreRight + 2. *
+				_dblResponseZScoreLeft) / (_dblResponseZScoreRight - _dblResponseZScoreLeft) : 0.;
 		}
 
 		@Override public double evaluate (
@@ -144,9 +142,8 @@ public class MonotoneConvexHaganWest {
 			_dblResponseZScoreRight = dblResponseZScoreRight;
 			_dblPredictorOrdinateLeft = dblPredictorOrdinateLeft;
 			_dblPredictorOrdinateRight = dblPredictorOrdinateRight;
-
-			if (_dblResponseZScoreLeft != _dblResponseZScoreRight)
-				_dblEta = 3. * _dblResponseZScoreRight / (_dblResponseZScoreRight - _dblResponseZScoreLeft);
+			_dblEta = _dblResponseZScoreLeft != _dblResponseZScoreRight ? 3. * _dblResponseZScoreRight /
+				(_dblResponseZScoreRight - _dblResponseZScoreLeft) : 0.;
 		}
 
 		@Override public double evaluate (
@@ -192,6 +189,9 @@ public class MonotoneConvexHaganWest {
 				_dblEta = _dblResponseZScoreRight / (_dblResponseZScoreRight - _dblResponseZScoreLeft);
 				_dblA = -1. * _dblResponseZScoreLeft * _dblResponseZScoreRight / (_dblResponseZScoreRight -
 					_dblResponseZScoreLeft);
+			} else {
+				_dblA = 0.;
+				_dblEta = 0.;
 			}
 		}
 
@@ -413,7 +413,7 @@ public class MonotoneConvexHaganWest {
 	}
 
 	/**
-	 * Calculate the Response given the Predictor Ordinate
+	 * Calculate the Response Value given the Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate The Predictor Ordinate
 	 * 
@@ -422,7 +422,7 @@ public class MonotoneConvexHaganWest {
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
-	public double response (
+	public double responseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{

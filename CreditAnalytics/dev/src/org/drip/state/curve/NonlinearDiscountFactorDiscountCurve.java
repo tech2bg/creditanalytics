@@ -254,7 +254,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		if (dblDate <= _adblDate[0])
 			return java.lang.Math.exp (-1. * _dblLeftFlatForwardRate * (dblDate - _dblEpochDate) / 365.25);
 
-		return dblDate <= _adblDate[_adblDate.length - 1] ? _msr.response (dblDate) : java.lang.Math.exp (-1.
+		return dblDate <= _adblDate[_adblDate.length - 1] ? _msr.responseValue (dblDate) : java.lang.Math.exp (-1.
 			* _dblRightFlatForwardRate * (dblDate - _dblEpochDate) / 365.25);
 	}
 
@@ -317,6 +317,18 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			(adblManifestMeasure, rvtp));
 	}
 
+	@Override public NonlinearDiscountFactorDiscountCurve parallelShiftQuantificationMetric (
+		final double dblShift)
+	{
+		return null;
+	}
+
+	@Override public org.drip.analytics.definition.Curve customTweakQuantificationMetric (
+		final org.drip.param.definition.ResponseValueTweakParams rvtp)
+	{
+		return null;
+	}
+
 	@Override public NonlinearDiscountFactorDiscountCurve createBasisRateShiftedCurve (
 		final double[] adblDate,
 		final double[] adblBasis)
@@ -329,7 +341,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			double[] adblCDFRate = new double[adblBasis.length];
 
 			for (int i = 0; i < adblDate.length; ++i)
-				adblCDFRate[i] = rate (adblDate[i]) + adblBasis[i];
+				adblCDFRate[i] = zero (adblDate[i]) + adblBasis[i];
 
 			return new NonlinearDiscountFactorDiscountCurve (new org.drip.analytics.date.JulianDate
 				(_dblEpochDate), _strCurrency, adblDate, adblCDFRate);
@@ -337,18 +349,6 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			e.printStackTrace();
 		}
 
-		return null;
-	}
-
-	@Override public NonlinearDiscountFactorDiscountCurve parallelShiftQuantificationMetric (
-		final double dblShift)
-	{
-		return null;
-	}
-
-	@Override public org.drip.analytics.definition.Curve customTweakQuantificationMetric (
-		final org.drip.param.definition.ResponseValueTweakParams rvtp)
-	{
 		return null;
 	}
 
@@ -425,7 +425,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		if (iNumDate - 1 == iNodeIndex) {
 			try {
-				_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (_msr.response
+				_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (_msr.responseValue
 					(_adblDate[iNodeIndex])) / (_adblDate[iNodeIndex] - _dblEpochDate);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

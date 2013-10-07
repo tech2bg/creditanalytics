@@ -216,7 +216,7 @@ public class MinimalQuadraticHaganWest {
 	}
 
 	/**
-	 * Calculate the Response given the Predictor Ordinate
+	 * Calculate the Response Value given the Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate The Predictor Ordinate
 	 * 
@@ -225,7 +225,7 @@ public class MinimalQuadraticHaganWest {
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
-	public double response (
+	public double responseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
@@ -264,7 +264,7 @@ public class MinimalQuadraticHaganWest {
 
 		for (double dblTime = adblTime[0]; dblTime <= adblTime[adblTime.length - 1]; dblTime += 0.25)
 			System.out.println ("Response[" + org.drip.math.common.FormatUtil.FormatDouble (dblTime, 2, 2,
-				1.) + "] = " + org.drip.math.common.FormatUtil.FormatDouble (mqhw.response (dblTime), 1, 6,
-					1.));
+				1.) + "] = " + org.drip.math.common.FormatUtil.FormatDouble (mqhw.responseValue (dblTime), 1,
+					6, 1.));
 	}
 }

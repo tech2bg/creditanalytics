@@ -368,7 +368,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
-							if (!org.drip.math.common.NumberUtil.IsValid (_adblRate[i] = _dc.rate
+							if (!org.drip.math.common.NumberUtil.IsValid (_adblRate[i] = _dc.zero
 								(_adblDate[i] = _dtStart.addYears (i + 1).getJulian())))
 								return false;
 						} catch (java.lang.Exception e) {
@@ -397,7 +397,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 							if (0 != i) dblStartDate = _adblDate[i - 1];
 
-							double dblRate = _dcFromRates.rate (dblStartDate, _adblDate[i]);
+							double dblRate = _dcFromRates.forward (dblStartDate, _adblDate[i]);
 
 							rnvd.set ("DiscountFactorOriginalDC[" + new org.drip.analytics.date.JulianDate
 								(_adblDate[i]) + "]", org.drip.math.common.FormatUtil.FormatDouble
@@ -532,12 +532,12 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.math.common.NumberUtil.IsValid (adblRate[i] =
-								_dcFromFlatRate.rate (adblDate[i] = _dtStart.addYears (i +
+								_dcFromFlatRate.zero (adblDate[i] = _dtStart.addYears (i +
 									1).getJulian())))
 								return false;
 
 							if (!org.drip.math.common.NumberUtil.IsValid (adblRateShifted[i] =
-								_dcShifted.rate (adblDate[i] = _dtStart.addYears (i +
+								_dcShifted.zero (adblDate[i] = _dtStart.addYears (i +
 									1).getJulian())))
 								return false;
 
@@ -604,11 +604,11 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.math.common.NumberUtil.IsValid (adblRate[i] =
-								_dcFromFlatRate.rate (_adblDate[i])))
+								_dcFromFlatRate.zero (_adblDate[i])))
 								return false;
 
 							if (!org.drip.math.common.NumberUtil.IsValid (adblRateShifted[i] =
-								_dcBasisShifted.rate (_adblDate[i])))
+								_dcBasisShifted.zero (_adblDate[i])))
 								return false;
 
 							org.drip.analytics.date.JulianDate dt = new org.drip.analytics.date.JulianDate
@@ -675,11 +675,11 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.math.common.NumberUtil.IsValid (adblRate[i] =
-								_dcFromFlatRate.rate (_adblDate[i])))
+								_dcFromFlatRate.zero (_adblDate[i])))
 								return false;
 
 							if (!org.drip.math.common.NumberUtil.IsValid (adblRateNTP[i] =
-								_dcNTP.rate (_adblDate[i])))
+								_dcNTP.zero (_adblDate[i])))
 								return false;
 
 							org.drip.analytics.date.JulianDate dt = new org.drip.analytics.date.JulianDate
@@ -788,7 +788,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.math.common.NumberUtil.IsValid (_adblImpliedRate[i] =
-								_dc.rate ((i + 1) + "Y", (i + 2) + "Y")))
+								_dc.forward ((i + 1) + "Y", (i + 2) + "Y")))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();

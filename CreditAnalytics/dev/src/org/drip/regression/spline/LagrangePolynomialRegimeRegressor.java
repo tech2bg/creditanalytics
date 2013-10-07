@@ -72,7 +72,7 @@ public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.
 	@Override public boolean execRegression()
 	{
 		try {
-			if (!org.drip.math.common.NumberUtil.IsValid (_dblValue = _sss.response (2.16))) return false;
+			if (!org.drip.math.common.NumberUtil.IsValid (_dblValue = _sss.responseValue (2.16))) return false;
 
 			_bLocallyMonotone = _sss.isLocallyMonotone();
 		} catch (java.lang.Exception e) {

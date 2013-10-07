@@ -55,6 +55,7 @@ package org.drip.math.solver1D;
  */
 
 public abstract class FixedPointFinder {
+	protected boolean _bWhine = false;
 	protected double _dblOFGoal = java.lang.Double.NaN;
 	protected org.drip.math.solver1D.ExecutionControl _ec = null;
 	protected org.drip.math.function.AbstractUnivariate _of = null;
@@ -62,13 +63,16 @@ public abstract class FixedPointFinder {
 	protected FixedPointFinder (
 		final double dblOFGoal,
 		final org.drip.math.function.AbstractUnivariate of,
-		final org.drip.math.solver1D.ExecutionControl ec)
+		final org.drip.math.solver1D.ExecutionControl ec,
+		final boolean bWhine)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (_dblOFGoal = dblOFGoal) || null == (_of = of))
 			throw new java.lang.Exception ("FixedPointFinder constructor: Invalid inputs");
 
 		_ec = new org.drip.math.solver1D.ExecutionControl (of, null);
+
+		_bWhine = bWhine;
 	}
 
 	protected abstract boolean iterateVariate (
@@ -124,7 +128,7 @@ public abstract class FixedPointFinder {
 
 			rfop.setRoot (iv.getVariate());
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			if (_bWhine) e.printStackTrace();
 		}
 
 		return rfop;

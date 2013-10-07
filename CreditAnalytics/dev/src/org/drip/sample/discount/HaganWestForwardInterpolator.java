@@ -55,7 +55,7 @@ public class HaganWestForwardInterpolator {
 		while (dblTime <= dblTimeFinish) {
 			System.out.println ("\t\tResponse[" +
 				FormatUtil.FormatDouble (dblTime, 1, 2, 1.) + "]: " +
-				FormatUtil.FormatDouble (mchw.response (dblTime), 1, 6, 1.));
+				FormatUtil.FormatDouble (mchw.responseValue (dblTime), 1, 6, 1.));
 
 			dblTime += dblTimeDelta;
 		}
@@ -71,7 +71,7 @@ public class HaganWestForwardInterpolator {
 		while (dblTime <= dblTimeFinish) {
 			System.out.println ("\t\tPositivity Enforced Response[" +
 				FormatUtil.FormatDouble (dblTime, 1, 2, 1.) + "]: " +
-				FormatUtil.FormatDouble (mchw.response (dblTime), 1, 6, 1.));
+				FormatUtil.FormatDouble (mchw.responseValue (dblTime), 1, 6, 1.));
 
 			dblTime += dblTimeDelta;
 		}

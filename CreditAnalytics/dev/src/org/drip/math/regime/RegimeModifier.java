@@ -85,7 +85,7 @@ public class RegimeModifier {
 			adblPredictorOrdinate[iNewIndex] = aSeg[i].left();
 
 			try {
-				adblResponseValue[iNewIndex++] = regimeIn.response (aSeg[i].left());
+				adblResponseValue[iNewIndex++] = regimeIn.responseValue (aSeg[i].left());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -102,7 +102,7 @@ public class RegimeModifier {
 		adblPredictorOrdinate[iNewIndex] = aSeg[iNumSegmentIn - 1].right();
 
 		try {
-			adblResponseValue[iNewIndex++] = regimeIn.response (aSeg[iNumSegmentIn - 1].right());
+			adblResponseValue[iNewIndex++] = regimeIn.responseValue (aSeg[iNumSegmentIn - 1].right());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -167,7 +167,7 @@ public class RegimeModifier {
 			org.drip.math.segment.ResponseValueConstraint[iNumSegmentIn + 1];
 
 		try {
-			dblRegimeResponseValueLeft = regimeIn.response (regimeIn.getLeftPredictorOrdinateEdge());
+			dblRegimeResponseValueLeft = regimeIn.responseValue (regimeIn.getLeftPredictorOrdinateEdge());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -183,7 +183,7 @@ public class RegimeModifier {
 
 			try {
 				aRVCOut[i] = new org.drip.math.segment.ResponseValueConstraint (new double[]
-					{dblPredictorOrdinateRight}, new double[] {1.}, regimeIn.response
+					{dblPredictorOrdinateRight}, new double[] {1.}, regimeIn.responseValue
 						(dblPredictorOrdinateRight));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

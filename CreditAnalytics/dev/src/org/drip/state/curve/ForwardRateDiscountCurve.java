@@ -340,7 +340,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 
 		try {
 			for (int i = 0; i < adblDate.length; ++i)
-				adblShiftedRate[i] = rate (adblDate[i]) + adblBasis[i];
+				adblShiftedRate[i] = zero (adblDate[i]) + adblBasis[i];
 
 			return new ForwardRateDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
 				_strCurrency, adblDate, adblShiftedRate);

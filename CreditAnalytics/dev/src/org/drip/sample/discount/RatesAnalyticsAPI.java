@@ -98,7 +98,7 @@ public class RatesAnalyticsAPI {
 		JulianDate dt = dtStart.addYears (10);
 
 		System.out.println ("DCFromDF[" + dt.toString() + "]; DF=" + dcFromDF.df (dt) + "; Rate=" +
-			dcFromDF.rate ("10Y"));
+			dcFromDF.zero ("10Y"));
 
 		/*
 		 * Build the discount curve from an array of dates and forward rates
@@ -108,7 +108,7 @@ public class RatesAnalyticsAPI {
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		System.out.println ("DCFromRate[" + dt.toString() + "]; DF=" + dcFromRate.df (dt) + "; Rate=" +
-			dcFromRate.rate ("10Y"));
+			dcFromRate.zero ("10Y"));
 
 		/*
 		 * Build the discount curve from a flat rate
@@ -117,7 +117,7 @@ public class RatesAnalyticsAPI {
 		DiscountCurve dcFromFlatRate = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", 0.04);
 
 		System.out.println ("DCFromFlatRate[" + dt.toString() + "]; DF=" + dcFromFlatRate.df (dt) +
-			"; Rate=" + dcFromFlatRate.rate ("10Y"));
+			"; Rate=" + dcFromFlatRate.zero ("10Y"));
 	}
 
 	/**

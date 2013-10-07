@@ -44,10 +44,10 @@ package org.drip.math.solver1D;
  */
 
 public class FixedPointFinderBracketing extends org.drip.math.solver1D.FixedPointFinder {
-	protected org.drip.math.solver1D.IteratedBracket _ib = null;
-	private org.drip.math.solver1D.ExecutionInitializer _ei = null;
-
 	protected int _iIteratorPrimitive = -1;
+	protected org.drip.math.solver1D.IteratedBracket _ib = null;
+
+	private org.drip.math.solver1D.ExecutionInitializer _ei = null;
 
 	protected final double calcNextVariate (
 		final double dblCurrentVariate,
@@ -143,7 +143,7 @@ public class FixedPointFinderBracketing extends org.drip.math.solver1D.FixedPoin
 
 			return iv.setVariate (dblVariate) && iv.setOF (_of.evaluate (dblVariate)) && rfop.incrOFCalcs();
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			if (_bWhine) e.printStackTrace();
 		}
 
 		return false;
@@ -167,7 +167,7 @@ public class FixedPointFinderBracketing extends org.drip.math.solver1D.FixedPoin
 
 			return bop;
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			if (_bWhine) e.printStackTrace();
 		}
 
 		return null;
@@ -180,6 +180,7 @@ public class FixedPointFinderBracketing extends org.drip.math.solver1D.FixedPoin
 	 * @param of Objective Function
 	 * @param ec Execution Control
 	 * @param iIteratorPrimitive Iterator Primitive
+	 * @param bWhine TRUE => Balk on Encountering Exception
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
@@ -188,10 +189,11 @@ public class FixedPointFinderBracketing extends org.drip.math.solver1D.FixedPoin
 		final double dblOFGoal,
 		final org.drip.math.function.AbstractUnivariate of,
 		final org.drip.math.solver1D.ExecutionControl ec,
-		final int iIteratorPrimitive)
+		final int iIteratorPrimitive,
+		final boolean bWhine)
 		throws java.lang.Exception
 	{
-		super (dblOFGoal, of, ec);
+		super (dblOFGoal, of, ec, bWhine);
 
 		if (org.drip.math.solver1D.VariateIteratorPrimitive.BISECTION != (_iIteratorPrimitive =
 			iIteratorPrimitive) && org.drip.math.solver1D.VariateIteratorPrimitive.FALSE_POSITION !=

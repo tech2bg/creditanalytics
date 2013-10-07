@@ -83,7 +83,7 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbBrent = new org.drip.math.solver1D.FixedPointFinderBrent (0., _of);
+						fpfbBrent = new org.drip.math.solver1D.FixedPointFinderBrent (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -118,7 +118,7 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbZheng = new org.drip.math.solver1D.FixedPointFinderZheng (0., _of);
+						fpfbZheng = new org.drip.math.solver1D.FixedPointFinderZheng (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {

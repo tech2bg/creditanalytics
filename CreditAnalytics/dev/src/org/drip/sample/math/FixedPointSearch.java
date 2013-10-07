@@ -35,7 +35,7 @@ import org.drip.math.solver1D.*;
  */
 
 /**
- * FixedPointFinder contains a sample illustration of usage of the Root Finder Library. It demonstrates the
+ * FixedPointSearch contains a sample illustration of usage of the Root Finder Library. It demonstrates the
  * 	fixed point extraction using the following techniques:
  * 	- Newton-Raphson method
  * 	- Bisection Method
@@ -49,7 +49,7 @@ import org.drip.math.solver1D.*;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixedPointFinder {
+public class FixedPointSearch {
 
 	/*
 	 * Sample illustrating the Invocation of the Newton-Raphson Open Method
@@ -61,7 +61,7 @@ public class FixedPointFinder {
 		final AbstractUnivariate func)
 	{
 		try {
-			FixedPointFinderOutput fpop = new FixedPointFinderNewton (0., func).findRoot();
+			FixedPointFinderOutput fpop = new FixedPointFinderNewton (0., func, true).findRoot();
 
 			System.out.println ("--------\nNEWTON START\n-------");
 
@@ -89,7 +89,7 @@ public class FixedPointFinder {
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
-				VariateIteratorPrimitive.BISECTION).findRoot();
+				VariateIteratorPrimitive.BISECTION, true).findRoot();
 
 			System.out.println ("--------\nBISECTION START\n-------");
 
@@ -117,7 +117,7 @@ public class FixedPointFinder {
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
-				VariateIteratorPrimitive.FALSE_POSITION).findRoot();
+				VariateIteratorPrimitive.FALSE_POSITION, true).findRoot();
 
 			System.out.println ("--------\nFALSE POSITION START\n-------");
 
@@ -145,7 +145,7 @@ public class FixedPointFinder {
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
-				VariateIteratorPrimitive.QUADRATIC_INTERPOLATION).findRoot();
+				VariateIteratorPrimitive.QUADRATIC_INTERPOLATION, true).findRoot();
 
 			System.out.println ("--------\nQUADRATIC INTERPOLATION START\n-------");
 
@@ -173,7 +173,7 @@ public class FixedPointFinder {
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
-				VariateIteratorPrimitive.INVERSE_QUADRATIC_INTERPOLATION).findRoot();
+				VariateIteratorPrimitive.INVERSE_QUADRATIC_INTERPOLATION, true).findRoot();
 
 			System.out.println ("--------\nINVERSE QUADRATIC INTERPOLATION START\n-------");
 
@@ -201,7 +201,7 @@ public class FixedPointFinder {
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
-				VariateIteratorPrimitive.RIDDER).findRoot();
+				VariateIteratorPrimitive.RIDDER, true).findRoot();
 
 			System.out.println ("--------\nRIDDER START\n-------");
 
@@ -228,7 +228,7 @@ public class FixedPointFinder {
 		final AbstractUnivariate func)
 	{
 		try {
-			FixedPointFinderOutput fpop = new FixedPointFinderBrent (0., func).findRoot();
+			FixedPointFinderOutput fpop = new FixedPointFinderBrent (0., func, true).findRoot();
 
 			System.out.println ("--------\nBRENT START\n-------");
 
@@ -255,7 +255,7 @@ public class FixedPointFinder {
 		final AbstractUnivariate func)
 	{
 		try {
-			FixedPointFinderOutput fpop = new FixedPointFinderZheng (0., func).findRoot();
+			FixedPointFinderOutput fpop = new FixedPointFinderZheng (0., func, true).findRoot();
 
 			System.out.println ("--------\nZHENG START\n-------");
 

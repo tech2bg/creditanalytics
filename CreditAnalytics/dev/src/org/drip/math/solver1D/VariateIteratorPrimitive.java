@@ -94,7 +94,7 @@ public class VariateIteratorPrimitive {
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblX1) || !org.drip.math.common.NumberUtil.IsValid
 			(dblX2))
-			throw new java.lang.Exception ("VariateIteratorPrimitive::Bisection => Invalid inputs");
+			throw new java.lang.Exception ("VariateIteratorPrimitive::Bisection => Invalid inputs " + dblX2);
 
 		return 0.5 * (dblX1 + dblX2);
 	}

@@ -169,7 +169,7 @@ public class RegimeAdjuster {
 		double dblXMax = regimeBase.getRightPredictorOrdinateEdge();
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeBase.response (dblX), 1, 2, 1.) + " | "
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeBase.responseValue (dblX), 1, 2, 1.) + " | "
 				+ regimeBase.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regimeBase.jackDResponseDResponseInput (dblX).displayString());
@@ -185,7 +185,7 @@ public class RegimeAdjuster {
 
 		while (dblX <= dblXMax) {
 			if (regimeLeftClipped.in (dblX)) {
-				System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeLeftClipped.response (dblX), 1, 2, 1.) + " | "
+				System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeLeftClipped.responseValue (dblX), 1, 2, 1.) + " | "
 					+ regimeLeftClipped.monotoneType (dblX));
 
 				System.out.println ("Jacobian Y[" + dblX + "]=" + regimeLeftClipped.jackDResponseDResponseInput (dblX).displayString());
@@ -202,7 +202,7 @@ public class RegimeAdjuster {
 
 		while (dblX <= dblXMax) {
 			if (regimeRightClipped.in (dblX)) {
-				System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeRightClipped.response (dblX), 1, 2, 1.) + " | "
+				System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeRightClipped.responseValue (dblX), 1, 2, 1.) + " | "
 					+ regimeRightClipped.monotoneType (dblX));
 
 				System.out.println ("Jacobian Y[" + dblX + "]=" + regimeRightClipped.jackDResponseDResponseInput (dblX).displayString());
@@ -228,17 +228,17 @@ public class RegimeAdjuster {
 			java.lang.String strRightClippedMonotonocity = "             ";
 
 			java.lang.String strDisplay = "Y[" + FormatUtil.FormatDouble (dblX, 2, 3, 1.) + "] => "
-				+ FormatUtil.FormatDouble (regimeBase.response (dblX), 2, 6, 1.) + " | "
+				+ FormatUtil.FormatDouble (regimeBase.responseValue (dblX), 2, 6, 1.) + " | "
 				+ regimeBase.monotoneType (dblX);
 
 			if (regimeLeftClipped.in (dblX)) {
-				strLeftClippedValue = FormatUtil.FormatDouble (regimeLeftClipped.response (dblX), 2, 6, 1.);
+				strLeftClippedValue = FormatUtil.FormatDouble (regimeLeftClipped.responseValue (dblX), 2, 6, 1.);
 
 				strLeftClippedMonotonocity = regimeLeftClipped.monotoneType (dblX).toString();
 			}
 
 			if (regimeRightClipped.in (dblX)) {
-				strRightClippedValue = FormatUtil.FormatDouble (regimeRightClipped.response (dblX), 2, 6, 1.);
+				strRightClippedValue = FormatUtil.FormatDouble (regimeRightClipped.responseValue (dblX), 2, 6, 1.);
 
 				strRightClippedMonotonocity = regimeRightClipped.monotoneType (dblX).toString();
 			}

@@ -65,7 +65,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 
 	protected abstract boolean isMonotone();
 
-	protected double[] translateCkFromSegment (
+	protected double[] globalCk (
 		final double dblPredictorOrdinate,
 		final org.drip.math.segment.PredictorResponse prPrev,
 		final int iCk)
@@ -79,8 +79,8 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 			dblLocalOrderedDerivScale *= dblSegmentPredictorWidth;
 
 			try {
-				adblLocalDerivAtLeftOrdinate[i] = prPrev.calcResponseDerivative (dblPredictorOrdinate, i + 1,
-					false) * dblLocalOrderedDerivScale;
+				adblLocalDerivAtLeftOrdinate[i] = prPrev.calcResponseValueDerivative (dblPredictorOrdinate, i
+					+ 1, false) * dblLocalOrderedDerivScale;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -92,32 +92,32 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	}
 
 	/**
-	 * Response given the Local Predictor Ordinate
+	 * Response Value given the Local Predictor Ordinate
 	 * 
 	 * @param dblLocalPredictorOrdinate Predictor Ordinate
 	 * 
-	 * @return Response
+	 * @return Response Value
 	 * 
 	 * @throws java.lang.Exception Thrown if Response Cannot be computed.
 	 */
 
-	protected abstract double localResponse (
+	protected abstract double localResponseValue (
 		final double dblLocalPredictorOrdinate)
 		throws java.lang.Exception;
 
 	/**
-	 * nth order Response Derivative at the Local Predictor Ordinate
+	 * nth order Response Value Derivative at the Local Predictor Ordinate
 	 * 
 	 * @param dblLocalPredictorOrdinate Local Predictor Ordinate
 	 * @param iOrder Order of the Derivative
 	 * 
-	 * @return nth order Response Derivative at the Local Predictor Ordinate
+	 * @return nth order Response Value Derivative at the Local Predictor Ordinate
 	 * 
-	 * @throws java.lang.Exception Thrown if the nth order Response Derivative at the Local Predictor
+	 * @throws java.lang.Exception Thrown if the nth order Response Value Derivative at the Local Predictor
 	 *  Ordinate cannot be computed.
 	 */
 
-	protected abstract double localResponseDerivative (
+	protected abstract double localResponseValueDerivative (
 		final double dblLocalPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception;
@@ -178,19 +178,6 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 		final org.drip.math.segment.CalibrationParams scp);
 
 	/**
-	 * Calibrate the coefficients from the prior Predictor/Response Segment and the Constraint
-	 * 
-	 * @param prPrev Prior Predictor/Response Segment
-	 * @param rvc The Segment Response Value Constraint
-	 * 
-	 * @return TRUE => If the calibration succeeds
-	 */
-
-	public abstract boolean calibrate (
-		final PredictorResponse prPrev,
-		final org.drip.math.segment.ResponseValueConstraint rvc);
-
-	/**
 	 * Calibrate the coefficients from the prior Segment and the Response Value at the Right Predictor
 	 *  Ordinate
 	 * 
@@ -215,6 +202,19 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	}
 
 	/**
+	 * Calibrate the coefficients from the prior Predictor/Response Segment and the Constraint
+	 * 
+	 * @param prPrev Prior Predictor/Response Segment
+	 * @param rvc The Segment Response Value Constraint
+	 * 
+	 * @return TRUE => If the calibration succeeds
+	 */
+
+	public abstract boolean calibrate (
+		final PredictorResponse prPrev,
+		final org.drip.math.segment.ResponseValueConstraint rvc);
+
+	/**
 	 * Calculate the Response Value at the given Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate
@@ -224,27 +224,27 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @throws java.lang.Exception Thrown if the calculation did not succeed
 	 */
 
-	public double calcResponse (
+	public double responseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		return localResponse (localize (dblPredictorOrdinate));
+		return localResponseValue (localize (dblPredictorOrdinate));
 	}
 
 	/**
-	 * Calculate the Ordered Response Derivative at the Predictor Ordinate
+	 * Calculate the Ordered Response Value Derivative at the Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Response Derivative is to be
 	 * 	calculated
 	 * @param iOrder Derivative Order
 	 * @param bLocal TRUE => Get the localized transform of the Derivative; FALSE => Get the untransformed
 	 * 
-	 * @throws Thrown if the Ordered Response Derivative cannot be calculated
+	 * @throws Thrown if the Ordered Response Value Derivative cannot be calculated
 	 * 
-	 * @return Retrieve the Ordered Response Derivative
+	 * @return Retrieve the Ordered Response Value Derivative
 	 */
 
-	public double calcResponseDerivative (
+	public double calcResponseValueDerivative (
 		final double dblPredictorOrdinate,
 		final int iOrder,
 		final boolean bLocal)
@@ -252,18 +252,19 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	{
 		double dblLocalPredictorOrdinate = localize (dblPredictorOrdinate);
 
-		if (0 == iOrder) return localResponse (dblLocalPredictorOrdinate);
+		if (0 == iOrder) return localResponseValue (dblLocalPredictorOrdinate);
 
-		double dblOrderedResponseDerivative = localResponseDerivative (dblLocalPredictorOrdinate, iOrder);
+		double dblOrderedResponseValueDerivative = localResponseValueDerivative (dblLocalPredictorOrdinate,
+			iOrder);
 
-		if (bLocal) return dblOrderedResponseDerivative;
+		if (bLocal) return dblOrderedResponseValueDerivative;
 
 		double dblSegmentWidth = width();
 
 		for (int i = 0; i < iOrder; ++i)
-			dblOrderedResponseDerivative /= dblSegmentWidth;
+			dblOrderedResponseValueDerivative /= dblSegmentWidth;
 
-		return dblOrderedResponseDerivative;
+		return dblOrderedResponseValueDerivative;
 	}
 
 	/**
@@ -340,7 +341,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 				final double dblX)
 				throws java.lang.Exception
 			{
-				return localResponseDerivative (dblX, 1);
+				return localResponseValueDerivative (dblX, 1);
 			}
 
 			@Override public org.drip.math.calculus.Differential calcDifferential (
@@ -352,7 +353,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 					double dblVariateInfinitesimal = _dc.getVariateInfinitesimal (dblX);
 
 					return new org.drip.math.calculus.Differential (dblVariateInfinitesimal,
-						localResponseDerivative (dblX, iOrder) * dblVariateInfinitesimal);
+						localResponseValueDerivative (dblX, iOrder) * dblVariateInfinitesimal);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}
@@ -363,7 +364,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 
 		try {
 			org.drip.math.solver1D.FixedPointFinderOutput fpop = new
-				org.drip.math.solver1D.FixedPointFinderBrent (0., ofDeriv).findRoot
+				org.drip.math.solver1D.FixedPointFinderBrent (0., ofDeriv, false).findRoot
 					(org.drip.math.solver1D.InitializationHeuristics.FromHardSearchEdges (0., 1.));
 
 			if (null == fpop || !fpop.containsRoot())
@@ -376,7 +377,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 				return new org.drip.math.segment.Monotonocity
 					(org.drip.math.segment.Monotonocity.MONOTONIC);
 
-			double dbl2ndDeriv = localResponseDerivative (dblExtremum, 2);
+			double dbl2ndDeriv = localResponseValueDerivative (dblExtremum, 2);
 
 			if (0. > dbl2ndDeriv)
 				return new org.drip.math.segment.Monotonocity
@@ -393,6 +394,8 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 			return new org.drip.math.segment.Monotonocity
 				(org.drip.math.segment.Monotonocity.NON_MONOTONIC);
 		} catch (java.lang.Exception e) {
+			System.out.println ("Am I not here?");
+
 			// e.printStackTrace();
 		}
 
@@ -400,7 +403,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 			return new org.drip.math.segment.Monotonocity
 				(org.drip.math.segment.Monotonocity.MONOTONIC);
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 		return null;
@@ -487,11 +490,11 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	}
 
 	/**
-	 * Calibrate the coefficients from the Left Edge Response Value Constraint, the Left Edge Response Slope,
-	 *  and the Right Edge Response Value Constraint
+	 * Calibrate the coefficients from the Left Edge Response Value Constraint, the Left Edge Response Value
+	 *  Slope, and the Right Edge Response Value Constraint
 	 * 
 	 * @param rvcLeft Left Edge Response Value Constraint
-	 * @param dblLeftEdgeResponseSlope Left Edge Response Slope
+	 * @param dblLeftResponseValueSlope Left Edge Response ValueSlope
 	 * @param rvcRight Right Edge Response Value Constraint
 	 * 
 	 * @return TRUE => If the calibration succeeds
@@ -499,17 +502,17 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 
 	public boolean calibrate (
 		final org.drip.math.segment.ResponseValueConstraint rvcLeft,
-		final double dblLeftEdgeResponseSlope,
+		final double dblLeftResponseValueSlope,
 		final org.drip.math.segment.ResponseValueConstraint rvcRight)
 	{
-		if (null == rvcLeft || !org.drip.math.common.NumberUtil.IsValid (dblLeftEdgeResponseSlope) || null ==
-			rvcRight)
+		if (null == rvcLeft || !org.drip.math.common.NumberUtil.IsValid (dblLeftResponseValueSlope) || null
+			== rvcRight)
 			return false;
 
 		try {
 			return calibrate (new org.drip.math.segment.CalibrationParams (null, null,
 				org.drip.math.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
-					dblLeftEdgeResponseSlope), null, new org.drip.math.segment.ResponseValueConstraint[]
+					dblLeftResponseValueSlope), null, new org.drip.math.segment.ResponseValueConstraint[]
 						{rvcLeft, rvcRight}));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -569,11 +572,11 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	}
 
 	/**
-	 * Calibrate the Coefficients from the Edge Response Values and the Left Edge Response Slope and
+	 * Calibrate the Coefficients from the Edge Response Values and the Left Edge Response Value Slope and
 	 *  calculate the Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
 	 * 
 	 * @param dblLeftEdgeResponseValue Left Edge Response Value
-	 * @param dblLeftEdgeResponseSlope Left Edge Response Slope
+	 * @param dblLeftResponseValueSlope Left Edge Response Slope
 	 * @param dblRightEdgeResponseValue Right Edge Response Value
 	 * 
 	 * @return The Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
@@ -581,10 +584,10 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 
 	public org.drip.math.calculus.WengertJacobian jackDCoeffDEdgeParams (
 		final double dblLeftEdgeResponseValue,
-		final double dblLeftEdgeResponseSlope,
+		final double dblLeftResponseValueSlope,
 		final double dblRightEdgeResponseValue)
 	{
-		if (!calibrate (dblLeftEdgeResponseValue, dblLeftEdgeResponseSlope, dblRightEdgeResponseValue))
+		if (!calibrate (dblLeftEdgeResponseValue, dblLeftResponseValueSlope, dblRightEdgeResponseValue))
 			return null;
 
 		return jackDCoeffDEdgeParams();

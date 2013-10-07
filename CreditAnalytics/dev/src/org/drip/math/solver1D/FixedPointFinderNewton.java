@@ -91,16 +91,18 @@ public class FixedPointFinderNewton extends org.drip.math.solver1D.FixedPointFin
 	 * 
 	 * @param dblOFGoal OF Goal
 	 * @param of Objective Function
+	 * @param bWhine TRUE => Balk on Encountering Exception
 	 * 
 	 * @throws java.lang.Exception Propogated from underneath
 	 */
 
 	public FixedPointFinderNewton (
 		final double dblOFGoal,
-		final org.drip.math.function.AbstractUnivariate of)
+		final org.drip.math.function.AbstractUnivariate of,
+		final boolean bWhine)
 		throws java.lang.Exception
 	{
-		super (dblOFGoal, of, null);
+		super (dblOFGoal, of, null, bWhine);
 
 		_ei = new org.drip.math.solver1D.ExecutionInitializer (_of, null);
 	}

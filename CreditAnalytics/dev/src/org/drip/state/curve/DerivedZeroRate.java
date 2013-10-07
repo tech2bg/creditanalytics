@@ -327,34 +327,34 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		return _dc.effectiveDF (strTenor1, strTenor2);
 	}
 
-	@Override public double rate (
-		final double dblDt1,
-		final double dblDt2)
+	@Override public double forward (
+		final double dblDate1,
+		final double dblDate2)
 		throws java.lang.Exception
 	{
-		return _dc.rate (dblDt1, dblDt2);
+		return _dc.forward (dblDate1, dblDate2);
 	}
 
-	@Override public double rate (
-		final double dblDate)
-		throws java.lang.Exception
-	{
-		return _dc.rate (dblDate);
-	}
-
-	@Override public double rate (
-		final java.lang.String strTenor)
-		throws java.lang.Exception
-	{
-		return _dc.rate (strTenor);
-	}
-
-	@Override public double rate (
+	@Override public double forward (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
 	{
-		return _dc.rate (strTenor1, strTenor2);
+		return _dc.forward (strTenor1, strTenor2);
+	}
+
+	@Override public double zero (
+		final double dblDate)
+		throws java.lang.Exception
+	{
+		return _dc.zero (dblDate);
+	}
+
+	@Override public double zero (
+		final java.lang.String strTenor)
+		throws java.lang.Exception
+	{
+		return _dc.zero (strTenor);
 	}
 
 	@Override public byte[] serialize()

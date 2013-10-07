@@ -770,7 +770,7 @@ public class CreditAnalyticsTestSuite {
 
 			try {
 				System.out.println ("DCFromDF[" + dt.toString() + "]; DF=" + dcFromDF.df (dt) + "; Rate="
-					+ dcFromDF.rate ("10Y"));
+					+ dcFromDF.zero ("10Y"));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
 					System.out.println ("DiscountCurveAPISample failed.");
@@ -787,7 +787,7 @@ public class CreditAnalyticsTestSuite {
 
 			try {
 				System.out.println ("DCFromRate[" + dt.toString() + "]; DF=" + dcFromRate.df (dt) +
-					"; Rate=" + dcFromRate.rate ("10Y"));
+					"; Rate=" + dcFromRate.zero ("10Y"));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
 					System.out.println ("DiscountCurveAPISample failed.");
@@ -804,7 +804,7 @@ public class CreditAnalyticsTestSuite {
 
 			try {
 				System.out.println ("DCFromFlatRate[" + dt.toString() + "]; DF=" + dcFromFlatRate.df (dt)
-					+ "; Rate=" + dcFromFlatRate.rate ("10Y"));
+					+ "; Rate=" + dcFromFlatRate.zero ("10Y"));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
 					System.out.println ("DiscountCurveAPISample failed.");

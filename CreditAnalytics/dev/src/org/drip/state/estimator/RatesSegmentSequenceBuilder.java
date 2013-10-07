@@ -71,9 +71,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 
 			try {
 				if (null != _regimePrev && _regimePrev.in (dblDate))
-					dblValue -= _regimePrev.response (dblDate) * me.getValue();
+					dblValue -= _regimePrev.responseValue (dblDate) * me.getValue();
 				else if (null != _cr && _cr.inBuiltRange (dblDate))
-					dblValue -= _cr.response (dblDate) * me.getValue();
+					dblValue -= _cr.responseValue (dblDate) * me.getValue();
 				else {
 					lsPredictor.add (dblDate);
 

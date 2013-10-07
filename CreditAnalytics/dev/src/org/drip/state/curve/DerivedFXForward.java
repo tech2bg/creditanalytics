@@ -363,7 +363,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		if (null == dcImplied)
 			throw new java.lang.Exception ("FXForwardCurve.rate: Cannot imply basis DC!");
 
-		return dcImplied.rate (dblDate);
+		return dcImplied.zero (dblDate);
 	}
 
 	@Override public double[] calcImpliedNodeRates (
@@ -379,9 +379,9 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 				double dblBaseImpliedRate = java.lang.Double.NaN;
 
 				if (bBasisOnDenom)
-					dblBaseImpliedRate = dcNum.rate (_adblDate[i]);
+					dblBaseImpliedRate = dcNum.zero (_adblDate[i]);
 				else
-					dblBaseImpliedRate = dcDenom.rate (_adblDate[i]);
+					dblBaseImpliedRate = dcDenom.zero (_adblDate[i]);
 
 				adblImpliedNodeRate[i] = dblBaseImpliedRate + calcNodeBasis (i,	valParam, dcNum, dcDenom,
 					bBasisOnDenom);

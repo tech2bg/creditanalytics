@@ -38,7 +38,7 @@ package org.drip.math.segment;
 public class PredictorResponseBuilderParams {
 	private java.lang.String _strBasisSpline = "";
 	private org.drip.math.spline.BasisSetParams _bsp = null;
-	private org.drip.math.segment.DesignInelasticParams _sep = null;
+	private org.drip.math.segment.DesignInelasticParams _dip = null;
 	private org.drip.math.segment.ResponseScalingShapeController _rssc = null;
 
 	/**
@@ -46,7 +46,7 @@ public class PredictorResponseBuilderParams {
 	 * 
 	 * @param strBasisSpline Named Segment Basis Spline
 	 * @param bsp Segment Basis Set Construction Parameters
-	 * @param sep Segment Elastic Parameters
+	 * @param dip Segment Design Inelastic Parameters
 	 * @param rssc Segment Shape Controller
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
@@ -55,11 +55,11 @@ public class PredictorResponseBuilderParams {
 	public PredictorResponseBuilderParams (
 		final java.lang.String strBasisSpline,
 		final org.drip.math.spline.BasisSetParams bsp,
-		final org.drip.math.segment.DesignInelasticParams sep,
+		final org.drip.math.segment.DesignInelasticParams dip,
 		final org.drip.math.segment.ResponseScalingShapeController rssc)
 		throws java.lang.Exception
 	{
-		if (null == (_strBasisSpline = strBasisSpline) || null == (_bsp = bsp) || null == (_sep = sep))
+		if (null == (_strBasisSpline = strBasisSpline) || null == (_bsp = bsp) || null == (_dip = dip))
 			throw new java.lang.Exception ("PredictorResponseBuilderParams ctr => Invalid Inputs");
 
 		_rssc = rssc;
@@ -95,7 +95,7 @@ public class PredictorResponseBuilderParams {
 
 	public org.drip.math.segment.DesignInelasticParams getSegmentElasticParams()
 	{
-		return _sep;
+		return _dip;
 	}
 
 	/**

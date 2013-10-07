@@ -179,9 +179,9 @@ public class BasisSplineSet {
 
 		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25);
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcResponse (1.));
+		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 
-		System.out.println ("\tY[" + 1.5 + "]: " + seg1.calcResponse (1.5));
+		System.out.println ("\tY[" + 1.5 + "]: " + seg1.responseValue (1.5));
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
@@ -195,9 +195,9 @@ public class BasisSplineSet {
 
 		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16.);
 
-		System.out.println ("\tY[" + 1.5 + "]: " + seg2.calcResponse (1.5));
+		System.out.println ("\tY[" + 1.5 + "]: " + seg2.responseValue (1.5));
 
-		System.out.println ("\tY[" + 2. + "]: " + seg2.calcResponse (2.));
+		System.out.println ("\tY[" + 2. + "]: " + seg2.responseValue (2.));
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
@@ -213,7 +213,7 @@ public class BasisSplineSet {
 
 		double dblX = 2.0;
 
-		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcResponse (dblX));
+		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}
@@ -260,9 +260,9 @@ public class BasisSplineSet {
 			// new SegmentEdgeParams (1., new double[] {1.}), // SEP Left
 			// new SegmentEdgeParams (4., new double[] {6.})); // SEP Right
 
-		System.out.println ("\tY[" + 0.0 + "]: " + seg1.calcResponse (0.0));
+		System.out.println ("\tY[" + 0.0 + "]: " + seg1.responseValue (0.0));
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg1.calcResponse (1.0));
+		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.0));
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
@@ -286,9 +286,9 @@ public class BasisSplineSet {
 			// new SegmentEdgeParams (4., new double[] {6.}), // SEP Left
 			// new SegmentEdgeParams (15., new double[] {17.})); // SEP Right
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg2.calcResponse (1.0));
+		System.out.println ("\tY[" + 1.0 + "]: " + seg2.responseValue (1.0));
 
-		System.out.println ("\tY[" + 2.0 + "]: " + seg2.calcResponse (2.0));
+		System.out.println ("\tY[" + 2.0 + "]: " + seg2.responseValue (2.0));
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
@@ -304,7 +304,7 @@ public class BasisSplineSet {
 
 		double dblX = 2.0;
 
-		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.calcResponse (dblX));
+		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 	}

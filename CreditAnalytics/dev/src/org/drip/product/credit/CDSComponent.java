@@ -1411,7 +1411,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			try {
 				org.drip.math.solver1D.FixedPointFinderOutput rfop = new
-					org.drip.math.solver1D.FixedPointFinderBrent (0., ofCDSPriceFromFlatSpread).findRoot();
+					org.drip.math.solver1D.FixedPointFinderBrent (0., ofCDSPriceFromFlatSpread,
+						true).findRoot();
 
 				if (null == rfop || !rfop.containsRoot() && !mktParams.setCreditCurve (ccOld))
 					return new SpreadCalibOP (rfop.getRoot(), ccOld);

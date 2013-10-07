@@ -170,7 +170,7 @@ public class CustomCurveBuilder {
 			double dblTime = me.getKey();
 
 			if (null != regimeDF && regimeDF.in (dblTime))
-				dblValue += regimeDF.response (dblTime) * me.getValue();
+				dblValue += regimeDF.responseValue (dblTime) * me.getValue();
 			else {
 				lsTime.add (me.getKey());
 
@@ -447,9 +447,9 @@ public class CustomCurveBuilder {
 		for (double dblX = regimeNaturalCash.getLeftPredictorOrdinateEdge(); dblX <= regimeNaturalCash.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
 			System.out.println ("Cash DF[" +
 				FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "Y] => " +
-				FormatUtil.FormatDouble (regimeNaturalCash.response (dblX), 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (regimeNaturalCash.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeNaturalCash.monotoneType (dblX) + "  <====>  " +
-				FormatUtil.FormatDouble (regimeFinancialCash.response (dblX), 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (regimeFinancialCash.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeNaturalCash.monotoneType (dblX));
 
 		System.out.println ("\n");
@@ -467,9 +467,9 @@ public class CustomCurveBuilder {
 		for (double dblX = regimeNaturalSwap.getLeftPredictorOrdinateEdge(); dblX <= regimeNaturalSwap.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
 			System.out.println ("Swap DF   [" +
 				FormatUtil.FormatDouble (dblX, 2, 0, 1.) + "Y] => " +
-				FormatUtil.FormatDouble (regimeNaturalSwap.response (dblX), 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (regimeNaturalSwap.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeNaturalSwap.monotoneType (dblX) + "  <====>  " +
-				FormatUtil.FormatDouble (regimeFinancialSwap.response (dblX), 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (regimeFinancialSwap.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeFinancialSwap.monotoneType (dblX));
 	}
 }

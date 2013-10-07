@@ -85,7 +85,7 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 				{
 					try {
 						fpfbBisect = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of, null,
-							org.drip.math.solver1D.VariateIteratorPrimitive.BISECTION);
+							org.drip.math.solver1D.VariateIteratorPrimitive.BISECTION, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -121,7 +121,7 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 				{
 					try {
 						fpfbFalsePosition = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of,
-							null, org.drip.math.solver1D.VariateIteratorPrimitive.FALSE_POSITION);
+							null, org.drip.math.solver1D.VariateIteratorPrimitive.FALSE_POSITION, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -156,7 +156,7 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 				{
 					try {
 						fpfbQuadratic = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of, null,
-							org.drip.math.solver1D.VariateIteratorPrimitive.QUADRATIC_INTERPOLATION);
+							org.drip.math.solver1D.VariateIteratorPrimitive.QUADRATIC_INTERPOLATION, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -193,7 +193,8 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 					try {
 						fpfbInverseQuadratic = new org.drip.math.solver1D.FixedPointFinderBracketing (0.,
 							_of, null,
-								org.drip.math.solver1D.VariateIteratorPrimitive.INVERSE_QUADRATIC_INTERPOLATION);
+								org.drip.math.solver1D.VariateIteratorPrimitive.INVERSE_QUADRATIC_INTERPOLATION,
+							true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -229,7 +230,7 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 				{
 					try {
 						fpfbRidder = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of, null,
-							org.drip.math.solver1D.VariateIteratorPrimitive.RIDDER);
+							org.drip.math.solver1D.VariateIteratorPrimitive.RIDDER, true);
 
 						return true;
 					} catch (java.lang.Exception e) {

@@ -158,7 +158,7 @@ public class DiscountCurveReconcilerAPI {
 				System.out.println ("\tCash [" + new JulianDate (dblX) + "] = " +
 					FormatUtil.FormatDouble (dfdc.df (dblX), 1, 8, 1.) + " || " +
 						ors.getContainingRegime (dblX).name() + " || " +
-							FormatUtil.FormatDouble (regimeCash.response (dblX), 1, 8, 1.) + " | " +
+							FormatUtil.FormatDouble (regimeCash.responseValue (dblX), 1, 8, 1.) + " | " +
 								regimeCash.monotoneType (dblX));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -176,7 +176,7 @@ public class DiscountCurveReconcilerAPI {
 				System.out.println ("\tSwap [" + new JulianDate (dblX) + "] = " +
 					FormatUtil.FormatDouble (dfdc.df (dblX), 1, 8, 1.) + " || " +
 						ors.getContainingRegime (dblX).name() + " || " +
-							FormatUtil.FormatDouble (regimeSwap.response (dblX), 1, 8, 1.) + " | " +
+							FormatUtil.FormatDouble (regimeSwap.responseValue (dblX), 1, 8, 1.) + " | " +
 								regimeSwap.monotoneType (dblX));
 		}
 

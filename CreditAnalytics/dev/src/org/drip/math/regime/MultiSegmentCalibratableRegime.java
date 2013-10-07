@@ -179,7 +179,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 
 			if (null == fpop || !fpop.containsRoot()) {
 				try {
-					fpop = new org.drip.math.solver1D.FixedPointFinderBrent (0., this).findRoot();
+					fpop = new org.drip.math.solver1D.FixedPointFinderBrent (0., this, true).findRoot();
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -232,19 +232,19 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	}
 
 	@Override public boolean setup (
-		final double dblLeftMostRegimeResponse,
+		final double dblLeftRegimeResponseValue,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		return setup (org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse
-			(getLeftPredictorOrdinateEdge(), dblLeftMostRegimeResponse), aRVC, iCalibrationBoundaryCondition,
-				iCalibrationDetail);
+			(getLeftPredictorOrdinateEdge(), dblLeftRegimeResponseValue), aRVC,
+				iCalibrationBoundaryCondition, iCalibrationDetail);
 	}
 
 	@Override public boolean setup (
-		final double dblLeftMostRegimeResponse,
-		final double[] adblSegmentRightEdgeResponse,
+		final double dblLeftRegimeResponseValue,
+		final double[] adblSegmentRightResponseValue,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
@@ -252,19 +252,19 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 		org.drip.math.segment.ResponseValueConstraint[] aSNWCRight = new
 			org.drip.math.segment.ResponseValueConstraint[iNumSegment];
 
-		if (0 == iNumSegment || iNumSegment != adblSegmentRightEdgeResponse.length) return false;
+		if (0 == iNumSegment || iNumSegment != adblSegmentRightResponseValue.length) return false;
 
 		try {
 			for (int i = 0; i < iNumSegment; ++i)
 				aSNWCRight[i] = new org.drip.math.segment.ResponseValueConstraint (new double[]
-					{_aSegment[i].right()}, new double[] {1.}, adblSegmentRightEdgeResponse[i]);
+					{_aSegment[i].right()}, new double[] {1.}, adblSegmentRightResponseValue[i]);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
 			return false;
 		}
 
-		return setup (dblLeftMostRegimeResponse, aSNWCRight, iCalibrationBoundaryCondition,
+		return setup (dblLeftRegimeResponseValue, aSNWCRight, iCalibrationBoundaryCondition,
 			iCalibrationDetail);
 	}
 
@@ -286,7 +286,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 			try {
 				if (0 != (org.drip.math.regime.MultiSegmentRegime.CALIBRATE & iSetupMode) &&
 					!_aSegment[i].calibrate (new org.drip.math.segment.CalibrationParams (new double[] {0.,
-						1.}, new double[] {aPORDLeft[i].response(), aPORDRight[i].response()},
+						1.}, new double[] {aPORDLeft[i].responseValue(), aPORDRight[i].responseValue()},
 							aPORDLeft[i].getDResponseDPredictorOrdinate(),
 								aPORDLeft[i].getDResponseDPredictorOrdinate(), null == aaRVC ? null :
 									aaRVC[i])))
@@ -354,11 +354,11 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 					(getRightPredictorOrdinateEdge(), dblRegimeRightResponse));
 	}
 
-	@Override public double response (
+	@Override public double responseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		return _aSegment[containingIndex (dblPredictorOrdinate, true, true)].calcResponse
+		return _aSegment[containingIndex (dblPredictorOrdinate, true, true)].responseValue
 			(dblPredictorOrdinate);
 	}
 
@@ -381,10 +381,11 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 
 		try {
 			for (int i = 0; i < iCk; ++i)
-				adblDeriv[i] = _aSegment[iIndex].calcResponseDerivative (dblPredictorOrdinate, i, false);
+				adblDeriv[i] = _aSegment[iIndex].calcResponseValueDerivative (dblPredictorOrdinate, i,
+					false);
 
 			return new org.drip.math.segment.PredictorOrdinateResponseDerivative
-				(_aSegment[iIndex].calcResponse (dblPredictorOrdinate), adblDeriv);
+				(_aSegment[iIndex].responseValue (dblPredictorOrdinate), adblDeriv);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -513,7 +514,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	{
 		org.drip.math.segment.PredictorResponse seg = _aSegment[_aSegment.length - 1];
 
-		return seg.calcResponseDerivative (seg.right(), iOrder, false);
+		return seg.calcResponseValueDerivative (seg.right(), iOrder, false);
 	}
 
 	@Override public boolean resetNode (

@@ -58,7 +58,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 		while (dblX <= dblXMax) {
 			try {
 				if (!rnvd.set (getName() + "_" + strRegimeName + "_" + dblX,
-					org.drip.math.common.FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " +
+					org.drip.math.common.FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " +
 						regime.monotoneType (dblX)))
 					return false;
 			} catch (java.lang.Exception e) {
@@ -159,9 +159,10 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 		for (int i = 0; i < adblY.length - 1; ++i)
 			aSBP[i] = prbp;
 
-		if (null == (_regimeBesselHermite = org.drip.math.regime.RegimeBuilder.CreateBesselCubicSplineRegime
-			("BESSEL_REGIME", new double[] {0.00, 1.00,  2.00,  3.00,  4.00}, adblY, aSBP,
-				org.drip.math.regime.MultiSegmentRegime.CALIBRATE)))
+		if (null == (_regimeBesselHermite =
+			org.drip.math.regime.LocalControlRegimeBuilder.CreateBesselCubicSplineRegime ("BESSEL_REGIME",
+				new double[] {0.00, 1.00,  2.00,  3.00,  4.00}, adblY, aSBP,
+					org.drip.math.regime.MultiSegmentRegime.CALIBRATE)))
 			return false;
 
 		return _regime.setupHermite (aSEPLeft, aSEPRight, null,

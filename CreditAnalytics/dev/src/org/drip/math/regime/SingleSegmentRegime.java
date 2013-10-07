@@ -65,16 +65,16 @@ public interface SingleSegmentRegime {
 		final int iCalibrationDetail);
 
 	/**
-	 * Calculate the Response for the given Predictor Ordinate
+	 * Calculate the Response Value for the given Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate
 	 * 
-	 * @return The Response
+	 * @return The Response Value
 	 * 
-	 * @throws java.lang.Exception Thrown if the Response cannot be calculated
+	 * @throws java.lang.Exception Thrown if the Response Value cannot be calculated
 	 */
 
-	public abstract double response (
+	public abstract double responseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception;
 

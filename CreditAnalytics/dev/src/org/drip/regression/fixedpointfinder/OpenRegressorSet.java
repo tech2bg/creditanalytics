@@ -82,7 +82,7 @@ public class OpenRegressorSet implements org.drip.regression.core.RegressorSet {
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbNewton = new org.drip.math.solver1D.FixedPointFinderNewton (0., _of);
+						fpfbNewton = new org.drip.math.solver1D.FixedPointFinderNewton (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {

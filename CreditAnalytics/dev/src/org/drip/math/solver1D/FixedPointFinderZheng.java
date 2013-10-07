@@ -73,15 +73,17 @@ public class FixedPointFinderZheng extends org.drip.math.solver1D.FixedPointFind
 	 * 
 	 * @param dblOFGoal OF Goal
 	 * @param of Objective Function
+	 * @param bWhine TRUE => Balk on Encountering Exception
 	 * 
 	 * @throws java.lang.Exception Propogated from below
 	 */
 
 	public FixedPointFinderZheng (
 		final double dblOFGoal,
-		final org.drip.math.function.AbstractUnivariate of)
+		final org.drip.math.function.AbstractUnivariate of,
+		final boolean bWhine)
 		throws java.lang.Exception
 	{
-		super (dblOFGoal, of, null, org.drip.math.solver1D.VariateIteratorPrimitive.BISECTION);
+		super (dblOFGoal, of, null, org.drip.math.solver1D.VariateIteratorPrimitive.BISECTION, bWhine);
 	}
 }

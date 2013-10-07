@@ -98,7 +98,7 @@ public class OverlappingRegimeSpan implements org.drip.math.grid.Span {
 		throws java.lang.Exception
 	{
 		for (org.drip.math.regime.MultiSegmentRegime regime : _lsRegime) {
-			if (regime.in (dblPredictorOrdinate)) return regime.response (dblPredictorOrdinate);
+			if (regime.in (dblPredictorOrdinate)) return regime.responseValue (dblPredictorOrdinate);
 		}
 
 		throw new java.lang.Exception ("OverlappingRegimeSpan::calcResponseValue => Cannot Calculate!");

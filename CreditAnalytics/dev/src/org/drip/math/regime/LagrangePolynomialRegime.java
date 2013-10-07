@@ -44,7 +44,7 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 	private static final int MINIMA_PREDICTOR_ORDINATE_NODE = 2;
 	private static final int MONOTONE_PREDICTOR_ORDINATE_NODE = 4;
 
-	private double[] _adblResponse = null;
+	private double[] _adblResponseValue = null;
 	private double[] _adblPredictorOrdinate = null;
 
 	private static final double CalcAbsoluteMin (
@@ -137,31 +137,31 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 
 	@Override public boolean setup (
 		final double dblYLeading,
-		final double[] adblResponse,
+		final double[] adblResponseValue,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
-		return null != (_adblResponse = adblResponse) && _adblResponse.length ==
+		return null != (_adblResponseValue = adblResponseValue) && _adblResponseValue.length ==
 			_adblPredictorOrdinate.length;
 	}
 
-	@Override public double response (
+	@Override public double responseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate))
-			throw new java.lang.Exception ("LagrangePolynomialRegime::response => Invalid inputs!");
+			throw new java.lang.Exception ("LagrangePolynomialRegime::responseValue => Invalid inputs!");
 
 		int iNumPredictorOrdinate = _adblPredictorOrdinate.length;
 
 		if (_adblPredictorOrdinate[0] > dblPredictorOrdinate ||
 			_adblPredictorOrdinate[iNumPredictorOrdinate - 1] < dblPredictorOrdinate)
-			throw new java.lang.Exception ("LagrangePolynomialRegime::response => Input out of range!");
+			throw new java.lang.Exception ("LagrangePolynomialRegime::responseValue => Input out of range!");
 
 		double dblResponse = 0;
 
 		for (int i = 0; i < iNumPredictorOrdinate; ++i) {
-			double dblResponsePredictorOrdinateContribution = _adblResponse[i];
+			double dblResponsePredictorOrdinateContribution = _adblResponseValue[i];
 
 			for (int j = 0; j < iNumPredictorOrdinate; ++j) {
 				if (i != j)
@@ -192,8 +192,8 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 
 		try {
 			if (!org.drip.math.common.NumberUtil.IsValid (dblInputResponseSensitivityShift =
-				EstimateBumpDelta (_adblResponse)) || !org.drip.math.common.NumberUtil.IsValid
-					(dblResponseWithUnadjustedResponseInput = response (dblPredictorOrdinate)))
+				EstimateBumpDelta (_adblResponseValue)) || !org.drip.math.common.NumberUtil.IsValid
+					(dblResponseWithUnadjustedResponseInput = responseValue (dblPredictorOrdinate)))
 				return null;
 
 			wjDResponseDResponseInput = new org.drip.math.calculus.WengertJacobian (1,
@@ -208,8 +208,8 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 			double[] adblSensitivityShiftedInputResponse = new double[iNumPredictorOrdinate];
 
 			for (int j = 0; j < iNumPredictorOrdinate; ++j)
-				adblSensitivityShiftedInputResponse[j] = i == j ? _adblResponse[j] +
-					dblInputResponseSensitivityShift : _adblResponse[j];
+				adblSensitivityShiftedInputResponse[j] = i == j ? _adblResponseValue[j] +
+					dblInputResponseSensitivityShift : _adblResponseValue[j];
 
 			try {
 				LagrangePolynomialRegime lps = new LagrangePolynomialRegime (_adblPredictorOrdinate);
@@ -217,9 +217,10 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 				if (!lps.setup (adblSensitivityShiftedInputResponse[0], adblSensitivityShiftedInputResponse,
 					org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_FLOATING,
 						org.drip.math.regime.MultiSegmentRegime.CALIBRATE) ||
-							!wjDResponseDResponseInput.accumulatePartialFirstDerivative (0, i, (lps.response
-								(dblPredictorOrdinate) - dblResponseWithUnadjustedResponseInput) /
-									dblInputResponseSensitivityShift))
+							!wjDResponseDResponseInput.accumulatePartialFirstDerivative (0, i,
+								(lps.responseValue (dblPredictorOrdinate) -
+									dblResponseWithUnadjustedResponseInput) /
+										dblInputResponseSensitivityShift))
 					return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -261,13 +262,13 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 			{
 				double dblDeltaX = CalcMinDifference (_adblPredictorOrdinate) * DIFF_SCALE;
 
-				return (response (dblX + dblDeltaX) - response (dblX)) / dblDeltaX;
+				return (responseValue (dblX + dblDeltaX) - responseValue (dblX)) / dblDeltaX;
 			}
 		};
 
 		try {
 			org.drip.math.solver1D.FixedPointFinderOutput fpop = new
-				org.drip.math.solver1D.FixedPointFinderBrent (0., ofDeriv).findRoot
+				org.drip.math.solver1D.FixedPointFinderBrent (0., ofDeriv, true).findRoot
 					(org.drip.math.solver1D.InitializationHeuristics.FromHardSearchEdges (0., 1.));
 
 			if (null == fpop || !fpop.containsRoot())
@@ -283,8 +284,8 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 
 			double dblDeltaX = CalcMinDifference (_adblPredictorOrdinate) * DIFF_SCALE;
 
-			double dbl2ndDeriv = response (dblExtremum + dblDeltaX) + response (dblExtremum - dblDeltaX) -
-				2. * response (dblPredictorOrdinate);
+			double dbl2ndDeriv = responseValue (dblExtremum + dblDeltaX) + responseValue (dblExtremum -
+				dblDeltaX) - 2. * responseValue (dblPredictorOrdinate);
 
 			if (0. > dbl2ndDeriv)
 				return new org.drip.math.segment.Monotonocity
@@ -397,7 +398,7 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 
 		if (iPredictorOrdinateNodeIndex > _adblPredictorOrdinate.length) return false;
 
-		_adblResponse[iPredictorOrdinateNodeIndex] = dblResetResponse;
+		_adblResponseValue[iPredictorOrdinateNodeIndex] = dblResetResponse;
 		return true;
 	}
 

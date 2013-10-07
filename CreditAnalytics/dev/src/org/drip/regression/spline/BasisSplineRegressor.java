@@ -235,9 +235,9 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 		final org.drip.regression.core.RegressionRunDetail rnvd)
 	{
 		try {
-			if (!rnvd.set (_strName + "_Seg1_1_0", "" + _seg1.calcResponse (1.))) return false;
+			if (!rnvd.set (_strName + "_Seg1_1_0", "" + _seg1.responseValue (1.))) return false;
 
-			if (!rnvd.set (_strName + "_Seg1_3_0", "" + _seg1.calcResponse (3.))) return false;
+			if (!rnvd.set (_strName + "_Seg1_3_0", "" + _seg1.responseValue (3.))) return false;
 
 			if (!rnvd.set (_strName + "_Seg1_Jack", _wjLeft.displayString()));
 
@@ -245,9 +245,9 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 
 			if (!rnvd.set (_strName + "_Seg1_Monotone", _seg1.monotoneType().toString()));
 
-			if (!rnvd.set (_strName + "_Seg2_3_0", "" + _seg2.calcResponse (3.))) return false;
+			if (!rnvd.set (_strName + "_Seg2_3_0", "" + _seg2.responseValue (3.))) return false;
 
-			if (!rnvd.set (_strName + "_Seg2_6_0", "" + _seg2.calcResponse (6.))) return false;
+			if (!rnvd.set (_strName + "_Seg2_6_0", "" + _seg2.responseValue (6.))) return false;
 
 			if (!rnvd.set (_strName + "_Seg2_Jack", _wjRight.displayString()));
 

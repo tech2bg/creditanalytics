@@ -186,7 +186,7 @@ public class NonlinearCurveCalibrator {
 		};
 
 		org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent
-			(0., ofIROuter).findRoot();
+			(0., ofIROuter, true).findRoot();
 
 		if (null == rfop || !rfop.containsRoot())
 			throw new java.lang.Exception ("NonlinearCurveCalibrator::calibrateIRCurve => Cannot get root!");
@@ -253,7 +253,7 @@ public class NonlinearCurveCalibrator {
 			org.drip.math.solver1D.FixedPointFinderOutput rfop = new
 				org.drip.math.solver1D.FixedPointFinderBrent (0., new CreditCurveCalibrator (cc, comp,
 					iInstr, valParams, dc, dcTSY, dcEDSF, pricerParamsIn, strMeasure, dblCalibValue,
-						mmFixings, quotingParams, bFlat)).findRoot();
+						mmFixings, quotingParams, bFlat), true).findRoot();
 
 			return null != rfop && rfop.containsRoot();
 		} catch (java.lang.Exception e) {
@@ -324,7 +324,7 @@ public class NonlinearCurveCalibrator {
 		};
 
 		org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent
-			(0., ofIRNode).findRoot();
+			(0., ofIRNode, true).findRoot();
 
 		if (null == rfop || !rfop.containsRoot())
 			throw new java.lang.Exception

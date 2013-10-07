@@ -239,30 +239,55 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	}
 
 	/**
-	 * Compute the implied rate between 2 dates
+	 * Compute the Forward Rate between two Dates
 	 * 
 	 * @param dblDt1 First Date
 	 * @param dblDt2 Second Date
 	 * 
-	 * @return Implied Rate
+	 * @return The Forward Rate
 	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
+	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
 	 */
 
-	public double rate (
-		final double dblDt1,
-		final double dblDt2)
+	public double forward (
+		final double dblDate1,
+		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDt1) || !org.drip.math.common.NumberUtil.IsValid
-			(dblDt2))
-			throw new java.lang.Exception ("DiscountCurve::rate => Invalid input");
+		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
+			(dblDate2))
+			throw new java.lang.Exception ("DiscountCurve::forward => Invalid input");
 
 		double dblStartDate = epoch().getJulian();
 
-		if (dblDt1 < dblStartDate || dblDt2 < dblStartDate) return 0.;
+		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
 
-		return 365.25 / (dblDt2 - dblDt1) * java.lang.Math.log (df (dblDt1) / df (dblDt2));
+		return 365.25 / (dblDate2 - dblDate1) * java.lang.Math.log (df (dblDate1) / df (dblDate2));
+	}
+
+	/**
+	 * Compute the Forward Rate between two Tenors
+	 * 
+	 * @param strTenor1 Tenor Start
+	 * @param strTenor2 Tenor End
+	 * 
+	 * @return The Forward Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
+	 */
+
+	public double forward (
+		final java.lang.String strTenor1,
+		final java.lang.String strTenor2)
+		throws java.lang.Exception
+	{
+		if (null == strTenor1 || strTenor1.isEmpty() || null == strTenor2 || strTenor2.isEmpty())
+			throw new java.lang.Exception ("DiscountCurve::forward => Invalid Date");
+
+		org.drip.analytics.date.JulianDate dtStart = epoch();
+
+		return forward (dtStart.addTenor (strTenor1).getJulian(), dtStart.addTenor
+			(strTenor2).getJulian());
 	}
 
 	/**
@@ -275,14 +300,14 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
 	 */
 
-	public double rate (
+	public double zero (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountCurve::rate => Invalid Date");
+			throw new java.lang.Exception ("DiscountCurve::zero => Invalid Date");
 
-		return rate (epoch().getJulian(), dblDate);
+		return forward (epoch().getJulian(), dblDate);
 	}
 
 	/**
@@ -295,41 +320,16 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
 	 */
 
-	public double rate (
+	public double zero (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
 		if (null == strTenor || strTenor.isEmpty())
-			throw new java.lang.Exception ("DiscountCurve::rate => Invalid date");
+			throw new java.lang.Exception ("DiscountCurve::zero => Invalid date");
 
 		org.drip.analytics.date.JulianDate dtStart = epoch();
 
-		return rate (dtStart.getJulian(), dtStart.addTenor (strTenor).getJulian());
-	}
-
-	/**
-	 * Calculate the implied rate between 2 tenors
-	 * 
-	 * @param strTenor1 Tenor start
-	 * @param strTenor2 Tenor end
-	 * 
-	 * @return Implied Discount Rate
-	 * 
-	 * @throws java.lang.Exception
-	 */
-
-	public double rate (
-		final java.lang.String strTenor1,
-		final java.lang.String strTenor2)
-		throws java.lang.Exception
-	{
-		if (null == strTenor1 || strTenor1.isEmpty() || null == strTenor2 || strTenor2.isEmpty())
-			throw new java.lang.Exception ("DiscountCurve::rate => Invalid Date");
-
-		org.drip.analytics.date.JulianDate dtStart = epoch();
-
-		return rate (dtStart.addTenor (strTenor1).getJulian(), dtStart.addTenor
-			(strTenor2).getJulian());
+		return forward (dtStart.getJulian(), dtStart.addTenor (strTenor).getJulian());
 	}
 
 	/**
@@ -535,7 +535,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (null == regime)
 			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot create Interp Regime");
 
-		return regime.response (dblDate);
+		return regime.responseValue (dblDate);
 	}
 
 	/**

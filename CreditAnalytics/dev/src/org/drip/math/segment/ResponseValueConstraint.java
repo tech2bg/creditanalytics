@@ -73,23 +73,23 @@ public class ResponseValueConstraint {
 	/**
 	 * Generate a ResponseValueConstraint instance from the given predictor/response pair.
 	 * 
-	 * @param dblPredictor The Predictor
-	 * @param dblResponse The Response
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * @param dblResponseValue The Response Value
 	 * 
 	 * @return The ResponseValueConstraint instance
 	 */
 
 	public static final ResponseValueConstraint FromPredictorResponse (
-		final double dblPredictor,
-		final double dblResponse)
+		final double dblPredictorOrdinate,
+		final double dblResponseValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictor) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblResponse))
+		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate) ||
+			!org.drip.math.common.NumberUtil.IsValid (dblResponseValue))
 			return null;
 
 		try {
-			return new ResponseValueConstraint (new double[] {dblPredictor}, new double[] {1.},
-				dblResponse);
+			return new ResponseValueConstraint (new double[] {dblPredictorOrdinate}, new double[] {1.},
+				dblResponseValue);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

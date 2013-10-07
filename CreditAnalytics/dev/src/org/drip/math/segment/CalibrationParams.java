@@ -39,9 +39,9 @@ package org.drip.math.segment;
  */
 
 public class CalibrationParams {
-	private double[] _adblResponse = null;
 	private double[] _adblLeftDeriv = null;
 	private double[] _adblRightDeriv = null;
+	private double[] _adblResponseValue = null;
 	private double[] _adblPredictorOrdinate = null;
 	private org.drip.math.segment.ResponseValueConstraint[] _aRVC = null;
 
@@ -49,7 +49,7 @@ public class CalibrationParams {
 	 * CalibrationParams constructor
 	 * 
 	 * @param adblPredictorOrdinate Array of the Predictor Ordinates
-	 * @param adblResponse Array of the Corresponding Responses
+	 * @param adblResponse ValueArray of the Corresponding Response Values
 	 * @param adblLeftDeriv Array of the Left Derivative Values
 	 * @param adblRightDeriv Array of the Right Derivative Values
 	 * @param aRVC Array of the Response Value Constraints
@@ -59,7 +59,7 @@ public class CalibrationParams {
 
 	public CalibrationParams (
 		final double[] adblPredictorOrdinate,
-		final double[] adblResponse,
+		final double[] adblResponseValue,
 		final double[] adblLeftDeriv,
 		final double[] adblRightDeriv,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC)
@@ -67,18 +67,18 @@ public class CalibrationParams {
 	{
 		_aRVC = aRVC;
 		int iNumPredictorOrdinate = 0;
-		_adblResponse = adblResponse;
+		_adblResponseValue = adblResponseValue;
 		_adblLeftDeriv = adblLeftDeriv;
 		_adblRightDeriv = adblRightDeriv;
 		_adblPredictorOrdinate = adblPredictorOrdinate;
 
-		if ((null == _adblPredictorOrdinate && null != _adblResponse) || (null != _adblPredictorOrdinate &&
-			null == _adblResponse))
+		if ((null == _adblPredictorOrdinate && null != _adblResponseValue) || (null != _adblPredictorOrdinate
+			&& null == _adblResponseValue))
 			throw new java.lang.Exception ("CalibrationParams ctr: Invalid Inputs!");
 
 		if (null != _adblPredictorOrdinate) iNumPredictorOrdinate = _adblPredictorOrdinate.length;
 
-		if (null != _adblResponse && iNumPredictorOrdinate != _adblResponse.length)
+		if (null != _adblResponseValue && iNumPredictorOrdinate != _adblResponseValue.length)
 			throw new java.lang.Exception ("CalibrationParams ctr: Invalid Inputs!");
 	}
 
@@ -94,14 +94,14 @@ public class CalibrationParams {
 	}
 
 	/**
-	 * Retrieve the Array of Responses
+	 * Retrieve the Array of Response Values
 	 * 
-	 * @return The Array of Responses
+	 * @return The Array of Response Values
 	 */
 
-	public double[] reponses()
+	public double[] reponseValues()
 	{
-		return _adblResponse;
+		return _adblResponseValue;
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class CalibrationParams {
 				if (_adblPredictorOrdinate[i] < dblPredictor) {
 					lsLeftPredictorOrdinate.add (_adblPredictorOrdinate[i]);
 
-					lsLeftResponse.add (_adblResponse[i]);
+					lsLeftResponse.add (_adblResponseValue[i]);
 				} else {
 					if (!bSplitPredictorOrdinateAdded) {
 						lsLeftPredictorOrdinate.add (dblPredictor);
@@ -224,7 +224,7 @@ public class CalibrationParams {
 
 					lsRightPredictorOrdinate.add (_adblPredictorOrdinate[i]);
 
-					lsRightResponse.add (_adblResponse[i]);
+					lsRightResponse.add (_adblResponseValue[i]);
 				}
 			}
 

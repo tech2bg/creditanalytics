@@ -203,7 +203,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -227,7 +227,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -341,7 +341,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " +
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " +
 				regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
@@ -366,7 +366,7 @@ public class RegimeEstimation {
 		dblX = 1.;
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 0.5;
@@ -386,7 +386,7 @@ public class RegimeEstimation {
 
 		while (dblX <= dblXMax) {
 			System.out.println ("Cardinal Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble
-				(regimeCardinalInsert.response (dblX), 1, 2, 1.) + " | " + regimeInsert.monotoneType (dblX));
+				(regimeCardinalInsert.responseValue (dblX), 1, 2, 1.) + " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 0.5;
 		}
@@ -405,7 +405,7 @@ public class RegimeEstimation {
 
 		while (dblX <= dblXMax) {
 			System.out.println ("Catmull-Rom Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble
-				(regimeCatmullRomInsert.response (dblX), 1, 2, 1.) + " | " + regimeInsert.monotoneType (dblX));
+				(regimeCatmullRomInsert.responseValue (dblX), 1, 2, 1.) + " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 0.5;
 		}
@@ -432,7 +432,7 @@ public class RegimeEstimation {
 			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
 			MultiSegmentRegime.CALIBRATE)); // Calibrate the Regime predictors to the responses
 
-		System.out.println ("Value = " + lps.response (2.16));
+		System.out.println ("Value = " + lps.responseValue (2.16));
 
 		System.out.println ("Value Jacobian = " + lps.jackDResponseDResponseInput (2.16).displayString());
 
@@ -477,7 +477,7 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateBesselCubicSplineRegime (
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateBesselCubicSplineRegime (
 			"BESSEL_REGIME",
 			adblX, // predictors
 			adblY, // responses
@@ -489,7 +489,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -513,7 +513,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -556,7 +556,7 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateHyman83MonotoneRegime (
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHyman83MonotoneRegime (
 			"HYMAN83_MONOTONE_REGIME",
 			adblX, // predictors
 			adblY, // responses
@@ -569,7 +569,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -593,7 +593,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -636,7 +636,7 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateHyman89MonotoneRegime (
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHyman89MonotoneRegime (
 			"HYMAN89_MONOTONE_REGIME",
 			adblX, // predictors
 			adblY, // responses
@@ -648,7 +648,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -672,7 +672,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -717,7 +717,7 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateHarmonicMonotoneRegime (
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHarmonicMonotoneRegime (
 			"HARMONIC_MONOTONE_REGIME",
 			adblX, // predictors
 			adblY, // responses
@@ -730,7 +730,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -754,7 +754,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -799,7 +799,7 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateVanLeerLimiterRegime (
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateVanLeerLimiterRegime (
 			"VAN_LEER_MONOTONE_REGIME",
 			adblX, // predictors
 			adblY, // responses
@@ -812,7 +812,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -836,7 +836,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -881,7 +881,7 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateHuynhLeFlochLimiterRegime (
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHuynhLeFlochLimiterRegime (
 			"VAN_LEER_MONOTONE_REGIME",
 			adblX, // predictors
 			adblY, // responses
@@ -894,7 +894,7 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.response (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -918,7 +918,165 @@ public class RegimeEstimation {
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.response (dblX), 1, 2, 1.)
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
+				+ " | " + regimeInsert.monotoneType (dblX));
+
+			dblX += 1.;
+		}
+	}
+
+	/**
+	 * Perform the following sequence of tests for a given segment control for a predictor/response range
+	 * 	- Estimate
+	 *  - Compute the segment-by-segment monotonicity
+	 *  - Regime Jacobian
+	 *  - Regime knot insertion
+	 * 
+	 * @param adblX The Predictor Array
+	 * @param adblY The Response Array
+	 * @param sbp The Segment Builder Parameters
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
+
+	public static final void AkimaRegimeTest (
+		final double[] adblX,
+		final double[] adblY,
+		final PredictorResponseBuilderParams sbp)
+		throws Exception
+	{
+		double dblX = 1.;
+		double dblXMax = 10.;
+
+		/*
+		 * Array of Segment Builder Parameters - one per segment
+		 */
+
+		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+
+		for (int i = 0; i < adblX.length - 1; ++i)
+			aSBP[i] = sbp;
+
+		/*
+		 * Construct a Regime instance 
+		 */
+
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateAkimaRegime(
+			"AKIMA_LOCAL_REGIME",
+			adblX, // predictors
+			adblY, // responses
+			aSBP, // Basis Segment Builder parameters
+			MultiSegmentRegime.CALIBRATE);
+
+		/*
+		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+
+			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
+
+			dblX += 1.;
+		}
+
+		/*
+		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
+		 */
+
+		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
+			9.,
+			10.,
+			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
+
+		dblX = 1.;
+
+		/*
+		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
+				+ " | " + regimeInsert.monotoneType (dblX));
+
+			dblX += 1.;
+		}
+	}
+
+	/**
+	 * Perform the following sequence of tests for a given segment control for a predictor/response range
+	 * 	- Estimate
+	 *  - Compute the segment-by-segment monotonicity
+	 *  - Regime Jacobian
+	 *  - Regime knot insertion
+	 * 
+	 * @param adblX The Predictor Array
+	 * @param adblY The Response Array
+	 * @param sbp The Segment Builder Parameters
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
+
+	public static final void KrugerRegimeTest (
+		final double[] adblX,
+		final double[] adblY,
+		final PredictorResponseBuilderParams sbp)
+		throws Exception
+	{
+		double dblX = 1.;
+		double dblXMax = 10.;
+
+		/*
+		 * Array of Segment Builder Parameters - one per segment
+		 */
+
+		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+
+		for (int i = 0; i < adblX.length - 1; ++i)
+			aSBP[i] = sbp;
+
+		/*
+		 * Construct a Regime instance 
+		 */
+
+		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateKrugerRegime(
+			"KRUGER_LOCAL_REGIME",
+			adblX, // predictors
+			adblY, // responses
+			aSBP, // Basis Segment Builder parameters
+			MultiSegmentRegime.CALIBRATE);
+
+		/*
+		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+
+			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
+
+			dblX += 1.;
+		}
+
+		/*
+		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
+		 */
+
+		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
+			9.,
+			10.,
+			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
+
+		dblX = 1.;
+
+		/*
+		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
+		 */
+
+		while (dblX <= dblXMax) {
+			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
 				+ " | " + regimeInsert.monotoneType (dblX));
 
 			dblX += 1.;
@@ -1022,5 +1180,13 @@ public class RegimeEstimation {
 		System.out.println (" \n---------- \n C1 HUYNH LE-FLOCH LIMITER REGIME WITHOUT FILTER \n ---------- \n");
 
 		HuynhLeFlochLimiterRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), false);
+
+		System.out.println (" \n---------- \n C1 AKIMA REGIME \n ---------- \n");
+
+		AkimaRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+
+		System.out.println (" \n---------- \n C1 KRUGER REGIME \n ---------- \n");
+
+		KrugerRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
 	}
 }
