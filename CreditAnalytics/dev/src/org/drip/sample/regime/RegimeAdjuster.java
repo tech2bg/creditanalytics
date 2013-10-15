@@ -150,7 +150,7 @@ public class RegimeAdjuster {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
+		DesignInelasticParams segParams = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		System.out.println (" \n---------- \n POLYNOMIAL \n ---------- \n");
 

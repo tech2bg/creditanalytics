@@ -200,8 +200,8 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	{
 		super (strName, strScenarioName);
 
-		org.drip.math.segment.DesignInelasticParams segParams = new
-			org.drip.math.segment.DesignInelasticParams (iCk, 2);
+		org.drip.math.segment.DesignInelasticParams segParams =
+			org.drip.math.segment.DesignInelasticParams.Create (iCk, 2);
 
 		org.drip.math.segment.ResponseScalingShapeController rssc = new
 			org.drip.math.segment.ResponseScalingShapeController (true, new

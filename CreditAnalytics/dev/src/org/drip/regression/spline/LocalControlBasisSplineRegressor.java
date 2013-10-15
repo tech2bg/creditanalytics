@@ -105,8 +105,8 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			org.drip.math.segment.PredictorResponseBuilderParams[iNumSegment];
 
 		for (int i = 0; i < iNumSegment; ++i)
-			aSBP[i] = new org.drip.math.segment.PredictorResponseBuilderParams (strBasisSpline, bsp, new
-				org.drip.math.segment.DesignInelasticParams (iCk, 1), new
+			aSBP[i] = new org.drip.math.segment.PredictorResponseBuilderParams (strBasisSpline, bsp,
+				org.drip.math.segment.DesignInelasticParams.Create (iCk, 1), new
 					org.drip.math.segment.ResponseScalingShapeController (true, new
 						org.drip.math.function.RationalShapeControl (1.)));
 
@@ -143,8 +143,8 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 		try {
 			prbp = new org.drip.math.segment.PredictorResponseBuilderParams
 				(org.drip.math.regime.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (4), new
-						org.drip.math.segment.DesignInelasticParams (2, 2), new
+					org.drip.math.spline.PolynomialBasisSetParams (4),
+						org.drip.math.segment.DesignInelasticParams.Create (2, 2), new
 							org.drip.math.segment.ResponseScalingShapeController (true, new
 								org.drip.math.function.RationalShapeControl (1.)));
 		} catch (java.lang.Exception e) {

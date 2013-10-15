@@ -339,4 +339,94 @@ public class NumberUtil {
 
 		return true;
 	}
+
+	/**
+	 * Print the Contents of the 2D Array Pair
+	 * 
+	 * @param strLeftLabel Left Label
+	 * @param strRightLabel Right Label
+	 * @param aadblLeft The Left 2D array
+	 * @param aadblRight The Right 2D array
+	 * @param bBailOnNaN Bail on encountering an NaN
+	 * 
+	 * @return TRUE => Print Successful
+	 */
+
+	public static final boolean Print2DArrayPair (
+		final java.lang.String strLeftLabel,
+		final java.lang.String strRightLabel,
+		final double[][] aadblLeft,
+		final double[][] aadblRight,
+		final boolean bBailOnNaN)
+	{
+		if (null == aadblLeft || null == aadblRight) return false;
+
+		int iSize = aadblLeft.length;
+
+		if (0 == iSize || iSize != aadblRight.length) return false;
+
+		for (int i = 0; i < iSize; ++i) {
+			for (int j = 0; j < iSize; ++j) {
+				if (!org.drip.math.common.NumberUtil.IsValid (aadblLeft[i][j]) &&
+					!org.drip.math.common.NumberUtil.IsValid (aadblRight[i][j]) && bBailOnNaN)
+					return false;
+
+				System.out.println (strLeftLabel + "[" + i + "][" + j + "] = " +
+					org.drip.math.common.FormatUtil.FormatDouble (aadblLeft[i][j], 1, 6, 1.) + "  |  " +
+						strRightLabel + "[" + i + "][" + j + "] = " +
+							org.drip.math.common.FormatUtil.FormatDouble (aadblRight[i][j], 1, 6, 1.));
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Print the Contents of the 2D Array Triplet
+	 * 
+	 * @param strLeftLabel Left Label
+	 * @param strMiddleLabel Middle Label
+	 * @param strRightLabel Right Label
+	 * @param aadblLeft The Left 2D array
+	 * @param aadblMiddle The Middle 2D array
+	 * @param aadblRight The Right 2D array
+	 * @param bBailOnNaN Bail on encountering an NaN
+	 * 
+	 * @return TRUE => Print Successful
+	 */
+
+	public static final boolean Print2DArrayTriplet (
+		final java.lang.String strLeftLabel,
+		final java.lang.String strMiddleLabel,
+		final java.lang.String strRightLabel,
+		final double[][] aadblLeft,
+		final double[][] aadblMiddle,
+		final double[][] aadblRight,
+		final boolean bBailOnNaN)
+	{
+		if (null == aadblLeft || null == aadblMiddle || null == aadblRight) return false;
+
+		int iSize = aadblLeft.length;
+
+		if (0 == iSize || iSize != aadblMiddle.length || iSize != aadblRight.length) return false;
+
+		for (int i = 0; i < iSize; ++i) {
+			for (int j = 0; j < iSize; ++j) {
+				if (!org.drip.math.common.NumberUtil.IsValid (aadblLeft[i][j]) &&
+						!org.drip.math.common.NumberUtil.IsValid (aadblLeft[i][j]) &&
+							!org.drip.math.common.NumberUtil.IsValid (aadblRight[i][j]) && bBailOnNaN)
+					return false;
+
+				System.out.println (strLeftLabel + "[" + i + "][" + j + "] = " +
+					org.drip.math.common.FormatUtil.FormatDouble (aadblLeft[i][j], 1, 6, 1.) + "  |  " +
+						strMiddleLabel + "[" + i + "][" + j + "] = " +
+							org.drip.math.common.FormatUtil.FormatDouble (aadblMiddle[i][j], 1, 6, 1.) +
+								"  |  " + strRightLabel + "[" + i + "][" + j + "] = " +
+									org.drip.math.common.FormatUtil.FormatDouble (aadblRight[i][j], 1, 6,
+										1.));
+			}
+		}
+
+		return true;
+	}
 }

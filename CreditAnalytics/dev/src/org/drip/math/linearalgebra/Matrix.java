@@ -216,14 +216,65 @@ public class Matrix {
 	}
 
 	/**
-	 * Regularize the specified diagonal entry of the input matrix
+	 * Regularize the specified diagonal entry of the input matrix using Row Swapping
 	 * 
 	 * @param mct The Input Matrix Complement Transform
 	 * 
 	 * @return The Regularization was successful
 	 */
 
-	public static final boolean Regularize (
+	public static final boolean RegularizeUsingRowSwap (
+		final org.drip.math.linearalgebra.MatrixComplementTransform mct)
+	{
+		if (null == mct) return false;
+
+		int iSize = mct.size();
+
+		double[][] aadblSource = mct.getSource();
+
+		double[][] aadblComplement = mct.getComplement();
+
+		for (int iDiagonal = 0; iDiagonal < iSize; ++iDiagonal) {
+			if (0. == aadblSource[iDiagonal][iDiagonal]) {
+				int iSwapRow = iSize - 1;
+
+				while ((0. == aadblSource[iSwapRow][iDiagonal] || 0. == aadblSource[iDiagonal][iSwapRow]) &&
+					iSwapRow >= 0)
+					--iSwapRow;
+
+				if (0 > iSwapRow) return false;
+
+				for (int iCol = 0; iCol < iSize; ++iCol) {
+					double dblComplementDiagonalEntry = aadblComplement[iDiagonal][iCol];
+					aadblComplement[iDiagonal][iCol] = aadblComplement[iSwapRow][iCol];
+					aadblComplement[iSwapRow][iCol] = dblComplementDiagonalEntry;
+					double dblSourceDiagonalEntry = aadblSource[iDiagonal][iCol];
+					aadblSource[iDiagonal][iCol] = aadblSource[iSwapRow][iCol];
+					aadblSource[iSwapRow][iCol] = dblSourceDiagonalEntry;
+				}
+			}
+		}
+
+		for (int iDiagonal = 0; iDiagonal < iSize; ++iDiagonal) {
+			if (0. == aadblSource[iDiagonal][iDiagonal]) {
+				org.drip.math.common.NumberUtil.Print2DArray ("ZERO DIAG!", aadblSource, false);
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Regularize the specified diagonal entry of the input matrix using Row Addition
+	 * 
+	 * @param mct The Input Matrix Complement Transform
+	 * 
+	 * @return The Regularization was successful
+	 */
+
+	public static final boolean RegularizeUsingRowAddition (
 		final org.drip.math.linearalgebra.MatrixComplementTransform mct)
 	{
 		if (null == mct) return false;
@@ -288,9 +339,7 @@ public class Matrix {
 			return null;
 		}
 
-		return mctOut;
-
-		// return Regularize (mctOut) ? mctOut : null;
+		return RegularizeUsingRowSwap (mctOut) ? mctOut : null;
 	}
 
 	/**
@@ -316,19 +365,19 @@ public class Matrix {
 		int iSize = aadblRegularizedSource.length;
 
 		for (int iDiagonal = 0; iDiagonal < iSize; ++iDiagonal) {
-			for (int iEntryCol = 0; iEntryCol < iSize; ++iEntryCol) {
-				if (iDiagonal == iEntryCol || 0. == aadblRegularizedSource[iDiagonal][iEntryCol]) continue;
+			if (0. == aadblRegularizedSource[iDiagonal][iDiagonal]) return null;
 
-				double dblWorkingRowFactor = aadblRegularizedSource[iDiagonal][iDiagonal] /
-					aadblRegularizedSource[iDiagonal][iEntryCol];
+			for (int iRow = 0; iRow < iSize; ++iRow) {
+				if (iRow == iDiagonal || 0. == aadblRegularizedSource[iRow][iDiagonal]) continue;
 
-				for (int iWorkingRow = 0; iWorkingRow < iSize; ++iWorkingRow) {
-					aadblRegularizedInverse[iWorkingRow][iEntryCol] =
-						aadblRegularizedInverse[iWorkingRow][iEntryCol] * dblWorkingRowFactor -
-							aadblRegularizedInverse[iWorkingRow][iDiagonal];
-					aadblRegularizedSource[iWorkingRow][iEntryCol] =
-						aadblRegularizedSource[iWorkingRow][iEntryCol] * dblWorkingRowFactor -
-							aadblRegularizedSource[iWorkingRow][iDiagonal];
+				double dblColEntryEliminatorRatio = aadblRegularizedSource[iDiagonal][iDiagonal] /
+					aadblRegularizedSource[iRow][iDiagonal];
+
+				for (int iCol = 0; iCol < iSize; ++iCol) {
+					aadblRegularizedSource[iRow][iCol] = aadblRegularizedSource[iRow][iCol] *
+						dblColEntryEliminatorRatio - aadblRegularizedSource[iDiagonal][iCol];
+					aadblRegularizedInverse[iRow][iCol] = aadblRegularizedInverse[iRow][iCol] *
+						dblColEntryEliminatorRatio - aadblRegularizedInverse[iDiagonal][iCol];
 				}
 			}
 		}
@@ -336,11 +385,11 @@ public class Matrix {
 		for (int iDiagonal = 0; iDiagonal < iSize; ++iDiagonal) {
 			double dblDiagScaleDown = aadblRegularizedSource[iDiagonal][iDiagonal];
 
-			for (int iEntryRow = 0; iEntryRow < iSize; ++iEntryRow) {
-				aadblRegularizedInverse[iEntryRow][iDiagonal] = aadblRegularizedInverse[iEntryRow][iDiagonal]
-					/ dblDiagScaleDown;
-				aadblRegularizedSource[iEntryRow][iDiagonal] = aadblRegularizedSource[iEntryRow][iDiagonal] /
-					dblDiagScaleDown;
+			if (0. == dblDiagScaleDown) return null;
+
+			for (int iCol = 0; iCol < iSize; ++iCol) {
+				aadblRegularizedSource[iDiagonal][iCol] /= dblDiagScaleDown;
+				aadblRegularizedInverse[iDiagonal][iCol] /= dblDiagScaleDown;
 			}
 		}
 
@@ -386,8 +435,6 @@ public class Matrix {
 			aadblAInv = InvertUsingGaussianElimination (aadblASource);
 
 		if (null == aadblAInv || iSize != aadblAInv.length || iSize != aadblAInv[0].length) return null;
-
-		// return aadblAInv;
 
 		return Product (aadblAInv, aadblZ2YJack);
 	}

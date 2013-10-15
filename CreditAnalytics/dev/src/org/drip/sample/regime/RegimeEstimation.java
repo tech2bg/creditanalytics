@@ -283,7 +283,7 @@ public class RegimeEstimation {
 		int iK = 1;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
+		DesignInelasticParams segParams = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/* 
 		 * Construct the C1 Hermite Polynomial Spline based Regime Estimator by using the following steps:
@@ -1115,7 +1115,7 @@ public class RegimeEstimation {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder= 2;
 
-		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
+		DesignInelasticParams segParams = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		System.out.println (" \n---------- \n BERNSTEIN POLYNOMIAL \n ---------- \n");
 

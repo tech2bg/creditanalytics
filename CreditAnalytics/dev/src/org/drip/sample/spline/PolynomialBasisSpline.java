@@ -72,7 +72,7 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		DesignInelasticParams segParams = new DesignInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder);
+		DesignInelasticParams segParams = DesignInelasticParams.Create (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
@@ -161,7 +161,7 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		DesignInelasticParams segParams = new DesignInelasticParams (iCk, iRoughnessPenaltyDerivativeOrder);
+		DesignInelasticParams segParams = DesignInelasticParams.Create (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis

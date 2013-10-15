@@ -126,8 +126,8 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		org.drip.math.segment.PredictorResponseBuilderParams sbp = new
 			org.drip.math.segment.PredictorResponseBuilderParams
 				(org.drip.math.regime.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (2), new
-						org.drip.math.segment.DesignInelasticParams (0, 2), null);
+					org.drip.math.spline.PolynomialBasisSetParams (2),
+						org.drip.math.segment.DesignInelasticParams.Create (0, 2), null);
 
 		int iNumSegment = adblDate.length;
 		_adblDate = new double[iNumSegment];

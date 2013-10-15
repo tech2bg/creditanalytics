@@ -76,7 +76,7 @@ public class CustomCurveBuilder {
 		return new PredictorResponseBuilderParams (
 			RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
 			new ExponentialTensionBasisSetParams (dblTension), // Segment Tension Parameter Value
-			new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+			DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 			new ResponseScalingShapeController (true, new RationalShapeControl (0.0))); // Univariate Rational Shape Controller
 	}
 
@@ -93,7 +93,7 @@ public class CustomCurveBuilder {
 		return new PredictorResponseBuilderParams (
 			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 			new PolynomialBasisSetParams (iNumDegree + 1), // Polynomial of degree (i.e, cubic would be 3+1; 4 basis functions - 1 "intercept")
-			new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+			DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 			new ResponseScalingShapeController (true, new RationalShapeControl (0.0))); // Univariate Rational Shape Controller
 	}
 
@@ -111,14 +111,14 @@ public class CustomCurveBuilder {
 			return new PredictorResponseBuilderParams (
 				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 				new PolynomialBasisSetParams (4), // Polynomial of order 3 (i.e, cubic - 4 basis functions - 1 "intercept")
-				new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+				DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 				new ResponseScalingShapeController (true, new RationalShapeControl (0.0))); // Univariate Rational Shape Controller
 
 		if (strBasisSpline.equalsIgnoreCase (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)) // Exponential Tension Basis Spline
 			return new PredictorResponseBuilderParams (
 				RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
 				new ExponentialTensionBasisSetParams (1.), // Segment Tension Parameter Value = 1.
-				new DesignInelasticParams (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+				DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
 				new ResponseScalingShapeController (true, new RationalShapeControl (0.0))); // Univariate Rational Shape Controller
 
 		return null;
@@ -318,7 +318,7 @@ public class CustomCurveBuilder {
 				if (bFirstNode) {
 					bFirstNode = false;
 
-					sbpLocal = MakeExponentialTensionSBP (100000.);
+					sbpLocal = MakeExponentialTensionSBP (100.);
 				} else
 					sbpLocal = MakeExponentialTensionSBP (1.);
 

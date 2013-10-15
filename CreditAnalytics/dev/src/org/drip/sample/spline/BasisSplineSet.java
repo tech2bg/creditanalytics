@@ -329,7 +329,7 @@ public class BasisSplineSet {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		DesignInelasticParams segParams = new DesignInelasticParams (iK, iRoughnessPenaltyDerivativeOrder);
+		DesignInelasticParams segParams = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Test the polynomial spline
@@ -337,7 +337,7 @@ public class BasisSplineSet {
 
 		System.out.println (" ---------- \n POLYNOMIAL \n ---------- \n");
 
-		TestSpline (CreatePolynomialSpline(), rssc, segParams);
+		TestSpline (CreatePolynomialSpline(), null, segParams);
 
 		/*
 		 * Test the Bernstein polynomial spline
@@ -377,6 +377,9 @@ public class BasisSplineSet {
 
 		System.out.println (" -------------------- \n C1 HERMITE \n -------------------- \n");
 
-		TestC1HermiteSpline (CreatePolynomialSpline(), rssc, new DesignInelasticParams (1, iRoughnessPenaltyDerivativeOrder));
+		TestC1HermiteSpline (
+			CreatePolynomialSpline(),
+			rssc,
+			DesignInelasticParams.Create (1, iRoughnessPenaltyDerivativeOrder));
 	}
 }

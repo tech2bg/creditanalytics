@@ -250,8 +250,6 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 	@Override public ForwardRateDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
-		System.out.println ("In here: " + _ccis);
-
 		if (!org.drip.math.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();

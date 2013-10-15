@@ -218,7 +218,7 @@ public class DiscountCurveReconcilerAPI {
 		PredictorResponseBuilderParams prbpPolynomial = new PredictorResponseBuilderParams (
 			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialBasisSetParams (4),
-			new DesignInelasticParams (2, 2),
+			DesignInelasticParams.Create (2, 2),
 			new ResponseScalingShapeController (true, new RationalShapeControl (0.)));
 
 		SplineLinearDiscountCurve (prbpPolynomial);

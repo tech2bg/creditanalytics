@@ -43,6 +43,28 @@ import org.drip.math.linearalgebra.*;
 
 public class LinearAlgebra {
 
+	private static final void InverseVerifyDump (
+		final String strLabel,
+		final double[][] aadblA)
+	{
+		double[][] aadblAInv = Matrix.InvertUsingGaussianElimination (aadblA);
+
+		System.out.println ("--- TESTS FOR " + strLabel + "---");
+
+		System.out.println ("---------------------------------");
+
+		NumberUtil.Print2DArrayTriplet (
+			"\tSOURCE" + strLabel,
+			"INVERSE" + strLabel,
+			"PRODUCT" + strLabel,
+			aadblA,
+			aadblAInv,
+			Matrix.Product (aadblA, aadblAInv),
+			false);
+
+		System.out.println ("---------------------------------\n\n");
+	}
+
 	/*
 	 * Sample illustrating the Invocation of Base Matrix Manipulation Functionality
 	 * 
@@ -51,15 +73,48 @@ public class LinearAlgebra {
 
 	public static final void MatrixManipulation()
 	{
-		double[][] aadblA = new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9.01}};
+		InverseVerifyDump ("#A", new double[][] {
+			{1, 2, 3},
+			{4, 5, 6},
+			{7, 8, 9.01}
+		});
 
-		double[][] aadblAInv = Matrix.InvertUsingGaussianElimination (aadblA);
+		InverseVerifyDump ("#B", new double[][] {
+			{ 0.1667,  0.0000,  0.0000,  0.0000},
+			{ 0.0000,  0.0000,  0.0000,  0.1667},
+			{-0.6667,  0.5000,  0.0000,  0.0000},
+			{ 2.6667, -3.0000,  1.0000,  0.0000}
+		});
 
-		NumberUtil.Print2DArray ("AINV", aadblAInv, false);
+		InverseVerifyDump ("#C", new double[][] {
+			{ 1.0000,  0.0000,  0.0000,  0.0000},
+			{ 1.0000,  1.0000,  1.0000,  1.0000},
+			{ 0.0000,  1.0000,  0.0000,  0.0000},
+			{ 0.0000,  0.0000,  2.0000,  0.0000}
+		});
 
-		double[][] aadblProduct = Matrix.Product (aadblA, aadblAInv);
+		InverseVerifyDump ("#D", new double[][] {
+			{ 0.0000,  1.0000},
+			{ 1.0000,  2.0000}
+		});
 
-		NumberUtil.Print2DArray ("PROD", aadblProduct, false);
+		InverseVerifyDump ("#E", new double[][] {
+			{ 0.0000,  1.0000},
+			{ 1.0000,  0.0000}
+		});
+
+		InverseVerifyDump ("#F", new double[][] {
+			{ 1.0000,  0.0000,  0.0000,  0.0000},
+			{ 1.0000,  1.0000,  1.0000,  1.0000},
+			{-1.0000,  1.0000,  0.0000,  0.0000},
+			{ 1.0000,  2.0000,  3.0000,  4.0000}
+		});
+
+		// double[] adblY = {1., 2.};
+
+		/* double[][] aadblX = Matrix.Product (aadblAInv, adblY);
+
+		NumberUtil.Print2DArray ("\tX", aadblX, false); */
 	}
 
 	/*
@@ -122,8 +177,8 @@ public class LinearAlgebra {
 	public static final void main (
 		final String[] astrArgs)
 	{
-		// MatrixManipulation();
+		MatrixManipulation();
 
-		LinearSystemSolver();
+		// LinearSystemSolver();
 	}
 }

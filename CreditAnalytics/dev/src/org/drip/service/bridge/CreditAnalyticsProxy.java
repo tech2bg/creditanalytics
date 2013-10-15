@@ -80,6 +80,9 @@ public class CreditAnalyticsProxy {
 			astrCalibMeasure[i] = "Rate";
 
 			try {
+				System.out.println ("Instr[" + i + "]: " + dtStart.addDays (2) + " => " + new
+					org.drip.analytics.date.JulianDate (adblDate[i]));
+
 				aCompCalib[i] = org.drip.product.creator.CashBuilder.CreateCash (dtStart.addDays (2), new
 					org.drip.analytics.date.JulianDate (adblDate[i]), "USD");
 			} catch (java.lang.Exception e) {
@@ -439,7 +442,8 @@ public class CreditAnalyticsProxy {
 		org.drip.service.bridge.CreditAnalyticsRequest cre = null;
 		org.drip.param.valuation.QuotingParams quotingParams = null;
 
-		org.drip.analytics.date.JulianDate dtStart = org.drip.analytics.date.JulianDate.Today();
+		org.drip.analytics.date.JulianDate dtStart = org.drip.analytics.date.JulianDate.Today().addBusDays
+			(0, "USD");
 
 		org.drip.product.credit.BondComponent bond = TestJSON (iTenorInYears);
 

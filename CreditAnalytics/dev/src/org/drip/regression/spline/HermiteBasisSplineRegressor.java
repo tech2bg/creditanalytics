@@ -85,8 +85,8 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	{
 		super (strName, strScenarioName, aAU, iCk);
 
-		org.drip.math.segment.DesignInelasticParams segParams = new
-			org.drip.math.segment.DesignInelasticParams (iCk, 1);
+		org.drip.math.segment.DesignInelasticParams segParams =
+			org.drip.math.segment.DesignInelasticParams.Create (iCk, 1);
 
 		org.drip.math.segment.ResponseScalingShapeController rssc = new
 			org.drip.math.segment.ResponseScalingShapeController (true, new
