@@ -52,6 +52,7 @@ public interface SingleSegmentRegime {
 	 * 
 	 * @param dblRegimeLeadingResponse Regime Left-most Response
 	 * @param adblSegmentRightEdgeResponse Array of Segment Right Edge Responses
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -61,6 +62,7 @@ public interface SingleSegmentRegime {
 	public abstract boolean setup (
 		final double dblRegimeLeadingResponse,
 		final double[] adblSegmentRightEdgeResponse,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail);
 

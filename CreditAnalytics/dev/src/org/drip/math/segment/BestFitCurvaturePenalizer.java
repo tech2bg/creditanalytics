@@ -29,17 +29,50 @@ package org.drip.math.segment;
  */
 
 /**
- * This Class implements the Segment's Fitness and Curvature Penalizers.
+ * This Class implements the Segment's Best Fit and the Curvature Penalizers.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FitnessCurvaturePenalizer {
+public class BestFitCurvaturePenalizer {
 	private org.drip.math.segment.LocalBasisEvaluator _lbe = null;
-	private org.drip.math.segment.FitnessPenaltyParams _fpp = null;
 	private org.drip.math.segment.CurvaturePenaltyParams _cpp = null;
+	private org.drip.math.segment.BestFitWeightedResponse _bfwr = null;
 
-	private double basisPairCurvaturePenalty (
+	/**
+	 * BestFitCurvaturePenalizer constructor
+	 * 
+	 * @param cpp Curvature Penalty Parameters
+	 * @param bfwr Best Fit Weighted Response
+	 * @param lbe The Local Basis Evaluator
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public BestFitCurvaturePenalizer (
+		final org.drip.math.segment.CurvaturePenaltyParams cpp,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr,
+		final org.drip.math.segment.LocalBasisEvaluator lbe)
+		throws java.lang.Exception
+	{
+		if (null == (_cpp = cpp) || null == (_lbe = lbe))
+			throw new java.lang.Exception ("BestFitCurvaturePenalizer ctr: Invalid Inputs");
+
+		_bfwr = bfwr;
+	}
+
+	/**
+	 * Compute the Cross-Curvature Penalty for the given Basis Pair
+	 * 
+	 * @param iBasisIndexI I Basis Index (I is the Summation Index)
+	 * @param iBasisIndexR R Basis Index (R is the Separator Index)
+	 * 
+	 * @return The Cross-Curvature Penalty for the given Basis Pair
+	 * 
+	 * @throws java.lang.Exception Thrown if the Cross-Curvature Penalty cannot be computed
+	 */
+
+	public double basisPairCurvaturePenalty (
 		final int iBasisIndexI,
 		final int iBasisIndexR)
 		throws java.lang.Exception
@@ -59,23 +92,34 @@ public class FitnessCurvaturePenalizer {
 		return _cpp.coefficient() * org.drip.math.calculus.Integrator.Boole (of, 0., 1.);
 	}
 
-	private double basisPairFitnessPenalty (
+	/**
+	 * Compute the Best Fit Cross-Product Penalty for the given Basis Pair
+	 * 
+	 * @param iBasisIndexI I Basis Index (I is the Summation Index)
+	 * @param iBasisIndexR R Basis Index (R is the Separator Index)
+	 * 
+	 * @return The Best Fit Cross-Product Penalty for the given Basis Pair
+	 * 
+	 * @throws java.lang.Exception Thrown if the Best Fit Cross-Product Penalty cannot be computed
+	 */
+
+	public double basisBestFitPenalty (
 		final int iBasisIndexI,
 		final int iBasisIndexR)
 		throws java.lang.Exception
 	{
-		if (null == _fpp) return 0.;
+		if (null == _bfwr) return 0.;
 
-		int iNumPoint = _fpp.numPoint();
+		int iNumPoint = _bfwr.numPoint();
 
 		if (0 == iNumPoint) return 0.;
 
 		double dblBasisPairFitnessPenalty = 0.;
 
 		for (int i = 0; i < iNumPoint; ++i) {
-			double dblPredictorOrdinate = _fpp.predictorOrdinate (i);
+			double dblPredictorOrdinate = _bfwr.predictorOrdinate (i);
 
-			dblBasisPairFitnessPenalty += _fpp.weight (i) * _lbe.localSpecificBasisResponse
+			dblBasisPairFitnessPenalty += _bfwr.weight (i) * _lbe.localSpecificBasisResponse
 				(dblPredictorOrdinate, iBasisIndexI) * _lbe.localSpecificBasisResponse (dblPredictorOrdinate,
 					iBasisIndexR);
 		}
@@ -84,25 +128,7 @@ public class FitnessCurvaturePenalizer {
 	}
 
 	/**
-	 * FitnessCurvaturePenalizer constructor
-	 * 
-	 * @param cpp Curvature Penalty Parameters
-	 * @param lbe The Local Basis Evaluator
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
-	 */
-
-	public FitnessCurvaturePenalizer (
-		final org.drip.math.segment.CurvaturePenaltyParams cpp,
-		final org.drip.math.segment.LocalBasisEvaluator lbe)
-		throws java.lang.Exception
-	{
-		if (null == (_cpp = cpp) || null == (_lbe = lbe))
-			throw new java.lang.Exception ("FitnessCurvaturePenalizer ctr: Invalid Inputs");
-	}
-
-	/**
-	 * Compute the Basis Pair Penalty Coefficient for the Fitness and the Curvature Penalties
+	 * Compute the Basis Pair Penalty Coefficient for the Best Fit and the Curvature Penalties
 	 * 
 	 * @param iBasisIndexI I Basis Index (I is the Summation Index)
 	 * @param iBasisIndexR R Basis Index (R is the Separator Index)
@@ -115,39 +141,39 @@ public class FitnessCurvaturePenalizer {
 		final int iBasisIndexR)
 		throws java.lang.Exception
 	{
-		return basisPairCurvaturePenalty (iBasisIndexI, iBasisIndexR) + basisPairFitnessPenalty
-			(iBasisIndexI, iBasisIndexR);
+		return basisPairCurvaturePenalty (iBasisIndexI, iBasisIndexR) + basisBestFitPenalty (iBasisIndexI,
+			iBasisIndexR);
 	}
 
 	/**
-	 * Compute the Constraint Value for the Fitness Penalty
+	 * Compute the Penalty Constraint for the Basis Pair
 	 * 
 	 * @param iBasisIndexR R Basis Index (R is the Separator Index)
 	 * 
-	 * @return The Constraint Value for the Fitness Penalty
+	 * @return Penalty Constraint for the Basis Pair
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public double basisPairFitnessConstraint (
+	public double basisPairPenaltyConstraint (
 		final int iBasisIndexR)
 		throws java.lang.Exception
 	{
-		if (null == _fpp) return 0.;
+		if (null == _bfwr) return 0.;
 
-		int iNumPoint = _fpp.numPoint();
+		int iNumPoint = _bfwr.numPoint();
 
 		if (0 == iNumPoint) return 0.;
 
-		double dblBasisPairFitnessPenalty = 0.;
+		double dblBasisPairPenaltyConstraint = 0.;
 
 		for (int i = 0; i < iNumPoint; ++i) {
-			double dblPredictorOrdinate = _fpp.predictorOrdinate (i);
+			double dblPredictorOrdinate = _bfwr.predictorOrdinate (i);
 
-			dblBasisPairFitnessPenalty += _fpp.weight (i) * _lbe.localSpecificBasisResponse
-				(dblPredictorOrdinate, iBasisIndexR) * _fpp.response (i);
+			dblBasisPairPenaltyConstraint += _bfwr.weight (i) * _lbe.localSpecificBasisResponse
+				(dblPredictorOrdinate, iBasisIndexR) * _bfwr.response (i);
 		}
 
-		return dblBasisPairFitnessPenalty / iNumPoint;
+		return dblBasisPairPenaltyConstraint / iNumPoint;
 	}
 }

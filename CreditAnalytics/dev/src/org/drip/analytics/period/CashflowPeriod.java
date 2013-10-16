@@ -31,14 +31,14 @@ package org.drip.analytics.period;
  */
 
 /**
- * CouponPeriod extends the period class with the following coupon day-count specific parameters: frequency,
- * 	reset date, and accrual day-count convention. It also exposes static methods to construct coupon period
- * 	sets starting backwards/forwards, as well as merge coupon periods.
+ * CashflowPeriod extends the period class with the following cash-flow day-count specific parameters:
+ *  frequency, reset date, and accrual day-count convention. It also exposes static methods to construct
+ *  cash-flow period sets starting backwards/forwards, as well as merge cash-flow periods.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CouponPeriod extends Period {
+public class CashflowPeriod extends Period {
 	private static final boolean s_bLog = false;
 
 	private int _iFreq = 2;
@@ -66,17 +66,17 @@ public class CouponPeriod extends Period {
 	}
 
 	/**
-	 * Merge the left and right coupon periods onto a bigger coupon period
+	 * Merge the left and right Cash Flow periods onto a bigger Cash Flow period
 	 * 
-	 * @param periodLeft Left Coupon Period
-	 * @param periodRight Right Coupon Period
+	 * @param periodLeft Left Cash Flow Period
+	 * @param periodRight Right Cash Flow Period
 	 * 
-	 * @return Merged Coupon Period
+	 * @return Merged Cash Flow Period
 	 */
 
-	public static final CouponPeriod MergeCouponPeriods (
-		final CouponPeriod periodLeft,
-		final CouponPeriod periodRight)
+	public static final CashflowPeriod MergeCashFlowPeriods (
+		final CashflowPeriod periodLeft,
+		final CashflowPeriod periodRight)
 	{
 		if (null == periodLeft || null == periodRight || periodLeft._dblEnd != periodRight._dblStart)
 			return null;
@@ -88,10 +88,10 @@ public class CouponPeriod extends Period {
 
 			if (!org.drip.math.common.NumberUtil.IsValid (dblLeftDCF)) return null;
 
-			return new CouponPeriod (periodLeft._dblStart, periodRight._dblEnd, periodLeft._dblAccrualStart,
-				periodRight._dblAccrualEnd, periodRight._dblPay, periodLeft._dblReset, periodRight._iFreq,
-					dblLeftDCF + 1. / periodRight._iFreq, periodRight._strCouponDC,
-						periodRight._bApplyCpnEOMAdj, periodRight._strAccrualDC,
+			return new CashflowPeriod (periodLeft._dblStart, periodRight._dblEnd,
+				periodLeft._dblAccrualStart, periodRight._dblAccrualEnd, periodRight._dblPay,
+					periodLeft._dblReset, periodRight._iFreq, dblLeftDCF + 1. / periodRight._iFreq,
+						periodRight._strCouponDC, periodRight._bApplyCpnEOMAdj, periodRight._strAccrualDC,
 							periodRight._bApplyAccEOMAdj, periodRight._dblMaturity,
 								periodRight._strCalendar);
 		} catch (java.lang.Exception e) {
@@ -127,7 +127,7 @@ public class CouponPeriod extends Period {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<CouponPeriod> GeneratePeriodsBackward (
+	public static final java.util.List<CashflowPeriod> GeneratePeriodsBackward (
 		final double dblEffective,
 		final double dblMaturityIn,
 		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
@@ -157,8 +157,8 @@ public class CouponPeriod extends Period {
 
 		boolean bFinalPeriod = true;
 		boolean bGenerationDone = false;
-		CouponPeriod periodFirst = null;
-		CouponPeriod periodSecond = null;
+		CashflowPeriod periodFirst = null;
+		CashflowPeriod periodSecond = null;
 		double dblPeriodEndDate = dblMaturity;
 		java.lang.String strTenor = (12 / iFreq) + "M";
 		double dblPeriodStartDate = java.lang.Double.NaN;
@@ -172,7 +172,7 @@ public class CouponPeriod extends Period {
 			return null;
 		}
 
-		java.util.List<CouponPeriod> lsCouponPeriod = new java.util.ArrayList<CouponPeriod>();
+		java.util.List<CashflowPeriod> lsCashflowPeriod = new java.util.ArrayList<CashflowPeriod>();
 
 		while (!bGenerationDone) {
 			if (dblPeriodStartDate <= dblEffective) {
@@ -195,7 +195,7 @@ public class CouponPeriod extends Period {
 								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStart,
 									dblAccrualEnd), strCalendar);
 
-					lsCouponPeriod.add (0, periodFirst = new CouponPeriod (DAPAdjust (dblPeriodStartDate,
+					lsCashflowPeriod.add (0, periodFirst = new CashflowPeriod (DAPAdjust (dblPeriodStartDate,
 						dapPeriodStart), dblPeriodEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust
 							(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq,
 								dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
@@ -213,7 +213,7 @@ public class CouponPeriod extends Period {
 								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStart,
 									dblAccrualEnd), strCalendar);
 
-					lsCouponPeriod.add (0, periodFirst = new CouponPeriod (DAPAdjust (dblPeriodStartDate,
+					lsCashflowPeriod.add (0, periodFirst = new CashflowPeriod (DAPAdjust (dblPeriodStartDate,
 						dapPeriodStart), DAPAdjust (dblPeriodEndDate, dapPeriodEnd), dblAccrualStart,
 							dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
 								(dblPeriodStartDate, dapReset), iFreq, dblDCF, strCouponDC, bApplyCpnEOMAdj,
@@ -237,19 +237,19 @@ public class CouponPeriod extends Period {
 			}
 		}
 
-		if (!bMergeLeadingPeriods || null == periodFirst || null == periodSecond) return lsCouponPeriod;
+		if (!bMergeLeadingPeriods || null == periodFirst || null == periodSecond) return lsCashflowPeriod;
 
-		CouponPeriod periodMerged = MergeCouponPeriods (periodFirst, periodSecond);
+		CashflowPeriod periodMerged = MergeCashFlowPeriods (periodFirst, periodSecond);
 
-		if (null == periodMerged) return lsCouponPeriod;
+		if (null == periodMerged) return lsCashflowPeriod;
 
-		lsCouponPeriod.remove (0);
+		lsCashflowPeriod.remove (0);
 
-		lsCouponPeriod.remove (0);
+		lsCashflowPeriod.remove (0);
 
-		lsCouponPeriod.add (0, periodMerged);
+		lsCashflowPeriod.add (0, periodMerged);
 
-		return lsCouponPeriod;
+		return lsCashflowPeriod;
 	}
 
 	/**
@@ -275,7 +275,7 @@ public class CouponPeriod extends Period {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<CouponPeriod> GeneratePeriodsForward (
+	public static final java.util.List<CashflowPeriod> GeneratePeriodsForward (
 		final double dblEffective,
 		final double dblMaturity,
 		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
@@ -304,7 +304,7 @@ public class CouponPeriod extends Period {
 		double dblPeriodStartDate = dblEffective;
 		double dblPeriodEndDate = dblPeriodStartDate + dblPeriodDays;
 
-		java.util.List<CouponPeriod> lsCouponPeriod = new java.util.ArrayList<CouponPeriod>();
+		java.util.List<CashflowPeriod> lsCashflowPeriod = new java.util.ArrayList<CashflowPeriod>();
 
 		while (!bFinalPeriod) {
 			if (dblPeriodEndDate >= dblMaturity) {
@@ -324,8 +324,8 @@ public class CouponPeriod extends Period {
 								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAdjustedAccrualStart,
 									dblAdjustedAccrualEnd), strCalendar);
 
-					lsCouponPeriod.add (0, new CouponPeriod (DAPAdjust (dblPeriodStartDate, dapPeriodStart),
-						DAPAdjust (dblPeriodEndDate, dapPeriodEnd), dblAdjustedAccrualStart,
+					lsCashflowPeriod.add (0, new CashflowPeriod (DAPAdjust (dblPeriodStartDate,
+						dapPeriodStart), DAPAdjust (dblPeriodEndDate, dapPeriodEnd), dblAdjustedAccrualStart,
 							dblAdjustedAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
 								(dblPeriodStartDate, dapReset), iFreq, dblDCF, strCouponDC,
 									bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj, dblMaturity,
@@ -341,10 +341,10 @@ public class CouponPeriod extends Period {
 								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAdjustedAccrualStart,
 									dblAdjustedAccrualEnd), strCalendar);
 
-					lsCouponPeriod.add (0, new CouponPeriod (DAPAdjust (dblPeriodStartDate, dapPeriodStart),
-						dblPeriodEndDate, dblAdjustedAccrualStart, dblAdjustedAccrualEnd, DAPAdjust
-							(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq,
-								dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
+					lsCashflowPeriod.add (0, new CashflowPeriod (DAPAdjust (dblPeriodStartDate,
+						dapPeriodStart), dblPeriodEndDate, dblAdjustedAccrualStart, dblAdjustedAccrualEnd,
+							DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset),
+								iFreq, dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
 									dblMaturity, strCalendar));
 				}
 			} catch (java.lang.Exception e) {
@@ -357,20 +357,20 @@ public class CouponPeriod extends Period {
 			dblPeriodStartDate = dblPeriodEndDate - dblPeriodDays;
 		}
 
-		return lsCouponPeriod;
+		return lsCashflowPeriod;
 	}
 
 	/**
-	 * Generates a single coupon period between the effective and the maturity dates
+	 * Generates a single Cash Flow period between the effective and the maturity dates
 	 * 
 	 * @param dblEffective Effective date
 	 * @param dblMaturity Maturity date
 	 * @param strCalendar Optional Holiday Calendar for accrual
 	 * 
-	 * @return List containing the single coupon period
+	 * @return List containing the single Cash Flow period
 	 */
 
-	public static final java.util.List<CouponPeriod> GetSinglePeriod (
+	public static final java.util.List<CashflowPeriod> GetSinglePeriod (
 		final double dblEffective,
 		final double dblMaturity,
 		final java.lang.String strCalendar)
@@ -379,11 +379,11 @@ public class CouponPeriod extends Period {
 			!org.drip.math.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity)
 			return null;
 
-		java.util.List<CouponPeriod> lsCouponPeriod = new java.util.ArrayList<CouponPeriod>();
+		java.util.List<CashflowPeriod> lsCashflowPeriod = new java.util.ArrayList<CashflowPeriod>();
 
 		try {
-			lsCouponPeriod.add (0, new CouponPeriod (dblEffective, dblMaturity, dblEffective, dblMaturity,
-				dblMaturity, dblEffective, 2, 0.5, "30/360", true, "30/360", true, dblMaturity,
+			lsCashflowPeriod.add (0, new CashflowPeriod (dblEffective, dblMaturity, dblEffective,
+				dblMaturity, dblMaturity, dblEffective, 2, 0.5, "30/360", true, "30/360", true, dblMaturity,
 					strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -391,11 +391,11 @@ public class CouponPeriod extends Period {
 			return null;
 		}
 
-		return lsCouponPeriod;
+		return lsCashflowPeriod;
 	}
 
 	/**
-	 * Constructs a CouponPeriod instance from the specified dates
+	 * Constructs a CashflowPeriod instance from the specified dates
 	 * 
 	 * @param dblStart Period Start Date
 	 * @param dblEnd Period End Date
@@ -415,7 +415,7 @@ public class CouponPeriod extends Period {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public CouponPeriod (
+	public CashflowPeriod (
 		final double dblStart,
 		final double dblEnd,
 		final double dblAccrualStart,
@@ -450,14 +450,14 @@ public class CouponPeriod extends Period {
 	}
 
 	/**
-	 * De-serialization of CouponPeriod from byte stream
+	 * De-serialization of CashflowPeriod from byte stream
 	 * 
 	 * @param ab Byte stream
 	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize CouponPeriod
+	 * @throws java.lang.Exception Thrown if cannot properly de-serialize CashflowPeriod
 	 */
 
-	public CouponPeriod (
+	public CashflowPeriod (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
@@ -474,10 +474,11 @@ public class CouponPeriod extends Period {
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblAccrualEnd))
-			throw new java.lang.Exception ("CouponPeriod::getAccrualDCF => Accrual end is NaN!");
+			throw new java.lang.Exception ("CashflowPeriod::getAccrualDCF => Accrual end is NaN!");
 
 		if (_dblAccrualStart > dblAccrualEnd && dblAccrualEnd > _dblAccrualEnd)
-			throw new java.lang.Exception ("CouponPeriod::getAccrualDCF => Invalid in-period accrual date!");
+			throw new java.lang.Exception
+				("CashflowPeriod::getAccrualDCF => Invalid in-period accrual date!");
 
 		return org.drip.analytics.daycount.Convention.YearFraction (_dblAccrualStart, dblAccrualEnd,
 			_strAccrualDC, _bApplyAccEOMAdj, _dblMaturity, new org.drip.analytics.daycount.ActActDCParams

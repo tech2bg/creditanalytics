@@ -528,7 +528,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.math.regime.MultiSegmentRegime regime =
 			org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator ("DISC_CURVE_REGIME",
-				adblDate, adblQuote, aSBP,
+				adblDate, adblQuote, aSBP, null,
 					org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
 						org.drip.math.regime.MultiSegmentRegime.CALIBRATE);
 
@@ -537,6 +537,14 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		return regime.responseValue (dblDate);
 	}
+
+	/**
+	 * Retrieve the Latent State Quantification Metric
+	 * 
+	 * @return The Latent State Quantification Metric
+	 */
+
+	public abstract java.lang.String latentStateQuantificationMetric();
 
 	/**
 	 * Retrieve the Jacobian for the DF to the given date
@@ -753,5 +761,58 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		return getForwardRateJack (epoch(), dt);
+	}
+
+	/**
+	 * Convert the inferred Formulation Constraint into a "Truthness" Entity
+	 * 
+	 * @return Map of the Truthness Entities
+	 */
+
+	public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness()
+	{
+		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+
+		if (null == aCC) return null;
+
+		int iNumComp = aCC.length;
+
+		if (0 == iNumComp) return null;
+
+		if (QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase (latentStateQuantificationMetric())) {
+			java.util.Map<java.lang.Double, java.lang.Double> mapCanonicalTruthness = new
+				java.util.TreeMap<java.lang.Double, java.lang.Double>();
+
+			mapCanonicalTruthness.put (_dblEpochDate, 1.);
+
+			for (org.drip.product.definition.CalibratableComponent cc : aCC) {
+				if (null == cc) continue;
+
+				java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+					cc.getCashFlowPeriod();
+
+				if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
+
+				for (org.drip.analytics.period.CashflowPeriod cpnPeriod : cc.getCashFlowPeriod()) {
+					if (null == cpnPeriod) continue;
+
+					double dblPay = cpnPeriod.getPayDate();
+
+					if (dblPay >= _dblEpochDate) {
+						try {
+							mapCanonicalTruthness.put (dblPay, df (dblPay));
+						} catch (java.lang.Exception e) {
+							e.printStackTrace();
+
+							return null;
+						}
+					}
+				}
+			}
+
+			return mapCanonicalTruthness;
+		}
+
+		return null;
 	}
 }

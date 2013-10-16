@@ -71,6 +71,9 @@ public class FormatUtil {
 		final double dblMultiplier)
 	{
 		java.lang.String strFormat = "#";
+		java.lang.String strLeading = "";
+
+		if (0 < dblMultiplier * dblValue) strLeading = " ";
 
 		for (int i = 0; i < iNumLeft; ++i)
 			strFormat += "0";
@@ -82,6 +85,6 @@ public class FormatUtil {
 				strFormat += "0";
 		}
 
-		return new java.text.DecimalFormat (strFormat).format (dblMultiplier * dblValue);
+		return strLeading + new java.text.DecimalFormat (strFormat).format (dblMultiplier * dblValue);
 	}
 }

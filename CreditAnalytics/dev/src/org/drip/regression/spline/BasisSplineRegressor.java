@@ -221,9 +221,9 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	@Override public boolean execRegression()
 	{
 		try {
-			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (25., 0., 20.25)) && null != (_wjRight =
-				_seg2.jackDCoeffDEdgeParams (_seg1, 16.)) && _seg2.calibrate (_seg1, 14.) && null !=
-					(_wjValue = _seg2.jackDResponseDEdgeParams (5.));
+			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null)) && null !=
+				(_wjRight = _seg2.jackDCoeffDEdgeParams (_seg1, 16., null)) && _seg2.calibrate (_seg1, 14.,
+					null) && null != (_wjValue = _seg2.jackDResponseDEdgeParams (5.));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

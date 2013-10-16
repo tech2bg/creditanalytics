@@ -116,7 +116,7 @@ public class RegimeModifier {
 		}
 
 		return org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator (regimeIn.name(),
-			adblPredictorOrdinate, adblResponseValue, aPRBPOut, iCalibrationBoundaryCondition,
+			adblPredictorOrdinate, adblResponseValue, aPRBPOut, null, iCalibrationBoundaryCondition,
 				iCalibrationDetail);
 	}
 
@@ -199,7 +199,7 @@ public class RegimeModifier {
 		adblPredictorOrdinateOut[iNumSegmentIn] = aSegment[iNumSegmentIn - 1].right();
 
 		return org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator (regimeIn.name(),
-			adblPredictorOrdinateOut, dblRegimeResponseValueLeft, aRVCOut, aPRBPOut,
+			adblPredictorOrdinateOut, dblRegimeResponseValueLeft, aRVCOut, aPRBPOut, null,
 				iCalibrationBoundaryCondition, iCalibrationDetail);
 	}
 
@@ -268,7 +268,7 @@ public class RegimeModifier {
 
 		if (null == regimeOut) return null;
 
-		return regimeOut.setupHermite (aPORDOutLeft, aPORDOutRight, null,
+		return regimeOut.setupHermite (aPORDOutLeft, aPORDOutRight, null, null,
 			org.drip.math.regime.MultiSegmentRegime.CALIBRATE) ? regimeOut : null;
 	}
 

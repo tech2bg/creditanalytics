@@ -1411,7 +1411,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
 		if (null == _periodParams) return null;
 
@@ -1423,7 +1423,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return _mktConv._settleParams;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriodCurveFactors> getCouponFlow (
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> getCouponFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams)
@@ -1432,8 +1432,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			mktParams.getCreditCurve())
 			return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriodCurveFactors> lsCP = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriodCurveFactors>();
+		java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> lsCP = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriodCurveFactors>();
 
 		double dblDFStart = java.lang.Double.NaN;
 		double dblSurvProbStart = java.lang.Double.NaN;
@@ -1441,7 +1441,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		for (org.drip.analytics.period.Period fp : _periodParams.getPeriods()) {
 			if (null == fp) continue;
 
-			org.drip.analytics.period.CouponPeriodCurveFactors cp = null;
+			org.drip.analytics.period.CashflowPeriodCurveFactors cp = null;
 
 			try {
 				double dblIndexRate = java.lang.Double.NaN;
@@ -1471,7 +1471,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				double dblDFEnd = mktParams.getDiscountCurve().df (fp.getPayDate());
 
-				cp = new org.drip.analytics.period.CouponPeriodCurveFactors (fp.getStartDate(),
+				cp = new org.drip.analytics.period.CashflowPeriodCurveFactors (fp.getStartDate(),
 					fp.getEndDate(), fp.getAccrualStartDate(), fp.getAccrualEndDate(), fp.getPayDate(),
 						fp.getCouponDCF(), getCoupon (valParams._dblValue, mktParams), getNotional
 							(fp.getStartDate()), getNotional (fp.getEndDate()), dblDFStart, dblDFEnd,

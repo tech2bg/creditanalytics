@@ -89,7 +89,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 
 	public double _dblFinalMaturity = java.lang.Double.NaN;
 
-	protected java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
+	protected java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
 	/**
 	 * Constructs PeriodSet from the effective date, day count, frequency, and the list
@@ -105,7 +105,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		final double dblEffective,
 		final java.lang.String strDC,
 		final int iFreq,
-		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod)
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod)
 	{
 		_iFreq = iFreq;
 		_strCouponDC = strDC;
@@ -221,9 +221,9 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 						continue;
 
 					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-					_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod
+					_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -251,7 +251,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	 * @return List of Coupon Period
 	 */
 
-	public java.util.List<org.drip.analytics.period.CouponPeriod> getPeriods()
+	public java.util.List<org.drip.analytics.period.CashflowPeriod> getPeriods()
 	{
 		return _lsCouponPeriod;
 	}
@@ -262,7 +262,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	 * @return The first Coupon period
 	 */
 
-	public org.drip.analytics.period.CouponPeriod getFirstPeriod()
+	public org.drip.analytics.period.CashflowPeriod getFirstPeriod()
 	{
 		return _lsCouponPeriod.get (0);
 	}
@@ -273,7 +273,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	 * @return The final Coupon period
 	 */
 
-	public org.drip.analytics.period.CouponPeriod getLastPeriod()
+	public org.drip.analytics.period.CashflowPeriod getLastPeriod()
 	{
 		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
 	}
@@ -297,7 +297,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 
 		int i = 0;
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			if (period.contains (dblDate)) return i;
 
 			++i;
@@ -315,7 +315,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	 * @return Period object corresponding to the input index
 	 */
 
-	public org.drip.analytics.period.CouponPeriod getPeriod (
+	public org.drip.analytics.period.CashflowPeriod getPeriod (
 		final int iIndex)
 	{
 		try {
@@ -359,7 +359,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				if (null == p) continue;
 
 				if (bFirstEntry)
@@ -397,13 +397,13 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	{
 		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 		int i = 5;
 
 		while (0 != i--) {
-			lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
+			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 				dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360",
 					true, dblStart + 1825, "GBP"));
 

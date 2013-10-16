@@ -50,7 +50,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 	private org.drip.math.segment.DesignInelasticParams _dip = null;
 	private org.drip.math.segment.ResponseScalingShapeController _rssc = null;
 	private org.drip.math.function.AbstractUnivariate[] _aAUResponseBasis = null;
-	private org.drip.math.calculus.WengertJacobian _wjDBasisCoeffDEdgeParams = null;
+	private org.drip.math.calculus.WengertJacobian _wjDBasisCoeffDEdgeValue = null;
 
 	/**
 	 * Build the LocalBasisPredictorResponse instance from the Basis Set
@@ -86,7 +86,8 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final double[] adblResponse,
 		final double[] adblLeftEdgeLocalDeriv,
 		final double[] adblRightEdgeLocalDeriv,
-		final org.drip.math.segment.ResponseBasisConstraint[] aRBC)
+		final org.drip.math.segment.ResponseBasisConstraint[] aRBC,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
 		int iNumConstraint = null == aRBC ? 0 : aRBC.length;
 		int iNumResponseBasisCoeff = _adblResponseBasisCoeff.length;
@@ -102,8 +103,8 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 			return false;
 
 		try {
-			org.drip.math.segment.FitnessCurvaturePenalizer fcp = new
-				org.drip.math.segment.FitnessCurvaturePenalizer (_dip.getCPP(), this);
+			org.drip.math.segment.BestFitCurvaturePenalizer bfcp = new
+				org.drip.math.segment.BestFitCurvaturePenalizer (_dip.getCPP(), bfwr, this);
 
 			for (int j = 0; j < iNumResponseBasisCoeff; ++j) {
 				if (j < iNumPredictorOrdinate)
@@ -118,7 +119,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 					adblPredictorResponseConstraintValue[j] =
 						adblRightEdgeLocalDeriv[j - iNumPredictorOrdinate - iNumConstraint - iNumLeftDeriv];
 				else
-					adblPredictorResponseConstraintValue[j] = fcp.basisPairFitnessConstraint (j);
+					adblPredictorResponseConstraintValue[j] = bfcp.basisPairPenaltyConstraint (j);
 			}
 
 			for (int i = 0; i < iNumResponseBasisCoeff; ++i) {
@@ -145,7 +146,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 						aadblResponseBasisCoeffConstraint[l][i] = localSpecificBasisDerivative (1., l -
 							iNumPredictorOrdinate - iNumConstraint - iNumLeftDeriv + 1, i);
 					else
-						aadblResponseBasisCoeffConstraint[l][i] = fcp.basisPairConstraintCoefficient (i, l);
+						aadblResponseBasisCoeffConstraint[l][i] = bfcp.basisPairConstraintCoefficient (i, l);
 				}
 			}
 		} catch (java.lang.Exception e) {
@@ -154,17 +155,17 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 			return false;
 		}
 
-		org.drip.math.linearalgebra.LinearizationOutput lss =
+		org.drip.math.linearalgebra.LinearizationOutput lo =
 			org.drip.math.linearalgebra.LinearSystemSolver.SolveUsingMatrixInversion
 				(aadblResponseBasisCoeffConstraint, adblPredictorResponseConstraintValue);
 
-		if (null == lss) return false;
+		if (null == lo) return false;
 
-		double[] adblCalibResponseBasisCoeff = lss.getTransformedRHS();
+		double[] adblCalibResponseBasisCoeff = lo.getTransformedRHS();
 
 		if (null == adblCalibResponseBasisCoeff || adblCalibResponseBasisCoeff.length !=
 			iNumResponseBasisCoeff || null == (_aadblDResponseBasisCoeffDConstraint =
-				lss.getTransformedMatrix()) || _aadblDResponseBasisCoeffDConstraint.length !=
+				lo.getTransformedMatrix()) || _aadblDResponseBasisCoeffDConstraint.length !=
 					iNumResponseBasisCoeff || _aadblDResponseBasisCoeffDConstraint[0].length !=
 						iNumResponseBasisCoeff)
 			return false;
@@ -186,7 +187,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 
 		for (int i = 0; i < iSize; ++i) {
 			for (int j = 0; j < iSize; ++j) {
-				if (!_wjDBasisCoeffDEdgeParams.accumulatePartialFirstDerivative (i, j,
+				if (!_wjDBasisCoeffDEdgeValue.accumulatePartialFirstDerivative (i, j,
 					_aadblDResponseBasisCoeffDConstraint[i][j]))
 					return false;
 			}
@@ -263,8 +264,8 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 				(dblLocalPredictorOrdinate), this, iCk) : null;
 
 			return lbprLeftSnipped.calibrate (new double[] {0., 1.}, new double[] {localResponseValue
-				(dblLocalPredictorOrdinate), localResponseValue (1.)}, adblCalibLeftEdgeDeriv, null, null) ?
-					lbprLeftSnipped : null;
+				(dblLocalPredictorOrdinate), localResponseValue (1.)}, adblCalibLeftEdgeDeriv, null, null,
+					null) ? lbprLeftSnipped : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -285,7 +286,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 				null;
 
 			return lbprRightSnipped.calibrate (new double[] {0., 1.}, new double[] {localResponseValue (0.),
-				localResponseValue (dblLocalPredictorOrdinate)}, adblCalibLeftEdgeDeriv, null, null) ?
+				localResponseValue (dblLocalPredictorOrdinate)}, adblCalibLeftEdgeDeriv, null, null, null) ?
 					lbprRightSnipped : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -349,8 +350,8 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		if (null == adblDResponseDBasisCoeff || iNumResponseBasisCoeff != adblDResponseDBasisCoeff.length)
 			return null;
 
-		org.drip.math.calculus.WengertJacobian wjDBasisCoeffDEdgeParams = (null == _wjDBasisCoeffDEdgeParams)
-			? jackDCoeffDEdgeParams() : _wjDBasisCoeffDEdgeParams;
+		org.drip.math.calculus.WengertJacobian wjDBasisCoeffDEdgeParams = (null == _wjDBasisCoeffDEdgeValue)
+			? jackDCoeffDEdgeParams() : _wjDBasisCoeffDEdgeValue;
 
 		for (int i = 0; i < iNumResponseBasisCoeff; ++i) {
 			for (int j = 0; j < iNumResponseBasisCoeff; ++j)
@@ -409,25 +410,25 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 
 	@Override public org.drip.math.calculus.WengertJacobian jackDCoeffDEdgeParams()
 	{
-		if (null != _wjDBasisCoeffDEdgeParams) return _wjDBasisCoeffDEdgeParams;
+		if (null != _wjDBasisCoeffDEdgeValue) return _wjDBasisCoeffDEdgeValue;
 
 		int iNumResponseBasisCoeff = numBasis();
 
 		try {
-			_wjDBasisCoeffDEdgeParams = new org.drip.math.calculus.WengertJacobian (iNumResponseBasisCoeff,
+			_wjDBasisCoeffDEdgeValue = new org.drip.math.calculus.WengertJacobian (iNumResponseBasisCoeff,
 				iNumResponseBasisCoeff);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
-			return _wjDBasisCoeffDEdgeParams = null;
+			return _wjDBasisCoeffDEdgeValue = null;
 		}
 
 		for (int i = 0; i < iNumResponseBasisCoeff; ++i) {
-			if (!_wjDBasisCoeffDEdgeParams.setWengert (i, _adblResponseBasisCoeff[i]))
-				return _wjDBasisCoeffDEdgeParams = null;
+			if (!_wjDBasisCoeffDEdgeValue.setWengert (i, _adblResponseBasisCoeff[i]))
+				return _wjDBasisCoeffDEdgeValue = null;
 		}
 
-		return setJackDCoeffDEdge() ? _wjDBasisCoeffDEdgeParams : (_wjDBasisCoeffDEdgeParams = null);
+		return setJackDCoeffDEdge() ? _wjDBasisCoeffDEdgeValue : (_wjDBasisCoeffDEdgeValue = null);
 	}
 
 	/**
@@ -466,16 +467,21 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 		final org.drip.math.segment.CalibrationParams cp)
 	{
 		return null == cp ? false : calibrate (cp.predictorOrdinates(), cp.reponseValues(), cp.leftDeriv(),
-			cp.rightDeriv(), cp.getBasisFunctionConstraint (_aAUResponseBasis, _rssc, this));
+			cp.rightDeriv(), cp.getBasisFunctionConstraint (_aAUResponseBasis, _rssc, this),
+				cp.bestFitWeightedResponse());
 	}
 
 	@Override public boolean calibrate (
 		final org.drip.math.segment.PredictorResponse prPrev,
-		final org.drip.math.segment.ResponseValueConstraint rvc)
+		final org.drip.math.segment.ResponseValueConstraint rvc,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
 		if (null == rvc) return false;
 
 		int iCk = _dip.getCk();
+
+		org.drip.math.segment.BestFitWeightedResponse bfrwSegment = null == bfwr ? null : bfwr.sizeToSegment
+			(this);
 
 		if (null == prPrev) {
 			try {
@@ -490,7 +496,7 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 
 				return calibrate (new double[] {0.}, new double[] {localResponseValue (0.)},
 					adblLocalDerivAtLeftOrdinate, null, new org.drip.math.segment.ResponseBasisConstraint[]
-						{rvc.responseBasisConstraint (_aAUResponseBasis, _rssc, this)});
+						{rvc.responseBasisConstraint (_aAUResponseBasis, _rssc, this)}, bfrwSegment);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -502,12 +508,34 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 			return calibrate (new double[] {0.}, new double[] {prPrev.localResponseValue (1.)}, 0 == iCk ?
 				null : globalCk (left(), prPrev, iCk), null, new
 					org.drip.math.segment.ResponseBasisConstraint[] {rvc.responseBasisConstraint
-						(_aAUResponseBasis, _rssc, this)});
+						(_aAUResponseBasis, _rssc, this)}, bfrwSegment);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return false;
+	}
+
+	@Override public double dcpe()
+		throws java.lang.Exception
+	{
+		double dblDCPE = 0.;
+		int iNumBasis = _aAUResponseBasis.length;
+
+		org.drip.math.segment.CurvaturePenaltyParams cpp = _dip.getCPP();
+
+		if (null == cpp) cpp = new org.drip.math.segment.CurvaturePenaltyParams (2, 1.);
+
+		org.drip.math.segment.BestFitCurvaturePenalizer bfcp = new
+			org.drip.math.segment.BestFitCurvaturePenalizer (cpp, null, this);
+
+		for (int i = 0; i < iNumBasis; ++i) {
+			for (int j = 0; j < iNumBasis; ++j)
+				dblDCPE += _adblResponseBasisCoeff[i] * _adblResponseBasisCoeff[j] *
+					bfcp.basisPairCurvaturePenalty (i, j);
+		}
+
+		return cpp.coefficient() * dblDCPE;
 	}
 
 	@Override public java.lang.String displayString()

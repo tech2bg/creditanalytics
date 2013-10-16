@@ -47,7 +47,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.definition.Component[] _aComp = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
-	private java.util.List<org.drip.analytics.period.CouponPeriod> _lPeriods = null;
+	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lPeriods = null;
 
 	@Override protected int measureAggregationType (
 		final java.lang.String strMeasureName)
@@ -368,9 +368,9 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 						continue;
 
 					if (null == _lPeriods)
-						_lPeriods = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lPeriods = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-					_lPeriods.add (new org.drip.analytics.period.CouponPeriod (astrRecord[i].getBytes()));
+					_lPeriods.add (new org.drip.analytics.period.CashflowPeriod (astrRecord[i].getBytes()));
 				}
 			}
 		}

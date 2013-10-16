@@ -111,7 +111,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final java.lang.String strDCZC,
 		final java.lang.String strCalendarZC,
 		final boolean bApplyEOMAdjZC,
-		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod,
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.definition.DiscountCurve dc,
@@ -140,7 +140,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 			bApplyCpnEOMAdj = quotingParams._bYieldApplyEOMAdj;
 		}
 
-		for (org.drip.analytics.period.CouponPeriod period : lsCouponPeriod)
+		for (org.drip.analytics.period.CashflowPeriod period : lsCouponPeriod)
 			updateMapEntries (period.getPayDate(), iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
 
 		updateMapEntries (dblWorkoutDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
@@ -224,6 +224,11 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
 	{
 		return _dc.lsmm();
+	}
+
+	@Override public java.lang.String latentStateQuantificationMetric()
+	{
+		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;
 	}
 
 	@Override public double manifestMeasure (

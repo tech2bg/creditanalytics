@@ -59,7 +59,7 @@ public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.
 	@Override public boolean preRegression()
 	{
 		try {
-			return _sss.setup (1., new double[] {1., 2., 3., 4.},
+			return _sss.setup (1., new double[] {1., 2., 3., 4.}, null,
 				org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_FLOATING,
 					org.drip.math.regime.MultiSegmentRegime.CALIBRATE);
 		} catch (java.lang.Exception e) {

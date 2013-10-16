@@ -597,17 +597,17 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 * @return List of CouponPeriods
 	 */
 
-	public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	public java.util.List<org.drip.analytics.period.CashflowPeriod> getCouponPeriod()
 	{
-		java.util.Set<org.drip.analytics.period.CouponPeriod> setPeriod =
+		java.util.Set<org.drip.analytics.period.CashflowPeriod> setPeriod =
 			org.drip.analytics.support.AnalyticsHelper.AggregateComponentPeriods (getComponents());
 
 		if (null == setPeriod || 0 == setPeriod.size()) return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-		for (org.drip.analytics.period.CouponPeriod p : setPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod p : setPeriod) {
 			if (null != p) lsCouponPeriod.add (p);
 		}
 

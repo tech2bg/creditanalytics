@@ -92,6 +92,7 @@ public class DiscountCurveReconcilerAPI {
 	{
 		return new LinearCurveCalibrator (
 			prbp,
+			null,
 			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
 			MultiSegmentRegime.CALIBRATE);
 	}

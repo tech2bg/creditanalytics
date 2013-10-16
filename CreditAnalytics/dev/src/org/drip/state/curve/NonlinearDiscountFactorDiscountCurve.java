@@ -154,7 +154,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			(_adblDate[iNumSegment - 1] - _dblEpochDate);
 
 		_msr = org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator ("POLY_SPLINE_DF_REGIME",
-			adblDate, adblDF, aSBP, org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
+			adblDate, adblDF, aSBP, null, org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
 				org.drip.math.regime.MultiSegmentRegime.CALIBRATE);
 	}
 
@@ -421,7 +421,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			return true;
 		}
 
-		if (1 == iNodeIndex) return _msr.setLeftNode (_dblLeftNodeDF, _dblLeftNodeDFSlope, dblNodeDF);
+		if (1 == iNodeIndex) return _msr.setLeftNode (_dblLeftNodeDF, _dblLeftNodeDFSlope, dblNodeDF, null);
 
 		if (iNumDate - 1 == iNodeIndex) {
 			try {

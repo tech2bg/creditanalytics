@@ -40,6 +40,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 	private org.drip.state.estimator.CurveRegime _cr = null;
 	private org.drip.state.estimator.RegimeBuilderSet _rbs = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
+	private org.drip.math.segment.BestFitWeightedResponse _fwr = null;
 	private org.drip.math.regime.MultiSegmentRegime _regimePrev = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
@@ -116,6 +117,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 	 * @param cmp Component Market Parameter
 	 * @param quotingParams Quoting Parameter
 	 * @param regimePrev The Previous Regime Used to value cash flows that fall in those segments
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
@@ -128,6 +130,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 		final org.drip.param.definition.ComponentMarketParams cmp,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.math.regime.MultiSegmentRegime regimePrev,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition)
 		throws java.lang.Exception
 	{
@@ -135,6 +138,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
 		_cmp = cmp;
+		_fwr = fwr;
 		_regimePrev = regimePrev;
 		_pricerParams = pricerParams;
 		_quotingParams = quotingParams;
@@ -186,7 +190,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 
 		if (null == rvc) return false;
 
-		return aPR[0].calibrate (rvcLeading, dblLeftSlope, rvc) && _cr.setSegmentBuilt (0);
+		return aPR[0].calibrate (rvcLeading, dblLeftSlope, rvc, _fwr) && _cr.setSegmentBuilt (0);
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -214,7 +218,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 
 			if (null == rvc) return false;
 
-			if (!aPR[iSegment].calibrate (0 == iSegment ? null : aPR[iSegment - 1], rvc) ||
+			if (!aPR[iSegment].calibrate (0 == iSegment ? null : aPR[iSegment - 1], rvc, _fwr) ||
 				!_cr.setSegmentBuilt (iSegment))
 				return false;
 		}

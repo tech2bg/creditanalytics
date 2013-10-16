@@ -218,11 +218,12 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	@Override public boolean setup (
 		final org.drip.math.segment.ResponseValueConstraint rvcLeading,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		try {
-			return setup (new org.drip.math.regime.CkSegmentSequenceBuilder (rvcLeading, aRVC,
+			return setup (new org.drip.math.regime.CkSegmentSequenceBuilder (rvcLeading, aRVC, fwr,
 				iCalibrationBoundaryCondition), iCalibrationDetail);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -234,17 +235,19 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	@Override public boolean setup (
 		final double dblLeftRegimeResponseValue,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		return setup (org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse
-			(getLeftPredictorOrdinateEdge(), dblLeftRegimeResponseValue), aRVC,
+			(getLeftPredictorOrdinateEdge(), dblLeftRegimeResponseValue), aRVC, fwr,
 				iCalibrationBoundaryCondition, iCalibrationDetail);
 	}
 
 	@Override public boolean setup (
 		final double dblLeftRegimeResponseValue,
 		final double[] adblSegmentRightResponseValue,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
@@ -264,7 +267,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 			return false;
 		}
 
-		return setup (dblLeftRegimeResponseValue, aSNWCRight, iCalibrationBoundaryCondition,
+		return setup (dblLeftRegimeResponseValue, aSNWCRight, fwr, iCalibrationBoundaryCondition,
 			iCalibrationDetail);
 	}
 
@@ -272,6 +275,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft,
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight,
 		final org.drip.math.segment.ResponseValueConstraint[][] aaRVC,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode)
 	{
 		if (null == aPORDLeft || null == aPORDRight) return false;
@@ -289,7 +293,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 						1.}, new double[] {aPORDLeft[i].responseValue(), aPORDRight[i].responseValue()},
 							aPORDLeft[i].getDResponseDPredictorOrdinate(),
 								aPORDLeft[i].getDResponseDPredictorOrdinate(), null == aaRVC ? null :
-									aaRVC[i])))
+									aaRVC[i], fwr)))
 					return false;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -346,12 +350,13 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 	@Override public boolean setLeftNode (
 		final double dblRegimeLeftResponse,
 		final double dblRegimeLeftResponseSlope,
-		final double dblRegimeRightResponse)
+		final double dblRegimeRightResponse,
+		final org.drip.math.segment.BestFitWeightedResponse fwr)
 	{
 		return _aSegment[0].calibrate (org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse
 			(getLeftPredictorOrdinateEdge(), dblRegimeLeftResponse), dblRegimeLeftResponseSlope,
 				org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse
-					(getRightPredictorOrdinateEdge(), dblRegimeRightResponse));
+					(getRightPredictorOrdinateEdge(), dblRegimeRightResponse), fwr);
 	}
 
 	@Override public double responseValue (
@@ -526,7 +531,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 			return false;
 
 		return _aSegment[iPredictorOrdinateIndex - 1].calibrate (_aSegment[iPredictorOrdinateIndex - 2],
-			dblResponseReset);
+			dblResponseReset, null);
 	}
 
 	@Override public boolean resetNode (
@@ -538,7 +543,7 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 			return false;
 
 		return _aSegment[iPredictorOrdinateIndex - 1].calibrate (_aSegment[iPredictorOrdinateIndex - 2],
-			sprcReset);
+			sprcReset, null);
 	}
 
 	@Override public boolean in (
@@ -662,5 +667,16 @@ public class MultiSegmentCalibratableRegime extends org.drip.math.function.Abstr
 		}
 
 		return null;
+	}
+
+	@Override public double dcpe()
+		throws java.lang.Exception
+	{
+		double dblDCPE = 0.;
+
+		for (org.drip.math.segment.PredictorResponse seg : _aSegment)
+			dblDCPE += seg.dcpe();
+
+		return dblDCPE;
 	}
 }

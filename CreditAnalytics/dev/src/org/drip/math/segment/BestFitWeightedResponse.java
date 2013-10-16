@@ -29,36 +29,37 @@ package org.drip.math.segment;
  */
 
 /**
- * FitnessPenaltyParams implements basis per-segment Fitness Penalty Parameter Set. Currently it contains the
- *  Fitness Penalty Weight Grid Matrix and the Segment Local Fitness Match Set.
+ * BestFitWeightedResponse implements basis per-segment Fitness Penalty Parameter Set. Currently it contains
+ *  the Best Fit Penalty Weight Grid Matrix and the corresponding Segment Local Predictor Ordinate/Response
+ *  Match Pair.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class FitnessPenaltyParams {
+public class BestFitWeightedResponse {
 	private double[] _adblWeight = null;
 	private double[] _adblResponse = null;
-	private double[] _adblLocalPredictorOrdinate = null;
+	private double[] _adblPredictorOrdinate = null;
 
 	/**
-	 * Construct the FitnessPenaltyParams Instance from the given Inputs
+	 * Construct the BestFitWeightedResponse Instance from the given Inputs
 	 * 
-	 * @param adblLocalPredictorOrdinate Array of Predictor Ordinates
+	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponse Array of Response Values
 	 * @param adblWeight Array of Weights
 	 * 
-	 * @return Instance of FitnessPenaltyParams
+	 * @return Instance of BestFitWeightedResponse
 	 */
 
-	public static final FitnessPenaltyParams Create (
-		final double[] adblLocalPredictorOrdinate,
+	public static final BestFitWeightedResponse Create (
+		final double[] adblPredictorOrdinate,
 		final double[] adblResponse,
 		final double[] adblWeight)
 	{
-		FitnessPenaltyParams frp = null;
+		BestFitWeightedResponse frp = null;
 
 		try {
-			frp = new FitnessPenaltyParams (adblWeight, adblResponse, adblLocalPredictorOrdinate);
+			frp = new BestFitWeightedResponse (adblWeight, adblResponse, adblPredictorOrdinate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -69,15 +70,16 @@ public class FitnessPenaltyParams {
 	}
 
 	/**
-	 * Construct the FitnessPenaltyParams Instance from the given Inputs
+	 * Construct the BestFitWeightedResponse Instance from the given Predictor Ordinate/Response Pairs, using
+	 * 	Uniform Weightings.
 	 * 
-	 * @param adblLocalPredictorOrdinate Array of Predictor Ordinates
+	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponse Array of Response Values
 	 * 
-	 * @return Instance of FitnessPenaltyParams
+	 * @return Instance of BestFitWeightedResponse
 	 */
 
-	public static final FitnessPenaltyParams Create (
+	public static final BestFitWeightedResponse Create (
 		final double[] adblLocalPredictorOrdinate,
 		final double[] adblResponse)
 	{
@@ -92,23 +94,23 @@ public class FitnessPenaltyParams {
 		return Create (adblLocalPredictorOrdinate, adblResponse, adblWeight);
 	}
 
-	private FitnessPenaltyParams (
+	private BestFitWeightedResponse (
 		final double[] adblWeight,
 		final double[] adblResponse,
-		final double[] adblLocalPredictorOrdinate)
+		final double[] adblPredictorOrdinate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (_adblWeight = adblWeight) ||
 			!org.drip.math.common.NumberUtil.IsValid (_adblResponse = adblResponse) ||
-				!org.drip.math.common.NumberUtil.IsValid (_adblLocalPredictorOrdinate =
-					adblLocalPredictorOrdinate))
-			throw new java.lang.Exception ("FitnessPenaltyParams ctr: Invalid Inputs");
+				!org.drip.math.common.NumberUtil.IsValid (_adblPredictorOrdinate =
+					adblPredictorOrdinate))
+			throw new java.lang.Exception ("BestFitWeightedResponse ctr: Invalid Inputs");
 
 		int iNumPointsToFit = _adblWeight.length;
 
 		if (0 == iNumPointsToFit || _adblResponse.length != iNumPointsToFit ||
-			_adblLocalPredictorOrdinate.length != iNumPointsToFit)
-			throw new java.lang.Exception ("FitnessPenaltyParams ctr: Invalid Inputs");
+			_adblPredictorOrdinate.length != iNumPointsToFit)
+			throw new java.lang.Exception ("BestFitWeightedResponse ctr: Invalid Inputs");
 	}
 
 	private boolean normalizeWeights()
@@ -154,20 +156,20 @@ public class FitnessPenaltyParams {
 		throws java.lang.Exception
 	{
 		if (iIndex >= numPoint())
-			throw new java.lang.Exception ("FitnessPenaltyParams::weight => Invalid Index");
+			throw new java.lang.Exception ("BestFitWeightedResponse::weight => Invalid Index");
 
 		return _adblWeight[iIndex];
 	}
 
 	/**
-	 * Retrieve the Array of Local Predictor Ordinates
+	 * Retrieve the Array of Predictor Ordinates
 	 * 
-	 * @return The Array of Local Predictor Ordinates
+	 * @return The Array of Predictor Ordinates
 	 */
 
 	public double[] predictorOrdinate()
 	{
-		return _adblLocalPredictorOrdinate;
+		return _adblPredictorOrdinate;
 	}
 
 	/**
@@ -183,9 +185,9 @@ public class FitnessPenaltyParams {
 		throws java.lang.Exception
 	{
 		if (iIndex >= numPoint())
-			throw new java.lang.Exception ("FitnessPenaltyParams::predictorOrdinate => Invalid Index");
+			throw new java.lang.Exception ("BestFitWeightedResponse::predictorOrdinate => Invalid Index");
 
-		return _adblLocalPredictorOrdinate[iIndex];
+		return _adblPredictorOrdinate[iIndex];
 	}
 
 	/**
@@ -212,7 +214,7 @@ public class FitnessPenaltyParams {
 		throws java.lang.Exception
 	{
 		if (iIndex >= numPoint())
-			throw new java.lang.Exception ("FitnessPenaltyParams::response => Invalid Index");
+			throw new java.lang.Exception ("BestFitWeightedResponse::response => Invalid Index");
 
 		return _adblResponse[iIndex];
 	}
@@ -226,5 +228,57 @@ public class FitnessPenaltyParams {
 	public int numPoint()
 	{
 		return null == _adblResponse ? 0 : _adblResponse.length;
+	}
+
+	/**
+	 * Generate the Segment Local Best Fit Weighted Response
+	 * 
+	 * @param inel The Inelastics Instance to be used for the Localization
+	 * 
+	 * @return The Segment Local Best Fit Weighted Response
+	 */
+
+	public BestFitWeightedResponse sizeToSegment (
+		final org.drip.math.segment.Inelastics inel)
+	{
+		if (null == inel) return null;
+
+		int iNumPoint = numPoint();
+
+		java.util.List<java.lang.Integer> lsIndex = new java.util.ArrayList<java.lang.Integer>();
+
+		for (int i = 0; i < iNumPoint; ++i) {
+			try {
+				if (inel.in (_adblPredictorOrdinate[i])) lsIndex.add (i);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		int iNumLocalPoint = lsIndex.size();
+
+		if (0 == iNumLocalPoint) return null;
+
+		int iIndex = 0;
+		double[] adblWeight = new double[iNumLocalPoint];
+		double[] adblResponse = new double[iNumLocalPoint];
+		double[] adblLocalPredictorOrdinate = new double[iNumLocalPoint];
+
+		for (int i : lsIndex) {
+			adblWeight[iIndex] = _adblWeight[i];
+			adblResponse[iIndex] = _adblResponse[i];
+
+			try {
+				adblLocalPredictorOrdinate[iIndex++] = inel.localize (_adblPredictorOrdinate[i]);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return Create (adblLocalPredictorOrdinate, adblResponse, adblWeight);
 	}
 }

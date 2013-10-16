@@ -247,6 +247,11 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		return java.lang.Math.exp (dblExpArg / 365.25);
 	}
 
+	@Override public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness()
+	{
+		return null;
+	}
+
 	@Override public ForwardRateDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{

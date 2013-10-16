@@ -242,7 +242,7 @@ public class CreditAnalyticsAPI {
 		 * CDS Coupon Cash Flow
 		 */
 
-		for (CouponPeriodCurveFactors p : cds.getCouponFlow (valParams, pricerParams, cmp))
+		for (CashflowPeriodCurveFactors p : cds.getCouponFlow (valParams, pricerParams, cmp))
 			System.out.println (
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +

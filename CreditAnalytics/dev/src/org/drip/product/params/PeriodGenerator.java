@@ -172,12 +172,12 @@ public class PeriodGenerator extends PeriodSet {
 					+ " ...");
 
 		if (0 == _iFreq) {
-			if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GetSinglePeriod
+			if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GetSinglePeriod
 				(_dblEffective, _dblMaturity, _strCalendar)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
-				if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GeneratePeriodsForward
+				if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsForward
 						(_dblEffective, // Effective
 -						_dblMaturity, // Maturity
 						_dapEffective, // Effective DAP
@@ -198,7 +198,7 @@ public class PeriodGenerator extends PeriodSet {
 						|| 0 == _lsCouponPeriod.size())
 						return false;
 			} else {
-				if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GeneratePeriodsBackward
+				if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward
 					(_dblEffective, // Effective
 					_dblMaturity, // Maturity
 					_dapEffective, // Effective DAP
@@ -232,7 +232,7 @@ public class PeriodGenerator extends PeriodSet {
 		return true;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getPeriods()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getPeriods()
 	{
 		return _lsCouponPeriod;
 	}

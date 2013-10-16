@@ -58,14 +58,6 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.defin
 		final double[] adblDate,
 		final double[] adblBasis);
 
-	/**
-	 * Retrieve the Latent State Quantification Metric
-	 * 
-	 * @return The Latent State Quantification Metric
-	 */
-
-	public abstract java.lang.String latentStateQuantificationMetric();
-
 	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
 	{
 		org.drip.product.definition.CalibratableComponent[] aCalibComp = calibComp();

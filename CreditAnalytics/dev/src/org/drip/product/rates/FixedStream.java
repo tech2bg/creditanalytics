@@ -45,7 +45,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
-	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
+	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -111,7 +111,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GeneratePeriodsBackward (
+		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
 			dblEffective, // Effective
 			dblMaturity, // Maturity
 			dapEffective, // Effective DAP
@@ -252,9 +252,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 						continue;
 
 					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-					_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod
+					_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -381,7 +381,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
@@ -409,7 +409,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		double dblDirtyDV01 = 0.;
 		boolean bFirstPeriod = true;
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblDirtyPeriodDV01 = java.lang.Double.NaN;
 
 			double dblPeriodPayDate = period.getPayDate();
@@ -560,7 +560,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
@@ -630,7 +630,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
@@ -739,7 +739,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				if (null == p) continue;
 
 				if (bFirstEntry)

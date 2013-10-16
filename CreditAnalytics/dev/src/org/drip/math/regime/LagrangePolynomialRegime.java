@@ -138,6 +138,7 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 	@Override public boolean setup (
 		final double dblYLeading,
 		final double[] adblResponseValue,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
@@ -215,7 +216,7 @@ public class LagrangePolynomialRegime implements org.drip.math.regime.SingleSegm
 				LagrangePolynomialRegime lps = new LagrangePolynomialRegime (_adblPredictorOrdinate);
 
 				if (!lps.setup (adblSensitivityShiftedInputResponse[0], adblSensitivityShiftedInputResponse,
-					org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_FLOATING,
+					null, org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_FLOATING,
 						org.drip.math.regime.MultiSegmentRegime.CALIBRATE) ||
 							!wjDResponseDResponseInput.accumulatePartialFirstDerivative (0, i,
 								(lps.responseValue (dblPredictorOrdinate) -

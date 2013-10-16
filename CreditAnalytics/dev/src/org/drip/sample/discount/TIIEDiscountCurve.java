@@ -113,14 +113,30 @@ public class TIIEDiscountCurve {
 
 		RegimeBuilderSet[] aRBS = new RegimeBuilderSet[] {rbsCash, rbsSwap};
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.LinearBuild (
+		DiscountCurve dcShapePreservingPass = RatesScenarioCurveBuilder.ShapePreservingBuild (
 			new PredictorResponseBuilderParams (
 				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
+				new PolynomialBasisSetParams (2),
+				DesignInelasticParams.Create (0, 2),
 				new ResponseScalingShapeController (true, new RationalShapeControl (0.))),
 			aRBS,
 			new ValuationParams (dtToday, dtToday, "MXN"),
+			null,
+			null,
+			null,
+			null,
+			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentRegime.CALIBRATE);
+
+		DiscountCurve dcSmoothingPass = RatesScenarioCurveBuilder.SmoothingBuild (
+			new PredictorResponseBuilderParams (
+				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialBasisSetParams (2),
+				DesignInelasticParams.Create (0, 2),
+				new ResponseScalingShapeController (true, new RationalShapeControl (0.))),
+			aRBS,
+			new ValuationParams (dtToday, dtToday, "MXN"),
+			null,
 			null,
 			null,
 			null,
@@ -129,26 +145,101 @@ public class TIIEDiscountCurve {
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
-		System.out.println ("\t     CASH INSTRUMENTS CALIBRATION RECOVERY");
+		System.out.println ("\t----------------------------------------------------------------");
+
+		System.out.println ("\t               CASH INSTRUMENTS CALIBRATION RECOVERY");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		System.out.println ("\t        SHAPE PRESERVING | SMOOTHING | INPUT QUOTE  ");
+
+		System.out.println ("\t----------------------------------------------------------------");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCashComp.length; ++i)
 			System.out.println ("\t[" + aCashComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aCashComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.));
+				FormatUtil.FormatDouble (
+					aCashComp[i].calcMeasureValue (
+						new ValuationParams (dtToday, dtToday, "MXN"), null,
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreservingPass, null, null, null, null, null, null),
+						null,
+						"Rate"),
+					1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (
+					aCashComp[i].calcMeasureValue (
+						new ValuationParams (dtToday, dtToday, "MXN"), null,
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothingPass, null, null, null, null, null, null),
+						null,
+						"Rate"),
+					1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.)
+			);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
-		System.out.println ("\t     SWAP INSTRUMENTS CALIBRATION RECOVERY");
+		System.out.println ("\t----------------------------------------------------------------");
+
+		System.out.println ("\t               SWAP INSTRUMENTS CALIBRATION RECOVERY");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		System.out.println ("\t        SHAPE PRESERVING | SMOOTHING | INPUT QUOTE  ");
+
+		System.out.println ("\t----------------------------------------------------------------");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapComp.length; ++i)
 			System.out.println ("\t[" + aSwapComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aSwapComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
+				FormatUtil.FormatDouble (
+					aSwapComp[i].calcMeasureValue (
+						new ValuationParams (dtToday, dtToday, "MXN"), null,
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreservingPass, null, null, null, null, null, null),
+						null,
+						"Rate"),
+					1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (
+					aSwapComp[i].calcMeasureValue (
+						new ValuationParams (dtToday, dtToday, "MXN"), null,
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothingPass, null, null, null, null, null, null),
+						null,
+						"Rate"),
+					1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.)
+			);
+
+		CalibratableComponent[] aCC = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
+			{"3Y", "6Y", "9Y", "12Y", "15Y", "18Y", "21Y", "24Y", "27Y", "30Y"});
+
+		System.out.println ("\n\t----------------------------------------------------------------");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		System.out.println ("\t           BESPOKE SWAPS PAR RATE");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		System.out.println ("\t        SHAPE PRESERVING | SMOOTHING  ");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		for (int i = 0; i < aCC.length; ++i)
+			System.out.println ("\t[" + aCC[i].getMaturityDate() + "] = " +
+				FormatUtil.FormatDouble (
+					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
+					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreservingPass, null, null, null, null, null, null),
+					null,
+					"Rate"),
+				1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (
+					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
+					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothingPass, null, null, null, null, null, null),
+					null,
+					"Rate"),
+				1, 6, 1.)
+			);
 	}
 }

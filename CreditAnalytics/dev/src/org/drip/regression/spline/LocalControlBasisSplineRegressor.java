@@ -161,11 +161,11 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 
 		if (null == (_regimeBesselHermite =
 			org.drip.math.regime.LocalControlRegimeBuilder.CreateBesselCubicSplineRegime ("BESSEL_REGIME",
-				new double[] {0.00, 1.00,  2.00,  3.00,  4.00}, adblY, aSBP,
+				new double[] {0.00, 1.00,  2.00,  3.00,  4.00}, adblY, aSBP, null,
 					org.drip.math.regime.MultiSegmentRegime.CALIBRATE)))
 			return false;
 
-		return _regime.setupHermite (aSEPLeft, aSEPRight, null,
+		return _regime.setupHermite (aSEPLeft, aSEPRight, null, null,
 			org.drip.math.regime.MultiSegmentRegime.CALIBRATE_JACOBIAN);
 	}
 

@@ -31,13 +31,13 @@ package org.drip.analytics.period;
  */
 
 /**
- * CouponPeriodCurveFactors is an enhancement of the period class using the following period measures: start/end survival
- * 	probabilities, start/end notionals, and period start/end discount factor
+ * CashflowPeriodCurveFactors is an enhancement of the period class using the following period measures:
+ *  start/end survival probabilities, start/end notionals, and period start/end discount factor.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CouponPeriodCurveFactors extends Period {
+public class CashflowPeriodCurveFactors extends Period {
 	protected double _dblEndDF = java.lang.Double.NaN;
 	protected double _dblSpread = java.lang.Double.NaN;
 	protected double _dblStartDF = java.lang.Double.NaN;
@@ -49,7 +49,7 @@ public class CouponPeriodCurveFactors extends Period {
 	protected double _dblFullCouponRate = java.lang.Double.NaN;
 
 	/**
-	 * Constructs the CouponPeriodCurveFactors class using the corresponding period curve measures.
+	 * Constructs the CashflowPeriodCurveFactors class using the corresponding period curve measures.
 	 * 
 	 * @param dblStart Period Start date
 	 * @param dblEnd Period end date
@@ -70,7 +70,7 @@ public class CouponPeriodCurveFactors extends Period {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public CouponPeriodCurveFactors (
+	public CashflowPeriodCurveFactors (
 		final double dblStart,
 		final double dblEnd,
 		final double dblAccrualStart,
@@ -98,21 +98,21 @@ public class CouponPeriodCurveFactors extends Period {
 							!org.drip.math.common.NumberUtil.IsValid (_dblStartSurvival = dblStartSurvival)
 								|| !org.drip.math.common.NumberUtil.IsValid (_dblEndSurvival =
 									dblEndSurvival))
-			throw new java.lang.Exception ("CouponPeriodCurveFactors ctr: Invalid Inputs");
+			throw new java.lang.Exception ("CashflowPeriodCurveFactors ctr: Invalid Inputs");
 
 		_dblSpread = dblSpread;
 		_dblIndexRate = dblIndexRate;
 	}
 
 	/**
-	 * De-serialization of CouponPeriodCurveFactors from byte stream
+	 * De-serialization of CashflowPeriodCurveFactors from byte stream
 	 * 
 	 * @param ab Byte stream
 	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize CouponPeriodCurveFactors
+	 * @throws java.lang.Exception Thrown if cannot properly de-serialize CashflowPeriodCurveFactors
 	 */
 
-	public CouponPeriodCurveFactors (
+	public CashflowPeriodCurveFactors (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
@@ -120,84 +120,84 @@ public class CouponPeriodCurveFactors extends Period {
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serialize: Invalid byte stream input");
+				("CashflowPeriodCurveFactors de-serialize: Invalid byte stream input");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CouponPeriodCurveFactors de-serializer: Empty state");
+			throw new java.lang.Exception ("CashflowPeriodCurveFactors de-serializer: Empty state");
 
 		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
 
 		if (null == strCP || strCP.isEmpty())
-			throw new java.lang.Exception ("CouponPeriodCurveFactors de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("CashflowPeriodCurveFactors de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strCP, getFieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serialize: Invalid number of fields");
+				("CashflowPeriodCurveFactors de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate full coupon rate");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate full coupon rate");
 
 		_dblFullCouponRate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate start notional");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate start notional");
 
 		_dblStartNotional = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate end notional");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate end notional");
 
 		_dblEndNotional = new java.lang.Double (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate start survival");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate start survival");
 
 		_dblStartSurvival = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate end survival");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate end survival");
 
 		_dblEndSurvival = new java.lang.Double (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate start DF");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate start DF");
 
 		_dblStartDF = new java.lang.Double (astrField[6]);
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate end DF");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate end DF");
 
 		_dblEndDF = new java.lang.Double (astrField[7]);
 
 		if (null == astrField[8] || astrField[8].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate floater spread");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate floater spread");
 
 		_dblSpread = new java.lang.Double (astrField[8]);
 
 		if (null == astrField[9] || astrField[9].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			throw new java.lang.Exception
-				("CouponPeriodCurveFactors de-serializer: Cannot locate index rate");
+				("CashflowPeriodCurveFactors de-serializer: Cannot locate index rate");
 
 		_dblIndexRate = new java.lang.Double (astrField[9]);
 	}

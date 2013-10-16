@@ -302,9 +302,10 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
-		return null;
+		return org.drip.analytics.period.CashflowPeriod.GetSinglePeriod (_dblEffective, _dblMaturity,
+			_strCalendar);
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams getCashSettleParams()

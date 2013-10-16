@@ -43,6 +43,7 @@ public class CalibrationParams {
 	private double[] _adblRightDeriv = null;
 	private double[] _adblResponseValue = null;
 	private double[] _adblPredictorOrdinate = null;
+	private org.drip.math.segment.BestFitWeightedResponse _bfwr = null;
 	private org.drip.math.segment.ResponseValueConstraint[] _aRVC = null;
 
 	/**
@@ -53,6 +54,7 @@ public class CalibrationParams {
 	 * @param adblLeftDeriv Array of the Left Derivative Values
 	 * @param adblRightDeriv Array of the Right Derivative Values
 	 * @param aRVC Array of the Response Value Constraints
+	 * @param bfwr Best Fit Weighted Response Values
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are not Valid
 	 */
@@ -62,14 +64,16 @@ public class CalibrationParams {
 		final double[] adblResponseValue,
 		final double[] adblLeftDeriv,
 		final double[] adblRightDeriv,
-		final org.drip.math.segment.ResponseValueConstraint[] aRVC)
+		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 		throws java.lang.Exception
 	{
 		_aRVC = aRVC;
+		_bfwr = bfwr;
 		int iNumPredictorOrdinate = 0;
-		_adblResponseValue = adblResponseValue;
 		_adblLeftDeriv = adblLeftDeriv;
 		_adblRightDeriv = adblRightDeriv;
+		_adblResponseValue = adblResponseValue;
 		_adblPredictorOrdinate = adblPredictorOrdinate;
 
 		if ((null == _adblPredictorOrdinate && null != _adblResponseValue) || (null != _adblPredictorOrdinate
@@ -124,6 +128,17 @@ public class CalibrationParams {
 	public double[] rightDeriv()
 	{
 		return _adblRightDeriv;
+	}
+
+	/**
+	 * Retrieve the Best Fit Weighted Response
+	 * 
+	 * @return The Best Fit Weighted Response
+	 */
+
+	public org.drip.math.segment.BestFitWeightedResponse bestFitWeightedResponse()
+	{
+		return _bfwr;
 	}
 
 	/**
@@ -301,8 +316,8 @@ public class CalibrationParams {
 
 		try {
 			return new CalibrationParams[] {new CalibrationParams (adblLeftPredictor, adblLeftResponse,
-				_adblLeftDeriv, adblDeriv, aSPRCLeft), new CalibrationParams (adblRightPredictor,
-					adblRightResponse, adblDeriv, _adblRightDeriv, aSPRCRight)};
+				_adblLeftDeriv, adblDeriv, aSPRCLeft, _bfwr), new CalibrationParams (adblRightPredictor,
+					adblRightResponse, adblDeriv, _adblRightDeriv, aSPRCRight, _bfwr)};
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

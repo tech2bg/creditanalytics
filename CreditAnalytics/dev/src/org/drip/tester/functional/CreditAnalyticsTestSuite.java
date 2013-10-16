@@ -1052,7 +1052,7 @@ public class CreditAnalyticsTestSuite {
 
 			System.out.println ("---------      ---------    ---------    --------- --------- --------");
 
-			for (org.drip.analytics.period.CouponPeriodCurveFactors p : cds.getCouponFlow (valParams,
+			for (org.drip.analytics.period.CashflowPeriodCurveFactors p : cds.getCouponFlow (valParams,
 				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
 					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05),
@@ -1321,7 +1321,7 @@ public class CreditAnalyticsTestSuite {
 
 			System.out.println ("---------      ---------    ---------    --------- --------- --------");
 
-			for (org.drip.analytics.period.CouponPeriodCurveFactors p : bond.getCouponFlow
+			for (org.drip.analytics.period.CashflowPeriodCurveFactors p : bond.getCouponFlow
 				(valParams, pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
 					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
 						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
@@ -1528,7 +1528,7 @@ public class CreditAnalyticsTestSuite {
 				System.out.println
 					("---------    ---------    ---------    ---------    ---------    --------");
 
-				for (org.drip.analytics.period.Period p : aBond[i].getCouponPeriod()) {
+				for (org.drip.analytics.period.Period p : aBond[i].getCashFlowPeriod()) {
 					try {
 						System.out.println (org.drip.analytics.date.JulianDate.fromJulian
 							(p.getAccrualStartDate()) + "    " +

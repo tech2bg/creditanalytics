@@ -362,7 +362,7 @@ public class YAS {
 
 		System.out.println ("\nCashflow\n--------");
 
-		for (Period p : bond.getCouponPeriod())
+		for (Period p : bond.getCashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +

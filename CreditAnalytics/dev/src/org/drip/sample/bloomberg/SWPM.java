@@ -295,7 +295,7 @@ public class SWPM {
 
 		System.out.println ("\n---- Fixed Cashflow ----\n");
 
-		for (Period p : fixStream.getCouponPeriod())
+		for (Period p : fixStream.getCashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
@@ -310,7 +310,7 @@ public class SWPM {
 
 		System.out.println ("\n---- Floating Cashflow ----\n");
 
-		for (Period p : floatStream.getCouponPeriod())
+		for (Period p : floatStream.getCashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +

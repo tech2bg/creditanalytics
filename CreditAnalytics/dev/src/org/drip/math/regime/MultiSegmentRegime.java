@@ -109,6 +109,7 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 	 * @param aPORDRight Array of Right Segment Edge Values
 	 * @param aaRVC Double Array of Constraints - Outer Index corresponds to Segment Index, and the Inner
 	 * 		Index to Constraint Array within each Segment
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Set up Mode (i.e., set up ITEP only, or fully calibrate the Regime, or calibrate
 	 * 	 	Regime plus compute Jacobian)
 	 * 
@@ -119,6 +120,7 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDLeft,
 		final org.drip.math.segment.PredictorOrdinateResponseDerivative[] aPORDRight,
 		final org.drip.math.segment.ResponseValueConstraint[][] aaRVC,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode);
 
 	/**
@@ -127,6 +129,7 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 	 * @param dblRegimeLeftResponse Response Value at the Left Edge of the Regime
 	 * @param dblRegimeLeftResponseSlope Response Slope Value at the Left Edge of the Regime
 	 * @param dblRegimeRightResponse Response Value at the Right Edge of the Regime
+	 * @param fwr Fitness Weighted Response
 	 * 
 	 * @return TRUE => Left slope successfully set
 	 */
@@ -134,7 +137,8 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 	public abstract boolean setLeftNode (
 		final double dblRegimeLeftResponse,
 		final double dblRegimeLeftResponseSlope,
-		final double dblRegimeRightResponse);
+		final double dblRegimeRightResponse,
+		final org.drip.math.segment.BestFitWeightedResponse fwr);
 
 	/**
 	 * Calculate the PORD at the specified Predictor Ordinate
@@ -241,6 +245,7 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 	 * 
 	 * @param rvcLeading Regime Left-most Segment Response Value Constraint
 	 * @param aRVC Array of Segment Response Value Constraints
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -250,6 +255,7 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 	public abstract boolean setup (
 		final org.drip.math.segment.ResponseValueConstraint rvcLeading,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail);
 
@@ -259,6 +265,7 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 	 * 
 	 * @param dblRegimeLeftResponseValue Regime Left-most Response Value
 	 * @param aRVC Array of Segment Response Value Constraints
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -268,6 +275,18 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 	public abstract boolean setup (
 		final double dblRegimeLeftResponseValue,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail);
+
+	/**
+	 * Retrieve the Span DCPE
+	 * 
+	 * @return The Span DCPE
+	 * 
+	 * @throws java.lang.Exception Thrown if the Span DCPE cannot be computed
+	 */
+
+	public abstract double dcpe()
+		throws java.lang.Exception;
 }

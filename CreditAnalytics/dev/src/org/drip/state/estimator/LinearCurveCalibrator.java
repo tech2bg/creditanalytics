@@ -37,13 +37,14 @@ package org.drip.state.estimator;
 public class LinearCurveCalibrator {
 	private int _iCalibrationDetail = -1;
 	private int _iCalibrationBoundaryCondition = -1;
+	private org.drip.math.segment.BestFitWeightedResponse _fwr = null;
 	private org.drip.math.segment.PredictorResponseBuilderParams _prbp = null;
 
 	/**
 	 * LinearCurveCalibrator constructor
 	 * 
 	 * @param prbp Segment Builder Parameters
-	 * @param rcs Regime Calibrator Setting
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -52,6 +53,7 @@ public class LinearCurveCalibrator {
 
 	public LinearCurveCalibrator (
 		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 		throws java.lang.Exception
@@ -59,6 +61,7 @@ public class LinearCurveCalibrator {
 		if (null == (_prbp = prbp))
 			throw new java.lang.Exception ("LinearCurveCalibrator ctr: Invalid Inputs");
 
+		_fwr = fwr;
 		_iCalibrationDetail = iCalibrationDetail;
 		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
 	}
@@ -114,7 +117,7 @@ public class LinearCurveCalibrator {
 						aPRBP);
 
 				if (!regime.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder (rbs, valParams,
-					pricerParams, cmp, quotingParams, regimePrev, _iCalibrationBoundaryCondition),
+					pricerParams, cmp, quotingParams, regimePrev, _fwr, _iCalibrationBoundaryCondition),
 						_iCalibrationDetail))
 					return null;
 			} catch (java.lang.Exception e) {

@@ -124,7 +124,7 @@ public class DiscountCurveBuilderAPI {
 
 		RegimeBuilderSet[] aRBS = new RegimeBuilderSet[] {rbsCash, rbsSwap};
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.LinearBuild (
+		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingBuild (
 			new PredictorResponseBuilderParams (
 				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialBasisSetParams (4),
@@ -132,6 +132,7 @@ public class DiscountCurveBuilderAPI {
 				new ResponseScalingShapeController (true, new RationalShapeControl (0.))),
 			aRBS,
 			new ValuationParams (dtToday, dtToday, "USD"),
+			null,
 			null,
 			null,
 			null,

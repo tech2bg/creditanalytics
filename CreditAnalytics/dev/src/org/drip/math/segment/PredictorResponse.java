@@ -183,17 +183,19 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * 
 	 * @param prPrev Prior Predictor/Response Segment
 	 * @param dblResponseAtRightOrdinate Response Value at the Right Predictor Ordinate
+	 * @param bfwr Best Fit Weighted Response
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
 
 	public boolean calibrate (
 		final PredictorResponse segPrev,
-		final double dblResponseAtRightOrdinate)
+		final double dblResponseAtRightOrdinate,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
 		try {
 			return calibrate (segPrev, org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse
-				(delocalize (1.), dblResponseAtRightOrdinate));
+				(delocalize (1.), dblResponseAtRightOrdinate), bfwr);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -202,17 +204,31 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	}
 
 	/**
-	 * Calibrate the coefficients from the prior Predictor/Response Segment and the Constraint
+	 * Calibrate the coefficients from the prior Predictor/Response Segment, the Constraint, and fitness
+	 * 	Weights
 	 * 
 	 * @param prPrev Prior Predictor/Response Segment
 	 * @param rvc The Segment Response Value Constraint
+	 * @param bfwr Best Fit Weighted Response
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
 
 	public abstract boolean calibrate (
 		final PredictorResponse prPrev,
-		final org.drip.math.segment.ResponseValueConstraint rvc);
+		final org.drip.math.segment.ResponseValueConstraint rvc,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr);
+
+	/**
+	 * Retrieve the Segment's DCPE
+	 * 
+	 * @return The Segment's DCPE
+	 * 
+	 * @throws java.lang.Exception Thrown if the Segment's DCPE cannot be computed
+	 */
+
+	public abstract double dcpe()
+		throws java.lang.Exception;
 
 	/**
 	 * Calculate the Response Value at the given Predictor Ordinate
@@ -326,8 +342,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	{
 		if (isMonotone()) {
 			try {
-				return new org.drip.math.segment.Monotonocity
-					(org.drip.math.segment.Monotonocity.MONOTONIC);
+				return new org.drip.math.segment.Monotonocity (org.drip.math.segment.Monotonocity.MONOTONIC);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -374,36 +389,29 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 
 			if (!org.drip.math.common.NumberUtil.IsValid (dblExtremum) || dblExtremum <= 0. || dblExtremum >=
 				1.)
-				return new org.drip.math.segment.Monotonocity
-					(org.drip.math.segment.Monotonocity.MONOTONIC);
+				return new org.drip.math.segment.Monotonocity (org.drip.math.segment.Monotonocity.MONOTONIC);
 
 			double dbl2ndDeriv = localResponseValueDerivative (dblExtremum, 2);
 
 			if (0. > dbl2ndDeriv)
-				return new org.drip.math.segment.Monotonocity
-					(org.drip.math.segment.Monotonocity.MAXIMA);
+				return new org.drip.math.segment.Monotonocity (org.drip.math.segment.Monotonocity.MAXIMA);
 
 			if (0. < dbl2ndDeriv)
-				return new org.drip.math.segment.Monotonocity
-					(org.drip.math.segment.Monotonocity.MINIMA);
+				return new org.drip.math.segment.Monotonocity (org.drip.math.segment.Monotonocity.MINIMA);
 
 			if (0. == dbl2ndDeriv)
 				return new org.drip.math.segment.Monotonocity
 					(org.drip.math.segment.Monotonocity.INFLECTION);
 
-			return new org.drip.math.segment.Monotonocity
-				(org.drip.math.segment.Monotonocity.NON_MONOTONIC);
+			return new org.drip.math.segment.Monotonocity (org.drip.math.segment.Monotonocity.NON_MONOTONIC);
 		} catch (java.lang.Exception e) {
-			System.out.println ("Am I not here?");
-
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		try {
-			return new org.drip.math.segment.Monotonocity
-				(org.drip.math.segment.Monotonocity.MONOTONIC);
+			return new org.drip.math.segment.Monotonocity (org.drip.math.segment.Monotonocity.MONOTONIC);
 		} catch (java.lang.Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return null;
@@ -430,6 +438,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @param dblLeftEdgeResponseValue Left Edge Response Value
 	 * @param dblLeftEdgeResponseSlope Left Edge Response Slope
 	 * @param dblRightEdgeResponseValue Right Edge Response Value
+	 * @param bfwr Best Fit Weighted Response
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
@@ -437,7 +446,8 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	public boolean calibrate (
 		final double dblLeftEdgeResponseValue,
 		final double dblLeftEdgeResponseSlope,
-		final double dblRightEdgeResponseValue)
+		final double dblRightEdgeResponseValue,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblLeftEdgeResponseValue) ||
 			!org.drip.math.common.NumberUtil.IsValid (dblLeftEdgeResponseSlope) ||
@@ -448,7 +458,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 			return calibrate (new org.drip.math.segment.CalibrationParams (new double[] {0., 1.}, new
 				double[] {dblLeftEdgeResponseValue, dblRightEdgeResponseValue},
 					org.drip.math.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
-						dblLeftEdgeResponseSlope), null, null));
+						dblLeftEdgeResponseSlope), null, null, bfwr));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -463,6 +473,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @param dblLeftEdgeResponseValue Left Edge Response Value
 	 * @param dblLeftEdgeResponseSlope Left Edge Response Slope
 	 * @param rvcRight Right Edge Response Value Constraint
+	 * @param bfwr Best Fit Weighted Response
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
@@ -470,7 +481,8 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	public boolean calibrate (
 		final double dblLeftEdgeResponseValue,
 		final double dblLeftEdgeResponseSlope,
-		final org.drip.math.segment.ResponseValueConstraint rvcRight)
+		final org.drip.math.segment.ResponseValueConstraint rvcRight,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblLeftEdgeResponseValue) ||
 			!org.drip.math.common.NumberUtil.IsValid (dblLeftEdgeResponseSlope) || null == rvcRight)
@@ -481,7 +493,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 				org.drip.math.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
 					dblLeftEdgeResponseSlope), null, new org.drip.math.segment.ResponseValueConstraint[]
 						{org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse (delocalize
-							(0.), dblLeftEdgeResponseValue), rvcRight}));
+							(0.), dblLeftEdgeResponseValue), rvcRight}, bfwr));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -496,6 +508,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @param rvcLeft Left Edge Response Value Constraint
 	 * @param dblLeftResponseValueSlope Left Edge Response ValueSlope
 	 * @param rvcRight Right Edge Response Value Constraint
+	 * @param bfwr Best Fit Weighted Response
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
@@ -503,7 +516,8 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	public boolean calibrate (
 		final org.drip.math.segment.ResponseValueConstraint rvcLeft,
 		final double dblLeftResponseValueSlope,
-		final org.drip.math.segment.ResponseValueConstraint rvcRight)
+		final org.drip.math.segment.ResponseValueConstraint rvcRight,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
 		if (null == rvcLeft || !org.drip.math.common.NumberUtil.IsValid (dblLeftResponseValueSlope) || null
 			== rvcRight)
@@ -513,7 +527,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 			return calibrate (new org.drip.math.segment.CalibrationParams (null, null,
 				org.drip.math.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
 					dblLeftResponseValueSlope), null, new org.drip.math.segment.ResponseValueConstraint[]
-						{rvcLeft, rvcRight}));
+						{rvcLeft, rvcRight}, bfwr));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -578,6 +592,7 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * @param dblLeftEdgeResponseValue Left Edge Response Value
 	 * @param dblLeftResponseValueSlope Left Edge Response Slope
 	 * @param dblRightEdgeResponseValue Right Edge Response Value
+	 * @param bfwr Fitness Weighted Response
 	 * 
 	 * @return The Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
 	 */
@@ -585,9 +600,10 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	public org.drip.math.calculus.WengertJacobian jackDCoeffDEdgeParams (
 		final double dblLeftEdgeResponseValue,
 		final double dblLeftResponseValueSlope,
-		final double dblRightEdgeResponseValue)
+		final double dblRightEdgeResponseValue,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
-		if (!calibrate (dblLeftEdgeResponseValue, dblLeftResponseValueSlope, dblRightEdgeResponseValue))
+		if (!calibrate (dblLeftEdgeResponseValue, dblLeftResponseValueSlope, dblRightEdgeResponseValue, bfwr))
 			return null;
 
 		return jackDCoeffDEdgeParams();
@@ -600,15 +616,17 @@ public abstract class PredictorResponse extends org.drip.math.segment.Inelastics
 	 * 
 	 * @param prPrev Previous Predictor/Response Segment
 	 * @param dblRightEdgeResponseValue Right Edge Response Value
+	 * @param bfwr Fitness Weighted Response
 	 * 
 	 * @return The Jacobian
 	 */
 
 	public org.drip.math.calculus.WengertJacobian jackDCoeffDEdgeParams (
 		final PredictorResponse prPrev,
-		final double dblRightEdgeResponseValue)
+		final double dblRightEdgeResponseValue,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 	{
-		if (!calibrate (prPrev, dblRightEdgeResponseValue)) return null;
+		if (!calibrate (prPrev, dblRightEdgeResponseValue, bfwr)) return null;
 
 		return jackDCoeffDEdgeParams();
 	}

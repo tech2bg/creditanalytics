@@ -125,6 +125,11 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 			_dblRightFlatForwardRate * (dblDate - dblStartDate) / 365.25);
 	}
 
+	@Override public java.lang.String latentStateQuantificationMetric()
+	{
+		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
+	}
+
 	@Override public DiscountFactorDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{

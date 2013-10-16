@@ -37,7 +37,6 @@ package org.drip.math.segment;
 
 public class DesignInelasticParams {
 	private int _iCk = -1;
-	private org.drip.math.segment.FitnessPenaltyParams _fpp = null;
 	private org.drip.math.segment.CurvaturePenaltyParams _cpp = null;
 
 	/**
@@ -49,8 +48,7 @@ public class DesignInelasticParams {
 	public static final DesignInelasticParams MakeC2DesignInelasticParams()
 	{
 		try {
-			return new DesignInelasticParams (2, new org.drip.math.segment.CurvaturePenaltyParams (2, 1.),
-				null);
+			return new DesignInelasticParams (2, new org.drip.math.segment.CurvaturePenaltyParams (2, 1.));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +71,7 @@ public class DesignInelasticParams {
 	{
 		try {
 			return new DesignInelasticParams (iCk, new org.drip.math.segment.CurvaturePenaltyParams
-				(iRoughnessPenaltyDerivativeOrder, 1.), null);
+				(iRoughnessPenaltyDerivativeOrder, 1.));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -83,15 +81,12 @@ public class DesignInelasticParams {
 
 	private DesignInelasticParams (
 		final int iCk,
-		final org.drip.math.segment.CurvaturePenaltyParams cpp,
-		final org.drip.math.segment.FitnessPenaltyParams fpp)
+		final org.drip.math.segment.CurvaturePenaltyParams cpp)
 		throws java.lang.Exception
 	{
-		if (0 > (_iCk = iCk))
-			throw new java.lang.Exception ("DesignInelasticParams ctr: Invalid Inputs");
+		if (0 > (_iCk = iCk)) throw new java.lang.Exception ("DesignInelasticParams ctr: Invalid Inputs");
 
 		_cpp = cpp;
-		_fpp = fpp;
 	}
 
 	/**
@@ -103,17 +98,6 @@ public class DesignInelasticParams {
 	public int getCk()
 	{
 		return _iCk;
-	}
-
-	/**
-	 * Retrieve the Fitness Penalty Parameters
-	 * 
-	 * @return The Fitness Penalty Parameters
-	 */
-
-	public org.drip.math.segment.FitnessPenaltyParams getFPP()
-	{
-		return _fpp;
 	}
 
 	/**

@@ -181,6 +181,7 @@ public class RegimeBuilder {
 	 * @param adblPredictorOrdinate Predictor Ordinate Array
 	 * @param adblResponseValue Response Value Array
 	 * @param aSBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -192,6 +193,7 @@ public class RegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aSBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
@@ -208,8 +210,8 @@ public class RegimeBuilder {
 		for (int i = 0; i < iNumRightNode; ++i)
 			adblResponseValueRight[i] = adblResponseValue[i + 1];
 
-		return regime.setup (adblResponseValue[0], adblResponseValueRight, iCalibrationBoundaryCondition,
-			iCalibrationDetail) ? regime : null;
+		return regime.setup (adblResponseValue[0], adblResponseValueRight, fwr,
+			iCalibrationBoundaryCondition, iCalibrationDetail) ? regime : null;
 	}
 
 	/**
@@ -221,6 +223,7 @@ public class RegimeBuilder {
 	 * @param dblRegimeLeftResponseValue Left-most Y Point
 	 * @param aRVC Array of Response Value Constraints - One per Segment
 	 * @param aPRBP Array of Segment Builder Parameters - One per Segment
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -233,13 +236,14 @@ public class RegimeBuilder {
 		final double dblRegimeLeftResponseValue,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		org.drip.math.regime.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aPRBP);
 
-		return null == regime ? null : regime.setup (dblRegimeLeftResponseValue, aRVC,
+		return null == regime ? null : regime.setup (dblRegimeLeftResponseValue, aRVC, fwr,
 			iCalibrationBoundaryCondition, iCalibrationDetail) ? regime : null;
 	}
 
@@ -252,6 +256,7 @@ public class RegimeBuilder {
 	 * @param rvcRegimeLeft Regime Left Constraint
 	 * @param aRVC Array of Segment Constraints - One per Segment
 	 * @param aPRBP Array of Segment Builder Parameters - One per Segment
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -264,13 +269,14 @@ public class RegimeBuilder {
 		final org.drip.math.segment.ResponseValueConstraint rvcRegimeLeft,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		org.drip.math.regime.MultiSegmentRegime regime = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aPRBP);
 
-		return null == regime ? null : regime.setup (rvcRegimeLeft, aRVC, iCalibrationBoundaryCondition,
+		return null == regime ? null : regime.setup (rvcRegimeLeft, aRVC, fwr, iCalibrationBoundaryCondition,
 			iCalibrationDetail) ? regime : null;
 	}
 
@@ -281,6 +287,7 @@ public class RegimeBuilder {
 	 * @param adblPredictorOrdinate Predictor Ordinate Array
 	 * @param dblResponseValue Response Value
 	 * @param prbp Segment Builder Parameters - One per Segment
+	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -292,6 +299,7 @@ public class RegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double dblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
@@ -314,6 +322,6 @@ public class RegimeBuilder {
 		}
 
 		return CreateCalibratedRegimeEstimator (strName, adblPredictorOrdinate, adblResponseValue, aPRBP,
-			iCalibrationBoundaryCondition, iCalibrationDetail);
+			fwr, iCalibrationBoundaryCondition, iCalibrationDetail);
 	}
 }

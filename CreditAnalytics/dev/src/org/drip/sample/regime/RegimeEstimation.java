@@ -195,6 +195,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, 
 			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
 			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
 
@@ -209,6 +210,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -232,6 +235,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	/**
@@ -331,7 +336,7 @@ public class RegimeEstimation {
 		 * - 4) Calibrate the Regime and compute the Jacobian
 		 */
 
-		System.out.println ("Regime Setup Succeeded: " + regime.setupHermite (aSEPLeft, aSEPRight, null, MultiSegmentRegime.CALIBRATE));
+		System.out.println ("Regime Setup Succeeded: " + regime.setupHermite (aSEPLeft, aSEPRight, null, null, MultiSegmentRegime.CALIBRATE));
 
 		double dblX = 0.;
 		double dblXMax = 4.;
@@ -348,6 +353,8 @@ public class RegimeEstimation {
 
 			dblX += 0.5;
 		}
+
+		System.out.println ("SPLINE_REGIME DCPE: " + regime.dcpe());
 
 		/* 
 		 * We now insert a Hermite local control knot. The following are the steps:
@@ -372,6 +379,8 @@ public class RegimeEstimation {
 			dblX += 0.5;
 		}
 
+		System.out.println ("SPLINE_REGIME_INSERT DCPE: " + regimeInsert.dcpe());
+
 		/* 
 		 * We now insert a Cardinal local control knot. The following are the steps:
 		 * 
@@ -391,6 +400,8 @@ public class RegimeEstimation {
 			dblX += 0.5;
 		}
 
+		System.out.println ("SPLINE_REGIME_CARDINAL_INSERT DCPE: " + regimeCardinalInsert.dcpe());
+
 		/* 
 		 * We now insert a Catmull-Rom local control knot. The following are the steps:
 		 * 
@@ -409,6 +420,8 @@ public class RegimeEstimation {
 
 			dblX += 0.5;
 		}
+
+		System.out.println ("SPLINE_REGIME_CATMULL_ROM_INSERT DCPE: " + regimeCatmullRomInsert.dcpe());
 	}
 
 	/**
@@ -428,7 +441,10 @@ public class RegimeEstimation {
 	{
 		SingleSegmentRegime lps = new LagrangePolynomialRegime (new double[] {-2., -1., 2., 5.});
 
-		System.out.println ("Setup: " + lps.setup (0.25, new double[] {0.25, 0.25, 12.25, 42.25},
+		System.out.println ("Setup: " + lps.setup (
+			0.25,
+			new double[] {0.25, 0.25, 12.25, 42.25},
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
 			MultiSegmentRegime.CALIBRATE)); // Calibrate the Regime predictors to the responses
 
@@ -482,6 +498,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE);
 
 		/*
@@ -495,6 +512,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_BESSEL DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -518,6 +537,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_BESSEL_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	/**
@@ -561,6 +582,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
 			true); // TRUE => Eliminate Spurious Segment Extrema
 
@@ -575,6 +597,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_HYMAN83 DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -598,6 +622,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_HYMAN83_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	/**
@@ -641,6 +667,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE);
 
 		/*
@@ -654,6 +681,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_HYMAN89 DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -677,6 +706,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_HYMAN89_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	/**
@@ -722,6 +753,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
 			bApplyMonotoneFilter);
 
@@ -736,6 +768,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_HARMONIC DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -759,6 +793,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_HARMONIC_INSERT DCPE: " + regime.dcpe());
 	}
 
 	/**
@@ -804,6 +840,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
 			bApplyMonotoneFilter);
 
@@ -818,6 +855,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_VANLEER DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -841,6 +880,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_VANLEER_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	/**
@@ -886,6 +927,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
 			bApplyMonotoneFilter);
 
@@ -900,6 +942,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_LEFLOCH DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -923,6 +967,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_LEFLOCH_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	/**
@@ -966,6 +1012,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE);
 
 		/*
@@ -979,6 +1026,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_AKIMA DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -1002,6 +1051,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_AKIMA_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	/**
@@ -1045,6 +1096,7 @@ public class RegimeEstimation {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE);
 
 		/*
@@ -1058,6 +1110,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_KRUGER DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -1081,6 +1135,8 @@ public class RegimeEstimation {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("SPLINE_REGIME_KRUGER_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	public static final void main (

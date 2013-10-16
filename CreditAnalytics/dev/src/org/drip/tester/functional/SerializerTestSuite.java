@@ -263,17 +263,17 @@ public class SerializerTestSuite {
 
 		Verify (abPeriod, new org.drip.analytics.period.Period (abPeriod), "Period");
 
-		byte[] abCouponPeriod = new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
+		byte[] abCouponPeriod = new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 			dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360", true,
 				dblStart + 1825, "GBP").serialize();
 
-		Verify (abCouponPeriod, new org.drip.analytics.period.CouponPeriod (abCouponPeriod), "CouponPeriod");
+		Verify (abCouponPeriod, new org.drip.analytics.period.CashflowPeriod (abCouponPeriod), "CouponPeriod");
 
-		byte[] abPCPCM = new org.drip.analytics.period.CouponPeriodCurveFactors (dblStart, dblStart + 180.,
+		byte[] abPCPCM = new org.drip.analytics.period.CashflowPeriodCurveFactors (dblStart, dblStart + 180.,
 			dblStart, dblStart + 180., dblStart + 180., 0.5, 0.05, 1000000., 100000.,0.985, 0.97, 0.99, 0.98,
 				java.lang.Double.NaN, java.lang.Double.NaN).serialize();
 
-		Verify (abPCPCM, new org.drip.analytics.period.CouponPeriodCurveFactors (abPCPCM),
+		Verify (abPCPCM, new org.drip.analytics.period.CashflowPeriodCurveFactors (abPCPCM),
 			"CouponPeriodCurveFactors");
 
 		byte[] abPLPCM = new org.drip.analytics.period.LossPeriodCurveFactors (dblStart, dblStart + 180.,
@@ -801,13 +801,13 @@ public class SerializerTestSuite {
 
 		Verify (abPricer, new org.drip.param.pricer.PricerParams (abPricer), "PricerParams");
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 		int i = 5;
 
 		while (0 != i--) {
-			lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
+			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 				dblStart, dblStart + 180, dblStart + 180, dblStart, 2, 0.5, "30/360", false, "30/360",
 					false, java.lang.Double.NaN, "ZAR"));
 

@@ -177,7 +177,7 @@ public class BasisSplineSet {
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25);
+		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 
@@ -189,11 +189,13 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
+		System.out.println ("Segment 1 DCPE: " + seg1.dcpe());
+
 		/*
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16.);
+		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., null);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + seg2.responseValue (1.5));
 
@@ -205,7 +207,9 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
-		seg2.calibrate (seg1, 14.);
+		System.out.println ("Segment 2 DCPE: " + seg2.dcpe());
+
+		seg2.calibrate (seg1, 14., null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
@@ -216,6 +220,8 @@ public class BasisSplineSet {
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
+
+		System.out.println ("\t\tSegment 2 DCPE: " + seg2.dcpe());
 	}
 
 	/*
@@ -254,7 +260,7 @@ public class BasisSplineSet {
 				new double[] {1., 4.}, // Left/Right Y
 				new double[] {1.}, // Left Deriv
 				new double[] {6.}, // Right Deriv
-				null)); // Constraints
+				null, null)); // Constraints, Fitness Weighted Response
 
 		// WengertJacobian wj1 = seg1.calibrateJacobian (
 			// new SegmentEdgeParams (1., new double[] {1.}), // SEP Left
@@ -270,6 +276,8 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
+		System.out.println ("Segment 1 DCPE: " + seg1.dcpe());
+
 		/*
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
@@ -280,11 +288,7 @@ public class BasisSplineSet {
 				new double[] {4., 15.}, // Left/Right Y
 				new double[] {6.}, // Left Deriv
 				new double[] {17.}, // Right Deriv
-				null)); // Constraints
-
-		// WengertJacobian wj2 = seg2.calibrateJacobian (
-			// new SegmentEdgeParams (4., new double[] {6.}), // SEP Left
-			// new SegmentEdgeParams (15., new double[] {17.})); // SEP Right
+				null, null)); // Constraints and Fitness Weighted Responses
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg2.responseValue (1.0));
 
@@ -296,7 +300,9 @@ public class BasisSplineSet {
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
-		seg2.calibrate (seg1, 14.);
+		System.out.println ("Segment 2 DCPE: " + seg2.dcpe());
+
+		seg2.calibrate (seg1, 14., null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
@@ -307,6 +313,8 @@ public class BasisSplineSet {
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
+
+		System.out.println ("\t\tSegment 2 DCPE: " + seg2.dcpe());
 	}
 
 	public static final void main (

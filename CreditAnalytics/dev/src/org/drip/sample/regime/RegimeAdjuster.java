@@ -112,6 +112,7 @@ public class RegimeAdjuster {
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
+			null,
 			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
 			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
 
@@ -177,6 +178,8 @@ public class RegimeAdjuster {
 			dblX += 1.;
 		}
 
+		System.out.println ("\tSPLINE_REGIME_BASE DCPE: " + regimeBase.dcpe());
+
 		System.out.println (" \n---------- \n LEFT CLIPPED \n ---------- \n");
 
 		MultiSegmentRegime regimeLeftClipped = regimeBase.clipLeft ("LEFT_CLIP", 1.66);
@@ -194,6 +197,8 @@ public class RegimeAdjuster {
 			dblX += 1.;
 		}
 
+		System.out.println ("\tSPLINE_REGIME_LEFT DCPE: " + regimeLeftClipped.dcpe());
+
 		System.out.println (" \n---------- \n RIGHT CLIPPED \n ---------- \n");
 
 		MultiSegmentRegime regimeRightClipped = regimeBase.clipRight ("RIGHT_CLIP", 7.48);
@@ -210,6 +215,8 @@ public class RegimeAdjuster {
 
 			dblX += 1.;
 		}
+
+		System.out.println ("\tSPLINE_REGIME_RIGHT DCPE: " + regimeRightClipped.dcpe());
 
 		dblX = regimeBase.getLeftPredictorOrdinateEdge();
 

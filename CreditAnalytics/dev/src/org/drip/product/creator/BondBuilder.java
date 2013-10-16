@@ -271,8 +271,8 @@ public class BondBuilder {
 				adt.length != adblPrincipal.length || null == dtEffective || 0 == iFreq)
 			return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 		double dblTotalPrincipal = 0.;
 		double[] adblDate = new double[adt.length];
@@ -320,7 +320,7 @@ public class BondBuilder {
 			}
 
 			try {
-				lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblPeriodStart, adblDate[i],
+				lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblPeriodStart, adblDate[i],
 					dblPeriodStart, adblDate[i], adblDate[i], dblPeriodStart, iFreq, 1. / iFreq, "30/360",
 						false, "30/360", false, java.lang.Double.NaN, ""));
 			} catch (java.lang.Exception e) {

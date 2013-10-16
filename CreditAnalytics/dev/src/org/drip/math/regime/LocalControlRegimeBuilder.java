@@ -395,6 +395,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblResponseValue Array of Response Values
 	 * @param adblCustomSlope Array of Custom Slopes
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Calibration Set up Mode NATURAL | FINANCIAL | FLOATING | NOTAKNOT
 	 * 
 	 * @return The Instance of the Hermite Spline Regime
@@ -406,6 +407,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblResponseValue,
 		final double[] adblCustomSlope,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode)
 	{
 		org.drip.math.regime.MultiSegmentRegime regime =
@@ -446,7 +448,7 @@ public class LocalControlRegimeBuilder {
 			}
 		}
 
-		return regime.setupHermite (aPORDLeft, aPORDRight, null, iSetupMode) ? regime : null;
+		return regime.setupHermite (aPORDLeft, aPORDRight, null, fwr, iSetupMode) ? regime : null;
 	}
 
 	/**
@@ -456,6 +458,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * 
 	 * @return Hermite/Bessel C1 Cubic Spline Regime
@@ -466,10 +469,11 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode)
 	{
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue, BesselC1
-			(adblPredictorOrdinate, adblResponseValue), aPRBP, iSetupMode);
+			(adblPredictorOrdinate, adblResponseValue), aPRBP, fwr, iSetupMode);
 	}
 
 	/**
@@ -482,6 +486,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * 
@@ -493,11 +498,12 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema)
 	{
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue, Hyman83C1
-			(adblPredictorOrdinate, adblResponseValue, bEliminateSpuriousExtrema), aPRBP, iSetupMode);
+			(adblPredictorOrdinate, adblResponseValue, bEliminateSpuriousExtrema), aPRBP, fwr, iSetupMode);
 	}
 
 	/**
@@ -510,6 +516,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * 
 	 * @return Hyman (1989) Monotone Preserving Regime
@@ -520,10 +527,11 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode)
 	{
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue, Hyman89C1
-			(adblPredictorOrdinate, adblResponseValue), aPRBP, iSetupMode);
+			(adblPredictorOrdinate, adblResponseValue), aPRBP, fwr, iSetupMode);
 	}
 
 	/**
@@ -536,6 +544,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bApplyMonotoneFilter TRUE => Apply the Monotone Filter
 	 * 
@@ -547,11 +556,12 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode,
 		final boolean bApplyMonotoneFilter)
 	{
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue, HarmonicC1
-			(adblPredictorOrdinate, adblResponseValue, bApplyMonotoneFilter), aPRBP, iSetupMode);
+			(adblPredictorOrdinate, adblResponseValue, bApplyMonotoneFilter), aPRBP, fwr, iSetupMode);
 	}
 
 	/**
@@ -564,6 +574,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bApplyMonotoneFilter TRUE => Apply the Monotone Filter
 	 * 
@@ -575,11 +586,12 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode,
 		final boolean bApplyMonotoneFilter)
 	{
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue, VanLeerLimiterC1
-			(adblPredictorOrdinate, adblResponseValue, bApplyMonotoneFilter), aPRBP, iSetupMode);
+			(adblPredictorOrdinate, adblResponseValue, bApplyMonotoneFilter), aPRBP, fwr, iSetupMode);
 	}
 
 	/**
@@ -591,6 +603,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bApplyMonotoneFilter TRUE => Apply the Monotone Filter
 	 * 
@@ -602,12 +615,13 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode,
 		final boolean bApplyMonotoneFilter)
 	{
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue,
 			HuynhLeFlochLimiterC1 (adblPredictorOrdinate, adblResponseValue, bApplyMonotoneFilter), aPRBP,
-				iSetupMode);
+				fwr, iSetupMode);
 	}
 
 	/**
@@ -620,6 +634,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * 
 	 * @return The Akima Local Control Regime Instance
@@ -630,6 +645,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode)
 	{
 		org.drip.math.regime.AkimaLocalControlRegime alcr =
@@ -638,7 +654,7 @@ public class LocalControlRegimeBuilder {
 		if (null == alcr) return null;
 
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue, alcr.slopeC1(),
-			aPRBP, iSetupMode);
+			aPRBP, fwr, iSetupMode);
 	}
 
 	/**
@@ -651,6 +667,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param fwr Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * 
 	 * @return The Kruger Regime
@@ -661,10 +678,11 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP,
+		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iSetupMode)
 	{
 		return CustomSlopeHermiteSpline (strName, adblPredictorOrdinate, adblResponseValue, KrugerC1
-			(adblPredictorOrdinate, adblResponseValue), aPRBP, iSetupMode);
+			(adblPredictorOrdinate, adblResponseValue), aPRBP, fwr, iSetupMode);
 	}
 
 	/**

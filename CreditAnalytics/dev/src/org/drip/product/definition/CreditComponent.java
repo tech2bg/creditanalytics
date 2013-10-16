@@ -49,7 +49,7 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	 * @return List of ProductCouponPeriodCurveMeasures
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.CouponPeriodCurveFactors> getCouponFlow (
+	public abstract java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> getCouponFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams);

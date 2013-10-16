@@ -301,6 +301,7 @@ public class CustomCurveBuilder {
 
 				regime.setup (1.,
 					new ResponseValueConstraint[] {snwc},
+					null,
 					iCalibrationBoundaryCondition,
 					iCalibrationDetail);
 			} else {
@@ -402,6 +403,7 @@ public class CustomCurveBuilder {
 			new double[] {0., 0.002778}, // t0 and t1 for the segment
 			new double[] {1., 0.999996}, // the corresponding discount factors
 			new PredictorResponseBuilderParams[] {MakeSBP (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)}, // Exponential Tension Basis Spline
+			null,
 			iCalibrationBoundaryCondition, iCalibrationDetail); // "Natural" Spline Boundary Condition + Calibrate the full regime
 
 		/*

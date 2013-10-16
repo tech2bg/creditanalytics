@@ -48,7 +48,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private java.lang.String _strFloatingRateIndex = "USD-LIBOR-3M";
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
-	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
+	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -123,7 +123,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null != strFloatingRateIndex && strFloatingRateIndex.isEmpty())
 			_strFloatingRateIndex = strFloatingRateIndex;
 
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GeneratePeriodsBackward (
+		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
 			dblEffective, // Effective
 			dblMaturity, // Maturity
 			dapEffective, // Effective DAP
@@ -272,9 +272,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 						continue;
 
 					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-					_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod
+					_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -355,7 +355,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		org.drip.analytics.period.Period currentPeriod = null;
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			if (null == period) continue;
 
 			if (dblValueDate >= period.getStartDate() && dblValueDate < period.getEndDate()) {
@@ -441,7 +441,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
@@ -477,7 +477,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		org.drip.analytics.definition.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
 			dc : mktParams.getForwardDiscountCurve();
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblFloatingRate = 0.;
 			double dblDirtyPeriodDV01 = java.lang.Double.NaN;
 
@@ -681,7 +681,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
@@ -751,7 +751,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
@@ -865,7 +865,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				if (null == p) continue;
 
 				if (bFirstEntry)

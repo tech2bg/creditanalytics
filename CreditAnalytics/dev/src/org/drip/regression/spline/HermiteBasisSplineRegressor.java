@@ -103,10 +103,10 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 		try {
 			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (new
 				org.drip.math.segment.CalibrationParams (new double[] {0., 1.}, new double[] {1., 4.},
-					new double[] {1.}, new double[] {6.}, null))) && null != (_wjRight =
+					new double[] {1.}, new double[] {6.}, null, null))) && null != (_wjRight =
 						_seg2.jackDCoeffDEdgeParams (new org.drip.math.segment.CalibrationParams (new
 							double[] {0., 1.}, new double[] {4., 15.}, new double[] {6.}, new double[] {17.},
-								null))) && _seg2.calibrate (_seg1, 14.) && null != (_wjValue =
+								null, null))) && _seg2.calibrate (_seg1, 14., null) && null != (_wjValue =
 									_seg2.jackDResponseDEdgeParams (1.5));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

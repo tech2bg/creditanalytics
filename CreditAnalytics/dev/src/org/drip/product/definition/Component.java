@@ -157,12 +157,12 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		final java.lang.String strCC);
 
 	/**
-	 * Gets the component's coupon periods
+	 * Get the Component's Cash Flow Periods
 	 * 
-	 * @return List of the component's coupon periods
+	 * @return List of the Component's Cash Flow Periods
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod();
+	public abstract java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod();
 
 	/**
 	 * Gets the component cash settlement parameters

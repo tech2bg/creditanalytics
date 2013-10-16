@@ -452,7 +452,7 @@ public class BondLiveAndEODAPI {
 
 			System.out.println ("---------      ---------    ---------   ------  ------   -------- --------- --------");
 
-			for (CouponPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, cmp))
+			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, cmp))
 				System.out.println (
 					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
@@ -468,7 +468,7 @@ public class BondLiveAndEODAPI {
 
 			System.out.println ("---------      ---------    ---------  -------- --------- --------");
 
-			for (CouponPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, cmp))
+			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, cmp))
 				System.out.println (
 					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +

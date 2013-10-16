@@ -366,7 +366,7 @@ public class BondAnalyticsAPI {
 			 * Generates and displays the coupon period details for the bonds
 			 */
 
-			for (Period p : aBond[i].getCouponPeriod())
+			for (Period p : aBond[i].getCashFlowPeriod())
 				System.out.println (
 					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
