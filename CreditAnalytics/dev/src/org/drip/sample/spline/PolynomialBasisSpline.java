@@ -252,7 +252,7 @@ public class PolynomialBasisSpline {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new RationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Set to 2nd order Roughness Penalty Derivative Order.

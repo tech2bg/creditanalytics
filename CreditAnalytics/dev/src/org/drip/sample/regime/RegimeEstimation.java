@@ -3,6 +3,7 @@ package org.drip.sample.regime;
 
 import org.drip.math.common.FormatUtil;
 import org.drip.math.function.*;
+import org.drip.math.pchip.LocalControlRegimeBuilder;
 import org.drip.math.regime.*;
 import org.drip.math.segment.*;
 import org.drip.math.spline.*;
@@ -278,7 +279,7 @@ public class RegimeEstimation {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new RationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
@@ -467,6 +468,8 @@ public class RegimeEstimation {
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -474,7 +477,9 @@ public class RegimeEstimation {
 	public static final void BesselHermiteSplineRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp)
+		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
+		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
 		double dblX = 1.;
@@ -499,7 +504,9 @@ public class RegimeEstimation {
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE);
+			MultiSegmentRegime.CALIBRATE,
+			bEliminateSpuriousExtrema,
+			bApplyMonotoneFilter);
 
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
@@ -551,6 +558,8 @@ public class RegimeEstimation {
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -558,7 +567,9 @@ public class RegimeEstimation {
 	public static final void Hyman83HermiteMonotoneRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp)
+		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
+		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
 		double dblX = 1.;
@@ -584,7 +595,8 @@ public class RegimeEstimation {
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
-			true); // TRUE => Eliminate Spurious Segment Extrema
+			bEliminateSpuriousExtrema,
+			bApplyMonotoneFilter);
 
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
@@ -636,6 +648,8 @@ public class RegimeEstimation {
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -643,7 +657,9 @@ public class RegimeEstimation {
 	public static final void Hyman89HermiteMonotoneRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp)
+		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
+		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
 		double dblX = 1.;
@@ -668,7 +684,9 @@ public class RegimeEstimation {
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE);
+			MultiSegmentRegime.CALIBRATE,
+			bEliminateSpuriousExtrema,
+			bApplyMonotoneFilter);
 
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
@@ -721,6 +739,8 @@ public class RegimeEstimation {
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
 	 * @param bApplyMonotoneFilter TRUE => Apply the Monotone Filter
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -729,6 +749,7 @@ public class RegimeEstimation {
 		final double[] adblX,
 		final double[] adblY,
 		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
@@ -755,6 +776,7 @@ public class RegimeEstimation {
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
+			bEliminateSpuriousExtrema,
 			bApplyMonotoneFilter);
 
 		/*
@@ -807,7 +829,8 @@ public class RegimeEstimation {
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
-	 * @param bApplyMonotoneFilter TRUE => Apply the Monotone Filter
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -816,6 +839,7 @@ public class RegimeEstimation {
 		final double[] adblX,
 		final double[] adblY,
 		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
@@ -842,6 +866,7 @@ public class RegimeEstimation {
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
+			bEliminateSpuriousExtrema,
 			bApplyMonotoneFilter);
 
 		/*
@@ -894,7 +919,8 @@ public class RegimeEstimation {
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
-	 * @param bApplyMonotoneFilter TRUE => Apply the Monotone Filter
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -903,6 +929,7 @@ public class RegimeEstimation {
 		final double[] adblX,
 		final double[] adblY,
 		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
@@ -929,6 +956,7 @@ public class RegimeEstimation {
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
 			MultiSegmentRegime.CALIBRATE,
+			bEliminateSpuriousExtrema,
 			bApplyMonotoneFilter);
 
 		/*
@@ -981,6 +1009,8 @@ public class RegimeEstimation {
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -988,7 +1018,9 @@ public class RegimeEstimation {
 	public static final void AkimaRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp)
+		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
+		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
 		double dblX = 1.;
@@ -1013,7 +1045,9 @@ public class RegimeEstimation {
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE);
+			MultiSegmentRegime.CALIBRATE,
+			bEliminateSpuriousExtrema,
+			bApplyMonotoneFilter);
 
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
@@ -1065,6 +1099,8 @@ public class RegimeEstimation {
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
 	 * @param sbp The Segment Builder Parameters
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -1072,7 +1108,9 @@ public class RegimeEstimation {
 	public static final void KrugerRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp)
+		final PredictorResponseBuilderParams sbp,
+		final boolean bEliminateSpuriousExtrema,
+		final boolean bApplyMonotoneFilter)
 		throws Exception
 	{
 		double dblX = 1.;
@@ -1097,7 +1135,9 @@ public class RegimeEstimation {
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE);
+			MultiSegmentRegime.CALIBRATE,
+			bEliminateSpuriousExtrema,
+			bApplyMonotoneFilter);
 
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
@@ -1161,7 +1201,7 @@ public class RegimeEstimation {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new RationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
@@ -1211,38 +1251,38 @@ public class RegimeEstimation {
 
 		System.out.println (" \n---------- \n C1 BESSEL/HERMITE \n ---------- \n");
 
-		BesselHermiteSplineRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+		BesselHermiteSplineRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
 
 		System.out.println (" \n---------- \n C1 HYMAN 1983 MONOTONE \n ---------- \n");
 
-		Hyman83HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+		Hyman83HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
 
 		System.out.println (" \n---------- \n C1 HYMAN 1989 MONOTONE \n ---------- \n");
 
-		Hyman89HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+		Hyman89HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
 
 		System.out.println (" \n---------- \n C1 HARMONIC MONOTONE WITH FILTER \n ---------- \n");
 
-		HarmonicHermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true);
+		HarmonicHermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
 
 		System.out.println (" \n---------- \n C1 HARMONIC MONOTONE WITHOUT FILTER \n ---------- \n");
 
-		HarmonicHermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), false);
+		HarmonicHermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, false);
 
 		System.out.println (" \n---------- \n C1 VAN LEER LIMITER REGIME WITHOUT FILTER \n ---------- \n");
 
-		VanLeerLimiterRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), false);
+		VanLeerLimiterRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, false);
 
 		System.out.println (" \n---------- \n C1 HUYNH LE-FLOCH LIMITER REGIME WITHOUT FILTER \n ---------- \n");
 
-		HuynhLeFlochLimiterRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), false);
+		HuynhLeFlochLimiterRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, false);
 
 		System.out.println (" \n---------- \n C1 AKIMA REGIME \n ---------- \n");
 
-		AkimaRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+		AkimaRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
 
 		System.out.println (" \n---------- \n C1 KRUGER REGIME \n ---------- \n");
 
-		KrugerRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc));
+		KrugerRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
 	}
 }

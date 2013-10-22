@@ -205,7 +205,7 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 
 		org.drip.math.segment.ResponseScalingShapeController rssc = new
 			org.drip.math.segment.ResponseScalingShapeController (true, new
-				org.drip.math.function.RationalShapeControl (1.));
+				org.drip.math.function.QuadraticRationalShapeControl (1.));
 
 		if (null == (_seg1 = org.drip.math.segment.LocalBasisPredictorResponse.Create (1.0, 3.0, aAU, rssc,
 			segParams)) || null == (_seg2 = org.drip.math.segment.LocalBasisPredictorResponse.Create (3.0,

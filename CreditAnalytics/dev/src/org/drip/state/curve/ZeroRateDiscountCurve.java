@@ -29,9 +29,9 @@ package org.drip.state.curve;
  */
 
 /**
- * DiscountFactorDiscountCurve manages the Discounting Latent State, using the Discount Factor as the State
+ * ZeroRateDiscountCurve manages the Discounting Latent State, using the Zero Rate as the State
  *  Response Representation. It exports the following functionality:
- *  - Calculate discount factor / discount factor Jacobian
+ *  - Calculate Zero Rate / Zero Rate Jacobian
  *  - Calculate implied forward rate / implied forward rate Jacobian
  *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
  *  - Optionally provide the calibration instruments and quotes used to build the curve.
@@ -39,12 +39,12 @@ package org.drip.state.curve;
  * @author Lakshmi Krishnamurthy
  */
 
-public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.DiscountCurve {
+public class ZeroRateDiscountCurve extends org.drip.analytics.definition.DiscountCurve {
 	private org.drip.math.grid.Span _span = null;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
 	private org.drip.analytics.definition.CurveSpanConstructionInput _rcci = null;
 
-	private DiscountFactorDiscountCurve shiftManifestMeasure (
+	private ZeroRateDiscountCurve shiftManifestMeasure (
 		final double[] adblShiftedManifestMeasure)
 	{
 		org.drip.state.estimator.RegimeRepresentationSpec[] aRBS = _rcci.getRBS();
@@ -54,6 +54,8 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 
 		int iRBSIndex = 0;
 		int iCalibInstrIndex = 0;
+		boolean bLeftMostEntity = true;
+		double dblLeftMostZero = java.lang.Double.NaN;
 
 		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : aRBS) {
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
@@ -66,6 +68,11 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 				astrManifestMeasure[i] = aLSMM[i].getManifestMeasure();
 
 				adblQuoteBumped[i] = adblShiftedManifestMeasure[iCalibInstrIndex++];
+
+				if (bLeftMostEntity && 0 == i) {
+					bLeftMostEntity = false;
+					dblLeftMostZero = adblQuoteBumped[i];
+				}
 			}
 
 			try {
@@ -80,8 +87,8 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		}
 
 		try {
-			return new org.drip.state.curve.DiscountFactorDiscountCurve (name(), (_rcci.lcc().calibrateSpan
-				(aRBSBumped, 1., _rcci.getValuationParameter(), _rcci.getPricerParameter(),
+			return new org.drip.state.curve.ZeroRateDiscountCurve (name(), (_rcci.lcc().calibrateSpan
+				(aRBSBumped, dblLeftMostZero, _rcci.getValuationParameter(), _rcci.getPricerParameter(),
 					_rcci.getQuotingParameter(), _rcci.getCMP())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -91,7 +98,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 	}
 
 	/**
-	 * DiscountFactorDiscountCurve constructor
+	 * ZeroRateDiscountCurve constructor
 	 * 
 	 * @param strCurrency Currency
 	 * @param span The Span Instance
@@ -99,15 +106,14 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 	 * @throws java.lang.Exception
 	 */
 
-	public DiscountFactorDiscountCurve (
+	public ZeroRateDiscountCurve (
 		final java.lang.String strCurrency,
 		final org.drip.math.grid.Span span)
 		throws java.lang.Exception
 	{
 		super (span.left(), strCurrency);
 
-		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log ((_span = span).calcResponseValue
-			(_span.right())) / (_span.right() - _span.left());
+		_dblRightFlatForwardRate = (_span = span).calcResponseValue (_span.right());
 	}
 
 	@Override public double df (
@@ -115,24 +121,23 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountFactorDiscountCurve::df => Invalid Inputs");
+			throw new java.lang.Exception ("ZeroRateDiscountCurve::df => Invalid Inputs");
 
 		double dblStartDate = _span.left();
 
 		if (dblDate <= dblStartDate) return 1.;
 
-		return dblDate <= _span.right() ? _span.calcResponseValue (dblDate) : java.lang.Math.exp (-1. *
-			_dblRightFlatForwardRate * (dblDate - dblStartDate) / 365.25);
+		return java.lang.Math.exp (-1. * zero (dblDate) * (dblDate - dblStartDate) / 365.25);
 	}
 
-	@Override public double forward (
+	public double forward (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
 			(dblDate2))
-			throw new java.lang.Exception ("DiscountFactorDiscountCurve::forward => Invalid input");
+			throw new java.lang.Exception ("ZeroRateDiscountCurve::forward => Invalid input");
 
 		double dblStartDate = epoch().getJulian();
 
@@ -146,21 +151,19 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		throws java.lang.Exception
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountFactorDiscountCurve::zero => Invalid Date");
+			throw new java.lang.Exception ("ZeroRateDiscountCurve::zero => Invalid Inputs");
 
-		double dblStartDate = epoch().getJulian();
+		if (dblDate <= _span.left()) return 1.;
 
-		if (dblDate < dblStartDate) return 0.;
-
-		return -365.25 / (dblDate - dblStartDate) * java.lang.Math.log (df (dblDate));
+		return dblDate <= _span.right() ? _span.calcResponseValue (dblDate) : _dblRightFlatForwardRate;
 	}
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
+		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;
 	}
 
-	@Override public DiscountFactorDiscountCurve parallelShiftManifestMeasure (
+	@Override public ZeroRateDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
 		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
@@ -178,7 +181,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		return shiftManifestMeasure (adblShiftedManifestMeasure);
 	}
 
-	@Override public DiscountFactorDiscountCurve shiftManifestMeasure (
+	@Override public ZeroRateDiscountCurve shiftManifestMeasure (
 		final int iSpanIndex,
 		final double dblShift)
 	{
@@ -222,7 +225,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		return shiftManifestMeasure (adblShiftedManifestMeasure);
 	}
 
-	@Override public DiscountFactorDiscountCurve parallelShiftQuantificationMetric (
+	@Override public ZeroRateDiscountCurve parallelShiftQuantificationMetric (
 		final double dblShift)
 	{
 		return null;
@@ -289,13 +292,13 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		throws java.lang.Exception
 	{
 		if (null == _rcci)
-			throw new java.lang.Exception ("DiscountFactorDiscountCurve::getManifestMeasure => Cannot get " +
+			throw new java.lang.Exception ("ZeroRateDiscountCurve::getManifestMeasure => Cannot get " +
 				strInstrumentCode);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _rcci.getQuote();
 
 		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode))
-			throw new java.lang.Exception ("DiscountFactorDiscountCurve::getManifestMeasure => Cannot get " +
+			throw new java.lang.Exception ("ZeroRateDiscountCurve::getManifestMeasure => Cannot get " +
 				strInstrumentCode);
 
 		return mapQuote.get (strInstrumentCode);

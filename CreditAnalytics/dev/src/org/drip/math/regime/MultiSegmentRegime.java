@@ -289,4 +289,10 @@ public interface MultiSegmentRegime extends org.drip.math.regime.SingleSegmentRe
 
 	public abstract double dcpe()
 		throws java.lang.Exception;
+
+	/**
+	 * Display the Segments
+	 */
+
+	public abstract java.lang.String displayString();
 }

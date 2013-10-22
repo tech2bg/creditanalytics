@@ -29,7 +29,7 @@ package org.drip.analytics.definition;
  */
 
 /**
- * BootCurveConstructionInput contains the Parameters needed for the Curve Calibration/Estimation. It
+ * CurveSpanConstructionInput contains the Parameters needed for the Curve Calibration/Estimation. It
  * 	contains the following:
  *  - Calibration Valuation Parameters
  *  - Calibration Quoting Parameters
@@ -41,23 +41,22 @@ package org.drip.analytics.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RegimeCurveConstructionInput implements org.drip.analytics.definition.CurveConstructionInputSet
+public abstract class CurveSpanConstructionInput implements
+	org.drip.analytics.definition.CurveConstructionInputSet
 {
 	private org.drip.param.pricer.PricerParams _pricerParam = null;
-	private org.drip.state.estimator.RegimeBuilderSet[] _aRBS = null;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
-	private org.drip.state.estimator.LinearCurveCalibrator _lcc = null;
 	private org.drip.param.valuation.QuotingParams _quotingParam = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
+	private org.drip.state.estimator.RegimeRepresentationSpec[] _aRBS = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 
 	/**
-	 * RegimeCurveConstructionInput constructor
+	 * CurveSpanConstructionInput constructor
 	 * 
-	 * @param lcc LinearCurveCalibrator instance
 	 * @param aRBS Array of RegimeBuilderSet
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
@@ -67,18 +66,16 @@ public class RegimeCurveConstructionInput implements org.drip.analytics.definiti
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
-	public RegimeCurveConstructionInput (
-		final org.drip.state.estimator.LinearCurveCalibrator lcc,
-		final org.drip.state.estimator.RegimeBuilderSet[] aRBS,
+	public CurveSpanConstructionInput (
+		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.QuotingParams quotingParam,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 		throws java.lang.Exception
 	{
-		if (null == (_lcc = lcc) || null == (_aRBS = aRBS) || 0 == _aRBS.length|| null == (_valParam =
-			valParam))
-			throw new java.lang.Exception ("RegimeCurveConstructionInput ctr: Invalid Inputs");
+		if (null == (_aRBS = aRBS) || 0 == _aRBS.length || null == (_valParam = valParam))
+			throw new java.lang.Exception ("CurveSpanConstructionInput ctr: Invalid Inputs");
 
 		_cmp = cmp;
 		_pricerParam = pricerParam;
@@ -100,7 +97,7 @@ public class RegimeCurveConstructionInput implements org.drip.analytics.definiti
 		java.util.List<org.drip.product.definition.CalibratableComponent> lsCC = new
 			java.util.ArrayList<org.drip.product.definition.CalibratableComponent>();
 
-		for (org.drip.state.estimator.RegimeBuilderSet rbs : _aRBS) {
+		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : _aRBS) {
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
 
 			int iNumComp = aCC.length;
@@ -126,7 +123,7 @@ public class RegimeCurveConstructionInput implements org.drip.analytics.definiti
 
 		_mapQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		for (org.drip.state.estimator.RegimeBuilderSet rbs : _aRBS) {
+		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : _aRBS) {
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
 
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
@@ -146,7 +143,7 @@ public class RegimeCurveConstructionInput implements org.drip.analytics.definiti
 
 		_mapMeasure = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		for (org.drip.state.estimator.RegimeBuilderSet rbs : _aRBS) {
+		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : _aRBS) {
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
 
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
@@ -179,17 +176,6 @@ public class RegimeCurveConstructionInput implements org.drip.analytics.definiti
 	}
 
 	/**
-	 * Retrieve the Linear Curve Calibrator
-	 * 
-	 * @return The Linear Curve Calibrator
-	 */
-
-	public org.drip.state.estimator.LinearCurveCalibrator getLCC()
-	{
-		return _lcc;
-	}
-
-	/**
 	 * Retrieve the Component Market Parameters
 	 * 
 	 * @return The Component Market Parameters
@@ -206,8 +192,16 @@ public class RegimeCurveConstructionInput implements org.drip.analytics.definiti
 	 * @return The Array of RBS
 	 */
 
-	public org.drip.state.estimator.RegimeBuilderSet[] getRBS()
+	public org.drip.state.estimator.RegimeRepresentationSpec[] getRBS()
 	{
 		return _aRBS;
 	}
+
+	/**
+	 * Retrieve the Linear Curve Calibrator
+	 * 
+	 * @return The Linear Curve Calibrator
+	 */
+
+	public abstract org.drip.state.estimator.LinearCurveCalibrator lcc();
 }

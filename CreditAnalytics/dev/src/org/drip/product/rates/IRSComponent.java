@@ -335,9 +335,17 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			if (org.drip.math.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
 
+				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+
 				mapResult.put ("Price", dblCleanPrice);
 
 				mapResult.put ("CleanPrice", dblCleanPrice);
+
+				double dblStartDate = getEffectiveDate().getJulian();
+
+				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > valParams._dblValue ? dblStartDate :
+					valParams._dblValue) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
+						(valParams._dblValue) * 0.01);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -660,8 +668,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				null, null, null, null, null, null, 100., "JPY", "JPY");
 
 		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
-			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01, 4, "Act/360", "Act/360", "JPY-LIBOR",
-				false, null, null, null, null, null, null, null, null, null, -100., "JPY", "JPY");
+			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01,
+				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-3M"), 4, "Act/360", "Act/360",
+					false, null, null, null, null, null, null, null, null, null, -100., "JPY", "JPY");
 
 		IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
 

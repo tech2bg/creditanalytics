@@ -247,7 +247,38 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		return java.lang.Math.exp (dblExpArg / 365.25);
 	}
 
-	@Override public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness()
+	@Override public double forward (
+		final double dblDate1,
+		final double dblDate2)
+		throws java.lang.Exception
+	{
+		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
+			(dblDate2))
+			throw new java.lang.Exception ("ForwardRateDiscountCurve::forward => Invalid input");
+
+		double dblStartDate = epoch().getJulian();
+
+		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
+
+		return 365.25 / (dblDate2 - dblDate1) * java.lang.Math.log (df (dblDate1) / df (dblDate2));
+	}
+
+	@Override public double zero (
+		final double dblDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("ForwardRateDiscountCurve::zero => Invalid Date");
+
+		double dblStartDate = epoch().getJulian();
+
+		if (dblDate < dblStartDate) return 0.;
+
+		return -365.25 / (dblDate - dblStartDate) * java.lang.Math.log (df (dblDate));
+	}
+
+	@Override public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness (
+		final java.lang.String strLatentQuantificationMetric)
 	{
 		return null;
 	}

@@ -45,7 +45,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private boolean _bApplyCpnEOMAdj = false;
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private java.lang.String _strFloatingRateIndex = "USD-LIBOR-3M";
+	private org.drip.product.params.FloatingRateIndex _fri = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
@@ -65,10 +65,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	 * @param dblEffective Effective Date
 	 * @param dblMaturity Maturity Date
 	 * @param dblSpread Spread
+	 * @param fri Floating Rate Index
 	 * @param iFreq Frequency
 	 * @param strCouponDC Coupon Day Count
 	 * @param strAccrualDC Accrual Day Count
-	 * @param strFloatingRateIndex Floating Rate Index
 	 * @param bFullStub TRUE => Generate full first-stub
 	 * @param dapEffective Effective DAP
 	 * @param dapMaturity Maturity DAP
@@ -90,10 +90,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final double dblEffective,
 		final double dblMaturity,
 		final double dblSpread,
+		final org.drip.product.params.FloatingRateIndex fri,
 		final int iFreq,
 		final java.lang.String strCouponDC,
 		final java.lang.String strAccrualDC,
-		final java.lang.String strFloatingRateIndex,
 		final boolean bFullStub,
 		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
 		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
@@ -111,17 +111,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.math.common.NumberUtil.IsValid
 			(_dblEffective = dblEffective) || !org.drip.math.common.NumberUtil.IsValid (_dblMaturity =
-				dblMaturity) || !org.drip.math.common.NumberUtil.IsValid (_dblSpread = dblSpread) ||
-					!org.drip.math.common.NumberUtil.IsValid (_dblNotional = dblNotional))
-			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params!");
+				dblMaturity) || !org.drip.math.common.NumberUtil.IsValid (_dblSpread = dblSpread) || null ==
+					(_fri = fri) || !org.drip.math.common.NumberUtil.IsValid (_dblNotional = dblNotional))
+			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params! " + _fri);
 
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
-
-		_strFloatingRateIndex = strIR + "-LIBOR-3M";
-
-		if (null != strFloatingRateIndex && strFloatingRateIndex.isEmpty())
-			_strFloatingRateIndex = strFloatingRateIndex;
 
 		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
 			dblEffective, // Effective
@@ -141,7 +136,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			_bApplyAccEOMAdj,
 			bFullStub, // Full First Coupon Period?
 			false, // Merge the first 2 Periods - create a long stub?
-			false,
+			true,
 			strCalendar)) || 0 == _lsCouponPeriod.size())
 			throw new java.lang.Exception ("FloatingStream ctr: Cannot generate Period Schedule");
 	}
@@ -235,10 +230,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate rate index");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
-			_strFloatingRateIndex = astrField[9];
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
+			_fri = null;
 		else
-			_strFloatingRateIndex = "";
+			_fri = new org.drip.product.params.FloatingRateIndex (astrField[9].getBytes());
 
 		if (null == astrField[10] || astrField[10].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate notional schedule");
@@ -375,11 +370,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			double dblCurrentResetDate = currentPeriod.getResetDate();
 
 			if (org.drip.math.common.NumberUtil.IsValid (dblCurrentResetDate)) {
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIndexFixing = mapFixings.get (new
-					org.drip.analytics.date.JulianDate (dblCurrentResetDate));
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIndexFixing =
+					mapFixings.get (new org.drip.analytics.date.JulianDate (dblCurrentResetDate));
 
 				if (null != mapIndexFixing) {
-					java.lang.Double dblFixing = mapIndexFixing.get (_strFloatingRateIndex);
+					java.lang.Double dblFixing = mapIndexFixing.get (_fri.fullyQualifiedName());
 
 					if (null != dblFixing) return dblFixing + _dblSpread;
 				}
@@ -400,7 +395,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 	@Override public java.lang.String getRatesForwardCurveName()
 	{
-		return _strFloatingRateIndex;
+		return _fri.fullyQualifiedName();
 	}
 
 	@Override public java.lang.String getCreditCurveName()
@@ -489,16 +484,17 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
+					java.lang.String strFullyQualifiedName = _fri.fullyQualifiedName();
+
 					if (null == mktParams.getFixings() || null == mktParams.getFixings().get (new
 						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
 							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
-								(period.getResetDate())).get (_strFloatingRateIndex))
-						dblResetRate = dblFloatingRate = dcForward.libor (period.getStartDate(),
-							period.getEndDate());
+								(period.getResetDate())).get (strFullyQualifiedName))
+						dblResetRate = dblFloatingRate = dcForward.libor (_fri.tenor());
 					else
 						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
 							org.drip.analytics.date.JulianDate (period.getResetDate())).get
-								(_strFloatingRateIndex);
+								(strFullyQualifiedName);
 
 					dblFixing01 = period.getAccrualDCF (valParams._dblValue) * 0.01 * getNotional
 						(period.getAccrualStartDate(), valParams._dblValue);
@@ -843,10 +839,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		sb.append (_dblEffective + getFieldDelimiter());
 
-		if (null == _strFloatingRateIndex || _strFloatingRateIndex.isEmpty())
+		if (null == _fri)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (_strFloatingRateIndex + getFieldDelimiter());
+			sb.append (new java.lang.String (_fri.serialize()) + getFieldDelimiter());
 
 		if (null == _notlSchedule)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
@@ -903,9 +899,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		FloatingStream fs = new org.drip.product.rates.FloatingStream
 			(org.drip.analytics.date.JulianDate.Today().getJulian(),
-				org.drip.analytics.date.JulianDate.Today().addTenor ("4Y").getJulian(), 0.03, 2, "30/360",
-					"30/360", "JPY-LIBOR", false, null, null, null, null, null, null, null, null, null, 100.,
-						"JPY", "JPY");
+				org.drip.analytics.date.JulianDate.Today().addTenor ("4Y").getJulian(), 0.03,
+					org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 2, "30/360", "30/360",
+						false, null, null, null, null, null, null, null, null, null, 100., "JPY", "JPY");
 
 		byte[] abFS = fs.serialize();
 

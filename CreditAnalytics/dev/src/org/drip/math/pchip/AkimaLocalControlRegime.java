@@ -1,5 +1,5 @@
 
-package org.drip.math.regime;
+package org.drip.math.pchip;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -149,10 +149,10 @@ public class AkimaLocalControlRegime {
 				(iNumExtendedResponseValue - 1, true) ? true : false;
 	}
 
-	public double[] slopeC1()
+	public double[] C1()
 	{
 		int iNumPredictorOrdinate = _adblPredictorOrdinate.length;
-		double[] adblSlopeC1 = new double[iNumPredictorOrdinate];
+		double[] adblC1 = new double[iNumPredictorOrdinate];
 		double[] adblExtendedSlope = new double[iNumPredictorOrdinate + 3];
 
 		for (int i = 0; i < iNumPredictorOrdinate + 3; ++i)
@@ -165,35 +165,12 @@ public class AkimaLocalControlRegime {
 			double dblSlope32 = java.lang.Math.abs (adblExtendedSlope[i + 3] - adblExtendedSlope[i + 2]);
 
 			if (0. == dblSlope10 && 0. == dblSlope32)
-				adblSlopeC1[i] = 0.5 * (adblExtendedSlope[i + 1] + adblExtendedSlope[i + 2]);
+				adblC1[i] = 0.5 * (adblExtendedSlope[i + 1] + adblExtendedSlope[i + 2]);
 			else
-				adblSlopeC1[i] = (dblSlope32 * adblExtendedSlope[i + 1] + dblSlope10 *
-					adblExtendedSlope[i + 2]) / (dblSlope10 + dblSlope32);
+				adblC1[i] = (dblSlope32 * adblExtendedSlope[i + 1] + dblSlope10 * adblExtendedSlope[i + 2]) /
+					(dblSlope10 + dblSlope32);
 		}
 
-		return adblSlopeC1;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		/*
-		 * X predictors
-		 */
-
-		double[] adblX = new double[] { 1.00,  1.50,  2.00, 3.00, 4.00, 5.00, 6.50, 8.00, 10.00};
-
-		/*
-		 * Y responses
-		 */
-
-		double[] adblY = new double[] {25.00, 20.25, 16.00, 9.00, 4.00, 1.00, 0.25, 4.00, 16.00};
-
-		AkimaLocalControlRegime aclr = Create (adblX, adblY);
-
-		System.out.println (aclr.slopeC1());
-
-		org.drip.math.common.NumberUtil.Print1DArray ("SLOPE", aclr.slopeC1(), false);
+		return adblC1;
 	}
 }

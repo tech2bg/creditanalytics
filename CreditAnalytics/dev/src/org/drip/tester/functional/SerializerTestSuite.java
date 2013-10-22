@@ -291,7 +291,7 @@ public class SerializerTestSuite {
 		Verify (abEDF, org.drip.product.creator.EDFutureBuilder.FromByteArray (abEDF), "EDFuture");
 
 		byte[] abIRS = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtToday, "4Y", 0.03, "JPY",
-			"JPY-LIBOR", "JPY").serialize();
+			"JPY-LIBOR-3M", "JPY").serialize();
 
 		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
 			"InterestRateSwap");
@@ -315,16 +315,19 @@ public class SerializerTestSuite {
 				null, 100., "MNO", "PQR");
 
 		aFloatStream[0] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
-			("3Y").getJulian(), 0.03, 4, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
-				null, null, null, -100., "ABC", "DEF");
+			("3Y").getJulian(), 0.03, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), 4,
+				"Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
+					"DEF");
 
 		aFloatStream[1] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
-			("5Y").getJulian(), 0.05, 4, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
-				null, null, null, -100., "ABC", "DEF");
+			("5Y").getJulian(), 0.05, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), 4,
+				"Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
+					"DEF");
 
 		aFloatStream[2] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
-			("7Y").getJulian(), 0.07, 1, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
-				null, null, null, -100., "ABC", "DEF");
+			("7Y").getJulian(), 0.07, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-12M"), 1,
+				"Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
+					"DEF");
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
 			aFloatStream).serialize();

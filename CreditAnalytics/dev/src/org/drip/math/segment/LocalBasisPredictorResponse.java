@@ -43,8 +43,6 @@ package org.drip.math.segment;
 
 public class LocalBasisPredictorResponse extends org.drip.math.segment.PredictorResponse implements
 	org.drip.math.segment.LocalBasisEvaluator {
-	private static final int DISPLAY_SEGMENT_PREDICTOR_PARTITION = 5;
-
 	private double[] _adblResponseBasisCoeff = null;
 	private double[][] _aadblDResponseBasisCoeffDConstraint = null;
 	private org.drip.math.segment.DesignInelasticParams _dip = null;
@@ -535,30 +533,19 @@ public class LocalBasisPredictorResponse extends org.drip.math.segment.Predictor
 					bfcp.basisPairCurvaturePenalty (i, j);
 		}
 
-		return cpp.coefficient() * dblDCPE;
+		return cpp.amplitude() * dblDCPE;
 	}
 
 	@Override public java.lang.String displayString()
 	{
-		double dblSegmentPartitionResponse = java.lang.Double.NaN;
-
-		double dblGlobalPredictorOrdinateLeft = left();
-
-		double dblGlobalSegmentPredictorWidth = width() / DISPLAY_SEGMENT_PREDICTOR_PARTITION;
-
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		for (int i = 0; i <= DISPLAY_SEGMENT_PREDICTOR_PARTITION; ++i) {
-			double dblGlobalPredictorOrdinate = dblGlobalPredictorOrdinateLeft + i *
-				dblGlobalSegmentPredictorWidth;
+		sb.append ("\t\t\t[" + left() + " => " + right() + "\n");
 
-			try {
-				dblSegmentPartitionResponse = responseValue (dblGlobalPredictorOrdinate);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-			}
+		for (int i = 0; i < _adblResponseBasisCoeff.length; ++i) {
+			if (0 != i) sb.append ("  |  ");
 
-			sb.append ("\t\t\t" + dblGlobalPredictorOrdinate + " = " + dblSegmentPartitionResponse + "\n");
+			sb.append (_adblResponseBasisCoeff[i] + "\n");
 		}
 
 		return sb.toString();

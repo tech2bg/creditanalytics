@@ -4,10 +4,10 @@ package org.drip.sample.discount;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.DiscountCurve;
 import org.drip.math.common.FormatUtil;
-import org.drip.math.function.RationalShapeControl;
+import org.drip.math.function.QuadraticRationalShapeControl;
 import org.drip.math.regime.*;
 import org.drip.math.segment.*;
-import org.drip.math.spline.PolynomialBasisSetParams;
+import org.drip.math.spline.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
@@ -42,7 +42,7 @@ import org.drip.state.estimator.*;
  *  	limitations under the License.
  */
 
-public class TIIEDiscountCurve {
+public class TIIEDiscountCurveCFDC {
 	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final java.lang.String[] astrTenor)
@@ -89,7 +89,7 @@ public class TIIEDiscountCurve {
 
 		double[] adblCashQuote = new double[] {0.0403};
 
-		RegimeBuilderSet rbsCash = RegimeBuilderSet.CreateRegimeBuilderSet (
+		RegimeRepresentationSpec rbsCash = RegimeRepresentationSpec.CreateRegimeBuilderSet (
 			"CASH",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
@@ -98,12 +98,14 @@ public class TIIEDiscountCurve {
 			adblCashQuote);
 
 		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
-			{"3M", "6M", "9M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "30Y"});
+			{"3M", "6M", "9M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y"});
+			// {"3M", "6M", "9M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "30Y"});
 
 		double[] adblSwapQuote = new double[]
-			{0.0396, 0.0387, 0.0388, 0.0389, 0.04135, 0.04455, 0.0486, 0.0526, 0.0593, 0.0649, 0.0714596, 0.0749596, 0.0776};
+			{0.0396, 0.0387, 0.0388, 0.0389, 0.04135, 0.04455, 0.0486, 0.0526, 0.0593, 0.0649, 0.0714596, 0.0749596};
+			// {0.0396, 0.0387, 0.0388, 0.0389, 0.04135, 0.04455, 0.0486, 0.0526, 0.0593, 0.0649, 0.0714596, 0.0749596, 0.0776};
 
-		RegimeBuilderSet rbsSwap = RegimeBuilderSet.CreateRegimeBuilderSet (
+		RegimeRepresentationSpec rbsSwap = RegimeRepresentationSpec.CreateRegimeBuilderSet (
 			"SWAP",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
@@ -111,37 +113,67 @@ public class TIIEDiscountCurve {
 			"Rate",
 			adblSwapQuote);
 
-		RegimeBuilderSet[] aRBS = new RegimeBuilderSet[] {rbsCash, rbsSwap};
+		RegimeRepresentationSpec[] aRBS = new RegimeRepresentationSpec[] {rbsCash, rbsSwap};
 
-		DiscountCurve dcShapePreservingPass = RatesScenarioCurveBuilder.ShapePreservingBuild (
+		LinearCurveCalibrator lccShapePreserving = new LinearCurveCalibrator (
 			new PredictorResponseBuilderParams (
 				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (2),
-				DesignInelasticParams.Create (0, 2),
-				new ResponseScalingShapeController (true, new RationalShapeControl (0.))),
+				new PolynomialBasisSetParams (3),
+				DesignInelasticParams.Create (1, 2),
+				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentRegime.CALIBRATE,
+			null);
+
+		GlobalControlCurveParams crbpSmoothening1 = new GlobalControlCurveParams (
+			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			new PredictorResponseBuilderParams (
+				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialBasisSetParams (3),
+				DesignInelasticParams.Create (1, 2),
+				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentRegime.CALIBRATE,
+			null);
+
+		GlobalControlCurveParams crbpSmoothening2 = new GlobalControlCurveParams (
+			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			new PredictorResponseBuilderParams (
+				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialBasisSetParams (3),
+				DesignInelasticParams.Create (1, 2),
+				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentRegime.CALIBRATE,
+			null);
+
+		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingBuild (
+			lccShapePreserving,
 			aRBS,
 			new ValuationParams (dtToday, dtToday, "MXN"),
 			null,
 			null,
-			null,
-			null,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-			MultiSegmentRegime.CALIBRATE);
+			null);
 
-		DiscountCurve dcSmoothingPass = RatesScenarioCurveBuilder.SmoothingBuild (
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (2),
-				DesignInelasticParams.Create (0, 2),
-				new ResponseScalingShapeController (true, new RationalShapeControl (0.))),
+		DiscountCurve dcSmoothening1 = RatesScenarioCurveBuilder.SmoothingGlobalControlBuild (
+			dcShapePreserving,
+			lccShapePreserving,
+			crbpSmoothening1,
 			aRBS,
 			new ValuationParams (dtToday, dtToday, "MXN"),
 			null,
 			null,
+			null);
+
+		DiscountCurve dcSmoothening2 = RatesScenarioCurveBuilder.SmoothingGlobalControlBuild (
+			dcShapePreserving,
+			lccShapePreserving,
+			crbpSmoothening2,
+			aRBS,
+			new ValuationParams (dtToday, dtToday, "MXN"),
 			null,
 			null,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-			MultiSegmentRegime.CALIBRATE);
+			null);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -151,7 +183,7 @@ public class TIIEDiscountCurve {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t        SHAPE PRESERVING | SMOOTHING | INPUT QUOTE  ");
+		System.out.println ("\t        SHAPE PRESERVING   | SMOOTHING #1  | SMOOTHING #2  |  INPUT QUOTE  ");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
@@ -162,17 +194,24 @@ public class TIIEDiscountCurve {
 				FormatUtil.FormatDouble (
 					aCashComp[i].calcMeasureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreservingPass, null, null, null, null, null, null),
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"Rate"),
-					1, 6, 1.) + " | " +
+					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCashComp[i].calcMeasureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothingPass, null, null, null, null, null, null),
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothening1, null, null, null, null, null, null),
 						null,
 						"Rate"),
-					1, 6, 1.) + " | " +
+					1, 6, 1.) + "   |   " +
+				FormatUtil.FormatDouble (
+					aCashComp[i].calcMeasureValue (
+						new ValuationParams (dtToday, dtToday, "MXN"), null,
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothening2, null, null, null, null, null, null),
+						null,
+						"Rate"),
+					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.)
 			);
 
@@ -184,7 +223,7 @@ public class TIIEDiscountCurve {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t        SHAPE PRESERVING | SMOOTHING | INPUT QUOTE  ");
+		System.out.println ("\t        SHAPE PRESERVING   | SMOOTHING #1  | SMOOTHING #2  |  INPUT QUOTE  ");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
@@ -195,17 +234,24 @@ public class TIIEDiscountCurve {
 				FormatUtil.FormatDouble (
 					aSwapComp[i].calcMeasureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreservingPass, null, null, null, null, null, null),
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
-						"Rate"),
-					1, 6, 1.) + " | " +
+						"CalibSwapRate"),
+					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aSwapComp[i].calcMeasureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothingPass, null, null, null, null, null, null),
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothening1, null, null, null, null, null, null),
 						null,
-						"Rate"),
-					1, 6, 1.) + " | " +
+						"CalibSwapRate"),
+					1, 6, 1.) + "   |   " +
+				FormatUtil.FormatDouble (
+					aSwapComp[i].calcMeasureValue (
+						new ValuationParams (dtToday, dtToday, "MXN"), null,
+						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothening2, null, null, null, null, null, null),
+						null,
+						"CalibSwapRate"),
+					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.)
 			);
 
@@ -220,7 +266,7 @@ public class TIIEDiscountCurve {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t        SHAPE PRESERVING | SMOOTHING  ");
+		System.out.println ("\t        SHAPE PRESERVING   |  SMOOTHING #1 |  SMOOTHING #2");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
@@ -230,15 +276,21 @@ public class TIIEDiscountCurve {
 			System.out.println ("\t[" + aCC[i].getMaturityDate() + "] = " +
 				FormatUtil.FormatDouble (
 					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreservingPass, null, null, null, null, null, null),
+					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 					null,
-					"Rate"),
-				1, 6, 1.) + " | " +
+					"CalibSwapRate"),
+				1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothingPass, null, null, null, null, null, null),
+					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothening1, null, null, null, null, null, null),
 					null,
-					"Rate"),
+					"CalibSwapRate"),
+				1, 6, 1.) + "   |   " +
+				FormatUtil.FormatDouble (
+					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
+					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcSmoothening2, null, null, null, null, null, null),
+					null,
+					"CalibSwapRate"),
 				1, 6, 1.)
 			);
 	}

@@ -249,21 +249,10 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
 	 */
 
-	public double forward (
+	public abstract double forward (
 		final double dblDate1,
 		final double dblDate2)
-		throws java.lang.Exception
-	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
-			(dblDate2))
-			throw new java.lang.Exception ("DiscountCurve::forward => Invalid input");
-
-		double dblStartDate = epoch().getJulian();
-
-		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
-
-		return 365.25 / (dblDate2 - dblDate1) * java.lang.Math.log (df (dblDate1) / df (dblDate2));
-	}
+		throws java.lang.Exception;
 
 	/**
 	 * Compute the Forward Rate between two Tenors
@@ -300,15 +289,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
 	 */
 
-	public double zero (
+	public abstract double zero (
 		final double dblDate)
-		throws java.lang.Exception
-	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountCurve::zero => Invalid Date");
-
-		return forward (epoch().getJulian(), dblDate);
-	}
+		throws java.lang.Exception;
 
 	/**
 	 * Calculate the implied rate to the given tenor
@@ -766,53 +749,70 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	/**
 	 * Convert the inferred Formulation Constraint into a "Truthness" Entity
 	 * 
+	 * @param strLatentStateQuantificationMetric Latent State Quantification Metric
+	 * 
 	 * @return Map of the Truthness Entities
 	 */
 
-	public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness()
+	public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness (
+		final java.lang.String strLatentStateQuantificationMetric)
 	{
+		if (null == strLatentStateQuantificationMetric || (!QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
+			(strLatentStateQuantificationMetric) && !QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+				(strLatentStateQuantificationMetric)))
+			return null;
+
 		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
 		int iNumComp = aCC.length;
+		boolean bFirstCashFlow = true;
 
 		if (0 == iNumComp) return null;
 
-		if (QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase (latentStateQuantificationMetric())) {
-			java.util.Map<java.lang.Double, java.lang.Double> mapCanonicalTruthness = new
-				java.util.TreeMap<java.lang.Double, java.lang.Double>();
+		java.util.Map<java.lang.Double, java.lang.Double> mapCanonicalTruthness = new
+			java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
+		if (QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase (strLatentStateQuantificationMetric))
 			mapCanonicalTruthness.put (_dblEpochDate, 1.);
 
-			for (org.drip.product.definition.CalibratableComponent cc : aCC) {
-				if (null == cc) continue;
+		for (org.drip.product.definition.CalibratableComponent cc : aCC) {
+			if (null == cc) continue;
 
-				java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-					cc.getCashFlowPeriod();
+			java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = cc.getCashFlowPeriod();
 
-				if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
+			if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
 
-				for (org.drip.analytics.period.CashflowPeriod cpnPeriod : cc.getCashFlowPeriod()) {
-					if (null == cpnPeriod) continue;
+			for (org.drip.analytics.period.CashflowPeriod cpnPeriod : cc.getCashFlowPeriod()) {
+				if (null == cpnPeriod) continue;
 
-					double dblPay = cpnPeriod.getPayDate();
+				double dblPay = cpnPeriod.getPayDate();
 
-					if (dblPay >= _dblEpochDate) {
-						try {
+				if (dblPay >= _dblEpochDate) {
+					try {
+						if (QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+							(strLatentStateQuantificationMetric))
 							mapCanonicalTruthness.put (dblPay, df (dblPay));
-						} catch (java.lang.Exception e) {
-							e.printStackTrace();
+						else if (QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
+							(strLatentStateQuantificationMetric)) {
+							if (bFirstCashFlow) {
+								bFirstCashFlow = false;
 
-							return null;
+								mapCanonicalTruthness.put (_dblEpochDate, zero (dblPay));
+							}
+
+							mapCanonicalTruthness.put (dblPay, zero (dblPay));
 						}
+					} catch (java.lang.Exception e) {
+						e.printStackTrace();
+
+						return null;
 					}
 				}
 			}
-
-			return mapCanonicalTruthness;
 		}
 
-		return null;
+		return mapCanonicalTruthness;
 	}
 }

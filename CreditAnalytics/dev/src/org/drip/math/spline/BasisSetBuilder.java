@@ -234,4 +234,73 @@ public class BasisSetBuilder {
 
 		return null;
 	}
+
+	/**
+	 * Construct the Exponential Rational Basis Set
+	 * 
+	 * 		y = A + B / (1+x) + C * exp(-x) + D * exp(-x) / (1+x)
+	 * 
+	 * @return The Exponential Rational Basis Set
+	 */
+
+	public static final org.drip.math.function.AbstractUnivariate[] ExponentialRationalBasisSet()
+	{
+		try {
+			double dblLambdaLR = 0.50;
+			double dblLambdaET = 0.02;
+
+			org.drip.math.function.AbstractUnivariate auLinearPoly = new org.drip.math.function.Polynomial
+				(0);
+
+			org.drip.math.function.AbstractUnivariate auLRSC = new
+				org.drip.math.function.LinearRationalShapeControl (dblLambdaLR);
+
+			org.drip.math.function.AbstractUnivariate auET = new
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambdaET);
+
+			org.drip.math.function.AbstractUnivariate auLRET = new
+				org.drip.math.function.LinearRationalTensionExponential (-dblLambdaET, dblLambdaLR);
+
+			return new org.drip.math.function.AbstractUnivariate[] {auLinearPoly, auLRSC, auET, auLRET};
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct the Exponential Mixture Basis Set
+	 * 
+	 * 		y = A + B * exp(-l_1 * x) + C * exp(-l_2 * x) + D * exp(-l_3 * x)
+	 * 
+	 * @return The Exponential Mixture Basis Set
+	 */
+
+	public static final org.drip.math.function.AbstractUnivariate[] ExponentialMixtureBasisSet()
+	{
+		try {
+			double dblLambda1 = 0.01;
+			double dblLambda2 = 0.05;
+			double dblLambda3 = 0.15;
+
+			org.drip.math.function.AbstractUnivariate auLinearPoly = new org.drip.math.function.Polynomial
+				(0);
+
+			org.drip.math.function.AbstractUnivariate auExp1 = new
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambda1);
+
+			org.drip.math.function.AbstractUnivariate auExp2 = new
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambda2);
+
+			org.drip.math.function.AbstractUnivariate auExp3 = new
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambda3);
+
+			return new org.drip.math.function.AbstractUnivariate[] {auLinearPoly, auExp1, auExp2, auExp3};
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

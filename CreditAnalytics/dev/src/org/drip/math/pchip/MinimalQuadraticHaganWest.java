@@ -1,5 +1,5 @@
 
-package org.drip.math.regime;
+package org.drip.math.pchip;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

@@ -371,6 +371,11 @@ public class NonlinearCurveCalibrator {
 				astrCalibMeasure.length)
 			return false;
 
+		if (dc instanceof org.drip.state.curve.NonlinearDiscountFactorDiscountCurve)
+			return bootstrapNonlinearInterestRateSequence
+				((org.drip.state.curve.NonlinearDiscountFactorDiscountCurve) dc, dcTSY, dcEDSF, aCalibComp,
+					valParams, astrCalibMeasure, adblCalibValue, dblBump, mmFixings, quotingParams, bFlat);
+
 		for (int i = 0; i < adblCalibValue.length; ++i) {
 			try {
 				if (!org.drip.math.common.NumberUtil.IsValid (calibrateIRNode (dc, dcTSY, dcEDSF,

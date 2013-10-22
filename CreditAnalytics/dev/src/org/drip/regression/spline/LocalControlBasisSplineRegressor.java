@@ -108,7 +108,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			aSBP[i] = new org.drip.math.segment.PredictorResponseBuilderParams (strBasisSpline, bsp,
 				org.drip.math.segment.DesignInelasticParams.Create (iCk, 1), new
 					org.drip.math.segment.ResponseScalingShapeController (true, new
-						org.drip.math.function.RationalShapeControl (1.)));
+						org.drip.math.function.QuadraticRationalShapeControl (1.)));
 
 		if (null == (_regime = org.drip.math.regime.RegimeBuilder.CreateUncalibratedRegimeEstimator
 			("SPLINE_REGIME", adblX, aSBP)))
@@ -146,7 +146,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 					org.drip.math.spline.PolynomialBasisSetParams (4),
 						org.drip.math.segment.DesignInelasticParams.Create (2, 2), new
 							org.drip.math.segment.ResponseScalingShapeController (true, new
-								org.drip.math.function.RationalShapeControl (1.)));
+								org.drip.math.function.QuadraticRationalShapeControl (1.)));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -160,9 +160,9 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			aSBP[i] = prbp;
 
 		if (null == (_regimeBesselHermite =
-			org.drip.math.regime.LocalControlRegimeBuilder.CreateBesselCubicSplineRegime ("BESSEL_REGIME",
+			org.drip.math.pchip.LocalControlRegimeBuilder.CreateBesselCubicSplineRegime ("BESSEL_REGIME",
 				new double[] {0.00, 1.00,  2.00,  3.00,  4.00}, adblY, aSBP, null,
-					org.drip.math.regime.MultiSegmentRegime.CALIBRATE)))
+					org.drip.math.regime.MultiSegmentRegime.CALIBRATE, true, true)))
 			return false;
 
 		return _regime.setupHermite (aSEPLeft, aSEPRight, null, null,

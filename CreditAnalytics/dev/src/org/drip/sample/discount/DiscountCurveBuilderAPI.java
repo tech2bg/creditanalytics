@@ -4,7 +4,7 @@ package org.drip.sample.discount;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.DiscountCurve;
 import org.drip.math.common.FormatUtil;
-import org.drip.math.function.RationalShapeControl;
+import org.drip.math.function.QuadraticRationalShapeControl;
 import org.drip.math.regime.*;
 import org.drip.math.segment.*;
 import org.drip.math.spline.PolynomialBasisSetParams;
@@ -100,7 +100,7 @@ public class DiscountCurveBuilderAPI {
 			0.0013, 0.0017, 0.0017, 0.0018, 0.0020, 0.0023, // Cash Rate
 			0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160}; // EDF Rate;
 
-		RegimeBuilderSet rbsCash = RegimeBuilderSet.CreateRegimeBuilderSet (
+		RegimeRepresentationSpec rbsCash = RegimeRepresentationSpec.CreateRegimeBuilderSet (
 			"CASH",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
@@ -114,7 +114,7 @@ public class DiscountCurveBuilderAPI {
 		double[] adblSwapQuote = new double[]
 			{0.0166, 0.0206, 0.0241, 0.0269, 0.0292, 0.0311, 0.0326, 0.0340, 0.0351, 0.0375, 0.0393, 0.0402, 0.0407, 0.0409, 0.0409};
 
-		RegimeBuilderSet rbsSwap = RegimeBuilderSet.CreateRegimeBuilderSet (
+		RegimeRepresentationSpec rbsSwap = RegimeRepresentationSpec.CreateRegimeBuilderSet (
 			"SWAP",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
@@ -122,22 +122,25 @@ public class DiscountCurveBuilderAPI {
 			"Rate",
 			adblSwapQuote);
 
-		RegimeBuilderSet[] aRBS = new RegimeBuilderSet[] {rbsCash, rbsSwap};
+		RegimeRepresentationSpec[] aRBS = new RegimeRepresentationSpec[] {rbsCash, rbsSwap};
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingBuild (
+		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
 			new PredictorResponseBuilderParams (
 				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialBasisSetParams (4),
 				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new RationalShapeControl (0.))),
+				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentRegime.CALIBRATE,
+			null);
+
+		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingBuild (
+			lcc,
 			aRBS,
 			new ValuationParams (dtToday, dtToday, "USD"),
 			null,
 			null,
-			null,
-			null,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-			MultiSegmentRegime.CALIBRATE);
+			null);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -161,6 +164,6 @@ public class DiscountCurveBuilderAPI {
 			System.out.println ("\t[" + aSwapComp[i].getMaturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwapComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
+						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
 	}
 }

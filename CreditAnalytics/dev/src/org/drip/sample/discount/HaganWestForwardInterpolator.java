@@ -2,7 +2,7 @@
 package org.drip.sample.discount;
 
 import org.drip.math.common.FormatUtil;
-import org.drip.math.regime.MonotoneConvexHaganWest;
+import org.drip.math.pchip.MonotoneConvexHaganWest;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

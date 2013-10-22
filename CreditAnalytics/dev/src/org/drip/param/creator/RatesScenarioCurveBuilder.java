@@ -37,6 +37,7 @@ package org.drip.param.creator;
  */
 
 public class RatesScenarioCurveBuilder {
+	private static final boolean s_bBlog = true;
 
 	/**
 	 * Creates an RatesScenarioCurve Instance from the currency and the array of the calibration
@@ -107,27 +108,22 @@ public class RatesScenarioCurveBuilder {
 	}
 
 	public static final org.drip.analytics.definition.DiscountCurve ShapePreservingBuild (
-		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
-		final org.drip.state.estimator.RegimeBuilderSet[] aRBS,
+		final org.drip.state.estimator.LinearCurveCalibrator lcc,
+		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.valuation.QuotingParams quotingParam,
-		final org.drip.math.segment.BestFitWeightedResponse bfwr,
-		final int iCalibrationBoundaryCondition,
-		final int iCalibrationDetail)
+		final org.drip.param.valuation.QuotingParams quotingParam)
 	{
-		try {
-			org.drip.state.estimator.LinearCurveCalibrator lcc = new
-				org.drip.state.estimator.LinearCurveCalibrator (prbp, bfwr, iCalibrationBoundaryCondition,
-					iCalibrationDetail);
+		if (null == lcc) return null;
 
+		try {
 			org.drip.state.curve.DiscountFactorDiscountCurve dcdf = new
 				org.drip.state.curve.DiscountFactorDiscountCurve (aRBS[0].getCalibComp()[0].getIRCurveName(),
-					(lcc.calibrateSpan (aRBS, valParam, null, null, null)));
+					(lcc.calibrateSpan (aRBS, 1., valParam, null, null, null)));
 
-			return dcdf.setCCIS (new org.drip.analytics.definition.RegimeCurveConstructionInput (lcc, aRBS,
-				valParam, pricerParam, quotingParam, cmp)) ? dcdf : null;
+			return dcdf.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aRBS, valParam,
+				pricerParam, quotingParam, cmp)) ? dcdf : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -135,66 +131,171 @@ public class RatesScenarioCurveBuilder {
 		return null;
 	}
 
-	public static final org.drip.analytics.definition.DiscountCurve SmoothingBuild (
-		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
-		final org.drip.state.estimator.RegimeBuilderSet[] aRBS,
+	public static final org.drip.analytics.definition.DiscountCurve SmoothingGlobalControlBuild (
+		final org.drip.analytics.definition.DiscountCurve dcShapePreserver,
+		final org.drip.state.estimator.LinearCurveCalibrator lcc,
+		final org.drip.state.estimator.GlobalControlCurveParams gccp,
+		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.valuation.QuotingParams quotingParam,
-		final org.drip.math.segment.BestFitWeightedResponse bfwr,
-		final int iCalibrationBoundaryCondition,
-		final int iCalibrationDetail)
+		final org.drip.param.valuation.QuotingParams quotingParam)
 	{
-		org.drip.analytics.definition.DiscountCurve dc = ShapePreservingBuild (prbp, aRBS, valParam,
-			pricerParam, cmp, quotingParam, bfwr, iCalibrationBoundaryCondition, iCalibrationDetail);
+		if (null == dcShapePreserver) return null;
 
-		if (null == dc) return null;
+		if (null == gccp) return dcShapePreserver;
 
-		java.util.Map<java.lang.Double, java.lang.Double> mapDFTruth = dc.canonicalTruthness();
+		java.lang.String strSmootheningQM = gccp.smootheningQuantificationMetric();
 
-		if (null == mapDFTruth) return null;
+		java.util.Map<java.lang.Double, java.lang.Double> mapQMTruth = dcShapePreserver.canonicalTruthness
+			(strSmootheningQM);
 
-		int iTruthSize = mapDFTruth.size();
+		if (null == mapQMTruth) return null;
 
-		if (null == mapDFTruth || 0 == iTruthSize) return null;
+		int iTruthSize = mapQMTruth.size();
 
-		java.util.Set<java.util.Map.Entry<java.lang.Double, java.lang.Double>> esDFTruth =
-			mapDFTruth.entrySet();
+		if (0 == iTruthSize) return null;
 
-		if (null == esDFTruth || 0 == esDFTruth.size()) return null;
+		java.util.Set<java.util.Map.Entry<java.lang.Double, java.lang.Double>> esQMTruth =
+			mapQMTruth.entrySet();
 
-		java.lang.String strName = dc.name();
+		if (null == esQMTruth || 0 == esQMTruth.size()) return null;
+
+		java.lang.String strName = dcShapePreserver.name();
 
 		int i = 0;
-		double[] adblDF = new double[iTruthSize];
+		double[] adblQM = new double[iTruthSize];
 		double[] adblDate = new double[iTruthSize];
 		org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP = new
 			org.drip.math.segment.PredictorResponseBuilderParams[iTruthSize - 1];
 
-		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meDFTruth : esDFTruth) {
-			if (null == meDFTruth) return null;
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meQMTruth : esQMTruth) {
+			if (null == meQMTruth) return null;
 
-			if (0 != i) aPRBP[i - 1] = prbp;
+			if (0 != i) aPRBP[i - 1] = gccp.prbp();
 
-			adblDate[i] = meDFTruth.getKey();
+			adblDate[i] = meQMTruth.getKey();
 
-			adblDF[i++] = meDFTruth.getValue();
+			adblQM[i++] = meQMTruth.getValue();
+
+			if (s_bBlog) {
+				try {
+					System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (meQMTruth.getKey())
+						+ " = " + meQMTruth.getValue());
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		try {
 			org.drip.math.regime.MultiSegmentRegime regime =
 				org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator (strName + "_REGIME",
-					adblDate, adblDF, aPRBP, bfwr, iCalibrationBoundaryCondition, iCalibrationDetail);
+					adblDate, adblQM, aPRBP, gccp.bestFitWeightedResponse(),
+						gccp.calibrationBoundaryCondition(), gccp.calibrationDetail());
 
-			org.drip.state.curve.DiscountFactorDiscountCurve dcdfMultiPass = new
-				org.drip.state.curve.DiscountFactorDiscountCurve (strName, new
+			org.drip.analytics.definition.DiscountCurve dcMultiPass = null;
+
+			if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+				(strSmootheningQM))
+				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, new
+					org.drip.math.grid.OverlappingRegimeSpan (regime));
+			else if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
+				(strSmootheningQM))
+				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, new
 					org.drip.math.grid.OverlappingRegimeSpan (regime));
 
-			return dcdfMultiPass.setCCIS (new org.drip.analytics.definition.RegimeCurveConstructionInput (new
-				org.drip.state.estimator.LinearCurveCalibrator (prbp, bfwr, iCalibrationBoundaryCondition,
-					iCalibrationDetail), aRBS, valParam, pricerParam, quotingParam, cmp)) ? dcdfMultiPass :
-						null;
+			return dcMultiPass.setCCIS (new org.drip.analytics.definition.SmoothingCCIS (dcShapePreserver,
+				gccp, lcc, aRBS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static final org.drip.analytics.definition.DiscountCurve SmoothingLocalControlBuild (
+		final org.drip.analytics.definition.DiscountCurve dcShapePreserver,
+		final org.drip.state.estimator.LinearCurveCalibrator lcc,
+		final org.drip.state.estimator.LocalControlCurveParams lccp,
+		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
+		final org.drip.param.valuation.ValuationParams valParam,
+		final org.drip.param.pricer.PricerParams pricerParam,
+		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.valuation.QuotingParams quotingParam)
+	{
+		if (null == dcShapePreserver) return null;
+
+		if (null == lccp) return dcShapePreserver;
+
+		java.lang.String strSmootheningQM = lccp.smootheningQuantificationMetric();
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapQMTruth = dcShapePreserver.canonicalTruthness
+			(strSmootheningQM);
+
+		if (null == mapQMTruth) return null;
+
+		int iTruthSize = mapQMTruth.size();
+
+		if (0 == iTruthSize) return null;
+
+		java.util.Set<java.util.Map.Entry<java.lang.Double, java.lang.Double>> esQMTruth =
+			mapQMTruth.entrySet();
+
+		if (null == esQMTruth || 0 == esQMTruth.size()) return null;
+
+		java.lang.String strName = dcShapePreserver.name();
+
+		int i = 0;
+		double[] adblQM = new double[iTruthSize];
+		double[] adblDate = new double[iTruthSize];
+		org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP = new
+			org.drip.math.segment.PredictorResponseBuilderParams[iTruthSize - 1];
+
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meQMTruth : esQMTruth) {
+			if (null == meQMTruth) return null;
+
+			if (0 != i) aPRBP[i - 1] = lccp.prbp();
+
+			adblDate[i] = meQMTruth.getKey();
+
+			adblQM[i++] = meQMTruth.getValue();
+
+			if (s_bBlog) {
+				try {
+					System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (meQMTruth.getKey())
+						+ " = " + meQMTruth.getValue());
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		try {
+			org.drip.math.pchip.LocalControlRegime lcr = org.drip.math.pchip.LocalControlRegime.Create
+				(adblDate, adblQM, org.drip.math.pchip.LocalControlRegime.C1_BESSEL,
+					lccp.eliminateSpuriousExtrema(), lccp.applyMonotoneFilter());
+
+			if (null == lcr) return null;
+
+			org.drip.math.regime.MultiSegmentRegime regime =
+				org.drip.math.pchip.LocalControlRegimeBuilder.CustomSlopeHermiteSpline (strName + "_REGIME",
+					adblDate, adblQM, lcr.C1(), aPRBP, lccp.bestFitWeightedResponse(),
+						lccp.calibrationDetail());
+
+			org.drip.analytics.definition.DiscountCurve dcMultiPass = null;
+
+			if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+				(strSmootheningQM))
+				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, new
+					org.drip.math.grid.OverlappingRegimeSpan (regime));
+			else if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
+				(strSmootheningQM))
+				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, new
+					org.drip.math.grid.OverlappingRegimeSpan (regime));
+
+			return dcMultiPass.setCCIS (new org.drip.analytics.definition.SmoothingCCIS (dcShapePreserver,
+				lccp, lcc, aRBS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -2,7 +2,7 @@
 package org.drip.sample.regime;
 
 import org.drip.math.common.FormatUtil;
-import org.drip.math.function.RationalShapeControl;
+import org.drip.math.function.QuadraticRationalShapeControl;
 import org.drip.math.regime.*;
 import org.drip.math.segment.*;
 import org.drip.math.spline.PolynomialBasisSetParams;
@@ -150,7 +150,7 @@ public class PenalizedFitRegime {
 
 		ResponseScalingShapeController rssc = new ResponseScalingShapeController (
 			false,
-			new RationalShapeControl (dblShapeControllerTension));
+			new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order

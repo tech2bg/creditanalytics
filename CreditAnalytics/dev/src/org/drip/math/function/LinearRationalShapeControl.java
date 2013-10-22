@@ -29,10 +29,10 @@ package org.drip.math.function;
  */
 
 /**
- * RationalShapeControl implements the deterministic rational shape control functionality on top of the
+ * LinearRationalShapeControl implements the deterministic rational shape control functionality on top of the
  *  estimator basis splines inside - [0,...,1) - Globally [x_0,...,x_1):
  * 
- * 			y = 1 / [1 + lambda * x * (1-x)]
+ * 			y = 1 / [1 + lambda * x]
  * 
  *		where is the normalized ordinate mapped as
  * 
@@ -41,32 +41,32 @@ package org.drip.math.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RationalShapeControl extends org.drip.math.function.AbstractUnivariate {
+public class LinearRationalShapeControl extends org.drip.math.function.AbstractUnivariate {
 	private double _dblLambda = java.lang.Double.NaN;
 
 	/**
-	 * RationalShapeControl constructor
+	 * LinearRationalShapeControl constructor
 	 * 
 	 * @param dblLambda Tension Parameter
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public RationalShapeControl (
+	public LinearRationalShapeControl (
 		final double dblLambda)
 		throws java.lang.Exception
 	{
 		super (null);
 
 		if (!org.drip.math.common.NumberUtil.IsValid (_dblLambda = dblLambda))
-			throw new java.lang.Exception ("RationalShapeControl ctr: Invalid tension");
+			throw new java.lang.Exception ("LinearRationalShapeControl ctr: Invalid tension");
 	}
 
 	@Override public double evaluate (
 		final double dblX)
 		throws java.lang.Exception
 	{
-		return 1. / (1. + _dblLambda * dblX * (1. - dblX));
+		return 1. / (1. + _dblLambda * dblX);
 	}
 
 	@Override public double calcDerivative (
@@ -74,13 +74,15 @@ public class RationalShapeControl extends org.drip.math.function.AbstractUnivari
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		if (3 <= iOrder) return super.calcDerivative (dblX, iOrder);
+		if (!org.drip.math.common.NumberUtil.IsValid (dblX))
+			throw new java.lang.Exception ("LinearRationalShapeControl::calcDerivative => Invalid Inputs");
 
-		double dblD2BetaDX2 = -2. * _dblLambda;
-		double dblDBetaDX = _dblLambda * (1. - 2. * dblX);
-		double dblBeta = 1. + _dblLambda * dblX * (1. - dblX);
-		return 1 == iOrder ? -1. * dblDBetaDX / (dblBeta * dblBeta) : (2. * dblDBetaDX - dblBeta *
-			dblD2BetaDX2) / (dblBeta * dblBeta * dblBeta);
+		double dblDerivative = 1. / (1. + _dblLambda * dblX);
+
+		for (int i = 0; i < iOrder; ++i)
+			dblDerivative *= (-1. * _dblLambda / (1. + _dblLambda * dblX));
+
+		return dblDerivative;
 	}
 
 	/**

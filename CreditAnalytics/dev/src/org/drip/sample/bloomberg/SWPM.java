@@ -198,8 +198,9 @@ public class SWPM {
 		 */
 
 		RatesComponent floatStream = new FloatingStream (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., 4, "Act/360", "Act/360", "USD-LIBOR-3M", false, null, null,
-				dap, dap, dap, dap, dap, null, null, -dblNotional, "USD", "USD");
+			dtMaturity.getJulian(), 0., org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), 4,
+				"Act/360", "Act/360", false, null, null,
+					dap, dap, dap, dap, dap, null, null, -dblNotional, "USD", "USD");
 
 		/*
 		 * Build the Swap from the fixed and the floating streams

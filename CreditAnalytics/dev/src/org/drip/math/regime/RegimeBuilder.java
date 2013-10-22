@@ -68,6 +68,18 @@ public class RegimeBuilder {
 	public static final java.lang.String BASIS_SPLINE_KAKLIS_PANDELIS = "KaklisPandelis";
 
 	/**
+	 * Exponential Rational Basis Spline
+	 */
+
+	public static final java.lang.String BASIS_SPLINE_EXPONENTIAL_RATIONAL = "ExponentialRational";
+
+	/**
+	 * Exponential Mixture Basis Spline
+	 */
+
+	public static final java.lang.String BASIS_SPLINE_EXPONENTIAL_MIXTURE = "ExponentialMixture";
+
+	/**
 	 * Create an uncalibrated Regime instance over the specified Predictor Ordinate Array using the specified
 	 * 	Basis Spline Parameters for the Segment.
 	 * 
@@ -100,7 +112,9 @@ public class RegimeBuilder {
 				!BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline) &&
 					!BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline) &&
 						!BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline) &&
-							!BASIS_SPLINE_KAKLIS_PANDELIS.equalsIgnoreCase (strBasisSpline)))
+							!BASIS_SPLINE_KAKLIS_PANDELIS.equalsIgnoreCase (strBasisSpline) &&
+								!BASIS_SPLINE_EXPONENTIAL_RATIONAL.equalsIgnoreCase (strBasisSpline) &&
+									!BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline)))
 				return null;
 
 			if (BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
@@ -140,6 +154,18 @@ public class RegimeBuilder {
 							((org.drip.math.spline.KaklisPandelisBasisSetParams)
 								aPRBP[i].getBasisSetParams()), aPRBP[i].getShapeController(),
 									aPRBP[i].getSegmentElasticParams())))
+					return null;
+			} else if (BASIS_SPLINE_EXPONENTIAL_RATIONAL.equalsIgnoreCase (strBasisSpline)) {
+				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
+					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
+						org.drip.math.spline.BasisSetBuilder.ExponentialRationalBasisSet(),
+							aPRBP[i].getShapeController(), aPRBP[i].getSegmentElasticParams())))
+					return null;
+			} else if (BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline)) {
+				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
+					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
+						org.drip.math.spline.BasisSetBuilder.ExponentialMixtureBasisSet(),
+							aPRBP[i].getShapeController(), aPRBP[i].getSegmentElasticParams())))
 					return null;
 			}
 		}

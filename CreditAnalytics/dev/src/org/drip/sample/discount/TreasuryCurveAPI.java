@@ -220,7 +220,7 @@ public class TreasuryCurveAPI {
 		for (int i = 0; i < astrTSYName.length; ++i) {
 			String strTenor = aiMaturityYear[i] + "Y";
 
-			System.out.println ("DF[" + strTenor + "]: " + dcTSY.zero (strTenor) +
+			System.out.println ("Zero[" + strTenor + "]: " + dcTSY.zero (strTenor) +
 				"; Yield[" + strTenor + "]: " + adblCalibYield[i]);
 		}
 

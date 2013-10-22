@@ -19,6 +19,7 @@ import org.drip.param.definition.BasketMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableComponent;
+import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 
 /*
@@ -157,13 +158,13 @@ public class MultiLegSwapAPI {
 		FloatingStream[] aFloatStream = new FloatingStream[3];
 
 		aFloatStream[0] = new FloatingStream (dtEffective.getJulian(), dtEffective.addTenor ("3Y").getJulian(),
-			0.03, 4, "Act/360", "Act/360", "USD-LIBOR-3M", false, null, null, dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
+			0.03, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
 
 		aFloatStream[1] = new FloatingStream (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(),
-			0.05, 4, "Act/360", "Act/360", "USD-LIBOR-3M", false, null, null, dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
+			0.05, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
 
 		aFloatStream[2] = new FloatingStream (dtEffective.getJulian(), dtEffective.addTenor ("7Y").getJulian(),
-			0.07, 1, "Act/360", "Act/360", "USD-LIBOR-3M", false, null, null, dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
+			0.07, FloatingRateIndex.Create ("ABC-RI-12M"), 1, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
 
 		/*
 		 * Create a Rates Basket instance containing the fixed and floating streams

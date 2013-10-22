@@ -31,7 +31,7 @@ package org.drip.math.regime;
 public class CkSegmentSequenceBuilder implements org.drip.math.regime.SegmentSequenceBuilder {
 	private int _iCalibrationBoundaryCondition = -1;
 	private org.drip.math.regime.MultiSegmentRegime _msr = null;
-	private org.drip.math.segment.BestFitWeightedResponse _fwr = null;
+	private org.drip.math.segment.BestFitWeightedResponse _bfwr = null;
 	private org.drip.math.segment.ResponseValueConstraint[] _aRVC = null;
 	private org.drip.math.segment.ResponseValueConstraint _rvcLeading = null;
 
@@ -41,7 +41,7 @@ public class CkSegmentSequenceBuilder implements org.drip.math.regime.SegmentSeq
 	 * @param rvcLeading Leading Segment Response Value Constraint
 	 * @param aRVC Array of Segment Response Value Constraints
 	 * @param iCalibrationBoundaryCondition Solver Mode - FLOATING | NATURAL | FINANCIAL
-	 * @param fwr Fitness Weighted Response
+	 * @param bfwr Best Fit Weighted Response
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -49,14 +49,14 @@ public class CkSegmentSequenceBuilder implements org.drip.math.regime.SegmentSeq
 	public CkSegmentSequenceBuilder (
 		final org.drip.math.segment.ResponseValueConstraint rvcLeading,
 		final org.drip.math.segment.ResponseValueConstraint[] aRVC,
-		final org.drip.math.segment.BestFitWeightedResponse fwr,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr,
 		final int iCalibrationBoundaryCondition)
 		throws java.lang.Exception
 	{
 		if (null == (_rvcLeading = rvcLeading) || null == (_aRVC = aRVC) || 0 == _aRVC.length)
 			throw new java.lang.Exception ("CkSegmentSequenceBuilder ctr: Invalid inputs!");
 
-		_fwr = fwr;
+		_bfwr = bfwr;
 		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
 	}
 
@@ -81,7 +81,7 @@ public class CkSegmentSequenceBuilder implements org.drip.math.regime.SegmentSeq
 
 		org.drip.math.segment.PredictorResponse[] aPR = _msr.getSegments();
 
-		return null != aPR && 1 <= aPR.length ? aPR[0].calibrate (_rvcLeading, dblLeftSlope, _aRVC[0], _fwr)
+		return null != aPR && 1 <= aPR.length ? aPR[0].calibrate (_rvcLeading, dblLeftSlope, _aRVC[0], _bfwr)
 			: false;
 	}
 
@@ -95,7 +95,7 @@ public class CkSegmentSequenceBuilder implements org.drip.math.regime.SegmentSeq
 		int iNumSegment = aPR.length;
 
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
-			if (!aPR[iSegment].calibrate (0 == iSegment ? null : aPR[iSegment - 1], _aRVC[iSegment], _fwr))
+			if (!aPR[iSegment].calibrate (0 == iSegment ? null : aPR[iSegment - 1], _aRVC[iSegment], _bfwr))
 				return false;
 		}
 

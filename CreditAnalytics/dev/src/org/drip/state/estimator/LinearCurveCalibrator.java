@@ -34,42 +34,34 @@ package org.drip.state.estimator;
  * @author Lakshmi Krishnamurthy
  */
 
-public class LinearCurveCalibrator {
-	private int _iCalibrationDetail = -1;
-	private int _iCalibrationBoundaryCondition = -1;
-	private org.drip.math.segment.BestFitWeightedResponse _fwr = null;
-	private org.drip.math.segment.PredictorResponseBuilderParams _prbp = null;
+public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalControlCurveParams {
 
 	/**
 	 * LinearCurveCalibrator constructor
 	 * 
 	 * @param prbp Segment Builder Parameters
-	 * @param fwr Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
+	 * @param bfwr Fitness Weighted Response
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public LinearCurveCalibrator (
 		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
-		final org.drip.math.segment.BestFitWeightedResponse fwr,
 		final int iCalibrationBoundaryCondition,
-		final int iCalibrationDetail)
+		final int iCalibrationDetail,
+		final org.drip.math.segment.BestFitWeightedResponse bfwr)
 		throws java.lang.Exception
 	{
-		if (null == (_prbp = prbp))
-			throw new java.lang.Exception ("LinearCurveCalibrator ctr: Invalid Inputs");
-
-		_fwr = fwr;
-		_iCalibrationDetail = iCalibrationDetail;
-		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
+		super ("", prbp, iCalibrationBoundaryCondition, iCalibrationDetail, bfwr);
 	}
 
 	/**
-	 * Calibrate the Span from the instruments in the regimes, and their cash flows.
+	 * Calibrate the Span from the Instruments in the Regimes, and their Cash Flows.
 	 * 
 	 * @param aRBS Array of the Regime Builder Parameters
+	 * @param dblEpochResponse Segment Sequence Left-most Response Value
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
 	 * @param quotingParams Quoting Parameter
@@ -79,7 +71,8 @@ public class LinearCurveCalibrator {
 	 */
 
 	public org.drip.math.grid.OverlappingRegimeSpan calibrateSpan (
-		final org.drip.state.estimator.RegimeBuilderSet[] aRBS,
+		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
+		final double dblEpochResponse,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
@@ -93,7 +86,7 @@ public class LinearCurveCalibrator {
 
 		if (0 == iNumRegime) return null;
 
-		for (org.drip.state.estimator.RegimeBuilderSet rbs : aRBS) {
+		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : aRBS) {
 			if (null == rbs) return null;
 
 			org.drip.product.definition.CalibratableComponent[] aCalibComp = rbs.getCalibComp();
@@ -108,7 +101,7 @@ public class LinearCurveCalibrator {
 				adblPredictorOrdinate[i] = 0 == i ? valParams._dblValue :
 					aCalibComp[i - 1].getMaturityDate().getJulian();
 
-				if (i != iNumCalibComp) aPRBP[i] = _prbp;
+				if (i != iNumCalibComp) aPRBP[i] = prbp();
 			}
 
 			try {
@@ -116,9 +109,9 @@ public class LinearCurveCalibrator {
 					org.drip.math.regime.RegimeBuilder.CreateSegmentSet (adblPredictorOrdinate, aPRBP),
 						aPRBP);
 
-				if (!regime.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder (rbs, valParams,
-					pricerParams, cmp, quotingParams, regimePrev, _fwr, _iCalibrationBoundaryCondition),
-						_iCalibrationDetail))
+				if (!regime.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder
+					(dblEpochResponse, rbs, valParams, pricerParams, cmp, quotingParams, regimePrev,
+						bestFitWeightedResponse(), calibrationBoundaryCondition()), calibrationDetail()))
 					return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

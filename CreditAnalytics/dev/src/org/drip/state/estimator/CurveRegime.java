@@ -70,9 +70,11 @@ public class CurveRegime extends org.drip.math.regime.MultiSegmentCalibratableRe
 	public boolean setSegmentBuilt (
 		final int iSegment)
 	{
-		if (iSegment >= _aSegment.length) return false;
+		org.drip.math.segment.PredictorResponse[] aSegment = getSegments();
 
-		_dblBuiltPredictorOrdinateRight = _aSegment[iSegment].right();
+		if (iSegment >= aSegment.length) return false;
+
+		_dblBuiltPredictorOrdinateRight = aSegment[iSegment].right();
 
 		return true;
 	}

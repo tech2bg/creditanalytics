@@ -118,4 +118,23 @@ public class PredictorResponseLinearConstraint {
 	{
 		return _mapResponsePredictorWeight;
 	}
+
+	/**
+	 * Display to Constraints and the corresponding Weights
+	 */
+
+	public void displayString()
+	{
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me :
+			_mapResponsePredictorWeight.entrySet()) {
+			try {
+				System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (me.getKey()) + " => " +
+					me.getValue());
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println ("\tConstraint: " + _dblValue);
+	}
 }

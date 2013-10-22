@@ -327,7 +327,7 @@ public class BasisSplineSet {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new RationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with second order

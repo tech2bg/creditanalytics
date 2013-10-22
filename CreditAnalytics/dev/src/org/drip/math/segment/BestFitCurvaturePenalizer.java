@@ -89,7 +89,7 @@ public class BestFitCurvaturePenalizer {
 			}
 		};
 
-		return _cpp.coefficient() * org.drip.math.calculus.Integrator.Boole (of, 0., 1.);
+		return _cpp.amplitude() * org.drip.math.calculus.Integrator.Boole (of, 0., 1.);
 	}
 
 	/**

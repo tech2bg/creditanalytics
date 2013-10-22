@@ -1,5 +1,5 @@
 
-package org.drip.math.segment;
+package org.drip.math.function;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,54 +29,40 @@ package org.drip.math.segment;
  */
 
 /**
- * CurvaturePenaltyParams implements basis per-segment Curvature Penalty Parameter Set. Currently it contains
- *  the Curvature Penalty Derivative Order and the Roughness Coefficient Amplitude.
+ * LinearRationalTensionExponential provides the evaluation of the Convolution of the Linear Rational and the
+ * 	Tension Exponential Functons and its derivatives for a specified variate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CurvaturePenaltyParams {
-	private int _iDerivativeOrder = -1;
-	private double _dblAmplitude = java.lang.Double.NaN;
+public class LinearRationalTensionExponential extends org.drip.math.function.UnivariateConvolution {
 
 	/**
-	 * CurvaturePenaltyParams constructor
+	 * Construct a LinearRationalTensionExponential instance
 	 * 
-	 * @param iDerivativeOrder Roughness Penalty Derivative Order
-	 * @param dblCoefficient Roughness Curvature Penalty Amplitude
+	 * @param dblExponentialTension Exponential Tension Parameter
+	 * @param dblRationalTension Rational Tension Parameter
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public CurvaturePenaltyParams (
-		final int iDerivativeOrder,
-		final double dblAmplitude)
+	public LinearRationalTensionExponential (
+		final double dblExponentialTension,
+		final double dblRationalTension)
 		throws java.lang.Exception
 	{
-		if (0 >= (_iDerivativeOrder = iDerivativeOrder) || !org.drip.math.common.NumberUtil.IsValid
-			(_dblAmplitude = dblAmplitude))
-			throw new java.lang.Exception ("CurvaturePenaltyParams ctr: Invalid Inputs");
+		super (new org.drip.math.function.ExponentialTension (java.lang.Math.E, dblExponentialTension), new
+			org.drip.math.function.LinearRationalShapeControl (dblRationalTension));
 	}
 
-	/**
-	 * Retrieve the Derivative Order
-	 * 
-	 * @return The Derivative Order
-	 */
-
-	public int derivativeOrder()
+	public static final void main (
+		final java.lang.String[] astrArgs)
+		throws java.lang.Exception
 	{
-		return _iDerivativeOrder;
-	}
+		LinearRationalTensionExponential lret = new LinearRationalTensionExponential (-1., 1.);
 
-	/**
-	 * Retrieve the Roughness Curvature Penalty Amplitude
-	 * 
-	 * @return The Roughness Curvature Penalty Amplitude
-	 */
+		System.out.println ("LRET[0.00] = " + lret.evaluate (0.00));
 
-	public double amplitude()
-	{
-		return _dblAmplitude;
+		System.out.println ("LRETDeriv[0.00] = " + lret.calcDerivative (0.00, 1));
 	}
 }

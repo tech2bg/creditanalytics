@@ -258,6 +258,36 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			* _dblRightFlatForwardRate * (dblDate - _dblEpochDate) / 365.25);
 	}
 
+	@Override public double forward (
+		final double dblDate1,
+		final double dblDate2)
+		throws java.lang.Exception
+	{
+		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
+			(dblDate2))
+			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve::forward => Invalid input");
+
+		double dblStartDate = epoch().getJulian();
+
+		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
+
+		return 365.25 / (dblDate2 - dblDate1) * java.lang.Math.log (df (dblDate1) / df (dblDate2));
+	}
+
+	@Override public double zero (
+		final double dblDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve::zero => Invalid Date");
+
+		double dblStartDate = epoch().getJulian();
+
+		if (dblDate < dblStartDate) return 0.;
+
+		return -365.25 / (dblDate - dblStartDate) * java.lang.Math.log (df (dblDate));
+	}
+
 	@Override public NonlinearDiscountFactorDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{

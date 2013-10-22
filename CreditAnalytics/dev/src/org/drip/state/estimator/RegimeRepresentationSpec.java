@@ -29,13 +29,13 @@ package org.drip.state.estimator;
  */
 
 /**
- * RegimeBuilderSet carries the calibration instruments and the corresponding calibration parameter set in
+ * RegimeRepresentationSpec carries the calibration instruments and the corresponding calibration parameter set in
  * 	LSMM instances. Together, these inputs are used for constructing an entire latent state regime.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class RegimeBuilderSet {
+public class RegimeRepresentationSpec {
 	private double[] _adblQuote = null;
 	private java.lang.String _strName = "";
 	private java.lang.String _strLatentStateID = "";
@@ -44,7 +44,7 @@ public class RegimeBuilderSet {
 	private org.drip.product.definition.CalibratableComponent[] _aCalibComp = null;
 
 	/**
-	 * Make a RegimeBuilderSet instance from the given components, quotes, and the measure.
+	 * Make a RegimeRepresentationSpec instance from the given components, quotes, and the measure.
 	 * 
 	 * @param strName Regime Name
 	 * @param strLatentStateID Latest State ID
@@ -56,7 +56,7 @@ public class RegimeBuilderSet {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public static final RegimeBuilderSet CreateRegimeBuilderSet (
+	public static final RegimeRepresentationSpec CreateRegimeBuilderSet (
 		final java.lang.String strName,
 		final java.lang.String strLatentStateID,
 		final java.lang.String strLatentStateQuantificationMetric,
@@ -75,7 +75,7 @@ public class RegimeBuilderSet {
 			astrManifestMeasure[i] = strManifestMeasure;
 
 		try {
-			return new RegimeBuilderSet (strName, strLatentStateID, strLatentStateQuantificationMetric,
+			return new RegimeRepresentationSpec (strName, strLatentStateID, strLatentStateQuantificationMetric,
 				aCalibComp, astrManifestMeasure, adblQuote);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -85,7 +85,7 @@ public class RegimeBuilderSet {
 	}
 
 	/**
-	 * RegimeBuilderSet constructor
+	 * RegimeRepresentationSpec constructor
 	 * 
 	 * @param strName Regime Name
 	 * @param strLatentStateID Latest State ID
@@ -97,7 +97,7 @@ public class RegimeBuilderSet {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public RegimeBuilderSet (
+	public RegimeRepresentationSpec (
 		final java.lang.String strName,
 		final java.lang.String strLatentStateID,
 		final java.lang.String strLatentStateQuantificationMetric,
@@ -111,12 +111,12 @@ public class RegimeBuilderSet {
 				= strLatentStateQuantificationMetric) || _strLatentStateQuantificationMetric.isEmpty() ||
 					null == (_aCalibComp = aCalibComp) || null == (_astrManifestMeasure =
 						astrManifestMeasure) || null == (_adblQuote = adblQuote))
-			throw new java.lang.Exception ("RegimeBuilderSet ctr: Invalid Inputs");
+			throw new java.lang.Exception ("RegimeRepresentationSpec ctr: Invalid Inputs");
 
 		int iNumComp = _aCalibComp.length;
 
 		if (1 > iNumComp || astrManifestMeasure.length != iNumComp || adblQuote.length != iNumComp)
-			throw new java.lang.Exception ("RegimeBuilderSet ctr: Invalid Inputs");
+			throw new java.lang.Exception ("RegimeRepresentationSpec ctr: Invalid Inputs");
 	}
 
 	/**
