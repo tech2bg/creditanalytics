@@ -37,7 +37,7 @@ package org.drip.param.creator;
  */
 
 public class RatesScenarioCurveBuilder {
-	private static final boolean s_bBlog = true;
+	private static final boolean s_bBlog = false;
 
 	/**
 	 * Creates an RatesScenarioCurve Instance from the currency and the array of the calibration
@@ -273,8 +273,8 @@ public class RatesScenarioCurveBuilder {
 
 		try {
 			org.drip.math.pchip.LocalControlRegime lcr = org.drip.math.pchip.LocalControlRegime.Create
-				(adblDate, adblQM, org.drip.math.pchip.LocalControlRegime.C1_BESSEL,
-					lccp.eliminateSpuriousExtrema(), lccp.applyMonotoneFilter());
+				(adblDate, adblQM, lccp.C1GeneratorScheme(), lccp.eliminateSpuriousExtrema(),
+					lccp.applyMonotoneFilter());
 
 			if (null == lcr) return null;
 

@@ -70,7 +70,13 @@ public class NumberUtil {
 		if (null == adbl) return true;
 
 		for (int i = 0; i < adbl.length; ++i) {
-			if (!IsValid (adbl[i])) return false;
+			if (!IsValid (adbl[i])) {
+				System.out.println ("[" + (i - 1) + "] => " + adbl[i - 1]);
+
+				System.out.println ("[" + i + "] => " + adbl[i]);
+
+				return false;
+			}
 		}
 
 		return true;

@@ -240,26 +240,29 @@ public class BasisSetBuilder {
 	 * 
 	 * 		y = A + B / (1+x) + C * exp(-x) + D * exp(-x) / (1+x)
 	 * 
+	 * @param erbsp Exponential Rational Basis set Parameters
+	 * 
 	 * @return The Exponential Rational Basis Set
 	 */
 
-	public static final org.drip.math.function.AbstractUnivariate[] ExponentialRationalBasisSet()
+	public static final org.drip.math.function.AbstractUnivariate[] ExponentialRationalBasisSet (
+		final org.drip.math.spline.ExponentialRationalBasisSetParams erbsp)
 	{
-		try {
-			double dblLambdaLR = 0.50;
-			double dblLambdaET = 0.02;
+		if (null == erbsp) return null;
 
+		try {
 			org.drip.math.function.AbstractUnivariate auLinearPoly = new org.drip.math.function.Polynomial
 				(0);
 
 			org.drip.math.function.AbstractUnivariate auLRSC = new
-				org.drip.math.function.LinearRationalShapeControl (dblLambdaLR);
+				org.drip.math.function.LinearRationalShapeControl (erbsp.rationalTension());
 
 			org.drip.math.function.AbstractUnivariate auET = new
-				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambdaET);
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -erbsp.exponentialTension());
 
 			org.drip.math.function.AbstractUnivariate auLRET = new
-				org.drip.math.function.LinearRationalTensionExponential (-dblLambdaET, dblLambdaLR);
+				org.drip.math.function.LinearRationalTensionExponential (-erbsp.exponentialTension(),
+					erbsp.rationalTension());
 
 			return new org.drip.math.function.AbstractUnivariate[] {auLinearPoly, auLRSC, auET, auLRET};
 		} catch (java.lang.Exception e) {
@@ -274,27 +277,28 @@ public class BasisSetBuilder {
 	 * 
 	 * 		y = A + B * exp(-l_1 * x) + C * exp(-l_2 * x) + D * exp(-l_3 * x)
 	 * 
+	 * @param embsp Exponential Mixture Basis set Parameters
+	 * 
 	 * @return The Exponential Mixture Basis Set
 	 */
 
-	public static final org.drip.math.function.AbstractUnivariate[] ExponentialMixtureBasisSet()
+	public static final org.drip.math.function.AbstractUnivariate[] ExponentialMixtureBasisSet (
+		final org.drip.math.spline.ExponentialMixtureBasisSetParams embsp)
 	{
-		try {
-			double dblLambda1 = 0.01;
-			double dblLambda2 = 0.05;
-			double dblLambda3 = 0.15;
+		if (null == embsp) return null;
 
+		try {
 			org.drip.math.function.AbstractUnivariate auLinearPoly = new org.drip.math.function.Polynomial
 				(0);
 
 			org.drip.math.function.AbstractUnivariate auExp1 = new
-				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambda1);
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -embsp.tension (0));
 
 			org.drip.math.function.AbstractUnivariate auExp2 = new
-				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambda2);
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -embsp.tension (1));
 
 			org.drip.math.function.AbstractUnivariate auExp3 = new
-				org.drip.math.function.ExponentialTension (java.lang.Math.E, -dblLambda3);
+				org.drip.math.function.ExponentialTension (java.lang.Math.E, -embsp.tension (2));
 
 			return new org.drip.math.function.AbstractUnivariate[] {auLinearPoly, auExp1, auExp2, auExp3};
 		} catch (java.lang.Exception e) {

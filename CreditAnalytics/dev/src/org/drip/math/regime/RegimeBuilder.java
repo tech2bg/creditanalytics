@@ -158,14 +158,18 @@ public class RegimeBuilder {
 			} else if (BASIS_SPLINE_EXPONENTIAL_RATIONAL.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
-						org.drip.math.spline.BasisSetBuilder.ExponentialRationalBasisSet(),
-							aPRBP[i].getShapeController(), aPRBP[i].getSegmentElasticParams())))
+						org.drip.math.spline.BasisSetBuilder.ExponentialRationalBasisSet
+							((org.drip.math.spline.ExponentialRationalBasisSetParams)
+								aPRBP[i].getBasisSetParams()), aPRBP[i].getShapeController(),
+									aPRBP[i].getSegmentElasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aSegment[i] = org.drip.math.segment.LocalBasisPredictorResponse.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
-						org.drip.math.spline.BasisSetBuilder.ExponentialMixtureBasisSet(),
-							aPRBP[i].getShapeController(), aPRBP[i].getSegmentElasticParams())))
+						org.drip.math.spline.BasisSetBuilder.ExponentialMixtureBasisSet
+							((org.drip.math.spline.ExponentialMixtureBasisSetParams)
+								aPRBP[i].getBasisSetParams()), aPRBP[i].getShapeController(),
+									aPRBP[i].getSegmentElasticParams())))
 					return null;
 			}
 		}

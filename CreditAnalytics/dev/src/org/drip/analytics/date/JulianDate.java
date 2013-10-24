@@ -799,6 +799,40 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	}
 
 	/**
+	 * Creates a JulianDate from a string containing date in the DDMMYYYY format
+	 * 
+	 * @param strMDY String containing date in the MM/DD/YYYY format
+	 * @param strDelim String Delimiter
+	 * 
+	 * @return JulianDate
+	 */
+
+	public static final JulianDate CreateFromMDY (
+		final java.lang.String strMDY,
+		final java.lang.String strDelim)
+	{
+		if (null == strMDY || strMDY.isEmpty() || null == strDelim || strDelim.isEmpty()) return null;
+
+		java.lang.String[] astrParts = strMDY.split (strDelim);
+
+		if (3 != astrParts.length) return null;
+
+		try {
+			int iMonth = new java.lang.Integer (astrParts[0]);
+
+			int iDay = new java.lang.Integer (astrParts[1]);
+
+			int iYear = new java.lang.Integer (astrParts[2]);
+
+			return CreateFromYMD (iYear, iMonth, iDay);
+		} catch (java.lang.Exception e) {
+			if (s_bLog) e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Create JulianDate from a double Julian
 	 * 
 	 * @param dblJulian Double representing the JulianDate

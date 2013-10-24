@@ -43,10 +43,28 @@ public class LocalControlRegime {
 	public static final java.lang.String C1_VANILLA = "C1_VANILLA";
 
 	/**
+	 * C1 Type: Akima
+	 */
+
+	public static final java.lang.String C1_AKIMA = "C1_AKIMA";
+
+	/**
 	 * C1 Type: Bessel
 	 */
 
 	public static final java.lang.String C1_BESSEL = "C1_BESSEL";
+
+	/**
+	 * C1 Type: Harmonic
+	 */
+
+	public static final java.lang.String C1_HARMONIC = "C1_HARMONIC";
+
+	/**
+	 * C1 Type: Huynh - Le Floch Limiter
+	 */
+
+	public static final java.lang.String C1_HUYNH_LE_FLOCH = "C1_HUYNH_LE_FLOCH";
 
 	/**
 	 * C1 Type: Hyman83
@@ -61,34 +79,16 @@ public class LocalControlRegime {
 	public static final java.lang.String C1_HYMAN89 = "C1_HYMAN89";
 
 	/**
-	 * C1 Type: Harmonic
-	 */
-
-	public static final java.lang.String C1_HARMONIC = "C1_HARMONIC";
-
-	/**
-	 * C1 Type: Van Leer Limiter
-	 */
-
-	public static final java.lang.String C1_VAN_LEER = "C1_VAN_LEER";
-
-	/**
-	 * C1 Type: Huynh - Le Floch Limiter
-	 */
-
-	public static final java.lang.String C1_HUYNH_LE_FLOCH = "C1_HUYNH_LE_FLOCH";
-
-	/**
 	 * C1 Type: Kruger
 	 */
 
 	public static final java.lang.String C1_KRUGER = "C1_KRUGER";
 
 	/**
-	 * C1 Type: Akima
+	 * C1 Type: Van Leer Limiter
 	 */
 
-	public static final java.lang.String C1_AKIMA = "C1_AKIMA";
+	public static final java.lang.String C1_VAN_LEER = "C1_VAN_LEER";
 
 	private double[] _adblC1 = null;
 	private double[] _adblResponseValue = null;
