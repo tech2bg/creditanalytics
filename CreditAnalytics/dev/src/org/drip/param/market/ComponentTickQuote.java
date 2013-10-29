@@ -104,7 +104,7 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 		if (null == strSerializedComponentTickQuote || strSerializedComponentTickQuote.isEmpty())
 			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedComponentTickQuote, getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)

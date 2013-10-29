@@ -102,7 +102,7 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedQuotingParams || strSerializedQuotingParams.isEmpty())
 			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedQuotingParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedQuotingParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)

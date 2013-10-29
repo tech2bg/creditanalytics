@@ -82,15 +82,15 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 		final double dblFixToFloatSpread)
 	{
 		if (null == strDates || strDates.isEmpty() || null == strFactors || strFactors.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (dblScheduleStart))
+			!org.drip.quant.common.NumberUtil.IsValid (dblScheduleStart))
 			return null;
 
 		if (bIsDiscrete) {
 			try {
 				return new EmbeddedOptionSchedule
-					(org.drip.math.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
+					(org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
 						java.util.StringTokenizer (strDates, ";")),
-							org.drip.math.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
+							org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
 								java.util.StringTokenizer (strFactors, ";")), bIsPut, iNoticePeriod,
 									bFixToFloatOnExercise, dblFixToFloatExerciseDate, strFloatIndex,
 										dblFixToFloatSpread);
@@ -102,9 +102,9 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 		}
 
 		return fromAmerican (dblScheduleStart,
-			org.drip.math.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
+			org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
 				java.util.StringTokenizer (strDates, ";")),
-					org.drip.math.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
+					org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
 						java.util.StringTokenizer (strFactors, ";")), bIsPut, iNoticePeriod,
 							bFixToFloatOnExercise, dblFixToFloatExerciseDate, strFloatIndex,
 								dblFixToFloatSpread);
@@ -287,7 +287,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 		if (null == strSerializedEmbeddedOptionSchedule || strSerializedEmbeddedOptionSchedule.isEmpty())
 			throw new java.lang.Exception ("EmbeddedOptionSchedule de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedEmbeddedOptionSchedule, getFieldDelimiter());
 
 		if (null == astrField || 8 > astrField.length)
@@ -346,7 +346,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 
 		java.util.List<java.lang.Double> lsdblFactor = new java.util.ArrayList<java.lang.Double>();
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblFactor,
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblFactor,
 			astrField[7], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception
 				("EmbeddedOptionSchedule de-serializer: Cannot decode hazard state");

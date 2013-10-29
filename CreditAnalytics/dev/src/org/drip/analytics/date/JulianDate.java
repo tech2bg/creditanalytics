@@ -225,7 +225,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	public static java.lang.String fromJulian (
 		final double dblJulianIn)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblJulianIn)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblJulianIn)) return null;
 
 		int iJA = (int) (dblJulianIn + HALFSECOND / 86400.0);
 
@@ -248,8 +248,8 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 
 		if (iYear <= 0) --iYear;
 
-		return org.drip.math.common.FormatUtil.PrePad (iMonth) + "/" +
-			org.drip.math.common.FormatUtil.PrePad (iDay) + "/" + iYear;
+		return org.drip.quant.common.FormatUtil.PrePad (iMonth) + "/" +
+			org.drip.quant.common.FormatUtil.PrePad (iDay) + "/" + iYear;
 	}
 
 	/**
@@ -266,7 +266,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblJulianIn)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblJulianIn))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblJulianIn))
 			throw new java.lang.Exception ("JulianDate.Year got NaN input!");
 
 		int iJA = (int) (dblJulianIn + HALFSECOND / 86400.0);
@@ -306,7 +306,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblJulianIn)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblJulianIn))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblJulianIn))
 			throw new java.lang.Exception ("JulianDate.Month got NaN input!");
 
 		int iJA = (int) (dblJulianIn + HALFSECOND / 86400.0);
@@ -340,7 +340,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblJulianIn)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblJulianIn))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblJulianIn))
 			throw new java.lang.Exception ("JulianDate.Month got NaN input!");
 
 		int iJA = (int) (dblJulianIn + HALFSECOND / 86400.0);
@@ -371,7 +371,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("JulianDate.DaysElapsed got NaN input!");
 
 		return (int) (dblDate - toJulian (Year (dblDate), JANUARY, 1));
@@ -391,7 +391,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("JulianDate.DaysRemaining got NaN input!");
 
 		return (int) (toJulian (Year (dblDate), DECEMBER, 31) - dblDate);
@@ -411,7 +411,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("JulianDate.IsLeapYear got NaN input!");
 
 		return 0 == (Year (dblDate) % 4);
@@ -436,7 +436,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final int iIncludeSide)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblEnd))
 			throw new java.lang.Exception ("JulianDate.ContainsFeb29 got NaN input!");
 
@@ -475,7 +475,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final int iIncludeSide)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblEnd))
 			throw new java.lang.Exception ("JulianDate.NumFeb29 got NaN input!");
 
@@ -717,7 +717,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("JulianDate.IsEOM got NaN input!");
 
 		return Day (dblDate) == DaysInMonth (Month (dblDate), Year (dblDate)) ? true : false;
@@ -734,8 +734,8 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		java.util.Date dtNow = new java.util.Date();
 
 		try {
-			return CreateFromYMD (org.drip.math.common.DateUtil.GetYear (dtNow),
-				org.drip.math.common.DateUtil.GetMonth (dtNow), org.drip.math.common.DateUtil.GetDate
+			return CreateFromYMD (org.drip.quant.common.DateUtil.GetYear (dtNow),
+				org.drip.quant.common.DateUtil.GetMonth (dtNow), org.drip.quant.common.DateUtil.GetDate
 					(dtNow));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -844,7 +844,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		final double dblJulian)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblJulian))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblJulian))
 			throw new java.lang.Exception ("JulianDate ctr got NaN input!");
 
 		_dblJulian = dblJulian;
@@ -1322,9 +1322,9 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		java.lang.String strDelim = null == strDelimIn ? "" : strDelimIn;
 
 		try {
-			return org.drip.math.common.FormatUtil.FormatDouble (Year (_dblJulian), 4, 0, 1.) + strDelim +
-				org.drip.math.common.FormatUtil.FormatDouble (Month (_dblJulian), 2, 0, 1.) + strDelim +
-					org.drip.math.common.FormatUtil.FormatDouble (Day (_dblJulian), 2, 0, 1.);
+			return org.drip.quant.common.FormatUtil.FormatDouble (Year (_dblJulian), 4, 0, 1.) + strDelim +
+				org.drip.quant.common.FormatUtil.FormatDouble (Month (_dblJulian), 2, 0, 1.) + strDelim +
+					org.drip.quant.common.FormatUtil.FormatDouble (Day (_dblJulian), 2, 0, 1.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

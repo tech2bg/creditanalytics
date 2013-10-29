@@ -104,7 +104,7 @@ public class TerminationSetting extends org.drip.service.stream.Serializer imple
 			strSerializedTerminationSetting.isEmpty())
 			throw new java.lang.Exception ("TerminationSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedTerminationSetting, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

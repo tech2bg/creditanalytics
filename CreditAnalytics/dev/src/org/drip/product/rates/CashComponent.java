@@ -112,7 +112,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (null == strSerializedCash || strSerializedCash.isEmpty())
 			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCash,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCash,
 			getFieldDelimiter());
 
 		if (null == astrField || 9 > astrField.length)
@@ -223,7 +223,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("CashComponent::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate);
@@ -234,8 +234,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("CashComponent::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
@@ -371,7 +371,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -391,12 +391,12 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			org.drip.math.calculus.WengertJacobian wjDFDF = dc.dfJack (_dblMaturity);
+			org.drip.quant.calculus.WengertJacobian wjDFDF = dc.dfJack (_dblMaturity);
 
 			if (null == wjDFDF) return null;
 
-			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = new
-				org.drip.math.calculus.WengertJacobian (1, wjDFDF.numParameters());
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = new
+				org.drip.quant.calculus.WengertJacobian (1, wjDFDF.numParameters());
 
 			for (int k = 0; k < wjDFDF.numParameters(); ++k) {
 				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, k, wjDFDF.getFirstDerivative (0,
@@ -413,7 +413,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -428,12 +428,12 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				org.drip.math.calculus.WengertJacobian wjDF = dc.dfJack (_dblMaturity);
+				org.drip.quant.calculus.WengertJacobian wjDF = dc.dfJack (_dblMaturity);
 
 				if (null == wjDF) return null;
 
-				org.drip.math.calculus.WengertJacobian wjDFMicroJack = new
-					org.drip.math.calculus.WengertJacobian (1, wjDF.numParameters());
+				org.drip.quant.calculus.WengertJacobian wjDFMicroJack = new
+					org.drip.quant.calculus.WengertJacobian (1, wjDF.numParameters());
 
 				for (int k = 0; k < wjDF.numParameters(); ++k) {
 					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, k, -365.25 / (_dblMaturity -
@@ -465,7 +465,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
 			try {
-				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 					java.lang.String[] {"Price"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();
@@ -474,7 +474,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 						lsmm.getMeasureQuoteValue()) ? prlc : null;
 				}
 
-				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 					java.lang.String[] {"PV"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();
@@ -483,7 +483,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 						(lsmm.getMeasureQuoteValue()) ? prlc : null;
 				}
 
-				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 					java.lang.String[] {"Rate"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();

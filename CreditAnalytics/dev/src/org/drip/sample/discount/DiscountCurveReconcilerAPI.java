@@ -3,16 +3,16 @@ package org.drip.sample.discount;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.DiscountCurve;
-import org.drip.math.common.FormatUtil;
-import org.drip.math.function.QuadraticRationalShapeControl;
-import org.drip.math.regime.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.PolynomialBasisSetParams;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableComponent;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.spline.basis.PolynomialFunctionSetParams;
+import org.drip.spline.params.*;
+import org.drip.spline.regime.*;
 import org.drip.state.curve.DiscountFactorDiscountCurve;
 import org.drip.state.estimator.*;
 
@@ -87,18 +87,18 @@ public class DiscountCurveReconcilerAPI {
 	}
 
 	private static final LinearCurveCalibrator MakeCalibrator (
-		PredictorResponseBuilderParams prbp)
+		SegmentCustomBuilderControl prbp)
 		throws Exception
 	{
 		return new LinearCurveCalibrator (
 			prbp,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-			MultiSegmentRegime.CALIBRATE,
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentSequence.CALIBRATE,
 			null);
 	}
 
 	public static final void SplineLinearDiscountCurve (
-		final PredictorResponseBuilderParams prbp)
+		final SegmentCustomBuilderControl prbp)
 		throws Exception
 	{
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
@@ -135,15 +135,15 @@ public class DiscountCurveReconcilerAPI {
 
 		RegimeRepresentationSpec[] aRBS = new RegimeRepresentationSpec[] {rbsCash, rbsSwap};
 
-		org.drip.math.grid.OverlappingRegimeSpan ors = lcc.calibrateSpan (aRBS, 1.,
+		org.drip.spline.grid.OverlappingRegimeSpan ors = lcc.calibrateSpan (aRBS, 1.,
 			new ValuationParams (dtToday, dtToday, "USD"),
 			null,
 			null,
 			null);
 
-		MultiSegmentRegime regimeCash = ors.getRegime ("CASH");
+		MultiSegmentSequence regimeCash = ors.getRegime ("CASH");
 
-		MultiSegmentRegime regimeSwap = ors.getRegime ("SWAP");
+		MultiSegmentSequence regimeSwap = ors.getRegime ("SWAP");
 
 		DiscountCurve dfdc = new DiscountFactorDiscountCurve ("USD", ors.toNonOverlapping());
 
@@ -216,11 +216,11 @@ public class DiscountCurveReconcilerAPI {
 	{
 		CreditAnalytics.Init ("");
 
-		PredictorResponseBuilderParams prbpPolynomial = new PredictorResponseBuilderParams (
-			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialBasisSetParams (4),
-			DesignInelasticParams.Create (2, 2),
-			new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.)));
+		SegmentCustomBuilderControl prbpPolynomial = new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (4),
+			SegmentDesignInelasticControl.Create (2, 2),
+			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)));
 
 		SplineLinearDiscountCurve (prbpPolynomial);
 	}

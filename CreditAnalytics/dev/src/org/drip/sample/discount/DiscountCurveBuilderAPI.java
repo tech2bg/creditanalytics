@@ -3,16 +3,16 @@ package org.drip.sample.discount;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.DiscountCurve;
-import org.drip.math.common.FormatUtil;
-import org.drip.math.function.QuadraticRationalShapeControl;
-import org.drip.math.regime.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.PolynomialBasisSetParams;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableComponent;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.spline.basis.PolynomialFunctionSetParams;
+import org.drip.spline.params.*;
+import org.drip.spline.regime.*;
 import org.drip.state.estimator.*;
 
 /*
@@ -125,13 +125,13 @@ public class DiscountCurveBuilderAPI {
 		RegimeRepresentationSpec[] aRBS = new RegimeRepresentationSpec[] {rbsCash, rbsSwap};
 
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentSequence.CALIBRATE,
 			null);
 
 		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingBuild (

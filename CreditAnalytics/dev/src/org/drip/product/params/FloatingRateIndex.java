@@ -142,7 +142,7 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 		if (null == strSerializedFloatingRateIndex || strSerializedFloatingRateIndex.isEmpty())
 			throw new java.lang.Exception ("FloatingRateIndex de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedFloatingRateIndex,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloatingRateIndex,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

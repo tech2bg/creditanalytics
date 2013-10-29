@@ -145,7 +145,7 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 		if (null == strSerializedCreditNodeTweakParams || strSerializedCreditNodeTweakParams.isEmpty())
 			throw new java.lang.Exception ("CreditNodeTweakParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedCreditNodeTweakParams, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

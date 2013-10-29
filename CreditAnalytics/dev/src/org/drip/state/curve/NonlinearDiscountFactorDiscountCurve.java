@@ -46,14 +46,14 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	private double[] _adblDate = null;
 	private double _dblLeftNodeDF = java.lang.Double.NaN;
 	private double _dblLeftNodeDFSlope = java.lang.Double.NaN;
-	private org.drip.math.regime.MultiSegmentRegime _msr = null;
+	private org.drip.spline.regime.MultiSegmentSequence _msr = null;
 	private double _dblLeftFlatForwardRate = java.lang.Double.NaN;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
 
 	private NonlinearDiscountFactorDiscountCurve shiftManifestMeasure (
 		final double[] adblShiftedManifestMeasure)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (adblShiftedManifestMeasure) || null == _ccis)
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblShiftedManifestMeasure) || null == _ccis)
 			return null;
 
 		org.drip.param.valuation.ValuationParams valParam = _ccis.getValuationParameter();
@@ -123,17 +123,17 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		_dblEpochDate = dtStart.getJulian();
 
-		org.drip.math.segment.PredictorResponseBuilderParams sbp = new
-			org.drip.math.segment.PredictorResponseBuilderParams
-				(org.drip.math.regime.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (2),
-						org.drip.math.segment.DesignInelasticParams.Create (0, 2), null);
+		org.drip.spline.params.SegmentCustomBuilderControl sbp = new
+			org.drip.spline.params.SegmentCustomBuilderControl
+				(org.drip.spline.regime.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
+					org.drip.spline.basis.PolynomialFunctionSetParams (2),
+						org.drip.spline.params.SegmentDesignInelasticControl.Create (0, 2), null);
 
 		int iNumSegment = adblDate.length;
 		_adblDate = new double[iNumSegment];
 		double[] adblDF = new double[iNumSegment];
-		org.drip.math.segment.PredictorResponseBuilderParams[] aSBP = new
-			org.drip.math.segment.PredictorResponseBuilderParams[adblDate.length - 1];
+		org.drip.spline.params.SegmentCustomBuilderControl[] aSBP = new
+			org.drip.spline.params.SegmentCustomBuilderControl[adblDate.length - 1];
 
 		for (int i = 0; i < iNumSegment; ++i) {
 			_adblDate[i] = adblDate[i];
@@ -153,9 +153,9 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (adblDF[iNumSegment - 1]) /
 			(_adblDate[iNumSegment - 1] - _dblEpochDate);
 
-		_msr = org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator ("POLY_SPLINE_DF_REGIME",
-			adblDate, adblDF, aSBP, null, org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-				org.drip.math.regime.MultiSegmentRegime.CALIBRATE);
+		_msr = org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator ("POLY_SPLINE_DF_REGIME",
+			adblDate, adblDF, aSBP, null, org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+				org.drip.spline.regime.MultiSegmentSequence.CALIBRATE);
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			throw new java.lang.Exception
 				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedPolynomialSplineDF, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -222,7 +222,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			throw new java.lang.Exception
 				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot decode state");
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate, astrField[3],
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate, astrField[3],
 			getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception
 				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot decode state");
@@ -246,7 +246,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve::df => Invalid Inputs");
 
 		if (dblDate <= _dblEpochDate) return 1.;
@@ -263,7 +263,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2))
 			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve::forward => Invalid input");
 
@@ -278,7 +278,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve::zero => Invalid Date");
 
 		double dblStartDate = epoch().getJulian();
@@ -291,7 +291,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	@Override public NonlinearDiscountFactorDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
 
@@ -310,7 +310,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final int iSpanIndex,
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
 
@@ -387,15 +387,15 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
 		final double dblDate)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
 
-		org.drip.math.calculus.WengertJacobian wj = null;
+		org.drip.quant.calculus.WengertJacobian wj = null;
 
 		try {
-			wj = new org.drip.math.calculus.WengertJacobian (1, _adblDate.length);
+			wj = new org.drip.quant.calculus.WengertJacobian (1, _adblDate.length);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -438,7 +438,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final int iNodeIndex,
 		final double dblNodeDF)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblNodeDF)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblNodeDF)) return false;
 
 		int iNumDate = _adblDate.length;
 
@@ -483,7 +483,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	public boolean initializeCalibrationRun (
 		final double dblLeftSlope)
 	{
-		return org.drip.math.common.NumberUtil.IsValid (_dblLeftNodeDFSlope = dblLeftSlope);
+		return org.drip.quant.common.NumberUtil.IsValid (_dblLeftNodeDFSlope = dblLeftSlope);
 	}
 
 	/**

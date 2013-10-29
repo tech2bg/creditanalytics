@@ -122,7 +122,7 @@ public class CDXIdentifier extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCDXIdentifier || strSerializedCDXIdentifier.isEmpty())
 			throw new java.lang.Exception ("CDXIdentifier de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCDXIdentifier,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCDXIdentifier,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

@@ -97,7 +97,7 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 	 * @return The micro-Jacobian
 	 */
 
-	public abstract org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	public abstract org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -115,7 +115,7 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 	 * @return The micro-Jacobian
 	 */
 
-	public abstract org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	public abstract org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,

@@ -1,12 +1,12 @@
 	
 package org.drip.sample.regime;
 
-import org.drip.math.common.FormatUtil;
-import org.drip.math.function.*;
-import org.drip.math.pchip.LocalControlRegimeBuilder;
-import org.drip.math.regime.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.*;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.*;
+import org.drip.spline.basis.*;
+import org.drip.spline.params.*;
+import org.drip.spline.pchip.*;
+import org.drip.spline.regime.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -62,13 +62,17 @@ public class RegimeEstimation {
 	 * @return Polynomial Segment Control Parameters
 	 */
 
-	public static final PredictorResponseBuilderParams PolynomialSegmentControlParams (
+	public static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
-		final DesignInelasticParams segParams,
-		final ResponseScalingShapeController rssc)
+		final SegmentDesignInelasticControl segParams,
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rssc);
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (iNumBasis),
+			segParams,
+			rssc);
 	}
 
 	/**
@@ -83,13 +87,17 @@ public class RegimeEstimation {
 	 * @return Bernstein Polynomial Segment Control Parameters
 	 */
 
-	public static final PredictorResponseBuilderParams BernsteinPolynomialSegmentControlParams (
+	public static final SegmentCustomBuilderControl BernsteinPolynomialSegmentControlParams (
 		final int iNumBasis,
-		final DesignInelasticParams segParams,
-		final ResponseScalingShapeController rssc)
+		final SegmentDesignInelasticControl segParams,
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_BERNSTEIN_POLYNOMIAL, new PolynomialBasisSetParams (iNumBasis), segParams, rssc);
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_BERNSTEIN_POLYNOMIAL,
+			new PolynomialFunctionSetParams (iNumBasis),
+			segParams,
+			rssc);
 	}
 
 	/**
@@ -104,13 +112,17 @@ public class RegimeEstimation {
 	 * @return Exponential Tension Segment Control Parameters
 	 */
 
-	public static final PredictorResponseBuilderParams ExponentialTensionSegmentControlParams (
+	public static final SegmentCustomBuilderControl ExponentialTensionSegmentControlParams (
 		final double dblTension,
-		final DesignInelasticParams segParams,
-		final ResponseScalingShapeController rssc)
+		final SegmentDesignInelasticControl segParams,
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rssc);
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION,
+			new ExponentialTensionSetParams (dblTension),
+			segParams,
+			rssc);
 	}
 
 	/**
@@ -125,13 +137,17 @@ public class RegimeEstimation {
 	 * @return Hyperbolic Tension Segment Control Parameters
 	 */
 
-	public static final PredictorResponseBuilderParams HyperbolicTensionSegmentControlParams (
+	public static final SegmentCustomBuilderControl HyperbolicTensionSegmentControlParams (
 		final double dblTension,
-		final DesignInelasticParams segParams,
-		final ResponseScalingShapeController rssc)
+		final SegmentDesignInelasticControl segParams,
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION, new ExponentialTensionBasisSetParams (dblTension), segParams, rssc);
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION,
+			new ExponentialTensionSetParams (dblTension),
+			segParams,
+			rssc);
 	}
 
 	/**
@@ -146,13 +162,17 @@ public class RegimeEstimation {
 	 * @return Kaklis-Pandelis Segment Control Parameters
 	 */
 
-	public static final PredictorResponseBuilderParams KaklisPandelisSegmentControlParams (
+	public static final SegmentCustomBuilderControl KaklisPandelisSegmentControlParams (
 		final int iKPTensionDegree,
-		final DesignInelasticParams segParams,
-		final ResponseScalingShapeController rssc)
+		final SegmentDesignInelasticControl segParams,
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (RegimeBuilder.BASIS_SPLINE_KAKLIS_PANDELIS, new KaklisPandelisBasisSetParams (iKPTensionDegree), segParams, rssc);
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_KAKLIS_PANDELIS,
+			new KaklisPandelisSetParams (iKPTensionDegree),
+			segParams,
+			rssc);
 	}
 
 	/**
@@ -172,7 +192,7 @@ public class RegimeEstimation {
 	public static final void BasisSplineRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp)
+		final SegmentCustomBuilderControl sbp)
 		throws Exception
 	{
 		double dblX = 1.;
@@ -182,7 +202,7 @@ public class RegimeEstimation {
 		 * Array of Segment Builder Parameters - one per segment
 		 */
 
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+		SegmentCustomBuilderControl[] aSBP = new SegmentCustomBuilderControl[adblX.length - 1]; 
 
 		for (int i = 0; i < adblX.length - 1; ++i)
 			aSBP[i] = sbp;
@@ -191,21 +211,22 @@ public class RegimeEstimation {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateCalibratedRegimeEstimator (
+		MultiSegmentSequence regime = MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator (
 			"SPLINE_REGIME",
 			adblX, // predictors
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null, 
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " +
+				regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
@@ -218,11 +239,11 @@ public class RegimeEstimation {
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
 		 */
 
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
+		MultiSegmentSequence regimeInsert = MultiSegmentSequenceModifier.InsertKnot (regime,
 			9.,
 			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		dblX = 1.;
 
@@ -279,7 +300,9 @@ public class RegimeEstimation {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
+			true,
+			new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
@@ -289,7 +312,7 @@ public class RegimeEstimation {
 		int iK = 1;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		DesignInelasticParams segParams = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/* 
 		 * Construct the C1 Hermite Polynomial Spline based Regime Estimator by using the following steps:
@@ -299,9 +322,9 @@ public class RegimeEstimation {
 
 		int iNumBasis = 4;
 
-		PredictorResponseBuilderParams sbp = new PredictorResponseBuilderParams (
-			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialBasisSetParams (iNumBasis),
+		SegmentCustomBuilderControl sbp = new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (iNumBasis),
 			segParams,
 			rssc);
 
@@ -309,7 +332,7 @@ public class RegimeEstimation {
 		 *	- 2a) Set the array of Segment Builder Parameters - one per segment
 		 */
 
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+		SegmentCustomBuilderControl[] aSBP = new SegmentCustomBuilderControl[adblX.length - 1]; 
 
 		for (int i = 0; i < adblX.length - 1; ++i)
 			aSBP[i] = sbp;
@@ -318,26 +341,26 @@ public class RegimeEstimation {
 		 * - 2b) Construct the Regime
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateUncalibratedRegimeEstimator ("SPLINE_REGIME", adblX, aSBP);
+		MultiSegmentSequence regime = MultiSegmentSequenceBuilder.CreateUncalibratedRegimeEstimator ("SPLINE_REGIME", adblX, aSBP);
 
-		PredictorOrdinateResponseDerivative[] aSEPLeft = new PredictorOrdinateResponseDerivative[adblY.length - 1];
-		PredictorOrdinateResponseDerivative[] aSEPRight = new PredictorOrdinateResponseDerivative[adblY.length - 1];
+		SegmentPredictorResponseDerivative[] aSEPLeft = new SegmentPredictorResponseDerivative[adblY.length - 1];
+		SegmentPredictorResponseDerivative[] aSEPRight = new SegmentPredictorResponseDerivative[adblY.length - 1];
 
 		 /* 
 		  * - 3) Set up the left and the local control Parameters
 		  */
 
 		for (int i = 0; i < adblY.length - 1; ++i) {
-			aSEPLeft[i] = new PredictorOrdinateResponseDerivative (adblY[i], new double[] {adblDYDX[i]});
+			aSEPLeft[i] = new SegmentPredictorResponseDerivative (adblY[i], new double[] {adblDYDX[i]});
 
-			aSEPRight[i] = new PredictorOrdinateResponseDerivative (adblY[i + 1], new double[] {adblDYDX[i + 1]});
+			aSEPRight[i] = new SegmentPredictorResponseDerivative (adblY[i + 1], new double[] {adblDYDX[i + 1]});
 		}
 
 		/* 
 		 * - 4) Calibrate the Regime and compute the Jacobian
 		 */
 
-		System.out.println ("Regime Setup Succeeded: " + regime.setupHermite (aSEPLeft, aSEPRight, null, null, MultiSegmentRegime.CALIBRATE));
+		System.out.println ("Regime Setup Succeeded: " + regime.setupHermite (aSEPLeft, aSEPRight, null, null, MultiSegmentSequence.CALIBRATE));
 
 		double dblX = 0.;
 		double dblXMax = 4.;
@@ -365,11 +388,11 @@ public class RegimeEstimation {
 		 * - 3) Compute the Estimated segment value and the motonicity across a suitable variate range.
 		 */
 
-		PredictorOrdinateResponseDerivative sepLeftSegmentRightNode = new PredictorOrdinateResponseDerivative (27.5, new double[] {25.5});
+		SegmentPredictorResponseDerivative sepLeftSegmentRightNode = new SegmentPredictorResponseDerivative (27.5, new double[] {25.5});
 
-		PredictorOrdinateResponseDerivative sepRightSegmentLeftNode = new PredictorOrdinateResponseDerivative (27.5, new double[] {25.5});
+		SegmentPredictorResponseDerivative sepRightSegmentLeftNode = new SegmentPredictorResponseDerivative (27.5, new double[] {25.5});
 
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime, 2.5, sepLeftSegmentRightNode, sepRightSegmentLeftNode);
+		MultiSegmentSequence regimeInsert = MultiSegmentSequenceModifier.InsertKnot (regime, 2.5, sepLeftSegmentRightNode, sepRightSegmentLeftNode);
 
 		dblX = 1.;
 
@@ -390,7 +413,7 @@ public class RegimeEstimation {
 		 * - 3) Compute the Estimated segment value and the motonicity across a suitable variate range.
 		 */
 
-		MultiSegmentRegime regimeCardinalInsert = RegimeModifier.InsertCardinalKnot (regime, 2.5, 0.);
+		MultiSegmentSequence regimeCardinalInsert = MultiSegmentSequenceModifier.InsertCardinalKnot (regime, 2.5, 0.);
 
 		dblX = 1.;
 
@@ -411,7 +434,7 @@ public class RegimeEstimation {
 		 * - 3) Compute the Estimated segment value and the motonicity across a suitable variate range.
 		 */
 
-		MultiSegmentRegime regimeCatmullRomInsert = RegimeModifier.InsertCatmullRomKnot (regime, 2.5);
+		MultiSegmentSequence regimeCatmullRomInsert = MultiSegmentSequenceModifier.InsertCatmullRomKnot (regime, 2.5);
 
 		dblX = 1.;
 
@@ -440,14 +463,14 @@ public class RegimeEstimation {
 	private static final void TestLagrangePolynomialRegime()
 		throws java.lang.Exception
 	{
-		SingleSegmentRegime lps = new LagrangePolynomialRegime (new double[] {-2., -1., 2., 5.});
+		SingleSegmentSequence lps = new SingleSegmentLagrangePolynomial (new double[] {-2., -1., 2., 5.});
 
 		System.out.println ("Setup: " + lps.setup (
 			0.25,
 			new double[] {0.25, 0.25, 12.25, 42.25},
 			null, // Fitness Weighted Response
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE)); // Calibrate the Regime predictors to the responses
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			MultiSegmentSequence.CALIBRATE)); // Calibrate the Regime predictors to the responses
 
 		System.out.println ("Value = " + lps.responseValue (2.16));
 
@@ -458,94 +481,42 @@ public class RegimeEstimation {
 		System.out.println ("Is Locally Monotone: " + lps.isLocallyMonotone());
 	}
 
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Regime Jacobian
-	 *  - Regime knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
-	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
-	 * 
-	 * 	WARNING: Insufficient Error Checking, so use caution
-	 */
-
-	public static final void BesselHermiteSplineRegimeTest (
+	public static final MultiSegmentSequence ConstructSpecifiedC1Regime (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
+		final java.lang.String strGeneratorType,
+		final SegmentCustomBuilderControl scbc,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
-		throws Exception
 	{
-		double dblX = 1.;
-		double dblXMax = 10.;
+		LocalMonotoneCkGenerator lmcg = LocalMonotoneCkGenerator.Create (
+			adblX,
+			adblY,
+			strGeneratorType,
+			bEliminateSpuriousExtrema,
+			bApplyMonotoneFilter);
 
 		/*
 		 * Array of Segment Builder Parameters - one per segment
 		 */
 
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+		SegmentCustomBuilderControl[] aSCBC = new SegmentCustomBuilderControl[adblX.length - 1]; 
 
 		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
+			aSCBC[i] = scbc;
 
 		/*
-		 * Construct a Regime instance 
+		 * Construct the Local Control Regime instance 
 		 */
 
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateBesselCubicSplineRegime (
-			"BESSEL_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
-		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
-
-			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_BESSEL DCPE: " + regime.dcpe());
-
-		/*
-		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
-		 */
-
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
-			9.,
-			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
-
-		dblX = 1.;
-
-		/*
-		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
-				+ " | " + regimeInsert.monotoneType (dblX));
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_BESSEL_INSERT DCPE: " + regimeInsert.dcpe());
+		return LocalControlRegimeBuilder.CustomSlopeHermiteSpline (
+			strGeneratorType + "_LOCAL_REGIME",
+			adblX,
+			adblY,
+			lmcg.C1(),
+			aSCBC,
+			null,
+			MultiSegmentSequence.CALIBRATE);
 	}
 
 	/**
@@ -564,63 +535,40 @@ public class RegimeEstimation {
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
-	public static final void Hyman83HermiteMonotoneRegimeTest (
+	public static final void C1GeneratedRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final boolean bEliminateSpuriousExtrema,
-		final boolean bApplyMonotoneFilter)
+		final MultiSegmentSequence regime)
 		throws Exception
 	{
 		double dblX = 1.;
 		double dblXMax = 10.;
 
 		/*
-		 * Array of Segment Builder Parameters - one per segment
-		 */
-
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
-
-		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
-
-		/*
-		 * Construct a Regime instance 
-		 */
-
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHyman83MonotoneRegime (
-			"HYMAN83_MONOTONE_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
 		 */
 
 		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
+			System.out.println (
+				"Y[" + dblX + "] => " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " +
+				regime.monotoneType (dblX));
 
 			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
 
 			dblX += 1.;
 		}
 
-		System.out.println ("SPLINE_REGIME_HYMAN83 DCPE: " + regime.dcpe());
+		System.out.println ("\tSPLINE_REGIME DCPE: " + regime.dcpe());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
 		 */
 
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
+		MultiSegmentSequence regimeInsert = MultiSegmentSequenceModifier.InsertKnot (regime,
 			9.,
 			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		dblX = 1.;
 
@@ -635,548 +583,7 @@ public class RegimeEstimation {
 			dblX += 1.;
 		}
 
-		System.out.println ("SPLINE_REGIME_HYMAN83_INSERT DCPE: " + regimeInsert.dcpe());
-	}
-
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Regime Jacobian
-	 *  - Regime knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
-	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
-	 * 
-	 * 	WARNING: Insufficient Error Checking, so use caution
-	 */
-
-	public static final void Hyman89HermiteMonotoneRegimeTest (
-		final double[] adblX,
-		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final boolean bEliminateSpuriousExtrema,
-		final boolean bApplyMonotoneFilter)
-		throws Exception
-	{
-		double dblX = 1.;
-		double dblXMax = 10.;
-
-		/*
-		 * Array of Segment Builder Parameters - one per segment
-		 */
-
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
-
-		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
-
-		/*
-		 * Construct a Regime instance 
-		 */
-
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHyman89MonotoneRegime (
-			"HYMAN89_MONOTONE_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
-		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
-
-			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_HYMAN89 DCPE: " + regime.dcpe());
-
-		/*
-		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
-		 */
-
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
-			9.,
-			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
-
-		dblX = 1.;
-
-		/*
-		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
-				+ " | " + regimeInsert.monotoneType (dblX));
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_HYMAN89_INSERT DCPE: " + regimeInsert.dcpe());
-	}
-
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Regime Jacobian
-	 *  - Regime knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param bApplyMonotoneFilter TRUE => Apply the Monotone Filter
-	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
-	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
-	 * 
-	 * 	WARNING: Insufficient Error Checking, so use caution
-	 */
-
-	public static final void HarmonicHermiteMonotoneRegimeTest (
-		final double[] adblX,
-		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final boolean bEliminateSpuriousExtrema,
-		final boolean bApplyMonotoneFilter)
-		throws Exception
-	{
-		double dblX = 1.;
-		double dblXMax = 10.;
-
-		/*
-		 * Array of Segment Builder Parameters - one per segment
-		 */
-
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
-
-		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
-
-		/*
-		 * Construct a Regime instance 
-		 */
-
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHarmonicMonotoneRegime (
-			"HARMONIC_MONOTONE_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
-		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
-
-			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_HARMONIC DCPE: " + regime.dcpe());
-
-		/*
-		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
-		 */
-
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
-			9.,
-			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
-
-		dblX = 1.;
-
-		/*
-		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
-				+ " | " + regimeInsert.monotoneType (dblX));
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_HARMONIC_INSERT DCPE: " + regime.dcpe());
-	}
-
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Regime Jacobian
-	 *  - Regime knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
-	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
-	 * 
-	 * 	WARNING: Insufficient Error Checking, so use caution
-	 */
-
-	public static final void VanLeerLimiterRegimeTest (
-		final double[] adblX,
-		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final boolean bEliminateSpuriousExtrema,
-		final boolean bApplyMonotoneFilter)
-		throws Exception
-	{
-		double dblX = 1.;
-		double dblXMax = 10.;
-
-		/*
-		 * Array of Segment Builder Parameters - one per segment
-		 */
-
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
-
-		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
-
-		/*
-		 * Construct a Regime instance 
-		 */
-
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateVanLeerLimiterRegime (
-			"VAN_LEER_MONOTONE_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
-		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
-
-			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_VANLEER DCPE: " + regime.dcpe());
-
-		/*
-		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
-		 */
-
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
-			9.,
-			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
-
-		dblX = 1.;
-
-		/*
-		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
-				+ " | " + regimeInsert.monotoneType (dblX));
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_VANLEER_INSERT DCPE: " + regimeInsert.dcpe());
-	}
-
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Regime Jacobian
-	 *  - Regime knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
-	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
-	 * 
-	 * 	WARNING: Insufficient Error Checking, so use caution
-	 */
-
-	public static final void HuynhLeFlochLimiterRegimeTest (
-		final double[] adblX,
-		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final boolean bEliminateSpuriousExtrema,
-		final boolean bApplyMonotoneFilter)
-		throws Exception
-	{
-		double dblX = 1.;
-		double dblXMax = 10.;
-
-		/*
-		 * Array of Segment Builder Parameters - one per segment
-		 */
-
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
-
-		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
-
-		/*
-		 * Construct a Regime instance 
-		 */
-
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateHuynhLeFlochLimiterRegime (
-			"VAN_LEER_MONOTONE_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
-		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
-
-			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_LEFLOCH DCPE: " + regime.dcpe());
-
-		/*
-		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
-		 */
-
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
-			9.,
-			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
-
-		dblX = 1.;
-
-		/*
-		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
-				+ " | " + regimeInsert.monotoneType (dblX));
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_LEFLOCH_INSERT DCPE: " + regimeInsert.dcpe());
-	}
-
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Regime Jacobian
-	 *  - Regime knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
-	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
-	 * 
-	 * 	WARNING: Insufficient Error Checking, so use caution
-	 */
-
-	public static final void AkimaRegimeTest (
-		final double[] adblX,
-		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final boolean bEliminateSpuriousExtrema,
-		final boolean bApplyMonotoneFilter)
-		throws Exception
-	{
-		double dblX = 1.;
-		double dblXMax = 10.;
-
-		/*
-		 * Array of Segment Builder Parameters - one per segment
-		 */
-
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
-
-		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
-
-		/*
-		 * Construct a Regime instance 
-		 */
-
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateAkimaRegime(
-			"AKIMA_LOCAL_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
-		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
-
-			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_AKIMA DCPE: " + regime.dcpe());
-
-		/*
-		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
-		 */
-
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
-			9.,
-			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
-
-		dblX = 1.;
-
-		/*
-		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
-				+ " | " + regimeInsert.monotoneType (dblX));
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_AKIMA_INSERT DCPE: " + regimeInsert.dcpe());
-	}
-
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Regime Jacobian
-	 *  - Regime knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
-	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
-	 * 
-	 * 	WARNING: Insufficient Error Checking, so use caution
-	 */
-
-	public static final void KrugerRegimeTest (
-		final double[] adblX,
-		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final boolean bEliminateSpuriousExtrema,
-		final boolean bApplyMonotoneFilter)
-		throws Exception
-	{
-		double dblX = 1.;
-		double dblXMax = 10.;
-
-		/*
-		 * Array of Segment Builder Parameters - one per segment
-		 */
-
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
-
-		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
-
-		/*
-		 * Construct a Regime instance 
-		 */
-
-		MultiSegmentRegime regime = LocalControlRegimeBuilder.CreateKrugerRegime(
-			"KRUGER_LOCAL_REGIME",
-			adblX, // predictors
-			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			null, // Fitness Weighted Response
-			MultiSegmentRegime.CALIBRATE,
-			bEliminateSpuriousExtrema,
-			bApplyMonotoneFilter);
-
-		/*
-		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (regime.responseValue (dblX), 1, 2, 1.) + " | " + regime.monotoneType (dblX));
-
-			System.out.println ("Jacobian Y[" + dblX + "]=" + regime.jackDResponseDResponseInput (dblX).displayString());
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_KRUGER DCPE: " + regime.dcpe());
-
-		/*
-		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
-		 */
-
-		MultiSegmentRegime regimeInsert = RegimeModifier.InsertKnot (regime,
-			9.,
-			10.,
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
-
-		dblX = 1.;
-
-		/*
-		 * Estimate, compute the sgement-by-segment monotonicty and the Regime Jacobian
-		 */
-
-		while (dblX <= dblXMax) {
-			System.out.println ("Inserted Y[" + dblX + "] " + FormatUtil.FormatDouble (regimeInsert.responseValue (dblX), 1, 2, 1.)
-				+ " | " + regimeInsert.monotoneType (dblX));
-
-			dblX += 1.;
-		}
-
-		System.out.println ("SPLINE_REGIME_KRUGER_INSERT DCPE: " + regimeInsert.dcpe());
+		System.out.println ("\tSPLINE_REGIME_INSERT DCPE: " + regimeInsert.dcpe());
 	}
 
 	public static final void main (
@@ -1201,7 +608,7 @@ public class RegimeEstimation {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
@@ -1211,7 +618,7 @@ public class RegimeEstimation {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder= 2;
 
-		DesignInelasticParams segParams = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		System.out.println (" \n---------- \n BERNSTEIN POLYNOMIAL \n ---------- \n");
 
@@ -1249,40 +656,130 @@ public class RegimeEstimation {
 
 		TestLagrangePolynomialRegime();
 
+		System.out.println (" \n---------- \n C1 AKIMA REGIME \n ---------- \n");
+
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_AKIMA,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				true)
+			);
+
 		System.out.println (" \n---------- \n C1 BESSEL/HERMITE \n ---------- \n");
 
-		BesselHermiteSplineRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
-
-		System.out.println (" \n---------- \n C1 HYMAN 1983 MONOTONE \n ---------- \n");
-
-		Hyman83HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
-
-		System.out.println (" \n---------- \n C1 HYMAN 1989 MONOTONE \n ---------- \n");
-
-		Hyman89HermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_BESSEL,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				true)
+			);
 
 		System.out.println (" \n---------- \n C1 HARMONIC MONOTONE WITH FILTER \n ---------- \n");
 
-		HarmonicHermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_HARMONIC,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				true)
+			);
 
 		System.out.println (" \n---------- \n C1 HARMONIC MONOTONE WITHOUT FILTER \n ---------- \n");
 
-		HarmonicHermiteMonotoneRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, false);
-
-		System.out.println (" \n---------- \n C1 VAN LEER LIMITER REGIME WITHOUT FILTER \n ---------- \n");
-
-		VanLeerLimiterRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, false);
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_HARMONIC,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				false)
+			);
 
 		System.out.println (" \n---------- \n C1 HUYNH LE-FLOCH LIMITER REGIME WITHOUT FILTER \n ---------- \n");
 
-		HuynhLeFlochLimiterRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, false);
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_HUYNH_LE_FLOCH,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				true)
+			);
 
-		System.out.println (" \n---------- \n C1 AKIMA REGIME \n ---------- \n");
+		System.out.println (" \n---------- \n C1 HYMAN 1983 MONOTONE \n ---------- \n");
 
-		AkimaRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_HYMAN83,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				true)
+			);
+
+		System.out.println (" \n---------- \n C1 HYMAN 1989 MONOTONE \n ---------- \n");
+
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_HYMAN89,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				true)
+			);
 
 		System.out.println (" \n---------- \n C1 KRUGER REGIME \n ---------- \n");
 
-		KrugerRegimeTest (adblX, adblY, PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc), true, true);
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_KRUGER,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				true)
+			);
+
+		System.out.println (" \n---------- \n C1 VAN LEER LIMITER REGIME WITHOUT FILTER \n ---------- \n");
+
+		C1GeneratedRegimeTest (
+			adblX,
+			adblY,
+			ConstructSpecifiedC1Regime (
+				adblX,
+				adblY,
+				LocalMonotoneCkGenerator.C1_VAN_LEER,
+				PolynomialSegmentControlParams (iPolyNumBasis, segParams, rssc),
+				true,
+				false)
+			);
 	}
 }

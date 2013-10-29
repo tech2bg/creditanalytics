@@ -68,11 +68,11 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 		final double dblDCF)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblStart = dblStart) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
-				!org.drip.math.common.NumberUtil.IsValid (_dblAccrualStart = dblAccrualStart) ||
-					!org.drip.math.common.NumberUtil.IsValid (_dblAccrualEnd = dblAccrualEnd) ||
-						!org.drip.math.common.NumberUtil.IsValid (_dblDCF = dblDCF) || dblStart > dblEnd ||
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStart = dblStart) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblAccrualStart = dblAccrualStart) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblAccrualEnd = dblAccrualEnd) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || dblStart > dblEnd ||
 							dblAccrualStart > dblAccrualEnd) {
 			System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dblStart) + "=>" +
 				org.drip.analytics.date.JulianDate.fromJulian (dblEnd));
@@ -109,7 +109,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 		if (null == strPeriod || strPeriod.isEmpty())
 			throw new java.lang.Exception ("Period de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strPeriod,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod,
 			super.getFieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)
@@ -196,7 +196,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	public boolean setAccrualStartDate (
 		final double dblAccrualStart)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblAccrualStart)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualStart)) return false;
 
 		_dblAccrualStart = dblAccrualStart;
 		return true;
@@ -244,7 +244,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	public boolean setPayDate (
 		final double dblPay)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPay)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPay)) return false;
 
 		_dblPay = dblPay;
 		return true;
@@ -262,7 +262,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 		final double dblAccrualEnd)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblAccrualEnd))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEnd))
 			throw new java.lang.Exception ("Period::getAccrualDCF => Invalid Inputs");
 
 		if (_dblAccrualStart > dblAccrualEnd || dblAccrualEnd > _dblAccrualEnd)
@@ -296,7 +296,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Period::contains => Invalid Inputs");
 
 		if (_dblStart > dblDate || dblDate > _dblEnd) return false;

@@ -6,16 +6,16 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.math.common.FormatUtil;
-import org.drip.math.function.QuadraticRationalShapeControl;
-import org.drip.math.regime.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableComponent;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.spline.basis.*;
+import org.drip.spline.params.*;
+import org.drip.spline.regime.*;
 import org.drip.state.estimator.*;
 
 /*
@@ -353,13 +353,13 @@ public class SwapProductCurveAnalytics {
 		RegimeRepresentationSpec[] aRRS = new RegimeRepresentationSpec[] {rbsCash, rbsSwap};
 
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_MIXTURE,
-				new ExponentialMixtureBasisSetParams (new double[] {0.01, 0.05, 0.25}),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_MIXTURE,
+				new ExponentialMixtureSetParams (new double[] {0.01, 0.05, 0.25}),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentSequence.CALIBRATE,
 			null);
 
 		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingBuild (
@@ -370,17 +370,15 @@ public class SwapProductCurveAnalytics {
 			null,
 			null);
 
-		return dcShapePreserving;
-
-		/* LocalControlCurveParams lccpHyman83 = new LocalControlCurveParams (
-			org.drip.math.pchip.LocalControlRegime.C1_HYMAN83,
+		LocalControlCurveParams lccpHyman83 = new LocalControlCurveParams (
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,
 			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);
@@ -393,7 +391,7 @@ public class SwapProductCurveAnalytics {
 			new ValuationParams (dt, dt, "MXN"),
 			null,
 			null,
-			null); */
+			null);
 	}
 
 	public static final CalibratableComponent[] CalibInstr (
@@ -530,7 +528,7 @@ public class SwapProductCurveAnalytics {
 		if (s_bBlog) {
 			StringBuffer sb = new StringBuffer();
 
-			sb.append ("\t1D Return       : " + FormatUtil.FormatDouble (dbl1DReturn, 1, 8, 1.) + "\n\r");
+			sb.append ("\t1D Return       : " + FormatUtil.FormatDouble (dbl1DReturn, 1, 8, 1.) + "\n");
 
 			sb.append ("\t1D Coupon Carry : " + FormatUtil.FormatDouble (dbl1DCarry, 1, 8, 1.) + "\n");
 
@@ -554,13 +552,13 @@ public class SwapProductCurveAnalytics {
 
 			sb.append ("\tDV01            : " + FormatUtil.FormatDouble (dblDV01, 1, 8, 1.) + "\n");
 
-			System.out.println (sb.toString());
-
 			if (null != _writeLog) _writeLog.write (sb.toString());
+
+			System.out.println (sb.toString());
 		}
 
-		return new PnLMetric (dbl1DReturn, dbl1DCarry, dbl1DRollDown, dbl1DCurveShift,
-			dbl1MCarry, dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01);
+		return new PnLMetric (dbl1DReturn, dbl1DCarry, dbl1DRollDown, dbl1DCurveShift, dbl1MCarry,
+			dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01);
 	}
 
 	public static final FwdMetric ComputeForwardMetric (
@@ -670,7 +668,7 @@ public class SwapProductCurveAnalytics {
 		java.lang.String strSwapCOBLine = "";
 
 		java.io.BufferedReader inSwapCOB = new java.io.BufferedReader (new java.io.FileReader
-			("C:\\Lakshmi\\DRIP_General\\ExternalDocs\\DiscountCurveConstruction\\Data\\MXN_Swap_Curve_1.txt"));
+			("C:\\Lakshmi\\DRIP_General\\ExternalDocs\\DiscountCurveConstruction\\Data\\MXN_Swap_Curve_2.txt"));
 
 		while (null != (strSwapCOBLine = inSwapCOB.readLine())) {
 			java.lang.String[] astrSwapCOBRecord = strSwapCOBLine.split (",");
@@ -697,16 +695,14 @@ public class SwapProductCurveAnalytics {
 
 			JulianDate dt1D = JulianDate.CreateFromMDY (astrSwapCOBRecord[0], "/");
 
-			double[] adblCashQuote1D = new double[] {Double.parseDouble (astrSwapCOBRecord[1])};
+			double[] adblCashQuote1D = new double[] {0.01 * Double.parseDouble (astrSwapCOBRecord[1])};
 
 			double[] adblSwapQuote1D = ParseSwapQuotes (astrSwapCOBRecord);
 
 			GenerateMetrics (dt0D, dt1D, adblCashQuote0D, adblCashQuote1D, adblSwapQuote0D, adblSwapQuote1D);
 
 			dt0D = dt1D;
-
 			adblCashQuote0D = adblCashQuote1D;
-
 			adblSwapQuote0D = adblSwapQuote1D;
 		}
 

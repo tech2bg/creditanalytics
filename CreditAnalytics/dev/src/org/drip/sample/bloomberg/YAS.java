@@ -10,7 +10,6 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.period.Period;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.math.common.FormatUtil;
 import org.drip.param.definition.*;
 import org.drip.param.market.MultiSidedQuote;
 import org.drip.param.valuation.*;
@@ -25,6 +24,7 @@ import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.product.creator.*;
 import org.drip.product.credit.BondComponent;
+import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 

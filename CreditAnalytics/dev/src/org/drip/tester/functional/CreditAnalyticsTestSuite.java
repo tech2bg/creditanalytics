@@ -1064,11 +1064,11 @@ public class CreditAnalyticsTestSuite {
 					System.out.println (org.drip.analytics.date.JulianDate.fromJulian
 						(p.getAccrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
 							(p.getAccrualEndDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
-								(p.getPayDate()) + "    " + org.drip.math.common.FormatUtil.FormatDouble
+								(p.getPayDate()) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
 									(p.getCouponDCF(), 1, 4, 1.) + "    " +
-										org.drip.math.common.FormatUtil.FormatDouble (dc.df
+										org.drip.quant.common.FormatUtil.FormatDouble (dc.df
 											(p.getPayDate()), 1, 4, 1.) + "    " +
-												org.drip.math.common.FormatUtil.FormatDouble (cc.getSurvival
+												org.drip.quant.common.FormatUtil.FormatDouble (cc.getSurvival
 													(p.getPayDate()), 1, 4, 1.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
@@ -1098,16 +1098,16 @@ public class CreditAnalyticsTestSuite {
 				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.getStartDate()) +
 					"    " + org.drip.analytics.date.JulianDate.fromJulian (dp.getEndDate()) + "    " +
 						org.drip.analytics.date.JulianDate.fromJulian (dp.getPayDate()) + "    " +
-							org.drip.math.common.FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) +
-								"    " + org.drip.math.common.FormatUtil.FormatDouble
+							org.drip.quant.common.FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) +
+								"    " + org.drip.quant.common.FormatUtil.FormatDouble
 									(dp.getEffectiveNotional(), 1, 0, 1.) + "    " +
-										org.drip.math.common.FormatUtil.FormatDouble
+										org.drip.quant.common.FormatUtil.FormatDouble
 											(dp.getEffectiveRecovery(), 1, 2, 1.) + "    " +
-												org.drip.math.common.FormatUtil.FormatDouble
+												org.drip.quant.common.FormatUtil.FormatDouble
 													(dp.effectiveDF(), 1, 4, 1.)  + "    " +
-														org.drip.math.common.FormatUtil.FormatDouble
+														org.drip.quant.common.FormatUtil.FormatDouble
 					(dp.getStartSurvival(), 1, 4, 1.) + "    " +
-						org.drip.math.common.FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.));
+						org.drip.quant.common.FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.));
 		}
 	}
 
@@ -1330,11 +1330,11 @@ public class CreditAnalyticsTestSuite {
 					System.out.println (org.drip.analytics.date.JulianDate.fromJulian
 						(p.getAccrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
 							(p.getAccrualEndDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
-								(p.getPayDate()) + "    " + org.drip.math.common.FormatUtil.FormatDouble
+								(p.getPayDate()) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
 									(p.getCouponDCF(), 1, 4, 1.) + "    " +
-										org.drip.math.common.FormatUtil.FormatDouble (dc.df
+										org.drip.quant.common.FormatUtil.FormatDouble (dc.df
 											(p.getPayDate()), 1, 4, 1.) + "    " +
-												org.drip.math.common.FormatUtil.FormatDouble
+												org.drip.quant.common.FormatUtil.FormatDouble
 													(cc.getSurvival (p.getPayDate()), 1, 4, 1.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
@@ -1361,22 +1361,22 @@ public class CreditAnalyticsTestSuite {
 				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.getStartDate()) +
 					"    " + org.drip.analytics.date.JulianDate.fromJulian (dp.getEndDate()) + "    " +
 						org.drip.analytics.date.JulianDate.fromJulian (dp.getPayDate()) + "    " +
-							org.drip.math.common.FormatUtil.FormatDouble (dp.getCouponDCF(), 1,
-								4, 1.) + "    " + org.drip.math.common.FormatUtil.FormatDouble
+							org.drip.quant.common.FormatUtil.FormatDouble (dp.getCouponDCF(), 1,
+								4, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
 									(dp.getEffectiveNotional(), 1, 0, 1.) + "    " +
-										org.drip.math.common.FormatUtil.FormatDouble
+										org.drip.quant.common.FormatUtil.FormatDouble
 											(dp.getEffectiveRecovery(), 1, 2, 1.) + "    " +
-												org.drip.math.common.FormatUtil.FormatDouble
+												org.drip.quant.common.FormatUtil.FormatDouble
 													(dp.effectiveDF(), 1, 4, 1.)  + "    " +
-														org.drip.math.common.FormatUtil.FormatDouble
+														org.drip.quant.common.FormatUtil.FormatDouble
 					(dp.getStartSurvival(), 1, 4, 1.) + "    " +
-						org.drip.math.common.FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.));
+						org.drip.quant.common.FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.));
 		}
 
 		if (s_bBondAnalDisplay) {
 			try {
 				System.out.println (strISIN + "    " + bond.getTicker() + " " +
-					org.drip.math.common.FormatUtil.FormatDouble (bond.getCoupon
+					org.drip.quant.common.FormatUtil.FormatDouble (bond.getCoupon
 						(org.drip.analytics.date.JulianDate.Today().getJulian(),
 							org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)), 2, 3, 100.) +
 								" " + bond.getMaturityDate());
@@ -1396,13 +1396,13 @@ public class CreditAnalyticsTestSuite {
 			System.out.println ("Work-out factor From Price: " + wi._dblExerciseFactor);
 
 			System.out.println ("Work-out Yield From Price: " +
-				org.drip.math.common.FormatUtil.FormatDouble (wi._dblYield, 2, 3, 100.));
+				org.drip.quant.common.FormatUtil.FormatDouble (wi._dblYield, 2, 3, 100.));
 
 			System.out.println ("Work-out Type for Price: " +
 				org.drip.analytics.support.AnalyticsHelper.WorkoutTypeToString (wi._iWOType));
 
-			System.out.println ("Yield From Price: " + org.drip.math.common.FormatUtil.FormatDouble
-				(dblYieldFromPrice, 2, 3, 100.) + " / " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("Yield From Price: " + org.drip.quant.common.FormatUtil.FormatDouble
+				(dblYieldFromPrice, 2, 3, 100.) + " / " + org.drip.quant.common.FormatUtil.FormatDouble
 					(dblYTMFromPrice, 2, 3, 100.));
 
 			System.out.println ("Z Spread From Price: " + (int) (10000. * dblZSpreadFromPrice) + " / " +
@@ -1430,10 +1430,10 @@ public class CreditAnalyticsTestSuite {
 				(10000. * dblPECSTMFromPrice));
 
 			System.out.println ("Price From TSY Spread: " +
-				org.drip.math.common.FormatUtil.FormatDouble (dblPriceFromTSYSpread, 2, 3, 100.));
+				org.drip.quant.common.FormatUtil.FormatDouble (dblPriceFromTSYSpread, 2, 3, 100.));
 
 			System.out.println ("Yield From TSY Spread: " +
-				org.drip.math.common.FormatUtil.FormatDouble (dblYieldFromTSYSpread, 2, 3, 100.));
+				org.drip.quant.common.FormatUtil.FormatDouble (dblYieldFromTSYSpread, 2, 3, 100.));
 
 			System.out.println ("Z Spread From TSY Spread: " + (int) (10000. * dblZSpreadFromTSYSpread));
 
@@ -1449,7 +1449,7 @@ public class CreditAnalyticsTestSuite {
 			System.out.println ("Credit Basis From TSY Spread: " + (int) (10000. *
 				dblCreditBasisFromTSYSpread));
 
-			System.out.println ("Credit Risky Price: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("Credit Risky Price: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(dblBondCreditPrice, 2, 3, 100.));
 
 			System.out.println ("Valuation Date: " + org.drip.analytics.date.JulianDate.Today());
@@ -1534,11 +1534,11 @@ public class CreditAnalyticsTestSuite {
 							(p.getAccrualStartDate()) + "    " +
 								org.drip.analytics.date.JulianDate.fromJulian (p.getAccrualEndDate()) +
 									"    " + org.drip.analytics.date.JulianDate.fromJulian (p.getPayDate()) +
-										"    " + org.drip.math.common.FormatUtil.FormatDouble
+										"    " + org.drip.quant.common.FormatUtil.FormatDouble
 											(p.getCouponDCF(), 1, 4, 1.) + "    " +
-												org.drip.math.common.FormatUtil.FormatDouble (dc.df
+												org.drip.quant.common.FormatUtil.FormatDouble (dc.df
 													(p.getPayDate()), 1, 4, 1.) + "    " +
-														org.drip.math.common.FormatUtil.FormatDouble
+														org.drip.quant.common.FormatUtil.FormatDouble
 							(cc.getSurvival (p.getPayDate()), 1, 4, 1.));
 					} catch (java.lang.Exception e) {
 						if (s_bSupressErrMsg) {
@@ -1560,7 +1560,7 @@ public class CreditAnalyticsTestSuite {
 			if (s_bCustomBondAnalDisplay) {
 				try {
 					System.out.println ("\nPrice From Yield: " +
-						org.drip.math.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.), 2, 3,
@@ -1585,12 +1585,12 @@ public class CreditAnalyticsTestSuite {
 
 				System.out.println ("Workout Factor: " + wi._dblExerciseFactor);
 
-				System.out.println ("Workout Yield: " + org.drip.math.common.FormatUtil.FormatDouble
+				System.out.println ("Workout Yield: " + org.drip.quant.common.FormatUtil.FormatDouble
 					(wi._dblYield, 2, 3, 100.));
 
 				try {
 					System.out.println ("Workout Yield From Price: " +
-						org.drip.math.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromPrice
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromPrice
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
@@ -1598,7 +1598,7 @@ public class CreditAnalyticsTestSuite {
 
 					try {
 						System.out.println ("Z Spread From Price: " +
-							org.drip.math.common.FormatUtil.FormatDouble
+							org.drip.quant.common.FormatUtil.FormatDouble
 								(aBond[i].calcZSpreadFromPrice
 									(org.drip.param.valuation.ValuationParams.CreateValParams
 										(org.drip.analytics.date.JulianDate.Today(), 0, "",
@@ -1609,14 +1609,14 @@ public class CreditAnalyticsTestSuite {
 					}
 
 					System.out.println ("TSY Spread From Price: " +
-							org.drip.math.common.FormatUtil.FormatDouble (aBond[i].calcTSYSpreadFromPrice
+							org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcTSYSpreadFromPrice
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
 										wi._dblDate, wi._dblExerciseFactor, 1.), 1, 3, 100.));
 
 					System.out.println ("Credit Basis From Price: " +
-						org.drip.math.common.FormatUtil.FormatDouble
+						org.drip.quant.common.FormatUtil.FormatDouble
 							(aBond[i].calcCreditBasisFromPrice
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
@@ -1624,7 +1624,7 @@ public class CreditAnalyticsTestSuite {
 											wi._dblDate, wi._dblExerciseFactor, 1.), 1, 3, 100.));
 
 					System.out.println ("PECS From Price: " +
-						org.drip.math.common.FormatUtil.FormatDouble
+						org.drip.quant.common.FormatUtil.FormatDouble
 							(aBond[i].calcPECSFromPrice
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
@@ -1632,21 +1632,21 @@ public class CreditAnalyticsTestSuite {
 											wi._dblDate, wi._dblExerciseFactor, 1.), 1, 3, 100.));
 
 					System.out.println ("Price From TSY Spread: " +
-						org.drip.math.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromTSYSpread
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromTSYSpread
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.0188), 2,
 										3, 100.));
 
 					System.out.println ("Yield From TSY Spread: " +
-						org.drip.math.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromTSYSpread
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromTSYSpread
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.0188), 2,
 										3, 100.));
 
 					System.out.println ("Credit Basis From TSY Spread: " +
-						org.drip.math.common.FormatUtil.FormatDouble
+						org.drip.quant.common.FormatUtil.FormatDouble
 							(aBond[i].calcCreditBasisFromTSYSpread
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
@@ -1654,14 +1654,14 @@ public class CreditAnalyticsTestSuite {
 											0.0188), 1, 3, 100.));
 
 					System.out.println ("PECS From TSY Spread: " +
-						org.drip.math.common.FormatUtil.FormatDouble (aBond[i].calcPECSFromTSYSpread
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPECSFromTSYSpread
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.0188),
 										1, 3, 100.));
 
 					System.out.println ("Theoretical Price: " +
-						org.drip.math.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromCreditBasis
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromCreditBasis
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
@@ -1755,21 +1755,21 @@ public class CreditAnalyticsTestSuite {
 
 					if (s_bTickerAnalDisplay)
 						System.out.println (strISIN + "    " + bond.getTicker() + " " +
-							org.drip.math.common.FormatUtil.FormatDouble (bond.getCoupon
+							org.drip.quant.common.FormatUtil.FormatDouble (bond.getCoupon
 								(org.drip.analytics.date.JulianDate.Today().getJulian(),
 									org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc,
 										cc)), 2, 3, 100.) + " " + bond.getMaturityDate() + "    " +
 											(bond.isFloater() ? "FLOAT" : "FIXED") + "     " +
-												org.drip.math.common.FormatUtil.FormatDouble
+												org.drip.quant.common.FormatUtil.FormatDouble
 													(dblYieldFromPrice, 2, 3, 100.) + "    " +
-														org.drip.math.common.FormatUtil.FormatDouble
+														org.drip.quant.common.FormatUtil.FormatDouble
 															(dblZSpreadFromPrice, 1, 3, 100.) + "    " +
-																org.drip.math.common.FormatUtil.FormatDouble
+																org.drip.quant.common.FormatUtil.FormatDouble
 							(dblDiscountMarginFromPrice, 1, 3, 100.) + "    " +
-								org.drip.math.common.FormatUtil.FormatDouble (dblTSYSpreadFromPrice, 1, 3,
-									100.) + "    " + org.drip.math.common.FormatUtil.FormatDouble
+								org.drip.quant.common.FormatUtil.FormatDouble (dblTSYSpreadFromPrice, 1, 3,
+									100.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
 										(dblCreditBasisFromPrice, 1, 3, 100.) + "    " + (dblPECSFromPrice) +
-											"    " + org.drip.math.common.FormatUtil.FormatDouble
+											"    " + org.drip.quant.common.FormatUtil.FormatDouble
 												(dblBondCreditPrice, 2, 3, 100.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
@@ -1794,11 +1794,11 @@ public class CreditAnalyticsTestSuite {
 
 				if (s_bTickerNotionalDisplay)
 					System.out.println (strISIN + "    " + bond.getTicker() + " " +
-						org.drip.math.common.FormatUtil.FormatDouble (bond.getCoupon
+						org.drip.quant.common.FormatUtil.FormatDouble (bond.getCoupon
 							(org.drip.analytics.date.JulianDate.Today().getJulian(),
 								org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)),
 									2, 3, 100.) + " " + bond.getMaturityDate() + "    " +
-										org.drip.math.common.FormatUtil.FormatDouble
+										org.drip.quant.common.FormatUtil.FormatDouble
 											(dblOutstandingAmount, 10, 0, 1.));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
@@ -1917,36 +1917,36 @@ public class CreditAnalyticsTestSuite {
 				System.out.println ("EOD Convexity From Price: " + dblEODConvexityFromPrice);
 
 				System.out.println ("EOD Credit Basis From Price: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODCreditBasisFromPrice, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODCreditBasisFromPrice, 1, 3, 100.));
 
-				System.out.println ("EOD PECS From Price: " + org.drip.math.common.FormatUtil.FormatDouble
+				System.out.println ("EOD PECS From Price: " + org.drip.quant.common.FormatUtil.FormatDouble
 					(dblEODPECSFromPrice, 1, 3, 100.));
 
 				System.out.println ("EOD Discount Margin From Price: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODDiscountMarginFromPrice, 1, 3,
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODDiscountMarginFromPrice, 1, 3,
 						100.));
 
 				System.out.println ("EOD Duration From Price: " + dblEODDurationFromPrice);
 
 				System.out.println ("EOD G Spread From Price: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODGSpreadFromPrice, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODGSpreadFromPrice, 1, 3, 100.));
 
 				System.out.println ("EOD I Spread From Price: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODISpreadFromPrice, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODISpreadFromPrice, 1, 3, 100.));
 
-				System.out.println ("EOD OAS From Price: " + org.drip.math.common.FormatUtil.FormatDouble
+				System.out.println ("EOD OAS From Price: " + org.drip.quant.common.FormatUtil.FormatDouble
 					(dblEODOASFromPrice, 1, 3, 100.));
 
 				System.out.println ("EOD Par ASW From Price: " + (int) dblEODParASWFromPrice);
 
 				System.out.println ("EOD TSY Spread From Price: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODTSYSpreadFromPrice, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODTSYSpreadFromPrice, 1, 3, 100.));
 
-				System.out.println ("EOD Yield From Price: " + org.drip.math.common.FormatUtil.FormatDouble
+				System.out.println ("EOD Yield From Price: " + org.drip.quant.common.FormatUtil.FormatDouble
 					(dblEODYieldFromPrice, 1, 3, 100.));
 
 				System.out.println ("EOD Z Spread From Price: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODZSpreadFromPrice, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODZSpreadFromPrice, 1, 3, 100.));
 			}
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
@@ -2054,36 +2054,36 @@ public class CreditAnalyticsTestSuite {
 				System.out.println ("EOD Convexity From Yield: " + dblEODConvexityFromYield);
 
 				System.out.println ("EOD Credit Basis From Yield: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODCreditBasisFromYield, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODCreditBasisFromYield, 1, 3, 100.));
 
-				System.out.println ("EOD PECS From Yield: " + org.drip.math.common.FormatUtil.FormatDouble
+				System.out.println ("EOD PECS From Yield: " + org.drip.quant.common.FormatUtil.FormatDouble
 					(dblEODPECSFromYield, 1, 3, 100.));
 
 				System.out.println ("EOD Discount Margin From Yield: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODDiscountMarginFromYield, 1, 3,
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODDiscountMarginFromYield, 1, 3,
 						100.));
 
 				System.out.println ("EOD Duration From Yield: " + dblEODDurationFromYield);
 
 				System.out.println ("EOD G Spread From Yield: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODGSpreadFromYield, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODGSpreadFromYield, 1, 3, 100.));
 
 				System.out.println ("EOD I Spread From Yield: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODISpreadFromYield, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODISpreadFromYield, 1, 3, 100.));
 
-				System.out.println ("EOD OAS From Yield: " + org.drip.math.common.FormatUtil.FormatDouble
+				System.out.println ("EOD OAS From Yield: " + org.drip.quant.common.FormatUtil.FormatDouble
 					(dblEODOASFromYield, 1, 3, 100.));
 
 				System.out.println ("EOD Par ASW From Yield: " + (int) dblEODParASWFromYield);
 
 				System.out.println ("EOD Price From Yield: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODPriceFromYield, 2, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODPriceFromYield, 2, 3, 100.));
 
 				System.out.println ("EOD TSY Spread From Yield: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODTSYSpreadFromYield, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODTSYSpreadFromYield, 1, 3, 100.));
 
 				System.out.println ("EOD Z Spread From Yield: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODZSpreadFromYield, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODZSpreadFromYield, 1, 3, 100.));
 			}
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
@@ -2192,37 +2192,37 @@ public class CreditAnalyticsTestSuite {
 				System.out.println ("EOD Convexity From TSY Spread: " + dblEODConvexityFromTSYSpread);
 
 				System.out.println ("EOD Credit Basis From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODCreditBasisFromTSYSpread, 1, 3,
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODCreditBasisFromTSYSpread, 1, 3,
 						100.));
 
 				System.out.println ("EOD PECS From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODPECSFromTSYSpread, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODPECSFromTSYSpread, 1, 3, 100.));
 
 				System.out.println ("EOD Discount Margin From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODDiscountMarginFromTSYSpread, 1, 3,
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODDiscountMarginFromTSYSpread, 1, 3,
 						100.));
 
 				System.out.println ("EOD Duration From TSY Spread: " + dblEODDurationFromTSYSpread);
 
 				System.out.println ("EOD G Spread From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODGSpreadFromTSYSpread, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODGSpreadFromTSYSpread, 1, 3, 100.));
 
 				System.out.println ("EOD I Spread From TSYSpread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODISpreadFromTSYSpread, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODISpreadFromTSYSpread, 1, 3, 100.));
 
 				System.out.println ("EOD OAS From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODOASFromTSYSpread, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODOASFromTSYSpread, 1, 3, 100.));
 
 				System.out.println ("EOD Par ASW From TSY Spread: " + (int) dblEODParASWFromTSYSpread);
 
 				System.out.println ("EOD Price From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODPriceFromTSYSpread, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODPriceFromTSYSpread, 1, 3, 100.));
 
 				System.out.println ("EOD Yield From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODYieldFromTSYSpread, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODYieldFromTSYSpread, 1, 3, 100.));
 
 				System.out.println ("EOD Z Spread From TSY Spread: " +
-					org.drip.math.common.FormatUtil.FormatDouble (dblEODZSpreadFromTSYSpread, 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (dblEODZSpreadFromTSYSpread, 1, 3, 100.));
 			}
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
@@ -2660,13 +2660,13 @@ public class CreditAnalyticsTestSuite {
 
 			System.out.println ("IsUnitTraded: " + bIsUnitTraded);
 
-			System.out.println ("Coupon: " + org.drip.math.common.FormatUtil.FormatDouble (dblCoupon, 2, 3,
+			System.out.println ("Coupon: " + org.drip.quant.common.FormatUtil.FormatDouble (dblCoupon, 2, 3,
 				100.));
 
-			System.out.println ("CurrentCoupon: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("CurrentCoupon: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(dblCurrentCoupon, 2, 3, 100.));
 
-			System.out.println ("FloatSpread: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("FloatSpread: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(dblFloatSpread, 1, 3, 100.));
 
 			System.out.println ("IssueAmount: " + dblIssueAmount);
@@ -2847,19 +2847,19 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		if (s_bBasketBond) {
-			System.out.println ("Fair Clean Price: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("Fair Clean Price: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(mapResult.get ("FairCleanPV"), 2, 3, 100.));
 
-			System.out.println ("Fair Yield: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("Fair Yield: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(mapResult.get ("Yield"), 2, 3, 100.));
 
-			System.out.println ("Fair GSpread: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("Fair GSpread: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(mapResult.get ("FairGSpread"), 1, 3, 100.));
 
-			System.out.println ("Fair ZSpread: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("Fair ZSpread: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(mapResult.get ("FairZSpread"), 1, 3, 100.));
 
-			System.out.println ("Fair ISpread: " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println ("Fair ISpread: " + org.drip.quant.common.FormatUtil.FormatDouble
 				(mapResult.get ("FairISpread"), 1, 3, 100.));
 
 			System.out.println ("Fair DV01: " + mapResult.get ("FairDV01"));
@@ -2917,7 +2917,7 @@ public class CreditAnalyticsTestSuite {
 
 			if (s_bFXFwd)
 				System.out.println ("Input " + cp.getCode() + "[" + (i + 1) + "] = " +
-					org.drip.math.common.FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
+					org.drip.quant.common.FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
 		}
 
 		org.drip.param.valuation.ValuationParams valParams =
@@ -2986,41 +2986,41 @@ public class CreditAnalyticsTestSuite {
 		if (s_bFXFwd) {
 			System.out.println (cp.getCode() + "[1Y]= " + dblFXFwd);
 
-			System.out.println (cp.getCode() + "[1Y](pip)= " + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println (cp.getCode() + "[1Y](pip)= " + org.drip.quant.common.FormatUtil.FormatDouble
 				(dblFXFwdPIP, 1, 3, 100.));
 
 			System.out.println ("EUR Basis bp for " + cp.getCode() + "[1Y] = " + dblFXFwdMarket + ": " +
-				org.drip.math.common.FormatUtil.FormatDouble (dblDCEURBasis, 1, 3, 100.));
+				org.drip.quant.common.FormatUtil.FormatDouble (dblDCEURBasis, 1, 3, 100.));
 
 			System.out.println ("USD Basis bp for " + cp.getCode() + "[1Y] = " + dblFXFwdMarket + ": " +
-				org.drip.math.common.FormatUtil.FormatDouble (dblDCUSDBasis, 1, 3, 100.));
+				org.drip.quant.common.FormatUtil.FormatDouble (dblDCUSDBasis, 1, 3, 100.));
 
 			for (int i = 0; i < adblFullUSDBasis.length; ++i) {
 				System.out.println ("FullUSDBasis[" + (i + 1) + "Y]=" +
-						org.drip.math.common.FormatUtil.FormatDouble (adblFullUSDBasis[i], 1, 3, 100.));
+						org.drip.quant.common.FormatUtil.FormatDouble (adblFullUSDBasis[i], 1, 3, 100.));
 
 				System.out.println ("FullEURBasis[" + (i + 1) + "Y]=" +
-						org.drip.math.common.FormatUtil.FormatDouble (adblFullEURBasis[i], 1, 3, 100.));
+						org.drip.quant.common.FormatUtil.FormatDouble (adblFullEURBasis[i], 1, 3, 100.));
 			}
 
 			for (int i = 0; i < adblBootstrappedUSDBasis.length; ++i) {
 				System.out.println ("Bootstrapped USDBasis from FX fwd for " + cp.getCode() + "[" + (i + 1) +
-					"Y]=" + org.drip.math.common.FormatUtil.FormatDouble (adblBootstrappedUSDBasis[i], 1, 3,
+					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblBootstrappedUSDBasis[i], 1, 3,
 						100.));
 
 				System.out.println ("Bootstrapped EURBasis from FX fwd for " + cp.getCode() + "[" + (i + 1) +
-					"Y]=" + org.drip.math.common.FormatUtil.FormatDouble (adblBootstrappedEURBasis[i], 1, 3,
+					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblBootstrappedEURBasis[i], 1, 3,
 						100.));
 			}
 
 			for (int i = 0; i < adblFXFwdFromUSDBasis.length; ++i)
 				System.out.println ("FX Fwd from Bootstrapped USD Basis: " + cp.getCode() + "[" + (i + 1) +
-					"Y]=" + org.drip.math.common.FormatUtil.FormatDouble (adblFXFwdFromUSDBasis[i], 1, 3,
+					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblFXFwdFromUSDBasis[i], 1, 3,
 						100.));
 
 			for (int i = 0; i < adblFXFwdFromEURBasis.length; ++i)
 				System.out.println ("FX Fwd from Bootstrapped EUR Basis: " + cp.getCode() + "[" + (i + 1) +
-					"Y]=" + org.drip.math.common.FormatUtil.FormatDouble (adblFXFwdFromEURBasis[i], 1, 3,
+					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblFXFwdFromEURBasis[i], 1, 3,
 						100.));
 		}
 	}

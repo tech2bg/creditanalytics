@@ -93,7 +93,7 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 		if (null == strSerializedYieldInterpreter || strSerializedYieldInterpreter.isEmpty())
 			throw new java.lang.Exception ("YieldInterpreter de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedYieldInterpreter,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedYieldInterpreter,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)

@@ -86,7 +86,7 @@ public class CashflowPeriod extends Period {
 				(periodLeft._dblAccrualStart, periodLeft._dblAccrualEnd, periodLeft._strAccrualDC,
 					periodLeft._bApplyAccEOMAdj, periodLeft._dblMaturity, null, periodLeft._strCalendar);
 
-			if (!org.drip.math.common.NumberUtil.IsValid (dblLeftDCF)) return null;
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblLeftDCF)) return null;
 
 			return new CashflowPeriod (periodLeft._dblStart, periodRight._dblEnd,
 				periodLeft._dblAccrualStart, periodRight._dblAccrualEnd, periodRight._dblPay,
@@ -148,8 +148,8 @@ public class CashflowPeriod extends Period {
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblEffective) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblMaturityIn) || dblEffective >= dblMaturityIn || 0 ==
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblMaturityIn) || dblEffective >= dblMaturityIn || 0 ==
 				iFreq)
 			return null;
 
@@ -294,8 +294,8 @@ public class CashflowPeriod extends Period {
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblEffective) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity || 0 ==
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity || 0 ==
 				iFreq)
 			return null;
 
@@ -375,8 +375,8 @@ public class CashflowPeriod extends Period {
 		final double dblMaturity,
 		final java.lang.String strCalendar)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblEffective) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity)
 			return null;
 
 		java.util.List<CashflowPeriod> lsCashflowPeriod = new java.util.ArrayList<CashflowPeriod>();
@@ -473,7 +473,7 @@ public class CashflowPeriod extends Period {
 		final double dblAccrualEnd)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblAccrualEnd))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEnd))
 			throw new java.lang.Exception ("CashflowPeriod::getAccrualDCF => Accrual end is NaN!");
 
 		if (_dblAccrualStart > dblAccrualEnd && dblAccrualEnd > _dblAccrualEnd)

@@ -73,8 +73,8 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 		final int iWOType)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblDate = dblDate) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblExerciseFactor = dblExerciseFactor))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDate = dblDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblExerciseFactor = dblExerciseFactor))
 			throw new java.lang.Exception ("ExerciseInfo ctr: Invalid Inputs!");
 
 		_iWOType = iWOType;
@@ -106,7 +106,7 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 		if (null == strSerializedNextExerciseInfo || strSerializedNextExerciseInfo.isEmpty())
 			throw new java.lang.Exception ("ExerciseInfo de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedNextExerciseInfo,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNextExerciseInfo,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

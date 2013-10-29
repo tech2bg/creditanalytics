@@ -90,7 +90,7 @@ public class CreditAnalyticsResponse extends org.drip.service.stream.Serializer 
 		if (null == strSerializedCreditAnalyticsResponse || strSerializedCreditAnalyticsResponse.isEmpty())
 			throw new java.lang.Exception ("CreditAnalyticsResponse de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedCreditAnalyticsResponse, getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)

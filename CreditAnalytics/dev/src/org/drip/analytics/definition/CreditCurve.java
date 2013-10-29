@@ -75,7 +75,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_strName =
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_strName =
 			strName) || _strName.isEmpty() || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
 			throw new java.lang.Exception ("CreditCurve ctr: Invalid Inputs");
 	}

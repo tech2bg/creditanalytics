@@ -99,9 +99,9 @@ public class WorkoutInfo extends org.drip.service.stream.Serializer {
 		final int iWOType)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblDate = dblDate) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblYield = dblYield) ||
-				!org.drip.math.common.NumberUtil.IsValid (_dblExerciseFactor = dblExerciseFactor))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDate = dblDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblYield = dblYield) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblExerciseFactor = dblExerciseFactor))
 			throw new java.lang.Exception ("WorkoutInfo ctr: One of wkout dat/yld/ex factor came out NaN!");
 
 		_iWOType= iWOType;
@@ -133,7 +133,7 @@ public class WorkoutInfo extends org.drip.service.stream.Serializer {
 		if (null == strSerializedWorkoutInfo || strSerializedWorkoutInfo.isEmpty())
 			throw new java.lang.Exception ("WorkoutInfo de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedWorkoutInfo,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedWorkoutInfo,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

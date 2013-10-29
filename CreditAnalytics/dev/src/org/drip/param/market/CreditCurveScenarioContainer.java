@@ -75,8 +75,8 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		final double dblRecoveryBump)
 		throws java.lang.Exception
 	{
-		if (null == aCalibInst || 0 == aCalibInst.length || !org.drip.math.common.NumberUtil.IsValid
-			(_dblCouponBump = dblCouponBump) || !org.drip.math.common.NumberUtil.IsValid (_dblRecoveryBump =
+		if (null == aCalibInst || 0 == aCalibInst.length || !org.drip.quant.common.NumberUtil.IsValid
+			(_dblCouponBump = dblCouponBump) || !org.drip.quant.common.NumberUtil.IsValid (_dblRecoveryBump =
 				dblRecoveryBump) || null == (_ccsg = new
 					org.drip.state.estimator.CreditCurveScenarioGenerator (aCalibInst)))
 			throw new java.lang.Exception ("CreditCurveScenarioContainer ctr => Invalid Inputs!");
@@ -98,7 +98,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		final int iCCScenario)
 	{
 		if (null == _ccsg || null == dc || null == adblQuotes || 0 == adblQuotes.length ||
-			!org.drip.math.common.NumberUtil.IsValid (dblRecovery) || null == astrCalibMeasure || 0 ==
+			!org.drip.quant.common.NumberUtil.IsValid (dblRecovery) || null == astrCalibMeasure || 0 ==
 				astrCalibMeasure.length || astrCalibMeasure.length != adblQuotes.length) {
 			if (s_bBlog)
 				System.out.println ("Bad CreditCurveScenarioContainer.cookScenarioCC Input params!");
@@ -203,7 +203,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		final org.drip.param.definition.ResponseValueTweakParams mmtpCC)
 	{
 		if (null == strCustomName || strCustomName.isEmpty() || null == _ccsg || null == dc || null ==
-			adblQuotes || 0 == adblQuotes.length || !org.drip.math.common.NumberUtil.IsValid (dblRecovery) ||
+			adblQuotes || 0 == adblQuotes.length || !org.drip.quant.common.NumberUtil.IsValid (dblRecovery) ||
 				null == astrCalibMeasure || 0 == astrCalibMeasure.length || astrCalibMeasure.length !=
 					adblQuotes.length || (null == mmtpDC && null == mmtpTSY && null == mmtpEDSF && null ==
 						mmtpCC)) {

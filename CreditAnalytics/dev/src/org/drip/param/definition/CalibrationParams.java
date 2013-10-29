@@ -121,7 +121,7 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCalibrationParams || strSerializedCalibrationParams.isEmpty())
 			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCalibrationParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCalibrationParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

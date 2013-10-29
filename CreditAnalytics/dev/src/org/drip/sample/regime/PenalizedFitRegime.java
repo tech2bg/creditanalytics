@@ -1,11 +1,11 @@
 
 package org.drip.sample.regime;
 
-import org.drip.math.common.FormatUtil;
-import org.drip.math.function.QuadraticRationalShapeControl;
-import org.drip.math.regime.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.PolynomialBasisSetParams;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.QuadraticRationalShapeControl;
+import org.drip.spline.basis.PolynomialFunctionSetParams;
+import org.drip.spline.params.*;
+import org.drip.spline.regime.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -47,7 +47,7 @@ public class PenalizedFitRegime {
 	 * Build Polynomial Segment Control Parameters
 	 * 
 	 * @param iNumBasis Number of Polynomial Basis Functions
-	 * @param segParams Inelastic Segment Parameters
+	 * @param sdic Inelastic Segment Parameters
 	 * @param rssc Shape Controller
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
@@ -55,16 +55,16 @@ public class PenalizedFitRegime {
 	 * @return Polynomial Segment Control Parameters
 	 */
 
-	public static final PredictorResponseBuilderParams PolynomialSegmentControlParams (
+	public static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
-		final DesignInelasticParams segParams,
-		final ResponseScalingShapeController rssc)
+		final SegmentDesignInelasticControl sdic,
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (
-			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialBasisSetParams (iNumBasis),
-			segParams,
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (iNumBasis),
+			sdic,
 			rssc);
 	}
 
@@ -77,40 +77,40 @@ public class PenalizedFitRegime {
 	 * 
 	 * @param adblX The Predictor Array
 	 * @param adblY The Response Array
-	 * @param sbp The Segment Builder Parameters
-	 * @param fwr The Fitness Weighted Response Instance
+	 * @param scbc The Segment Builder Parameters
+	 * @param sbfr The Fitness Weighted Response Instance
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
-	public static final MultiSegmentRegime BasisSplineRegimeTest (
+	public static final MultiSegmentSequence BasisSplineRegimeTest (
 		final double[] adblX,
 		final double[] adblY,
-		final PredictorResponseBuilderParams sbp,
-		final BestFitWeightedResponse fwr)
+		final SegmentCustomBuilderControl scbc,
+		final SegmentBestFitResponse sbfr)
 		throws Exception
 	{
 		/*
 		 * Array of Segment Builder Parameters - one per segment
 		 */
 
-		PredictorResponseBuilderParams[] aSBP = new PredictorResponseBuilderParams[adblX.length - 1]; 
+		SegmentCustomBuilderControl[] aSCBC = new SegmentCustomBuilderControl[adblX.length - 1]; 
 
 		for (int i = 0; i < adblX.length - 1; ++i)
-			aSBP[i] = sbp;
+			aSCBC[i] = scbc;
 
 		/*
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentRegime regime = RegimeBuilder.CreateCalibratedRegimeEstimator (
+		MultiSegmentSequence regime = MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator (
 			"SPLINE_REGIME",
 			adblX, // predictors
 			adblY, // responses
-			aSBP, // Basis Segment Builder parameters
-			fwr, // Fitness Weighted Response
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
-			MultiSegmentRegime.CALIBRATE); // Calibrate the Regime predictors to the responses
+			aSCBC, // Basis Segment Builder parameters
+			sbfr, // Fitness Weighted Response
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		return regime;
 	}
@@ -136,7 +136,7 @@ public class PenalizedFitRegime {
 		 *  weighted closeness of fit.
 		 */
 
-		BestFitWeightedResponse fwr = BestFitWeightedResponse.Create (
+		SegmentBestFitResponse sbfr = SegmentBestFitResponse.Create (
 			new double[] { 2.28,  2.52,  2.73, 3.00,  5.50, 8.44,  8.76,  9.08,  9.80,  9.92},
 			new double[] {14.27, 12.36, 10.61, 9.25, -0.50, 7.92, 10.07, 12.23, 15.51, 16.36},
 			new double[] { 1.09,  0.82,  1.34, 1.10,  0.50, 0.79,  0.65,  0.49,  0.24,  0.21}
@@ -148,7 +148,7 @@ public class PenalizedFitRegime {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
 			false,
 			new QuadraticRationalShapeControl (dblShapeControllerTension));
 
@@ -160,7 +160,9 @@ public class PenalizedFitRegime {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		DesignInelasticParams dip = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (
+			iK,
+			iRoughnessPenaltyDerivativeOrder);
 
 		System.out.println (" \n--------------------------------------------------------------------------------------------------");
 
@@ -170,15 +172,15 @@ public class PenalizedFitRegime {
 
 		int iPolyNumBasis = 4;
 
-		PredictorResponseBuilderParams prbp1 = PolynomialSegmentControlParams (iPolyNumBasis, dip, rssc);
+		SegmentCustomBuilderControl scbc1 = PolynomialSegmentControlParams (iPolyNumBasis, sdic, rssc);
 
-		PredictorResponseBuilderParams prbp2 = PolynomialSegmentControlParams (iPolyNumBasis + 1, dip, rssc);
+		SegmentCustomBuilderControl scbc2 = PolynomialSegmentControlParams (iPolyNumBasis + 1, sdic, rssc);
 
-		MultiSegmentRegime regimeBase1 = BasisSplineRegimeTest (adblX, adblY, prbp1, null);
+		MultiSegmentSequence regimeBase1 = BasisSplineRegimeTest (adblX, adblY, scbc1, null);
 
-		MultiSegmentRegime regimeBase2 = BasisSplineRegimeTest (adblX, adblY, prbp2, null);
+		MultiSegmentSequence regimeBase2 = BasisSplineRegimeTest (adblX, adblY, scbc2, null);
 
-		MultiSegmentRegime regimeBestFit = BasisSplineRegimeTest (adblX, adblY, prbp2, fwr);
+		MultiSegmentSequence regimeBestFit = BasisSplineRegimeTest (adblX, adblY, scbc2, sbfr);
 
 		/*
 		 * Compute the segment-by-segment monotonicity

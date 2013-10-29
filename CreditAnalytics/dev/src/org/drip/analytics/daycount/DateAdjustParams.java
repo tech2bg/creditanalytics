@@ -89,7 +89,7 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 		if (null == strDAP || strDAP.isEmpty())
 			throw new java.lang.Exception ("DateAdjustParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strDAP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strDAP, getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("DateAdjustParams de-serialize: Invalid number of fields");

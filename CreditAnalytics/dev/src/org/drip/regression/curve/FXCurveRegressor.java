@@ -181,9 +181,9 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					rnvd.set ("FXFwd", org.drip.math.common.FormatUtil.FormatDouble (_dblFXFwd, 1, 4, 1));
+					rnvd.set ("FXFwd", org.drip.quant.common.FormatUtil.FormatDouble (_dblFXFwd, 1, 4, 1));
 
-					rnvd.set ("FXFwdPIP", org.drip.math.common.FormatUtil.FormatDouble (_dblFXFwdPIP, 1, 1,
+					rnvd.set ("FXFwdPIP", org.drip.quant.common.FormatUtil.FormatDouble (_dblFXFwdPIP, 1, 1,
 						1));
 
 					return true;
@@ -301,46 +301,46 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					rnvd.set ("EURBasis", org.drip.math.common.FormatUtil.FormatDouble (_dblDCEURBasis, 1, 2,
+					rnvd.set ("EURBasis", org.drip.quant.common.FormatUtil.FormatDouble (_dblDCEURBasis, 1, 2,
 						10000.));
 
-					rnvd.set ("USDBasis", org.drip.math.common.FormatUtil.FormatDouble (_dblDCUSDBasis, 1, 2,
+					rnvd.set ("USDBasis", org.drip.quant.common.FormatUtil.FormatDouble (_dblDCUSDBasis, 1, 2,
 						10000.));
 
 					for (int i = 0; i < _adblFullUSDBasis.length; ++i) {
 						rnvd.set ("FullUSDBasis{" + (i + 1) + "Y}",
-							org.drip.math.common.FormatUtil.FormatDouble (_adblFullUSDBasis[i], 1, 4,
+							org.drip.quant.common.FormatUtil.FormatDouble (_adblFullUSDBasis[i], 1, 4,
 								10000.));
 
 						rnvd.set ("FullEURBasis{" + (i + 1) + "Y}",
-							org.drip.math.common.FormatUtil.FormatDouble (_adblFullEURBasis[i], 1, 4,
+							org.drip.quant.common.FormatUtil.FormatDouble (_adblFullEURBasis[i], 1, 4,
 								10000.));
 
 						rnvd.set ("BootstrapUSDBasis{" + (i + 1) + "Y}",
-							org.drip.math.common.FormatUtil.FormatDouble (_adblBootstrappedUSDBasis[i], 1, 0,
+							org.drip.quant.common.FormatUtil.FormatDouble (_adblBootstrappedUSDBasis[i], 1, 0,
 								10000.));
 
 						rnvd.set ("BootstrapEURBasis{" + (i + 1) + "Y}",
-							org.drip.math.common.FormatUtil.FormatDouble (_adblBootstrappedEURBasis[i], 1, 0,
+							org.drip.quant.common.FormatUtil.FormatDouble (_adblBootstrappedEURBasis[i], 1, 0,
 								10000.));
 
 						rnvd.set ("FXFwd from USD Basis{" + (i + 1) + "Y}",
-							org.drip.math.common.FormatUtil.FormatDouble (_adblFXFwdFromUSDBasis[i], 1, 4,
+							org.drip.quant.common.FormatUtil.FormatDouble (_adblFXFwdFromUSDBasis[i], 1, 4,
 								1.));
 
 						rnvd.set ("FXFwd from EUR Basis{" + (i + 1) + "Y}",
-							org.drip.math.common.FormatUtil.FormatDouble (_adblFXFwdFromEURBasis[i], 1, 4,
+							org.drip.quant.common.FormatUtil.FormatDouble (_adblFXFwdFromEURBasis[i], 1, 4,
 								1.));
 
-						if (!org.drip.math.common.NumberUtil.WithinTolerance (_adblFullUSDBasis[i],
+						if (!org.drip.quant.common.NumberUtil.WithinTolerance (_adblFullUSDBasis[i],
 							-_adblFullEURBasis[i]))
 							return false;
 
-						if (!org.drip.math.common.NumberUtil.WithinTolerance (_adblBootstrappedUSDBasis[i],
+						if (!org.drip.quant.common.NumberUtil.WithinTolerance (_adblBootstrappedUSDBasis[i],
 							-_adblBootstrappedEURBasis[i]))
 							return false;
 
-						if (!org.drip.math.common.NumberUtil.WithinTolerance (_adblFXFwdFromUSDBasis[i],
+						if (!org.drip.quant.common.NumberUtil.WithinTolerance (_adblFXFwdFromUSDBasis[i],
 							_adblFXFwdFromEURBasis[i]))
 							return false;
 					}

@@ -46,7 +46,7 @@ package org.drip.state.estimator;
  */
 
 public class NonlinearCurveCalibrator {
-	class CreditCurveCalibrator extends org.drip.math.function.AbstractUnivariate {
+	class CreditCurveCalibrator extends org.drip.quant.function1D.AbstractUnivariate {
 		private int _iInstr = -1;
 		private boolean _bFlat = false;
 		private java.lang.String _strMeasure = "";
@@ -145,7 +145,7 @@ public class NonlinearCurveCalibrator {
 		double[] adblNodeCalibOP = new double[aCalibComp.length];
 
 		for (int i = 0; i < aCalibComp.length; ++i) {
-			if (!org.drip.math.common.NumberUtil.IsValid (adblNodeCalibOP[i] = calibrateIRNode (dc, dcTSY,
+			if (!org.drip.quant.common.NumberUtil.IsValid (adblNodeCalibOP[i] = calibrateIRNode (dc, dcTSY,
 				dcEDSF, aCalibComp[i], i, valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump,
 					mmFixings, quotingParams, false, 0 == i ? java.lang.Double.NaN :
 						adblNodeCalibOP[i - 1]))) {
@@ -174,7 +174,7 @@ public class NonlinearCurveCalibrator {
 		final org.drip.param.valuation.QuotingParams quotingParams)
 		throws java.lang.Exception
 	{
-		org.drip.math.function.AbstractUnivariate ofIROuter = new org.drip.math.function.AbstractUnivariate
+		org.drip.quant.function1D.AbstractUnivariate ofIROuter = new org.drip.quant.function1D.AbstractUnivariate
 			(null) {
 			public double evaluate (
 				final double dblShiftedLeftSlope)
@@ -185,7 +185,7 @@ public class NonlinearCurveCalibrator {
 			}
 		};
 
-		org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent
+		org.drip.quant.solver1D.FixedPointFinderOutput rfop = new org.drip.quant.solver1D.FixedPointFinderBrent
 			(0., ofIROuter, true).findRoot();
 
 		if (null == rfop || !rfop.containsRoot())
@@ -241,7 +241,7 @@ public class NonlinearCurveCalibrator {
 		final boolean bFlat)
 	{
 		if (null == cc || null == comp || null == valParams || null == dc || null == pricerParamsIn || null
-			== strMeasure || strMeasure.isEmpty() || !org.drip.math.common.NumberUtil.IsValid
+			== strMeasure || strMeasure.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
 				(dblCalibValue)) {
 			System.out.println
 				("NonlinearCurveCalibrator::bootstrapHazardRate => Invalid params into CurveCalibrator.bootstrapHazardRate!");
@@ -250,8 +250,8 @@ public class NonlinearCurveCalibrator {
 		}
 
 		try {
-			org.drip.math.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.math.solver1D.FixedPointFinderBrent (0., new CreditCurveCalibrator (cc, comp,
+			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.quant.solver1D.FixedPointFinderBrent (0., new CreditCurveCalibrator (cc, comp,
 					iInstr, valParams, dc, dcTSY, dcEDSF, pricerParamsIn, strMeasure, dblCalibValue,
 						mmFixings, quotingParams, bFlat), true).findRoot();
 
@@ -301,10 +301,10 @@ public class NonlinearCurveCalibrator {
 		throws java.lang.Exception
 	{
 		if (null == dc || null == comp || null == valParams || null == strMeasure || strMeasure.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (dblCalibValue))
+			!org.drip.quant.common.NumberUtil.IsValid (dblCalibValue))
 			throw new java.lang.Exception ("NonlinearCurveCalibrator::calibrateIRNode => Invalid inputs!");
 
-		org.drip.math.function.AbstractUnivariate ofIRNode = new org.drip.math.function.AbstractUnivariate
+		org.drip.quant.function1D.AbstractUnivariate ofIRNode = new org.drip.quant.function1D.AbstractUnivariate
 			(null) {
 			public double evaluate (
 				final double dblValue)
@@ -323,7 +323,7 @@ public class NonlinearCurveCalibrator {
 			}
 		};
 
-		org.drip.math.solver1D.FixedPointFinderOutput rfop = new org.drip.math.solver1D.FixedPointFinderBrent
+		org.drip.quant.solver1D.FixedPointFinderOutput rfop = new org.drip.quant.solver1D.FixedPointFinderBrent
 			(0., ofIRNode, true).findRoot();
 
 		if (null == rfop || !rfop.containsRoot())
@@ -378,7 +378,7 @@ public class NonlinearCurveCalibrator {
 
 		for (int i = 0; i < adblCalibValue.length; ++i) {
 			try {
-				if (!org.drip.math.common.NumberUtil.IsValid (calibrateIRNode (dc, dcTSY, dcEDSF,
+				if (!org.drip.quant.common.NumberUtil.IsValid (calibrateIRNode (dc, dcTSY, dcEDSF,
 					aCalibComp[i], i, valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump,
 						mmFixings, quotingParams, false, java.lang.Double.NaN)))
 					return false;

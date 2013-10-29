@@ -158,8 +158,8 @@ public class PeriodGenerator extends PeriodSet {
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblEffective) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblMaturity))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEffective) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblMaturity))
 			return false;
 
 		if (null == _dapPay)
@@ -223,10 +223,10 @@ public class PeriodGenerator extends PeriodSet {
 			}
 		}
 
-		if (org.drip.math.common.NumberUtil.IsValid (_dblFirstCouponDate))
+		if (org.drip.quant.common.NumberUtil.IsValid (_dblFirstCouponDate))
 			_lsCouponPeriod.get (0).setPayDate (_dblFirstCouponDate);
 
-		if (org.drip.math.common.NumberUtil.IsValid (_dblInterestAccrualStart))
+		if (org.drip.quant.common.NumberUtil.IsValid (_dblInterestAccrualStart))
 			_lsCouponPeriod.get (0).setAccrualStartDate (_dblInterestAccrualStart);
 
 		return true;

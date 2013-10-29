@@ -42,9 +42,9 @@ package org.drip.regression.spline;
 public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.UnitRegressionExecutor {
 	private boolean _bLocallyMonotone = false;
 	private double _dblValue = java.lang.Double.NaN;
-	private org.drip.math.regime.SingleSegmentRegime _sss = null;
-	private org.drip.math.segment.Monotonocity _sm = null;
-	private org.drip.math.calculus.WengertJacobian _wj = null;
+	private org.drip.spline.regime.SingleSegmentSequence _sss = null;
+	private org.drip.spline.segment.Monotonocity _sm = null;
+	private org.drip.quant.calculus.WengertJacobian _wj = null;
 
 	public LagrangePolynomialRegimeRegressor (
 		final java.lang.String strName,
@@ -53,15 +53,15 @@ public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.
 	{
 		super (strName, strScenarioName);
 
-		_sss = new org.drip.math.regime.LagrangePolynomialRegime (new double[] {1., 2., 3., 4.});
+		_sss = new org.drip.spline.regime.SingleSegmentLagrangePolynomial (new double[] {1., 2., 3., 4.});
 	}
 
 	@Override public boolean preRegression()
 	{
 		try {
 			return _sss.setup (1., new double[] {1., 2., 3., 4.}, null,
-				org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_FLOATING,
-					org.drip.math.regime.MultiSegmentRegime.CALIBRATE);
+				org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_FLOATING,
+					org.drip.spline.regime.MultiSegmentSequence.CALIBRATE);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -72,7 +72,7 @@ public class LagrangePolynomialRegimeRegressor extends org.drip.regression.core.
 	@Override public boolean execRegression()
 	{
 		try {
-			if (!org.drip.math.common.NumberUtil.IsValid (_dblValue = _sss.responseValue (2.16))) return false;
+			if (!org.drip.quant.common.NumberUtil.IsValid (_dblValue = _sss.responseValue (2.16))) return false;
 
 			_bLocallyMonotone = _sss.isLocallyMonotone();
 		} catch (java.lang.Exception e) {

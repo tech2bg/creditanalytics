@@ -413,7 +413,7 @@ public class Convention {
 		final double dblDate,
 		final int iHolType)
 	{
-		if (null == strCalendarSet || strCalendarSet.isEmpty() || !org.drip.math.common.NumberUtil.IsValid
+		if (null == strCalendarSet || strCalendarSet.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate))
 			return false;
 
@@ -637,7 +637,7 @@ public class Convention {
 		final java.lang.String strCalendarSet)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Cannot roll a NaN date");
 
 		if (null == strCalendarSet || strCalendarSet.isEmpty() || DR_ACTUAL == iRollMode) return dblDate;
@@ -693,7 +693,7 @@ public class Convention {
 		final int iHolType)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Cannot a NaN date for holiday!");
 
 		return isLocSpecificHoliday ((null == strCalendar || strCalendar.isEmpty() || "".equalsIgnoreCase
@@ -737,7 +737,7 @@ public class Convention {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblFinish))
 			throw new java.lang.Exception ("Cannot a NaN date for a bus day!");
 
@@ -774,7 +774,7 @@ public class Convention {
 		final double dblFinish,
 		final java.lang.String strCalendar)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblFinish))
 			return null;
 
@@ -817,7 +817,7 @@ public class Convention {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblFinish))
 			throw new java.lang.Exception ("Cannot have a NaN date for a holiday!");
 
@@ -855,7 +855,7 @@ public class Convention {
 		final int iAdjustMode)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Cannot adjust a NaN date!");
 
 		double dblDateAdjusted = dblDate;

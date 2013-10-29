@@ -71,7 +71,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		final boolean bIsFXBasisBootstrapped)
 		throws java.lang.Exception
 	{
-		if (null == cp || null == dtSpot || !org.drip.math.common.NumberUtil.IsValid (dblFXSpot) || null ==
+		if (null == cp || null == dtSpot || !org.drip.quant.common.NumberUtil.IsValid (dblFXSpot) || null ==
 			adblDate || 0 == adblDate.length || null == adblFXBasis || 0 == adblFXBasis.length ||
 				adblDate.length != adblFXBasis.length)
 			throw new java.lang.Exception ("DerivedFXBasis ctr: Invalid Params");
@@ -85,7 +85,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		_bIsFXBasisBootstrapped = bIsFXBasisBootstrapped;
 
 		for (int i = 0; i < adblFXBasis.length; ++i) {
-			if (!org.drip.math.common.NumberUtil.IsValid (adblDate[i]) || adblDate[i] <= _dblSpotDate)
+			if (!org.drip.quant.common.NumberUtil.IsValid (adblDate[i]) || adblDate[i] <= _dblSpotDate)
 				throw new java.lang.Exception ("DerivedFXBasis ctr: Invalid params: Node date " +
 					org.drip.analytics.date.JulianDate.fromJulian (adblDate[i]) + " before spot " + dtSpot);
 
@@ -119,7 +119,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		if (null == strFXBasis || strFXBasis.isEmpty())
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strFXBasis,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFXBasis,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
@@ -150,7 +150,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
 			astrField[4], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
 
@@ -363,7 +363,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	{
 		int iNumBasis = _adblFXBasis.length;
 
-		if (iSpanIndex >= iNumBasis || !org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (iSpanIndex >= iNumBasis || !org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		double[] adblFXBasisBumped = new double[iNumBasis];
 

@@ -544,9 +544,9 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		final double dblSettleDate,
 		final double dblPV,
 		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.math.calculus.WengertJacobian wjPVDFMicroJack)
+		final org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack)
 	{
-		org.drip.math.calculus.WengertJacobian wjCashSettleDFDF = dc.dfJack (dblSettleDate);
+		org.drip.quant.calculus.WengertJacobian wjCashSettleDFDF = dc.dfJack (dblSettleDate);
 
 		if (null == wjCashSettleDFDF) return false;
 

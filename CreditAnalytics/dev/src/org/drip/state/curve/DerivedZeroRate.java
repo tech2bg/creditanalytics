@@ -64,7 +64,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		double dblYearFraction = org.drip.analytics.daycount.Convention.YearFraction (epoch().getJulian(),
 			dblDate, strDC, bApplyCpnEOMAdj, dblDate, null, strCalendar);
 
-		if (!org.drip.math.common.NumberUtil.IsValid (dblYearFraction) || 0. > dblYearFraction) return;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblYearFraction) || 0. > dblYearFraction) return;
 
 		org.drip.analytics.date.JulianDate dt = new org.drip.analytics.date.JulianDate (dblDate);
 
@@ -122,9 +122,9 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		super (dc.epoch().getJulian(), dc.currency());
 
 		if (null == (_dc = dc) || null == lsCouponPeriod || 0 == lsCouponPeriod.size() ||
-			!org.drip.math.common.NumberUtil.IsValid (dblWorkoutDate) ||
-				!org.drip.math.common.NumberUtil.IsValid (dblCashPayDate) ||
-					!org.drip.math.common.NumberUtil.IsValid (dblZCBump))
+			!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblCashPayDate) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblZCBump))
 			throw new java.lang.Exception ("DerivedZeroRate ctr => Invalid date parameters!");
 
 		int iFreq = 0 == iFreqZC ? 2 : iFreqZC;
@@ -173,7 +173,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DerivedZeroCurve::df => got NaN for date");
 
 		if (dblDate <= epoch().getJulian()) return 1.;
@@ -187,11 +187,11 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		return objDF;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
 		final double dblDate)
 	{
 		try {
-			if (!org.drip.math.common.NumberUtil.IsValid (dblDate) || null == _mapDF.get (new
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == _mapDF.get (new
 				org.drip.analytics.date.JulianDate (dblDate)))
 				return null;
 		} catch (java.lang.Exception e) {
@@ -207,7 +207,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DerivedZeroCurve::getZeroRate => Invalid Date");
 
 		if (dblDate <= epoch().getJulian()) return 1.;

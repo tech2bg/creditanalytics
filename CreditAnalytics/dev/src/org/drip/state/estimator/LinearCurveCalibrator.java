@@ -48,10 +48,10 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	 */
 
 	public LinearCurveCalibrator (
-		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
+		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail,
-		final org.drip.math.segment.BestFitWeightedResponse bfwr)
+		final org.drip.spline.params.SegmentBestFitResponse bfwr)
 		throws java.lang.Exception
 	{
 		super ("", prbp, iCalibrationBoundaryCondition, iCalibrationDetail, bfwr);
@@ -70,7 +70,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	 * @return Instance of the Discount Curve Span
 	 */
 
-	public org.drip.math.grid.OverlappingRegimeSpan calibrateSpan (
+	public org.drip.spline.grid.OverlappingRegimeSpan calibrateSpan (
 		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
 		final double dblEpochResponse,
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -81,8 +81,8 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		if (null == aRBS || null == valParams) return null;
 
 		int iNumRegime = aRBS.length;
-		org.drip.math.grid.OverlappingRegimeSpan span = null;
-		org.drip.math.regime.MultiSegmentRegime regimePrev = null;
+		org.drip.spline.grid.OverlappingRegimeSpan span = null;
+		org.drip.spline.regime.MultiSegmentSequence regimePrev = null;
 
 		if (0 == iNumRegime) return null;
 
@@ -92,10 +92,10 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 			org.drip.product.definition.CalibratableComponent[] aCalibComp = rbs.getCalibComp();
 
 			int iNumCalibComp = aCalibComp.length;
-			org.drip.math.regime.MultiSegmentRegime regime = null;
+			org.drip.spline.regime.MultiSegmentSequence regime = null;
 			double[] adblPredictorOrdinate = new double[iNumCalibComp + 1];
-			org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP = new
-				org.drip.math.segment.PredictorResponseBuilderParams[iNumCalibComp];
+			org.drip.spline.params.SegmentCustomBuilderControl[] aPRBP = new
+				org.drip.spline.params.SegmentCustomBuilderControl[iNumCalibComp];
 
 			for (int i = 0; i <= iNumCalibComp; ++i) {
 				adblPredictorOrdinate[i] = 0 == i ? valParams._dblValue :
@@ -106,7 +106,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 
 			try {
 				regime = new org.drip.state.estimator.CurveRegime (rbs.getName(),
-					org.drip.math.regime.RegimeBuilder.CreateSegmentSet (adblPredictorOrdinate, aPRBP),
+					org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateSegmentSet (adblPredictorOrdinate, aPRBP),
 						aPRBP);
 
 				if (!regime.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder
@@ -121,7 +121,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 
 			if (null == span) {
 				try {
-					span = new org.drip.math.grid.OverlappingRegimeSpan (regime);
+					span = new org.drip.spline.grid.OverlappingRegimeSpan (regime);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

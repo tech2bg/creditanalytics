@@ -227,7 +227,7 @@ public class CreditCurveScenarioGenerator {
 	{
 		if (null == strName || null == adblQuotes || null == astrCalibMeasure || null == valParams || null ==
 			dc || adblQuotes.length != astrCalibMeasure.length || _aCalibInst.length !=
-				astrCalibMeasure.length || !org.drip.math.common.NumberUtil.IsValid (dblRecovery))
+				astrCalibMeasure.length || !org.drip.quant.common.NumberUtil.IsValid (dblRecovery))
 			return null;
 
 		org.drip.analytics.definition.CreditCurve[] aCC = new
@@ -287,7 +287,7 @@ public class CreditCurveScenarioGenerator {
 	{
 		if (null == strName || null == valParams || null == dc || null == adblQuotes || null ==
 			astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length || _aCalibInst.length !=
-				astrCalibMeasure.length || !org.drip.math.common.NumberUtil.IsValid (dblRecovery))
+				astrCalibMeasure.length || !org.drip.quant.common.NumberUtil.IsValid (dblRecovery))
 			return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapTenorCC =

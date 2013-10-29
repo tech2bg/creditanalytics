@@ -38,8 +38,8 @@ package org.drip.state.estimator;
 public abstract class SmoothingCurveRegimeParams {
 	private int _iCalibrationDetail = -1;
 	private java.lang.String _strSmootheningQuantificationMetric = "";
-	private org.drip.math.segment.BestFitWeightedResponse _bfwr = null;
-	private org.drip.math.segment.PredictorResponseBuilderParams _prbp = null;
+	private org.drip.spline.params.SegmentBestFitResponse _bfwr = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl _prbp = null;
 
 	/**
 	 * SmoothingCurveRegimeParams constructor
@@ -54,9 +54,9 @@ public abstract class SmoothingCurveRegimeParams {
 
 	public SmoothingCurveRegimeParams (
 		final java.lang.String strSmootheningQuantificationMetric,
-		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
+		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationDetail,
-		final org.drip.math.segment.BestFitWeightedResponse bfwr)
+		final org.drip.spline.params.SegmentBestFitResponse bfwr)
 		throws java.lang.Exception
 	{
 		if (null == (_prbp = prbp))
@@ -95,7 +95,7 @@ public abstract class SmoothingCurveRegimeParams {
 	 * @return The Segment Builder Parameters
 	 */
 
-	public org.drip.math.segment.PredictorResponseBuilderParams prbp()
+	public org.drip.spline.params.SegmentCustomBuilderControl prbp()
 	{
 		return _prbp;
 	}
@@ -106,7 +106,7 @@ public abstract class SmoothingCurveRegimeParams {
 	 * @return The Best Fit Weighted Response
 	 */
 
-	public org.drip.math.segment.BestFitWeightedResponse bestFitWeightedResponse()
+	public org.drip.spline.params.SegmentBestFitResponse bestFitWeightedResponse()
 	{
 		return _bfwr;
 	}

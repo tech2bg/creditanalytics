@@ -61,9 +61,9 @@ public class CreditCurveBuilder {
 		final double dblHazardRate,
 		final double dblRecovery)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStartDate) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblHazardRate) ||
-				!org.drip.math.common.NumberUtil.IsValid (dblRecovery))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblHazardRate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblRecovery))
 			return null;
 
 		double[] adblHazard = new double[1];
@@ -106,7 +106,7 @@ public class CreditCurveBuilder {
 		final double[] adblSurvivalProbability,
 		final double dblRecovery)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblRecovery)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblRecovery)) return null;
 
 		try {
 			double dblSurvivalBegin = 1.;
@@ -118,7 +118,7 @@ public class CreditCurveBuilder {
 			adblRecoveryDate[0] = dblStartDate;
 
 			for (int i = 0; i < adblSurvivalProbability.length; ++i) {
-				if (!org.drip.math.common.NumberUtil.IsValid (adblSurvivalProbability[i]) ||
+				if (!org.drip.quant.common.NumberUtil.IsValid (adblSurvivalProbability[i]) ||
 					adblSurvivalDate[i] <= dblPeriodBegin || dblSurvivalBegin <= adblSurvivalProbability[i])
 					return null;
 
@@ -159,10 +159,10 @@ public class CreditCurveBuilder {
 		final double dblHazardDate,
 		final double dblRecovery)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStartDate) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblHazardRate) ||
-				!org.drip.math.common.NumberUtil.IsValid (dblHazardDate) ||
-					!org.drip.math.common.NumberUtil.IsValid (dblRecovery))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblHazardRate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblHazardDate) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblRecovery))
 			return null;
 
 		double[] adblHazard = new double[1];
@@ -206,7 +206,7 @@ public class CreditCurveBuilder {
 		final double dblRecovery)
 	{
 		if (null == dtStart || null == adblHazardRate || null == adblDate || adblHazardRate.length !=
-			adblDate.length || !org.drip.math.common.NumberUtil.IsValid (dblRecovery))
+			adblDate.length || !org.drip.quant.common.NumberUtil.IsValid (dblRecovery))
 			return null;
 
 		try {

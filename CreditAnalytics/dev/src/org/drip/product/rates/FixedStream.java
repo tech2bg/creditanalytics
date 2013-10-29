@@ -102,10 +102,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.math.common.NumberUtil.IsValid
-			(_dblEffective = dblEffective) || !org.drip.math.common.NumberUtil.IsValid (_dblMaturity =
-				dblMaturity) || !org.drip.math.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
-					!org.drip.math.common.NumberUtil.IsValid (_dblNotional = dblNotional))
+		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
+			(_dblEffective = dblEffective) || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity =
+				dblMaturity) || !org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional))
 			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
 
 		if (null == (_notlSchedule = notlSchedule))
@@ -160,7 +160,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		if (null == strSerializedFixedStream || strSerializedFixedStream.isEmpty())
 			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedFixedStream,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFixedStream,
 			getFieldDelimiter());
 
 		if (null == astrField || 12 > astrField.length)
@@ -242,7 +242,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
 			_lsCouponPeriod = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[11],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[11],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -296,7 +296,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FixedStream::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate);
@@ -307,8 +307,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("FixedStream::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
@@ -487,7 +487,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			e.printStackTrace();
 		}
 
-		if (org.drip.math.common.NumberUtil.IsValid (dblValueNotional)) {
+		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 			double dblCleanPrice = 100. * (1. + (dblCleanDV01 * _dblCoupon / _dblNotional /
 				dblValueNotional));
 
@@ -536,7 +536,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -556,7 +556,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 		try {
-			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = null;
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
 			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -565,10 +565,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
 
-				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
+				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -577,7 +577,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 				double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 				if (null == wjPVDFMicroJack)
-					wjPVDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+					wjPVDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 						wjPeriodFwdRateDF.numParameters());
 
 				double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
@@ -604,7 +604,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -626,7 +626,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 			try {
-				org.drip.math.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
+				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -635,10 +635,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
 
-					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -647,7 +647,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
-						wjSwapRateDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
 					double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());

@@ -130,7 +130,7 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 		if (null == strSerializedNotionalSetting || strSerializedNotionalSetting.isEmpty())
 			throw new java.lang.Exception ("NotionalSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedNotionalSetting,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNotionalSetting,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
@@ -191,7 +191,7 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblNotional)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional)) return false;
 
 		if (null == _fsPrincipalOutstanding) _fsPrincipalOutstanding = FactorSchedule.CreateBulletSchedule();
 

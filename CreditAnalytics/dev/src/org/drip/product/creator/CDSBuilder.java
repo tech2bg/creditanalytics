@@ -65,7 +65,7 @@ public class CDSBuilder {
 		final boolean bAdjustDates)
 	{
 		if (null == dtEffective || null == dtMaturity || null == strIR || strIR.isEmpty() || null ==
-			crValParams || !org.drip.math.common.NumberUtil.IsValid (dblCoupon)) {
+			crValParams || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) {
 			System.out.println ("Invalid CDS ctr params!");
 
 			return null;
@@ -120,7 +120,7 @@ public class CDSBuilder {
 		final boolean bAdjustDates)
 	{
 		if (null == dtEffective || null == dtMaturity || null == strIR || strIR.isEmpty() || null == strCC ||
-			strCC.isEmpty() || !org.drip.math.common.NumberUtil.IsValid (dblCoupon)) {
+			strCC.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) {
 			System.out.println ("Invalid CDS ctr params!");
 
 			return null;
@@ -310,7 +310,7 @@ public class CDSBuilder {
 		final java.lang.String strCalendar)
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty() || null == strIR || strIR.isEmpty()
-			|| null == crValParams || !org.drip.math.common.NumberUtil.IsValid (dblCoupon)) {
+			|| null == crValParams || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) {
 			System.out.println ("Invalid CDS ctr params!");
 
 			return null;
@@ -355,7 +355,7 @@ public class CDSBuilder {
 		final java.lang.String strCalendar)
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty() || null == strIR || strIR.isEmpty()
-			|| null == strCC || strCC.isEmpty() || !org.drip.math.common.NumberUtil.IsValid (dblCoupon)) {
+			|| null == strCC || strCC.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) {
 			System.out.println ("Invalid CDS ctr params!");
 
 			return null;

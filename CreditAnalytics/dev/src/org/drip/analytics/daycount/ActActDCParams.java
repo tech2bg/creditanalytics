@@ -82,7 +82,7 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 		if (null == strAAP || strAAP.isEmpty())
 			throw new java.lang.Exception ("ActActDCParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strAAP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strAAP, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("ActActDCParams de-serialize: Invalid number of fields");
@@ -126,8 +126,8 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 	{
 		_iFreq = iFreq;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblStart = dblStart))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblStart = dblStart))
 			throw new java.lang.Exception ("ActActDCParams ctr: Invalid inputs");
 	}
 

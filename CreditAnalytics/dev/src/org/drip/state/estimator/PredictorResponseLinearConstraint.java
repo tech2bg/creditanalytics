@@ -64,8 +64,8 @@ public class PredictorResponseLinearConstraint {
 		final double dblPredictor,
 		final double dblResponseWeight)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictor) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblResponseWeight))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictor) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblResponseWeight))
 			return false;
 
 		if (null == _mapResponsePredictorWeight)
@@ -91,7 +91,7 @@ public class PredictorResponseLinearConstraint {
 	public boolean setValue (
 		final double dblValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue)) return false;
 
 		_dblValue = dblValue;
 		return true;

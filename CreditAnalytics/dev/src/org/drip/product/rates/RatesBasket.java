@@ -157,7 +157,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		if (null == strSerializedRatesBasket || strSerializedRatesBasket.isEmpty())
 			throw new java.lang.Exception ("RatesBasket de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedRatesBasket,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedRatesBasket,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -170,7 +170,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		else
 			_strName = astrField[1];
 
-		java.lang.String[] astrCompFixedStream = org.drip.math.common.StringUtil.Split (astrField[2],
+		java.lang.String[] astrCompFixedStream = org.drip.quant.common.StringUtil.Split (astrField[2],
 			getCollectionRecordDelimiter());
 
 		if (null == astrCompFixedStream || 0 == astrCompFixedStream.length)
@@ -189,7 +189,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 				(astrCompFixedStream[i].getBytes());
 		}
 
-		java.lang.String[] astrCompFloatStream = org.drip.math.common.StringUtil.Split (astrField[3],
+		java.lang.String[] astrCompFloatStream = org.drip.quant.common.StringUtil.Split (astrField[3],
 			getCollectionRecordDelimiter());
 
 		if (null == astrCompFloatStream || 0 == astrCompFloatStream.length)

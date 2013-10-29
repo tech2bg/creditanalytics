@@ -40,11 +40,11 @@ package org.drip.regression.spline;
 
 public class HermiteBasisSplineRegressor extends org.drip.regression.spline.BasisSplineRegressor {
 	private java.lang.String _strName = "";
-	private org.drip.math.segment.PredictorResponse _seg1 = null;
-	private org.drip.math.segment.PredictorResponse _seg2 = null;
-	private org.drip.math.calculus.WengertJacobian _wjLeft = null;
-	private org.drip.math.calculus.WengertJacobian _wjRight = null;
-	private org.drip.math.calculus.WengertJacobian _wjValue = null;
+	private org.drip.spline.segment.ElasticConstitutiveState _seg1 = null;
+	private org.drip.spline.segment.ElasticConstitutiveState _seg2 = null;
+	private org.drip.quant.calculus.WengertJacobian _wjLeft = null;
+	private org.drip.quant.calculus.WengertJacobian _wjRight = null;
+	private org.drip.quant.calculus.WengertJacobian _wjValue = null;
 
 	/**
 	 * Creates an instance of Hermite BasisSplineRegressor
@@ -64,11 +64,11 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 		final int iCk)
 	{
 		try {
-			org.drip.math.function.AbstractUnivariate[] aAU =
-				org.drip.math.spline.BasisSetBuilder.PolynomialBasisSet (new
-					org.drip.math.spline.PolynomialBasisSetParams (iNumBasis));
+			org.drip.spline.basis.FunctionSet fs =
+				org.drip.spline.basis.FunctionSetBuilder.PolynomialBasisSet (new
+					org.drip.spline.basis.PolynomialFunctionSetParams (iNumBasis));
 
-			return null == aAU ? null : new HermiteBasisSplineRegressor (strName, strScenarioName, aAU, iCk);
+			return null == fs ? null : new HermiteBasisSplineRegressor (strName, strScenarioName, fs, iCk);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -79,22 +79,22 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	private HermiteBasisSplineRegressor (
 		final java.lang.String strName,
 		final java.lang.String strScenarioName,
-		final org.drip.math.function.AbstractUnivariate[] aAU,
+		final org.drip.spline.basis.FunctionSet fs,
 		final int iCk)
 		throws java.lang.Exception
 	{
-		super (strName, strScenarioName, aAU, iCk);
+		super (strName, strScenarioName, fs, iCk);
 
-		org.drip.math.segment.DesignInelasticParams segParams =
-			org.drip.math.segment.DesignInelasticParams.Create (iCk, 1);
+		org.drip.spline.params.SegmentDesignInelasticControl segParams =
+			org.drip.spline.params.SegmentDesignInelasticControl.Create (iCk, 1);
 
-		org.drip.math.segment.ResponseScalingShapeController rssc = new
-			org.drip.math.segment.ResponseScalingShapeController (true, new
-				org.drip.math.function.QuadraticRationalShapeControl (1.));
+		org.drip.spline.params.ResponseScalingShapeControl rssc = new
+			org.drip.spline.params.ResponseScalingShapeControl (true, new
+				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
-		if (null == (_seg1 = org.drip.math.segment.LocalBasisPredictorResponse.Create (0.0, 1.0, aAU, rssc,
-			segParams)) || null == (_seg2 = org.drip.math.segment.LocalBasisPredictorResponse.Create (1.0,
-				2.0, aAU, rssc, segParams)))
+		if (null == (_seg1 = org.drip.spline.segment.LocalElasticConstitutiveState.Create (0.0, 1.0, fs, rssc,
+			segParams)) || null == (_seg2 = org.drip.spline.segment.LocalElasticConstitutiveState.Create (1.0,
+				2.0, fs, rssc, segParams)))
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
 
@@ -102,9 +102,9 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	{
 		try {
 			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (new
-				org.drip.math.segment.CalibrationParams (new double[] {0., 1.}, new double[] {1., 4.},
+				org.drip.spline.params.SegmentCalibrationInputSet (new double[] {0., 1.}, new double[] {1., 4.},
 					new double[] {1.}, new double[] {6.}, null, null))) && null != (_wjRight =
-						_seg2.jackDCoeffDEdgeParams (new org.drip.math.segment.CalibrationParams (new
+						_seg2.jackDCoeffDEdgeParams (new org.drip.spline.params.SegmentCalibrationInputSet (new
 							double[] {0., 1.}, new double[] {4., 15.}, new double[] {6.}, new double[] {17.},
 								null, null))) && _seg2.calibrate (_seg1, 14., null) && null != (_wjValue =
 									_seg2.jackDResponseDEdgeParams (1.5));

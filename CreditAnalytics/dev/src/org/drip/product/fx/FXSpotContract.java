@@ -88,7 +88,7 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 		if (null == strSerializedFXSpot || strSerializedFXSpot.isEmpty())
 			throw new java.lang.Exception ("FXSpot de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedFXSpot,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFXSpot,
 			getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)

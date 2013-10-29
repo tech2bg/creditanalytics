@@ -48,7 +48,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 	private ForwardRateDiscountCurve shiftManifestMeasure (
 		final double[] adblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (adblShift) || null == _ccis) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
 
@@ -174,7 +174,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 			strSerializedConstantForwardDiscountCurve.isEmpty())
 			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedConstantForwardDiscountCurve, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -203,7 +203,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot decode state");
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate, astrField[3],
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate, astrField[3],
 			getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot decode state");
 
@@ -225,7 +225,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ForwardRateDiscountCurve::df => Got NaN for date");
 
 		if (dblDate <= _dblEpochDate) return 1.;
@@ -252,7 +252,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2))
 			throw new java.lang.Exception ("ForwardRateDiscountCurve::forward => Invalid input");
 
@@ -267,7 +267,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ForwardRateDiscountCurve::zero => Invalid Date");
 
 		double dblStartDate = epoch().getJulian();
@@ -286,7 +286,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 	@Override public ForwardRateDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
 
@@ -303,7 +303,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		final int iSpanIndex,
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
 
@@ -328,7 +328,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 	@Override public ForwardRateDiscountCurve parallelShiftQuantificationMetric (
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		int iNumDate = _adblRate.length;
 		double[] adblRate = new double[iNumDate];
@@ -390,18 +390,18 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
 		final double dblDate)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
 
 		int i = 0;
 		double dblDF = java.lang.Double.NaN;
 		double dblStartDate = _dblEpochDate;
-		org.drip.math.calculus.WengertJacobian wj = null;
+		org.drip.quant.calculus.WengertJacobian wj = null;
 
 		try {
-			wj = new org.drip.math.calculus.WengertJacobian (1, _adblRate.length);
+			wj = new org.drip.quant.calculus.WengertJacobian (1, _adblRate.length);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -439,7 +439,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		final int iNodeIndex,
 		final double dblValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblRate.length)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblRate.length)
 			return false;
 
 		for (int i = iNodeIndex; i < _adblRate.length; ++i)
@@ -452,7 +452,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		final int iNodeIndex,
 		final double dblValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblRate.length)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblRate.length)
 			return false;
 
 		for (int i = iNodeIndex; i < _adblRate.length; ++i)
@@ -464,7 +464,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 	@Override public boolean setFlatValue (
 		final double dblValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue)) return false;
 
 		for (int i = 0; i < _adblRate.length; ++i)
 			_adblRate[i] = dblValue;

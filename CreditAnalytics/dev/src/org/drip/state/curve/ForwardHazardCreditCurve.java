@@ -148,7 +148,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		if (null == strSerializedCreditCurve || strSerializedCreditCurve.isEmpty())
 			throw new java.lang.Exception ("ForwardHazardCreditCurve de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCreditCurve,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditCurve,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
@@ -179,7 +179,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			throw new java.lang.Exception
 				("ForwardHazardCreditCurve de-serializer: Cannot decode hazard state");
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblHazardDate, lsdblHazardRate,
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblHazardDate, lsdblHazardRate,
 			astrField[3], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception
 				("ForwardHazardCreditCurve de-serializer: Cannot decode hazard state");
@@ -208,7 +208,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			throw new java.lang.Exception
 				("ForwardHazardCreditCurve de-serializer: Cannot decode recovery state");
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblRecoveryDate,
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblRecoveryDate,
 			lsdblRecoveryRate, astrField[4], getCollectionRecordDelimiter(),
 				getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception
@@ -236,12 +236,12 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ForwardHazardCreditCurve::getSurvival => No surv for NaN date");
 
 		if (dblDate <= _dblEpochDate) return 1.;
 
-		if (org.drip.math.common.NumberUtil.IsValid (_dblSpecificDefaultDate) && dblDate >=
+		if (org.drip.quant.common.NumberUtil.IsValid (_dblSpecificDefaultDate) && dblDate >=
 			_dblSpecificDefaultDate)
 			return 0.;
 
@@ -265,7 +265,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ForwardHazardCreditCurve::getRecovery => NaN date");
 
 		for (int i = 0; i < _adblRecoveryDate.length; ++i) {
@@ -278,7 +278,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 	@Override public ForwardHazardCreditCurve parallelShiftQuantificationMetric (
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		double[] adblHazard = new double[_adblHazardRate.length];
 
@@ -304,7 +304,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 	@Override public ForwardHazardCreditCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		if (null == _valParam || null == _aCalibInst || 0 == _aCalibInst.length || null == _adblCalibQuote ||
 			0 == _adblCalibQuote.length || null == _astrCalibMeasure || 0 == _astrCalibMeasure.length ||
@@ -349,7 +349,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final int iSpanIndex,
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		if (null == _valParam || null == _aCalibInst || 0 == _aCalibInst.length || null == _adblCalibQuote ||
 			0 == _adblCalibQuote.length || null == _astrCalibMeasure || 0 == _astrCalibMeasure.length ||
@@ -397,7 +397,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final boolean bSingleNode,
 		final double dblRecovery)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblFlatNodeValue) || 0. >= dblFlatNodeValue || null ==
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblFlatNodeValue) || 0. >= dblFlatNodeValue || null ==
 			_valParam || null == _aCalibInst || 0 == _aCalibInst.length || null == _adblCalibQuote || 0 ==
 				_adblCalibQuote.length || null == _astrCalibMeasure || 0 == _astrCalibMeasure.length ||
 					_astrCalibMeasure.length != _adblCalibQuote.length || _adblCalibQuote.length !=
@@ -413,7 +413,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			if (bSingleNode)
 				cc = org.drip.state.creator.CreditCurveBuilder.FromHazardNode (_dblEpochDate, _strName,
 					_strCurrency, _adblHazardRate[0], _adblHazardDate[0],
-						!org.drip.math.common.NumberUtil.IsValid (dblRecovery) ? _adblRecoveryRate[0] :
+						!org.drip.quant.common.NumberUtil.IsValid (dblRecovery) ? _adblRecoveryRate[0] :
 							dblRecovery);
 			else
 				cc = new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency, _adblHazardRate,
@@ -553,7 +553,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final int iNodeIndex,
 		final double dblValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblHazardRate.length)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblHazardRate.length)
 			return false;
 
 		for (int i = iNodeIndex; i < _adblHazardRate.length; ++i)
@@ -566,7 +566,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final int iNodeIndex,
 		final double dblValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblHazardRate.length)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblHazardRate.length)
 			return false;
 
 		for (int i = iNodeIndex; i < _adblHazardRate.length; ++i)
@@ -578,7 +578,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 	@Override public boolean setFlatValue (
 		final double dblValue)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue)) return false;
 
 		for (int i = 0; i < _adblHazardRate.length; ++i)
 			_adblHazardRate[i] = dblValue;

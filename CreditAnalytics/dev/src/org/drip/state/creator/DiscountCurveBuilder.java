@@ -126,7 +126,7 @@ public class DiscountCurveBuilder {
 		final java.lang.String strCurrency,
 		final double dblRate)
 	{
-		if (null == dtStart || !org.drip.math.common.NumberUtil.IsValid (dblRate)) return null;
+		if (null == dtStart || !org.drip.quant.common.NumberUtil.IsValid (dblRate)) return null;
 
 		try {
 			return new org.drip.state.curve.ForwardRateDiscountCurve (dtStart, strCurrency, new double[]

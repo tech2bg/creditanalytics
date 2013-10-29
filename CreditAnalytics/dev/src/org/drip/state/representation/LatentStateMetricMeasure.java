@@ -92,7 +92,7 @@ public class LatentStateMetricMeasure {
 		if (null == (_strID = strID) || _strID.isEmpty() || null == (_strQuantificationMetric =
 			strQuantificationMetric) || _strQuantificationMetric.isEmpty() || null == (_strManifestMeasure =
 				strManifestMeasure) || _strManifestMeasure.isEmpty() ||
-					!org.drip.math.common.NumberUtil.IsValid (_dblMeasureQuoteValue = dblMeasureQuoteValue))
+					!org.drip.quant.common.NumberUtil.IsValid (_dblMeasureQuoteValue = dblMeasureQuoteValue))
 			throw new java.lang.Exception ("LatentStateMetricMeasure ctr: Invalid Inputs!");
 	}
 

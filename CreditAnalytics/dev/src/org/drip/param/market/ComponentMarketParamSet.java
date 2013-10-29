@@ -153,7 +153,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		if (null == strSerializedComponentMarketParams || strSerializedComponentMarketParams.isEmpty())
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedComponentMarketParams, getFieldDelimiter());
 
 		if (null == astrField || 9 > astrField.length)
@@ -211,14 +211,14 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate fixings");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7])) {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[7],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[7],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
 
-					java.lang.String[] astrKVPair = org.drip.math.common.StringUtil.Split (astrRecord[i],
+					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
 						getCollectionKeyValueDelimiter());
 					
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
@@ -229,7 +229,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 										(astrKVPair[1]))
 						continue;
 
-					java.lang.String[] astrKeySet = org.drip.math.common.StringUtil.Split (astrKVPair[0],
+					java.lang.String[] astrKeySet = org.drip.quant.common.StringUtil.Split (astrKVPair[0],
 						getCollectionMultiLevelKeyDelimiter());
 
 					if (null == astrKeySet || 2 != astrKeySet.length || null == astrKeySet[0] ||
@@ -262,7 +262,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate TSY quotes");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8])) {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[8],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[8],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -271,7 +271,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 						org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrRecord[i]))
 						continue;
 
-					java.lang.String[] astrKVPair = org.drip.math.common.StringUtil.Split (astrRecord[i],
+					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
 						getCollectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||

@@ -112,7 +112,7 @@ public class Static extends Base {
 		if (null == strFH || strFH.isEmpty())
 			throw new java.lang.Exception ("StaticHoliday de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strFH, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, getFieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
 			throw new java.lang.Exception ("StaticHoliday de-serialize: Invalid number of fields");

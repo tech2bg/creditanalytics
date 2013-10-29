@@ -82,9 +82,9 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 		final double dblPV)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblDV01 = dblDV01) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblCouponPV = dblCouponPV) ||
-				!org.drip.math.common.NumberUtil.IsValid (_dblPV = dblPV))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDV01 = dblDV01) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCouponPV = dblCouponPV) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblPV = dblPV))
 			throw new java.lang.Exception ("BondCouponMeasures ctr: Invalid Inputs!");
 
 		_dblIndexCouponPV = dblIndexCouponPV;
@@ -116,7 +116,7 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 		if (null == strSerializedBondCouponMeasures || strSerializedBondCouponMeasures.isEmpty())
 			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedBondCouponMeasures, getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
@@ -157,7 +157,7 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 	public boolean adjustForSettlement (
 		final double dblCashPayDF)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblCashPayDF)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblCashPayDF)) return false;
 
 		_dblDV01 /= dblCashPayDF;
 		_dblIndexCouponPV /= dblCashPayDF;
@@ -183,8 +183,8 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 		final double dblIndex,
 		final boolean bDirtyFromClean)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblAccrued01) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblCoupon))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrued01) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblCoupon))
 			return false;
 
 		if (bDirtyFromClean)

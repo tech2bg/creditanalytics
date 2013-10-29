@@ -127,7 +127,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 		if (null == strSerializedMarketConvention || strSerializedMarketConvention.isEmpty())
 			throw new java.lang.Exception ("QuoteConvention de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedMarketConvention,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedMarketConvention,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
@@ -189,8 +189,8 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 
 	@Override public boolean validate()
 	{
-		return org.drip.math.common.NumberUtil.IsValid (_dblFirstSettle) &&
-			org.drip.math.common.NumberUtil.IsValid (_dblRedemptionValue);
+		return org.drip.quant.common.NumberUtil.IsValid (_dblFirstSettle) &&
+			org.drip.quant.common.NumberUtil.IsValid (_dblRedemptionValue);
 	}
 
 	@Override public byte[] serialize()

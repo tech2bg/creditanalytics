@@ -1,8 +1,8 @@
 
 package org.drip.sample.discount;
 
-import org.drip.math.common.FormatUtil;
-import org.drip.math.pchip.MonotoneConvexHaganWest;
+import org.drip.quant.common.FormatUtil;
+import org.drip.spline.pchip.MonotoneConvexHaganWest;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

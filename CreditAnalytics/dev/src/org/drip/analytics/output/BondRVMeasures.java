@@ -165,7 +165,7 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		if (null == strSerializedBondRVMeasures || strSerializedBondRVMeasures.isEmpty())
 			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedBondRVMeasures,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBondRVMeasures,
 			getFieldDelimiter());
 
 		if (null == astrField || 17 > astrField.length)

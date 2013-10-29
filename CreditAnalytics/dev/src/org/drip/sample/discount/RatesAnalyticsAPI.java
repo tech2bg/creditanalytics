@@ -16,6 +16,8 @@ import org.drip.product.definition.*;
 
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
+import org.drip.quant.calculus.WengertJacobian;
+import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
@@ -23,8 +25,6 @@ import org.drip.state.creator.*;
  * DRIP Math Support
  */
 
-import org.drip.math.calculus.WengertJacobian;
-import org.drip.math.common.FormatUtil;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -366,7 +366,7 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		org.drip.math.calculus.WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
+		org.drip.quant.calculus.WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}

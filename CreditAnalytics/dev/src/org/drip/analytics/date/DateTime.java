@@ -51,8 +51,8 @@ public class DateTime extends org.drip.service.stream.Serializer {
 
 		java.util.Date dtNow = new java.util.Date();
 
-		_dblDate = JulianDate.toJulian (org.drip.math.common.DateUtil.GetYear (dtNow),
-			org.drip.math.common.DateUtil.GetMonth (dtNow), org.drip.math.common.DateUtil.GetDate (dtNow));
+		_dblDate = JulianDate.toJulian (org.drip.quant.common.DateUtil.GetYear (dtNow),
+			org.drip.quant.common.DateUtil.GetMonth (dtNow), org.drip.quant.common.DateUtil.GetDate (dtNow));
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 		final long lTime)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Invalid DateTime ctr params!");
 
 		_lTime = lTime;
@@ -102,7 +102,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 		if (null == strSerializedDateTime || strSerializedDateTime.isEmpty())
 			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedDateTime,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedDateTime,
 			super.getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)

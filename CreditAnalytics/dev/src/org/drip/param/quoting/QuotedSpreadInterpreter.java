@@ -107,7 +107,7 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 		if (null == strSerializedQuotedSpreadInterpreter || strSerializedQuotedSpreadInterpreter.isEmpty())
 			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedQuotedSpreadInterpreter, getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)

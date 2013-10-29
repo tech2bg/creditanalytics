@@ -77,7 +77,7 @@ public class ResponseValueTweakParams extends org.drip.service.stream.Serializer
 		final double dblTweakAmount)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblTweakAmount = dblTweakAmount))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblTweakAmount = dblTweakAmount))
 			throw new java.lang.Exception ("ResponseValueTweakParams ctr => Invalid Inputs");
 
 		_iTweakNode = iTweakNode;
@@ -111,7 +111,7 @@ public class ResponseValueTweakParams extends org.drip.service.stream.Serializer
 		if (null == strSerializedNodeTweakParams || strSerializedNodeTweakParams.isEmpty())
 			throw new java.lang.Exception ("ResponseValueTweakParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedNodeTweakParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNodeTweakParams,
 			super.getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

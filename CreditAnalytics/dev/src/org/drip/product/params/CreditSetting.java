@@ -123,7 +123,7 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 			strSerializedCreditSetting.isEmpty())
 			throw new java.lang.Exception ("CreditSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCreditSetting,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditSetting,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
@@ -170,7 +170,7 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 	{
 		if (null == _strCC || _strCC.isEmpty()) return true;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblRecovery) && !_bUseCurveRec) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblRecovery) && !_bUseCurveRec) return false;
 
 		return true;
 	}

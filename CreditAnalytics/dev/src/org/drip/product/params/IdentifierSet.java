@@ -109,7 +109,7 @@ public class IdentifierSet extends org.drip.service.stream.Serializer implements
 		if (null == strSerializedIdentifierSet || strSerializedIdentifierSet.isEmpty())
 			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedIdentifierSet,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedIdentifierSet,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

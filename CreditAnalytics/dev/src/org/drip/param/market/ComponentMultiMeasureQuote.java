@@ -79,7 +79,7 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		if (null == strSerializedComponentQuote || strSerializedComponentQuote.isEmpty())
 			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedComponentQuote,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedComponentQuote,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -103,14 +103,14 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate map of quotes");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[3],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
 
-					java.lang.String[] astrKVPair = org.drip.math.common.StringUtil.Split (astrRecord[i],
+					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
 						getCollectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||

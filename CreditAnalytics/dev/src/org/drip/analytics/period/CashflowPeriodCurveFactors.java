@@ -90,13 +90,13 @@ public class CashflowPeriodCurveFactors extends Period {
 	{
 		super (dblStart, dblEnd, dblAccrualStart, dblAccrualEnd, dblPay, dblDCF);
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblFullCouponRate = dblFullCouponRate) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblStartNotional = dblStartNotional) ||
-				!org.drip.math.common.NumberUtil.IsValid (_dblEndNotional = dblEndNotional) ||
-					!org.drip.math.common.NumberUtil.IsValid (_dblStartDF = dblStartDF) ||
-						!org.drip.math.common.NumberUtil.IsValid (_dblEndDF = dblEndDF) ||
-							!org.drip.math.common.NumberUtil.IsValid (_dblStartSurvival = dblStartSurvival)
-								|| !org.drip.math.common.NumberUtil.IsValid (_dblEndSurvival =
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFullCouponRate = dblFullCouponRate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblStartNotional = dblStartNotional) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblEndNotional = dblEndNotional) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblStartDF = dblStartDF) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dblEndDF = dblEndDF) ||
+							!org.drip.quant.common.NumberUtil.IsValid (_dblStartSurvival = dblStartSurvival)
+								|| !org.drip.quant.common.NumberUtil.IsValid (_dblEndSurvival =
 									dblEndSurvival))
 			throw new java.lang.Exception ("CashflowPeriodCurveFactors ctr: Invalid Inputs");
 
@@ -132,7 +132,7 @@ public class CashflowPeriodCurveFactors extends Period {
 		if (null == strCP || strCP.isEmpty())
 			throw new java.lang.Exception ("CashflowPeriodCurveFactors de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strCP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, getFieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
 			throw new java.lang.Exception

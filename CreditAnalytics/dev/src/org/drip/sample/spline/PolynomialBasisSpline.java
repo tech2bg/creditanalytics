@@ -1,10 +1,11 @@
 
 package org.drip.sample.spline;
 
-import org.drip.math.calculus.WengertJacobian;
-import org.drip.math.function.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.*;
+import org.drip.quant.calculus.WengertJacobian;
+import org.drip.quant.function1D.*;
+import org.drip.spline.basis.*;
+import org.drip.spline.params.*;
+import org.drip.spline.segment.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -62,7 +63,7 @@ public class PolynomialBasisSpline {
 		final int iNumBasis,
 		final int iCk,
 		final int iRoughnessPenaltyDerivativeOrder,
-		final ResponseScalingShapeController rssc)
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
 		System.out.println (" ------------------------------ \n     POLYNOMIAL n = " + iNumBasis +
@@ -72,61 +73,61 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		DesignInelasticParams segParams = DesignInelasticParams.Create (iCk, iRoughnessPenaltyDerivativeOrder);
+		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
 		 */
 
-		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
+		PolynomialFunctionSetParams pfsp = new PolynomialFunctionSetParams (iNumBasis);
 
-		AbstractUnivariate[] aAU = BasisSetBuilder.PolynomialBasisSet (polybsbp);
+		FunctionSet fs = FunctionSetBuilder.PolynomialBasisSet (pfsp);
 
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		PredictorResponse seg1 = LocalBasisPredictorResponse.Create (1.0, 1.5, aAU, rssc, segParams);
+		ElasticConstitutiveState ecs1 = LocalElasticConstitutiveState.Create (1.0, 1.5, fs, rssc, sdic);
 
-		PredictorResponse seg2 = LocalBasisPredictorResponse.Create (1.5, 2.0, aAU, rssc, segParams);
+		ElasticConstitutiveState ecs2 = LocalElasticConstitutiveState.Create (1.5, 2.0, fs, rssc, sdic);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null);
+		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., 0., 20.25, null);
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
+		System.out.println ("\tY[" + 1.0 + "]: " + ecs1.responseValue (1.));
 
-		System.out.println ("\tY[" + 1.5 + "]: " + seg1.responseValue (1.5));
+		System.out.println ("\tY[" + 1.5 + "]: " + ecs1.responseValue (1.5));
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
-		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 1 Head: " + ecs1.jackDCoeffDEdgeParams().displayString());
 
-		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
+		System.out.println ("Segment 1 Monotone Type: " + ecs1.monotoneType());
 
-		System.out.println ("Segment 1 DCPE: " + seg1.dcpe());
+		System.out.println ("Segment 1 DCPE: " + ecs1.dcpe());
 
 		/*
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., null);
+		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, 16., null);
 
-		System.out.println ("\tY[" + 1.5 + "]: " + seg2.responseValue (1.5));
+		System.out.println ("\tY[" + 1.5 + "]: " + ecs2.responseValue (1.5));
 
-		System.out.println ("\tY[" + 2. + "]: " + seg2.responseValue (2.));
+		System.out.println ("\tY[" + 2. + "]: " + ecs2.responseValue (2.));
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
-		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + ecs2.jackDCoeffDEdgeParams().displayString());
 
-		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
+		System.out.println ("Segment 2 Monotone Type: " + ecs2.monotoneType());
 
-		System.out.println ("Segment 2 DCPE: " + seg2.dcpe());
+		System.out.println ("Segment 2 DCPE: " + ecs2.dcpe());
 
-		seg2.calibrate (seg1, 14., null);
+		ecs2.calibrate (ecs1, 14., null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
@@ -134,11 +135,11 @@ public class PolynomialBasisSpline {
 
 		double dblX = 2.0;
 
-		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
+		System.out.println ("\t\tValue[" + dblX + "]: " + ecs2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeParams (dblX).displayString());
 
-		System.out.println ("\t\tSegment 2 DCPE: " + seg2.dcpe());
+		System.out.println ("\t\tSegment 2 DCPE: " + ecs2.dcpe());
 	}
 
 	/*
@@ -157,7 +158,7 @@ public class PolynomialBasisSpline {
 		final int iNumBasis,
 		final int iCk,
 		final int iRoughnessPenaltyDerivativeOrder,
-		final ResponseScalingShapeController sc)
+		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
 		System.out.println (" ------------------------------ \n     HERMITE POLYNOMIAL n = " + iNumBasis +
@@ -167,67 +168,68 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		DesignInelasticParams segParams = DesignInelasticParams.Create (iCk, iRoughnessPenaltyDerivativeOrder);
+		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
 		 */
 
-		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
+		PolynomialFunctionSetParams pfsp = new PolynomialFunctionSetParams (iNumBasis);
 
-		AbstractUnivariate[] aAU = BasisSetBuilder.PolynomialBasisSet (polybsbp);
+		FunctionSet fs = FunctionSetBuilder.PolynomialBasisSet (pfsp);
 
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		PredictorResponse seg1 = LocalBasisPredictorResponse.Create (0.0, 1.0, aAU, sc, segParams);
+		ElasticConstitutiveState ecs1 = LocalElasticConstitutiveState.Create (0.0, 1.0, fs, rssc, sdic);
 
-		PredictorResponse seg2 = LocalBasisPredictorResponse.Create (1.0, 2.0, aAU, sc, segParams);
+		ElasticConstitutiveState ecs2 = LocalElasticConstitutiveState.Create (1.0, 2.0, fs, rssc, sdic);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		seg1.calibrate (new CalibrationParams (
+		ecs1.calibrate (new SegmentCalibrationInputSet (
 			new double[] {0., 1.}, // Segment Calibration Nodes
 			new double[] {1., 4.}, // Segment Calibration Values
 			new double[] {1.}, // Segment Left Derivative
 			new double[] {6.}, // Segment Left Derivative
 			null, null)); // Segment Constraint AND Fitness Penalty Response
 
-		System.out.println ("\tY[" + 0.0 + "]: " + seg1.responseValue (0.0));
+		System.out.println ("\tY[" + 0.0 + "]: " + ecs1.responseValue (0.0));
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.0));
+		System.out.println ("\tY[" + 1.0 + "]: " + ecs1.responseValue (1.0));
 
-		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 1 Head: " + ecs1.jackDCoeffDEdgeParams().displayString());
 
-		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
+		System.out.println ("Segment 1 Monotone Type: " + ecs1.monotoneType());
 
-		System.out.println ("Segment 1 DCPE: " + seg1.dcpe());
+		System.out.println ("Segment 1 DCPE: " + ecs1.dcpe());
 
 		/*
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		seg2.calibrate (new CalibrationParams (
+		ecs2.calibrate (new SegmentCalibrationInputSet (
 			new double[] {0., 1.}, // Segment Calibration Nodes
 			new double[] {4., 15.}, // Segment Calibration Values
 			new double[] {6.}, // Segment Left Derivative
 			new double[] {17.}, // Segment Left Derivative
-			null, null)); // Segment Constraint AND Fitness Penalty Response
+			null, // Segment Constraint
+			null)); // Fitness Penalty Response
 
-		System.out.println ("\tY[" + 1.0 + "]: " + seg2.responseValue (1.0));
+		System.out.println ("\tY[" + 1.0 + "]: " + ecs2.responseValue (1.0));
 
-		System.out.println ("\tY[" + 2.0 + "]: " + seg2.responseValue (2.0));
+		System.out.println ("\tY[" + 2.0 + "]: " + ecs2.responseValue (2.0));
 
-		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + ecs2.jackDCoeffDEdgeParams().displayString());
 
-		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
+		System.out.println ("Segment 2 Monotone Type: " + ecs2.monotoneType());
 
-		System.out.println ("Segment 2 DCPE: " + seg2.dcpe());
+		System.out.println ("Segment 2 DCPE: " + ecs2.dcpe());
 
-		seg2.calibrate (seg1, 14., null);
+		ecs2.calibrate (ecs1, 14., null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
@@ -235,11 +237,11 @@ public class PolynomialBasisSpline {
 
 		double dblX = 2.0;
 
-		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
+		System.out.println ("\t\tValue[" + dblX + "]: " + ecs2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeParams (dblX).displayString());
 
-		System.out.println ("\t\tSegment 2 DCPE: " + seg2.dcpe());
+		System.out.println ("\t\tSegment 2 DCPE: " + ecs2.dcpe());
 	}
 
 	public static final void main (
@@ -252,7 +254,9 @@ public class PolynomialBasisSpline {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
+			true,
+			new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Set to 2nd order Roughness Penalty Derivative Order.

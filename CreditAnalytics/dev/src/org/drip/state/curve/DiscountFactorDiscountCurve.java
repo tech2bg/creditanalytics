@@ -40,7 +40,7 @@ package org.drip.state.curve;
  */
 
 public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.DiscountCurve {
-	private org.drip.math.grid.Span _span = null;
+	private org.drip.spline.grid.Span _span = null;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
 	private org.drip.analytics.definition.CurveSpanConstructionInput _rcci = null;
 
@@ -101,7 +101,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 
 	public DiscountFactorDiscountCurve (
 		final java.lang.String strCurrency,
-		final org.drip.math.grid.Span span)
+		final org.drip.spline.grid.Span span)
 		throws java.lang.Exception
 	{
 		super (span.left(), strCurrency);
@@ -114,7 +114,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DiscountFactorDiscountCurve::df => Invalid Inputs");
 
 		double dblStartDate = _span.left();
@@ -130,7 +130,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2))
 			throw new java.lang.Exception ("DiscountFactorDiscountCurve::forward => Invalid input");
 
@@ -145,7 +145,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DiscountFactorDiscountCurve::zero => Invalid Date");
 
 		double dblStartDate = epoch().getJulian();
@@ -163,7 +163,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 	@Override public DiscountFactorDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
 
@@ -182,7 +182,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		final int iSpanIndex,
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
 
@@ -234,7 +234,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
 		final double dblDate)
 	{
 		return null;

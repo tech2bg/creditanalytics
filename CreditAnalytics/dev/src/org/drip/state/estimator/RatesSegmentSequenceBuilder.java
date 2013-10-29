@@ -35,19 +35,19 @@ package org.drip.state.estimator;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RatesSegmentSequenceBuilder implements org.drip.math.regime.SegmentSequenceBuilder {
+public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.SegmentSequenceBuilder {
 	private int _iCalibrationBoundaryCondition = -1;
 	private double _dblEpochResponse = java.lang.Double.NaN;
 	private org.drip.state.estimator.CurveRegime _cr = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
-	private org.drip.math.segment.BestFitWeightedResponse _fwr = null;
-	private org.drip.math.regime.MultiSegmentRegime _regimePrev = null;
+	private org.drip.spline.params.SegmentBestFitResponse _fwr = null;
+	private org.drip.spline.regime.MultiSegmentSequence _regimePrev = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 	private org.drip.state.estimator.RegimeRepresentationSpec _rbs = null;
 
-	private org.drip.math.segment.ResponseValueConstraint GenerateSegmentConstraint (
+	private org.drip.spline.params.SegmentResponseValueConstraint GenerateSegmentConstraint (
 		final org.drip.state.estimator.PredictorResponseLinearConstraint prlc)
 	{
 		java.util.TreeMap<java.lang.Double, java.lang.Double> mapResponsePredictorWeight =
@@ -100,7 +100,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 		}
 
 		try {
-			return new org.drip.math.segment.ResponseValueConstraint (adblPredictor, adblResponseWeight,
+			return new org.drip.spline.params.SegmentResponseValueConstraint (adblPredictor, adblResponseWeight,
 				prlc.getValue() + dblValue);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -132,12 +132,12 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams cmp,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.math.regime.MultiSegmentRegime regimePrev,
-		final org.drip.math.segment.BestFitWeightedResponse fwr,
+		final org.drip.spline.regime.MultiSegmentSequence regimePrev,
+		final org.drip.spline.params.SegmentBestFitResponse fwr,
 		final int iCalibrationBoundaryCondition)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblEpochResponse = dblEpochResponse) || null == (_rbs
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochResponse = dblEpochResponse) || null == (_rbs
 			= rbs) || null == (_valParams = valParams))
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
@@ -150,13 +150,13 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 	}
 
 	@Override public boolean setRegime (
-		final org.drip.math.regime.MultiSegmentRegime msr)
+		final org.drip.spline.regime.MultiSegmentSequence msr)
 	{
 		if (null == msr || !(msr instanceof org.drip.state.estimator.CurveRegime)) return false;
 
 		org.drip.state.estimator.CurveRegime cr = (org.drip.state.estimator.CurveRegime) msr;
 
-		org.drip.math.segment.PredictorResponse[] aPR = cr.getSegments();
+		org.drip.spline.segment.ElasticConstitutiveState[] aPR = cr.segments();
 
 		if (null == aPR || aPR.length != _rbs.getCalibComp().length) return false;
 
@@ -174,14 +174,14 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 	{
 		if (null == _cr || !_cr.setClearBuiltRange()) return false;
 
-		org.drip.math.segment.PredictorResponse[] aPR = _cr.getSegments();
+		org.drip.spline.segment.ElasticConstitutiveState[] aPR = _cr.segments();
 
 		org.drip.product.definition.CalibratableComponent cc = _rbs.getCalibComp (0);
 
 		org.drip.state.representation.LatentStateMetricMeasure lsmm = _rbs.getLSMM (0);
 
-		org.drip.math.segment.ResponseValueConstraint rvcLeading =
-			org.drip.math.segment.ResponseValueConstraint.FromPredictorResponse (_valParams._dblValue,
+		org.drip.spline.params.SegmentResponseValueConstraint rvcLeading =
+			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair (_valParams._dblValue,
 				_dblEpochResponse);
 
 		if (null == aPR || 1 > aPR.length || null == cc | null == lsmm || null == rvcLeading) return false;
@@ -191,7 +191,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 
 		if (null == prlc) return false;
 
-		org.drip.math.segment.ResponseValueConstraint rvc = GenerateSegmentConstraint (prlc);
+		org.drip.spline.params.SegmentResponseValueConstraint rvc = GenerateSegmentConstraint (prlc);
 
 		if (null == rvc) return false;
 
@@ -203,7 +203,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 	{
 		if (null == _cr) return false;
 
-		org.drip.math.segment.PredictorResponse[] aPR = _cr.getSegments();
+		org.drip.spline.segment.ElasticConstitutiveState[] aPR = _cr.segments();
 
 		int iNumSegment = aPR.length;
 
@@ -219,7 +219,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.math.regime.Segment
 
 			if (null == prlc) return false;
 
-			org.drip.math.segment.ResponseValueConstraint rvc = GenerateSegmentConstraint (prlc);
+			org.drip.spline.params.SegmentResponseValueConstraint rvc = GenerateSegmentConstraint (prlc);
 
 			if (null == rvc) return false;
 

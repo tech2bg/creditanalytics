@@ -3,16 +3,16 @@ package org.drip.sample.discount;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.DiscountCurve;
-import org.drip.math.common.FormatUtil;
-import org.drip.math.function.QuadraticRationalShapeControl;
-import org.drip.math.regime.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableComponent;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.spline.basis.*;
+import org.drip.spline.params.*;
+import org.drip.spline.regime.*;
 import org.drip.state.estimator.*;
 
 /*
@@ -114,89 +114,89 @@ public class ShapeDFZeroLocalSmooth {
 		RegimeRepresentationSpec[] aRRS = new RegimeRepresentationSpec[] {rrsCash, rrsSwap};
 
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_MIXTURE,
-				new ExponentialMixtureBasisSetParams (new double[] {0.01, 0.05, 0.25}),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_MIXTURE,
+				new ExponentialMixtureSetParams (new double[] {0.01, 0.05, 0.25}),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentSequence.CALIBRATE,
 			null);
 
 		LocalControlCurveParams lccpAkima = new LocalControlCurveParams (
-			org.drip.math.pchip.LocalControlRegime.C1_AKIMA,
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_AKIMA,
 			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);
 
 		LocalControlCurveParams lccpHarmonic = new LocalControlCurveParams (
-			org.drip.math.pchip.LocalControlRegime.C1_HARMONIC,
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HARMONIC,
 			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);
 
 		LocalControlCurveParams lccpHyman83 = new LocalControlCurveParams (
-			org.drip.math.pchip.LocalControlRegime.C1_HYMAN83,
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,
 			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);
 
 		LocalControlCurveParams lccpHyman89 = new LocalControlCurveParams (
-			org.drip.math.pchip.LocalControlRegime.C1_HYMAN89,
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN89,
 			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);
 
 		LocalControlCurveParams lccpHuynhLeFloch = new LocalControlCurveParams (
-			org.drip.math.pchip.LocalControlRegime.C1_HUYNH_LE_FLOCH,
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HUYNH_LE_FLOCH,
 			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);
 
 		LocalControlCurveParams lccpKruger = new LocalControlCurveParams (
-			org.drip.math.pchip.LocalControlRegime.C1_KRUGER,
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_KRUGER,
 			org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
-			new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialBasisSetParams (4),
-				DesignInelasticParams.Create (2, 2),
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentRegime.CALIBRATE,
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+			MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);

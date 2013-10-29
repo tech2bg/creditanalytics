@@ -68,7 +68,7 @@ public class DateEOMAdjustment {
 
 		if (!bApplyEOMAdj) return dm;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblEnd))
 			return null;
 
@@ -122,7 +122,7 @@ public class DateEOMAdjustment {
 
 		if (!bApplyEOMAdj) return dm;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblEnd))
 			return null;
 
@@ -179,8 +179,8 @@ public class DateEOMAdjustment {
 
 		if (!bApplyEOMAdj) return dm;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
-			(dblEnd) || !org.drip.math.common.NumberUtil.IsValid (dblMaturity))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd) || !org.drip.quant.common.NumberUtil.IsValid (dblMaturity))
 			return null;
 
 		try {

@@ -65,7 +65,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 		if (null == strNumCcy || strNumCcy.isEmpty() || null == strDenomCcy || strDenomCcy.isEmpty() || null
 			== strQuoteCcy || strNumCcy.equalsIgnoreCase (strDenomCcy) || (!strQuoteCcy.equalsIgnoreCase
 				(strNumCcy) && !strQuoteCcy.equalsIgnoreCase (strDenomCcy)) ||
-					!org.drip.math.common.NumberUtil.IsValid (dblPIPFactor))
+					!org.drip.quant.common.NumberUtil.IsValid (dblPIPFactor))
 			throw new java.lang.Exception ("CurrencyPair ctr: Invalid parameters");
 
 		_strNumCcy = strNumCcy;
@@ -100,7 +100,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCurrencyPair || strSerializedCurrencyPair.isEmpty())
 			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCurrencyPair,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCurrencyPair,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

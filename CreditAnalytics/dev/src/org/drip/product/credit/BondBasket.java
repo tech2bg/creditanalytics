@@ -637,7 +637,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		if (null == strSerializedBasketBond || strSerializedBasketBond.isEmpty())
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedBasketBond,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketBond,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
@@ -661,7 +661,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
 
-		java.lang.String[] astrBondRecord = org.drip.math.common.StringUtil.Split (astrField[3],
+		java.lang.String[] astrBondRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
 			getCollectionRecordDelimiter());
 
 		if (null == astrBondRecord || 0 == astrBondRecord.length)
@@ -681,7 +681,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
 
-		java.lang.String[] astrWeightRecord = org.drip.math.common.StringUtil.Split (astrField[4],
+		java.lang.String[] astrWeightRecord = org.drip.quant.common.StringUtil.Split (astrField[4],
 			getCollectionRecordDelimiter());
 
 		if (null == astrWeightRecord || 0 == astrWeightRecord.length)
@@ -736,7 +736,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		_adblNormWeights = new double[adblWeights.length];
 
 		for (int i = 0; i < adblWeights.length; ++i) {
-			if (!org.drip.math.common.NumberUtil.IsValid (adblWeights[i]))
+			if (!org.drip.quant.common.NumberUtil.IsValid (adblWeights[i]))
 				throw new java.lang.Exception ("Invalid BondBasket weights!");
 
 			dblCumulativeWeight += adblWeights[i];

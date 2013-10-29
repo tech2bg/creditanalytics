@@ -103,7 +103,7 @@ public class TreasuryBenchmark extends org.drip.service.stream.Serializer implem
 		if (null == strSerializedTreasuryBenchmark || strSerializedTreasuryBenchmark.isEmpty())
 			throw new java.lang.Exception ("TreasuryBenchmark de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedTreasuryBenchmark,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedTreasuryBenchmark,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

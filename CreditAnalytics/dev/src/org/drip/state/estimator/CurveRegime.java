@@ -35,7 +35,7 @@ package org.drip.state.estimator;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CurveRegime extends org.drip.math.regime.MultiSegmentCalibratableRegime {
+public class CurveRegime extends org.drip.spline.regime.CalibratableMultiSegmentSequence {
 	private double _dblBuiltPredictorOrdinateRight = java.lang.Double.NaN;
 
 	/**
@@ -50,8 +50,8 @@ public class CurveRegime extends org.drip.math.regime.MultiSegmentCalibratableRe
 
 	public CurveRegime (
 		final java.lang.String strName,
-		final org.drip.math.segment.PredictorResponse[] aPR,
-		final org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP)
+		final org.drip.spline.segment.ElasticConstitutiveState[] aPR,
+		final org.drip.spline.params.SegmentCustomBuilderControl[] aPRBP)
 		throws java.lang.Exception
 	{
 		super (strName, aPR, aPRBP);
@@ -70,7 +70,7 @@ public class CurveRegime extends org.drip.math.regime.MultiSegmentCalibratableRe
 	public boolean setSegmentBuilt (
 		final int iSegment)
 	{
-		org.drip.math.segment.PredictorResponse[] aSegment = getSegments();
+		org.drip.spline.segment.ElasticConstitutiveState[] aSegment = segments();
 
 		if (iSegment >= aSegment.length) return false;
 
@@ -106,7 +106,7 @@ public class CurveRegime extends org.drip.math.regime.MultiSegmentCalibratableRe
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblPredictorOrdinate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate))
 			throw new java.lang.Exception ("CurveRegime.inBuiltRange => Invalid Inputs");
 
 		return dblPredictorOrdinate >= getLeftPredictorOrdinateEdge() && dblPredictorOrdinate <=

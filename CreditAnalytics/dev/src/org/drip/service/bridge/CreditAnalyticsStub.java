@@ -107,7 +107,7 @@ public class CreditAnalyticsStub {
 
 		double dblAskPrice = 0.01 * qPrice.getQuote ("ASK");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (dblAskPrice)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblAskPrice)) return null;
 
 		org.drip.param.valuation.WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null,
 			dblAskPrice);

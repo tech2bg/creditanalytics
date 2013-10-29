@@ -100,7 +100,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		final boolean[] abIsPIP)
 		throws java.lang.Exception
 	{
-		if (null == cp || null == dtSpot || !org.drip.math.common.NumberUtil.IsValid (dblFXSpot) || null ==
+		if (null == cp || null == dtSpot || !org.drip.quant.common.NumberUtil.IsValid (dblFXSpot) || null ==
 			adblDate || 0 == adblDate.length || null == adblFXFwd || 0 == adblFXFwd.length || null == abIsPIP
 				|| 0 == abIsPIP.length || adblDate.length != adblFXFwd.length || adblDate.length !=
 					abIsPIP.length)
@@ -115,7 +115,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		_adblFXFwd = new double[adblFXFwd.length];
 
 		for (int i = 0; i < abIsPIP.length; ++i) {
-			if (!org.drip.math.common.NumberUtil.IsValid (adblDate[i]) || adblDate[i] <= _dblSpotDate)
+			if (!org.drip.quant.common.NumberUtil.IsValid (adblDate[i]) || adblDate[i] <= _dblSpotDate)
 				throw new java.lang.Exception ("DerivedFXForward ctr: Node date " +
 					org.drip.analytics.date.JulianDate.fromJulian (adblDate[i]) + " before spot " + dtSpot);
 
@@ -150,7 +150,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		if (null == strFXCurve || strFXCurve.isEmpty())
 			throw new java.lang.Exception ("DerivedFXForward de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strFXCurve,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFXCurve,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
@@ -178,7 +178,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("DerivedFXForward de-serializer: Cannot decode state");
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
 			astrField[3], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception ("DerivedFXForward de-serializer: Cannot decode state");
 
@@ -201,7 +201,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 		java.util.List<java.lang.Boolean> lsb = new java.util.ArrayList<java.lang.Boolean>();
 
-		if (!org.drip.math.common.StringUtil.BooleanListFromString (lsb, astrField[4],
+		if (!org.drip.quant.common.StringUtil.BooleanListFromString (lsb, astrField[4],
 			getCollectionRecordDelimiter()))
 			throw new java.lang.Exception ("DerivedFXForward de-serializer: Cannot decode state");
 
@@ -354,7 +354,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		final boolean bBasisOnDenom)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FXForwardCurve.rate: Invalid input date!");
 
 		org.drip.analytics.definition.DiscountCurve dcImplied = bootstrapBasisDC (valParam, dcNum, dcDenom,
@@ -467,7 +467,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 	{
 		int iNumForward = _adblFXFwd.length;
 
-		if (iSpanIndex >= iNumForward || !org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (iSpanIndex >= iNumForward || !org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		double[] adblFXForwardBumped = new double[iNumForward];
 

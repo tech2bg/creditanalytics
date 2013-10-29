@@ -52,10 +52,10 @@ public class GlobalControlCurveParams extends org.drip.state.estimator.Smoothing
 
 	public GlobalControlCurveParams (
 		final java.lang.String strSmootheningQuantificationMetric,
-		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
+		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail,
-		final org.drip.math.segment.BestFitWeightedResponse bfwr)
+		final org.drip.spline.params.SegmentBestFitResponse bfwr)
 		throws java.lang.Exception
 	{
 		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, bfwr);

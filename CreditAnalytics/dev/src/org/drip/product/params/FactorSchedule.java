@@ -57,9 +57,9 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 			return null;
 
 		try {
-			return new FactorSchedule (org.drip.math.common.StringUtil.MakeDoubleArrayFromStringTokenizer
+			return new FactorSchedule (org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer
 				(new java.util.StringTokenizer (strDates, ";")),
-					org.drip.math.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
+					org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
 						java.util.StringTokenizer (strFactors, ";")));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -194,7 +194,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		if (null == strSerializedFactorSchedule || strSerializedFactorSchedule.isEmpty())
 			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedFactorSchedule,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFactorSchedule,
 			getFieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
@@ -210,7 +210,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 
 		java.util.List<java.lang.Double> lsdblFactor = new java.util.ArrayList<java.lang.Double>();
 
-		if (!org.drip.math.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblFactor,
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblFactor,
 			astrField[1], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
 			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot decode hazard state");
 
@@ -242,7 +242,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FactorSchedule::getFactor => Invalid Input");
 
 		if (dblDate <= _adblDate[0]) return _adblFactor[0];
@@ -268,7 +268,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FactorSchedule::getIndex => Invalid Input/State");
 
 		if (dblDate <= _adblDate[0]) return 0;
@@ -296,8 +296,8 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		final double dblEndDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStartDate) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblEndDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate))
 			throw new java.lang.Exception ("FactorSchedule::getFactor => Invalid Inputs");
 
 		int iEndIndex = getIndex (dblEndDate);

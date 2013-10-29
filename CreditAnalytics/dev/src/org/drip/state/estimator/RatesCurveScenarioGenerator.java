@@ -119,7 +119,7 @@ public class RatesCurveScenarioGenerator {
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
 			_aCalibInst.length != astrCalibMeasure.length || null == valParams ||
-				!org.drip.math.common.NumberUtil.IsValid (dblBump)) {
+				!org.drip.quant.common.NumberUtil.IsValid (dblBump)) {
 			System.out.println ("Invalid params to IRCurveScenarioGenerator::createIRCurve!");
 
 			return null;
@@ -201,7 +201,7 @@ public class RatesCurveScenarioGenerator {
 	{
 		if (null == _aCalibInst || 0 == _aCalibInst.length || null == adblQuotes || null == astrCalibMeasure
 			|| adblQuotes.length != astrCalibMeasure.length || _aCalibInst.length != astrCalibMeasure.length
-				|| null == valParams || !org.drip.math.common.NumberUtil.IsValid (dblBump)) {
+				|| null == valParams || !org.drip.quant.common.NumberUtil.IsValid (dblBump)) {
 			System.out.println ("Invalid params to IRCurveScenarioGenerator::createTenorIRCurves!");
 
 			return null;
@@ -257,7 +257,7 @@ public class RatesCurveScenarioGenerator {
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
 			_aCalibInst.length != astrCalibMeasure.length || null == valParams ||
-				!org.drip.math.common.NumberUtil.IsValid (dblBump)) {
+				!org.drip.quant.common.NumberUtil.IsValid (dblBump)) {
 			System.out.println ("Invalid params to IRCurveScenarioGenerator::createTenorIRCurveMap!");
 
 			return null;

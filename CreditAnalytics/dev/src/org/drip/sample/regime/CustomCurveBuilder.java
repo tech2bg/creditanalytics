@@ -11,11 +11,11 @@ import java.util.*;
  * DRIP Math Imports
  */
 
-import org.drip.math.common.FormatUtil;
-import org.drip.math.function.QuadraticRationalShapeControl;
-import org.drip.math.regime.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.*;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.QuadraticRationalShapeControl;
+import org.drip.spline.basis.*;
+import org.drip.spline.params.*;
+import org.drip.spline.regime.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -69,15 +69,17 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final PredictorResponseBuilderParams MakeExponentialTensionSBP (
+	private static final SegmentCustomBuilderControl MakeExponentialTensionSCBC (
 		final double dblTension)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (
-			RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
-			new ExponentialTensionBasisSetParams (dblTension), // Segment Tension Parameter Value
-			DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
-			new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
+			new ExponentialTensionSetParams (dblTension), // Segment Tension Parameter Value
+			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
 	}
 
 	/**
@@ -86,15 +88,17 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final PredictorResponseBuilderParams MakePolynomialSBP (
+	public static final SegmentCustomBuilderControl MakePolynomialSBP (
 		final int iNumDegree)
 		throws Exception
 	{
-		return new PredictorResponseBuilderParams (
-			RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
-			new PolynomialBasisSetParams (iNumDegree + 1), // Polynomial of degree (i.e, cubic would be 3+1; 4 basis functions - 1 "intercept")
-			DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
-			new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+		return new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
+			new PolynomialFunctionSetParams (iNumDegree + 1), // Polynomial of degree (i.e, cubic would be 3+1; 4 basis functions - 1 "intercept")
+			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
 	}
 
 	/**
@@ -103,23 +107,27 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final PredictorResponseBuilderParams MakeSBP (
+	private static final SegmentCustomBuilderControl MakeSCBC (
 		final String strBasisSpline)
 		throws Exception
 	{
-		if (strBasisSpline.equalsIgnoreCase (RegimeBuilder.BASIS_SPLINE_POLYNOMIAL)) // Polynomial Basis Spline
-			return new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
-				new PolynomialBasisSetParams (4), // Polynomial of order 3 (i.e, cubic - 4 basis functions - 1 "intercept")
-				DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+		if (strBasisSpline.equalsIgnoreCase (MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL)) // Polynomial Basis Spline
+			return new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
+				new PolynomialFunctionSetParams (4), // Polynomial of order 3 (i.e, cubic - 4 basis functions - 1 "intercept")
+				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+				new ResponseScalingShapeControl (
+					true,
+					new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
 
-		if (strBasisSpline.equalsIgnoreCase (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)) // Exponential Tension Basis Spline
-			return new PredictorResponseBuilderParams (
-				RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
-				new ExponentialTensionBasisSetParams (1.), // Segment Tension Parameter Value = 1.
-				DesignInelasticParams.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
-				new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+		if (strBasisSpline.equalsIgnoreCase (MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)) // Exponential Tension Basis Spline
+			return new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
+				new ExponentialTensionSetParams (1.), // Segment Tension Parameter Value = 1.
+				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+				new ResponseScalingShapeControl (
+					true,
+					new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
 
 		return null;
 	}
@@ -155,9 +163,9 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final ResponseValueConstraint GenerateSegmentConstraint (
+	private static final SegmentResponseValueConstraint GenerateSegmentConstraint (
 		final TreeMap<Double, Double> mapCF,
-		final MultiSegmentRegime regimeDF)
+		final MultiSegmentSequence regimeDF)
 		throws Exception
 	{
 		double dblValue = 0.;
@@ -189,7 +197,7 @@ public class CustomCurveBuilder {
 			adblNodeWeight[i] = lsWeight.get (i);
 		}
 
-		return new ResponseValueConstraint (adblNode, adblNodeWeight, -dblValue);
+		return new SegmentResponseValueConstraint (adblNode, adblNodeWeight, -dblValue);
 	}
 
 	/**
@@ -247,8 +255,8 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final MultiSegmentRegime BuildSwapCurve (
-		MultiSegmentRegime regime,
+	private static final MultiSegmentSequence BuildSwapCurve (
+		MultiSegmentSequence regime,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 		throws Exception
@@ -274,7 +282,7 @@ public class CustomCurveBuilder {
 			 * Convert the Cash flow into a DRIP segment constraint using the "prior" curve regime
 			 */
 
-			ResponseValueConstraint snwc = GenerateSegmentConstraint (mapCF, regime);
+			SegmentResponseValueConstraint srvc = GenerateSegmentConstraint (mapCF, regime);
 
 			/*
 			 * If it is the head segment, create a regime instance for the discount curve.
@@ -285,22 +293,22 @@ public class CustomCurveBuilder {
 				 * Set the Segment Builder Parameters. This may be set on a segment-by-segment basis.
 				 */
 
-				PredictorResponseBuilderParams sbp = MakeSBP (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION);
+				SegmentCustomBuilderControl scbc = MakeSCBC (MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION);
 
 				/*
 				 * Start off with a single segment regime, with the corresponding Builder Parameters
 				 */
 
-				regime = RegimeBuilder.CreateUncalibratedRegimeEstimator ("SWAP",
+				regime = MultiSegmentSequenceBuilder.CreateUncalibratedRegimeEstimator ("SWAP",
 					new double[] {0., dblTenorInYears},
-					new PredictorResponseBuilderParams[] {sbp});
+					new SegmentCustomBuilderControl[] {scbc});
 
 				/*
 				 * Set the regime up by carrying out a "Natural Boundary" Spline Calibration
 				 */
 
 				regime.setup (1.,
-					new ResponseValueConstraint[] {snwc},
+					new SegmentResponseValueConstraint[] {srvc},
 					null,
 					iCalibrationBoundaryCondition,
 					iCalibrationDetail);
@@ -314,25 +322,25 @@ public class CustomCurveBuilder {
 				 *  ensures that there is no propagation of derivatives and therefore high locality.
 				 */
 
-				PredictorResponseBuilderParams sbpLocal = null;
+				SegmentCustomBuilderControl scbcLocal = null;
 
 				if (bFirstNode) {
 					bFirstNode = false;
 
-					sbpLocal = MakeExponentialTensionSBP (100.);
+					scbcLocal = MakeExponentialTensionSCBC (100.);
 				} else
-					sbpLocal = MakeExponentialTensionSBP (1.);
+					scbcLocal = MakeExponentialTensionSCBC (1.);
 
 				/*
 				 * If not the head segment, just append the exclusive swap instrument segment to the tail of
 				 * 	the current regime state, using the constraint generated from the swap cash flow.
 				 */
 
-				regime = org.drip.math.regime.RegimeModifier.AppendSegment (
+				regime = org.drip.spline.regime.MultiSegmentSequenceModifier.AppendSegment (
 					regime,
 					dblTenorInYears,
-					snwc,
-					sbpLocal,
+					srvc,
+					scbcLocal,
 					iCalibrationBoundaryCondition,
 					iCalibrationDetail);
 			}
@@ -389,7 +397,7 @@ public class CustomCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final MultiSegmentRegime BuildCashCurve (
+	private static final MultiSegmentSequence BuildCashCurve (
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 		throws Exception
@@ -398,11 +406,13 @@ public class CustomCurveBuilder {
 		 * For the head segment, create a calibrated regime instance for the discount curve.
 		 */
 
-		MultiSegmentRegime regimeCash = RegimeBuilder.CreateCalibratedRegimeEstimator (
+		MultiSegmentSequence regimeCash = MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator (
 			"CASH",
 			new double[] {0., 0.002778}, // t0 and t1 for the segment
 			new double[] {1., 0.999996}, // the corresponding discount factors
-			new PredictorResponseBuilderParams[] {MakeSBP (RegimeBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)}, // Exponential Tension Basis Spline
+			new SegmentCustomBuilderControl[] {
+				MakeSCBC (MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)
+			}, // Exponential Tension Basis Spline
 			null,
 			iCalibrationBoundaryCondition, iCalibrationDetail); // "Natural" Spline Boundary Condition + Calibrate the full regime
 
@@ -420,7 +430,7 @@ public class CustomCurveBuilder {
 			 * Insert the instrument/quote as a "knot" entity into the regime. Given the "natural" spline
 			 */
 
-			regimeCash = RegimeModifier.InsertKnot (regimeCash, dblTenorInYears, dblDF, iCalibrationBoundaryCondition, iCalibrationDetail);
+			regimeCash = MultiSegmentSequenceModifier.InsertKnot (regimeCash, dblTenorInYears, dblDF, iCalibrationBoundaryCondition, iCalibrationDetail);
 		}
 
 		return regimeCash;
@@ -430,9 +440,13 @@ public class CustomCurveBuilder {
 		final String[] astrArgs)
 		throws Exception
 	{
-		MultiSegmentRegime regimeNaturalCash = BuildCashCurve (MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, MultiSegmentRegime.CALIBRATE);
+		MultiSegmentSequence regimeNaturalCash = BuildCashCurve (
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentSequence.CALIBRATE);
 
-		MultiSegmentRegime regimeFinancialCash = BuildCashCurve (MultiSegmentRegime.BOUNDARY_CONDITION_FINANCIAL, MultiSegmentRegime.CALIBRATE);
+		MultiSegmentSequence regimeFinancialCash = BuildCashCurve (
+			MultiSegmentSequence.BOUNDARY_CONDITION_FINANCIAL,
+			MultiSegmentSequence.CALIBRATE);
 
 		double dblXShift = 0.1 * (regimeNaturalCash.getRightPredictorOrdinateEdge() - regimeNaturalCash.getLeftPredictorOrdinateEdge());
 
@@ -456,9 +470,15 @@ public class CustomCurveBuilder {
 
 		System.out.println ("\n");
 
-		MultiSegmentRegime regimeNaturalSwap = BuildSwapCurve (regimeNaturalCash, MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL, MultiSegmentRegime.CALIBRATE);
+		MultiSegmentSequence regimeNaturalSwap = BuildSwapCurve (
+			regimeNaturalCash,
+			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			MultiSegmentSequence.CALIBRATE);
 
-		MultiSegmentRegime regimeFinancialSwap = BuildSwapCurve (regimeNaturalCash, MultiSegmentRegime.BOUNDARY_CONDITION_FINANCIAL, MultiSegmentRegime.CALIBRATE);
+		MultiSegmentSequence regimeFinancialSwap = BuildSwapCurve (
+			regimeNaturalCash,
+			MultiSegmentSequence.BOUNDARY_CONDITION_FINANCIAL,
+			MultiSegmentSequence.CALIBRATE);
 
 		/*
 		 * Display the DF, the monotonicity, and the convexity for the swaps.

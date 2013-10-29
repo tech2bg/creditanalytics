@@ -230,7 +230,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		final java.lang.String strName)
 		throws java.lang.Exception
 	{
-		if (null == dtEffective || null == dtMaturity || !org.drip.math.common.NumberUtil.IsValid (dblCoupon)
+		if (null == dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)
 			|| null == aComp || 0 == aComp.length || null == adblWeight || 0 == adblWeight.length ||
 				aComp.length != adblWeight.length || null == strName || strName.isEmpty())
 			throw new java.lang.Exception ("Invalid inputs to BasketDefaultSwap ctr!");
@@ -284,7 +284,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		if (null == strSerializedBasketDefaultSwap || strSerializedBasketDefaultSwap.isEmpty())
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedBasketDefaultSwap,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketDefaultSwap,
 			getFieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
@@ -328,7 +328,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component array");
 
-		java.lang.String[] astrCDS = org.drip.math.common.StringUtil.Split (astrField[6],
+		java.lang.String[] astrCDS = org.drip.quant.common.StringUtil.Split (astrField[6],
 			getCollectionRecordDelimiter());
 
 		if (null == astrCDS || 0 == astrCDS.length)
@@ -358,7 +358,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_lPeriods = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[8],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[8],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -379,7 +379,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component weights");
 
-		java.lang.String[] astrWeights = org.drip.math.common.StringUtil.Split (astrField[9],
+		java.lang.String[] astrWeights = org.drip.quant.common.StringUtil.Split (astrField[9],
 			getCollectionRecordDelimiter());
 
 		if (null == astrWeights || 0 == astrWeights.length)

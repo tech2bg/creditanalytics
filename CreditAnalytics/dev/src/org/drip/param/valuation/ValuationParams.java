@@ -152,7 +152,7 @@ public class ValuationParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedValuationParams || strSerializedValuationParams.isEmpty())
 			throw new java.lang.Exception ("ValuationParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedValuationParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedValuationParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

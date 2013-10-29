@@ -487,43 +487,43 @@ public class CreditAnalyticsProxy {
 	{
 		if (null == rv) return false;
 
-		System.out.println (strPrefix + "ASW: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "ASW: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblAssetSwapSpread, 0, 0, 1.));
 
-		System.out.println (strPrefix + "Bond Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Bond Basis: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Convexity: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Convexity: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblConvexity, 0, 2, 1000000.));
 
-		System.out.println (strPrefix + "Credit Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Credit Basis: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblCreditBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Discount Margin: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Discount Margin: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblDiscountMargin, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "G Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "G Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblGSpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "I Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "I Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblISpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Macaulay Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Macaulay Duration: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblMacaulayDuration, 0, 2, 1.));
 
-		System.out.println (strPrefix + "Modified Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Modified Duration: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblModifiedDuration, 0, 2, 10000.));
 
-		System.out.println (strPrefix + "OAS: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "OAS: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblOASpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "PECS: " + org.drip.math.common.FormatUtil.FormatDouble (rv._dblPECS,
+		System.out.println (strPrefix + "PECS: " + org.drip.quant.common.FormatUtil.FormatDouble (rv._dblPECS,
 			0, 0, 10000.));
 
-		System.out.println (strPrefix + "Price: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Price: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblPrice, 0, 3, 100.));
 
-		System.out.println (strPrefix + "TSY Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "TSY Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblTSYSpread, 0, 0, 10000.));
 
 		try {
@@ -537,19 +537,19 @@ public class CreditAnalyticsProxy {
 
 		System.out.println (strPrefix + "Workout Type: " + rv._wi._iWOType);
 
-		System.out.println (strPrefix + "Workout Yield: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Workout Yield: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._wi._dblYield, 0, 3, 100.));
 
-		System.out.println (strPrefix + "Yield01: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Yield01: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblYield01, 0, 2, 10000.));
 
-		System.out.println (strPrefix + "Yield Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Yield Basis: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Yield Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Yield Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Z Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Z Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblZSpread, 0, 0, 10000.));
 
 		return true;
@@ -569,12 +569,12 @@ public class CreditAnalyticsProxy {
 			org.drip.analytics.output.BondRVMeasures> me : mapRVM.entrySet()) {
 			org.drip.analytics.output.BondRVMeasures rv = me.getValue();
 
-			System.out.println (me.getKey() + DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble
-				(rv._wi._dblYield, 0, 2, 100.) + DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println (me.getKey() + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
+				(rv._wi._dblYield, 0, 2, 100.) + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
 					(rv._dblZSpread, 0, 0, 10000.) + DISPLAY_GAP +
-						org.drip.math.common.FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.) +
-							DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble (rv._dblCreditBasis,
-								0, 0, 10000.) + DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble
+						org.drip.quant.common.FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.) +
+							DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble (rv._dblCreditBasis,
+								0, 0, 10000.) + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
 									(rv._dblPrice, 0, 3, 100.));
 		}
 

@@ -153,7 +153,7 @@ public class BondBuilder {
 		final org.drip.product.params.FactorSchedule fsCoupon)
 	{
 		if (null == strName || strName.isEmpty() || null == strCurrency || strCurrency.isEmpty() || null ==
-			dtEffective || null == dtMaturity || !org.drip.math.common.NumberUtil.IsValid (dblCoupon))
+			dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon))
 			return null;
 
 		return BondBuilder.CreateBondFromParams (new org.drip.product.params.TreasuryBenchmark (null,
@@ -212,7 +212,7 @@ public class BondBuilder {
 		final org.drip.product.params.FactorSchedule fsCoupon)
 	{
 		if (null == strName || strName.isEmpty() || null == strCurrency || strCurrency.isEmpty() || null ==
-			dtEffective || null == dtMaturity || !org.drip.math.common.NumberUtil.IsValid (dblSpread))
+			dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblSpread))
 			return null;
 
 		return BondBuilder.CreateBondFromParams (new org.drip.product.params.TreasuryBenchmark (null,

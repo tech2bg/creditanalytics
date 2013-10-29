@@ -101,7 +101,7 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCashSettleParams || strSerializedCashSettleParams.isEmpty())
 			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCashSettleParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCashSettleParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -142,7 +142,7 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		final double dblValue)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue))
 			throw new java.lang.Exception ("Invalid input valuation date");
 
 		return org.drip.analytics.daycount.Convention.Adjust (dblValue + _iLag, _strCalendar, _iAdjustMode);

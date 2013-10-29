@@ -1,10 +1,11 @@
 
 package org.drip.sample.spline;
 
-import org.drip.math.calculus.WengertJacobian;
-import org.drip.math.function.*;
-import org.drip.math.segment.*;
-import org.drip.math.spline.*;
+import org.drip.quant.calculus.WengertJacobian;
+import org.drip.quant.function1D.*;
+import org.drip.spline.basis.*;
+import org.drip.spline.params.*;
+import org.drip.spline.segment.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -54,7 +55,7 @@ public class BasisSplineSet {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final AbstractUnivariate[] CreatePolynomialSpline()
+	private static final FunctionSet CreatePolynomialSpline()
 		throws Exception
 	{
 		int iNumBasis = 4;
@@ -63,9 +64,9 @@ public class BasisSplineSet {
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
 		 */
 
-		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
+		PolynomialFunctionSetParams polybsbp = new PolynomialFunctionSetParams (iNumBasis);
 
-		return BasisSetBuilder.PolynomialBasisSet (polybsbp);
+		return FunctionSetBuilder.PolynomialBasisSet (polybsbp);
 	}
 
 	/*
@@ -74,7 +75,7 @@ public class BasisSplineSet {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final AbstractUnivariate[] CreateBernsteinPolynomialSpline()
+	private static final FunctionSet CreateBernsteinPolynomialSpline()
 		throws Exception
 	{
 		int iNumBasis = 4;
@@ -83,9 +84,9 @@ public class BasisSplineSet {
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
 		 */
 
-		PolynomialBasisSetParams polybsbp = new PolynomialBasisSetParams (iNumBasis);
+		PolynomialFunctionSetParams polybsbp = new PolynomialFunctionSetParams (iNumBasis);
 
-		return BasisSetBuilder.BernsteinPolynomialBasisSet (polybsbp);
+		return FunctionSetBuilder.BernsteinPolynomialBasisSet (polybsbp);
 	}
 
 	/*
@@ -94,7 +95,7 @@ public class BasisSplineSet {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final AbstractUnivariate[] CreateExponentialTensionSpline()
+	private static final FunctionSet CreateExponentialTensionSpline()
 		throws Exception
 	{
 		double dblTension = 1.;
@@ -103,9 +104,9 @@ public class BasisSplineSet {
 		 * Create the basis parameter set from the segment tension parameter, and construct the basis
 		 */
 
-		ExponentialTensionBasisSetParams etbsbp = new ExponentialTensionBasisSetParams (dblTension);
+		ExponentialTensionSetParams etbsbp = new ExponentialTensionSetParams (dblTension);
 
-		return BasisSetBuilder.ExponentialTensionBasisSet (etbsbp);
+		return FunctionSetBuilder.ExponentialTensionBasisSet (etbsbp);
 	}
 
 	/*
@@ -114,7 +115,7 @@ public class BasisSplineSet {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final AbstractUnivariate[] CreateHyperbolicTensionSpline()
+	private static final FunctionSet CreateHyperbolicTensionSpline()
 		throws Exception
 	{
 		double dblTension = 1.;
@@ -123,9 +124,9 @@ public class BasisSplineSet {
 		 * Create the basis parameter set from the segment tension parameter, and construct the basis
 		 */
 
-		ExponentialTensionBasisSetParams etbsbp = new ExponentialTensionBasisSetParams (dblTension);
+		ExponentialTensionSetParams etbsbp = new ExponentialTensionSetParams (dblTension);
 
-		return BasisSetBuilder.HyperbolicTensionBasisSet (etbsbp);
+		return FunctionSetBuilder.HyperbolicTensionBasisSet (etbsbp);
 	}
 
 	/*
@@ -134,7 +135,7 @@ public class BasisSplineSet {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final AbstractUnivariate[] CreateKaklisPandelisSpline()
+	private static final FunctionSet CreateKaklisPandelisSpline()
 		throws Exception
 	{
 		int iPolynomialTensionDegree = 2;
@@ -143,9 +144,9 @@ public class BasisSplineSet {
 		 * Create the basis parameter set from the segment polynomial tension control, and construct the basis
 		 */
 
-		KaklisPandelisBasisSetParams kpbpsp = new KaklisPandelisBasisSetParams (iPolynomialTensionDegree);
+		KaklisPandelisSetParams kpbpsp = new KaklisPandelisSetParams (iPolynomialTensionDegree);
 
-		return BasisSetBuilder.KaklisPandelisBasisSet (kpbpsp);
+		return FunctionSetBuilder.KaklisPandelisBasisSet (kpbpsp);
 	}
 
 	/*
@@ -160,18 +161,18 @@ public class BasisSplineSet {
 	 */
 
 	private static final void TestSpline (
-		final AbstractUnivariate[] aAU,
-		final ResponseScalingShapeController rssc,
-		final DesignInelasticParams segParams)
+		final FunctionSet fs,
+		final ResponseScalingShapeControl rssc,
+		final SegmentDesignInelasticControl segParams)
 		throws Exception
 	{
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		PredictorResponse seg1 = LocalBasisPredictorResponse.Create (1.0, 1.5, aAU, rssc, segParams);
+		ElasticConstitutiveState seg1 = LocalElasticConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams);
 
-		PredictorResponse seg2 = LocalBasisPredictorResponse.Create (1.5, 2.0, aAU, rssc, segParams);
+		ElasticConstitutiveState seg2 = LocalElasticConstitutiveState.Create (1.5, 2.0, fs, rssc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
@@ -237,34 +238,30 @@ public class BasisSplineSet {
 	 */
 
 	private static final void TestC1HermiteSpline (
-		final AbstractUnivariate[] aAU,
-		final ResponseScalingShapeController sc,
-		final DesignInelasticParams segParams)
+		final FunctionSet fs,
+		final ResponseScalingShapeControl sc,
+		final SegmentDesignInelasticControl segParams)
 		throws Exception
 	{
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		PredictorResponse seg1 = LocalBasisPredictorResponse.Create (0.0, 1.0, aAU, sc, segParams);
+		ElasticConstitutiveState seg1 = LocalElasticConstitutiveState.Create (0.0, 1.0, fs, sc, segParams);
 
-		PredictorResponse seg2 = LocalBasisPredictorResponse.Create (1.0, 2.0, aAU, sc, segParams);
+		ElasticConstitutiveState seg2 = LocalElasticConstitutiveState.Create (1.0, 2.0, fs, sc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
 		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (
-			new CalibrationParams (
+			new SegmentCalibrationInputSet (
 				new double[] {0., 1.}, // Left/Right X
 				new double[] {1., 4.}, // Left/Right Y
 				new double[] {1.}, // Left Deriv
 				new double[] {6.}, // Right Deriv
 				null, null)); // Constraints, Fitness Weighted Response
-
-		// WengertJacobian wj1 = seg1.calibrateJacobian (
-			// new SegmentEdgeParams (1., new double[] {1.}), // SEP Left
-			// new SegmentEdgeParams (4., new double[] {6.})); // SEP Right
 
 		System.out.println ("\tY[" + 0.0 + "]: " + seg1.responseValue (0.0));
 
@@ -283,7 +280,7 @@ public class BasisSplineSet {
 		 */
 
 		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (
-			new CalibrationParams (
+			new SegmentCalibrationInputSet (
 				new double[] {0., 1.}, // Left/Right X
 				new double[] {4., 15.}, // Left/Right Y
 				new double[] {6.}, // Left Deriv
@@ -327,7 +324,9 @@ public class BasisSplineSet {
 
 		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeController rssc = new ResponseScalingShapeController (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
+			true,
+			new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with second order
@@ -337,7 +336,9 @@ public class BasisSplineSet {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		DesignInelasticParams segParams = DesignInelasticParams.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (
+			iK,
+			iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Test the polynomial spline
@@ -388,6 +389,6 @@ public class BasisSplineSet {
 		TestC1HermiteSpline (
 			CreatePolynomialSpline(),
 			rssc,
-			DesignInelasticParams.Create (1, iRoughnessPenaltyDerivativeOrder));
+			SegmentDesignInelasticControl.Create (1, iRoughnessPenaltyDerivativeOrder));
 	}
 }

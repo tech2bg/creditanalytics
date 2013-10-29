@@ -54,8 +54,8 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 				_strRegressionScenario)
 			{
 				org.drip.analytics.date.JulianDate dtStart = null;
-				org.drip.math.calculus.WengertJacobian wjPVDF = null;
-				org.drip.math.calculus.WengertJacobian aWJComp[] = null;
+				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
+				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
 				org.drip.analytics.definition.DiscountCurve dcIRS = null;
 				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
 				java.util.Map<org.drip.analytics.date.JulianDate,
@@ -67,7 +67,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 					double adblDate[] = new double[NUM_DC_INSTR];
 					double adblRate[] = new double[NUM_DC_INSTR];
 					double adblCompCalibValue[] = new double[NUM_DC_INSTR];
-					aWJComp = new org.drip.math.calculus.WengertJacobian[NUM_DC_INSTR];
+					aWJComp = new org.drip.quant.calculus.WengertJacobian[NUM_DC_INSTR];
 					java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
 					aCompCalib = new org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
 

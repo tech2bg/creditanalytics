@@ -111,7 +111,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		if (null == strSerializedFloaterSetting || strSerializedFloaterSetting.isEmpty())
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedFloaterSetting,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloaterSetting,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
@@ -150,11 +150,11 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread) &&
-			!org.drip.math.common.NumberUtil.IsValid (_dblCurrentCoupon))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread) &&
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon))
 			return false;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCurrentCoupon) && (null == _strRateIndex ||
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon) && (null == _strRateIndex ||
 			_strRateIndex.isEmpty()))
 			return false;
 

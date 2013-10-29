@@ -36,7 +36,7 @@ package org.drip.regression.fixedpointfinder;
  */
 
 public class OpenRegressorSet implements org.drip.regression.core.RegressorSet {
-	private org.drip.math.function.AbstractUnivariate _of = null;
+	private org.drip.quant.function1D.AbstractUnivariate _of = null;
 	private java.lang.String _strRegressionScenario = "org.drip.math.solver1D.FixedPointFinderNewton";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -44,7 +44,7 @@ public class OpenRegressorSet implements org.drip.regression.core.RegressorSet {
 
 	public OpenRegressorSet()
 	{
-		_of = new org.drip.math.function.AbstractUnivariate (null)
+		_of = new org.drip.quant.function1D.AbstractUnivariate (null)
 		{
 			public double evaluate (
 				final double dblVariate)
@@ -76,13 +76,13 @@ public class OpenRegressorSet implements org.drip.regression.core.RegressorSet {
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor
 				("NewtonFixedPointFinder", _strRegressionScenario)
 			{
-				org.drip.math.solver1D.FixedPointFinderNewton fpfbNewton = null;
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopNewton = null;
+				org.drip.quant.solver1D.FixedPointFinderNewton fpfbNewton = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopNewton = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbNewton = new org.drip.math.solver1D.FixedPointFinderNewton (0., _of, true);
+						fpfbNewton = new org.drip.quant.solver1D.FixedPointFinderNewton (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {

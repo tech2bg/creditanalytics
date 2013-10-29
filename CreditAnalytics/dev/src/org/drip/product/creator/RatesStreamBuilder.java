@@ -136,7 +136,7 @@ public class RatesStreamBuilder {
 		final java.lang.String strCalendar)
 	{
 		if (null == dtEffective || null == dtMaturity || null == strIR || strIR.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (dblCoupon)) return null;
+			!org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return null;
 
 		try {
 			org.drip.product.definition.RatesComponent fixStream = CreateFixedStream (dtEffective,
@@ -180,7 +180,7 @@ public class RatesStreamBuilder {
 		final java.lang.String strCalendar)
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty() || null == strIR || strIR.isEmpty()
-			|| !org.drip.math.common.NumberUtil.IsValid (dblCoupon)) return null;
+			|| !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return null;
 
 		try {
 			org.drip.product.definition.RatesComponent fixStream = CreateFixedStream (dtEffective,

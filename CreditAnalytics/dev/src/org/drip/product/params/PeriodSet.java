@@ -140,7 +140,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		if (null == strSerializedPeriodSet || strSerializedPeriodSet.isEmpty())
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedPeriodSet,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedPeriodSet,
 			getFieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
@@ -211,7 +211,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_lsCouponPeriod = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[9],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[9],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -233,11 +233,11 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	@Override public boolean validate()
 	{
 		if (null == _lsCouponPeriod || 0 == _lsCouponPeriod.size() ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblEffective) || 0 == _iFreq)
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEffective) || 0 == _iFreq)
 			return false;
 
 		for (org.drip.analytics.period.Period fp : _lsCouponPeriod) {
-			if (null == fp || !org.drip.math.common.NumberUtil.IsValid (_dblMaturity = fp.getEndDate()))
+			if (null == fp || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = fp.getEndDate()))
 				return false;
 		}
 
@@ -292,7 +292,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("PeriodSet::getPeriodIndex => Input date is NaN!");
 
 		int i = 0;

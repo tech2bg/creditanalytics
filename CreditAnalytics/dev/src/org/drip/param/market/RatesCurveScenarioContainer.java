@@ -84,7 +84,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 	{
 		if (null == valParams || null == adblQuotes || null == astrCalibMeasure || 0 == adblQuotes.length ||
 			0 == astrCalibMeasure.length || adblQuotes.length != astrCalibMeasure.length ||
-				!org.drip.math.common.NumberUtil.IsValid (dblBump) || null == _irsg) {
+				!org.drip.quant.common.NumberUtil.IsValid (dblBump) || null == _irsg) {
 			if (s_bBlog)
 				System.out.println ("Invalid inputs/state in RatesCurveScenarioContainer.cookScenarioDC");
 

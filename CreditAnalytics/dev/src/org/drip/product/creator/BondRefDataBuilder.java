@@ -554,7 +554,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 			brdb._strTicker = rs.getString ("Ticker");
 
-			if (!org.drip.math.common.NumberUtil.IsValid (brdb._dblCoupon = rs.getDouble ("Coupon")))
+			if (!org.drip.quant.common.NumberUtil.IsValid (brdb._dblCoupon = rs.getDouble ("Coupon")))
 				return null;
 
 			brdb._dtMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
@@ -627,13 +627,13 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 				(rs.getDate ("IssueDate"))))
 				return null;
 
-			brdb._bIsCallable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsCallable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsCallable"));
 
-			brdb._bIsPutable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsPutable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsPutable"));
 
-			brdb._bIsSinkable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsSinkable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsSinkable"));
 
 			brdb._strBBGParent = rs.getString ("BBGParent");
@@ -669,26 +669,26 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 			if (null == brdb._strCouponCurrency || brdb._strCouponCurrency.isEmpty()) return null;
 
-			brdb._bIsStructuredNote = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsStructuredNote = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("StructuredNote"));
 
-			brdb._bIsUnitTraded = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsUnitTraded = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("UnitTraded"));
 
-			brdb._bIsReversibleConvertible = org.drip.math.common.StringUtil.ParseFromUnitaryString
+			brdb._bIsReversibleConvertible = org.drip.quant.common.StringUtil.ParseFromUnitaryString
 				(rs.getString ("ReverseConvertible"));
 
 			brdb._strTradeCurrency = rs.getString ("TradeCurrency");
 
 			if (null == brdb._strTradeCurrency || brdb._strTradeCurrency.isEmpty()) return null;
 
-			brdb._bIsBearer = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsBearer = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Bearer"));
 
-			brdb._bIsRegistered = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsRegistered = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Registered"));
 
-			brdb._bHasBeenCalled = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bHasBeenCalled = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Called"));
 
 			brdb._strIssuer = rs.getString ("Issuer");
@@ -701,10 +701,10 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 			brdb._dblCurrentCoupon = rs.getDouble ("CurrentCoupon");
 
-			brdb._bIsFloater = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsFloater = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Floater"));
 
-			brdb._bTradeStatus = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bTradeStatus = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("TradeStatus"));
 
 			brdb._strCDRCountryCode = rs.getString ("CDRCountryCode");
@@ -716,13 +716,13 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 			brdb._dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
 				(rs.getDate ("FinalMaturity"));
 
-			brdb._bIsPrivatePlacement = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsPrivatePlacement = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("PrivatePlacement"));
 
-			brdb._bIsPerpetual = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsPerpetual = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Perpetual"));
 
-			brdb._bIsDefaulted = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			brdb._bIsDefaulted = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Defaulted"));
 
 			brdb._dblFloatSpread = rs.getDouble ("FloatSpread");
@@ -965,7 +965,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == strSerializedBondRefDataBuilder || strSerializedBondRefDataBuilder.isEmpty())
 			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedBondRefDataBuilder, getFieldDelimiter());
 
 		if (null == astrField || 76 > astrField.length)
@@ -3124,27 +3124,27 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 		sb.append ("'").append (_strCollateralType).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblIssueAmount))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblIssueAmount))
 			sb.append ("null, ");
 		else
 			sb.append (_dblIssueAmount).append (", ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblOutstandingAmount))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblOutstandingAmount))
 			sb.append ("null, ");
 		else
 			sb.append (_dblOutstandingAmount).append (", ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblMinimumPiece))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblMinimumPiece))
 			sb.append ("null, ");
 		else
 			sb.append (_dblMinimumPiece).append (", ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblMinimumIncrement))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblMinimumIncrement))
 			sb.append ("null, ");
 		else
 			sb.append (_dblMinimumIncrement).append (", ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblParAmount))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblParAmount))
 			sb.append ("null, ");
 		else
 			sb.append (_dblParAmount).append (", ");
@@ -3230,7 +3230,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 		sb.append ("'").append (_strFloatCouponConvention).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCurrentCoupon))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon))
 			sb.append ("null, ");
 		else
 			sb.append (_dblCurrentCoupon).append (", ");
@@ -3254,7 +3254,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 		sb.append ("'").append (_bIsDefaulted ? 1 : 0).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread))
 			sb.append ("null, ");
 		else
 			sb.append (_dblFloatSpread).append (", ");
@@ -3271,12 +3271,12 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 		sb.append ("'").append (_strIssuerSPN).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblIssuePrice))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblIssuePrice))
 			sb.append ("null, ");
 		else
 			sb.append (_dblIssuePrice).append (", ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCoupon))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon))
 			sb.append ("null, ");
 		else
 			sb.append (_dblCoupon).append (", ");

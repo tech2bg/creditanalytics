@@ -100,7 +100,7 @@ public class Variable extends Base {
 		if (null == strFH || strFH.isEmpty())
 			throw new java.lang.Exception ("FloatingHoliday de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strFH, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("FloatingHoliday de-serialize: Invalid number of fields");

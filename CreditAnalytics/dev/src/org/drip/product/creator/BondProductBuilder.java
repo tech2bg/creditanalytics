@@ -289,7 +289,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 			bpb._strTicker = rs.getString ("Ticker");
 
-			if (!org.drip.math.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * rs.getDouble ("Coupon"))) {
+			if (!org.drip.quant.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * rs.getDouble ("Coupon"))) {
 				System.out.println ("Invalid coupon for ISIN " + bpb._strISIN);
 
 				return null;
@@ -353,13 +353,13 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 				return null;
 			}
 
-			bpb._bIsCallable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsCallable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsCallable"));
 
-			bpb._bIsPutable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsPutable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsPutable"));
 
-			bpb._bIsSinkable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsSinkable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsSinkable"));
 
 			bpb._strRedemptionCurrency = org.drip.analytics.support.AnalyticsHelper.SwitchIRCurve
@@ -389,12 +389,12 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 				return null;
 			}
 
-			bpb._bHasBeenCalled = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bHasBeenCalled = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Called"));
 
 			bpb._strFloatCouponConvention = rs.getString ("FloatCouponConvention");
 
-			bpb._bIsFloater = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsFloater = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Floater"));
 
 			// bpb._dblCurrentCoupon = 0.01 * rs.getDouble ("CurrentCoupon");
@@ -402,17 +402,17 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 			bpb._dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
 				(rs.getDate ("FinalMaturity"));
 
-			bpb._bIsPerpetual = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsPerpetual = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Perpetual"));
 
-			bpb._bIsDefaulted = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsDefaulted = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Defaulted"));
 
 			bpb._dblFloatSpread = 0.0001 * rs.getDouble ("FloatSpread");
 
 			bpb._strRateIndex = rs.getString ("RateIndex");
 
-			if (bpb._bIsFloater && !org.drip.math.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
+			if (bpb._bIsFloater && !org.drip.quant.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
 				bpb._strRateIndex || bpb._strRateIndex.isEmpty())) {
 				System.out.println ("Invalid float spread for " + DES (bpb));
 
@@ -467,7 +467,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 		if (null == (bpb._strTicker = mapJSON.get ("ticker"))) return null;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * java.lang.Double.parseDouble
+		if (!org.drip.quant.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * java.lang.Double.parseDouble
 			(mapJSON.get ("coupon"))))
 			return null;
 
@@ -544,7 +544,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 			bpb._strRateIndex = mapJSON.get ("resetIndex");
 
-			if (bpb._bIsFloater && !org.drip.math.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
+			if (bpb._bIsFloater && !org.drip.quant.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
 				bpb._strRateIndex || bpb._strRateIndex.isEmpty())) {
 				System.out.println ("Invalid float spread for " + DES (bpb));
 
@@ -599,7 +599,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		if (null == strSerializedBondProductBuilder || strSerializedBondProductBuilder.isEmpty())
 			throw new java.lang.Exception ("BondProductBuilder de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedBondProductBuilder, getFieldDelimiter());
 
 		if (null == astrField || 32 > astrField.length)
@@ -1474,7 +1474,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	public boolean setFloatSpread (
 		final org.drip.param.definition.MarketParams mpc)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCurrentCoupon)) {
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon)) {
 			System.out.println ("Curr cpn for ISIN " + _strISIN + " is NaN!");
 
 			return false;
@@ -1577,7 +1577,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		}
 
 		if (_bIsFloater && (null == _strRateIndex || _strRateIndex.isEmpty()) &&
-			!org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread) && java.lang.Double.isNaN
+			!org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread) && java.lang.Double.isNaN
 				(_dblCurrentCoupon)) {
 			if (m_bDisplayWarnings)
 				System.out.println ("Invalid Rate index & float spread & current coupon for " + _strISIN);
@@ -1593,7 +1593,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 			}
 		}
 
-		if (_bIsFloater && !org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread)) {
+		if (_bIsFloater && !org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread)) {
 			try {
 				if (!setFloatSpread (mpc)) {
 					if (m_bDisplayWarnings)
@@ -1681,7 +1681,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 		sb.append ("'").append (_strFloatCouponConvention).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCurrentCoupon))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon))
 			sb.append ("null, ");
 		else
 			sb.append (_dblCurrentCoupon).append (", ");
@@ -1697,7 +1697,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 		sb.append ("'").append (_bIsDefaulted ? 1 : 0).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread))
 			sb.append ("null, ");
 		else
 			sb.append (_dblFloatSpread).append (", ");

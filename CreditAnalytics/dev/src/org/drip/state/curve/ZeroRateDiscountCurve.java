@@ -40,7 +40,7 @@ package org.drip.state.curve;
  */
 
 public class ZeroRateDiscountCurve extends org.drip.analytics.definition.DiscountCurve {
-	private org.drip.math.grid.Span _span = null;
+	private org.drip.spline.grid.Span _span = null;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
 	private org.drip.analytics.definition.CurveSpanConstructionInput _rcci = null;
 
@@ -108,7 +108,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.definition.Discoun
 
 	public ZeroRateDiscountCurve (
 		final java.lang.String strCurrency,
-		final org.drip.math.grid.Span span)
+		final org.drip.spline.grid.Span span)
 		throws java.lang.Exception
 	{
 		super (span.left(), strCurrency);
@@ -120,7 +120,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.definition.Discoun
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ZeroRateDiscountCurve::df => Invalid Inputs");
 
 		double dblStartDate = _span.left();
@@ -135,7 +135,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.definition.Discoun
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2))
 			throw new java.lang.Exception ("ZeroRateDiscountCurve::forward => Invalid input");
 
@@ -150,7 +150,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.definition.Discoun
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ZeroRateDiscountCurve::zero => Invalid Inputs");
 
 		if (dblDate <= _span.left()) return 1.;
@@ -166,7 +166,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.definition.Discoun
 	@Override public ZeroRateDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
 
@@ -185,7 +185,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.definition.Discoun
 		final int iSpanIndex,
 		final double dblShift)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblShift)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
 
@@ -237,7 +237,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.definition.Discoun
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
 		final double dblDate)
 	{
 		return null;

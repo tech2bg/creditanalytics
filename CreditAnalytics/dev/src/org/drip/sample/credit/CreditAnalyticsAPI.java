@@ -20,6 +20,7 @@ import org.drip.product.definition.*;
 
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
+import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
@@ -27,7 +28,6 @@ import org.drip.state.creator.*;
  * DRIP Math Support
  */
 
-import org.drip.math.common.FormatUtil;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

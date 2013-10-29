@@ -83,7 +83,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		throws java.lang.Exception
 	{
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate))
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate))
 			throw new java.lang.Exception ("DiscountCurve ctr: Invalid Inputs");
 	}
 
@@ -331,7 +331,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final double dblDt2)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDt1) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDt1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDt2))
 			throw new java.lang.Exception ("DiscountCurve::libor => Invalid input dates");
 
@@ -422,7 +422,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DiscountCurve::liborDV01 got NaN for date");
 
 		org.drip.analytics.date.JulianDate dtStart = epoch().addDays (2);
@@ -468,7 +468,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Invalid input");
 
 		org.drip.product.definition.CalibratableComponent[] aCalibComp = calibComp();
@@ -477,17 +477,17 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			throw new java.lang.Exception
 				("DiscountCurve.estimateMeasure => Calib Components not available");
 
-		org.drip.math.segment.PredictorResponseBuilderParams sbp = new
-			org.drip.math.segment.PredictorResponseBuilderParams
-				(org.drip.math.regime.RegimeBuilder.BASIS_SPLINE_POLYNOMIAL, new
-					org.drip.math.spline.PolynomialBasisSetParams (4),
-						org.drip.math.segment.DesignInelasticParams.Create (2, 2), null);
+		org.drip.spline.params.SegmentCustomBuilderControl sbp = new
+			org.drip.spline.params.SegmentCustomBuilderControl
+				(org.drip.spline.regime.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
+					org.drip.spline.basis.PolynomialFunctionSetParams (4),
+						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), null);
 
 		int iNumComponent = aCalibComp.length;
 		double[] adblDate = new double[iNumComponent];
 		double[] adblQuote = new double[iNumComponent];
-		org.drip.math.segment.PredictorResponseBuilderParams[] aSBP = new
-			org.drip.math.segment.PredictorResponseBuilderParams[iNumComponent - 1];
+		org.drip.spline.params.SegmentCustomBuilderControl[] aSBP = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iNumComponent - 1];
 
 		if (0 == iNumComponent)
 			throw new java.lang.Exception
@@ -509,11 +509,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			adblDate[i] = aCalibComp[i].getMaturityDate().getJulian();
 		}
 
-		org.drip.math.regime.MultiSegmentRegime regime =
-			org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator ("DISC_CURVE_REGIME",
+		org.drip.spline.regime.MultiSegmentSequence regime =
+			org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator ("DISC_CURVE_REGIME",
 				adblDate, adblQuote, aSBP, null,
-					org.drip.math.regime.MultiSegmentRegime.BOUNDARY_CONDITION_NATURAL,
-						org.drip.math.regime.MultiSegmentRegime.CALIBRATE);
+					org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+						org.drip.spline.regime.MultiSegmentSequence.CALIBRATE);
 
 		if (null == regime)
 			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot create Interp Regime");
@@ -537,7 +537,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public abstract org.drip.math.calculus.WengertJacobian dfJack (
+	public abstract org.drip.quant.calculus.WengertJacobian dfJack (
 		final double dblDate);
 
 	/**
@@ -548,7 +548,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian dfJack (
+	public org.drip.quant.calculus.WengertJacobian dfJack (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		if (null == dt) return null;
@@ -564,7 +564,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian dfJack (
+	public org.drip.quant.calculus.WengertJacobian dfJack (
 		final java.lang.String strTenor)
 	{
 		if (null == strTenor || strTenor.isEmpty()) return null;
@@ -586,10 +586,10 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compPVDFJack (
+	public org.drip.quant.calculus.WengertJacobian compPVDFJack (
 		final double dblDate)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCalibComp = calibComp();
 
@@ -597,7 +597,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		int iNumParameters = 0;
 		int iNumComponents = aCalibComp.length;
-		org.drip.math.calculus.WengertJacobian wjCompPVDF = null;
+		org.drip.quant.calculus.WengertJacobian wjCompPVDF = null;
 
 		org.drip.param.valuation.ValuationParams valParams =
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
@@ -607,14 +607,14 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 				_ccis.getFixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
-			org.drip.math.calculus.WengertJacobian wjCompPVDFMicroJack = aCalibComp[i].calcPVDFMicroJack
+			org.drip.quant.calculus.WengertJacobian wjCompPVDFMicroJack = aCalibComp[i].calcPVDFMicroJack
 				(valParams, null, mktParams, null);
 
 			if (null == wjCompPVDFMicroJack) return null;
 
 			if (null == wjCompPVDF) {
 				try {
-					wjCompPVDF = new org.drip.math.calculus.WengertJacobian (iNumComponents, iNumParameters =
+					wjCompPVDF = new org.drip.quant.calculus.WengertJacobian (iNumComponents, iNumParameters =
 						wjCompPVDFMicroJack.numParameters());
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
@@ -641,7 +641,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian compPVDFJack (
+	public org.drip.quant.calculus.WengertJacobian compPVDFJack (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		return null == dt ? null : compPVDFJack (dt.getJulian());
@@ -656,19 +656,19 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian getForwardRateJack (
+	public org.drip.quant.calculus.WengertJacobian getForwardRateJack (
 		final double dblDate1,
 		final double dblDate2)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblDate2) || dblDate1 == dblDate2)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2) || dblDate1 == dblDate2)
 			return null;
 
-		org.drip.math.calculus.WengertJacobian wj1 = dfJack (dblDate1);
+		org.drip.quant.calculus.WengertJacobian wj1 = dfJack (dblDate1);
 
 		if (null == wj1) return null;
 
-		org.drip.math.calculus.WengertJacobian wj2 = dfJack (dblDate2);
+		org.drip.quant.calculus.WengertJacobian wj2 = dfJack (dblDate2);
 
 		if (null == wj2) return null;
 
@@ -676,14 +676,14 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		double dblDF1 = java.lang.Double.NaN;
 		double dblDF2 = java.lang.Double.NaN;
-		org.drip.math.calculus.WengertJacobian wjForwardRate = null;
+		org.drip.quant.calculus.WengertJacobian wjForwardRate = null;
 
 		try {
 			dblDF1 = df (dblDate1);
 
 			dblDF2 = df (dblDate2);
 
-			wjForwardRate = new org.drip.math.calculus.WengertJacobian (1, iNumDFNodes);
+			wjForwardRate = new org.drip.quant.calculus.WengertJacobian (1, iNumDFNodes);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -709,7 +709,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian getForwardRateJack (
+	public org.drip.quant.calculus.WengertJacobian getForwardRateJack (
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2)
 	{
@@ -726,7 +726,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian getZeroRateJack (
+	public org.drip.quant.calculus.WengertJacobian getZeroRateJack (
 		final double dblDate)
 	{
 		return getForwardRateJack (epoch().getJulian(), dblDate);
@@ -740,7 +740,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.math.calculus.WengertJacobian getZeroRateJack (
+	public org.drip.quant.calculus.WengertJacobian getZeroRateJack (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		return getForwardRateJack (epoch(), dt);

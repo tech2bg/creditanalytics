@@ -19,14 +19,13 @@ import org.drip.product.definition.*;
  */
 
 import org.drip.product.creator.*;
+import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 
 /*
  * DRIP Math Support
  */
-
-import org.drip.math.common.FormatUtil;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -177,7 +176,7 @@ public class CDSW {
 			System.out.println (
 				aCDS[i].getMaturityDate() + " | " +
 				cc.manifestMeasure(aCDS[i].getPrimaryCode()) + " | " +
-				org.drip.math.common.FormatUtil.FormatDouble (1. - cc.getSurvival (aCDS[i].getMaturityDate()), 1, 3, 1.));
+				org.drip.quant.common.FormatUtil.FormatDouble (1. - cc.getSurvival (aCDS[i].getMaturityDate()), 1, 3, 1.));
 	}
 
 	/*

@@ -172,7 +172,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		if (null == strSerializedEDFuture || strSerializedEDFuture.isEmpty())
 			throw new java.lang.Exception ("EDFComponent de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedEDFuture,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedEDFuture,
 			getFieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)
@@ -280,7 +280,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("EDFComponent::getNotional => Got NaN date");
 
 		return _notlSchedule.getFactor (dblDate);
@@ -299,8 +299,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("EDFComponent::getNotional => Got NaN date");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
@@ -428,7 +428,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -452,15 +452,15 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-			org.drip.math.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
+			org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
 
-			org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.dfJack
+			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.dfJack
 				(getMaturityDate().getJulian());
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
 
-			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = new
-				org.drip.math.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = new
+				org.drip.quant.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
 
 			for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
 				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i, wjDFMaturity.getFirstDerivative
@@ -482,7 +482,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -501,15 +501,15 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-				org.drip.math.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
+				org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
 
-				org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.dfJack
+				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.dfJack
 					(getMaturityDate().getJulian());
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;
 
-				org.drip.math.calculus.WengertJacobian wjDFMicroJack = new
-					org.drip.math.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
+				org.drip.quant.calculus.WengertJacobian wjDFMicroJack = new
+					org.drip.quant.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
 
 				for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
 					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, i,
@@ -546,7 +546,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
 			try {
-				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 					java.lang.String[] {"Price"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();
@@ -556,7 +556,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 							&& prlc.setValue (0.) ? prlc : null;
 				}
 
-				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 					java.lang.String[] {"PV"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();
@@ -566,7 +566,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 							prlc.setValue (0.) ? prlc : null;
 				}
 
-				if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 					java.lang.String[] {"Rate"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();

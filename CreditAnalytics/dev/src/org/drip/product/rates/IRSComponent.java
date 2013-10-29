@@ -95,7 +95,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (null == strSerializedInterestRateSwap || strSerializedInterestRateSwap.isEmpty())
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedInterestRateSwap,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedInterestRateSwap,
 			getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
@@ -332,7 +332,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		}
 
 		try {
-			if (org.drip.math.common.NumberUtil.IsValid (dblValueNotional)) {
+			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
 
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
@@ -421,7 +421,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -441,7 +441,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 		try {
-			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = null;
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
 			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -450,10 +450,10 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
 
-				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
+				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -462,7 +462,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 				if (null == wjPVDFMicroJack)
-					wjPVDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+					wjPVDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 						wjPeriodFwdRateDF.numParameters());
 
 				double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
@@ -489,7 +489,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -511,7 +511,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 			try {
-				org.drip.math.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
+				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
 				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -520,10 +520,10 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
 
-					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -532,7 +532,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
-						wjSwapRateDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
 					double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
@@ -573,7 +573,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(lsmm.getQuantificationMetric())) {
-			if (org.drip.math.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
 				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
 				org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 					org.drip.state.estimator.PredictorResponseLinearConstraint();

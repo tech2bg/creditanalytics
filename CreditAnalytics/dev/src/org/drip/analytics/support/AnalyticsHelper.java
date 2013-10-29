@@ -350,7 +350,7 @@ public class AnalyticsHelper {
 		final double dblTime)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblYield) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblYield) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblTime))
 			throw new java.lang.Exception ("CurveProductHelper.YieldDF: Bad yield/time");
 
@@ -377,7 +377,7 @@ public class AnalyticsHelper {
 		final double dblTime)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDF) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDF) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblTime))
 			throw new java.lang.Exception ("CurveProductHelper.DFYield: Bad yield/time");
 
@@ -399,7 +399,7 @@ public class AnalyticsHelper {
 		final double dblValue,
 		final double dblMaturity)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblMaturity))
 			return null;
 
@@ -557,8 +557,8 @@ public class AnalyticsHelper {
 		if (null == dt) return null;
 
 		try {
-			return org.drip.analytics.date.JulianDate.CreateFromYMD (org.drip.math.common.DateUtil.GetYear
-				(dt), org.drip.math.common.DateUtil.GetMonth (dt), org.drip.math.common.DateUtil.GetDate
+			return org.drip.analytics.date.JulianDate.CreateFromYMD (org.drip.quant.common.DateUtil.GetYear
+				(dt), org.drip.quant.common.DateUtil.GetMonth (dt), org.drip.quant.common.DateUtil.GetDate
 					(dt));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -740,7 +740,7 @@ public class AnalyticsHelper {
 			final org.drip.analytics.date.JulianDate dtValue,
 			final double dblFix)
 	{
-		if (null == dtValue || null == bond || !org.drip.math.common.NumberUtil.IsValid (dblFix))
+		if (null == dtValue || null == bond || !org.drip.quant.common.NumberUtil.IsValid (dblFix))
 			return null;
 
 		org.drip.analytics.date.JulianDate dtReset = null;
@@ -798,7 +798,7 @@ public class AnalyticsHelper {
 	{
 		if (null == comp || null == valParams || null == period || null == pricerParams || null == mktParams
 			|| null == mktParams.getDiscountCurve() || null == mktParams.getCreditCurve() ||
-				!org.drip.math.common.NumberUtil.IsValid (dblWorkoutDate) || period.getStartDate() >
+				!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) || period.getStartDate() >
 					dblWorkoutDate)
 			return null;
 
@@ -838,14 +838,14 @@ public class AnalyticsHelper {
 		final double dblBump,
 		final boolean bIsProportional)
 	{
-		if (null == adblQuotesIn || 0 == adblQuotesIn.length || !org.drip.math.common.NumberUtil.IsValid
+		if (null == adblQuotesIn || 0 == adblQuotesIn.length || !org.drip.quant.common.NumberUtil.IsValid
 			(dblBump))
 			return null;
 
 		double[] adblQuotesOut = new double[adblQuotesIn.length];
 
 		for (int i = 0; i < adblQuotesIn.length; ++i) {
-			if (!org.drip.math.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
+			if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
 			if (!bIsProportional)
 				adblQuotesOut[i] = adblQuotesIn[i] + dblBump;
@@ -877,7 +877,7 @@ public class AnalyticsHelper {
 		if (org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK ==
 			ntp._iTweakNode) {
 			for (int i = 0; i < adblQuotesIn.length; ++i) {
-				if (!org.drip.math.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
+				if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
 				if (!ntp._bIsTweakProportional)
 					adblQuotesOut[i] = adblQuotesIn[i] + ntp._dblTweakAmount;
@@ -888,7 +888,7 @@ public class AnalyticsHelper {
 			if (ntp._iTweakNode < 0 || ntp._iTweakNode >= adblQuotesIn.length) return null;
 
 			for (int i = 0; i < adblQuotesIn.length; ++i) {
-				if (!org.drip.math.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
+				if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
 				if (i == ntp._iTweakNode) {
 					if (!ntp._bIsTweakProportional)

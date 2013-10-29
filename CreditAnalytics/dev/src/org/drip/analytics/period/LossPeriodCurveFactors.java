@@ -192,7 +192,7 @@ public class LossPeriodCurveFactors extends Period {
 		if (null == strCP || strCP.isEmpty())
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strCP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serialize: Invalid number of fields");

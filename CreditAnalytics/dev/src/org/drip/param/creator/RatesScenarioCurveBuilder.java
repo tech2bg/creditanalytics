@@ -166,8 +166,8 @@ public class RatesScenarioCurveBuilder {
 		int i = 0;
 		double[] adblQM = new double[iTruthSize];
 		double[] adblDate = new double[iTruthSize];
-		org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP = new
-			org.drip.math.segment.PredictorResponseBuilderParams[iTruthSize - 1];
+		org.drip.spline.params.SegmentCustomBuilderControl[] aPRBP = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iTruthSize - 1];
 
 		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meQMTruth : esQMTruth) {
 			if (null == meQMTruth) return null;
@@ -189,8 +189,8 @@ public class RatesScenarioCurveBuilder {
 		}
 
 		try {
-			org.drip.math.regime.MultiSegmentRegime regime =
-				org.drip.math.regime.RegimeBuilder.CreateCalibratedRegimeEstimator (strName + "_REGIME",
+			org.drip.spline.regime.MultiSegmentSequence regime =
+				org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator (strName + "_REGIME",
 					adblDate, adblQM, aPRBP, gccp.bestFitWeightedResponse(),
 						gccp.calibrationBoundaryCondition(), gccp.calibrationDetail());
 
@@ -199,11 +199,11 @@ public class RatesScenarioCurveBuilder {
 			if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, new
-					org.drip.math.grid.OverlappingRegimeSpan (regime));
+					org.drip.spline.grid.OverlappingRegimeSpan (regime));
 			else if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, new
-					org.drip.math.grid.OverlappingRegimeSpan (regime));
+					org.drip.spline.grid.OverlappingRegimeSpan (regime));
 
 			return dcMultiPass.setCCIS (new org.drip.analytics.definition.SmoothingCCIS (dcShapePreserver,
 				gccp, lcc, aRBS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
@@ -249,8 +249,8 @@ public class RatesScenarioCurveBuilder {
 		int i = 0;
 		double[] adblQM = new double[iTruthSize];
 		double[] adblDate = new double[iTruthSize];
-		org.drip.math.segment.PredictorResponseBuilderParams[] aPRBP = new
-			org.drip.math.segment.PredictorResponseBuilderParams[iTruthSize - 1];
+		org.drip.spline.params.SegmentCustomBuilderControl[] aPRBP = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iTruthSize - 1];
 
 		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meQMTruth : esQMTruth) {
 			if (null == meQMTruth) return null;
@@ -272,14 +272,14 @@ public class RatesScenarioCurveBuilder {
 		}
 
 		try {
-			org.drip.math.pchip.LocalControlRegime lcr = org.drip.math.pchip.LocalControlRegime.Create
+			org.drip.spline.pchip.LocalMonotoneCkGenerator lcr = org.drip.spline.pchip.LocalMonotoneCkGenerator.Create
 				(adblDate, adblQM, lccp.C1GeneratorScheme(), lccp.eliminateSpuriousExtrema(),
 					lccp.applyMonotoneFilter());
 
 			if (null == lcr) return null;
 
-			org.drip.math.regime.MultiSegmentRegime regime =
-				org.drip.math.pchip.LocalControlRegimeBuilder.CustomSlopeHermiteSpline (strName + "_REGIME",
+			org.drip.spline.regime.MultiSegmentSequence regime =
+				org.drip.spline.pchip.LocalControlRegimeBuilder.CustomSlopeHermiteSpline (strName + "_REGIME",
 					adblDate, adblQM, lcr.C1(), aPRBP, lccp.bestFitWeightedResponse(),
 						lccp.calibrationDetail());
 
@@ -288,11 +288,11 @@ public class RatesScenarioCurveBuilder {
 			if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, new
-					org.drip.math.grid.OverlappingRegimeSpan (regime));
+					org.drip.spline.grid.OverlappingRegimeSpan (regime));
 			else if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, new
-					org.drip.math.grid.OverlappingRegimeSpan (regime));
+					org.drip.spline.grid.OverlappingRegimeSpan (regime));
 
 			return dcMultiPass.setCCIS (new org.drip.analytics.definition.SmoothingCCIS (dcShapePreserver,
 				lccp, lcc, aRBS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;

@@ -150,7 +150,7 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCreditCurve || strSerializedCreditCurve.isEmpty())
 			throw new java.lang.Exception ("PricerParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCreditCurve,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditCurve,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

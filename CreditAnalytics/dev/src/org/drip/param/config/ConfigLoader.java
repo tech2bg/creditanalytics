@@ -442,9 +442,9 @@ public class ConfigLoader {
 					if (null == lh) lh = new org.drip.analytics.holiday.Locale();
 
 					lh.addStaticHoliday (org.drip.analytics.date.JulianDate.CreateFromYMD
-						(org.drip.math.common.DateUtil.GetYear (dtSQLHoliday),
-							org.drip.math.common.DateUtil.GetMonth (dtSQLHoliday),
-								org.drip.math.common.DateUtil.GetYear (dtSQLHoliday)), "");
+						(org.drip.quant.common.DateUtil.GetYear (dtSQLHoliday),
+							org.drip.quant.common.DateUtil.GetMonth (dtSQLHoliday),
+								org.drip.quant.common.DateUtil.GetYear (dtSQLHoliday)), "");
 
 					mapHols.put (strLocation, lh);
 				}

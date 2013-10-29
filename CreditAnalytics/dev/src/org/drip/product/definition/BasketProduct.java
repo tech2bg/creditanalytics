@@ -531,7 +531,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	{
 		double dblNotional = getNotional (dblDate);
 
-		if (null == bmp || 0. == dblNotional || !org.drip.math.common.NumberUtil.IsValid (dblNotional))
+		if (null == bmp || 0. == dblNotional || !org.drip.quant.common.NumberUtil.IsValid (dblNotional))
 			throw new java.lang.Exception ("BasketProduct::getCoupon => Cannot extract basket notional");
 
 		org.drip.product.definition.Component[] aComp = getComponents();

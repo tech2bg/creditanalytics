@@ -77,7 +77,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCreditAnalyticsRequest || strSerializedCreditAnalyticsRequest.isEmpty())
 			throw new java.lang.Exception ("CreditAnalyticsRequest de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedCreditAnalyticsRequest, getFieldDelimiter());
 
 		if (null == astrField || 8 > astrField.length)
@@ -171,7 +171,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 
 		_strTime = new java.util.Date().toString();
 
-		_strID = org.drip.math.common.StringUtil.GUID();
+		_strID = org.drip.quant.common.StringUtil.GUID();
 	}
 
 	/**

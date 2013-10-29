@@ -300,7 +300,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		final double dblFixing)
 	{
 		if (null == dtFix || null == strIndex || strIndex.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (dblFixing))
+			!org.drip.quant.common.NumberUtil.IsValid (dblFixing))
 			return false;
 
 		if (null == _mmFixings)

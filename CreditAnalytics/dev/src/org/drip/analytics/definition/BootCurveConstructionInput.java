@@ -91,7 +91,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 			java.lang.String strInstrumentCode = aCalibInst[i].getPrimaryCode();
 
 			if (null == strInstrumentCode || strInstrumentCode.isEmpty() || null == astrCalibMeasure[i] ||
-				astrCalibMeasure[i].isEmpty() || !org.drip.math.common.NumberUtil.IsValid
+				astrCalibMeasure[i].isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
 					(adblCalibQuote[i]))
 				return null;
 

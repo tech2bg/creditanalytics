@@ -113,7 +113,7 @@ public class RatesSetting extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception
 				("RatesSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedRatesSetting,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedRatesSetting,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

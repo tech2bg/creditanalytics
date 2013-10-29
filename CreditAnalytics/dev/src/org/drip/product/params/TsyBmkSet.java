@@ -83,7 +83,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 		if (null == strSerializedTsyBmkSet || strSerializedTsyBmkSet.isEmpty())
 			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedTsyBmkSet,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedTsyBmkSet,
 			getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
@@ -105,7 +105,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_astrSecBmk = null;
 		else {
-			_astrSecBmk = org.drip.math.common.StringUtil.Split (astrField[2],
+			_astrSecBmk = org.drip.quant.common.StringUtil.Split (astrField[2],
 				getCollectionRecordDelimiter());
 
 			if (null == _astrSecBmk || 0 == _astrSecBmk.length) {

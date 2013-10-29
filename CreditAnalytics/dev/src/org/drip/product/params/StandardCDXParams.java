@@ -58,7 +58,7 @@ public class StandardCDXParams {
 		throws java.lang.Exception
 	{
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblCoupon = dblCoupon))
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon))
 			throw new java.lang.Exception ("StandardCDXParams ctr => Invalid inputs");
 
 		_iNumComponents = iNumComponents;

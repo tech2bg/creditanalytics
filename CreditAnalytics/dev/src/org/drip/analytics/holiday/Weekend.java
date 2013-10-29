@@ -79,7 +79,7 @@ public class Weekend extends org.drip.service.stream.Serializer {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (strWH))
 			throw new java.lang.Exception ("Weekend de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strWH, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strWH, getFieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
 			throw new java.lang.Exception ("Weekend de-serialize: Invalid number of fields");
@@ -89,7 +89,7 @@ public class Weekend extends org.drip.service.stream.Serializer {
 		java.util.List<java.lang.Integer> lsi = new java.util.ArrayList<java.lang.Integer>();
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]) ||
-			!org.drip.math.common.StringUtil.IntegerListFromString (lsi, astrField[1],
+			!org.drip.quant.common.StringUtil.IntegerListFromString (lsi, astrField[1],
 				getCollectionRecordDelimiter()))
 			throw new java.lang.Exception ("Weekend de-serializer: Cannot decode state");
 

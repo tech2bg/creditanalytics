@@ -377,14 +377,14 @@ public class SerializerTestSuite {
 
 		co._dblCalcTime = 433.7;
 
-		Set2DMapValues (co._mBase = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
-			0.3601, 537.500);
+		Set2DMapValues (co._mBase = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.3601, 537.500);
 
-		Set2DMapValues (co._mRRDelta = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
-			0.0015, 0.020);
+		Set2DMapValues (co._mRRDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.0015, 0.020);
 
-		Set2DMapValues (co._mRRGamma = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
-			0.0006, 0.003);
+		Set2DMapValues (co._mRRGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.0006, 0.003);
 
 		Set2DMapValues (co._mFlatIRDelta = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), -0.0007, 0.006);

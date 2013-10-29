@@ -101,7 +101,7 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 		if (null == strSerializedCurrencySet || strSerializedCurrencySet.isEmpty())
 			throw new java.lang.Exception ("CurrencySet de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCurrencySet,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCurrencySet,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

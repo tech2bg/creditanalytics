@@ -57,9 +57,9 @@ public class LocalControlCurveParams extends org.drip.state.estimator.SmoothingC
 	public LocalControlCurveParams (
 		final java.lang.String strC1GeneratorScheme,
 		final java.lang.String strSmootheningQuantificationMetric,
-		final org.drip.math.segment.PredictorResponseBuilderParams prbp,
+		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationDetail,
-		final org.drip.math.segment.BestFitWeightedResponse bfwr,
+		final org.drip.spline.params.SegmentBestFitResponse bfwr,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
 		throws java.lang.Exception

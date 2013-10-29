@@ -78,7 +78,7 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 		if (null == strHoliday || strHoliday.isEmpty())
 			throw new java.lang.Exception ("Base de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strHoliday,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strHoliday,
 			super.getFieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
@@ -111,7 +111,7 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 		final Weekend wkend)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Base::RollHoliday => Cannot Roll NaN date!");
 
 		double dblRolledDate = dblDate;
