@@ -29,36 +29,41 @@ package org.drip.spline.segment;
  */
 
 /**
- * This Class implements the Segment's Best Fit and the Curvature Penalizers.
+ * This Class implements the Segment's Best Fit, Curvature, and Length Penalizers.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class BestFitCurvaturePenalizer {
+public class BestFitFlexurePenalizer {
 	private org.drip.spline.segment.LocalBasisEvaluator _lbe = null;
 	private org.drip.spline.params.SegmentBestFitResponse _sbfr = null;
-	private org.drip.spline.params.SegmentCurvaturePenaltyControl _scpp = null;
+	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcLength = null;
+	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcCurvature = null;
 
 	/**
-	 * BestFitCurvaturePenalizer constructor
+	 * BestFitFlexurePenalizer constructor
 	 * 
-	 * @param scpp Curvature Penalty Parameters
+	 * @param sfpcCurvature Curvature Penalty Parameters
+	 * @param sfpcLength Length Penalty Parameters
 	 * @param sbfr Best Fit Weighted Response
 	 * @param lbe The Local Basis Evaluator
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BestFitCurvaturePenalizer (
-		final org.drip.spline.params.SegmentCurvaturePenaltyControl scpp,
+	public BestFitFlexurePenalizer (
+		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcCurvature,
+		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcLength,
 		final org.drip.spline.params.SegmentBestFitResponse sbfr,
 		final org.drip.spline.segment.LocalBasisEvaluator lbe)
 		throws java.lang.Exception
 	{
-		if (null == (_scpp = scpp) || null == (_lbe = lbe))
-			throw new java.lang.Exception ("BestFitCurvaturePenalizer ctr: Invalid Inputs");
+		if (null == (_lbe = lbe))
+			throw new java.lang.Exception ("BestFitFlexurePenalizer ctr: Invalid Inputs");
 
 		_sbfr = sbfr;
+		_sfpcLength = sfpcLength;
+		_sfpcCurvature = sfpcCurvature;
 	}
 
 	/**
@@ -77,20 +82,56 @@ public class BestFitCurvaturePenalizer {
 		final int iBasisIndexR)
 		throws java.lang.Exception
 	{
+		if (null == _sfpcCurvature) return 0.;
+
 		org.drip.quant.function1D.AbstractUnivariate au = new org.drip.quant.function1D.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblVariate)
 				throws Exception
 			{
-				int iOrder = _scpp.derivativeOrder();
+				int iOrder = _sfpcCurvature.derivativeOrder();
 
 				return _lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexI) *
 					_lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexR);
 			}
 		};
 
-		return _scpp.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, 0., 1.);
+		return _sfpcCurvature.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, 0., 1.);
+	}
+
+	/**
+	 * Compute the Cross-Length Penalty for the given Basis Pair
+	 * 
+	 * @param iBasisIndexI I Basis Index (I is the Summation Index)
+	 * @param iBasisIndexR R Basis Index (R is the Separator Index)
+	 * 
+	 * @return The Cross-Length Penalty for the given Basis Pair
+	 * 
+	 * @throws java.lang.Exception Thrown if the Cross-Length Penalty cannot be computed
+	 */
+
+	public double basisPairLengthPenalty (
+		final int iBasisIndexI,
+		final int iBasisIndexR)
+		throws java.lang.Exception
+	{
+		if (null == _sfpcLength) return 0.;
+
+		org.drip.quant.function1D.AbstractUnivariate au = new org.drip.quant.function1D.AbstractUnivariate
+			(null) {
+			@Override public double evaluate (
+				final double dblVariate)
+				throws Exception
+			{
+				int iOrder = _sfpcLength.derivativeOrder();
+
+				return _lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexI) *
+					_lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexR);
+			}
+		};
+
+		return _sfpcLength.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, 0., 1.);
 	}
 
 	/**
@@ -142,8 +183,8 @@ public class BestFitCurvaturePenalizer {
 		final int iBasisIndexR)
 		throws java.lang.Exception
 	{
-		return basisPairCurvaturePenalty (iBasisIndexI, iBasisIndexR) + basisBestFitPenalty (iBasisIndexI,
-			iBasisIndexR);
+		return basisPairCurvaturePenalty (iBasisIndexI, iBasisIndexR) + basisPairLengthPenalty (iBasisIndexI,
+			iBasisIndexR) + basisBestFitPenalty (iBasisIndexI, iBasisIndexR);
 	}
 
 	/**

@@ -64,19 +64,19 @@ import org.drip.spline.regime.*;
 public class CustomCurveBuilder {
 
 	/**
-	 * Sample API demonstrating the creation of the segment builder parameters based on exponential tension spline.
+	 * Sample API demonstrating the creation of the segment builder parameters based on Koch-Lyche-Kvasov tension spline.
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final SegmentCustomBuilderControl MakeExponentialTensionSCBC (
+	private static final SegmentCustomBuilderControl MakeKLKTensionSCBC (
 		final double dblTension)
 		throws Exception
 	{
 		return new SegmentCustomBuilderControl (
-			MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION, // Spline Type KLK Hyperbolic Basis Tension
 			new ExponentialTensionSetParams (dblTension), // Segment Tension Parameter Value
-			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 			new ResponseScalingShapeControl (
 				true,
 				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
@@ -95,7 +95,7 @@ public class CustomCurveBuilder {
 		return new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 			new PolynomialFunctionSetParams (iNumDegree + 1), // Polynomial of degree (i.e, cubic would be 3+1; 4 basis functions - 1 "intercept")
-			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 			new ResponseScalingShapeControl (
 				true,
 				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
@@ -115,7 +115,7 @@ public class CustomCurveBuilder {
 			return new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 				new PolynomialFunctionSetParams (4), // Polynomial of order 3 (i.e, cubic - 4 basis functions - 1 "intercept")
-				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 				new ResponseScalingShapeControl (
 					true,
 					new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
@@ -124,7 +124,7 @@ public class CustomCurveBuilder {
 			return new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
 				new ExponentialTensionSetParams (1.), // Segment Tension Parameter Value = 1.
-				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Roughness penalty (if necessary) order: 2
+				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 				new ResponseScalingShapeControl (
 					true,
 					new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
@@ -315,8 +315,7 @@ public class CustomCurveBuilder {
 			} else {
 				/*
 				 * The Segment Builder Parameters shown here illustrate using an exponential/hyperbolic
-				 *  spline with very high tension (100000.) to "stitch" the cash regime with the swaps
-				 *  regime.
+				 *  spline with high tension (15.) to "stitch" the cash regime with the swaps regime.
 				 *  
 				 * Each of the respective regimes have their own tension settings, so the "high" tension
 				 *  ensures that there is no propagation of derivatives and therefore high locality.
@@ -327,9 +326,9 @@ public class CustomCurveBuilder {
 				if (bFirstNode) {
 					bFirstNode = false;
 
-					scbcLocal = MakeExponentialTensionSCBC (100.);
+					scbcLocal = MakeKLKTensionSCBC (15.);
 				} else
-					scbcLocal = MakeExponentialTensionSCBC (1.);
+					scbcLocal = MakeKLKTensionSCBC (1.);
 
 				/*
 				 * If not the head segment, just append the exclusive swap instrument segment to the tail of

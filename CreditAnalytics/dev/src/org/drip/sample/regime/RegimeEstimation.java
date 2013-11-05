@@ -606,7 +606,7 @@ public class RegimeEstimation {
 		 * Construct a rational shape controller with the shape controller tension of 1.
 		 */
 
-		double dblShapeControllerTension = 1.;
+		double dblShapeControllerTension = 0.;
 
 		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
 

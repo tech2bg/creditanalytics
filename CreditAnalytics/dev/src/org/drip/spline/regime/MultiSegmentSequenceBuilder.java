@@ -80,6 +80,30 @@ public class MultiSegmentSequenceBuilder {
 	public static final java.lang.String BASIS_SPLINE_EXPONENTIAL_MIXTURE = "ExponentialMixture";
 
 	/**
+	 * Koch-Lyche-Kvasov Exponential Tension Spline
+	 */
+
+	public static final java.lang.String BASIS_SPLINE_KLK_EXPONENTIAL_TENSION = "KLKExponentialTension";
+
+	/**
+	 * Koch-Lyche-Kvasov Hyperbolic Tension Spline
+	 */
+
+	public static final java.lang.String BASIS_SPLINE_KLK_HYPERBOLIC_TENSION = "KLKHyperbolicTension";
+
+	/**
+	 * Koch-Lyche-Kvasov Rational Linear Tension Spline
+	 */
+
+	public static final java.lang.String BASIS_SPLINE_KLK_RATIONAL_LINEAR_TENSION = "KLKRationalLinearTension";
+
+	/**
+	 * Koch-Lyche-Kvasov Rational Quadratic Tension Spline
+	 */
+
+	public static final java.lang.String BASIS_SPLINE_KLK_RATIONAL_QUADRATIC_TENSION = "KLKRationalQuadraticTension";
+
+	/**
 	 * Create an uncalibrated Regime instance over the specified Predictor Ordinate Array using the specified
 	 * 	Basis Spline Parameters for the Segment.
 	 * 
@@ -114,7 +138,14 @@ public class MultiSegmentSequenceBuilder {
 						!BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline) &&
 							!BASIS_SPLINE_KAKLIS_PANDELIS.equalsIgnoreCase (strBasisSpline) &&
 								!BASIS_SPLINE_EXPONENTIAL_RATIONAL.equalsIgnoreCase (strBasisSpline) &&
-									!BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline)))
+									!BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline) &&
+										!BASIS_SPLINE_KLK_EXPONENTIAL_TENSION.equalsIgnoreCase
+											(strBasisSpline) &&
+												!BASIS_SPLINE_KLK_HYPERBOLIC_TENSION.equalsIgnoreCase
+													(strBasisSpline) &&
+														!BASIS_SPLINE_KLK_RATIONAL_LINEAR_TENSION.equalsIgnoreCase
+				(strBasisSpline) && !BASIS_SPLINE_KLK_RATIONAL_QUADRATIC_TENSION.equalsIgnoreCase
+					(strBasisSpline)))
 				return null;
 
 			if (BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
@@ -164,6 +195,34 @@ public class MultiSegmentSequenceBuilder {
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialMixtureBasisSet
 							((org.drip.spline.basis.ExponentialMixtureSetParams) aSCBC[i].basisSetParams()),
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+					return null;
+			} else if (BASIS_SPLINE_KLK_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
+				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
+						org.drip.spline.tension.KochLycheKvasovFamily.FromExponentialPrimitive
+							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+					return null;
+			} else if (BASIS_SPLINE_KLK_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
+				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
+						org.drip.spline.tension.KochLycheKvasovFamily.FromHyperbolicPrimitive
+							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+					return null;
+			} else if (BASIS_SPLINE_KLK_RATIONAL_LINEAR_TENSION.equalsIgnoreCase (strBasisSpline)) {
+				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
+						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalLinearPrimitive
+							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+					return null;
+			} else if (BASIS_SPLINE_KLK_RATIONAL_QUADRATIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
+				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
+						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalQuadraticPrimitive
+							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			}

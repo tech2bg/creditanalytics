@@ -35,13 +35,13 @@ import org.drip.spline.regime.*;
  */
 
 /**
- * PenalizedFitRegime demonstrates the setting up and the usage of the curvature and closeness of fit
+ * PenalizedCurvatureFit demonstrates the setting up and the usage of the curvature and closeness of fit
  * 	penalizing spline.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class PenalizedFitRegime {
+public class PenalizedCurvatureFit {
 
 	/**
 	 * Build Polynomial Segment Control Parameters

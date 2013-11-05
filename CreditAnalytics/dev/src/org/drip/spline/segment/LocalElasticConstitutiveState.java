@@ -101,8 +101,9 @@ public class LocalElasticConstitutiveState extends org.drip.spline.segment.Elast
 			return false;
 
 		try {
-			org.drip.spline.segment.BestFitCurvaturePenalizer bfcp = new
-				org.drip.spline.segment.BestFitCurvaturePenalizer (_sdic.getCPP(), sbfr, this);
+			org.drip.spline.segment.BestFitFlexurePenalizer bffp = new
+				org.drip.spline.segment.BestFitFlexurePenalizer (_sdic.curvaturePenaltyControl(),
+					_sdic.lengthPenaltyControl(), sbfr, this);
 
 			for (int j = 0; j < iNumResponseBasisCoeff; ++j) {
 				if (j < iNumPredictorOrdinate)
@@ -117,7 +118,7 @@ public class LocalElasticConstitutiveState extends org.drip.spline.segment.Elast
 					adblPredictorResponseConstraintValue[j] =
 						adblRightEdgeLocalDeriv[j - iNumPredictorOrdinate - iNumConstraint - iNumLeftDeriv];
 				else
-					adblPredictorResponseConstraintValue[j] = bfcp.basisPairPenaltyConstraint (j);
+					adblPredictorResponseConstraintValue[j] = bffp.basisPairPenaltyConstraint (j);
 			}
 
 			for (int i = 0; i < iNumResponseBasisCoeff; ++i) {
@@ -144,7 +145,7 @@ public class LocalElasticConstitutiveState extends org.drip.spline.segment.Elast
 						aadblResponseBasisCoeffConstraint[l][i] = localSpecificBasisDerivative (1., l -
 							iNumPredictorOrdinate - iNumConstraint - iNumLeftDeriv + 1, i);
 					else
-						aadblResponseBasisCoeffConstraint[l][i] = bfcp.basisPairConstraintCoefficient (i, l);
+						aadblResponseBasisCoeffConstraint[l][i] = bffp.basisPairConstraintCoefficient (i, l);
 				}
 			}
 		} catch (java.lang.Exception e) {
@@ -500,12 +501,12 @@ public class LocalElasticConstitutiveState extends org.drip.spline.segment.Elast
 		double dblDCPE = 0.;
 		int iNumBasis = _fs._aAUResponseBasis.length;
 
-		org.drip.spline.params.SegmentCurvaturePenaltyControl scpp = _sdic.getCPP();
+		org.drip.spline.params.SegmentFlexurePenaltyControl scpp = _sdic.curvaturePenaltyControl();
 
-		if (null == scpp) scpp = new org.drip.spline.params.SegmentCurvaturePenaltyControl (2, 1.);
+		if (null == scpp) scpp = new org.drip.spline.params.SegmentFlexurePenaltyControl (2, 1.);
 
-		org.drip.spline.segment.BestFitCurvaturePenalizer bfcp = new
-			org.drip.spline.segment.BestFitCurvaturePenalizer (scpp, null, this);
+		org.drip.spline.segment.BestFitFlexurePenalizer bfcp = new
+			org.drip.spline.segment.BestFitFlexurePenalizer (scpp, null, null, this);
 
 		for (int i = 0; i < iNumBasis; ++i) {
 			for (int j = 0; j < iNumBasis; ++j)

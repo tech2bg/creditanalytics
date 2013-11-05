@@ -330,15 +330,15 @@ public class BasisSplineSet {
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with second order
-		 * 	roughness penalty, and without constraint
+		 *  curvature penalty, and without constraint
 		 */
 
 		int iK = 2;
-		int iRoughnessPenaltyDerivativeOrder = 2;
+		int iCurvaturePenaltyDerivativeOrder = 2;
 
 		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (
 			iK,
-			iRoughnessPenaltyDerivativeOrder);
+			iCurvaturePenaltyDerivativeOrder);
 
 		/*
 		 * Test the polynomial spline
@@ -389,6 +389,6 @@ public class BasisSplineSet {
 		TestC1HermiteSpline (
 			CreatePolynomialSpline(),
 			rssc,
-			SegmentDesignInelasticControl.Create (1, iRoughnessPenaltyDerivativeOrder));
+			SegmentDesignInelasticControl.Create (1, iCurvaturePenaltyDerivativeOrder));
 	}
 }

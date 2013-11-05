@@ -29,18 +29,20 @@ package org.drip.spline.params;
  */
 
 /**
- * SegmentCurvaturePenaltyControl implements basis per-segment Curvature Penalty Parameter Set. Currently it
- *  contains the Curvature Penalty Derivative Order and the Roughness Coefficient Amplitude.
+ * SegmentFlexurePenaltyControl implements basis per-segment Flexure Penalty Parameter Set. Currently it
+ *  contains the Flexure Penalty Derivative Order and the Roughness Coefficient Amplitude.
+ *  
+ *  Flexure Penalty Control may be used to implement Segment Curvature Control and/or Segment Length Control.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentCurvaturePenaltyControl {
+public class SegmentFlexurePenaltyControl {
 	private int _iDerivativeOrder = -1;
 	private double _dblAmplitude = java.lang.Double.NaN;
 
 	/**
-	 * SegmentCurvaturePenaltyControl constructor
+	 * SegmentFlexurePenaltyControl constructor
 	 * 
 	 * @param iDerivativeOrder Roughness Penalty Derivative Order
 	 * @param dblAmplitude Roughness Curvature Penalty Amplitude
@@ -48,14 +50,14 @@ public class SegmentCurvaturePenaltyControl {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public SegmentCurvaturePenaltyControl (
+	public SegmentFlexurePenaltyControl (
 		final int iDerivativeOrder,
 		final double dblAmplitude)
 		throws java.lang.Exception
 	{
 		if (0 >= (_iDerivativeOrder = iDerivativeOrder) || !org.drip.quant.common.NumberUtil.IsValid
 			(_dblAmplitude = dblAmplitude))
-			throw new java.lang.Exception ("SegmentCurvaturePenaltyControl ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SegmentFlexurePenaltyControl ctr: Invalid Inputs");
 	}
 
 	/**
