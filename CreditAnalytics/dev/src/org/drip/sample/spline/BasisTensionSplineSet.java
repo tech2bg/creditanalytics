@@ -58,7 +58,7 @@ public class BasisTensionSplineSet {
 	private static final FunctionSet KLKHyperbolicTensionSpline()
 		throws Exception
 	{
-		double dblTension = 1.;
+		double dblTension = .01;
 
 		/*
 		 * Create the basis parameter set from the segment tension parameter, and construct the basis
@@ -213,7 +213,7 @@ public class BasisTensionSplineSet {
 		 * Construct a rational shape controller with the shape controller tension of 1.
 		 */
 
-		double dblShapeControllerTension = 0.0;
+		double dblShapeControllerTension = 1.;
 
 		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
 			true,
@@ -221,7 +221,7 @@ public class BasisTensionSplineSet {
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with second order
-		 *  penalty and second order curvature penalty, and without constraint
+		 *  curvature penalty, and without constraint
 		 */
 
 		int iK = 2;

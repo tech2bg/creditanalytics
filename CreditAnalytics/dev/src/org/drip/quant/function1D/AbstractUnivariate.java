@@ -82,6 +82,8 @@ public abstract class AbstractUnivariate {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 >= iOrder) return null;
 
+		double dblDerivative = 0.;
+		double dblOrderedVariateInfinitesimal = 1.;
 		double dblVariateInfinitesimal = java.lang.Double.NaN;
 
 		try {
@@ -92,30 +94,21 @@ public abstract class AbstractUnivariate {
 			return null;
 		}
 
-		if (1 != iOrder) {
+		for (int i = 0; i <= iOrder; ++i) {
+			if (0 != i) dblOrderedVariateInfinitesimal *= (2. * dblVariateInfinitesimal);
+
 			try {
-				org.drip.quant.calculus.Differential diffLeft = calcDifferential (dblVariate - 0.5 *
-					dblVariateInfinitesimal, iOrder - 1);
-
-				if (null == diffLeft) return null;
-
-				org.drip.quant.calculus.Differential diffRight = calcDifferential (dblVariate + 0.5 *
-					dblVariateInfinitesimal, iOrder - 1);
-
-				if (null == diffRight) return null;
-
-				return new org.drip.quant.calculus.Differential ((diffLeft.getDeltaOF() -
-					diffRight.getDeltaOF()) / dblVariateInfinitesimal, dblVariateInfinitesimal);
+				dblDerivative += (i % 2 == 0 ? 1 : -1) * org.drip.quant.common.NumberUtil.NCK (iOrder, i) *
+					evaluate (dblVariate + dblVariateInfinitesimal * (iOrder - 2. * i));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
-			}
 
-			return null;
+				return null;
+			}
 		}
 
 		try {
-			return new org.drip.quant.calculus.Differential (dblVariateInfinitesimal, evaluate (dblVariate +
-				dblVariateInfinitesimal) - dblOFBase);
+			return new org.drip.quant.calculus.Differential (dblOrderedVariateInfinitesimal, dblDerivative);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -159,6 +152,6 @@ public abstract class AbstractUnivariate {
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		return calcDifferential (dblVariate, evaluate (dblVariate), iOrder).calcSlope (false);
+		return calcDifferential (dblVariate, evaluate (dblVariate), iOrder).calcSlope (true);
 	}
 }

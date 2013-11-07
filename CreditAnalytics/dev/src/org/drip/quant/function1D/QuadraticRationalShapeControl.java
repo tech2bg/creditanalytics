@@ -74,13 +74,18 @@ public class QuadraticRationalShapeControl extends org.drip.quant.function1D.Abs
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		if (3 <= iOrder) return super.calcDerivative (dblX, iOrder);
+		if (0. == _dblLambda) return 0.;
 
 		double dblD2BetaDX2 = -2. * _dblLambda;
 		double dblDBetaDX = _dblLambda * (1. - 2. * dblX);
 		double dblBeta = 1. + _dblLambda * dblX * (1. - dblX);
-		return 1 == iOrder ? -1. * dblDBetaDX / (dblBeta * dblBeta) : (2. * dblDBetaDX - dblBeta *
-			dblD2BetaDX2) / (dblBeta * dblBeta * dblBeta);
+
+		if (1 == iOrder) return -1. * dblDBetaDX / (dblBeta * dblBeta);
+
+		if (2 == iOrder)
+			return (2. * dblDBetaDX * dblDBetaDX - dblBeta * dblD2BetaDX2) / (dblBeta * dblBeta * dblBeta);
+
+		return super.calcDerivative (dblX, iOrder);
 	}
 
 	/**
@@ -92,5 +97,16 @@ public class QuadraticRationalShapeControl extends org.drip.quant.function1D.Abs
 	public double getShapeControlCoefficient()
 	{
 		return _dblLambda;
+	}
+
+	public static final void main (
+		final java.lang.String[] astrArgs)
+		throws java.lang.Exception
+	{
+		QuadraticRationalShapeControl qrsc = new QuadraticRationalShapeControl (1.);
+
+		System.out.println (qrsc.calcDerivative (0., 2));
+
+		System.out.println (qrsc.calcDerivative (1., 2));
 	}
 }

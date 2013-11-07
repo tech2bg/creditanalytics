@@ -589,9 +589,16 @@ public class LocalElasticConstitutiveState extends org.drip.spline.segment.Elast
 				(dblLocalPredictorOrdinate) : _fs._aAUResponseBasis[iBasisFunctionIndex].calcDerivative
 					(dblLocalPredictorOrdinate, i);
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblBasisFunctionDeriv))
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblBasisFunctionDeriv)) {
+				System.out.println ("\tdblLocalPredictorOrdinate: " + dblLocalPredictorOrdinate);
+
+				System.out.println ("\t" + _fs._aAUResponseBasis[iBasisFunctionIndex]);
+
+				System.out.println ("\t" + _fs._aAUResponseBasis[iBasisFunctionIndex].calcDerivative (dblLocalPredictorOrdinate, 1));
+
 				throw new java.lang.Exception
 					("LocalElasticConstitutiveState::localSpecificBasisDerivative => Cannot compute Basis Function Derivative");
+			}
 
 			double dblShapeControllerPredictorOrdinate = _rssc.isLocal() ? dblLocalPredictorOrdinate :
 				delocalize (dblLocalPredictorOrdinate);
@@ -600,9 +607,14 @@ public class LocalElasticConstitutiveState extends org.drip.spline.segment.Elast
 				(dblShapeControllerPredictorOrdinate) : _rssc.shapeController().calcDerivative
 					(dblShapeControllerPredictorOrdinate, iOrder - i);
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblShapeControlDeriv))
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblShapeControlDeriv)) {
+				System.out.println ("\tDeriv Order: " + (iOrder - i));
+
+				System.out.println ("\tDeriv: " + dblShapeControlDeriv);
+
 				throw new java.lang.Exception
 					("LocalElasticConstitutiveState::localSpecificBasisDerivative => Cannot compute Shape Control Derivative");
+			}
 
 			double dblShapeControllerDerivScale = 1.;
 

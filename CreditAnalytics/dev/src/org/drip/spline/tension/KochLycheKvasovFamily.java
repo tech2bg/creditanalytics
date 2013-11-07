@@ -65,6 +65,27 @@ public class KochLycheKvasovFamily {
 				return (java.lang.Math.sinh (dblTension * dblX) - dblTension * dblX) / (dblTension *
 					dblTension * java.lang.Math.sinh (dblTension));
 			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromHyperbolicPrimitive.Phy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder)
+					return (java.lang.Math.cosh (dblTension * dblX) - 1.) / (dblTension * java.lang.Math.sinh
+						(dblTension));
+
+				if (2 == iOrder)
+					return java.lang.Math.sinh (dblTension * dblX) / java.lang.Math.sinh (dblTension);
+
+				return calcDerivative (dblX, iOrder);
+			}
 		};
 
 		org.drip.quant.function1D.AbstractUnivariate auPsy = new org.drip.quant.function1D.AbstractUnivariate
@@ -81,6 +102,27 @@ public class KochLycheKvasovFamily {
 
 				return (java.lang.Math.sinh (dblTension * (1. - dblX)) - dblTension * (1. - dblX)) /
 					(dblTension * dblTension * java.lang.Math.sinh (dblTension));
+			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromHyperbolicPrimitive.Phy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder)
+					return (1. - java.lang.Math.cosh (dblTension * (1. - dblX))) / (dblTension *
+						java.lang.Math.cosh (dblTension));
+
+				if (2 == iOrder)
+					return java.lang.Math.sinh (dblTension * (1. - dblX)) / java.lang.Math.sinh (dblTension);
+
+				return calcDerivative (dblX, iOrder);
 			}
 		};
 
@@ -121,6 +163,38 @@ public class KochLycheKvasovFamily {
 
 				return dblX * dblX * dblX / (1. + dblTension * (1. - dblX)) / (6. + 8. * dblTension);
 			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromRationalLinearPrimitive.Phy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder) {
+					double dblDLDX = -1. * dblTension;
+					double dblL = 1. + dblTension * (1. - dblX);
+
+					return 1. / (dblL * dblL * (6. + 8. * dblTension)) * (3. * dblL * dblX * dblX - dblDLDX *
+						dblX * dblX * dblX);
+				}
+
+				if (2 == iOrder) {
+					double dblD2LDX2 = 0.;
+					double dblDLDX = -1. * dblTension;
+					double dblL = 1. + dblTension * (1. - dblX);
+
+					return 1. / (dblL * dblL * (6. + 8. * dblTension)) * (6. * dblL * dblX - dblD2LDX2 * dblX
+						* dblX * dblX) - 2. / (dblL * dblL * dblL * (6. + 8. * dblTension)) *
+							(3. * dblL * dblX * dblX - dblDLDX * dblX * dblX * dblX);
+				}
+
+				return calcDerivative (dblX, iOrder);
+			}
 		};
 
 		org.drip.quant.function1D.AbstractUnivariate auPsy = new org.drip.quant.function1D.AbstractUnivariate
@@ -137,6 +211,39 @@ public class KochLycheKvasovFamily {
 
 				return (1. - dblX) * (1. - dblX) * (1. - dblX) / (1. + dblTension * dblX) / (6. + 8. *
 					dblTension);
+			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromRationalLinearPrimitive.Psy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder) {
+					double dblDLDX = dblTension;
+					double dblL = 1. + dblTension * dblX;
+
+					return -1. / (dblL * dblL * (6. + 8. * dblTension)) * (3. * dblL * (1. - dblX) *
+						(1. - dblX) + dblDLDX * (1. - dblX) * (1. - dblX) * (1. - dblX));
+				}
+
+				if (2 == iOrder) {
+					double dblD2LDX2 = 0.;
+					double dblDLDX = dblTension;
+					double dblL = 1. + dblTension * dblX;
+
+					return 1. / (dblL * dblL * (6. + 8. * dblTension)) * (6. * dblL * (1. - dblX) - dblD2LDX2
+						* (1. - dblX) * (1. - dblX) * (1. - dblX)) - 2. / (dblL * dblL * dblL *
+							(6. + 8. * dblTension)) * (3. * dblL * (1. - dblX) * (1. - dblX) + dblDLDX *
+								(1. - dblX) * (1. - dblX) * (1. - dblX));
+				}
+
+				return calcDerivative (dblX, iOrder);
 			}
 		};
 
@@ -178,6 +285,38 @@ public class KochLycheKvasovFamily {
 
 				return dblX * dblX * dblX / (1. + dblTension * dblX * (1. - dblX)) / (6. + 8. * dblTension);
 			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromRationalQuadraticPrimitive.Phy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder) {
+					double dblDLDX = dblTension * (1. - 2. * dblX);
+					double dblL = 1. + dblTension * dblX * (1. - dblX);
+
+					return 1. / (dblL * dblL * (6. + 8. * dblTension)) * (3. * dblL * dblX * dblX - dblDLDX *
+						dblX * dblX * dblX);
+				}
+
+				if (2 == iOrder) {
+					double dblD2LDX2 = -2. * dblTension;
+					double dblDLDX = dblTension * (1. - 2. * dblX);
+					double dblL = 1. + dblTension * dblX * (1. - dblX);
+
+					return 1. / (dblL * dblL * (6. + 8. * dblTension)) * (6. * dblL * dblX - dblD2LDX2 * dblX
+						* dblX * dblX) - 2. / (dblL * dblL * dblL * (6. + 8. * dblTension)) *
+							(3. * dblL * dblX * dblX - dblDLDX * dblX * dblX * dblX);
+				}
+
+				return calcDerivative (dblX, iOrder);
+			}
 		};
 
 		org.drip.quant.function1D.AbstractUnivariate auPsy = new org.drip.quant.function1D.AbstractUnivariate
@@ -194,6 +333,39 @@ public class KochLycheKvasovFamily {
 
 				return (1. - dblX) * (1. - dblX) * (1. - dblX) / (1. + dblTension * dblX * (1. - dblX)) / (6.
 					+ 8. * dblTension);
+			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromRationalQuadraticPrimitive.Psy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder) {
+					double dblDLDX = dblTension * (1. - 2. * dblX);
+					double dblL = 1. + dblTension * dblX * (1. - dblX);
+
+					return -1. / (dblL * dblL * (6. + 8. * dblTension)) * (3. * dblL * (1. - dblX) *
+						(1. - dblX) + dblDLDX * (1. - dblX) * (1. - dblX) * (1. - dblX));
+				}
+
+				if (2 == iOrder) {
+					double dblD2LDX2 = -2. * dblTension * dblX;
+					double dblDLDX = dblTension * (1. - 2. * dblX);
+					double dblL = 1. + dblTension * dblX * (1. - dblX);
+
+					return 1. / (dblL * dblL * (6. + 8. * dblTension)) * (6. * dblL * (1. - dblX) - dblD2LDX2
+						* (1. - dblX) * (1. - dblX) * (1. - dblX)) - 2. / (dblL * dblL * dblL *
+							(6. + 8. * dblTension)) * (3. * dblL * (1. - dblX) * (1. - dblX) + dblDLDX *
+								(1. - dblX) * (1. - dblX) * (1. - dblX));
+				}
+
+				return calcDerivative (dblX, iOrder);
 			}
 		};
 
@@ -232,8 +404,30 @@ public class KochLycheKvasovFamily {
 
 				double dblTension = etsp.tension();
 
-				return dblX * dblX * dblX * java.lang.Math.exp (-1. * dblTension * (1. - dblX))/ (6. + 7. *
+				return dblX * dblX * dblX * java.lang.Math.exp (-1. * dblTension * (1. - dblX)) / (6. + 7. *
 					dblTension);
+			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromExponentialPrimitive.Phy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder)
+					return (3. + dblTension * dblX) / (6. + 7. * dblTension) * dblX * dblX *
+						java.lang.Math.exp (-1. * dblTension * (1. - dblX));
+
+				if (2 == iOrder)
+					return (dblTension * dblTension * dblX * dblX + 6. * dblTension * dblX + 6.) / (6. + 7. *
+						dblTension) * dblX * java.lang.Math.exp (-1. * dblTension * (1. - dblX));
+
+				return calcDerivative (dblX, iOrder);
 			}
 		};
 
@@ -251,6 +445,29 @@ public class KochLycheKvasovFamily {
 
 				return (1. - dblX) * (1. - dblX) * (1. - dblX) * java.lang.Math.exp (-1. * dblTension * dblX)
 					/ (6. + 7. * dblTension);
+			}
+
+			@Override public double calcDerivative (
+				final double dblX,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("KLKF::FromExponentialPrimitive.Psy::calcDerivative => Invalid Inputs!");
+
+				double dblTension = etsp.tension();
+
+				if (1 == iOrder)
+					return -1. * (3. + dblTension * (1. - dblX)) / (6. + 7. * dblTension) * (1. - dblX) *
+						(1. - dblX) * java.lang.Math.exp (-1. * dblTension * dblX);
+
+				if (2 == iOrder)
+					return (dblTension * dblTension * (1. - dblX) * (1. - dblX) + 6. * dblTension *
+						(1. - dblX) + 6.) / (6. + 7. * dblTension) * (1. - dblX) * java.lang.Math.exp (-1. *
+							dblTension * dblX);
+
+				return calcDerivative (dblX, iOrder);
 			}
 		};
 

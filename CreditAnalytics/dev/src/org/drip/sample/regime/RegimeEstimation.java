@@ -1,4 +1,4 @@
-	
+
 package org.drip.sample.regime;
 
 import org.drip.quant.common.FormatUtil;
@@ -606,9 +606,11 @@ public class RegimeEstimation {
 		 * Construct a rational shape controller with the shape controller tension of 1.
 		 */
 
-		double dblShapeControllerTension = 0.;
+		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
+			true,
+			new QuadraticRationalShapeControl (dblShapeControllerTension));
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order

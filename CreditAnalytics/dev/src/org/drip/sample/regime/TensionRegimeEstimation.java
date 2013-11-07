@@ -194,6 +194,8 @@ public class TensionRegimeEstimation {
 			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
+		System.out.println ("\t\tregime = " + regime);
+
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
 		 */
@@ -255,19 +257,23 @@ public class TensionRegimeEstimation {
 		 * Construct a rational shape controller with the shape controller tension of 1.
 		 */
 
-		double dblShapeControllerTension = 0.;
+		double dblShapeControllerTension = 1.;
 
-		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (dblShapeControllerTension));
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
+			false,
+			new LinearRationalShapeControl (dblShapeControllerTension));
 
 		/*
-		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
-		 * 	roughness penalty derivative, and without constraint
+		 * Construct the Segment Inelastic Parameter that is C2 (iK = 2 sets it to C2), with Second Order
+		 * 	Curvature Penalty Derivative, and without constraint
 		 */
 
 		int iK = 2;
-		int iRoughnessPenaltyDerivativeOrder= 2;
+		int iCurvaturePenaltyDerivativeOrder= 2;
 
-		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (
+			iK,
+			iCurvaturePenaltyDerivativeOrder);
 
 		double dblKLKTension = 1.;
 

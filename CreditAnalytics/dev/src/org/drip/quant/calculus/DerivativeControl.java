@@ -37,7 +37,7 @@ package org.drip.quant.calculus;
  */
 
 public class DerivativeControl {
-	private static final double ABSOLUTE_INCREMENT = 1.e-07;
+	private static final double ABSOLUTE_INCREMENT = 1.e-05;
 	private static final double RELATIVE_INCREMENT = 1.e-06;
 
 	private double _dblBumpFactor = RELATIVE_INCREMENT;

@@ -326,7 +326,7 @@ public class CustomCurveBuilder {
 				if (bFirstNode) {
 					bFirstNode = false;
 
-					scbcLocal = MakeKLKTensionSCBC (15.);
+					scbcLocal = MakeKLKTensionSCBC (1.);
 				} else
 					scbcLocal = MakeKLKTensionSCBC (1.);
 
@@ -410,7 +410,8 @@ public class CustomCurveBuilder {
 			new double[] {0., 0.002778}, // t0 and t1 for the segment
 			new double[] {1., 0.999996}, // the corresponding discount factors
 			new SegmentCustomBuilderControl[] {
-				MakeSCBC (MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)
+				// MakeSCBC (MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)
+				MakeKLKTensionSCBC (1.)
 			}, // Exponential Tension Basis Spline
 			null,
 			iCalibrationBoundaryCondition, iCalibrationDetail); // "Natural" Spline Boundary Condition + Calibrate the full regime
