@@ -142,7 +142,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.regime.S
 	@Override public boolean setup (
 		final double dblYLeading,
 		final double[] adblResponseValue,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{

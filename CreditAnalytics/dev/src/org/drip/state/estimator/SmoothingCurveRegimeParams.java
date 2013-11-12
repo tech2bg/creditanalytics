@@ -38,7 +38,7 @@ package org.drip.state.estimator;
 public abstract class SmoothingCurveRegimeParams {
 	private int _iCalibrationDetail = -1;
 	private java.lang.String _strSmootheningQuantificationMetric = "";
-	private org.drip.spline.params.SegmentBestFitResponse _bfwr = null;
+	private org.drip.spline.params.RegimeBestFitResponse _rfwr = null;
 	private org.drip.spline.params.SegmentCustomBuilderControl _prbp = null;
 
 	/**
@@ -47,7 +47,7 @@ public abstract class SmoothingCurveRegimeParams {
 	 * @param strSmootheningQuantificationMetric Curve Smoothening Quantification Metric
 	 * @param prbp Segment Builder Parameters
 	 * @param iCalibrationDetail The Calibration Detail
-	 * @param bfwr Fitness Weighted Response
+	 * @param rfwr Regime Fitness Weighted Response
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -56,13 +56,13 @@ public abstract class SmoothingCurveRegimeParams {
 		final java.lang.String strSmootheningQuantificationMetric,
 		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.SegmentBestFitResponse bfwr)
+		final org.drip.spline.params.RegimeBestFitResponse rfwr)
 		throws java.lang.Exception
 	{
 		if (null == (_prbp = prbp))
 			throw new java.lang.Exception ("SmoothingCurveRegimeParams ctr: Invalid Inputs");
 
-		_bfwr = bfwr;
+		_rfwr = rfwr;
 		_iCalibrationDetail = iCalibrationDetail;
 		_strSmootheningQuantificationMetric = strSmootheningQuantificationMetric;
 	}
@@ -106,8 +106,8 @@ public abstract class SmoothingCurveRegimeParams {
 	 * @return The Best Fit Weighted Response
 	 */
 
-	public org.drip.spline.params.SegmentBestFitResponse bestFitWeightedResponse()
+	public org.drip.spline.params.RegimeBestFitResponse bestFitWeightedResponse()
 	{
-		return _bfwr;
+		return _rfwr;
 	}
 }

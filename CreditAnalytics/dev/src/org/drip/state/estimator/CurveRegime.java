@@ -42,19 +42,19 @@ public class CurveRegime extends org.drip.spline.regime.CalibratableMultiSegment
 	 * CurveRegime constructor - Construct a sequence of Basis Spline Segments
 	 * 
 	 * @param strName Name of the Regime
-	 * @param aPR Array of Segments
-	 * @param aPRBP Array of Segment Builder Parameters
+	 * @param aCS Array of Segments
+	 * @param aSCBC Array of Segment Builder Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public CurveRegime (
 		final java.lang.String strName,
-		final org.drip.spline.segment.ElasticConstitutiveState[] aPR,
-		final org.drip.spline.params.SegmentCustomBuilderControl[] aPRBP)
+		final org.drip.spline.segment.ConstitutiveState[] aCS,
+		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC)
 		throws java.lang.Exception
 	{
-		super (strName, aPR, aPRBP);
+		super (strName, aCS, aSCBC);
 
 		_dblBuiltPredictorOrdinateRight = getLeftPredictorOrdinateEdge();
 	}
@@ -70,11 +70,11 @@ public class CurveRegime extends org.drip.spline.regime.CalibratableMultiSegment
 	public boolean setSegmentBuilt (
 		final int iSegment)
 	{
-		org.drip.spline.segment.ElasticConstitutiveState[] aSegment = segments();
+		org.drip.spline.segment.ConstitutiveState[] aCS = segments();
 
-		if (iSegment >= aSegment.length) return false;
+		if (iSegment >= aCS.length) return false;
 
-		_dblBuiltPredictorOrdinateRight = aSegment[iSegment].right();
+		_dblBuiltPredictorOrdinateRight = aCS[iSegment].right();
 
 		return true;
 	}

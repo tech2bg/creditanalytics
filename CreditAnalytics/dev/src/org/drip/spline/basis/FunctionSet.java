@@ -35,12 +35,7 @@ package org.drip.spline.basis;
  */
 
 public class FunctionSet {
-
-	/**
-	 * Basis Spline Function Set
-	 */
-
-	public org.drip.quant.function1D.AbstractUnivariate[] _aAUResponseBasis = null;
+	private org.drip.quant.function1D.AbstractUnivariate[] _aAUResponseBasis = null;
 
 	/**
 	 * @param aAUResponseBasis Array of the Basis Function Set
@@ -52,7 +47,34 @@ public class FunctionSet {
 		final org.drip.quant.function1D.AbstractUnivariate[] aAUResponseBasis)
 		throws java.lang.Exception
 	{
-		if (null == (_aAUResponseBasis = aAUResponseBasis))
+		if (null == (_aAUResponseBasis = aAUResponseBasis) || 0 == _aAUResponseBasis.length)
 			throw new java.lang.Exception ("FunctionSet ctr: Invaid Inputs!");
+	}
+
+	/**
+	 * Retrieve the Number of Basis Functions
+	 * 
+	 * @return Number of Basis Functions
+	 */
+
+	public int numBasis()
+	{
+		return _aAUResponseBasis.length;
+	}
+
+	/**
+	 * Retrieve the Basis Function identified by the specified Index
+	 * 
+	 * @param iBasisIndex The Basis Function Index
+	 * 
+	 * @return The Basis Function identified by the specified Index
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate indexedBasisFunction (
+		final int iBasisIndex)
+	{
+		if (iBasisIndex >= numBasis()) return null;
+
+		return _aAUResponseBasis[iBasisIndex];
 	}
 }

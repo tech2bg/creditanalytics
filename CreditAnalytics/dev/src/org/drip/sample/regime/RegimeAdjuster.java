@@ -181,7 +181,7 @@ public class RegimeAdjuster {
 			dblX += 1.;
 		}
 
-		System.out.println ("\tSPLINE_REGIME_BASE DCPE: " + regimeBase.dcpe());
+		System.out.println ("\tSPLINE_REGIME_BASE DPE: " + regimeBase.curvatureDPE());
 
 		System.out.println (" \n---------- \n LEFT CLIPPED \n ---------- \n");
 
@@ -200,7 +200,7 @@ public class RegimeAdjuster {
 			dblX += 1.;
 		}
 
-		System.out.println ("\tSPLINE_REGIME_LEFT DCPE: " + regimeLeftClipped.dcpe());
+		System.out.println ("\tSPLINE_REGIME_LEFT DPE: " + regimeLeftClipped.curvatureDPE());
 
 		System.out.println (" \n---------- \n RIGHT CLIPPED \n ---------- \n");
 
@@ -219,7 +219,7 @@ public class RegimeAdjuster {
 			dblX += 1.;
 		}
 
-		System.out.println ("\tSPLINE_REGIME_RIGHT DCPE: " + regimeRightClipped.dcpe());
+		System.out.println ("\tSPLINE_REGIME_RIGHT DPE: " + regimeRightClipped.curvatureDPE());
 
 		dblX = regimeBase.getLeftPredictorOrdinateEdge();
 

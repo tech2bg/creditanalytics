@@ -233,7 +233,7 @@ public class RegimeEstimation {
 			dblX += 1.;
 		}
 
-		System.out.println ("SPLINE_REGIME DCPE: " + regime.dcpe());
+		System.out.println ("SPLINE_REGIME DPE: " + regime.curvatureDPE());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -258,7 +258,7 @@ public class RegimeEstimation {
 			dblX += 1.;
 		}
 
-		System.out.println ("SPLINE_REGIME_INSERT DCPE: " + regimeInsert.dcpe());
+		System.out.println ("SPLINE_REGIME_INSERT DPE: " + regimeInsert.curvatureDPE());
 	}
 
 	/**
@@ -378,7 +378,7 @@ public class RegimeEstimation {
 			dblX += 0.5;
 		}
 
-		System.out.println ("SPLINE_REGIME DCPE: " + regime.dcpe());
+		System.out.println ("SPLINE_REGIME DPE: " + regime.curvatureDPE());
 
 		/* 
 		 * We now insert a Hermite local control knot. The following are the steps:
@@ -403,7 +403,7 @@ public class RegimeEstimation {
 			dblX += 0.5;
 		}
 
-		System.out.println ("SPLINE_REGIME_INSERT DCPE: " + regimeInsert.dcpe());
+		System.out.println ("SPLINE_REGIME_INSERT DPE: " + regimeInsert.curvatureDPE());
 
 		/* 
 		 * We now insert a Cardinal local control knot. The following are the steps:
@@ -424,7 +424,7 @@ public class RegimeEstimation {
 			dblX += 0.5;
 		}
 
-		System.out.println ("SPLINE_REGIME_CARDINAL_INSERT DCPE: " + regimeCardinalInsert.dcpe());
+		System.out.println ("SPLINE_REGIME_CARDINAL_INSERT DPE: " + regimeCardinalInsert.curvatureDPE());
 
 		/* 
 		 * We now insert a Catmull-Rom local control knot. The following are the steps:
@@ -445,7 +445,7 @@ public class RegimeEstimation {
 			dblX += 0.5;
 		}
 
-		System.out.println ("SPLINE_REGIME_CATMULL_ROM_INSERT DCPE: " + regimeCatmullRomInsert.dcpe());
+		System.out.println ("SPLINE_REGIME_CATMULL_ROM_INSERT DPE: " + regimeCatmullRomInsert.curvatureDPE());
 	}
 
 	/**
@@ -558,7 +558,7 @@ public class RegimeEstimation {
 			dblX += 1.;
 		}
 
-		System.out.println ("\tSPLINE_REGIME DCPE: " + regime.dcpe());
+		System.out.println ("\tSPLINE_REGIME DPE: " + regime.curvatureDPE());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -583,7 +583,7 @@ public class RegimeEstimation {
 			dblX += 1.;
 		}
 
-		System.out.println ("\tSPLINE_REGIME_INSERT DCPE: " + regimeInsert.dcpe());
+		System.out.println ("\tSPLINE_REGIME_INSERT DPE: " + regimeInsert.curvatureDPE());
 	}
 
 	public static final void main (

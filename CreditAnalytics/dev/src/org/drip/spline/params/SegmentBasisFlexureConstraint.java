@@ -29,7 +29,7 @@ package org.drip.spline.params;
  */
 
 /**
- * SegmentIndexedBasisConstraint holds the set of fields needed to characterize a single local linear
+ * SegmentBasisFlexureConstraint holds the set of fields needed to characterize a single local linear
  * 	Constraint, expressed linearly as a combination of the local Predictor Ordinates and their corresponding
  *  Response Basis Function Realizations. Constraints are expressed as
  * 
@@ -40,18 +40,18 @@ package org.drip.spline.params;
  * 	W_i => Weight applied for the Response Basis Function i
  * 	V => Value of the Constraint
  * 
- * SegmentIndexedBasisConstraint can be viewed as the localized basis function transpose of
+ * SegmentBasisFlexureConstraint can be viewed as the localized basis function transpose of
  *  SegmentResponseValueConstraint.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentIndexedBasisConstraint {
+public class SegmentBasisFlexureConstraint {
 	private double[] _adblResponseBasisCoeffWeight = null;
 	private double _dblConstraintValue = java.lang.Double.NaN;
 
 	/**
-	 * SegmentIndexedBasisConstraint constructor
+	 * SegmentBasisFlexureConstraint constructor
 	 * 
 	 * @param adblResponseBasisCoeffWeight The Weight for each of the Coefficients in the Basis Function Set
 	 * @param dblConstraintValue The Constraint Value
@@ -59,7 +59,7 @@ public class SegmentIndexedBasisConstraint {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public SegmentIndexedBasisConstraint (
+	public SegmentBasisFlexureConstraint (
 		double[] adblResponseBasisCoeffWeight,
 		double dblConstraintValue)
 		throws java.lang.Exception
@@ -67,7 +67,7 @@ public class SegmentIndexedBasisConstraint {
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblConstraintValue = dblConstraintValue) || null ==
 			(_adblResponseBasisCoeffWeight = adblResponseBasisCoeffWeight) || 0 ==
 				_adblResponseBasisCoeffWeight.length)
-			throw new java.lang.Exception ("SegmentIndexedBasisConstraint ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SegmentBasisFlexureConstraint ctr: Invalid Inputs");
 	}
 
 	/**

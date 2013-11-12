@@ -82,7 +82,8 @@ public class SegmentDesignInelasticControl {
 	}
 
 	/**
-	 * Constructor for the Segment Design Inelastic Parameters given the desired Ck, the Segment Length and the Roughness Penalty Order
+	 * Constructor for the Segment Design Inelastic Parameters given the desired Ck, the Segment Length and
+	 *  the Roughness Penalty Order
 	 * 
 	 * @param iCk Continuity Order
 	 * @param sfpcLength Segment Length Penalty

@@ -29,37 +29,37 @@ package org.drip.spline.params;
  */
 
 /**
- * SegmentBestFitResponse implements basis per-segment Fitness Penalty Parameter Set. Currently it contains
- *  the Best Fit Penalty Weight Grid Matrix and the corresponding Segment Local Predictor Ordinate/Response
- *  Match Pair.
+ * RegimeBestFitResponse implements basis per-regime Fitness Penalty Parameter Set. Currently it contains
+ *  the Best Fit Penalty Weight Grid Matrix and the corresponding Local Predictor Ordinate/Response Match
+ *  Pair.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentBestFitResponse {
+public class RegimeBestFitResponse {
 	private double[] _adblWeight = null;
 	private double[] _adblResponse = null;
 	private double[] _adblPredictorOrdinate = null;
 
 	/**
-	 * Construct the SegmentBestFitResponse Instance from the given Inputs
+	 * Construct the RegimeBestFitResponse Instance from the given Inputs
 	 * 
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param adblWeight Array of Weights
 	 * 
-	 * @return Instance of SegmentBestFitResponse
+	 * @return Instance of RegimeBestFitResponse
 	 */
 
-	public static final SegmentBestFitResponse Create (
+	public static final RegimeBestFitResponse Create (
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final double[] adblWeight)
 	{
-		SegmentBestFitResponse frp = null;
+		RegimeBestFitResponse frp = null;
 
 		try {
-			frp = new SegmentBestFitResponse (adblWeight, adblResponseValue, adblPredictorOrdinate);
+			frp = new RegimeBestFitResponse (adblWeight, adblResponseValue, adblPredictorOrdinate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -70,16 +70,16 @@ public class SegmentBestFitResponse {
 	}
 
 	/**
-	 * Construct the SegmentBestFitResponse Instance from the given Predictor Ordinate/Response Pairs, using
+	 * Construct the RegimeBestFitResponse Instance from the given Predictor Ordinate/Response Pairs, using
 	 * 	Uniform Weightings.
 	 * 
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * 
-	 * @return Instance of SegmentBestFitResponse
+	 * @return Instance of RegimeBestFitResponse
 	 */
 
-	public static final SegmentBestFitResponse Create (
+	public static final RegimeBestFitResponse Create (
 		final double[] adblLocalPredictorOrdinate,
 		final double[] adblResponseValue)
 	{
@@ -94,7 +94,7 @@ public class SegmentBestFitResponse {
 		return Create (adblLocalPredictorOrdinate, adblResponseValue, adblWeight);
 	}
 
-	private SegmentBestFitResponse (
+	private RegimeBestFitResponse (
 		final double[] adblWeight,
 		final double[] adblResponse,
 		final double[] adblPredictorOrdinate)
@@ -103,13 +103,13 @@ public class SegmentBestFitResponse {
 		if (!org.drip.quant.common.NumberUtil.IsValid (_adblWeight = adblWeight) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_adblResponse = adblResponse) ||
 				!org.drip.quant.common.NumberUtil.IsValid (_adblPredictorOrdinate = adblPredictorOrdinate))
-			throw new java.lang.Exception ("SegmentBestFitResponse ctr: Invalid Inputs");
+			throw new java.lang.Exception ("RegimeBestFitResponse ctr: Invalid Inputs");
 
 		int iNumPointsToFit = _adblWeight.length;
 
 		if (0 == iNumPointsToFit || _adblResponse.length != iNumPointsToFit ||
 			_adblPredictorOrdinate.length != iNumPointsToFit)
-			throw new java.lang.Exception ("SegmentBestFitResponse ctr: Invalid Inputs");
+			throw new java.lang.Exception ("RegimeBestFitResponse ctr: Invalid Inputs");
 	}
 
 	private boolean normalizeWeights()
@@ -155,7 +155,7 @@ public class SegmentBestFitResponse {
 		throws java.lang.Exception
 	{
 		if (iIndex >= numPoint())
-			throw new java.lang.Exception ("SegmentBestFitResponse::weight => Invalid Index");
+			throw new java.lang.Exception ("RegimeBestFitResponse::weight => Invalid Index");
 
 		return _adblWeight[iIndex];
 	}
@@ -184,7 +184,7 @@ public class SegmentBestFitResponse {
 		throws java.lang.Exception
 	{
 		if (iIndex >= numPoint())
-			throw new java.lang.Exception ("SegmentBestFitResponse::predictorOrdinate => Invalid Index");
+			throw new java.lang.Exception ("RegimeBestFitResponse::predictorOrdinate => Invalid Index");
 
 		return _adblPredictorOrdinate[iIndex];
 	}
@@ -213,7 +213,7 @@ public class SegmentBestFitResponse {
 		throws java.lang.Exception
 	{
 		if (iIndex >= numPoint())
-			throw new java.lang.Exception ("SegmentBestFitResponse::response => Invalid Index");
+			throw new java.lang.Exception ("RegimeBestFitResponse::response => Invalid Index");
 
 		return _adblResponse[iIndex];
 	}
@@ -227,5 +227,51 @@ public class SegmentBestFitResponse {
 	public int numPoint()
 	{
 		return null == _adblResponse ? 0 : _adblResponse.length;
+	}
+
+	/**
+	 * Generate the Segment Local Best Fit Weighted Response contained within the specified Segment
+	 * 
+	 * @param ics The Inelastics Instance to be used for the Localization
+	 * 
+	 * @return The Segment Local Best Fit Weighted Response
+	 */
+
+	public SegmentBestFitResponse sizeToSegment (
+		final org.drip.spline.segment.InelasticConstitutiveState ics)
+	{
+		if (null == ics) return null;
+
+		int iNumPoint = numPoint();
+
+		java.util.List<java.lang.Integer> lsIndex = new java.util.ArrayList<java.lang.Integer>();
+
+		for (int i = 0; i < iNumPoint; ++i) {
+			try {
+				if (ics.in (_adblPredictorOrdinate[i])) lsIndex.add (i);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		int iNumLocalPoint = lsIndex.size();
+
+		if (0 == iNumLocalPoint) return null;
+
+		int iIndex = 0;
+		double[] adblWeight = new double[iNumLocalPoint];
+		double[] adblResponse = new double[iNumLocalPoint];
+		double[] adblPredictor = new double[iNumLocalPoint];
+
+		for (int i : lsIndex) {
+			adblWeight[iIndex] = _adblWeight[i];
+			adblResponse[iIndex] = _adblResponse[i];
+			adblPredictor[iIndex++] = _adblPredictorOrdinate[i];
+		}
+
+		return org.drip.spline.params.SegmentBestFitResponse.Create (adblPredictor, adblResponse,
+			adblWeight);
 	}
 }

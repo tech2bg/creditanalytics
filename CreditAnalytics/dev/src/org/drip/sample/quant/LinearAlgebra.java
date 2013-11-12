@@ -110,11 +110,12 @@ public class LinearAlgebra {
 			{ 1.0000,  2.0000,  3.0000,  4.0000}
 		});
 
-		// double[] adblY = {1., 2.};
-
-		/* double[][] aadblX = Matrix.Product (aadblAInv, adblY);
-
-		NumberUtil.Print2DArray ("\tX", aadblX, false); */
+		InverseVerifyDump ("#G", new double[][] {
+			{ 0.0000,  1.0000,  0.0000,  0.0000},
+			{ 0.0000,  0.0000,  2.0000,  0.0000},
+			{ 0.0434,  0.0188, 16.0083, 24.0037},
+			{ 0.0188,  0.0083, 24.0037, 48.0017}
+		});
 	}
 
 	/*
@@ -125,14 +126,6 @@ public class LinearAlgebra {
 
 	public static final void LinearSystemSolver()
 	{
-		/* double[][] aadblA = new double[][] {{1., 2., 3.}, {2., 3., 4.}, {3., 5., 8.}};
-		double[] adblB = new double[] {63., 19., 121.};
-		double[][] aadblA = new double[][] {{0., 2., 0.}, {5., 0., 0.}, {0., 0., 1.}};
-		double[] adblB = new double[] {14., 5., 22. };
-		double[][] aadblA = new double[][] {{5., 1., 1.}, {1., 5., 1.}, {1., 1., 5.}};
-		double[] adblB = new double[] {12., 17., 22.}; */
-		// double[][] aadblA = new double[][] {{1., 0., 0., 0.}, {1., 1., 2.72, 0.37}, {0., 0., 3.19, 0.37}, {0., 0., 1., 0.43}};
-		// double[] adblB = new double[] {1., 1., 7., 0.};
 		double[][] aadblA = new double[][] {
 				{1.000, 0.500, 0.333,  0.000,  0.000, 0.000},
 				{0.000, 0.000, 0.000,  1.000,  0.500, 0.333},

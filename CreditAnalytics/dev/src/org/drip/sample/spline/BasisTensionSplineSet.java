@@ -150,9 +150,9 @@ public class BasisTensionSplineSet {
 		 * Construct the left and the right segments
 		 */
 
-		ElasticConstitutiveState seg1 = LocalElasticConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams);
+		ConstitutiveState seg1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams);
 
-		ElasticConstitutiveState seg2 = LocalElasticConstitutiveState.Create (1.5, 2.0, fs, rssc, segParams);
+		ConstitutiveState seg2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
@@ -170,7 +170,7 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
-		System.out.println ("\tSegment 1 DCPE: " + seg1.dcpe());
+		System.out.println ("\tSegment 1 DPE: " + seg1.curvatureDPE());
 
 		/*
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
@@ -188,7 +188,7 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
-		System.out.println ("\tSegment 2 DCPE: " + seg2.dcpe());
+		System.out.println ("\tSegment 2 DPE: " + seg2.curvatureDPE());
 
 		seg2.calibrate (seg1, 14., null);
 
@@ -202,7 +202,7 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
 
-		System.out.println ("\t\tSegment 2 DCPE: " + seg2.dcpe());
+		System.out.println ("\t\tSegment 2 DPE: " + seg2.curvatureDPE());
 	}
 
 	public static final void main (

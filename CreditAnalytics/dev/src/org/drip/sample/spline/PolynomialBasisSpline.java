@@ -87,9 +87,9 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		ElasticConstitutiveState ecs1 = LocalElasticConstitutiveState.Create (1.0, 1.5, fs, rssc, sdic);
+		ConstitutiveState ecs1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, sdic);
 
-		ElasticConstitutiveState ecs2 = LocalElasticConstitutiveState.Create (1.5, 2.0, fs, rssc, sdic);
+		ConstitutiveState ecs2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, sdic);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
@@ -107,7 +107,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 1 Monotone Type: " + ecs1.monotoneType());
 
-		System.out.println ("Segment 1 DCPE: " + ecs1.dcpe());
+		System.out.println ("Segment 1 DPE: " + ecs1.curvatureDPE());
 
 		/*
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
@@ -125,7 +125,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 2 Monotone Type: " + ecs2.monotoneType());
 
-		System.out.println ("Segment 2 DCPE: " + ecs2.dcpe());
+		System.out.println ("Segment 2 DPE: " + ecs2.curvatureDPE());
 
 		ecs2.calibrate (ecs1, 14., null);
 
@@ -139,7 +139,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeParams (dblX).displayString());
 
-		System.out.println ("\t\tSegment 2 DCPE: " + ecs2.dcpe());
+		System.out.println ("\t\tSegment 2 DPE: " + ecs2.curvatureDPE());
 	}
 
 	/*
@@ -182,20 +182,20 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		ElasticConstitutiveState ecs1 = LocalElasticConstitutiveState.Create (0.0, 1.0, fs, rssc, sdic);
+		ConstitutiveState ecs1 = ConstitutiveState.Create (0.0, 1.0, fs, rssc, sdic);
 
-		ElasticConstitutiveState ecs2 = LocalElasticConstitutiveState.Create (1.0, 2.0, fs, rssc, sdic);
+		ConstitutiveState ecs2 = ConstitutiveState.Create (1.0, 2.0, fs, rssc, sdic);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		ecs1.calibrate (new SegmentCalibrationInputSet (
+		ecs1.calibrate (
 			new double[] {0., 1.}, // Segment Calibration Nodes
 			new double[] {1., 4.}, // Segment Calibration Values
 			new double[] {1.}, // Segment Left Derivative
 			new double[] {6.}, // Segment Left Derivative
-			null, null)); // Segment Constraint AND Fitness Penalty Response
+			null, null); // Segment Constraint AND Fitness Penalty Response
 
 		System.out.println ("\tY[" + 0.0 + "]: " + ecs1.responseValue (0.0));
 
@@ -205,19 +205,19 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 1 Monotone Type: " + ecs1.monotoneType());
 
-		System.out.println ("Segment 1 DCPE: " + ecs1.dcpe());
+		System.out.println ("Segment 1 DPE: " + ecs1.curvatureDPE());
 
 		/*
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		ecs2.calibrate (new SegmentCalibrationInputSet (
-			new double[] {0., 1.}, // Segment Calibration Nodes
+		ecs2.calibrate (
+			new double[] {1., 2.}, // Segment Calibration Nodes
 			new double[] {4., 15.}, // Segment Calibration Values
 			new double[] {6.}, // Segment Left Derivative
 			new double[] {17.}, // Segment Left Derivative
 			null, // Segment Constraint
-			null)); // Fitness Penalty Response
+			null); // Fitness Penalty Response
 
 		System.out.println ("\tY[" + 1.0 + "]: " + ecs2.responseValue (1.0));
 
@@ -227,7 +227,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 2 Monotone Type: " + ecs2.monotoneType());
 
-		System.out.println ("Segment 2 DCPE: " + ecs2.dcpe());
+		System.out.println ("Segment 2 DPE: " + ecs2.curvatureDPE());
 
 		ecs2.calibrate (ecs1, 14., null);
 
@@ -241,7 +241,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeParams (dblX).displayString());
 
-		System.out.println ("\t\tSegment 2 DCPE: " + ecs2.dcpe());
+		System.out.println ("\t\tSegment 2 DPE: " + ecs2.curvatureDPE());
 	}
 
 	public static final void main (

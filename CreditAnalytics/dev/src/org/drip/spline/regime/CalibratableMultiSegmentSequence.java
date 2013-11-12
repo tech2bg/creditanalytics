@@ -52,8 +52,8 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	private static final int MONOTONE_PREDICTOR_ORDINATE_NODE = 4;
 
 	private java.lang.String _strName = "";
+	private org.drip.spline.segment.ConstitutiveState[] _aCS = null;
 	private org.drip.spline.regime.SegmentSequenceBuilder _ssb = null;
-	private org.drip.spline.segment.ElasticConstitutiveState[] _aECS = null;
 	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBC = null;
 	private org.drip.quant.calculus.WengertJacobian _wjDCoeffDEdgeParams = null;
 
@@ -87,7 +87,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	{
 		if (null == wjDResponseDEdgeParams) return null;
 
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 		org.drip.quant.calculus.WengertJacobian wjDResponseDEdgeResponse = null;
 
 		try {
@@ -102,10 +102,10 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			if (i == iNodeIndex) {
 				if (!wjDResponseDEdgeResponse.accumulatePartialFirstDerivative (0, i,
 					wjDResponseDEdgeParams.getFirstDerivative (0,
-						org.drip.spline.segment.ElasticConstitutiveState.LEFT_NODE_VALUE_PARAMETER_INDEX)) ||
+						org.drip.spline.segment.ConstitutiveState.LEFT_NODE_VALUE_PARAMETER_INDEX)) ||
 							!wjDResponseDEdgeResponse.accumulatePartialFirstDerivative (0, i + 1,
 								wjDResponseDEdgeParams.getFirstDerivative (0,
-									org.drip.spline.segment.ElasticConstitutiveState.RIGHT_NODE_VALUE_PARAMETER_INDEX)))
+									org.drip.spline.segment.ConstitutiveState.RIGHT_NODE_VALUE_PARAMETER_INDEX)))
 					return null;
 			}
 		}
@@ -117,7 +117,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	 * CalibratableMultiSegmentSequence constructor - Construct a sequence of Basis Spline Segments
 	 * 
 	 * @param strName Name of the Regime
-	 * @param aECS Array of Segments
+	 * @param aCS Array of Segments
 	 * @param aSCBC Array of Segment Builder Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
@@ -125,24 +125,24 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 	public CalibratableMultiSegmentSequence (
 		final java.lang.String strName,
-		final org.drip.spline.segment.ElasticConstitutiveState[] aECS,
+		final org.drip.spline.segment.ConstitutiveState[] aCS,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC)
 		throws java.lang.Exception
 	{
 		super (null);
 
-		if (null == aECS || null == aSCBC || null == (_strName = strName) || _strName.isEmpty())
+		if (null == aCS || null == aSCBC || null == (_strName = strName) || _strName.isEmpty())
 			throw new java.lang.Exception ("CalibratableMultiSegmentSequence ctr => Invalid inputs!");
 
-		int iNumSegment = aECS.length;
-		_aECS = new org.drip.spline.segment.ElasticConstitutiveState[iNumSegment];
+		int iNumSegment = aCS.length;
+		_aCS = new org.drip.spline.segment.ConstitutiveState[iNumSegment];
 		_aSCBC = new org.drip.spline.params.SegmentCustomBuilderControl[iNumSegment];
 
 		if (0 == iNumSegment || iNumSegment != aSCBC.length)
 			throw new java.lang.Exception ("CalibratableMultiSegmentSequence ctr => Invalid inputs!");
 
 		for (int i = 0; i < iNumSegment; ++i) {
-			if (null == (_aECS[i] = aECS[i]) || null == (_aSCBC[i] = aSCBC[i]))
+			if (null == (_aCS[i] = aCS[i]) || null == (_aSCBC[i] = aSCBC[i]))
 				throw new java.lang.Exception ("CalibratableMultiSegmentSequence ctr => Invalid inputs!");
 		}
 	}
@@ -152,9 +152,9 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		return _strName;
 	}
 
-	@Override public org.drip.spline.segment.ElasticConstitutiveState[] segments()
+	@Override public org.drip.spline.segment.ConstitutiveState[] segments()
 	{
-		return _aECS;
+		return _aCS;
 	}
 
 	@Override public org.drip.spline.params.SegmentCustomBuilderControl[] segmentBuilderControl()
@@ -190,11 +190,11 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		}
 
 		if (0 != (org.drip.spline.regime.MultiSegmentSequence.CALIBRATE_JACOBIAN &iCalibrationDetail)) {
-			int iNumSegment = _aECS.length;
+			int iNumSegment = _aCS.length;
 
 			try {
 				if (null == (_wjDCoeffDEdgeParams = new org.drip.quant.calculus.WengertJacobian
-					(_aECS[0].numBasis(), iNumSegment + 1)))
+					(_aCS[0].getBasisEvaluator().numBasis(), iNumSegment + 1)))
 					return false;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -202,12 +202,12 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 				return false;
 			}
 
-			org.drip.quant.calculus.WengertJacobian wjHead = _aECS[0].jackDCoeffDEdgeParams();
+			org.drip.quant.calculus.WengertJacobian wjHead = _aCS[0].jackDCoeffDEdgeParams();
 
 			if (!setDCoeffDEdgeParams (0, wjHead) || !setDCoeffDEdgeParams (1, wjHead)) return false;
 
 			for (int i = 1; i < iNumSegment; ++i) {
-				if (!setDCoeffDEdgeParams (i + 1, _aECS[i].jackDCoeffDEdgeParams())) return false;
+				if (!setDCoeffDEdgeParams (i + 1, _aCS[i].jackDCoeffDEdgeParams())) return false;
 			}
 		}
 
@@ -217,12 +217,12 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	@Override public boolean setup (
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcLeading,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		try {
-			return setup (new org.drip.spline.regime.CkSegmentSequenceBuilder (srvcLeading, aSRVC, sbfr,
+			return setup (new org.drip.spline.regime.CkSegmentSequenceBuilder (srvcLeading, aSRVC, rbfr,
 				iCalibrationBoundaryCondition), iCalibrationDetail);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -234,23 +234,23 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	@Override public boolean setup (
 		final double dblLeftRegimeResponseValue,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		return setup (org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-			(getLeftPredictorOrdinateEdge(), dblLeftRegimeResponseValue), aSRVC, sbfr,
+			(getLeftPredictorOrdinateEdge(), dblLeftRegimeResponseValue), aSRVC, rbfr,
 				iCalibrationBoundaryCondition, iCalibrationDetail);
 	}
 
 	@Override public boolean setup (
 		final double dblLeftRegimeResponseValue,
 		final double[] adblSegmentRightResponseValue,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 		org.drip.spline.params.SegmentResponseValueConstraint[] aSNVCRight = new
 			org.drip.spline.params.SegmentResponseValueConstraint[iNumSegment];
 
@@ -259,14 +259,14 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		try {
 			for (int i = 0; i < iNumSegment; ++i)
 				aSNVCRight[i] = new org.drip.spline.params.SegmentResponseValueConstraint (new double[]
-					{_aECS[i].right()}, new double[] {1.}, adblSegmentRightResponseValue[i]);
+					{_aCS[i].right()}, new double[] {1.}, adblSegmentRightResponseValue[i]);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
 			return false;
 		}
 
-		return setup (dblLeftRegimeResponseValue, aSNVCRight, sbfr, iCalibrationBoundaryCondition,
+		return setup (dblLeftRegimeResponseValue, aSNVCRight, rbfr, iCalibrationBoundaryCondition,
 			iCalibrationDetail);
 	}
 
@@ -274,12 +274,12 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		final org.drip.spline.params.SegmentPredictorResponseDerivative[] aSPRDLeft,
 		final org.drip.spline.params.SegmentPredictorResponseDerivative[] aSPRDRight,
 		final org.drip.spline.params.SegmentResponseValueConstraint[][] aaSRVC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode)
 	{
 		if (null == aSPRDLeft || null == aSPRDRight) return false;
 
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 
 		if (iNumSegment != aSPRDLeft.length || iNumSegment != aSPRDRight.length || (null != aaSRVC &&
 			iNumSegment != aaSRVC.length))
@@ -287,12 +287,24 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 		for (int i = 0; i < iNumSegment; ++i) {
 			try {
+				int iNumSegmentConstraint = 0;
+				org.drip.spline.params.SegmentBasisFlexureConstraint[] aSIBC = null;
+
+				if (null != aaSRVC && null != aaSRVC[i]) {
+					aSIBC = new org.drip.spline.params.SegmentBasisFlexureConstraint[iNumSegmentConstraint =
+						aaSRVC[i].length];
+
+					for (int j = 0; i < iNumSegmentConstraint; ++j)
+						aSIBC[j] = null == aaSRVC[i][j] ? null : aaSRVC[i][j].responseIndexedBasisConstraint
+							(_aCS[i].getBasisEvaluator(), _aCS[i]);
+				}
+
 				if (0 != (org.drip.spline.regime.MultiSegmentSequence.CALIBRATE & iSetupMode) &&
-					!_aECS[i].calibrate (new org.drip.spline.params.SegmentCalibrationInputSet (new double[]
-						{0., 1.}, new double[] {aSPRDLeft[i].responseValue(), aSPRDRight[i].responseValue()},
+					!_aCS[i].calibrate (new double[] {_aCS[i].left(), _aCS[i].right()}, new double[]
+						{aSPRDLeft[i].responseValue(), aSPRDRight[i].responseValue()},
 							aSPRDLeft[i].getDResponseDPredictorOrdinate(),
-								aSPRDLeft[i].getDResponseDPredictorOrdinate(), null == aaSRVC ? null :
-									aaSRVC[i], sbfr)))
+								aSPRDRight[i].getDResponseDPredictorOrdinate(), aSIBC, null == rbfr ? null :
+									rbfr.sizeToSegment (_aCS[i])))
 					return false;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -304,7 +316,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		if (0 != (org.drip.spline.regime.MultiSegmentSequence.CALIBRATE_JACOBIAN & iSetupMode)) {
 			try {
 				if (null == (_wjDCoeffDEdgeParams = new org.drip.quant.calculus.WengertJacobian
-					(_aECS[0].numBasis(), iNumSegment + 1)))
+					(_aCS[0].getBasisEvaluator().numBasis(), iNumSegment + 1)))
 					return false;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -313,14 +325,14 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			}
 
 			org.drip.quant.calculus.WengertJacobian wjDCoeffDEdgeParamsHead =
-				_aECS[0].jackDCoeffDEdgeParams();
+				_aCS[0].jackDCoeffDEdgeParams();
 
 			if (!setDCoeffDEdgeParams (0, wjDCoeffDEdgeParamsHead) || !setDCoeffDEdgeParams (1,
 				wjDCoeffDEdgeParamsHead))
 				return false;
 
 			for (int i = 1; i < iNumSegment; ++i) {
-				if (!setDCoeffDEdgeParams (i + 1, _aECS[i].jackDCoeffDEdgeParams())) return false;
+				if (!setDCoeffDEdgeParams (i + 1, _aCS[i].jackDCoeffDEdgeParams())) return false;
 			}
 		}
 
@@ -350,20 +362,21 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		final double dblRegimeLeftResponse,
 		final double dblRegimeLeftResponseSlope,
 		final double dblRegimeRightResponse,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr)
+		final org.drip.spline.params.RegimeBestFitResponse rbfr)
 	{
-		return _aECS[0].calibrate
+		return _aCS[0].calibrate
 			(org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
 				(getLeftPredictorOrdinateEdge(), dblRegimeLeftResponse), dblRegimeLeftResponseSlope,
 					org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-						(getRightPredictorOrdinateEdge(), dblRegimeRightResponse), sbfr);
+						(getRightPredictorOrdinateEdge(), dblRegimeRightResponse), null == rbfr ? null :
+							rbfr.sizeToSegment (_aCS[0]));
 	}
 
 	@Override public double responseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		return _aECS[containingIndex (dblPredictorOrdinate, true, true)].responseValue
+		return _aCS[containingIndex (dblPredictorOrdinate, true, true)].responseValue
 			(dblPredictorOrdinate);
 	}
 
@@ -386,9 +399,9 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 		try {
 			for (int i = 0; i < iCk; ++i)
-				adblDeriv[i] = _aECS[iIndex].calcResponseValueDerivative (dblPredictorOrdinate, i, false);
+				adblDeriv[i] = _aCS[iIndex].calcResponseValueDerivative (dblPredictorOrdinate, i);
 
-			return new org.drip.spline.params.SegmentPredictorResponseDerivative (_aECS[iIndex].responseValue
+			return new org.drip.spline.params.SegmentPredictorResponseDerivative (_aCS[iIndex].responseValue
 				(dblPredictorOrdinate), adblDeriv);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -410,7 +423,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			return null;
 		}
 
-		return setDResponseDEdgeResponse (iIndex, _aECS[iIndex].jackDResponseDEdgeParams
+		return setDResponseDEdgeResponse (iIndex, _aCS[iIndex].jackDResponseDEdgeParams
 			(dblPredictorOrdinate));
 	}
 
@@ -427,19 +440,19 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			return null;
 		}
 
-		return _aECS[iIndex].monotoneType();
+		return _aCS[iIndex].monotoneType();
 	}
 
 	@Override public boolean isLocallyMonotone()
 		throws java.lang.Exception
 	{
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 
 		for (int i = 0; i < iNumSegment; ++i) {
 			org.drip.spline.segment.Monotonocity mono = null;
 
 			try {
-				mono = _aECS[i].monotoneType();
+				mono = _aCS[i].monotoneType();
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -454,7 +467,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		final double[] adblMeasuredResponse)
 		throws java.lang.Exception
 	{
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 		int[] aiMonotoneType = new int[iNumSegment];
 		int[] aiNodeMiniMax = new int[iNumSegment + 1];
 
@@ -477,7 +490,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			}
 
 			if (i < iNumSegment) {
-				org.drip.spline.segment.Monotonocity mono = _aECS[i].monotoneType();
+				org.drip.spline.segment.Monotonocity mono = _aCS[i].monotoneType();
 
 				if (null != mono) aiMonotoneType[i] = mono.type();
 			}
@@ -503,33 +516,33 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate)) return false;
 
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 
 		for (int i = 0; i < iNumSegment; ++i) {
-			if (dblPredictorOrdinate == _aECS[i].left()) return false;
+			if (dblPredictorOrdinate == _aCS[i].left()) return false;
 		}
 
-		return dblPredictorOrdinate == _aECS[iNumSegment - 1].left();
+		return dblPredictorOrdinate == _aCS[iNumSegment - 1].left();
 	}
 
 	@Override public double calcRightEdgeDerivative (
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		org.drip.spline.segment.ElasticConstitutiveState ecs = _aECS[_aECS.length - 1];
+		org.drip.spline.segment.ConstitutiveState ecs = _aCS[_aCS.length - 1];
 
-		return ecs.calcResponseValueDerivative (ecs.right(), iOrder, false);
+		return ecs.calcResponseValueDerivative (ecs.right(), iOrder);
 	}
 
 	@Override public boolean resetNode (
 		final int iPredictorOrdinateIndex,
 		final double dblResponseReset)
 	{
-		if (0 == iPredictorOrdinateIndex || 1 == iPredictorOrdinateIndex || _aECS.length <
+		if (0 == iPredictorOrdinateIndex || 1 == iPredictorOrdinateIndex || _aCS.length <
 			iPredictorOrdinateIndex || !org.drip.quant.common.NumberUtil.IsValid (dblResponseReset))
 			return false;
 
-		return _aECS[iPredictorOrdinateIndex - 1].calibrate (_aECS[iPredictorOrdinateIndex - 2],
+		return _aCS[iPredictorOrdinateIndex - 1].calibrate (_aCS[iPredictorOrdinateIndex - 2],
 			dblResponseReset, null);
 	}
 
@@ -537,11 +550,11 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		final int iPredictorOrdinateIndex,
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcReset)
 	{
-		if (0 == iPredictorOrdinateIndex || 1 == iPredictorOrdinateIndex || _aECS.length <
+		if (0 == iPredictorOrdinateIndex || 1 == iPredictorOrdinateIndex || _aCS.length <
 			iPredictorOrdinateIndex || null == srvcReset)
 			return false;
 
-		return _aECS[iPredictorOrdinateIndex - 1].calibrate (_aECS[iPredictorOrdinateIndex - 2], srvcReset,
+		return _aCS[iPredictorOrdinateIndex - 1].calibrate (_aCS[iPredictorOrdinateIndex - 2], srvcReset,
 			null);
 	}
 
@@ -558,12 +571,12 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 	@Override public double getLeftPredictorOrdinateEdge()
 	{
-		return _aECS[0].left();
+		return _aCS[0].left();
 	}
 
 	@Override public double getRightPredictorOrdinateEdge()
 	{
-		return _aECS[_aECS.length - 1].right();
+		return _aCS[_aCS.length - 1].right();
 	}
 
 	@Override public int containingIndex (
@@ -576,13 +589,13 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			throw new java.lang.Exception
 				("CalibratableMultiSegmentSequence::containingIndex => Predictor Ordinate not in the Regime Range");
 
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 
 		for (int i = 0 ; i < iNumSegment; ++i) {
-			boolean bLeftValid = bIncludeLeft ? _aECS[i].left() <= dblPredictorOrdinate : _aECS[i].left() <
+			boolean bLeftValid = bIncludeLeft ? _aCS[i].left() <= dblPredictorOrdinate : _aCS[i].left() <
 				dblPredictorOrdinate;
 
-			boolean bRightValid = bIncludeRight ? _aECS[i].right() >= dblPredictorOrdinate : _aECS[i].right()
+			boolean bRightValid = bIncludeRight ? _aCS[i].right() >= dblPredictorOrdinate : _aCS[i].right()
 				> dblPredictorOrdinate;
 
 			if (bLeftValid && bRightValid) return i;
@@ -596,7 +609,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		final java.lang.String strName,
 		final double dblPredictorOrdinate)
 	{
-		int iNumSegment = _aECS.length;
+		int iNumSegment = _aCS.length;
 		int iContainingPredictorOrdinateIndex = 0;
 
 		try {
@@ -608,22 +621,22 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		}
 
 		int iNumClippedSegment = iNumSegment - iContainingPredictorOrdinateIndex;
-		org.drip.spline.segment.ElasticConstitutiveState[] aECS = new
-			org.drip.spline.segment.ElasticConstitutiveState[iNumClippedSegment];
+		org.drip.spline.segment.ConstitutiveState[] aCS = new
+			org.drip.spline.segment.ConstitutiveState[iNumClippedSegment];
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
 			org.drip.spline.params.SegmentCustomBuilderControl[iNumClippedSegment];
 
 		for (int i = 0; i < iNumClippedSegment; ++i) {
-			if (null == (aECS[i] = 0 == i ?
-				_aECS[iContainingPredictorOrdinateIndex].clipLeftOfPredictorOrdinate (dblPredictorOrdinate) :
-					_aECS[i + iContainingPredictorOrdinateIndex]))
+			if (null == (aCS[i] = 0 == i ?
+				_aCS[iContainingPredictorOrdinateIndex].clipLeftOfPredictorOrdinate (dblPredictorOrdinate) :
+					_aCS[i + iContainingPredictorOrdinateIndex]))
 				return null;
 
 			aSCBC[i] = _aSCBC[i + iContainingPredictorOrdinateIndex];
 		}
 
 		try {
-			return new CalibratableMultiSegmentSequence (strName, aECS, aSCBC);
+			return new CalibratableMultiSegmentSequence (strName, aCS, aSCBC);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -645,22 +658,22 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			return null;
 		}
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aECS = new
-			org.drip.spline.segment.ElasticConstitutiveState[iContainingPredictorOrdinateIndex + 1];
+		org.drip.spline.segment.ConstitutiveState[] aCS = new
+			org.drip.spline.segment.ConstitutiveState[iContainingPredictorOrdinateIndex + 1];
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
 			org.drip.spline.params.SegmentCustomBuilderControl[iContainingPredictorOrdinateIndex + 1];
 
 		for (int i = 0; i <= iContainingPredictorOrdinateIndex; ++i) {
-			if (null == (aECS[i] = iContainingPredictorOrdinateIndex == i ?
-				_aECS[iContainingPredictorOrdinateIndex].clipRightOfPredictorOrdinate
-					(dblPredictorOrdinate) : _aECS[i]))
+			if (null == (aCS[i] = iContainingPredictorOrdinateIndex == i ?
+				_aCS[iContainingPredictorOrdinateIndex].clipRightOfPredictorOrdinate (dblPredictorOrdinate) :
+					_aCS[i]))
 				return null;
 
 			aSCBC[i] = _aSCBC[i];
 		}
 
 		try {
-			return new CalibratableMultiSegmentSequence (strName, aECS, aSCBC);
+			return new CalibratableMultiSegmentSequence (strName, aCS, aSCBC);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -668,23 +681,48 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		return null;
 	}
 
-	@Override public double dcpe()
+	@Override public double curvatureDPE()
 		throws java.lang.Exception
 	{
-		double dblDCPE = 0.;
+		double dblDPE = 0.;
 
-		for (org.drip.spline.segment.ElasticConstitutiveState ecs : _aECS)
-			dblDCPE += ecs.dcpe();
+		for (org.drip.spline.segment.ConstitutiveState cs : _aCS)
+			dblDPE += cs.curvatureDPE();
 
-		return dblDCPE;
+		return dblDPE;
+	}
+
+	@Override public double lengthDPE()
+		throws java.lang.Exception
+	{
+		double dblDPE = 0.;
+
+		for (org.drip.spline.segment.ConstitutiveState cs : _aCS)
+			dblDPE += cs.lengthDPE();
+
+		return dblDPE;
+	}
+
+	@Override public double bestFitDPE (
+		final org.drip.spline.params.RegimeBestFitResponse rbfr)
+		throws java.lang.Exception
+	{
+		if (null == rbfr) return 0.;
+
+		double dblDPE = 0.;
+
+		for (org.drip.spline.segment.ConstitutiveState cs : _aCS)
+			dblDPE += cs.bestFitDPE (rbfr.sizeToSegment (cs));
+
+		return dblDPE;
 	}
 
 	@Override public java.lang.String displayString()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		for (int i = 0; i < _aECS.length; ++i)
-			sb.append (_aECS[i].displayString() + " \n");
+		for (int i = 0; i < _aCS.length; ++i)
+			sb.append (_aCS[i].displayString() + " \n");
 
 		return sb.toString();
 	}

@@ -46,7 +46,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblResponseValue Array of Response Values
 	 * @param adblCustomSlope Array of Custom Slopes
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Calibration Set up Mode NATURAL | FINANCIAL | FLOATING | NOTAKNOT
 	 * 
 	 * @return The Instance of the Hermite Spline Regime
@@ -58,7 +58,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblResponseValue,
 		final double[] adblCustomSlope,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode)
 	{
 		org.drip.spline.regime.MultiSegmentSequence msr =
@@ -99,7 +99,7 @@ public class LocalControlRegimeBuilder {
 			}
 		}
 
-		return msr.setupHermite (aSPRDLeft, aSPRDRight, null, sbfr, iSetupMode) ? msr : null;
+		return msr.setupHermite (aSPRDLeft, aSPRDRight, null, rbfr, iSetupMode) ? msr : null;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -122,7 +122,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -133,7 +133,7 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -159,7 +159,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -170,7 +170,7 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -196,7 +196,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -207,7 +207,7 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -233,7 +233,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -244,7 +244,7 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -270,7 +270,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -281,7 +281,7 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 
 	/**
@@ -294,7 +294,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -307,7 +307,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -318,7 +318,7 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 
 	/**
@@ -330,7 +330,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -343,7 +343,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -354,7 +354,7 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 
 	/**
@@ -367,7 +367,7 @@ public class LocalControlRegimeBuilder {
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
@@ -380,7 +380,7 @@ public class LocalControlRegimeBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
@@ -391,6 +391,6 @@ public class LocalControlRegimeBuilder {
 					bApplyMonotoneFilter);
 
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
-			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
+			adblResponseValue, lmcg.C1(), aSCBC, rbfr, iSetupMode);
 	}
 }

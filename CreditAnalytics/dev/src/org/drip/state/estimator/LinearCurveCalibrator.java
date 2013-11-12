@@ -42,7 +42,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	 * @param prbp Segment Builder Parameters
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
-	 * @param bfwr Fitness Weighted Response
+	 * @param rfwr Curve Fitness Weighted Response
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -51,10 +51,10 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.SegmentBestFitResponse bfwr)
+		final org.drip.spline.params.RegimeBestFitResponse rfwr)
 		throws java.lang.Exception
 	{
-		super ("", prbp, iCalibrationBoundaryCondition, iCalibrationDetail, bfwr);
+		super ("", prbp, iCalibrationBoundaryCondition, iCalibrationDetail, rfwr);
 	}
 
 	/**

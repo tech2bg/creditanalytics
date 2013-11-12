@@ -194,8 +194,6 @@ public class TensionRegimeEstimation {
 			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
-		System.out.println ("\t\tregime = " + regime);
-
 		/*
 		 * Estimate, compute the segment-by-segment monotonicity and the Regime Jacobian
 		 */
@@ -209,7 +207,7 @@ public class TensionRegimeEstimation {
 			dblX += 1.;
 		}
 
-		System.out.println ("\t\tSPLINE_REGIME DCPE: " + regime.dcpe());
+		System.out.println ("\t\tSPLINE_REGIME DPE: " + regime.curvatureDPE());
 
 		/*
 		 * Construct a new Regime instance by inserting a pair of of predictor/response knots
@@ -234,7 +232,7 @@ public class TensionRegimeEstimation {
 			dblX += 1.;
 		}
 
-		System.out.println ("\t\tSPLINE_REGIME_INSERT DCPE: " + regimeInsert.dcpe());
+		System.out.println ("\t\tSPLINE_REGIME_INSERT DPE: " + regimeInsert.curvatureDPE());
 	}
 
 	public static final void main (

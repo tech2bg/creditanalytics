@@ -41,7 +41,7 @@ package org.drip.spline.params;
  * 	V => Value of the Constraint
  * 
  * SegmentResponseValueConstraint can be viewed as the global response point value transform of
- *  SegmentIndexedBasisConstraint.
+ *  SegmentBasisFlexureConstraint.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -162,49 +162,35 @@ public class SegmentResponseValueConstraint {
 	 * Convert the Segment Constraint onto Local Predictor Ordinates, the corresponding Response Basis
 	 *  Function, and the Shape Controller Realizations
 	 * 
-	 * @param aAUResponseBasis Array of the Response Basis Functions
-	 * @param rssc Shape Controller
+	 * @param lbe The Local Basis Evaluator
 	 * @param ics Inelastics transformer to convert coordinate space to Local from Global
 	 * 
 	 * @return The Segment Basis Function Constraint
 	 */
 
-	public org.drip.spline.params.SegmentIndexedBasisConstraint responseBasisIndexConstraint (
-		final org.drip.quant.function1D.AbstractUnivariate[] aAUResponseBasis,
-		final org.drip.spline.params.ResponseScalingShapeControl rssc,
+	public org.drip.spline.params.SegmentBasisFlexureConstraint responseIndexedBasisConstraint (
+		final org.drip.spline.segment.BasisEvaluator lbe,
 		final org.drip.spline.segment.InelasticConstitutiveState ics)
 	{
-		if (null == aAUResponseBasis || null == ics) return null;
+		if (null == lbe || null == ics) return null;
 
-		int iNumResponseBasis = aAUResponseBasis.length;
+		int iNumResponseBasis = lbe.numBasis();
+
 		int iNumPredictorOrdinate = _adblPredictorOrdinate.length;
 		double[] adblResponseBasisWeight = new double[iNumResponseBasis];
-		double[] adblLocalPredictorOrdinate = new double[iNumPredictorOrdinate];
 
 		if (0 == iNumResponseBasis) return null;
-
-		for (int i = 0; i < iNumPredictorOrdinate; ++i) {
-			try {
-				adblLocalPredictorOrdinate[i] = ics.localize (_adblPredictorOrdinate[i]);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
 
 		try {
 			for (int i = 0; i < iNumResponseBasis; ++i) {
 				adblResponseBasisWeight[i] = 0.;
 
 				for (int j = 0; j < iNumPredictorOrdinate; ++j)
-					adblResponseBasisWeight[i] += _adblResponseValueWeight[j] * aAUResponseBasis[i].evaluate
-						(adblLocalPredictorOrdinate[j]) * (null == rssc ? 1. :
-							rssc.shapeController().evaluate (rssc.isLocal() ? adblLocalPredictorOrdinate[j] :
-								ics.delocalize (adblLocalPredictorOrdinate[j])));
+					adblResponseBasisWeight[i] += _adblResponseValueWeight[j] *
+						lbe.shapedBasisFunctionResponse (_adblPredictorOrdinate[j], i);
 			}
 
-			return new org.drip.spline.params.SegmentIndexedBasisConstraint (adblResponseBasisWeight,
+			return new org.drip.spline.params.SegmentBasisFlexureConstraint (adblResponseBasisWeight,
 				_dblWeightedResponseValueConstraint);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

@@ -87,7 +87,7 @@ public class PenalizedCurvatureFit {
 		final double[] adblX,
 		final double[] adblY,
 		final SegmentCustomBuilderControl scbc,
-		final SegmentBestFitResponse sbfr)
+		final RegimeBestFitResponse rbfr)
 		throws Exception
 	{
 		/*
@@ -108,7 +108,7 @@ public class PenalizedCurvatureFit {
 			adblX, // predictors
 			adblY, // responses
 			aSCBC, // Basis Segment Builder parameters
-			sbfr, // Fitness Weighted Response
+			rbfr, // Regime Fitness Weighted Response
 			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
@@ -136,7 +136,7 @@ public class PenalizedCurvatureFit {
 		 *  weighted closeness of fit.
 		 */
 
-		SegmentBestFitResponse sbfr = SegmentBestFitResponse.Create (
+		RegimeBestFitResponse rbfr = RegimeBestFitResponse.Create (
 			new double[] { 2.28,  2.52,  2.73, 3.00,  5.50, 8.44,  8.76,  9.08,  9.80,  9.92},
 			new double[] {14.27, 12.36, 10.61, 9.25, -0.50, 7.92, 10.07, 12.23, 15.51, 16.36},
 			new double[] { 1.09,  0.82,  1.34, 1.10,  0.50, 0.79,  0.65,  0.49,  0.24,  0.21}
@@ -180,7 +180,7 @@ public class PenalizedCurvatureFit {
 
 		MultiSegmentSequence regimeBase2 = BasisSplineRegimeTest (adblX, adblY, scbc2, null);
 
-		MultiSegmentSequence regimeBestFit = BasisSplineRegimeTest (adblX, adblY, scbc2, sbfr);
+		MultiSegmentSequence regimeBestFit = BasisSplineRegimeTest (adblX, adblY, scbc2, rbfr);
 
 		/*
 		 * Compute the segment-by-segment monotonicity
@@ -227,10 +227,10 @@ public class PenalizedCurvatureFit {
 			dblX += 0.25;
 		}
 
-		System.out.println ("\tBASE #1  DCPE: " + FormatUtil.FormatDouble (regimeBase1.dcpe(), 10, 0, 1.));
+		System.out.println ("\tBASE #1  DPE: " + FormatUtil.FormatDouble (regimeBase1.curvatureDPE(), 10, 0, 1.));
 
-		System.out.println ("\tBASE #2  DCPE: " + FormatUtil.FormatDouble (regimeBase2.dcpe(), 10, 0, 1.));
+		System.out.println ("\tBASE #2  DPE: " + FormatUtil.FormatDouble (regimeBase2.curvatureDPE(), 10, 0, 1.));
 
-		System.out.println ("\tBEST FIT DCPE: " + FormatUtil.FormatDouble (regimeBestFit.dcpe(), 10, 0, 1.));
+		System.out.println ("\tBEST FIT DPE: " + FormatUtil.FormatDouble (regimeBestFit.curvatureDPE(), 10, 0, 1.));
 	}
 }

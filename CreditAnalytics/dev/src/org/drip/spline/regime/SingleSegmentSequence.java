@@ -52,7 +52,7 @@ public interface SingleSegmentSequence {
 	 * 
 	 * @param dblRegimeLeadingResponse Regime Left-most Response
 	 * @param adblSegmentRightEdgeResponse Array of Segment Right Edge Responses
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -62,7 +62,7 @@ public interface SingleSegmentSequence {
 	public abstract boolean setup (
 		final double dblRegimeLeadingResponse,
 		final double[] adblSegmentRightEdgeResponse,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail);
 

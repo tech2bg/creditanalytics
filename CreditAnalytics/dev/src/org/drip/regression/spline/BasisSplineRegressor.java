@@ -44,8 +44,8 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	private org.drip.quant.calculus.WengertJacobian _wjLeft = null;
 	private org.drip.quant.calculus.WengertJacobian _wjRight = null;
 	private org.drip.quant.calculus.WengertJacobian _wjValue = null;
-	private org.drip.spline.segment.ElasticConstitutiveState _seg1 = null;
-	private org.drip.spline.segment.ElasticConstitutiveState _seg2 = null;
+	private org.drip.spline.segment.ConstitutiveState _seg1 = null;
+	private org.drip.spline.segment.ConstitutiveState _seg2 = null;
 
 	/**
 	 * Creates an instance of Polynomial BasisSplineRegressor
@@ -207,10 +207,9 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 			org.drip.spline.params.ResponseScalingShapeControl (true, new
 				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
-		if (null == (_seg1 = org.drip.spline.segment.LocalElasticConstitutiveState.Create (1.0, 3.0, fs,
-			rssc, segParams)) || null == (_seg2 =
-				org.drip.spline.segment.LocalElasticConstitutiveState.Create (3.0, 6.0, fs, rssc,
-					segParams)))
+		if (null == (_seg1 = org.drip.spline.segment.ConstitutiveState.Create (1.0, 3.0, fs, rssc,
+			segParams)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (3.0, 6.0, fs,
+				rssc, segParams)))
 			throw new java.lang.Exception ("BasisSplineRegressor ctr: Cant create the segments");
 	}
 

@@ -31,7 +31,7 @@ package org.drip.spline.regime;
 public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentSequenceBuilder {
 	private int _iCalibrationBoundaryCondition = -1;
 	private org.drip.spline.regime.MultiSegmentSequence _mss = null;
-	private org.drip.spline.params.SegmentBestFitResponse _sbfr = null;
+	private org.drip.spline.params.RegimeBestFitResponse _rbfr = null;
 	private org.drip.spline.params.SegmentResponseValueConstraint[] _aSRVC = null;
 	private org.drip.spline.params.SegmentResponseValueConstraint _srvcLeading = null;
 
@@ -41,7 +41,7 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 	 * @param srvcLeading Leading Segment Response Value Constraint
 	 * @param aSRVC Array of Segment Response Value Constraints
 	 * @param iCalibrationBoundaryCondition Solver Mode - FLOATING | NATURAL | FINANCIAL
-	 * @param sbfr Best Fit Weighted Response
+	 * @param rbfr Sequence Best Fit Weighted Response
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -49,14 +49,17 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 	public CkSegmentSequenceBuilder (
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcLeading,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition)
 		throws java.lang.Exception
 	{
-		if (null == (_srvcLeading = srvcLeading) || null == (_aSRVC = aSRVC) || 0 == _aSRVC.length)
+		_rbfr = rbfr;
+		_aSRVC = aSRVC;
+		_srvcLeading = srvcLeading;
+
+		if (null == _srvcLeading && (null == _aSRVC || 0 == _aSRVC.length) && null == _rbfr)
 			throw new java.lang.Exception ("CkSegmentSequenceBuilder ctr: Invalid inputs!");
 
-		_sbfr = sbfr;
 		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
 	}
 
@@ -79,10 +82,10 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 	{
 		if (null == _mss) return false;
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aECS = _mss.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCS = _mss.segments();
 
-		return null != aECS && 1 <= aECS.length ? aECS[0].calibrate (_srvcLeading, dblLeftSlope, _aSRVC[0],
-			_sbfr) : false;
+		return null != aCS && 1 <= aCS.length ? aCS[0].calibrate (_srvcLeading, dblLeftSlope, null == _aSRVC
+			? null : _aSRVC[0], null == _rbfr ? null : _rbfr.sizeToSegment (aCS[0])) : false;
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -90,13 +93,13 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 	{
 		if (null == _mss) return false;
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aECS = _mss.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCS = _mss.segments();
 
-		int iNumSegment = aECS.length;
+		int iNumSegment = aCS.length;
 
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
-			if (!aECS[iSegment].calibrate (0 == iSegment ? null : aECS[iSegment - 1], _aSRVC[iSegment],
-				_sbfr))
+			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], null == _aSRVC ? null :
+				_aSRVC[iSegment], null == _rbfr ? null : _rbfr.sizeToSegment (aCS[iSegment])))
 				return false;
 		}
 

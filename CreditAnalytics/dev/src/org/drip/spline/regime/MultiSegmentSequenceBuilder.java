@@ -114,7 +114,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @return Regime instance
 	 */
 
-	public static final org.drip.spline.segment.ElasticConstitutiveState[] CreateSegmentSet (
+	public static final org.drip.spline.segment.ConstitutiveState[] CreateSegmentSet (
 		final double[] adblPredictorOrdinate,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC)
 	{
@@ -124,8 +124,8 @@ public class MultiSegmentSequenceBuilder {
 
 		if (1 > iNumSegment || iNumSegment != aSCBC.length) return null;
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aECS = new
-			org.drip.spline.segment.ElasticConstitutiveState[iNumSegment];
+		org.drip.spline.segment.ConstitutiveState[] aCS = new
+			org.drip.spline.segment.ConstitutiveState[iNumSegment];
 
 		for (int i = 0; i < iNumSegment; ++i) {
 			if (null == aSCBC[i]) return null;
@@ -149,77 +149,77 @@ public class MultiSegmentSequenceBuilder {
 				return null;
 
 			if (BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.PolynomialBasisSet
 							((org.drip.spline.basis.PolynomialFunctionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.BernsteinPolynomialBasisSet
 							((org.drip.spline.basis.PolynomialFunctionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.HyperbolicTensionBasisSet
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialTensionBasisSet
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_KAKLIS_PANDELIS.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.KaklisPandelisBasisSet
 							((org.drip.spline.basis.KaklisPandelisSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_RATIONAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialRationalBasisSet
 							((org.drip.spline.basis.ExponentialRationalSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialMixtureBasisSet
 							((org.drip.spline.basis.ExponentialMixtureSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromExponentialPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromHyperbolicPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_RATIONAL_LINEAR_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalLinearPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
 								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_RATIONAL_QUADRATIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aECS[i] = org.drip.spline.segment.LocalElasticConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalQuadraticPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
@@ -228,7 +228,7 @@ public class MultiSegmentSequenceBuilder {
 			}
 		}
 
-		return aECS;
+		return aCS;
 	}
 
 	/**
@@ -265,7 +265,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param adblPredictorOrdinate Predictor Ordinate Array
 	 * @param adblResponseValue Response Value Array
 	 * @param aSCBC Array of Segment Builder Parameters
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -277,7 +277,7 @@ public class MultiSegmentSequenceBuilder {
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
@@ -294,7 +294,7 @@ public class MultiSegmentSequenceBuilder {
 		for (int i = 0; i < iNumRightNode; ++i)
 			adblResponseValueRight[i] = adblResponseValue[i + 1];
 
-		return mss.setup (adblResponseValue[0], adblResponseValueRight, sbfr, iCalibrationBoundaryCondition,
+		return mss.setup (adblResponseValue[0], adblResponseValueRight, rbfr, iCalibrationBoundaryCondition,
 			iCalibrationDetail) ? mss : null;
 	}
 
@@ -307,7 +307,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param dblRegimeLeftResponseValue Left-most Y Point
 	 * @param aSRVC Array of Response Value Constraints - One per Segment
 	 * @param aSCBC Array of Segment Builder Parameters - One per Segment
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -320,14 +320,14 @@ public class MultiSegmentSequenceBuilder {
 		final double dblRegimeLeftResponseValue,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		org.drip.spline.regime.MultiSegmentSequence mss = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aSCBC);
 
-		return null == mss ? null : mss.setup (dblRegimeLeftResponseValue, aSRVC, sbfr,
+		return null == mss ? null : mss.setup (dblRegimeLeftResponseValue, aSRVC, rbfr,
 			iCalibrationBoundaryCondition, iCalibrationDetail) ? mss : null;
 	}
 
@@ -340,7 +340,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param srvcRegimeLeft Regime Left Constraint
 	 * @param aSRVC Array of Segment Constraints - One per Segment
 	 * @param aSCBC Array of Segment Builder Parameters - One per Segment
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -353,14 +353,14 @@ public class MultiSegmentSequenceBuilder {
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcRegimeLeft,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
 		org.drip.spline.regime.MultiSegmentSequence mss = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aSCBC);
 
-		return null == mss ? null : mss.setup (srvcRegimeLeft, aSRVC, sbfr, iCalibrationBoundaryCondition,
+		return null == mss ? null : mss.setup (srvcRegimeLeft, aSRVC, rbfr, iCalibrationBoundaryCondition,
 			iCalibrationDetail) ? mss : null;
 	}
 
@@ -371,7 +371,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param adblPredictorOrdinate Predictor Ordinate Array
 	 * @param dblResponseValue Response Value
 	 * @param scbc Segment Builder Parameters - One per Segment
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -383,7 +383,7 @@ public class MultiSegmentSequenceBuilder {
 		final double[] adblPredictorOrdinate,
 		final double dblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail)
 	{
@@ -406,6 +406,36 @@ public class MultiSegmentSequenceBuilder {
 		}
 
 		return CreateCalibratedRegimeEstimator (strName, adblPredictorOrdinate, adblResponseValue, aSCBC,
-			sbfr, iCalibrationBoundaryCondition, iCalibrationDetail);
+			rbfr, iCalibrationBoundaryCondition, iCalibrationDetail);
+	}
+
+	/**
+	 * Create a Regression Spline Instance over the specified array of Predictor Ordinate Knot Points and the
+	 *  Set of the Points to be Best Fit.
+	 * 
+	 * @param strName Name of the Regime
+	 * @param adblKnotPredictorOrdinate Array of the Predictor Ordinate Knots
+	 * @param aSCBC Array of Segment Builder Parameters
+	 * @param rbfr Regime Fitness Weighted Response
+	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param iCalibrationDetail The Calibration Detail
+	 * 
+	 * @return Regime instance
+	 */
+
+	public static final org.drip.spline.regime.MultiSegmentSequence CreateRegresionSplineEstimator (
+		final java.lang.String strName,
+		final double[] adblKnotPredictorOrdinate,
+		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
+		final int iCalibrationBoundaryCondition,
+		final int iCalibrationDetail)
+	{
+		org.drip.spline.regime.MultiSegmentSequence mss = CreateUncalibratedRegimeEstimator (strName,
+			adblKnotPredictorOrdinate, aSCBC);
+
+		if (null == mss) return null;
+
+		return mss.setup (null, null, rbfr, iCalibrationBoundaryCondition, iCalibrationDetail) ? mss : null;
 	}
 }

@@ -45,7 +45,7 @@ public class GlobalControlCurveParams extends org.drip.state.estimator.Smoothing
 	 * @param prbp Segment Builder Parameters
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
-	 * @param bfwr Fitness Weighted Response
+	 * @param rfwr Curve Fitness Weighted Response
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -55,10 +55,10 @@ public class GlobalControlCurveParams extends org.drip.state.estimator.Smoothing
 		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.SegmentBestFitResponse bfwr)
+		final org.drip.spline.params.RegimeBestFitResponse rfwr)
 		throws java.lang.Exception
 	{
-		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, bfwr);
+		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, rfwr);
 
 		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
 	}

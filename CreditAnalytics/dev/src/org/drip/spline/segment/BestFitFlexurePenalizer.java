@@ -35,14 +35,16 @@ package org.drip.spline.segment;
  */
 
 public class BestFitFlexurePenalizer {
-	private org.drip.spline.segment.LocalBasisEvaluator _lbe = null;
+	private org.drip.spline.segment.BasisEvaluator _lbe = null;
 	private org.drip.spline.params.SegmentBestFitResponse _sbfr = null;
+	private org.drip.spline.segment.InelasticConstitutiveState _ics = null;
 	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcLength = null;
 	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcCurvature = null;
 
 	/**
 	 * BestFitFlexurePenalizer constructor
 	 * 
+	 * @param ics Segment Inelastics
 	 * @param sfpcCurvature Curvature Penalty Parameters
 	 * @param sfpcLength Length Penalty Parameters
 	 * @param sbfr Best Fit Weighted Response
@@ -52,13 +54,14 @@ public class BestFitFlexurePenalizer {
 	 */
 
 	public BestFitFlexurePenalizer (
+		final org.drip.spline.segment.InelasticConstitutiveState ics,
 		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcCurvature,
 		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcLength,
 		final org.drip.spline.params.SegmentBestFitResponse sbfr,
-		final org.drip.spline.segment.LocalBasisEvaluator lbe)
+		final org.drip.spline.segment.BasisEvaluator lbe)
 		throws java.lang.Exception
 	{
-		if (null == (_lbe = lbe))
+		if (null == (_lbe = lbe) || null == (_ics = ics))
 			throw new java.lang.Exception ("BestFitFlexurePenalizer ctr: Invalid Inputs");
 
 		_sbfr = sbfr;
@@ -92,12 +95,13 @@ public class BestFitFlexurePenalizer {
 			{
 				int iOrder = _sfpcCurvature.derivativeOrder();
 
-				return _lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexI) *
-					_lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexR);
+				return _lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexI) *
+					_lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexR);
 			}
 		};
 
-		return _sfpcCurvature.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, 0., 1.);
+		return _sfpcCurvature.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, _ics.left(),
+			_ics.right());
 	}
 
 	/**
@@ -126,12 +130,13 @@ public class BestFitFlexurePenalizer {
 			{
 				int iOrder = _sfpcLength.derivativeOrder();
 
-				return _lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexI) *
-					_lbe.localSpecificBasisDerivative (dblVariate, iOrder, iBasisIndexR);
+				return _lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexI) *
+					_lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexR);
 			}
 		};
 
-		return _sfpcLength.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, 0., 1.);
+		return _sfpcLength.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, _ics.left(),
+			_ics.right());
 	}
 
 	/**
@@ -161,9 +166,9 @@ public class BestFitFlexurePenalizer {
 		for (int i = 0; i < iNumPoint; ++i) {
 			double dblPredictorOrdinate = _sbfr.predictorOrdinate (i);
 
-			dblBasisPairFitnessPenalty += _sbfr.weight (i) * _lbe.localSpecificBasisResponse
-				(dblPredictorOrdinate, iBasisIndexI) * _lbe.localSpecificBasisResponse (dblPredictorOrdinate,
-					iBasisIndexR);
+			dblBasisPairFitnessPenalty += _sbfr.weight (i) * _lbe.shapedBasisFunctionResponse
+				(dblPredictorOrdinate, iBasisIndexI) * _lbe.shapedBasisFunctionResponse
+					(dblPredictorOrdinate, iBasisIndexR);
 		}
 
 		return dblBasisPairFitnessPenalty / iNumPoint;
@@ -212,7 +217,7 @@ public class BestFitFlexurePenalizer {
 		for (int i = 0; i < iNumPoint; ++i) {
 			double dblPredictorOrdinate = _sbfr.predictorOrdinate (i);
 
-			dblBasisPairPenaltyConstraint += _sbfr.weight (i) * _lbe.localSpecificBasisResponse
+			dblBasisPairPenaltyConstraint += _sbfr.weight (i) * _lbe.shapedBasisFunctionResponse
 				(dblPredictorOrdinate, iBasisIndexR) * _sbfr.response (i);
 		}
 

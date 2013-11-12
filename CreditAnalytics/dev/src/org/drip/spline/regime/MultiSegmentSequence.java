@@ -98,7 +98,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	 * @return The Regime Segments
 	 */
 
-	public abstract org.drip.spline.segment.ElasticConstitutiveState[] segments();
+	public abstract org.drip.spline.segment.ConstitutiveState[] segments();
 
 	/**
 	 * Set up (i.e., calibrate) the individual Segment in the Regime to the Target Segment Edge Values and
@@ -109,7 +109,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	 * @param aSPRDRight Array of Right Segment Edge Values
 	 * @param aaSRVC Double Array of Constraints - Outer Index corresponds to Segment Index, and the Inner
 	 * 		Index to Constraint Array within each Segment
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iSetupMode Set up Mode (i.e., set up ITEP only, or fully calibrate the Regime, or calibrate
 	 * 	 	Regime plus compute Jacobian)
 	 * 
@@ -120,7 +120,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 		final org.drip.spline.params.SegmentPredictorResponseDerivative[] aSPRDLeft,
 		final org.drip.spline.params.SegmentPredictorResponseDerivative[] aSPRDRight,
 		final org.drip.spline.params.SegmentResponseValueConstraint[][] aaSRVC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iSetupMode);
 
 	/**
@@ -129,7 +129,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	 * @param dblRegimeLeftResponse Response Value at the Left Edge of the Regime
 	 * @param dblRegimeLeftResponseSlope Response Slope Value at the Left Edge of the Regime
 	 * @param dblRegimeRightResponse Response Value at the Right Edge of the Regime
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * 
 	 * @return TRUE => Left slope successfully set
 	 */
@@ -138,7 +138,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 		final double dblRegimeLeftResponse,
 		final double dblRegimeLeftResponseSlope,
 		final double dblRegimeRightResponse,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr);
+		final org.drip.spline.params.RegimeBestFitResponse rbfr);
 
 	/**
 	 * Calculate the SPRD at the specified Predictor Ordinate
@@ -245,7 +245,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	 * 
 	 * @param srvcLeading Regime Left-most Segment Response Value Constraint
 	 * @param aSRVC Array of Segment Response Value Constraints
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Fitness Weighted Response
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -255,7 +255,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	public abstract boolean setup (
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcLeading,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse sbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail);
 
@@ -265,7 +265,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	 * 
 	 * @param dblRegimeLeftResponseValue Regime Left-most Response Value
 	 * @param aSRVC Array of Segment Response Value Constraints
-	 * @param sbfr Fitness Weighted Response
+	 * @param rbfr Regime Best Fit Weighted Response Values
 	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -275,19 +275,44 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	public abstract boolean setup (
 		final double dblRegimeLeftResponseValue,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
-		final org.drip.spline.params.SegmentBestFitResponse sbfr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final int iCalibrationBoundaryCondition,
 		final int iCalibrationDetail);
 
 	/**
-	 * Retrieve the Span DCPE
+	 * Retrieve the Span Curvature DPE
 	 * 
-	 * @return The Span DCPE
+	 * @return The Span Curvature DPE
 	 * 
-	 * @throws java.lang.Exception Thrown if the Span DCPE cannot be computed
+	 * @throws java.lang.Exception Thrown if the Span Curvature DPE cannot be computed
 	 */
 
-	public abstract double dcpe()
+	public abstract double curvatureDPE()
+		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Span Length DPE
+	 * 
+	 * @return The Span Length DPE
+	 * 
+	 * @throws java.lang.Exception Thrown if the Span Length DPE cannot be computed
+	 */
+
+	public abstract double lengthDPE()
+		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Regime Best Fit DPE
+	 * 
+	 * @param rbfr Regime Best Fit Weighted Response Values
+	 * 
+	 * @return The Regime Best Fit DPE
+	 * 
+	 * @throws java.lang.Exception Thrown if the Regime Best Fit DPE cannot be computed
+	 */
+
+	public abstract double bestFitDPE (
+		final org.drip.spline.params.RegimeBestFitResponse sbfr)
 		throws java.lang.Exception;
 
 	/**

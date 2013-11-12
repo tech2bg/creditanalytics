@@ -62,7 +62,7 @@ public class MultiSegmentSequenceModifier {
 				(dblPredictorOrdinate))
 			return null;
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aSeg = mssIn.segments();
+		org.drip.spline.segment.ConstitutiveState[] aSeg = mssIn.segments();
 
 		int iNewIndex = 0;
 		int iNumSegmentIn = aSeg.length;
@@ -154,11 +154,11 @@ public class MultiSegmentSequenceModifier {
 			if (adblConstraintOrdinate[i] <= dblRegimePredictorOrdinateRight) return null;
 		}
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aECS = mssIn.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCS = mssIn.segments();
 
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBCIn = mssIn.segmentBuilderControl();
 
-		int iNumSegmentIn = aECS.length;
+		int iNumSegmentIn = aCS.length;
 		double dblRegimeResponseValueLeft = java.lang.Double.NaN;
 		double[] adblPredictorOrdinateOut = new double[iNumSegmentIn + 2];
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBCOut = new
@@ -177,9 +177,9 @@ public class MultiSegmentSequenceModifier {
 		for (int i = 0; i < iNumSegmentIn; ++i) {
 			aSCBCOut[i] = aSCBCIn[i];
 
-			adblPredictorOrdinateOut[i] = aECS[i].left();
+			adblPredictorOrdinateOut[i] = aCS[i].left();
 
-			double dblPredictorOrdinateRight = aECS[i].right();
+			double dblPredictorOrdinateRight = aCS[i].right();
 
 			try {
 				aSRVCOut[i] = new org.drip.spline.params.SegmentResponseValueConstraint (new double[]
@@ -196,7 +196,7 @@ public class MultiSegmentSequenceModifier {
 		aSCBCOut[iNumSegmentIn] = scbc;
 		adblPredictorOrdinateOut[iNumSegmentIn + 1] = dblPredictorOrdinateAppendRight;
 
-		adblPredictorOrdinateOut[iNumSegmentIn] = aECS[iNumSegmentIn - 1].right();
+		adblPredictorOrdinateOut[iNumSegmentIn] = aCS[iNumSegmentIn - 1].right();
 
 		return org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator
 			(mssIn.name(), adblPredictorOrdinateOut, dblRegimeResponseValueLeft, aSRVCOut, aSCBCOut, null,
@@ -225,10 +225,10 @@ public class MultiSegmentSequenceModifier {
 				sprdRightSegmentLeftEdge)
 			return null;
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aECSIn = mssIn.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCSIn = mssIn.segments();
 
 		int iOutSegmentIndex = 1;
-		int iNumSegmentIn = aECSIn.length;
+		int iNumSegmentIn = aCSIn.length;
 		double[] adblPredictorOrdinateOut = new double[iNumSegmentIn + 2];
 		org.drip.spline.params.SegmentPredictorResponseDerivative[] aSPRDOutLeft = new
 			org.drip.spline.params.SegmentPredictorResponseDerivative[iNumSegmentIn + 1];
@@ -237,29 +237,29 @@ public class MultiSegmentSequenceModifier {
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBCOut = new
 			org.drip.spline.params.SegmentCustomBuilderControl[iNumSegmentIn + 1];
 
-		if (dblPredictorOrdinate < aECSIn[0].left() || dblPredictorOrdinate >
-			aECSIn[iNumSegmentIn - 1].right())
+		if (dblPredictorOrdinate < aCSIn[0].left() || dblPredictorOrdinate >
+			aCSIn[iNumSegmentIn - 1].right())
 			return null;
 
-		adblPredictorOrdinateOut[0] = aECSIn[0].left();
+		adblPredictorOrdinateOut[0] = aCSIn[0].left();
 
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBCIn = mssIn.segmentBuilderControl();
 
 		for (int i = 0; i < iNumSegmentIn; ++i) {
 			aSCBCOut[iOutSegmentIndex - 1] = aSCBCIn[i];
 
-			aSPRDOutLeft[iOutSegmentIndex - 1] = mssIn.calcSPRD (aECSIn[i].left());
+			aSPRDOutLeft[iOutSegmentIndex - 1] = mssIn.calcSPRD (aCSIn[i].left());
 
-			if (dblPredictorOrdinate > aECSIn[i].left() && dblPredictorOrdinate < aECSIn[i].right()) {
+			if (dblPredictorOrdinate > aCSIn[i].left() && dblPredictorOrdinate < aCSIn[i].right()) {
 				aSPRDOutRight[iOutSegmentIndex - 1] = sprdLeftSegmentRightEdge;
 				adblPredictorOrdinateOut[iOutSegmentIndex++] = dblPredictorOrdinate;
 				aSCBCOut[iOutSegmentIndex - 1] = aSCBCIn[i];
 				aSPRDOutLeft[iOutSegmentIndex - 1] = sprdRightSegmentLeftEdge;
 			}
 
-			aSPRDOutRight[iOutSegmentIndex - 1] = mssIn.calcSPRD (aECSIn[i].right());
+			aSPRDOutRight[iOutSegmentIndex - 1] = mssIn.calcSPRD (aCSIn[i].right());
 
-			adblPredictorOrdinateOut[iOutSegmentIndex++] = aECSIn[i].right();
+			adblPredictorOrdinateOut[iOutSegmentIndex++] = aCSIn[i].right();
 		}
 
 		org.drip.spline.regime.MultiSegmentSequence mssOut =
@@ -292,25 +292,25 @@ public class MultiSegmentSequenceModifier {
 				(dblPredictorOrdinate))
 			return null;
 
-		org.drip.spline.segment.ElasticConstitutiveState[] aECSIn = mssIn.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCSIn = mssIn.segments();
 
 		int iOutSegmentIndex = 0;
-		int iNumSegmentIn = aECSIn.length;
+		int iNumSegmentIn = aCSIn.length;
 
-		if (dblPredictorOrdinate < aECSIn[0].left() || dblPredictorOrdinate >
-			aECSIn[iNumSegmentIn - 1].right())
+		if (dblPredictorOrdinate < aCSIn[0].left() || dblPredictorOrdinate >
+			aCSIn[iNumSegmentIn - 1].right())
 			return null;
 
 		for (; iOutSegmentIndex < iNumSegmentIn; ++iOutSegmentIndex) {
-			if (dblPredictorOrdinate > aECSIn[iOutSegmentIndex].left() && dblPredictorOrdinate <
-				aECSIn[iOutSegmentIndex].right())
+			if (dblPredictorOrdinate > aCSIn[iOutSegmentIndex].left() && dblPredictorOrdinate <
+				aCSIn[iOutSegmentIndex].right())
 				break;
 		}
 
 		org.drip.spline.params.SegmentPredictorResponseDerivative sprdCardinalOut =
 			org.drip.spline.params.SegmentPredictorResponseDerivative.CardinalEdgeAggregate
-				(mssIn.calcSPRD (aECSIn[iOutSegmentIndex].left()), mssIn.calcSPRD
-					(aECSIn[iOutSegmentIndex].right()), dblCardinalTension);
+				(mssIn.calcSPRD (aCSIn[iOutSegmentIndex].left()), mssIn.calcSPRD
+					(aCSIn[iOutSegmentIndex].right()), dblCardinalTension);
 
 		return null == sprdCardinalOut ? null : InsertKnot (mssIn, dblPredictorOrdinate, sprdCardinalOut,
 			sprdCardinalOut);

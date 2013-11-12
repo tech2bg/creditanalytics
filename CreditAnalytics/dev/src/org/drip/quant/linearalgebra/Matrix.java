@@ -238,11 +238,18 @@ public class Matrix {
 			if (0. == aadblSource[iDiagonal][iDiagonal]) {
 				int iSwapRow = iSize - 1;
 
-				while ((0. == aadblSource[iSwapRow][iDiagonal] || 0. == aadblSource[iDiagonal][iSwapRow]) &&
-					iSwapRow >= 0)
+				while (iSwapRow >= 0 && (0. == aadblSource[iSwapRow][iDiagonal] || 0. ==
+					aadblSource[iDiagonal][iSwapRow]))
 					--iSwapRow;
 
-				if (0 > iSwapRow) return false;
+				if (0 > iSwapRow) {
+					iSwapRow = 0;
+
+					while (iSwapRow < iSize && 0. == aadblSource[iSwapRow][iDiagonal])
+						++iSwapRow;
+
+					if (iSwapRow >= iSize) return false;
+				}
 
 				for (int iCol = 0; iCol < iSize; ++iCol) {
 					double dblComplementDiagonalEntry = aadblComplement[iDiagonal][iCol];

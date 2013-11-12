@@ -47,7 +47,7 @@ public class LocalControlCurveParams extends org.drip.state.estimator.SmoothingC
 	 * @param strSmootheningQuantificationMetric Curve Smoothening Quantification Metric
 	 * @param prbp Segment Builder Parameters
 	 * @param iCalibrationDetail The Calibration Detail
-	 * @param bfwr Fitness Weighted Response
+	 * @param rfwr Curve Fitness Weighted Response
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
@@ -59,12 +59,12 @@ public class LocalControlCurveParams extends org.drip.state.estimator.SmoothingC
 		final java.lang.String strSmootheningQuantificationMetric,
 		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.SegmentBestFitResponse bfwr,
+		final org.drip.spline.params.RegimeBestFitResponse rbfr,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
 		throws java.lang.Exception
 	{
-		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, bfwr);
+		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, rbfr);
 
 		if (null == (_strC1GeneratorScheme = strC1GeneratorScheme))
 			throw new java.lang.Exception ("LocalControlCurveParams ctr: Invalid Inputs!");
