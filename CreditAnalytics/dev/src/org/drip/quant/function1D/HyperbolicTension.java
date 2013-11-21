@@ -103,6 +103,20 @@ public class HyperbolicTension extends org.drip.quant.function1D.AbstractUnivari
 					dblVariate));
 	}
 
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("HyperbolicTension::integrate => Invalid Inputs");
+
+		return SINH == _iType ? (java.lang.Math.cosh (_dblTension * dblEnd) - java.lang.Math.cosh
+			(_dblTension * dblBegin)) / _dblTension : (java.lang.Math.sinh (_dblTension * dblEnd) -
+				java.lang.Math.sinh (_dblTension * dblBegin)) / _dblTension;
+	}
+
 	/**
 	 * Retrieve the hyperbolic function type
 	 * 

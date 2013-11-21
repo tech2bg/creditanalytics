@@ -85,6 +85,18 @@ public class LinearRationalShapeControl extends org.drip.quant.function1D.Abstra
 		return dblDerivative;
 	}
 
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("LinearRationalShapeControl::integrate => Invalid Inputs");
+
+		return (java.lang.Math.log ((1. + _dblLambda * dblEnd) / (1. + _dblLambda * dblBegin))) / _dblLambda;
+	}
+
 	/**
 	 * Retrieve the shape control coefficient
 	 * 

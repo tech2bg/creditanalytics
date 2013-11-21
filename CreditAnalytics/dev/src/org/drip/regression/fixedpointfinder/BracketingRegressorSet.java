@@ -69,6 +69,14 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 
 				return 1. + 3. * dblVariate - 2. * java.lang.Math.sin (dblVariate);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 	}
 

@@ -91,6 +91,21 @@ public class ExponentialTension extends org.drip.quant.function1D.AbstractUnivar
 			dblDerivFactor * java.lang.Math.exp (_dblTension * dblVariate);
 	}
 
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("ExponentialTension::integrate => Invalid Inputs");
+
+		return _bIsBaseNatural ? (java.lang.Math.exp (_dblTension * dblEnd) - java.lang.Math.exp (_dblTension
+			* dblBegin)) / _dblTension : (java.lang.Math.pow (_dblBase, _dblTension * dblEnd) -
+				java.lang.Math.pow (_dblBase, _dblTension * dblBegin)) / (_dblTension * java.lang.Math.log
+					(_dblBase));
+	}
+
 	/**
 	 * Is the base natural?
 	 * 

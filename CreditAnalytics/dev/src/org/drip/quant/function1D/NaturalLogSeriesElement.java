@@ -72,6 +72,19 @@ public class NaturalLogSeriesElement extends org.drip.quant.function1D.AbstractU
 			org.drip.quant.common.NumberUtil.Factorial (_iExponent - iOrder);
 	}
 
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("NaturalLogSeriesElement::integrate => Invalid Inputs");
+
+		return (java.lang.Math.pow (dblEnd, _iExponent) - java.lang.Math.pow (dblBegin, _iExponent)) /
+			org.drip.quant.common.NumberUtil.Factorial (_iExponent + 1);
+	}
+
 	/**
 	 * Retrieve the exponent in the natural log series
 	 * 

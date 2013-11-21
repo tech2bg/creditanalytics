@@ -73,7 +73,7 @@ public class FormatUtil {
 		java.lang.String strFormat = "#";
 		java.lang.String strLeading = "";
 
-		if (0 < dblMultiplier * dblValue) strLeading = " ";
+		if (0 <= dblMultiplier * dblValue) strLeading = " ";
 
 		for (int i = 0; i < iNumLeft; ++i)
 			strFormat += "0";

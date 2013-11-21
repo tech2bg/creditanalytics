@@ -6,16 +6,16 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.QuadraticRationalShapeControl;
+import org.drip.spline.basis.*;
+import org.drip.spline.params.*;
+import org.drip.spline.regime.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableComponent;
-import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.spline.basis.*;
-import org.drip.spline.params.*;
-import org.drip.spline.regime.*;
 import org.drip.state.estimator.*;
 
 /*
@@ -66,6 +66,7 @@ import org.drip.state.estimator.*;
 
 public class SwapProductCurveAnalytics {
 	public static final boolean s_bBlog = true;
+	public static java.io.BufferedWriter _writeCOB = null;
 	public static java.io.BufferedWriter _writeLog = null;
 
 	static class PnLMetric {
@@ -173,7 +174,7 @@ public class SwapProductCurveAnalytics {
 
 			double[] adblForward = new double[_lsForward.size()];
 
-			for (double dbl : adblForward)
+			for (double dbl : _lsForward)
 				adblForward[i++] = dbl;
 
 			return adblForward;
@@ -291,13 +292,17 @@ public class SwapProductCurveAnalytics {
 
 	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
-		final String[] astrTenor)
+		final String[] astrTenor,
+		final java.lang.String strCurrency)
 		throws Exception
 	{
 		CalibratableComponent[] aCalibComp = new CalibratableComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"), "MXN");
+			aCalibComp[i] = CashBuilder.CreateCash (
+				dtEffective,
+				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency),
+				strCurrency);
 
 		return aCalibComp;
 	}
@@ -305,7 +310,8 @@ public class SwapProductCurveAnalytics {
 	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor,
-		final double[] adblSwapQuote)
+		final double[] adblSwapQuote,
+		final String strCurrency)
 		throws Exception
 	{
 		CalibratableComponent[] aCalibComp = new CalibratableComponent[astrTenor.length];
@@ -313,11 +319,11 @@ public class SwapProductCurveAnalytics {
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCalibComp[i] = RatesStreamBuilder.CreateIRS (
 				dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"),
+				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency),
 				adblSwapQuote[i],
-				"MXN",
-				"MXN-LIBOR-6M",
-				"MXN");
+				strCurrency,
+				strCurrency + "-LIBOR-6M",
+				strCurrency);
 
 		return aCalibComp;
 	}
@@ -327,10 +333,11 @@ public class SwapProductCurveAnalytics {
 		final String[] astrCashTenor,
 		final double[] adblCashQuote,
 		final String[] astrSwapTenor,
-		final double[] adblSwapQuote)
+		final double[] adblSwapQuote,
+		final String strCurrency)
 		throws Exception
 	{
-		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (dt, astrCashTenor);
+		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (dt, astrCashTenor, strCurrency);
 
 		RegimeRepresentationSpec rbsCash = RegimeRepresentationSpec.CreateRegimeBuilderSet (
 			"CASH",
@@ -340,7 +347,7 @@ public class SwapProductCurveAnalytics {
 			"Rate",
 			adblCashQuote);
 
-		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dt, astrSwapTenor, adblSwapQuote);
+		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dt, astrSwapTenor, adblSwapQuote, strCurrency);
 
 		RegimeRepresentationSpec rbsSwap = RegimeRepresentationSpec.CreateRegimeBuilderSet (
 			"SWAP",
@@ -354,8 +361,8 @@ public class SwapProductCurveAnalytics {
 
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
 			new SegmentCustomBuilderControl (
-				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_MIXTURE,
-				new ExponentialMixtureSetParams (new double[] {0.01, 0.05, 0.25}),
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
+				new ExponentialTensionSetParams (1.),
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
@@ -365,10 +372,12 @@ public class SwapProductCurveAnalytics {
 		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingBuild (
 			lcc,
 			aRRS,
-			new ValuationParams (dt, dt, "MXN"),
+			new ValuationParams (dt, dt, strCurrency),
 			null,
 			null,
 			null);
+
+		// return dcShapePreserving;
 
 		LocalControlCurveParams lccpHyman83 = new LocalControlCurveParams (
 			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,
@@ -378,7 +387,7 @@ public class SwapProductCurveAnalytics {
 				new PolynomialFunctionSetParams (4),
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentSequence.CALIBRATE,
+				MultiSegmentSequence.CALIBRATE,
 			null,
 			true,
 			true);
@@ -388,7 +397,7 @@ public class SwapProductCurveAnalytics {
 			lcc,
 			lccpHyman83,
 			aRRS,
-			new ValuationParams (dt, dt, "MXN"),
+			new ValuationParams (dt, dt, strCurrency),
 			null,
 			null,
 			null);
@@ -399,12 +408,13 @@ public class SwapProductCurveAnalytics {
 		final String[] astrCashTenor,
 		final double[] adblCashQuote,
 		final String[] astrSwapTenor,
-		final double[] adblSwapQuote)
+		final double[] adblSwapQuote,
+		final String strCurrency)
 		throws Exception
 	{
-		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (dt, astrCashTenor);
+		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (dt, astrCashTenor, strCurrency);
 
-		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dt, astrSwapTenor, adblSwapQuote);
+		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dt, astrSwapTenor, adblSwapQuote, strCurrency);
 
 		CalibratableComponent[] aCalibComp = new CalibratableComponent[aCashComp.length + aSwapComp.length];
 
@@ -423,19 +433,22 @@ public class SwapProductCurveAnalytics {
 		final CalibratableComponent irs,
 		final JulianDate dt,
 		final DiscountCurve dc,
-		final String strMeasure)
+		final String strMeasure,
+		final String strCurrency)
 		throws Exception
 	{
+		if (irs.getMaturityDate().getJulian() <= dt.getJulian()) return 0.;
+
 		CaseInsensitiveTreeMap<Double> mapIndexFixing = new CaseInsensitiveTreeMap<Double>();
 
-		mapIndexFixing.put ("USD-LIBOR-3M", 0.05);
+		mapIndexFixing.put (strCurrency + "-LIBOR-3M", 0.05);
 
 		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mmFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
 
 		mmFixings.put (dt, mapIndexFixing);
 
 		CaseInsensitiveTreeMap<Double> mapSwapCalc = irs.value (
-			new ValuationParams (dt, dt, "MXN"),
+			new ValuationParams (dt, dt, strCurrency),
 			null,
 			ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings),
 			null);
@@ -448,40 +461,45 @@ public class SwapProductCurveAnalytics {
 		final JulianDate dt1,
 		final JulianDate dt2,
 		final DiscountCurve dc1,
-		final DiscountCurve dc2)
+		final DiscountCurve dc2,
+		final String strCurrency)
 		throws Exception
 	{
-		return calcMeasure (irs, dt2, dc2, "DirtyPV") - calcMeasure (irs, dt1, dc1, "DirtyPV");
+		return calcMeasure (irs, dt2, dc2, "DirtyPV", strCurrency) - calcMeasure (irs, dt1, dc1, "DirtyPV", strCurrency);
 	}
 
 	public static final double calcCarry (
 		final CalibratableComponent irs,
 		final JulianDate dt1,
 		final JulianDate dt2,
-		final DiscountCurve dc)
+		final DiscountCurve dc,
+		final String strCurrency)
 		throws Exception
 	{
-		return calcMeasure (irs, dt2, dc, "FixAccrued") + calcMeasure (irs, dt2, dc, "FloatAccrued") - calcMeasure (irs, dt1, dc, "FixAccrued") - calcMeasure (irs, dt1, dc, "FloatAccrued");
+		return calcMeasure (irs, dt2, dc, "FixAccrued", strCurrency) + calcMeasure (irs, dt2, dc, "FloatAccrued", strCurrency) -
+			calcMeasure (irs, dt1, dc, "FixAccrued", strCurrency) - calcMeasure (irs, dt1, dc, "FloatAccrued", strCurrency);
 	}
 
 	public static final double calcRollDown (
 		final CalibratableComponent irs,
 		final JulianDate dt1,
 		final JulianDate dt2,
-		final DiscountCurve dc)
+		final DiscountCurve dc,
+		final String strCurrency)
 		throws Exception
 	{
-		return calcMeasure (irs, dt1, dc, "FairPremium") - calcMeasure (irs, dt2, dc, "FairPremium");
+		return calcMeasure (irs, dt1, dc, "FairPremium", strCurrency) - calcMeasure (irs, dt2, dc, "FairPremium", strCurrency);
 	}
 
 	public static final double calcCurveShift (
 		final CalibratableComponent irs,
 		final JulianDate dt,
 		final DiscountCurve dc1,
-		final DiscountCurve dc2)
+		final DiscountCurve dc2,
+		final String strCurrency)
 		throws Exception
 	{
-		return calcMeasure (irs, dt, dc1, "FairPremium") - calcMeasure (irs, dt, dc2, "FairPremium");
+		return calcMeasure (irs, dt, dc1, "FairPremium", strCurrency) - calcMeasure (irs, dt, dc2, "FairPremium", strCurrency);
 	}
 
 	public static final double Forward (
@@ -500,30 +518,31 @@ public class SwapProductCurveAnalytics {
 		final JulianDate dt1D,
 		final CalibratableComponent irs,
 		final DiscountCurve dc0D,
-		final DiscountCurve dc1D)
+		final DiscountCurve dc1D,
+		final String strCurrency)
 		throws Exception
 	{
 		JulianDate dt1M = dt0D.addTenor ("1M");
 
 		JulianDate dt3M = dt0D.addTenor ("3M");
 
-		double dblDV01 = calcMeasure (irs, dt0D, dc0D, "FixedDV01");
+		double dblDV01 = calcMeasure (irs, dt0D, dc0D, "FixedDV01", strCurrency);
 
-		double dbl1DReturn = calcReturn (irs, dt0D, dt1D, dc0D, dc1D);
+		double dbl1DReturn = calcReturn (irs, dt0D, dt1D, dc0D, dc1D, strCurrency);
 
-		double dbl1DCarry = calcCarry (irs, dt0D, dt1D, dc0D);
+		double dbl1DCarry = calcCarry (irs, dt0D, dt1D, dc0D, strCurrency);
 
-		double dbl1DRollDown = calcRollDown (irs, dt0D, dt1D, dc0D) * dblDV01;
+		double dbl1DRollDown = calcRollDown (irs, dt0D, dt1D, dc0D, strCurrency) * dblDV01;
 
-		double dbl1DCurveShift = calcCurveShift (irs, dt0D, dc0D, dc1D) * dblDV01;
+		double dbl1DCurveShift = calcCurveShift (irs, dt0D, dc0D, dc1D, strCurrency) * dblDV01;
 
-		double dbl1MCarry = calcCarry (irs, dt0D, dt1M, dc0D);
+		double dbl1MCarry = calcCarry (irs, dt0D, dt1M, dc0D, strCurrency);
 
-		double dbl1MRollDown = calcRollDown (irs, dt0D, dt1M, dc0D) * dblDV01;
+		double dbl1MRollDown = calcRollDown (irs, dt0D, dt1M, dc0D, strCurrency) * dblDV01;
 
-		double dbl3MCarry = calcCarry (irs, dt0D, dt3M, dc0D);
+		double dbl3MCarry = calcCarry (irs, dt0D, dt3M, dc0D, strCurrency);
 
-		double dbl3MRollDown = calcRollDown (irs, dt0D, dt3M, dc0D) * dblDV01;
+		double dbl3MRollDown = calcRollDown (irs, dt0D, dt3M, dc0D, strCurrency) * dblDV01;
 
 		if (s_bBlog) {
 			StringBuffer sb = new StringBuffer();
@@ -552,13 +571,21 @@ public class SwapProductCurveAnalytics {
 
 			sb.append ("\tDV01            : " + FormatUtil.FormatDouble (dblDV01, 1, 8, 1.) + "\n");
 
-			if (null != _writeLog) _writeLog.write (sb.toString());
-
 			System.out.println (sb.toString());
+
+			if (null != _writeLog) _writeLog.write (sb.toString());
 		}
 
-		return new PnLMetric (dbl1DReturn, dbl1DCarry, dbl1DRollDown, dbl1DCurveShift, dbl1MCarry,
-			dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01);
+		PnLMetric pnlOP = new PnLMetric (dbl1DReturn, dbl1DCarry, dbl1DRollDown, dbl1DCurveShift,
+			dbl1MCarry, dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01);
+
+		if (null != _writeCOB) {
+			_writeCOB.write (pnlOP.toString());
+
+			_writeCOB.flush();
+		}
+
+		return pnlOP;
 	}
 
 	public static final FwdMetric ComputeForwardMetric (
@@ -566,8 +593,6 @@ public class SwapProductCurveAnalytics {
 		final DiscountCurve dc)
 		throws Exception
 	{
-		String[] astrTenor = new String[] {"01M", "03M", "06M", "09M", "01Y", "02Y", "03Y", "04Y", "05Y", "07Y", "10Y", "15Y", "20Y", "30Y"};
-
 		StringBuffer sb = new StringBuffer();
 
 		if (s_bBlog) {
@@ -576,7 +601,7 @@ public class SwapProductCurveAnalytics {
 			for (int i = 0; i < aCalibInstr.length; ++ i) {
 				if (0 != i) sb.append ("  |   ");
 
-				sb.append (astrTenor[i]);
+				sb.append (aCalibInstr[i].getMaturityDate());
 			}
 
 			sb.append ("\t\t\t--------------------------------------------------------------------------------------------------------------------------------------\n");
@@ -585,7 +610,7 @@ public class SwapProductCurveAnalytics {
 		FwdMetric fmOP = new FwdMetric();
 
 		for (int i = 0; i < aCalibInstr.length; ++i) {
-			if (s_bBlog) sb.append ("\t\t" + astrTenor[i] + " => ");
+			if (s_bBlog) sb.append ("\t\t" + aCalibInstr[i].getMaturityDate() + " => ");
 
 			for (int j = 0; j < aCalibInstr.length; ++j) {
 				if (s_bBlog && 0 != j) sb.append (" | ");
@@ -606,50 +631,65 @@ public class SwapProductCurveAnalytics {
 			if (null != _writeLog) _writeLog.write (sb.toString());
 		}
 
+		if (null != _writeCOB) {
+			_writeCOB.write (fmOP.toString());
+
+			_writeCOB.flush();
+		}
+
 		return fmOP;
 	}
 
 	public static final void GenerateMetrics (
 		final JulianDate dt0D,
 		final JulianDate dt1D,
+		final String[] astrCashTenor,
+		final String[] astrIRSTenor,
 		final double[] adblCashQuote0D,
 		final double[] adblCashQuote1D,
 		final double[] adblIRSQuote0D,
-		final double[] adblIRSQuote1D)
+		final double[] adblIRSQuote1D,
+		final String strCurrency)
 		throws Exception
 	{
-		String[] astrCashTenor = new String[] {"1M"};
-		String[] astrIRSTenor = new String[] {"3M", "6M", "9M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "30Y"};
+		CalibratableComponent[] aCalibInstr = CalibInstr (dt0D, astrCashTenor, adblCashQuote0D, astrIRSTenor, adblIRSQuote0D, strCurrency);
 
-		CalibratableComponent[] aCalibInstr = CalibInstr (dt0D, astrCashTenor, adblCashQuote0D, astrIRSTenor, adblIRSQuote0D);
+		DiscountCurve dc0D = BuildCurve (dt0D, astrCashTenor, adblCashQuote0D, astrIRSTenor, adblIRSQuote0D, strCurrency);
 
-		DiscountCurve dc0D = BuildCurve (dt0D, astrCashTenor, adblCashQuote0D, astrIRSTenor, adblIRSQuote0D);
+		DiscountCurve dc1D = BuildCurve (dt1D, astrCashTenor, adblCashQuote1D, astrIRSTenor, adblIRSQuote1D, strCurrency);
 
-		DiscountCurve dc1D = BuildCurve (dt1D, astrCashTenor, adblCashQuote1D, astrIRSTenor, adblIRSQuote1D);
+		_writeLog = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\Metric.PnL"));
 
-		_writeLog = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\DRIP\\CreditAnalytics\\Metric.PnL"));
-
-		SPCAMetric spcaOP = new SPCAMetric (dt0D, "MXN");
+		SPCAMetric spcaOP = new SPCAMetric (dt0D, strCurrency);
 
 		for (CalibratableComponent comp : aCalibInstr) {
 			if (!(comp instanceof org.drip.product.rates.IRSComponent)) continue;
 
 			if (s_bBlog) System.out.println ("\n\t----\n\tComputing PnL Metrics for " + comp.getComponentName() + "\n\t----");
 
-			spcaOP.addPnLMetric (ComputePnLMetrics (dt0D, dt1D, comp, dc0D, dc1D));
-		}
+			_writeCOB.write (dt0D.toString() + "," + comp.getComponentName() + ",");
 
-		spcaOP.addFwdMetric (ComputeForwardMetric (aCalibInstr, dc0D));
+			spcaOP.addPnLMetric (ComputePnLMetrics (dt0D, dt1D, comp, dc0D, dc1D, strCurrency));
+
+			_writeCOB.write (",");
+
+			spcaOP.addFwdMetric (ComputeForwardMetric (aCalibInstr, dc0D));
+
+			_writeCOB.newLine();
+
+			_writeCOB.flush();
+		}
 
 		_writeLog.flush();
 	}
 
 	public static final double[] ParseSwapQuotes (
-		final String[] astrSwapQuote)
+		final String[] astrSwapQuote,
+		final int iNumSwapQuote)
 	{
-		double[] adblSwapQuote = new double[13];
+		double[] adblSwapQuote = new double[iNumSwapQuote];
 
-		for (int i = 2; i < 15; ++i)
+		for (int i = 2; i < iNumSwapQuote + 2; ++i)
 			adblSwapQuote[i - 2] = 0.01 * Double.parseDouble (astrSwapQuote[i]);
 
 		return adblSwapQuote;
@@ -667,27 +707,53 @@ public class SwapProductCurveAnalytics {
 		double[] adblSwapQuote0D = null;
 		java.lang.String strSwapCOBLine = "";
 
+		/*
+		 * MXN Currency/Cash/IRS Tenor Collection
+		 */
+
+		/* String strCurrency = "MXN";
+		String[] astrCashTenor = new String[] {"1M"};
+		String[] astrIRSTenor = new String[] {"3M", "6M", "9M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "30Y"}; */
+
+		/*
+		 * ZAR Currency/Cash/IRS Tenor Collection
+		 */
+
+		String strCurrency = "ZAR";
+		String[] astrCashTenor = new String[] {"1M"};
+		String[] astrIRSTenor = new String[] {"3M", "6M", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "12Y", "15Y", "20Y", "25Y", "30Y"};
+
+		int iNumField = 1 + astrCashTenor.length + astrIRSTenor.length;
+
 		java.io.BufferedReader inSwapCOB = new java.io.BufferedReader (new java.io.FileReader
-			("C:\\Lakshmi\\DRIP_General\\ExternalDocs\\DiscountCurveConstruction\\Data\\MXN_Swap_Curve_2.txt"));
+			("C:\\IFA\\" + strCurrency + "_Swap_Curve.txt"));
+
+		_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\SPCA." + strCurrency));
 
 		while (null != (strSwapCOBLine = inSwapCOB.readLine())) {
 			java.lang.String[] astrSwapCOBRecord = strSwapCOBLine.split (",");
 
-			if (null == astrSwapCOBRecord || 15 != astrSwapCOBRecord.length) return;
+			if (null == astrSwapCOBRecord || iNumField != astrSwapCOBRecord.length) {
+				inSwapCOB.close();
 
-			System.out.println ("Date : " + JulianDate.CreateFromMDY (astrSwapCOBRecord[0], "/"));
+				return;
+			}
 
-			System.out.println ("Cash Quote : " + astrSwapCOBRecord[1]);
+			if (s_bBlog) {
+				System.out.println ("Date : " + JulianDate.CreateFromMDY (astrSwapCOBRecord[0], "/"));
 
-			for (int i = 2; i < 15; ++i)
-				System.out.println ("Swap Quote : " + astrSwapCOBRecord[i]);
+				System.out.println ("Cash Quote : " + astrSwapCOBRecord[1]);
+
+				for (int i = 2; i < iNumField; ++i)
+					System.out.println ("Swap Quote : " + astrSwapCOBRecord[i]);
+			}
 
 			if (bFirstEntry) {
 				adblCashQuote0D = new double[] {0.01 * Double.parseDouble (astrSwapCOBRecord[1])};
 
 				dt0D = JulianDate.CreateFromMDY (astrSwapCOBRecord[0], "/");
 
-				adblSwapQuote0D = ParseSwapQuotes (astrSwapCOBRecord);
+				adblSwapQuote0D = ParseSwapQuotes (astrSwapCOBRecord, astrIRSTenor.length);
 
 				bFirstEntry = false;
 				continue;
@@ -697,14 +763,17 @@ public class SwapProductCurveAnalytics {
 
 			double[] adblCashQuote1D = new double[] {0.01 * Double.parseDouble (astrSwapCOBRecord[1])};
 
-			double[] adblSwapQuote1D = ParseSwapQuotes (astrSwapCOBRecord);
+			double[] adblSwapQuote1D = ParseSwapQuotes (astrSwapCOBRecord, astrIRSTenor.length);
 
-			GenerateMetrics (dt0D, dt1D, adblCashQuote0D, adblCashQuote1D, adblSwapQuote0D, adblSwapQuote1D);
+			GenerateMetrics (dt0D, dt1D, astrCashTenor, astrIRSTenor, adblCashQuote0D, adblCashQuote1D, adblSwapQuote0D, adblSwapQuote1D, strCurrency);
 
 			dt0D = dt1D;
+
 			adblCashQuote0D = adblCashQuote1D;
+
 			adblSwapQuote0D = adblSwapQuote1D;
 		}
 
+		inSwapCOB.close();
 	}
 }

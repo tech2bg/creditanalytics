@@ -80,6 +80,14 @@ public class MonotoneConvexHaganWest {
 			return _dblResponseZScoreLeft * (1. - 4. * dblX + 3. * dblX * dblX) + _dblResponseZScoreRight *
 				(-2. * dblX + 3. * dblX * dblX);
 		}
+
+		@Override public double integrate (
+			final double dblBegin,
+			final double dblEnd)
+			throws java.lang.Exception
+		{
+			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+		}
 	}
 
 	class Case2Univariate extends org.drip.quant.function1D.AbstractUnivariate {
@@ -121,6 +129,14 @@ public class MonotoneConvexHaganWest {
 				(_dblResponseZScoreRight - _dblResponseZScoreLeft) * (dblX - _dblEta) * (dblX - _dblEta) /
 					(1. - _dblEta) / (1. - _dblEta);
 		}
+
+		@Override public double integrate (
+			final double dblBegin,
+			final double dblEnd)
+			throws java.lang.Exception
+		{
+			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+		}
 	}
 
 	class Case3Univariate extends org.drip.quant.function1D.AbstractUnivariate {
@@ -161,6 +177,14 @@ public class MonotoneConvexHaganWest {
 			return dblX < _dblEta ? _dblResponseZScoreLeft + (_dblResponseZScoreLeft -
 				_dblResponseZScoreRight) * (_dblEta - dblX) * (_dblEta - dblX) / _dblEta / _dblEta :
 					_dblResponseZScoreRight;
+		}
+
+		@Override public double integrate (
+			final double dblBegin,
+			final double dblEnd)
+			throws java.lang.Exception
+		{
+			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 		}
 	}
 
@@ -210,6 +234,14 @@ public class MonotoneConvexHaganWest {
 			return dblX < _dblEta ? _dblA + (_dblResponseZScoreLeft - _dblA) * (_dblEta - dblX) * (_dblEta -
 				dblX) / _dblEta / _dblEta : _dblA + (_dblResponseZScoreRight - _dblA) * (dblX - _dblEta) *
 					(dblX - _dblEta) / (1. - _dblEta) / (1. - _dblEta);
+		}
+
+		@Override public double integrate (
+			final double dblBegin,
+			final double dblEnd)
+			throws java.lang.Exception
+		{
+			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 		}
 	}
 

@@ -99,7 +99,7 @@ public class NonlinearCurveCalibrator {
 					pricerParamsIn._bSurvToPayDate, pricerParamsIn._iDiscretizationScheme);
 		}
 
-		public double evaluate (
+		@Override public double evaluate (
 			final double dblRate)
 			throws java.lang.Exception
 		{
@@ -109,6 +109,14 @@ public class NonlinearCurveCalibrator {
 			return _dblCalibValue - _comp.calcMeasureValue (_valParams, _pricerParams,
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (_dc, _dcTSY,
 					_dcEDSF, _cc, null, null, _mmFixings), _quotingParams, _strMeasure);
+		}
+
+		@Override public double integrate (
+			final double dblBegin,
+			final double dblEnd)
+			throws java.lang.Exception
+		{
+			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 		}
 	}
 
@@ -174,14 +182,22 @@ public class NonlinearCurveCalibrator {
 		final org.drip.param.valuation.QuotingParams quotingParams)
 		throws java.lang.Exception
 	{
-		org.drip.quant.function1D.AbstractUnivariate ofIROuter = new org.drip.quant.function1D.AbstractUnivariate
-			(null) {
+		org.drip.quant.function1D.AbstractUnivariate ofIROuter = new
+			org.drip.quant.function1D.AbstractUnivariate (null) {
 			public double evaluate (
 				final double dblShiftedLeftSlope)
 				throws java.lang.Exception
 			{
 				return calcCalibrationMetric (dc, dcTSY, dcEDSF, aCalibComp, valParams, astrCalibMeasure,
 					adblCalibValue, dblBump, mmFixings, quotingParams, dblShiftedLeftSlope);
+			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 			}
 		};
 
@@ -304,8 +320,8 @@ public class NonlinearCurveCalibrator {
 			!org.drip.quant.common.NumberUtil.IsValid (dblCalibValue))
 			throw new java.lang.Exception ("NonlinearCurveCalibrator::calibrateIRNode => Invalid inputs!");
 
-		org.drip.quant.function1D.AbstractUnivariate ofIRNode = new org.drip.quant.function1D.AbstractUnivariate
-			(null) {
+		org.drip.quant.function1D.AbstractUnivariate ofIRNode = new
+			org.drip.quant.function1D.AbstractUnivariate (null) {
 			public double evaluate (
 				final double dblValue)
 				throws java.lang.Exception
@@ -320,6 +336,14 @@ public class NonlinearCurveCalibrator {
 						(strMeasure, 0, null), true, 0),
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 								(dc, dcTSY, dcEDSF, null, null, null, mmFixings), quotingParams, strMeasure);
+			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 			}
 		};
 

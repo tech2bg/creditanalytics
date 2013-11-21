@@ -423,7 +423,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @return Regime instance
 	 */
 
-	public static final org.drip.spline.regime.MultiSegmentSequence CreateRegresionSplineEstimator (
+	public static final org.drip.spline.regime.MultiSegmentSequence CreateRegressionSplineEstimator (
 		final java.lang.String strName,
 		final double[] adblKnotPredictorOrdinate,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,

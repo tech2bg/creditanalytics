@@ -358,6 +358,18 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			iBC + " unknown");
 	}
 
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("HyperbolicTension::integrate => Invalid Inputs");
+
+		return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+	}
+
 	@Override public boolean setLeftNode (
 		final double dblRegimeLeftResponse,
 		final double dblRegimeLeftResponseSlope,

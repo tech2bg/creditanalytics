@@ -82,4 +82,16 @@ public class UnivariateConvolution extends org.drip.quant.function1D.AbstractUni
 
 		return dblDerivative + _au1.calcDerivative (dblVariate, iOrder) * _au2.evaluate (dblVariate);
 	}
+
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("HyperbolicTension::integrate => Invalid Inputs");
+
+		return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+	}
 }

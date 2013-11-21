@@ -870,6 +870,14 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 				return null;
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
 		try {

@@ -1,5 +1,5 @@
 
-package org.drip.quant.function1D;
+package org.drip.spline.tension;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,30 +29,31 @@ package org.drip.quant.function1D;
  */
 
 /**
- * Polynomial provides the evaluation of the n-th order Polynomial and its derivatives for a specified
- * 	variate.
+ * KLKHyperbolicTensionPhy implements the basic framework and the family of C2 Tension Splines outlined in
+ *  Koch and Lyche (1989), Koch and Lyche (1993), and Kvasov (2000) Papers.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class Polynomial extends org.drip.quant.function1D.AbstractUnivariate {
-	private int _iDegree = -1;
+public class KLKHyperbolicTensionPhy extends org.drip.quant.function1D.AbstractUnivariate {
+	private double _dblTension = java.lang.Double.NaN;
 
 	/**
-	 * Polynomial constructor
+	 * KLKHyperbolicTensionPhy constructor
 	 * 
-	 * @param iDegree Degree of the Polynomial
+	 * @param dblTension Tension of the HyperbolicTension Function
 	 * 
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
-	public Polynomial (
-		final int iDegree)
+	public KLKHyperbolicTensionPhy (
+		final double dblTension)
 		throws java.lang.Exception
 	{
 		super (null);
 
-		if (0 > (_iDegree = iDegree)) throw new java.lang.Exception ("Polynomial ctr: Invalid Inputs");
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblTension = dblTension))
+			throw new java.lang.Exception ("KLKHyperbolicTensionPhy ctr: Invalid Inputs");
 	}
 
 	@Override public double evaluate (
@@ -60,9 +61,9 @@ public class Polynomial extends org.drip.quant.function1D.AbstractUnivariate {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate))
-			throw new java.lang.Exception ("Polynomial::evaluate => Invalid Inputs");
+			throw new java.lang.Exception ("KLKHyperbolicTensionPhy::evaluate => Invalid Inputs");
 
-		return java.lang.Math.pow (dblVariate, _iDegree);
+		return java.lang.Math.sinh (_dblTension * dblVariate) / java.lang.Math.sinh (_dblTension);
 	}
 
 	@Override public double calcDerivative (
@@ -71,10 +72,10 @@ public class Polynomial extends org.drip.quant.function1D.AbstractUnivariate {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 > iOrder)
-			throw new java.lang.Exception ("Polynomial::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("KLKHyperbolicTensionPhy::calcDerivative => Invalid Inputs");
 
-		return iOrder > _iDegree ? 0. : java.lang.Math.pow (dblVariate, _iDegree - iOrder) *
-			org.drip.quant.common.NumberUtil.NPK (_iDegree, _iDegree - iOrder);
+		return java.lang.Math.pow (_dblTension, iOrder) * java.lang.Math.sinh (_dblTension * dblVariate) /
+			java.lang.Math.sinh (_dblTension);
 	}
 
 	@Override public double integrate (
@@ -84,39 +85,39 @@ public class Polynomial extends org.drip.quant.function1D.AbstractUnivariate {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblEnd))
-			throw new java.lang.Exception ("Polynomial::integrate => Invalid Inputs");
+			throw new java.lang.Exception ("HyperbolicTension::integrate => Invalid Inputs");
 
-		return (java.lang.Math.pow (dblEnd, _iDegree + 1) - java.lang.Math.pow (dblBegin, _iDegree + 1)) /
-			(_iDegree + 1);
+		return (java.lang.Math.cosh (_dblTension * dblEnd) - java.lang.Math.cosh (_dblTension * dblBegin)) /
+			(_dblTension * java.lang.Math.sinh (_dblTension));
 	}
 
 	/**
-	 * Retrieve the degree of the polynomial
+	 * Retrieve the Tension Parameter
 	 * 
-	 * @return Degree of the polynomial
+	 * @return Tension Parameter
 	 */
 
-	public double getDegree()
+	public double getTension()
 	{
-		 return _iDegree;
+		return _dblTension;
 	}
 
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		Polynomial poly = new Polynomial (4);
+		KLKHyperbolicTensionPhy khtp = new KLKHyperbolicTensionPhy (2.);
 
-		System.out.println ("Poly[0.0] = " + poly.evaluate (0.0));
+		System.out.println ("KLKHyperbolicTensionPhy[0.0] = " + khtp.evaluate (0.0));
 
-		System.out.println ("Poly[0.5] = " + poly.evaluate (0.5));
+		System.out.println ("KLKHyperbolicTensionPhy[0.5] = " + khtp.evaluate (0.5));
 
-		System.out.println ("Poly[1.0] = " + poly.evaluate (1.0));
+		System.out.println ("KLKHyperbolicTensionPhy[1.0] = " + khtp.evaluate (1.0));
 
-		System.out.println ("Deriv[0.0] = " + poly.calcDerivative (0.0, 3));
+		System.out.println ("KLKHyperbolicTensionPhyDeriv[0.0] = " + khtp.calcDerivative (0.0, 2));
 
-		System.out.println ("Deriv[0.5] = " + poly.calcDerivative (0.5, 3));
+		System.out.println ("KLKHyperbolicTensionPhyDeriv[0.5] = " + khtp.calcDerivative (0.5, 2));
 
-		System.out.println ("Deriv[1.0] = " + poly.calcDerivative (1.0, 3));
+		System.out.println ("KLKHyperbolicTensionPhyDeriv[1.0] = " + khtp.calcDerivative (1.0, 2));
 	}
 }

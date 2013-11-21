@@ -98,10 +98,17 @@ public class BestFitFlexurePenalizer {
 				return _lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexI) *
 					_lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexR);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
-		return _sfpcCurvature.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, _ics.left(),
-			_ics.right());
+		return _sfpcCurvature.amplitude() * au.integrate (_ics.left(), _ics.right());
 	}
 
 	/**
@@ -133,10 +140,17 @@ public class BestFitFlexurePenalizer {
 				return _lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexI) *
 					_lbe.shapedBasisFunctionDerivative (dblVariate, iOrder, iBasisIndexR);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
-		return _sfpcLength.amplitude() * org.drip.quant.calculus.Integrator.Boole (au, _ics.left(),
-			_ics.right());
+		return _sfpcLength.amplitude() * au.integrate (_ics.left(), _ics.right());
 	}
 
 	/**

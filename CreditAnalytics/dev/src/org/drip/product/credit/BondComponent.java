@@ -12524,6 +12524,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					return _bond.calcPriceFromYield (valParams, mktParams, null, dblWorkoutDate,
 						dblWorkoutFactor, dblYield) - dblPrice;
 				}
+
+				@Override public double integrate (
+					final double dblBegin,
+					final double dblEnd)
+					throws java.lang.Exception
+				{
+					return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+				}
 			};
 
 			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
@@ -12576,6 +12584,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					return _bond.calcPriceFromBumpedZC (valParams, mktParams, null, iZeroCurveBaseDC,
 						dblWorkoutDate, dblWorkoutFactor, dblZSpread) - dblPrice;
 				}
+
+				@Override public double integrate (
+					final double dblBegin,
+					final double dblEnd)
+					throws java.lang.Exception
+				{
+					return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+				}
 			};
 
 			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
@@ -12619,6 +12635,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				{
 					return _bond.calcPriceFromBumpedDC (valParams, mktParams, dblWorkoutDate,
 						dblWorkoutFactor, dblZSpread) - dblPriceCalib;
+				}
+
+				@Override public double integrate (
+					final double dblBegin,
+					final double dblEnd)
+					throws java.lang.Exception
+				{
+					return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 				}
 			};
 
@@ -12668,6 +12692,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					return _bond.calcPriceFromBumpedDC (valParams, mktParams, dblWorkoutDate,
 						dblWorkoutFactor, dblZSpread) - dblPriceCalib;
 				}
+
+				@Override public double integrate (
+					final double dblBegin,
+					final double dblEnd)
+					throws java.lang.Exception
+				{
+					return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+				}
 			};
 
 			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
@@ -12711,6 +12743,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				{
 					return _bond.calcPriceFromBumpedCC (valParams, mktParams, dblWorkoutDate,
 						dblWorkoutFactor, dblCreditBasis, bFlatCalib) - dblPriceCalib;
+				}
+
+				@Override public double integrate (
+					final double dblBegin,
+					final double dblEnd)
+					throws java.lang.Exception
+				{
+					return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 				}
 			};
 

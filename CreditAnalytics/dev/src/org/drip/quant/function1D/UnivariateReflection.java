@@ -75,6 +75,18 @@ public class UnivariateReflection extends org.drip.quant.function1D.AbstractUniv
 		return java.lang.Math.pow (-1., iOrder) * _au.calcDerivative (1. - dblVariate, iOrder);
 	}
 
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("UnivariateReflection::integrate => Invalid Inputs");
+
+		return -1. * _au.integrate (1. - dblBegin, 1. - dblEnd);
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception

@@ -100,7 +100,7 @@ public class RegressionSplineEstimator {
 		 * Construct a Regime instance 
 		 */
 
-		MultiSegmentSequence regime = MultiSegmentSequenceBuilder.CreateRegresionSplineEstimator (
+		MultiSegmentSequence regime = MultiSegmentSequenceBuilder.CreateRegressionSplineEstimator (
 			"SPLINE_REGIME",
 			adblX, // predictors
 			aSBP, // Basis Segment Builder parameters

@@ -29,24 +29,34 @@ package org.drip.spline.tension;
  */
 
 /**
- * C2BasisFunctionSet class implements per-segment function set for tension splines. Derived implementations
+ * CkBasisFunctionSet class implements per-segment function set for tension splines. Derived implementations
  *  expose explicit targeted basis functions.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class C2BasisFunctionSet extends org.drip.spline.basis.FunctionSet {
+public class CkBasisFunctionSet extends org.drip.spline.basis.FunctionSet {
 	protected double _dblTension = java.lang.Double.NaN;
 
 	private static final org.drip.quant.function1D.AbstractUnivariate[] responseBasis (
+		final int iCk,
 		final org.drip.quant.function1D.AbstractUnivariate[] aAUHat)
 	{
-		if (null == aAUHat || 2 != aAUHat.length) return null;
+		if (null == aAUHat || iCk != aAUHat.length) return null;
 
 		try {
-			return new org.drip.quant.function1D.AbstractUnivariate[] {new
-				org.drip.quant.function1D.Polynomial (0), new org.drip.quant.function1D.UnivariateReflection
-					(new org.drip.quant.function1D.Polynomial (1)), aAUHat[0], aAUHat[1]};
+			org.drip.quant.function1D.AbstractUnivariate[] aAU = new
+				org.drip.quant.function1D.AbstractUnivariate[iCk + 2];
+
+			aAU[0] = new org.drip.quant.function1D.Polynomial (0);
+
+			aAU[1] = new org.drip.quant.function1D.UnivariateReflection (new
+				org.drip.quant.function1D.Polynomial (1));
+
+			for (int i = 0; i < iCk; ++i)
+				aAU[2 + i] = aAUHat[i];
+
+			return aAU;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -55,23 +65,25 @@ public class C2BasisFunctionSet extends org.drip.spline.basis.FunctionSet {
 	}
 
 	/**
-	 * C2BasisFunctionSet constructor
+	 * CkBasisFunctionSet constructor
 	 * 
+	 * @param iCk Ck Continuity Criterion
 	 * @param dblTension Tension Parameter
 	 * @param aAUHat The Hat Representation Function Set
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public C2BasisFunctionSet (
+	public CkBasisFunctionSet (
+		final int iCk,
 		final double dblTension,
 		final org.drip.quant.function1D.AbstractUnivariate[] aAUHat)
 		throws java.lang.Exception
 	{
-		super (responseBasis (aAUHat));
+		super (responseBasis (iCk, aAUHat));
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblTension = dblTension))
-			throw new java.lang.Exception ("C2BasisFunctionSet ctr: Invalid Inputs!");
+			throw new java.lang.Exception ("CkBasisFunctionSet ctr: Invalid Inputs!");
 	}
 
 	/**

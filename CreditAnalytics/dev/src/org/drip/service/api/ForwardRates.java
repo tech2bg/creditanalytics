@@ -1,5 +1,5 @@
 
-package org.drip.spline.basis;
+package org.drip.service.api;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,52 +29,75 @@ package org.drip.spline.basis;
  */
 
 /**
- * This class implements the basis spline function set.
+ * ForwardRates contains the array of the forward rates.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FunctionSet {
-	private org.drip.quant.function1D.AbstractUnivariate[] _aAUResponseBasis = null;
+public class ForwardRates {
+	private java.util.List<java.lang.Double> _lsForward = new java.util.ArrayList<java.lang.Double>();
 
 	/**
-	 * @param aAUResponseBasis Array of the Basis Function Set
-	 * 
-	 * @throws java.lang.Exception Thrown if Inputs are invalid
+	 * Empty ForwardRates constructor
 	 */
 
-	public FunctionSet (
-		final org.drip.quant.function1D.AbstractUnivariate[] aAUResponseBasis)
-		throws java.lang.Exception
+	public ForwardRates()
 	{
-		if (null == (_aAUResponseBasis = aAUResponseBasis) || 0 == _aAUResponseBasis.length)
-			throw new java.lang.Exception ("FunctionSet ctr: Invalid Inputs!");
 	}
 
 	/**
-	 * Retrieve the Number of Basis Functions
+	 * Add a Forward Rate to the List
 	 * 
-	 * @return Number of Basis Functions
+	 * @param dblForward The Forward Rate to be added
+	 * 
+	 * @return TRUE => Successfully added
 	 */
 
-	public int numBasis()
+	public boolean addForward (
+		final double dblForward)
 	{
-		return _aAUResponseBasis.length;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblForward)) return false;
+
+		_lsForward.add (dblForward);
+
+		return true;
 	}
 
 	/**
-	 * Retrieve the Basis Function identified by the specified Index
+	 * Convert the List of Forwards to an Array
 	 * 
-	 * @param iBasisIndex The Basis Function Index
-	 * 
-	 * @return The Basis Function identified by the specified Index
+	 * @return The Array of Forwards
 	 */
 
-	public org.drip.quant.function1D.AbstractUnivariate indexedBasisFunction (
-		final int iBasisIndex)
+	public double[] toArray()
 	{
-		if (iBasisIndex >= numBasis()) return null;
+		if (0 == _lsForward.size()) return null;
 
-		return _aAUResponseBasis[iBasisIndex];
+		int i = 0;
+
+		double[] adblForward = new double[_lsForward.size()];
+
+		for (double dbl : _lsForward)
+			adblForward[i++] = dbl;
+
+		return adblForward;
+	}
+
+	@Override public java.lang.String toString()
+	{
+		java.lang.StringBuffer sb = new java.lang.StringBuffer();
+
+		boolean bStart = true;
+
+		for (double dbl : toArray()) {
+			if (bStart)
+				bStart = false;
+			else
+				sb.append (",");
+
+			sb.append (dbl);
+		}
+
+		return sb.toString();
 	}
 }

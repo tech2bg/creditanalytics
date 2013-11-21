@@ -1,0 +1,126 @@
+
+package org.drip.spline.bspline;
+
+/*
+ * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ */
+
+/*!
+ * Copyright (C) 2013 Lakshmi Krishnamurthy
+ * 
+ * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
+ * 		developers - http://www.credit-trader.org
+ * 
+ * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
+ * 		focus towards the needs of the bonds and credit products community.
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *   	you may not use this file except in compliance with the License.
+ *   
+ *  You may obtain a copy of the License at
+ *  	http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  	distributed under the License is distributed on an "AS IS" BASIS,
+ *  	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  
+ *  See the License for the specific language governing permissions and
+ *  	limitations under the License.
+ */
+
+/**
+ * TensionBasisHat implements the basis hat function that form the basis for all B Splines. They contain the
+ *  left/right ordinates, the tension, and the normalizer.
+ *
+ * @author Lakshmi Krishnamurthy
+ */
+
+public abstract class TensionBasisHat extends org.drip.quant.function1D.AbstractUnivariate {
+	private double _dblTension = java.lang.Double.NaN;
+	private double _dblNormalizer = java.lang.Double.NaN;
+	private double _dblLeftPredictorOrdinate = java.lang.Double.NaN;
+	private double _dblRightPredictorOrdinate = java.lang.Double.NaN;
+
+	protected TensionBasisHat (
+		final double dblTension,
+		final double dblLeftPredictorOrdinate,
+		final double dblRightPredictorOrdinate)
+		throws java.lang.Exception
+	{
+		super (null);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblLeftPredictorOrdinate = dblLeftPredictorOrdinate)
+			|| !org.drip.quant.common.NumberUtil.IsValid (_dblRightPredictorOrdinate =
+				dblRightPredictorOrdinate) || !org.drip.quant.common.NumberUtil.IsValid (_dblTension =
+					dblTension))
+			throw new java.lang.Exception ("TensionBasisHat ctr: Invalid Inputs");
+
+		_dblNormalizer = 1. / java.lang.Math.sinh (_dblTension * (_dblRightPredictorOrdinate -
+			_dblLeftPredictorOrdinate));
+	}
+
+	/**
+	 * Identifies if the ordinate is local to the range
+	 * 
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * 
+	 * @return TRUE => The Ordinate is local to the Specified Range
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
+
+	public boolean in (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate))
+			throw new java.lang.Exception ("TensionBasisHat::in => Invalid Input");
+
+		return dblPredictorOrdinate >= _dblLeftPredictorOrdinate && dblPredictorOrdinate <=
+			_dblRightPredictorOrdinate;
+	}
+
+	/**
+	 * Retrieve the Left Predictor Ordinate
+	 * 
+	 * @return The Left Predictor Ordinate
+	 */
+
+	public double left()
+	{
+		return _dblLeftPredictorOrdinate;
+	}
+
+	/**
+	 * Retrieve the Right Predictor Ordinate
+	 * 
+	 * @return The Right Predictor Ordinate
+	 */
+
+	public double right()
+	{
+		return _dblRightPredictorOrdinate;
+	}
+
+	/**
+	 * Retrieve the Tension
+	 * 
+	 * @return The Tension
+	 */
+
+	public double tension()
+	{
+		return _dblTension;
+	}
+
+	/**
+	 * Retrieve the Normalizer
+	 * 
+	 * @return The Normalizer
+	 */
+
+	public double normalizer()
+	{
+		return _dblNormalizer;
+	}
+}

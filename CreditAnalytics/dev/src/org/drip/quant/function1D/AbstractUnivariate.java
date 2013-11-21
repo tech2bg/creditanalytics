@@ -154,4 +154,23 @@ public abstract class AbstractUnivariate {
 	{
 		return calcDifferential (dblVariate, evaluate (dblVariate), iOrder).calcSlope (true);
 	}
+
+	/**
+	 * Integrate over the given range
+	 * 
+	 * @param dblBegin Range Begin 
+	 * @param dblEnd Range End 
+	 *  
+	 * @return The Integrated Value
+	 * 
+	 * @throws java.lang.Exception Thrown if evaluation cannot be done
+	 */
+
+	public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+	}
 }

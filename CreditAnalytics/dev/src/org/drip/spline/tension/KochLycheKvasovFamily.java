@@ -86,6 +86,23 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblEnd))
+					throw new java.lang.Exception
+						("KLKF::FromHyperbolicPrimitive.Phy::integrate => Invalid Inputs");
+
+				double dblTension = etsp.tension();
+
+				return (java.lang.Math.cosh (dblTension * dblEnd) - java.lang.Math.cosh (dblTension *
+					dblBegin) - 0.5 * dblTension * (dblEnd * dblEnd - dblBegin * dblBegin)) / (dblTension *
+						dblTension * dblTension * java.lang.Math.sinh (dblTension));
+			}
 		};
 
 		org.drip.quant.function1D.AbstractUnivariate auPsy = new org.drip.quant.function1D.AbstractUnivariate
@@ -111,7 +128,7 @@ public class KochLycheKvasovFamily {
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromHyperbolicPrimitive.Phy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromHyperbolicPrimitive.Psy::calcDerivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -124,11 +141,29 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblEnd))
+					throw new java.lang.Exception
+						("KLKF::FromHyperbolicPrimitive.Psy::integrate => Invalid Inputs");
+
+				double dblTension = etsp.tension();
+
+				return -1. * (java.lang.Math.sinh (dblTension * (1. - dblEnd)) - java.lang.Math.sinh 
+					(dblTension * (1. - dblBegin)) - 0.5 * dblTension * ((1. - dblEnd) * (1. - dblEnd) - (1.
+						- dblBegin) * (1. - dblBegin))) / (dblTension * dblTension * dblTension *
+							java.lang.Math.sinh (dblTension));
+			}
 		};
 
 		try {
-			return new C2BasisFunctionSet (etsp.tension(), new org.drip.quant.function1D.AbstractUnivariate[]
-				{auPhy, auPsy});
+			return new CkBasisFunctionSet (2, etsp.tension(), new
+				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -195,6 +230,14 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
 		org.drip.quant.function1D.AbstractUnivariate auPsy = new org.drip.quant.function1D.AbstractUnivariate
@@ -245,11 +288,19 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
 		try {
-			return new C2BasisFunctionSet (etsp.tension(), new org.drip.quant.function1D.AbstractUnivariate[]
-				{auPhy, auPsy});
+			return new CkBasisFunctionSet (2, etsp.tension(), new
+				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -317,6 +368,14 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
 		org.drip.quant.function1D.AbstractUnivariate auPsy = new org.drip.quant.function1D.AbstractUnivariate
@@ -367,11 +426,19 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
 		try {
-			return new C2BasisFunctionSet (etsp.tension(), new org.drip.quant.function1D.AbstractUnivariate[]
-				{auPhy, auPsy});
+			return new CkBasisFunctionSet (2, etsp.tension(), new
+				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -429,6 +496,14 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
 		org.drip.quant.function1D.AbstractUnivariate auPsy = new org.drip.quant.function1D.AbstractUnivariate
@@ -469,11 +544,19 @@ public class KochLycheKvasovFamily {
 
 				return calcDerivative (dblX, iOrder);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 
 		try {
-			return new C2BasisFunctionSet (etsp.tension(), new org.drip.quant.function1D.AbstractUnivariate[]
-				{auPhy, auPsy});
+			return new CkBasisFunctionSet (2, etsp.tension(), new
+				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

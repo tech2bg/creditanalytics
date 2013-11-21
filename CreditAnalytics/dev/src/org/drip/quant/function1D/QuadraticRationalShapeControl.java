@@ -88,6 +88,21 @@ public class QuadraticRationalShapeControl extends org.drip.quant.function1D.Abs
 		return super.calcDerivative (dblX, iOrder);
 	}
 
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("QuadraticRationalShapeControl::integrate => Invalid Inputs");
+
+		double dblAlpha = java.lang.Math.sqrt (0.25 * (_dblLambda + 4.) / _dblLambda);
+
+		return -0.5 * (java.lang.Math.log ((dblEnd - dblAlpha - 0.5) * (dblBegin + dblAlpha - 0.5) /
+			(dblEnd + dblAlpha - 0.5) / (dblBegin - dblAlpha - 0.5))) / dblAlpha / _dblLambda;
+	}
+
 	/**
 	 * Retrieve the shape control coefficient
 	 * 

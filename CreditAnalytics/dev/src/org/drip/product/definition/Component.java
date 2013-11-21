@@ -198,6 +198,21 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	public abstract java.util.Set<java.lang.String> getMeasureNames();
 
 	/**
+	 * Retrieve the Instrument's Imputed Tenor
+	 * 
+	 * @return The Instrument's Imputed Tenor
+	 */
+
+	public java.lang.String tenor()
+	{
+		double dblNumDays = getMaturityDate().getJulian() - getEffectiveDate().getJulian();
+
+		if (365. > dblNumDays) return ((int) (0.5 + (dblNumDays / 30.))) + "M";
+
+		 return ((int) (0.5 + (dblNumDays / 365.))) + "Y";
+	}
+
+	/**
 	 * Calculates the value of the given component measure
 	 * 
 	 * @param valParams ValuationParams

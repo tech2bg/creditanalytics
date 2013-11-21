@@ -1,5 +1,5 @@
 
-package org.drip.spline.basis;
+package org.drip.service.api;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,52 +29,64 @@ package org.drip.spline.basis;
  */
 
 /**
- * This class implements the basis spline function set.
+ * CDXCOB contains the Name and the COB Price for a given CDX.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FunctionSet {
-	private org.drip.quant.function1D.AbstractUnivariate[] _aAUResponseBasis = null;
+public class CDXCOB {
+	private java.lang.String _strCDXName = "";
+	private double _dblPrice = java.lang.Double.NaN;
 
 	/**
-	 * @param aAUResponseBasis Array of the Basis Function Set
+	 * CDXCOB constructor
 	 * 
-	 * @throws java.lang.Exception Thrown if Inputs are invalid
+	 * @param strCDXName The CDX Name
+	 * @param dblPrice The COB Price
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public FunctionSet (
-		final org.drip.quant.function1D.AbstractUnivariate[] aAUResponseBasis)
+	public CDXCOB (
+		final java.lang.String strCDXName,
+		final double dblPrice)
 		throws java.lang.Exception
 	{
-		if (null == (_aAUResponseBasis = aAUResponseBasis) || 0 == _aAUResponseBasis.length)
-			throw new java.lang.Exception ("FunctionSet ctr: Invalid Inputs!");
+		if (null == (_strCDXName = strCDXName) || _strCDXName.isEmpty() ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblPrice = dblPrice))
+			throw new java.lang.Exception ("CDXCOB ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the Number of Basis Functions
+	 * The CDX Name
 	 * 
-	 * @return Number of Basis Functions
+	 * @return The CDX Name
 	 */
 
-	public int numBasis()
+	public java.lang.String name()
 	{
-		return _aAUResponseBasis.length;
+		return _strCDXName;
 	}
 
 	/**
-	 * Retrieve the Basis Function identified by the specified Index
+	 * The COB Price
 	 * 
-	 * @param iBasisIndex The Basis Function Index
-	 * 
-	 * @return The Basis Function identified by the specified Index
+	 * @return The COB Price
 	 */
 
-	public org.drip.quant.function1D.AbstractUnivariate indexedBasisFunction (
-		final int iBasisIndex)
+	public double price()
 	{
-		if (iBasisIndex >= numBasis()) return null;
+		return _dblPrice;
+	}
 
-		return _aAUResponseBasis[iBasisIndex];
+	/**
+	 * Display the CDXCOB Content
+	 * 
+	 * @return The CDXCOB Content
+	 */
+
+	public java.lang.String display()
+	{
+		return _strCDXName + " => " + _dblPrice;
 	}
 }
