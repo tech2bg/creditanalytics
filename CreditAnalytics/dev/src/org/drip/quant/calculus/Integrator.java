@@ -60,8 +60,10 @@ public class Integrator {
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
 			throw new java.lang.Exception ("Integrator::LinearQuadrature => Invalid Inputs");
+
+		if (dblLeft == dblRight) return 0.;
 
 		double dblWidth = (dblRight - dblLeft) / NUM_QUAD;
 		double dblX = dblLeft + dblWidth;
@@ -100,8 +102,10 @@ public class Integrator {
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
 			throw new java.lang.Exception ("Integrator::MidPoint => Invalid Inputs");
+
+		if (dblLeft == dblRight) return 0.;
 
 		double dblYMid = au.evaluate (0.5 * (dblLeft + dblRight));
 
@@ -131,8 +135,10 @@ public class Integrator {
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
 			throw new java.lang.Exception ("Integrator::Trapezoidal => Invalid Inputs");
+
+		if (dblLeft == dblRight) return 0.;
 
 		double dblYLeft = au.evaluate (dblLeft);
 
@@ -166,8 +172,10 @@ public class Integrator {
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
 			throw new java.lang.Exception ("Integrator::Simpson => Invalid Inputs");
+
+		if (dblLeft == dblRight) return 0.;
 
 		double dblYLeft = au.evaluate (dblLeft);
 
@@ -208,8 +216,10 @@ public class Integrator {
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
 			throw new java.lang.Exception ("Integrator::Simpson38 => Invalid Inputs");
+
+		if (dblLeft == dblRight) return 0.;
 
 		double dblY0 = au.evaluate (dblLeft);
 
@@ -257,8 +267,10 @@ public class Integrator {
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
 			throw new java.lang.Exception ("Integrator::Boole => Invalid Inputs");
+
+		if (dblLeft == dblRight) return 0.;
 
 		double dblY0 = au.evaluate (dblLeft);
 
@@ -292,25 +304,5 @@ public class Integrator {
 			throw new java.lang.Exception ("Integrator::Boole => Cannot calculate Y at " + dblRight);
 
 		return (dblRight - dblLeft) / 90 * (7 * dblY0 + 32 * dblY1 + 12 * dblY2 + 32 * dblY3 + 7 * dblY4);
-	}
-
-	public static void main (
-		final java.lang.String astrArgs[])
-		throws java.lang.Exception
-	{
-		org.drip.quant.function1D.AbstractUnivariate au = new org.drip.quant.function1D.ExponentialTension
-			(java.lang.Math.E, 1.);
-
-		System.out.println ("Linear = " + Integrator.LinearQuadrature (au, 0., 1.));
-
-		System.out.println ("MidPoint = " + Integrator.MidPoint (au, 0., 1.));
-
-		System.out.println ("Trapezoidal = " + Integrator.Trapezoidal (au, 0., 1.));
-
-		System.out.println ("Simpson = " + Integrator.Simpson (au, 0., 1.));
-
-		System.out.println ("Simpson38 = " + Integrator.Simpson38 (au, 0., 1.));
-
-		System.out.println ("Boole = " + Integrator.Boole (au, 0., 1.));
 	}
 }

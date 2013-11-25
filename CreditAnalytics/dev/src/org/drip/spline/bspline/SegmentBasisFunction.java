@@ -29,18 +29,20 @@ package org.drip.spline.bspline;
  */
 
 /**
- * OrderedEnvelope is the abstract class over which the local ordered envelope functions for the B Splines
+ * SegmentBasisFunction is the abstract class over which the local ordered envelope functions for the B Splines
  * 	are implemented.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class OrderedEnvelope extends org.drip.quant.function1D.AbstractUnivariate {
+public abstract class SegmentBasisFunction extends org.drip.quant.function1D.AbstractUnivariate {
+	private int _iBSplineOrder = -1;
 	private double _dblLeadingPredictorOrdinate = java.lang.Double.NaN;
 	private double _dblTrailingPredictorOrdinate = java.lang.Double.NaN;
 	private double _dblFollowingPredictorOrdinate = java.lang.Double.NaN;
 
-	protected OrderedEnvelope (
+	protected SegmentBasisFunction (
+		final int iBSplineOrder,
 		final double dblLeadingPredictorOrdinate,
 		final double dblFollowingPredictorOrdinate,
 		final double dblTrailingPredictorOrdinate)
@@ -54,8 +56,19 @@ public abstract class OrderedEnvelope extends org.drip.quant.function1D.Abstract
 					!org.drip.quant.common.NumberUtil.IsValid (_dblTrailingPredictorOrdinate =
 						dblTrailingPredictorOrdinate) || _dblLeadingPredictorOrdinate >=
 							_dblFollowingPredictorOrdinate || _dblFollowingPredictorOrdinate >=
-								_dblTrailingPredictorOrdinate)
-			throw new java.lang.Exception ("OrderedEnvelope ctr: Invalid Inputs");
+								_dblTrailingPredictorOrdinate || 2 > (_iBSplineOrder = iBSplineOrder))
+			throw new java.lang.Exception ("SegmentBasisFunction ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Order of the B Spline
+	 * 
+	 * @return The Order of the B Spline
+	 */
+
+	public int bSplineOrder()
+	{
+		return _iBSplineOrder;
 	}
 
 	/**
@@ -112,7 +125,7 @@ public abstract class OrderedEnvelope extends org.drip.quant.function1D.Abstract
 	 * @throws java.lang.Exception Thrown if input is invalid
 	 */
 
-	public abstract double cumulativeIntegrand (
+	public abstract double normalizedCumulative (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception;
 }
