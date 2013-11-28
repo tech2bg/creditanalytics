@@ -59,24 +59,6 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	public static final int CALIBRATE_JACOBIAN = 2;
 
 	/**
-	 * Calibration Boundary Condition: Floating Boundary Condition
-	 */
-
-	public static final int BOUNDARY_CONDITION_FLOATING = 1;
-
-	/**
-	 * Calibration Boundary Condition: Natural Boundary Condition
-	 */
-
-	public static final int BOUNDARY_CONDITION_NATURAL = 2;
-
-	/**
-	 * Calibration Boundary Condition: Financial Boundary Condition
-	 */
-
-	public static final int BOUNDARY_CONDITION_FINANCIAL = 4;
-
-	/**
 	 * Retrieve the Segment Builder Parameters
 	 * 
 	 * @return The Segment Builder Parameters
@@ -150,6 +132,20 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 
 	public abstract org.drip.spline.params.SegmentPredictorResponseDerivative calcSPRD (
 		final double dblPredictorOrdinate);
+
+	/**
+	 * Calculate the Derivative of the requested order at the Left Edge of the Regime
+	 * 
+	 * @param iOrder Order of the Derivative
+	 * 
+	 * @return The Derivative of the requested order at the Left Edge of the Regime
+	 * 
+	 * @throws java.lang.Exception Thrown if the Derivative cannot be calculated
+	 */
+
+	public abstract double calcLeftEdgeDerivative (
+		final int iOrder)
+		throws java.lang.Exception;
 
 	/**
 	 * Calculate the Derivative of the requested order at the right Edge of the Regime
@@ -246,7 +242,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	 * @param srvcLeading Regime Left-most Segment Response Value Constraint
 	 * @param aSRVC Array of Segment Response Value Constraints
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return TRUE => Set up was successful
@@ -256,7 +252,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcLeading,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.RegimeBestFitResponse sbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail);
 
 	/**
@@ -266,7 +262,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 	 * @param dblRegimeLeftResponseValue Regime Left-most Response Value
 	 * @param aSRVC Array of Segment Response Value Constraints
 	 * @param rbfr Regime Best Fit Weighted Response Values
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return TRUE => Set up was successful
@@ -276,7 +272,7 @@ public interface MultiSegmentSequence extends org.drip.spline.regime.SingleSegme
 		final double dblRegimeLeftResponseValue,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail);
 
 	/**

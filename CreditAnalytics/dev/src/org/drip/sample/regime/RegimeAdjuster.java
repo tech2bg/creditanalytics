@@ -112,7 +112,7 @@ public class RegimeAdjuster {
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null,
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		return regime;

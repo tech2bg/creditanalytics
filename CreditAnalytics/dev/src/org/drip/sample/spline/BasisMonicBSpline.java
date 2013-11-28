@@ -50,20 +50,23 @@ public class BasisMonicBSpline {
 		final String strTest)
 		throws Exception
 	{
-		SegmentBasisFunction me = BasisFunctionGenerator.Monic (
+		SegmentBasisFunction me = SegmentBasisFunctionGenerator.Monic (
 			strHatType,
 			strShapeController,
 			adblPredictorOrdinate,
-			1.);
+			2,
+			aTBH[0].tension());
 
 		double dblX = 1.0;
 		double dblXIncrement = 0.25;
 
-		System.out.println ("\n\t------------------------------------------------");
+		System.out.println ("\n\t-------------------------------------------------");
 
-		System.out.println ("\t--------------" + strTest + "------------");
+		System.out.println ("\t--------------" + strTest + "-------------");
 
-		System.out.println ("\t------------------------------------------------\n");
+		System.out.println ("\t-------------------------------------------------\n");
+
+		System.out.println ("\t-------------X---|---LEFT---|---RIGHT--|--MONIC--\n");
 
 		while (dblX <= 3.0) {
 			System.out.println (
@@ -81,7 +84,7 @@ public class BasisMonicBSpline {
 
 		while (dblX <= 3.0) {
 			System.out.println (
-				"\t\tNormalizedCumulative[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
+				"\t\tNormCumulative[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
 				FormatUtil.FormatDouble (me.normalizedCumulative (dblX), 1, 5, 1.));
 
 			dblX += dblXIncrement;
@@ -94,7 +97,7 @@ public class BasisMonicBSpline {
 
 		while (dblX <= 3.0) {
 			System.out.println (
-				"\t\t\tDerivative[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
+				"\t\t\tDeriv[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
 				FormatUtil.FormatDouble (me.calcDerivative (dblX, iOrder), 1, 5, 1.));
 
 			dblX += dblXIncrement;
@@ -113,11 +116,12 @@ public class BasisMonicBSpline {
 			adblPredictorOrdinate[0],
 			adblPredictorOrdinate[1],
 			adblPredictorOrdinate[2],
+			2,
 			1.);
 
 		TestMonicHatBasis (
 			BasisHatPairGenerator.PROCESSED_TENSION_HYPERBOLIC,
-			CubicRationalLeftRaw.SHAPE_CONTROL_RATIONAL_LINEAR,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			aTBHProcessed,
 			adblPredictorOrdinate,
 			" PROCESSED HYPERBOLIC ");
@@ -129,24 +133,70 @@ public class BasisMonicBSpline {
 			1.);
 
 		TestMonicHatBasis (
-			BasisHatPairGenerator.TENSION_HYPERBOLIC,
-			CubicRationalLeftRaw.SHAPE_CONTROL_RATIONAL_LINEAR,
+			BasisHatPairGenerator.RAW_TENSION_HYPERBOLIC,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			aTBHStraight,
 			adblPredictorOrdinate,
 			" STRAIGHT  HYPERBOLIC ");
 
-		TensionBasisHat[] aTBHCubicRational = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
-			CubicRationalLeftRaw.SHAPE_CONTROL_RATIONAL_LINEAR,
+		TensionBasisHat[] aTBHCubicRationalPlain = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			adblPredictorOrdinate[0],
 			adblPredictorOrdinate[1],
 			adblPredictorOrdinate[2],
+			2,
+			0.);
+
+		TestMonicHatBasis (
+			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
+			aTBHCubicRationalPlain,
+			adblPredictorOrdinate,
+			"     CUBIC     FLAT   ");
+
+		TensionBasisHat[] aTBHCubicRationalLinear = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
+			adblPredictorOrdinate[0],
+			adblPredictorOrdinate[1],
+			adblPredictorOrdinate[2],
+			2,
 			1.);
 
 		TestMonicHatBasis (
 			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
-			CubicRationalLeftRaw.SHAPE_CONTROL_RATIONAL_LINEAR,
-			aTBHCubicRational,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
+			aTBHCubicRationalLinear,
 			adblPredictorOrdinate,
-			"   CUBIC    RATIONAL  ");
+			" CUBIC LINEAR RATIONAL ");
+
+		TensionBasisHat[] aTBHCubicRationalQuadratic = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_QUADRATIC,
+			adblPredictorOrdinate[0],
+			adblPredictorOrdinate[1],
+			adblPredictorOrdinate[2],
+			2,
+			1.);
+
+		TestMonicHatBasis (
+			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_QUADRATIC,
+			aTBHCubicRationalQuadratic,
+			adblPredictorOrdinate,
+			" CUBIC  QUAD  RATIONAL ");
+
+		TensionBasisHat[] aTBHCubicRationalExponential = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_EXPONENTIAL,
+			adblPredictorOrdinate[0],
+			adblPredictorOrdinate[1],
+			adblPredictorOrdinate[2],
+			2,
+			1.);
+
+		TestMonicHatBasis (
+			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_EXPONENTIAL,
+			aTBHCubicRationalExponential,
+			adblPredictorOrdinate,
+			" CUBIC  EXP  RATIONAL ");
 	}
 }

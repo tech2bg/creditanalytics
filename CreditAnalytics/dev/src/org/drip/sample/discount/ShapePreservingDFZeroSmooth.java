@@ -119,7 +119,7 @@ public class ShapePreservingDFZeroSmooth {
 				new ExponentialMixtureSetParams (new double[] {0.01, 0.05, 0.25}),
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null);
 
@@ -130,7 +130,7 @@ public class ShapePreservingDFZeroSmooth {
 				new PolynomialFunctionSetParams (4),
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null);
 

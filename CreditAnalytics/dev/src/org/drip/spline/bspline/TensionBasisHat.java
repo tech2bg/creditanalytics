@@ -29,22 +29,21 @@ package org.drip.spline.bspline;
  */
 
 /**
- * TensionBasisHat implements the basis hat function that form the basis for all B Splines. They contain the
- *  left/right ordinates, the tension, and the normalizer.
+ * TensionBasisHat implements the common basis hat function that form the basis for all B Splines. It
+ *  contains the left/right ordinates, the tension, and the normalizer.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public abstract class TensionBasisHat extends org.drip.quant.function1D.AbstractUnivariate {
 	private double _dblTension = java.lang.Double.NaN;
-	private double _dblNormalizer = java.lang.Double.NaN;
 	private double _dblLeftPredictorOrdinate = java.lang.Double.NaN;
 	private double _dblRightPredictorOrdinate = java.lang.Double.NaN;
 
 	protected TensionBasisHat (
-		final double dblTension,
 		final double dblLeftPredictorOrdinate,
-		final double dblRightPredictorOrdinate)
+		final double dblRightPredictorOrdinate,
+		final double dblTension)
 		throws java.lang.Exception
 	{
 		super (null);
@@ -54,9 +53,6 @@ public abstract class TensionBasisHat extends org.drip.quant.function1D.Abstract
 				dblRightPredictorOrdinate) || !org.drip.quant.common.NumberUtil.IsValid (_dblTension =
 					dblTension))
 			throw new java.lang.Exception ("TensionBasisHat ctr: Invalid Inputs");
-
-		_dblNormalizer = 1. / java.lang.Math.sinh (_dblTension * (_dblRightPredictorOrdinate -
-			_dblLeftPredictorOrdinate));
 	}
 
 	/**
@@ -114,13 +110,13 @@ public abstract class TensionBasisHat extends org.drip.quant.function1D.Abstract
 	}
 
 	/**
-	 * Retrieve the Normalizer
+	 * Compute the Normalizer
 	 * 
 	 * @return The Normalizer
+	 * 
+	 * @throws java.lang.Exception Thrown if the Normalizer cannot be computed
 	 */
 
-	public double normalizer()
-	{
-		return _dblNormalizer;
-	}
+	public abstract double normalizer()
+		throws java.lang.Exception;
 }

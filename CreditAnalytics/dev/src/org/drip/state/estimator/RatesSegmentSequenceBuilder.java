@@ -36,16 +36,16 @@ package org.drip.state.estimator;
  */
 
 public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.SegmentSequenceBuilder {
-	private int _iCalibrationBoundaryCondition = -1;
 	private double _dblEpochResponse = java.lang.Double.NaN;
 	private org.drip.state.estimator.CurveRegime _cr = null;
+	private org.drip.spline.regime.BoundarySettings _bc = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.spline.params.RegimeBestFitResponse _rbfr = null;
-	private org.drip.spline.regime.MultiSegmentSequence _regimePrev = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 	private org.drip.state.estimator.RegimeRepresentationSpec _rbs = null;
+	private org.drip.spline.regime.MultiSegmentSequence _regimePrev = null;
 
 	private org.drip.spline.params.SegmentResponseValueConstraint GenerateSegmentConstraint (
 		final org.drip.state.estimator.PredictorResponseLinearConstraint prlc)
@@ -120,7 +120,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 	 * @param quotingParams Quoting Parameter
 	 * @param regimePrev The Previous Regime Used to value cash flows that fall in those segments
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bc The Calibration Boundary Condition
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
@@ -134,11 +134,11 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.spline.regime.MultiSegmentSequence regimePrev,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition)
+		final org.drip.spline.regime.BoundarySettings bc)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochResponse = dblEpochResponse) || null == (_rbs
-			= rbs) || null == (_valParams = valParams))
+			= rbs) || null == (_valParams = valParams) || null == (_bc = bc))
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
 		_cmp = cmp;
@@ -146,7 +146,6 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 		_regimePrev = regimePrev;
 		_pricerParams = pricerParams;
 		_quotingParams = quotingParams;
-		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
 	}
 
 	@Override public boolean setRegime (
@@ -164,9 +163,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 		return true;
 	}
 
-	@Override public int getCalibrationBoundaryCondition()
+	@Override public org.drip.spline.regime.BoundarySettings getCalibrationBoundaryCondition()
 	{
-		return _iCalibrationBoundaryCondition;
+		return _bc;
 	}
 
 	@Override public boolean calibStartingSegment (

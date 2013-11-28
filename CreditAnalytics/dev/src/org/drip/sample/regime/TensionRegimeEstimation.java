@@ -191,7 +191,7 @@ public class TensionRegimeEstimation {
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null, 
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		/*
@@ -216,7 +216,7 @@ public class TensionRegimeEstimation {
 		MultiSegmentSequence regimeInsert = MultiSegmentSequenceModifier.InsertKnot (regime,
 			9.,
 			10.,
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		dblX = 1.;

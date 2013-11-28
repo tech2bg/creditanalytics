@@ -47,7 +47,7 @@ public interface SegmentSequenceBuilder {
 	 * @return The Calibration Boundary Condition
 	 */
 
-	public abstract int getCalibrationBoundaryCondition();
+	public abstract org.drip.spline.regime.BoundarySettings getCalibrationBoundaryCondition();
 
 	/**
 	 * Calibrate the Starting Segment using the LeftSlope

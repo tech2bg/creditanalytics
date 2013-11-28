@@ -257,7 +257,7 @@ public class CustomCurveBuilder {
 
 	private static final MultiSegmentSequence BuildSwapCurve (
 		MultiSegmentSequence regime,
-		final int iCalibrationBoundaryCondition,
+		final BoundarySettings bs,
 		final int iCalibrationDetail)
 		throws Exception
 	{
@@ -310,7 +310,7 @@ public class CustomCurveBuilder {
 				regime.setup (1.,
 					new SegmentResponseValueConstraint[] {srvc},
 					null,
-					iCalibrationBoundaryCondition,
+					bs,
 					iCalibrationDetail);
 			} else {
 				/*
@@ -340,7 +340,7 @@ public class CustomCurveBuilder {
 					dblTenorInYears,
 					srvc,
 					scbcLocal,
-					iCalibrationBoundaryCondition,
+					bs,
 					iCalibrationDetail);
 			}
 		}
@@ -397,7 +397,7 @@ public class CustomCurveBuilder {
 	 */
 
 	private static final MultiSegmentSequence BuildCashCurve (
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 		throws Exception
 	{
@@ -414,7 +414,7 @@ public class CustomCurveBuilder {
 				MakeKLKTensionSCBC (1.)
 			}, // Exponential Tension Basis Spline
 			null,
-			iCalibrationBoundaryCondition, iCalibrationDetail); // "Natural" Spline Boundary Condition + Calibrate the full regime
+			bs, iCalibrationDetail); // "Natural" Spline Boundary Condition + Calibrate the full regime
 
 		/*
 		 * Construct the discount curve by iterating through the cash instruments and their discount
@@ -430,7 +430,7 @@ public class CustomCurveBuilder {
 			 * Insert the instrument/quote as a "knot" entity into the regime. Given the "natural" spline
 			 */
 
-			regimeCash = MultiSegmentSequenceModifier.InsertKnot (regimeCash, dblTenorInYears, dblDF, iCalibrationBoundaryCondition, iCalibrationDetail);
+			regimeCash = MultiSegmentSequenceModifier.InsertKnot (regimeCash, dblTenorInYears, dblDF, bs, iCalibrationDetail);
 		}
 
 		return regimeCash;
@@ -441,20 +441,24 @@ public class CustomCurveBuilder {
 		throws Exception
 	{
 		MultiSegmentSequence regimeNaturalCash = BuildCashCurve (
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE);
 
 		MultiSegmentSequence regimeFinancialCash = BuildCashCurve (
-			MultiSegmentSequence.BOUNDARY_CONDITION_FINANCIAL,
+			BoundarySettings.FinancialStandard(),
+			MultiSegmentSequence.CALIBRATE);
+
+		MultiSegmentSequence regimeNotAKnotCash = BuildCashCurve (
+			BoundarySettings.NotAKnotStandard (1, 1),
 			MultiSegmentSequence.CALIBRATE);
 
 		double dblXShift = 0.1 * (regimeNaturalCash.getRightPredictorOrdinateEdge() - regimeNaturalCash.getLeftPredictorOrdinateEdge());
 
-		System.out.println ("\n\t\t\t----------------     <====>  ------------------");
+		System.out.println ("\n\t\t\t----------------       <====>    ------------------       <====>    ------------------");
 
-		System.out.println ("\t\t\tNATURAL BOUNDARY     <====>  FINANCIAL BOUNDARY");
+		System.out.println ("\t\t\tNATURAL BOUNDARY       <====>   NOT A KNOT BOUNDARY       <====>    FINANCIAL BOUNDARY");
 
-		System.out.println ("\t\t\t----------------     <====>  ------------------\n");
+		System.out.println ("\t\t\t----------------       <====>    ------------------       <====>    ------------------\n");
 
 		/*
 		 * Display the DF, the monotonicity, and the convexity for the cash instruments.
@@ -465,6 +469,8 @@ public class CustomCurveBuilder {
 				FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "Y] => " +
 				FormatUtil.FormatDouble (regimeNaturalCash.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeNaturalCash.monotoneType (dblX) + "  <====>  " +
+				FormatUtil.FormatDouble (regimeNotAKnotCash.responseValue (dblX), 1, 6, 1.) + " | " +
+				regimeNotAKnotCash.monotoneType (dblX) + "  <====>  " +
 				FormatUtil.FormatDouble (regimeFinancialCash.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeNaturalCash.monotoneType (dblX));
 
@@ -472,12 +478,17 @@ public class CustomCurveBuilder {
 
 		MultiSegmentSequence regimeNaturalSwap = BuildSwapCurve (
 			regimeNaturalCash,
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE);
 
 		MultiSegmentSequence regimeFinancialSwap = BuildSwapCurve (
-			regimeNaturalCash,
-			MultiSegmentSequence.BOUNDARY_CONDITION_FINANCIAL,
+			regimeFinancialCash,
+			BoundarySettings.FinancialStandard(),
+			MultiSegmentSequence.CALIBRATE);
+
+		MultiSegmentSequence regimeNotAKnotSwap = BuildSwapCurve (
+			regimeNotAKnotCash,
+			BoundarySettings.NotAKnotStandard (1, 1),
 			MultiSegmentSequence.CALIBRATE);
 
 		/*
@@ -491,6 +502,8 @@ public class CustomCurveBuilder {
 				FormatUtil.FormatDouble (dblX, 2, 0, 1.) + "Y] => " +
 				FormatUtil.FormatDouble (regimeNaturalSwap.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeNaturalSwap.monotoneType (dblX) + "  <====>  " +
+				FormatUtil.FormatDouble (regimeNotAKnotSwap.responseValue (dblX), 1, 6, 1.) + " | " +
+				regimeNotAKnotSwap.monotoneType (dblX) + "  <====>  " +
 				FormatUtil.FormatDouble (regimeFinancialSwap.responseValue (dblX), 1, 6, 1.) + " | " +
 				regimeFinancialSwap.monotoneType (dblX));
 	}

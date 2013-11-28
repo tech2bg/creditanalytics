@@ -510,9 +510,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		}
 
 		org.drip.spline.regime.MultiSegmentSequence regime =
-			org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator ("DISC_CURVE_REGIME",
-				adblDate, adblQuote, aSBP, null,
-					org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator
+				("DISC_CURVE_REGIME", adblDate, adblQuote, aSBP, null,
+					org.drip.spline.regime.BoundarySettings.NaturalStandard(),
 						org.drip.spline.regime.MultiSegmentSequence.CALIBRATE);
 
 		if (null == regime)

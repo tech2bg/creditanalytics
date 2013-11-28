@@ -95,6 +95,8 @@ public class SegmentMonicBasisFunction extends org.drip.spline.bspline.SegmentBa
 			(dblEnd))
 			throw new java.lang.Exception ("SegmentMonicBasisFunction::integrate => Invalid Inputs");
 
+		if (dblBegin >= dblEnd) return 0.;
+
 		if (dblBegin <= leading()) {
 			if (dblEnd <= leading()) return 0.;
 
@@ -142,11 +144,11 @@ public class SegmentMonicBasisFunction extends org.drip.spline.bspline.SegmentBa
 			throw new java.lang.Exception
 				("SegmentMonicBasisFunction::normalizedCumulative => Invalid Inputs");
 
-		if (dblPredictorOrdinate < leading()) return 0.;
+		if (dblPredictorOrdinate <= leading()) return 0.;
 
-		if (dblPredictorOrdinate > trailing()) return 1.;
+		if (dblPredictorOrdinate >= trailing()) return 1.;
 
-		if (dblPredictorOrdinate < following())
+		if (dblPredictorOrdinate <= following())
 			return _tbhLeft.integrate (leading(), dblPredictorOrdinate) / normalizer();
 
 		return (_tbhLeft.integrate (leading(), following()) + _tbhRight.integrate (following(),

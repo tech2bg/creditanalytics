@@ -45,13 +45,14 @@ import org.drip.quant.common.FormatUtil;
  */
 
 public class BasisMonicHatComparison {
-	public static final void main (
-		final String[] astrArgs)
+	public static final void ShapeControllerTest (
+		final String strShapeController,
+		final double dblTension)
 		throws Exception
 	{
-		CubicRationalLeftRaw crlr = new CubicRationalLeftRaw (CubicRationalLeftRaw.SHAPE_CONTROL_RATIONAL_LINEAR, 1., 1., 2.);
+		CubicRationalLeftRaw crlr = new CubicRationalLeftRaw (1., 2., strShapeController, dblTension);
 
-		CubicRationalRightRaw crrr = new CubicRationalRightRaw (CubicRationalRightRaw.SHAPE_CONTROL_RATIONAL_LINEAR, 1., 2., 3.);
+		CubicRationalRightRaw crrr = new CubicRationalRightRaw (2., 3., strShapeController, dblTension);
 
 		TensionProcessedBasisHat tpbhLeft = new TensionProcessedBasisHat (crlr, 2);
 
@@ -62,22 +63,59 @@ public class BasisMonicHatComparison {
 		double dblX = crlr.left();
 
 		while (dblX <= crrr.right()) {
-			System.out.println ("Deriv[" + dblX + "] => " +
+			System.out.println ("\tDeriv[" + dblX + "] => " +
 				FormatUtil.FormatDouble (smbf.calcDerivative (dblX, 1), 1, 5, 1.));
 
-			System.out.println ("\tCubic Rational Left Deriv[" + dblX + "]  => " +
+			System.out.println ("\t\tCubic Rational Left Deriv[" + dblX + "]  => " +
 				FormatUtil.FormatDouble (crlr.calcDerivative (dblX, 3), 1, 5, 1.));
 
-			System.out.println ("\tCubic Rational Right Deriv[" + dblX + "] => " +
+			System.out.println ("\t\tCubic Rational Right Deriv[" + dblX + "] => " +
 				FormatUtil.FormatDouble (crrr.calcDerivative (dblX, 3), 1, 5, 1.));
 
-			System.out.println ("\tTPBH Left Deriv[" + dblX + "]  => " +
+			System.out.println ("\t\tTPBH Left Deriv[" + dblX + "]  => " +
 				FormatUtil.FormatDouble (tpbhLeft.calcDerivative (dblX, 1), 1, 5, 1.));
 
-			System.out.println ("\tTPBH Right Deriv[" + dblX + "] => " +
+			System.out.println ("\t\tTPBH Right Deriv[" + dblX + "] => " +
 				FormatUtil.FormatDouble (tpbhRight.calcDerivative (dblX, 1), 1, 5, 1.));
 
 			dblX += 0.5;
 		}
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		System.out.println ("\n-------------------------------------------------------------------");
+
+		System.out.println ("----------------- NO SHAPE CONTROL --------------------------------");
+
+		System.out.println ("-------------------------------------------------------------------");
+
+		ShapeControllerTest (BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR, 0.);
+
+		System.out.println ("\n-------------------------------------------------------------------");
+
+		System.out.println ("----------------- LINEAR SHAPE CONTROL; Tension 1.0 ---------------");
+
+		System.out.println ("-------------------------------------------------------------------");
+
+		ShapeControllerTest (BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR, 1.);
+
+		System.out.println ("\n-------------------------------------------------------------------");
+
+		System.out.println ("-------------- QUADRATIC SHAPE CONTROL; Tension 1.0 ---------------");
+
+		System.out.println ("-------------------------------------------------------------------");
+
+		ShapeControllerTest (BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_QUADRATIC, 1.);
+
+		System.out.println ("\n-------------------------------------------------------------------");
+
+		System.out.println ("-------------- EXPONENTIAL SHAPE CONTROL; Tension 1.0 ---------------");
+
+		System.out.println ("-------------------------------------------------------------------");
+
+		ShapeControllerTest (BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_EXPONENTIAL, 1.);
 	}
 }

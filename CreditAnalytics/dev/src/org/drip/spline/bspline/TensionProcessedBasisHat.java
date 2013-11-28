@@ -53,7 +53,7 @@ public class TensionProcessedBasisHat extends org.drip.spline.bspline.TensionBas
 		final int iDerivOrder)
 		throws java.lang.Exception
 	{
-		super (tbhRaw.tension(), tbhRaw.left(), tbhRaw.right());
+		super (tbhRaw.left(), tbhRaw.right(), tbhRaw.tension());
 
 		if (null == (_tbhRaw = tbhRaw) || 0 >= (_iDerivOrder = iDerivOrder))
 			throw new java.lang.Exception ("TensionProcessedBasisHat ctr: Invalid Input");
@@ -90,9 +90,24 @@ public class TensionProcessedBasisHat extends org.drip.spline.bspline.TensionBas
 			(dblEnd))
 			throw new java.lang.Exception ("TensionProcessedBasisHat::integrate => Invalid Inputs");
 
-		if (1 == _iDerivOrder) return _tbhRaw.evaluate (dblEnd) - _tbhRaw.evaluate (dblBegin);
+		double dblBoundedBegin = org.drip.quant.common.NumberUtil.Bound (dblBegin, left(), right());
 
-		return _tbhRaw.calcDerivative (dblEnd, _iDerivOrder - 1) - _tbhRaw.calcDerivative (dblBegin,
+		double dblBoundedEnd = org.drip.quant.common.NumberUtil.Bound (dblEnd, left(), right());
+
+		if (dblBoundedBegin >= dblBoundedEnd) return 0.;
+
+		if (1 == _iDerivOrder) return _tbhRaw.evaluate (dblBoundedEnd) - _tbhRaw.evaluate (dblBoundedBegin);
+
+		return _tbhRaw.calcDerivative (dblBoundedEnd, _iDerivOrder - 1) - _tbhRaw.calcDerivative
+			(dblBoundedBegin, _iDerivOrder - 1);
+	}
+
+	@Override public double normalizer()
+		throws java.lang.Exception
+	{
+		if (1 == _iDerivOrder) return _tbhRaw.evaluate (right()) - _tbhRaw.evaluate (left());
+
+		return _tbhRaw.calcDerivative (right(), _iDerivOrder - 1) - _tbhRaw.calcDerivative (left(),
 			_iDerivOrder - 1);
 	}
 }

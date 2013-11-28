@@ -1,6 +1,8 @@
 
 package org.drip.spline.tension;
 
+import org.drip.spline.bspline.SegmentBasisFunctionSet;
+
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -162,7 +164,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new CkBasisFunctionSet (2, etsp.tension(), new
+			return new SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -299,7 +301,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new CkBasisFunctionSet (2, etsp.tension(), new
+			return new SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -437,7 +439,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new CkBasisFunctionSet (2, etsp.tension(), new
+			return new SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -555,7 +557,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new CkBasisFunctionSet (2, etsp.tension(), new
+			return new SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

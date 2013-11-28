@@ -92,7 +92,7 @@ public class DiscountCurveReconcilerAPI {
 	{
 		return new LinearCurveCalibrator (
 			prbp,
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null);
 	}

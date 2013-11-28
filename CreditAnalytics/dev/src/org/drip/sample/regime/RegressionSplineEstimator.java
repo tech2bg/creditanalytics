@@ -105,7 +105,7 @@ public class RegressionSplineEstimator {
 			adblX, // predictors
 			aSBP, // Basis Segment Builder parameters
 			rbfr, 
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		/*

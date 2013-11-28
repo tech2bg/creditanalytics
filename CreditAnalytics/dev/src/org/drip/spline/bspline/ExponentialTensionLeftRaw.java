@@ -40,20 +40,20 @@ public class ExponentialTensionLeftRaw extends org.drip.spline.bspline.TensionBa
 	/**
 	 * ExponentialTensionLeftRaw constructor
 	 * 
-	 * @param dblTension Tension of the Tension Hat Function
 	 * @param dblLeftPredictorOrdinate The Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate The Right Predictor Ordinate
+	 * @param dblTension Tension of the Tension Hat Function
 	 * 
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
 	public ExponentialTensionLeftRaw (
-		final double dblTension,
 		final double dblLeftPredictorOrdinate,
-		final double dblRightPredictorOrdinate)
+		final double dblRightPredictorOrdinate,
+		final double dblTension)
 		throws java.lang.Exception
 	{
-		super (dblTension, dblLeftPredictorOrdinate, dblRightPredictorOrdinate);
+		super (dblLeftPredictorOrdinate, dblRightPredictorOrdinate, dblTension);
 	}
 
 	@Override public double evaluate (
@@ -84,10 +84,6 @@ public class ExponentialTensionLeftRaw extends org.drip.spline.bspline.TensionBa
 			return (java.lang.Math.cosh (tension() * (dblPredictorOrdinate - left())) - 1.) / (tension() *
 				java.lang.Math.sinh (tension() * dblWidth));
 
-		if (2 == iOrder)
-			return java.lang.Math.sinh (tension() * (dblPredictorOrdinate - left())) / java.lang.Math.sinh
-				(tension() * dblWidth);
-
 		return java.lang.Math.pow (tension(), iOrder - 2) * (0 == iOrder % 2 ? java.lang.Math.sinh (tension()
 			* (dblPredictorOrdinate - left())) : java.lang.Math.cosh (tension() * (dblPredictorOrdinate -
 				left()))) / java.lang.Math.sinh (tension() * dblWidth);
@@ -102,9 +98,26 @@ public class ExponentialTensionLeftRaw extends org.drip.spline.bspline.TensionBa
 			(dblEnd))
 			throw new java.lang.Exception ("ExponentialTensionLeftRaw::integrate => Invalid Inputs");
 
+		double dblBoundedBegin = org.drip.quant.common.NumberUtil.Bound (dblBegin, left(), right());
+
+		double dblBoundedEnd = org.drip.quant.common.NumberUtil.Bound (dblEnd, left(), right());
+
+		if (dblBoundedBegin >= dblBoundedEnd) return 0.;
+
+		if (0. == tension()) return dblBoundedEnd - dblBoundedBegin;
+
+		return (java.lang.Math.cosh (dblBoundedEnd - left()) - java.lang.Math.cosh (dblBoundedBegin -
+			left()) - 0.5 * tension() * tension() * (((dblBoundedEnd - left()) * (dblBoundedEnd - left())) -
+				((dblBoundedBegin - left()) * (dblBoundedBegin - left())))) / (tension() * tension() *
+					tension() * java.lang.Math.sinh (tension() * (right() - left())));
+	}
+
+	@Override public double normalizer()
+		throws java.lang.Exception
+	{
 		double dblWidth = right() - left();
 
-		return (java.lang.Math.cosh (tension() * dblWidth) - 1. - 0.5 * tension() * tension() * dblWidth *
-			dblWidth) / (tension() * tension() * tension() * java.lang.Math.sinh (tension() * dblWidth));
+		return (java.lang.Math.cosh (dblWidth) - 1. - 0.5 * tension() * tension() * dblWidth * dblWidth) /
+			(tension() * tension() * tension() * java.lang.Math.sinh (tension() * dblWidth));
 	}
 }

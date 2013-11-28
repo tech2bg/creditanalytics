@@ -143,7 +143,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.regime.S
 		final double dblYLeading,
 		final double[] adblResponseValue,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		return null != (_adblResponseValue = adblResponseValue) && _adblResponseValue.length ==
@@ -219,10 +219,11 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.regime.S
 					dblInputResponseSensitivityShift : _adblResponseValue[j];
 
 			try {
-				SingleSegmentLagrangePolynomial lps = new SingleSegmentLagrangePolynomial (_adblPredictorOrdinate);
+				SingleSegmentLagrangePolynomial lps = new SingleSegmentLagrangePolynomial
+					(_adblPredictorOrdinate);
 
 				if (!lps.setup (adblSensitivityShiftedInputResponse[0], adblSensitivityShiftedInputResponse,
-					null, org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_FLOATING,
+					null, org.drip.spline.regime.BoundarySettings.FloatingStandard(),
 						org.drip.spline.regime.MultiSegmentSequence.CALIBRATE) ||
 							!wjDResponseDResponseInput.accumulatePartialFirstDerivative (0, i,
 								(lps.responseValue (dblPredictorOrdinate) -

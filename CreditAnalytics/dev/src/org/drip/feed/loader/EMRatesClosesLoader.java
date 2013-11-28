@@ -392,7 +392,7 @@ public class EMRatesClosesLoader {
 					org.drip.spline.params.SegmentCustomBuilderControl
 						(org.drip.spline.regime.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc),
-					org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
+					org.drip.spline.regime.BoundarySettings.NaturalStandard(),
 						org.drip.spline.regime.MultiSegmentSequence.CALIBRATE, null);
 
 			org.drip.analytics.definition.DiscountCurve dcShapePreserving =

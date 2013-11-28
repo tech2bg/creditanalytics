@@ -34,7 +34,7 @@ package org.drip.spline.bspline;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BasisFunctionGenerator {
+public class SegmentBasisFunctionGenerator {
 
 	/**
 	 * Create a Tension Monic B Spline Basis Function
@@ -42,6 +42,7 @@ public class BasisFunctionGenerator {
 	 * @param strHatType The Primitive Hat Type
 	 * @param strShapeControlType Type of the Shape Controller to be used - NONE, LINEAR/QUADRATIC Rational
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
+	 * @param iDerivOrder The Derivative Order
 	 * @param dblTension Tension
 	 * 
 	 * @return The Tension Monic B Spline Basis Function Instance
@@ -51,29 +52,13 @@ public class BasisFunctionGenerator {
 		final java.lang.String strHatType,
 		final java.lang.String strShapeControlType,
 		final double[] adblPredictorOrdinate,
+		final int iDerivOrder,
 		final double dblTension)
 	{
-		if (null == strHatType ||
-			(!org.drip.spline.bspline.BasisHatPairGenerator.TENSION_HYPERBOLIC.equalsIgnoreCase (strHatType)
-				&& !org.drip.spline.bspline.BasisHatPairGenerator.PROCESSED_TENSION_HYPERBOLIC.equalsIgnoreCase
-					(strHatType) &&
-						!org.drip.spline.bspline.BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL.equalsIgnoreCase
-			(strHatType)))
-			return null;
-
-		TensionBasisHat[] aTBH = null;
-
-		if (org.drip.spline.bspline.BasisHatPairGenerator.TENSION_HYPERBOLIC.equalsIgnoreCase (strHatType))
-			aTBH = BasisHatPairGenerator.HyperbolicTensionHatPair (adblPredictorOrdinate[0],
-				adblPredictorOrdinate[1], adblPredictorOrdinate[2], dblTension);
-		else if (org.drip.spline.bspline.BasisHatPairGenerator.PROCESSED_TENSION_HYPERBOLIC.equalsIgnoreCase
-			(strHatType))
-			aTBH = BasisHatPairGenerator.ProcessedHyperbolicTensionHatPair (adblPredictorOrdinate[0],
-				adblPredictorOrdinate[1], adblPredictorOrdinate[2], dblTension);
-		else if (org.drip.spline.bspline.BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL.equalsIgnoreCase
-			(strHatType))
-			aTBH = BasisHatPairGenerator.ProcessedCubicRationalHatPair (strShapeControlType,
-				adblPredictorOrdinate[0], adblPredictorOrdinate[1], adblPredictorOrdinate[2], dblTension);
+		org.drip.spline.bspline.TensionBasisHat[] aTBH =
+			org.drip.spline.bspline.BasisHatPairGenerator.GenerateHatPair (strHatType, strShapeControlType,
+				adblPredictorOrdinate[0], adblPredictorOrdinate[1], adblPredictorOrdinate[2], iDerivOrder,
+					dblTension);
 
 		if (null == aTBH || 2 != aTBH.length) return null;
 
@@ -90,7 +75,9 @@ public class BasisFunctionGenerator {
 	 * Construct a Sequence of Monic Basis Functions
 	 * 
 	 * @param strHatType The Primitive Hat Type
+	 * @param strShapeControlType Type of the Shape Controller to be used - NONE, LINEAR/QUADRATIC Rational
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
+	 * @param iDerivOrder The Derivative Order
 	 * @param dblTension Tension
 	 * 
 	 * @return Sequence of Tension Monic B Spline Basis Functions
@@ -98,7 +85,9 @@ public class BasisFunctionGenerator {
 
 	public static final org.drip.spline.bspline.SegmentBasisFunction[] MonicSequence (
 		final java.lang.String strHatType,
+		final java.lang.String strShapeControlType,
 		final double[] adblPredictorOrdinate,
+		final int iDerivOrder,
 		final double dblTension)
 	{
 		if (null == adblPredictorOrdinate) return null;
@@ -110,9 +99,9 @@ public class BasisFunctionGenerator {
 		if (0 >= iNumMonic) return null;
 
 		for (int i = 0; i < iNumMonic; ++i) {
-			TensionBasisHat[] aTBH = BasisHatPairGenerator.HyperbolicTensionHatPair
-				(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1], adblPredictorOrdinate[i + 2],
-					dblTension);
+			TensionBasisHat[] aTBH = BasisHatPairGenerator.GenerateHatPair (strHatType, strShapeControlType,
+				adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1], adblPredictorOrdinate[i + 2],
+					iDerivOrder, dblTension);
 
 			if (null == aTBH || 2 != aTBH.length) return null;
 
@@ -132,7 +121,6 @@ public class BasisFunctionGenerator {
 	 * Create a sequence of B Splines of the specified order from the given inputs.
 	 * 
 	 * @param iTargetBSplineOrder Desired B Spline Order
-	 * @param dblTension Tension
 	 * @param aSBFPrev Array of Segment Basis Functions
 	 * 
 	 * @return The sequence of B Splines of the specified order.
@@ -140,7 +128,6 @@ public class BasisFunctionGenerator {
 
 	public static final org.drip.spline.bspline.SegmentBasisFunction[] MulticSequence (
 		final int iTargetBSplineOrder,
-		final double dblTension,
 		final org.drip.spline.bspline.SegmentBasisFunction[] aSBFPrev)
 	{
 		if (2 >= iTargetBSplineOrder || null == aSBFPrev) return null;
@@ -163,6 +150,6 @@ public class BasisFunctionGenerator {
 		}
 
 		return iTargetBSplineOrder == aSBF[0].bSplineOrder() ? aSBF : MulticSequence (iTargetBSplineOrder,
-			dblTension, aSBF);
+			aSBF);
 	}
 }

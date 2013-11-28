@@ -53,7 +53,7 @@ public interface SingleSegmentSequence {
 	 * @param dblRegimeLeadingResponse Regime Left-most Response
 	 * @param adblSegmentRightEdgeResponse Array of Segment Right Edge Responses
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return TRUE => Set up was successful
@@ -63,7 +63,7 @@ public interface SingleSegmentSequence {
 		final double dblRegimeLeadingResponse,
 		final double[] adblSegmentRightEdgeResponse,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail);
 
 	/**

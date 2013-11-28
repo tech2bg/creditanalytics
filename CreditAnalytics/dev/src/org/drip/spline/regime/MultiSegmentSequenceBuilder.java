@@ -266,7 +266,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param adblResponseValue Response Value Array
 	 * @param aSCBC Array of Segment Builder Parameters
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return Regime instance
@@ -278,7 +278,7 @@ public class MultiSegmentSequenceBuilder {
 		final double[] adblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		org.drip.spline.regime.MultiSegmentSequence mss = CreateUncalibratedRegimeEstimator (strName,
@@ -294,8 +294,8 @@ public class MultiSegmentSequenceBuilder {
 		for (int i = 0; i < iNumRightNode; ++i)
 			adblResponseValueRight[i] = adblResponseValue[i + 1];
 
-		return mss.setup (adblResponseValue[0], adblResponseValueRight, rbfr, iCalibrationBoundaryCondition,
-			iCalibrationDetail) ? mss : null;
+		return mss.setup (adblResponseValue[0], adblResponseValueRight, rbfr, bs, iCalibrationDetail) ? mss :
+			null;
 	}
 
 	/**
@@ -308,7 +308,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param aSRVC Array of Response Value Constraints - One per Segment
 	 * @param aSCBC Array of Segment Builder Parameters - One per Segment
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return Regime Instance
@@ -321,14 +321,14 @@ public class MultiSegmentSequenceBuilder {
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		org.drip.spline.regime.MultiSegmentSequence mss = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aSCBC);
 
-		return null == mss ? null : mss.setup (dblRegimeLeftResponseValue, aSRVC, rbfr,
-			iCalibrationBoundaryCondition, iCalibrationDetail) ? mss : null;
+		return null == mss ? null : mss.setup (dblRegimeLeftResponseValue, aSRVC, rbfr, bs,
+			iCalibrationDetail) ? mss : null;
 	}
 
 	/**
@@ -341,7 +341,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param aSRVC Array of Segment Constraints - One per Segment
 	 * @param aSCBC Array of Segment Builder Parameters - One per Segment
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return Regime Instance
@@ -354,14 +354,14 @@ public class MultiSegmentSequenceBuilder {
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		org.drip.spline.regime.MultiSegmentSequence mss = CreateUncalibratedRegimeEstimator (strName,
 			adblPredictorOrdinate, aSCBC);
 
-		return null == mss ? null : mss.setup (srvcRegimeLeft, aSRVC, rbfr, iCalibrationBoundaryCondition,
-			iCalibrationDetail) ? mss : null;
+		return null == mss ? null : mss.setup (srvcRegimeLeft, aSRVC, rbfr, bs, iCalibrationDetail) ? mss :
+			null;
 	}
 
 	/**
@@ -372,7 +372,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param dblResponseValue Response Value
 	 * @param scbc Segment Builder Parameters - One per Segment
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return Regime Instance
@@ -384,7 +384,7 @@ public class MultiSegmentSequenceBuilder {
 		final double dblResponseValue,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblResponseValue) || null == adblPredictorOrdinate ||
@@ -406,7 +406,7 @@ public class MultiSegmentSequenceBuilder {
 		}
 
 		return CreateCalibratedRegimeEstimator (strName, adblPredictorOrdinate, adblResponseValue, aSCBC,
-			rbfr, iCalibrationBoundaryCondition, iCalibrationDetail);
+			rbfr, bs, iCalibrationDetail);
 	}
 
 	/**
@@ -417,7 +417,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @param adblKnotPredictorOrdinate Array of the Predictor Ordinate Knots
 	 * @param aSCBC Array of Segment Builder Parameters
 	 * @param rbfr Regime Fitness Weighted Response
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return Regime instance
@@ -428,7 +428,7 @@ public class MultiSegmentSequenceBuilder {
 		final double[] adblKnotPredictorOrdinate,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		org.drip.spline.regime.MultiSegmentSequence mss = CreateUncalibratedRegimeEstimator (strName,
@@ -436,6 +436,6 @@ public class MultiSegmentSequenceBuilder {
 
 		if (null == mss) return null;
 
-		return mss.setup (null, null, rbfr, iCalibrationBoundaryCondition, iCalibrationDetail) ? mss : null;
+		return mss.setup (null, null, rbfr, bs, iCalibrationDetail) ? mss : null;
 	}
 }

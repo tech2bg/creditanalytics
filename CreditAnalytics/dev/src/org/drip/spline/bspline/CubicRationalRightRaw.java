@@ -36,53 +36,30 @@ package org.drip.spline.bspline;
  */
 
 public class CubicRationalRightRaw extends org.drip.spline.bspline.TensionBasisHat {
-
-	/**
-	 * Cubic Polynomial with No Shape Controller
-	 */
-
-	public static final java.lang.String SHAPE_CONTROL_NONE = "SHAPE_CONTROL_NONE";
-
-	/**
-	 * Cubic Polynomial with Rational Linear Shape Controller
-	 */
-
-	public static final java.lang.String SHAPE_CONTROL_RATIONAL_LINEAR =
-		"SHAPE_CONTROL_RATIONAL_LINEAR";
-
-	/**
-	 * Cubic Polynomial with Rational Quadratic Shape Controller
-	 */
-
-	public static final java.lang.String SHAPE_CONTROL_RATIONAL_QUADRATIC =
-		"SHAPE_CONTROL_RATIONAL_QUADRATIC";
-
-	private java.lang.String _strShapeControlType = "";
+	private org.drip.spline.bspline.RightHatShapeControl _rhsc = null;
 
 	/**
 	 * CubicRationalRightRaw constructor
 	 * 
-	 * @param strShapeControlType Type of the Shape Controller to be used - NONE, LINEAR/QUADRATIC Rational
-	 * @param dblTension Tension of the Tension Hat Function
 	 * @param dblLeftPredictorOrdinate The Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate The Right Predictor Ordinate
+	 * @param strShapeControlType Type of the Shape Controller to be used - NONE, LINEAR/QUADRATIC Rational
+	 * @param dblTension Tension of the Tension Hat Function
 	 * 
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
 	public CubicRationalRightRaw (
-		final java.lang.String strShapeControlType,
-		final double dblTension,
 		final double dblLeftPredictorOrdinate,
-		final double dblRightPredictorOrdinate)
+		final double dblRightPredictorOrdinate,
+		final java.lang.String strShapeControlType,
+		final double dblTension)
 		throws java.lang.Exception
 	{
-		super (dblTension, dblLeftPredictorOrdinate, dblRightPredictorOrdinate);
+		super (dblLeftPredictorOrdinate, dblRightPredictorOrdinate, dblTension);
 
-		if (null == (_strShapeControlType = strShapeControlType) || (!SHAPE_CONTROL_NONE.equalsIgnoreCase
-			(_strShapeControlType) && !SHAPE_CONTROL_RATIONAL_LINEAR.equalsIgnoreCase (_strShapeControlType)
-				&& !SHAPE_CONTROL_RATIONAL_QUADRATIC.equalsIgnoreCase (_strShapeControlType)))
-			throw new java.lang.Exception ("CubicRationalRightRaw ctr: Invalid Inputs");
+		_rhsc = new org.drip.spline.bspline.RightHatShapeControl (dblLeftPredictorOrdinate,
+			dblRightPredictorOrdinate, strShapeControlType, dblTension);
 	}
 
 	@Override public double evaluate (
@@ -94,18 +71,7 @@ public class CubicRationalRightRaw extends org.drip.spline.bspline.TensionBasisH
 		double dblCubicValue = (right() - dblPredictorOrdinate) * (right() - dblPredictorOrdinate) *
 			(right() - dblPredictorOrdinate);
 
-		if (SHAPE_CONTROL_NONE.equalsIgnoreCase (_strShapeControlType)) return dblCubicValue;
-
-		double dblWidth = right() - left();
-
-		double dblScale = 1. / (dblWidth * (6. + 6. * tension() * dblWidth + 2. * tension() * dblWidth *
-			dblWidth));
-
-		if (SHAPE_CONTROL_RATIONAL_LINEAR.equalsIgnoreCase (_strShapeControlType))
-			return dblCubicValue * dblScale / (1. + tension() * (dblPredictorOrdinate - left()));
-
-		return dblCubicValue * dblScale / (1. + tension() * (right() - dblPredictorOrdinate) *
-			(dblPredictorOrdinate - left()) / dblWidth);
+		return 0. == tension() ? dblCubicValue / 6. : dblCubicValue * _rhsc.evaluate (dblPredictorOrdinate);
 	}
 
 	@Override public double calcDerivative (
@@ -118,16 +84,15 @@ public class CubicRationalRightRaw extends org.drip.spline.bspline.TensionBasisH
 
 		if (!in (dblPredictorOrdinate)) return 0.;
 
-		if (!SHAPE_CONTROL_NONE.equalsIgnoreCase (_strShapeControlType))
-			return super.calcDerivative (dblPredictorOrdinate, iOrder);
+		if (0. != tension()) return super.calcDerivative (dblPredictorOrdinate, iOrder);
 
 		double dblGap = right() - dblPredictorOrdinate;
 
-		if (1 == iOrder) return -3. * dblGap * dblGap;
+		if (1 == iOrder) return -0.5 * dblGap * dblGap;
 
-		if (2 == iOrder) return 6. * dblGap;
+		if (2 == iOrder) return dblGap;
 
-		return 3 == iOrder ? -6. : 0.;
+		return 3 == iOrder ? -1. : 0.;
 	}
 
 	@Override public double integrate (
@@ -145,8 +110,7 @@ public class CubicRationalRightRaw extends org.drip.spline.bspline.TensionBasisH
 
 		double dblBoundedEnd = org.drip.quant.common.NumberUtil.Bound (dblEnd, left(), right());
 
-		if (!SHAPE_CONTROL_NONE.equalsIgnoreCase (_strShapeControlType))
-			return super.integrate (dblBoundedBegin, dblBoundedEnd);
+		if (0. != tension()) return super.integrate (dblBoundedBegin, dblBoundedEnd);
 
 		double dblBeginGap = right() - dblBoundedBegin;
 
@@ -156,20 +120,10 @@ public class CubicRationalRightRaw extends org.drip.spline.bspline.TensionBasisH
 			dblBeginGap * dblBeginGap);
 	}
 
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
+	@Override public double normalizer()
 	{
-		CubicRationalRightRaw crrr = new CubicRationalRightRaw (SHAPE_CONTROL_RATIONAL_LINEAR, 1., 1., 2.);
+		double dblWidth = right() - left();
 
-		double dblX = crrr.left();
-
-		while (dblX <= crrr.right()) {
-			System.out.println ("CRRR[" + dblX + "] => " + crrr.evaluate (dblX));
-
-			dblX += 0.10;
-		}
-
-		System.out.println (crrr.evaluate (2.));
+		return 0.25 * dblWidth * dblWidth * dblWidth * dblWidth;
 	}
 }

@@ -217,7 +217,7 @@ public class RegimeEstimation {
 			adblY, // responses
 			aSBP, // Basis Segment Builder parameters
 			null, 
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		/*
@@ -242,7 +242,7 @@ public class RegimeEstimation {
 		MultiSegmentSequence regimeInsert = MultiSegmentSequenceModifier.InsertKnot (regime,
 			9.,
 			10.,
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		dblX = 1.;
@@ -469,7 +469,7 @@ public class RegimeEstimation {
 			0.25,
 			new double[] {0.25, 0.25, 12.25, 42.25},
 			null, // Fitness Weighted Response
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE)); // Calibrate the Regime predictors to the responses
 
 		System.out.println ("Value = " + lps.responseValue (2.16));
@@ -567,7 +567,7 @@ public class RegimeEstimation {
 		MultiSegmentSequence regimeInsert = MultiSegmentSequenceModifier.InsertKnot (regime,
 			9.,
 			10.,
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		dblX = 1.;

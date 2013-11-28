@@ -153,9 +153,10 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (adblDF[iNumSegment - 1]) /
 			(_adblDate[iNumSegment - 1] - _dblEpochDate);
 
-		_msr = org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator ("POLY_SPLINE_DF_REGIME",
-			adblDate, adblDF, aSBP, null, org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL,
-				org.drip.spline.regime.MultiSegmentSequence.CALIBRATE);
+		_msr = org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator
+			("POLY_SPLINE_DF_REGIME", adblDate, adblDF, aSBP, null,
+				org.drip.spline.regime.BoundarySettings.NaturalStandard(),
+					org.drip.spline.regime.MultiSegmentSequence.CALIBRATE);
 	}
 
 	/**

@@ -40,20 +40,20 @@ public class ExponentialTensionRightHat extends org.drip.spline.bspline.TensionB
 	/**
 	 * ExponentialTensionRightHat constructor
 	 * 
-	 * @param dblTension Tension of the Tension Hat Function
 	 * @param dblLeftPredictorOrdinate The Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate The Right Predictor Ordinate
+	 * @param dblTension Tension of the Tension Hat Function
 	 * 
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
 	public ExponentialTensionRightHat (
-		final double dblTension,
 		final double dblLeftPredictorOrdinate,
-		final double dblRightPredictorOrdinate)
+		final double dblRightPredictorOrdinate,
+		final double dblTension)
 		throws java.lang.Exception
 	{
-		super (dblTension, dblLeftPredictorOrdinate, dblRightPredictorOrdinate);
+		super (dblLeftPredictorOrdinate, dblRightPredictorOrdinate, dblTension);
 	}
 
 	@Override public double evaluate (
@@ -89,7 +89,21 @@ public class ExponentialTensionRightHat extends org.drip.spline.bspline.TensionB
 			(dblEnd))
 			throw new java.lang.Exception ("ExponentialTensionRightHat::integrate => Invalid Inputs");
 
-		return -1. * (java.lang.Math.cosh (tension() * (right() - dblEnd)) - java.lang.Math.cosh (tension() *
-			(right() - dblBegin))) * normalizer() / tension();
+		double dblBoundedBegin = org.drip.quant.common.NumberUtil.Bound (dblBegin, left(), right());
+
+		double dblBoundedEnd = org.drip.quant.common.NumberUtil.Bound (dblEnd, left(), right());
+
+		if (dblBoundedBegin >= dblBoundedEnd) return 0.;
+
+		if (0. == tension()) return dblBoundedEnd - dblBoundedBegin;
+
+		return -1. * (java.lang.Math.cosh (tension() * (right() - dblBoundedEnd)) - java.lang.Math.cosh
+			(tension() * (right() - dblBoundedBegin))) * normalizer() / tension();
+	}
+
+	@Override public double normalizer()
+		throws java.lang.Exception
+	{
+		return (java.lang.Math.cosh (tension() * (right() - left())) - 1.) / tension();
 	}
 }

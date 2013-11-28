@@ -55,8 +55,8 @@ public class SegmentMulticBasisFunction extends org.drip.spline.bspline.SegmentB
 	{
 		super (oeLeft.bSplineOrder() + 1, oeLeft.leading(), oeRight.leading(), oeRight.trailing());
 
-		_oeLeft = oeLeft;
-		_oeRight = oeRight;
+		if ((_oeLeft = oeLeft).bSplineOrder() != (_oeRight = oeRight).bSplineOrder())
+			throw new java.lang.Exception ("SegmentMulticBasisFunction ctr: Invalid Inputs");
 	}
 
 	@Override public double evaluate (
@@ -64,7 +64,7 @@ public class SegmentMulticBasisFunction extends org.drip.spline.bspline.SegmentB
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate))
-			throw new java.lang.Exception ("SegmentMulticBasisFunction::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("SegmentMulticBasisFunction::evaluate => Invalid Inputs");
 
 		if (dblPredictorOrdinate < leading() || dblPredictorOrdinate > trailing()) return 0.;
 

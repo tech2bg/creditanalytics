@@ -36,14 +36,14 @@ package org.drip.state.estimator;
  */
 
 public class GlobalControlCurveParams extends org.drip.state.estimator.SmoothingCurveRegimeParams {
-	private int _iCalibrationBoundaryCondition = -1;
+	private org.drip.spline.regime.BoundarySettings _bc = null;
 
 	/**
 	 * GlobalControlCurveParams constructor
 	 * 
 	 * @param strSmootheningQuantificationMetric Curve Smoothening Quantification Metric
 	 * @param prbp Segment Builder Parameters
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bc The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * @param rfwr Curve Fitness Weighted Response
 	 * 
@@ -53,14 +53,15 @@ public class GlobalControlCurveParams extends org.drip.state.estimator.Smoothing
 	public GlobalControlCurveParams (
 		final java.lang.String strSmootheningQuantificationMetric,
 		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bc,
 		final int iCalibrationDetail,
 		final org.drip.spline.params.RegimeBestFitResponse rfwr)
 		throws java.lang.Exception
 	{
 		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, rfwr);
 
-		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
+		if (null == (_bc = bc))
+			throw new java.lang.Exception ("GlobalControlCurveParams ctr: Invalid Inputs");
 	}
 
 	/**
@@ -69,8 +70,8 @@ public class GlobalControlCurveParams extends org.drip.state.estimator.Smoothing
 	 * @return The Calibration Boundary Condition
 	 */
 
-	public int calibrationBoundaryCondition()
+	public org.drip.spline.regime.BoundarySettings calibrationBoundaryCondition()
 	{
-		return _iCalibrationBoundaryCondition;
+		return _bc;
 	}
 }

@@ -1,5 +1,5 @@
 
-package org.drip.spline.tension;
+package org.drip.spline.bspline;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,31 +29,31 @@ package org.drip.spline.tension;
  */
 
 /**
- * CkBasisFunctionSet class implements per-segment function set for tension splines. Derived implementations
- *  expose explicit targeted basis functions.
+ * SegmentBasisFunctionSet class implements per-segment function set for B Splines and tension splines.
+ *  Derived implementations expose explicit targeted basis functions.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CkBasisFunctionSet extends org.drip.spline.basis.FunctionSet {
+public class SegmentBasisFunctionSet extends org.drip.spline.basis.FunctionSet {
 	protected double _dblTension = java.lang.Double.NaN;
 
 	private static final org.drip.quant.function1D.AbstractUnivariate[] responseBasis (
-		final int iCk,
+		final int iNumBasisToUse,
 		final org.drip.quant.function1D.AbstractUnivariate[] aAUHat)
 	{
-		if (null == aAUHat || iCk != aAUHat.length) return null;
+		if (null == aAUHat || iNumBasisToUse > aAUHat.length) return null;
 
 		try {
 			org.drip.quant.function1D.AbstractUnivariate[] aAU = new
-				org.drip.quant.function1D.AbstractUnivariate[iCk + 2];
+				org.drip.quant.function1D.AbstractUnivariate[iNumBasisToUse + 2];
 
 			aAU[0] = new org.drip.quant.function1D.Polynomial (0);
 
 			aAU[1] = new org.drip.quant.function1D.UnivariateReflection (new
 				org.drip.quant.function1D.Polynomial (1));
 
-			for (int i = 0; i < iCk; ++i)
+			for (int i = 0; i < iNumBasisToUse; ++i)
 				aAU[2 + i] = aAUHat[i];
 
 			return aAU;
@@ -65,25 +65,25 @@ public class CkBasisFunctionSet extends org.drip.spline.basis.FunctionSet {
 	}
 
 	/**
-	 * CkBasisFunctionSet constructor
+	 * SegmentBasisFunctionSet constructor
 	 * 
-	 * @param iCk Ck Continuity Criterion
+	 * @param iNumBasisToUse Number of Basis in the Hat Basis Set to Use
 	 * @param dblTension Tension Parameter
 	 * @param aAUHat The Hat Representation Function Set
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public CkBasisFunctionSet (
-		final int iCk,
+	public SegmentBasisFunctionSet (
+		final int iNumBasisToUse,
 		final double dblTension,
 		final org.drip.quant.function1D.AbstractUnivariate[] aAUHat)
 		throws java.lang.Exception
 	{
-		super (responseBasis (iCk, aAUHat));
+		super (responseBasis (iNumBasisToUse, aAUHat));
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblTension = dblTension))
-			throw new java.lang.Exception ("CkBasisFunctionSet ctr: Invalid Inputs!");
+			throw new java.lang.Exception ("SegmentBasisFunctionSet ctr: Invalid Inputs!");
 	}
 
 	/**

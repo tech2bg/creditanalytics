@@ -170,8 +170,8 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 		if (!_ssb.setRegime (this)) return false;
 
-		if (org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_FLOATING ==
-			_ssb.getCalibrationBoundaryCondition()) {
+		if (org.drip.spline.regime.BoundarySettings.BOUNDARY_CONDITION_FLOATING ==
+			_ssb.getCalibrationBoundaryCondition().boundaryCondition()) {
 			if (!_ssb.calibStartingSegment (0.) || !_ssb.calibSegmentSequence (1)) return false;
 		} else if (0 != (org.drip.spline.regime.MultiSegmentSequence.CALIBRATE & iCalibrationDetail)) {
 			org.drip.quant.solver1D.FixedPointFinderOutput fpop = null;
@@ -218,12 +218,12 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcLeading,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		try {
-			return setup (new org.drip.spline.regime.CkSegmentSequenceBuilder (srvcLeading, aSRVC, rbfr,
-				iCalibrationBoundaryCondition), iCalibrationDetail);
+			return setup (new org.drip.spline.regime.CkSegmentSequenceBuilder (srvcLeading, aSRVC, rbfr, bs),
+				iCalibrationDetail);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -235,19 +235,19 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		final double dblLeftRegimeResponseValue,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		return setup (org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-			(getLeftPredictorOrdinateEdge(), dblLeftRegimeResponseValue), aSRVC, rbfr,
-				iCalibrationBoundaryCondition, iCalibrationDetail);
+			(getLeftPredictorOrdinateEdge(), dblLeftRegimeResponseValue), aSRVC, rbfr, bs,
+				iCalibrationDetail);
 	}
 
 	@Override public boolean setup (
 		final double dblLeftRegimeResponseValue,
 		final double[] adblSegmentRightResponseValue,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		int iNumSegment = _aCS.length;
@@ -266,8 +266,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			return false;
 		}
 
-		return setup (dblLeftRegimeResponseValue, aSNVCRight, rbfr, iCalibrationBoundaryCondition,
-			iCalibrationDetail);
+		return setup (dblLeftRegimeResponseValue, aSNVCRight, rbfr, bs, iCalibrationDetail);
 	}
 
 	@Override public boolean setupHermite (
@@ -347,12 +346,19 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			throw new java.lang.Exception
 				("CalibratableMultiSegmentSequence::evaluate => cannot set up segments!");
 
-		int iBC = _ssb.getCalibrationBoundaryCondition();
+		org.drip.spline.regime.BoundarySettings bs = _ssb.getCalibrationBoundaryCondition();
 
-		if (org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL == iBC)
-			return calcRightEdgeDerivative (2);
-		else if (org.drip.spline.regime.MultiSegmentSequence.BOUNDARY_CONDITION_FINANCIAL == iBC)
-			return calcRightEdgeDerivative (1);
+		int iBC = bs.boundaryCondition();
+
+		if (org.drip.spline.regime.BoundarySettings.BOUNDARY_CONDITION_NATURAL == iBC)
+			return calcRightEdgeDerivative (bs.rightDerivOrder());
+
+		if (org.drip.spline.regime.BoundarySettings.BOUNDARY_CONDITION_FINANCIAL == iBC)
+			return calcRightEdgeDerivative (bs.rightDerivOrder());
+
+		if (org.drip.spline.regime.BoundarySettings.BOUNDARY_CONDITION_NOT_A_KNOT == iBC)
+			return calcRightEdgeDerivative (bs.rightDerivOrder()) - calcLeftEdgeDerivative
+				(bs.leftDerivOrder());
 
 		throw new java.lang.Exception ("CalibratableMultiSegmentSequence::evaluate => Boundary Condition " +
 			iBC + " unknown");
@@ -535,6 +541,15 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		}
 
 		return dblPredictorOrdinate == _aCS[iNumSegment - 1].left();
+	}
+
+	@Override public double calcLeftEdgeDerivative (
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		org.drip.spline.segment.ConstitutiveState ecs = _aCS[0];
+
+		return ecs.calcResponseValueDerivative (ecs.left(), iOrder);
 	}
 
 	@Override public double calcRightEdgeDerivative (

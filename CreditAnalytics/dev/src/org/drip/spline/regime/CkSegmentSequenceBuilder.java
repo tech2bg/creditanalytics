@@ -29,7 +29,7 @@ package org.drip.spline.regime;
  */
 
 public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentSequenceBuilder {
-	private int _iCalibrationBoundaryCondition = -1;
+	private org.drip.spline.regime.BoundarySettings _bc = null;
 	private org.drip.spline.regime.MultiSegmentSequence _mss = null;
 	private org.drip.spline.params.RegimeBestFitResponse _rbfr = null;
 	private org.drip.spline.params.SegmentResponseValueConstraint[] _aSRVC = null;
@@ -40,8 +40,8 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 	 * 
 	 * @param srvcLeading Leading Segment Response Value Constraint
 	 * @param aSRVC Array of Segment Response Value Constraints
-	 * @param iCalibrationBoundaryCondition Solver Mode - FLOATING | NATURAL | FINANCIAL
 	 * @param rbfr Sequence Best Fit Weighted Response
+	 * @param bc The Calibration Boundary Condition
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -50,7 +50,7 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcLeading,
 		final org.drip.spline.params.SegmentResponseValueConstraint[] aSRVC,
 		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final int iCalibrationBoundaryCondition)
+		final org.drip.spline.regime.BoundarySettings bc)
 		throws java.lang.Exception
 	{
 		_rbfr = rbfr;
@@ -60,7 +60,8 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 		if (null == _srvcLeading && (null == _aSRVC || 0 == _aSRVC.length) && null == _rbfr)
 			throw new java.lang.Exception ("CkSegmentSequenceBuilder ctr: Invalid inputs!");
 
-		_iCalibrationBoundaryCondition = iCalibrationBoundaryCondition;
+		if (null == (_bc = bc))
+			throw new java.lang.Exception ("CkSegmentSequenceBuilder ctr: Invalid inputs!");
 	}
 
 	@Override public boolean setRegime (
@@ -72,9 +73,9 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.regime.SegmentS
 		return true;
 	}
 
-	@Override public int getCalibrationBoundaryCondition()
+	@Override public org.drip.spline.regime.BoundarySettings getCalibrationBoundaryCondition()
 	{
-		return _iCalibrationBoundaryCondition;
+		return _bc;
 	}
 
 	@Override public boolean calibStartingSegment (

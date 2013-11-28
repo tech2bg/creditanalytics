@@ -42,8 +42,11 @@ import org.drip.quant.common.FormatUtil;
  */
 
 public class BasisMulticBSpline {
-	public static final void main (
-		final String[] astrArgs)
+	public static final void RunMulticBSplineTest (
+		final String strHatType,
+		final String strShapeControlType,
+		final double dblTension,
+		final int iMulticBSplineOrder)
 		throws Exception
 	{
 		double[] adblPredictorOrdinateLeft = new double[] {1., 2., 3.};
@@ -53,74 +56,140 @@ public class BasisMulticBSpline {
 			adblPredictorOrdinateLeft[0],
 			adblPredictorOrdinateLeft[1],
 			adblPredictorOrdinateLeft[2],
-			1.);
+			dblTension);
 
 		TensionBasisHat[] aTBHRight = BasisHatPairGenerator.HyperbolicTensionHatPair (
-			adblPredictorOrdinateLeft[0],
-			adblPredictorOrdinateLeft[1],
-			adblPredictorOrdinateLeft[2],
-			1.);
+			adblPredictorOrdinateRight[0],
+			adblPredictorOrdinateRight[1],
+			adblPredictorOrdinateRight[2],
+			dblTension);
 
-		SegmentBasisFunction meLeft = BasisFunctionGenerator.Monic (
-			BasisHatPairGenerator.TENSION_HYPERBOLIC,
-			CubicRationalLeftRaw.SHAPE_CONTROL_NONE,
+		SegmentBasisFunction sbfMonicLeft = SegmentBasisFunctionGenerator.Monic (
+			strHatType,
+			strShapeControlType,
 			adblPredictorOrdinateLeft,
-			1.);
+			2,
+			dblTension);
 
-		SegmentBasisFunction meRight = BasisFunctionGenerator.Monic (
-			BasisHatPairGenerator.TENSION_HYPERBOLIC,
-			CubicRationalLeftRaw.SHAPE_CONTROL_NONE,
+		SegmentBasisFunction sbfMonicRight = SegmentBasisFunctionGenerator.Monic (
+			strHatType,
+			strShapeControlType,
 			adblPredictorOrdinateRight,
-			1.);
+			2,
+			dblTension);
 
-		System.out.println ("\n\t-------------------------------------\n");
+		System.out.println ("\n\t-------------------------------------------------");
+
+		System.out.println ("\t            X    |   LEFT   |   RIGHT  |   MONIC  ");
+
+		System.out.println ("\t-------------------------------------------------");
 
 		double dblX = 0.50;
 		double dblXIncrement = 0.25;
 
 		while (dblX <= 4.50) {
 			System.out.println (
-				"\t\tResponse[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
+				"\tResponse[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
 				FormatUtil.FormatDouble (aTBHLeft[0].evaluate (dblX), 1, 5, 1.) + " | " +
 				FormatUtil.FormatDouble (aTBHLeft[1].evaluate (dblX), 1, 5, 1.) + " | " +
-				FormatUtil.FormatDouble (meLeft.evaluate (dblX), 1, 5, 1.));
+				FormatUtil.FormatDouble (sbfMonicLeft.evaluate (dblX), 1, 5, 1.));
 
 			dblX += dblXIncrement;
 		}
 
-		System.out.println ("\n\t-------------------------------------\n");
+		System.out.println ("\n\t-------------------------------------------------");
+
+		System.out.println ("\t            X    |   LEFT   |   RIGHT  |   MONIC  ");
+
+		System.out.println ("\t-------------------------------------------------");
 
 		dblX = 0.50;
 
 		while (dblX <= 4.50) {
 			System.out.println (
-				"\t\tResponse[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
+				"\tResponse[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
 				FormatUtil.FormatDouble (aTBHRight[0].evaluate (dblX), 1, 5, 1.) + " | " +
 				FormatUtil.FormatDouble (aTBHRight[1].evaluate (dblX), 1, 5, 1.) + " | " +
-				FormatUtil.FormatDouble (meRight.evaluate (dblX), 1, 5, 1.));
+				FormatUtil.FormatDouble (sbfMonicRight.evaluate (dblX), 1, 5, 1.));
 
 			dblX += dblXIncrement;
 		}
 
-		SegmentBasisFunction[] aMultic = BasisFunctionGenerator.MulticSequence (
-			3,
-			1.,
-			new SegmentBasisFunction[] {meLeft, meRight});
+		SegmentBasisFunction[] sbfMultic = SegmentBasisFunctionGenerator.MulticSequence (
+			iMulticBSplineOrder,
+			new SegmentBasisFunction[] {sbfMonicLeft, sbfMonicRight});
 
-		System.out.println ("\n\t-------------------------------------\n");
+		System.out.println ("\n\t-------------------------------------------------");
+
+		System.out.println ("\t          PREDICTOR    | RESPONSE | CUMULATIVE  ");
+
+		System.out.println ("\t-------------------------------------------------");
 
 		dblX = 0.50;
 		dblXIncrement = 0.125;
 
 		while (dblX <= 4.50) {
 			System.out.println (
-				"\t\tMultic Response[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
-				FormatUtil.FormatDouble (aMultic[0].evaluate (dblX), 1, 5, 1.) + " | " +
-				FormatUtil.FormatDouble (aMultic[0].normalizedCumulative (dblX), 1, 5, 1.));
+				"\t\tMultic[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
+				FormatUtil.FormatDouble (sbfMultic[0].evaluate (dblX), 1, 5, 1.) + " | " +
+				FormatUtil.FormatDouble (sbfMultic[0].normalizedCumulative (dblX), 1, 5, 1.));
 
 			dblX += dblXIncrement;
 		}
 
-		System.out.println ("\n\t-------------------------------------\n");
+		System.out.println ("\n\t-------------------------------------------------\n");
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		System.out.println ("\n    RAW TENSION HYPERBOLIC | LINEAR SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
+
+		RunMulticBSplineTest (
+			BasisHatPairGenerator.RAW_TENSION_HYPERBOLIC,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
+			1.,
+			3);
+
+		System.out.println ("\n   PROC TENSION HYPERBOLIC | LINEAR SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
+
+		RunMulticBSplineTest (
+			BasisHatPairGenerator.PROCESSED_TENSION_HYPERBOLIC,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
+			1.,
+			3);
+
+		System.out.println ("\n   RAW CUBIC RATIONAL | LINEAR SHAPE CONTROL | TENSION = 0.0 | CUBIC B SPLINE");
+
+		RunMulticBSplineTest (
+			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
+			0.,
+			3);
+
+		System.out.println ("\n   RAW CUBIC RATIONAL | LINEAR SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
+
+		RunMulticBSplineTest (
+			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
+			1.,
+			3);
+
+		System.out.println ("\n   RAW CUBIC RATIONAL | QUADRATIC SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
+
+		RunMulticBSplineTest (
+			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_QUADRATIC,
+			1.,
+			3);
+
+		System.out.println ("\n   RAW CUBIC RATIONAL | EXPONENTIAL SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
+
+		RunMulticBSplineTest (
+			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_EXPONENTIAL,
+			1.,
+			3);
 	}
 }

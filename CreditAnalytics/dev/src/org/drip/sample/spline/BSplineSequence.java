@@ -74,30 +74,37 @@ public class BSplineSequence {
 		final String[] astrArgs)
 		throws Exception
 	{
-		double[] adblPredictorOrdinate = new double[] {1., 2., 3., 4., 5.};
+		double[] adblPredictorOrdinate = new double[] {1., 2., 3., 4., 5., 6.};
 
-		SegmentBasisFunction[] aMonic = BasisFunctionGenerator.MonicSequence (
-			BasisHatPairGenerator.TENSION_HYPERBOLIC,
+		SegmentBasisFunction[] aMonic = SegmentBasisFunctionGenerator.MonicSequence (
+			BasisHatPairGenerator.RAW_TENSION_HYPERBOLIC,
+			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			adblPredictorOrdinate,
+			0,
 			1.);
 
 		for (int i = 0; i < aMonic.length; ++i)
 			ComputeResponseMetric (aMonic[i], "   MONIC   ");
 
-		SegmentBasisFunction[] aQuadratic = BasisFunctionGenerator.MulticSequence (
+		SegmentBasisFunction[] aQuadratic = SegmentBasisFunctionGenerator.MulticSequence (
 			3,
-			1.,
 			aMonic);
 
 		for (int i = 0; i < aQuadratic.length; ++i)
 			ComputeResponseMetric (aQuadratic[i], " QUADRATIC ");
 
-		SegmentBasisFunction[] aCubic = BasisFunctionGenerator.MulticSequence (
+		SegmentBasisFunction[] aCubic = SegmentBasisFunctionGenerator.MulticSequence (
 			4,
-			1.,
 			aQuadratic);
 
 		for (int i = 0; i < aCubic.length; ++i)
 			ComputeResponseMetric (aCubic[i], "   CUBIC   ");
+
+		SegmentBasisFunction[] aQuartic = SegmentBasisFunctionGenerator.MulticSequence (
+			5,
+			aCubic);
+
+		for (int i = 0; i < aQuartic.length; ++i)
+			ComputeResponseMetric (aQuartic[i], "  QUARTIC  ");
 	}
 }

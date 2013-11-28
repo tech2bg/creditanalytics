@@ -40,20 +40,20 @@ public class ExponentialTensionRightRaw extends org.drip.spline.bspline.TensionB
 	/**
 	 * ExponentialTensionRightRaw constructor
 	 * 
-	 * @param dblTension Tension of the Tension Hat Function
 	 * @param dblLeftPredictorOrdinate The Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate The Right Predictor Ordinate
+	 * @param dblTension Tension of the Tension Hat Function
 	 * 
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
 	public ExponentialTensionRightRaw (
-		final double dblTension,
 		final double dblLeftPredictorOrdinate,
-		final double dblRightPredictorOrdinate)
+		final double dblRightPredictorOrdinate,
+		final double dblTension)
 		throws java.lang.Exception
 	{
-		super (dblTension, dblLeftPredictorOrdinate, dblRightPredictorOrdinate);
+		super (dblLeftPredictorOrdinate, dblRightPredictorOrdinate, dblTension);
 	}
 
 	@Override public double evaluate (
@@ -84,11 +84,7 @@ public class ExponentialTensionRightRaw extends org.drip.spline.bspline.TensionB
 			return (1. - java.lang.Math.cosh (tension() * (right() - dblPredictorOrdinate))) / (tension() *
 				java.lang.Math.sinh (tension() * dblWidth));
 
-		if (2 == iOrder)
-			return java.lang.Math.sinh (tension() * (right() - dblPredictorOrdinate)) / java.lang.Math.sinh
-				(tension() * dblWidth);
-
-		return java.lang.Math.pow (-1. * tension(), iOrder - 2) * (0 == iOrder % 2 ? java.lang.Math.sinh
+		return java.lang.Math.pow (-tension(), iOrder - 2) * (0 == iOrder % 2 ? java.lang.Math.sinh
 			(tension() * (right() - dblPredictorOrdinate)) : java.lang.Math.cosh (tension() * (right() -
 				dblPredictorOrdinate))) / java.lang.Math.sinh (tension() * dblWidth);
 	}
@@ -102,9 +98,32 @@ public class ExponentialTensionRightRaw extends org.drip.spline.bspline.TensionB
 			(dblEnd))
 			throw new java.lang.Exception ("ExponentialTensionRightRaw::integrate => Invalid Inputs");
 
+		double dblBoundedBegin = org.drip.quant.common.NumberUtil.Bound (dblBegin, left(), right());
+
+		double dblBoundedEnd = org.drip.quant.common.NumberUtil.Bound (dblEnd, left(), right());
+
+		if (dblBoundedBegin >= dblBoundedEnd) return 0.;
+
+		if (0. == tension()) return dblBoundedEnd - dblBoundedBegin;
+
+		double dblBoundedBeginRightGap = right() - dblBoundedBegin;
+
+		double dblBoundedEndRightGap = right() - dblBoundedEnd;
+
+		return (0.5 * tension() * tension() * (dblBoundedEndRightGap * dblBoundedEndRightGap -
+			dblBoundedBeginRightGap * dblBoundedBeginRightGap) + java.lang.Math.cosh (tension() *
+				dblBoundedBeginRightGap) - java.lang.Math.cosh (tension() * dblBoundedEndRightGap)) /
+					(tension() * tension() * tension() * java.lang.Math.sinh (tension() * (right() -
+						left())));
+	}
+
+	@Override public double normalizer()
+		throws java.lang.Exception
+	{
 		double dblWidth = right() - left();
 
-		return (java.lang.Math.cosh (tension() * dblWidth) - 1. - 0.5 * tension() * tension() * dblWidth *
-			dblWidth) / (tension() * tension() * tension() * java.lang.Math.sinh (tension() * dblWidth));
+		return (-0.5 * tension() * tension() * dblWidth * dblWidth + java.lang.Math.cosh (tension() *
+			dblWidth) - 1.) / (tension() * tension() * tension() * java.lang.Math.sinh (tension() *
+				dblWidth));
 	}
 }

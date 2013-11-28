@@ -310,4 +310,51 @@ public class FunctionSetBuilder {
 
 		return null;
 	}
+
+	/**
+	 * Construct the BSpline Basis Function Set
+	 * 
+	 * @param bssp BSpline Basis Set Parameters
+	 * 
+	 * @return The BSpline Basis Function Set
+	 */
+
+	public static final org.drip.spline.basis.FunctionSet BSplineBasisSet (
+		final org.drip.spline.basis.BSplineSequenceParams bssp)
+	{
+		if (null == bssp) return null;
+
+		org.drip.spline.bspline.SegmentBasisFunction[] aSBF =
+			org.drip.spline.bspline.SegmentBasisFunctionGenerator.MonicSequence (bssp.hat(),
+				bssp.shapeControl(), bssp.predictorOrdinates(), bssp.procBasisDerivOrder(), bssp.tension());
+
+		if (null == aSBF || bssp.numBasis() >= aSBF.length) return null;
+
+		int iBSplineOrder = bssp.bSplineOrder();
+
+		try {
+			return new org.drip.spline.bspline.SegmentBasisFunctionSet (bssp.numBasis(), bssp.tension(), 2 ==
+				iBSplineOrder ? aSBF : org.drip.spline.bspline.SegmentBasisFunctionGenerator.MulticSequence
+					(iBSplineOrder, aSBF));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static final void main (
+		final java.lang.String[] astrArgs)
+		throws java.lang.Exception
+	{
+		org.drip.spline.basis.BSplineSequenceParams bssp = new org.drip.spline.basis.BSplineSequenceParams
+			(org.drip.spline.bspline.BasisHatPairGenerator.RAW_TENSION_HYPERBOLIC,
+				org.drip.spline.bspline.BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR, 2, 4, 1., -1);
+
+		org.drip.quant.common.NumberUtil.Print1DArray ("BSSP", bssp.predictorOrdinates(), false);
+
+		org.drip.spline.basis.FunctionSet fsBSS = BSplineBasisSet (bssp);
+
+		System.out.println ("fsBSS Size = " + fsBSS.numBasis());
+	}
 }

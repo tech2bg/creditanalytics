@@ -109,7 +109,7 @@ public class PenalizedCurvatureFit {
 			adblY, // responses
 			aSCBC, // Basis Segment Builder parameters
 			rbfr, // Regime Fitness Weighted Response
-			MultiSegmentSequence.BOUNDARY_CONDITION_NATURAL, // Boundary Condition - Natural
+			BoundarySettings.NaturalStandard(), // Boundary Condition - Natural
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Regime predictors to the responses
 
 		return regime;

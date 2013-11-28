@@ -44,7 +44,7 @@ public class MultiSegmentSequenceModifier {
 	 * @param mssIn Input Regime
 	 * @param dblPredictorOrdinate Predictor Ordinate Knot
 	 * @param dblResponseValue Response Value
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return The Regime with the Knot inserted
@@ -54,7 +54,7 @@ public class MultiSegmentSequenceModifier {
 		final org.drip.spline.regime.MultiSegmentSequence mssIn,
 		final double dblPredictorOrdinate,
 		final double dblResponseValue,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate) ||
@@ -116,8 +116,7 @@ public class MultiSegmentSequenceModifier {
 		}
 
 		return org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator
-			(mssIn.name(), adblPredictorOrdinate, adblResponseValue, aSCBCOut, null,
-				iCalibrationBoundaryCondition, iCalibrationDetail);
+			(mssIn.name(), adblPredictorOrdinate, adblResponseValue, aSCBCOut, null, bs, iCalibrationDetail);
 	}
 
 	/**
@@ -128,7 +127,7 @@ public class MultiSegmentSequenceModifier {
 	 * 	appended
 	 * @param srvc The Segment Response Value Constraint
 	 * @param scbc Segment Builder Parameters
-	 * @param iCalibrationBoundaryCondition The Calibration Boundary Condition
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
 	 * @return The Regime with the Segment Appended
@@ -139,7 +138,7 @@ public class MultiSegmentSequenceModifier {
 		final double dblPredictorOrdinateAppendRight,
 		final org.drip.spline.params.SegmentResponseValueConstraint srvc,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
-		final int iCalibrationBoundaryCondition,
+		final org.drip.spline.regime.BoundarySettings bs,
 		final int iCalibrationDetail)
 	{
 		if (null == mssIn || null == srvc || null == scbc || !org.drip.quant.common.NumberUtil.IsValid
@@ -200,7 +199,7 @@ public class MultiSegmentSequenceModifier {
 
 		return org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator
 			(mssIn.name(), adblPredictorOrdinateOut, dblRegimeResponseValueLeft, aSRVCOut, aSCBCOut, null,
-				iCalibrationBoundaryCondition, iCalibrationDetail);
+				bs, iCalibrationDetail);
 	}
 
 	/**
