@@ -58,9 +58,9 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	protected double[] _adblCalibQuote = null;
 	protected java.lang.String[] _astrCalibMeasure = null;
 	protected org.drip.param.pricer.PricerParams _pricerParam = null;
-	protected org.drip.analytics.definition.DiscountCurve _dc = null;
-	protected org.drip.analytics.definition.DiscountCurve _dcTSY = null;
-	protected org.drip.analytics.definition.DiscountCurve _dcEDSF = null;
+	protected org.drip.analytics.rates.DiscountCurve _dc = null;
+	protected org.drip.analytics.rates.DiscountCurve _dcTSY = null;
+	protected org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 	protected org.drip.param.valuation.ValuationParams _valParam = null;
 	protected org.drip.param.valuation.QuotingParams _quotingParams = null;
 	protected org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
@@ -482,9 +482,9 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	public void setInstrCalibInputs (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final boolean bFlat,
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
 		final double[] adblCalibQuote,
@@ -549,7 +549,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 				aLSMM[i] = new org.drip.state.representation.LatentStateMetricMeasure
 					(org.drip.state.representation.LatentStateMetricMeasure.LATENT_STATE_SURVIVAL,
 						org.drip.state.representation.LatentStateMetricMeasure.QUANTIFICATION_METRIC_FORWARD_HAZARD_RATE,
-						_astrCalibMeasure[i], _adblCalibQuote[i]);
+							_astrCalibMeasure[i], _adblCalibQuote[i]);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

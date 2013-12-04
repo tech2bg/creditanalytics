@@ -50,25 +50,25 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	 * Rates Discount Curve
 	 */
 
-	private org.drip.analytics.definition.DiscountCurve _dc = null;
+	private org.drip.analytics.rates.DiscountCurve _dc = null;
 
 	/*
 	 * Forward Discount Curve
 	 */
 
-	private org.drip.analytics.definition.DiscountCurve _dcForward = null;
+	private org.drip.analytics.rates.DiscountCurve _dcForward = null;
 
 	/*
 	 * Treasury Discount Curve
 	 */
 
-	private org.drip.analytics.definition.DiscountCurve _dcTSY = null;
+	private org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 
 	/*
 	 * EDSF Discount Curve
 	 */
 
-	private org.drip.analytics.definition.DiscountCurve _dcEDSF = null;
+	private org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 
 	/*
 	 * Component Quote
@@ -106,10 +106,10 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	 */
 
 	public ComponentMarketParamSet (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcForward,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcForward,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
@@ -322,13 +322,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getDiscountCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve getDiscountCurve()
 	{
 		return _dc;
 	}
 
 	@Override public boolean setDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dc)
+		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		if (null == dc) return false;
 
@@ -336,13 +336,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getForwardDiscountCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve getForwardDiscountCurve()
 	{
 		return _dcForward;
 	}
 
 	@Override public boolean setForwardDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dcForward)
+		final org.drip.analytics.rates.DiscountCurve dcForward)
 	{
 		if (null == dcForward) return false;
 
@@ -350,13 +350,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getTSYDiscountCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve getTSYDiscountCurve()
 	{
 		return _dcTSY;
 	}
 
 	@Override public boolean setTSYDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dcTSY)
+		final org.drip.analytics.rates.DiscountCurve dcTSY)
 	{
 		if (null == dcTSY) return false;
 
@@ -364,13 +364,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getEDSFDiscountCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve getEDSFDiscountCurve()
 	{
 		return _dcEDSF;
 	}
 
 	@Override public boolean setEDSFDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dcEDSF)
+		final org.drip.analytics.rates.DiscountCurve dcEDSF)
 	{
 		if (null == dcEDSF) return false;
 
@@ -539,22 +539,22 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			adblHazardRate[i] = 0.01 * (i + 1);
 		}
 
-		org.drip.analytics.definition.ExplicitBootDiscountCurve dc =
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.ExplicitBootDiscountCurve dcForward =
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dcForward =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblForward,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.ExplicitBootDiscountCurve dcTSY =
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.ExplicitBootDiscountCurve dcEDSF =
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);

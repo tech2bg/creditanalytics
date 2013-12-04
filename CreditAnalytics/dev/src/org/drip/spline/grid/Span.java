@@ -29,7 +29,7 @@ package org.drip.spline.grid;
  */
 
 /**
- * Span is the interface that exposes the functionality behind the collection of Regimes that may be
+ * Span is the interface that exposes the functionality behind the collection of Stretches that may be
  *  overlapping or non-overlapping.
  *
  * @author Lakshmi Krishnamurthy
@@ -38,40 +38,40 @@ package org.drip.spline.grid;
 public interface Span {
 
 	/**
-	 * Add a Regime to the Span
+	 * Add a Stretch to the Span
 	 * 
-	 * @param mss Regime to be added
+	 * @param mss Stretch to be added
 	 * 
-	 * @return TRUE => Regime added successfully
+	 * @return TRUE => Stretch added successfully
 	 */
 
-	public abstract boolean addRegime (
-		final org.drip.spline.regime.MultiSegmentSequence mss);
+	public abstract boolean addStretch (
+		final org.drip.spline.stretch.MultiSegmentSequence mss);
 
 	/**
-	 * Retrieve the first Regime that contains the Predictor Ordinate
+	 * Retrieve the first Stretch that contains the Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate The Predictor Ordinate
 	 * 
-	 * @return The containing Regime
+	 * @return The containing Stretch
 	 */
 
-	public abstract org.drip.spline.regime.MultiSegmentSequence getContainingRegime (
+	public abstract org.drip.spline.stretch.MultiSegmentSequence getContainingStretch (
 		final double dblPredictorOrdinate);
 
 	/**
-	 * Retrieve the Regime by Name
+	 * Retrieve the Stretch by Name
 	 * 
-	 * @param strName The Regime Name
+	 * @param strName The Stretch Name
 	 * 
-	 * @return The Regime
+	 * @return The Stretch
 	 */
 
-	public abstract org.drip.spline.regime.MultiSegmentSequence getRegime (
+	public abstract org.drip.spline.stretch.MultiSegmentSequence getStretch (
 		final java.lang.String strName);
 
 	/**
-	 * Compute the Response from the containing Regimes
+	 * Compute the Response from the containing Stretches
 	 * 
 	 * @param dblPredictorOrdinate The Predictor Ordinate
 	 * 

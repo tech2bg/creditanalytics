@@ -140,8 +140,8 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 			{
 				private double _dblFXFwd = java.lang.Double.NaN;
 				private double _dblFXFwdPIP = java.lang.Double.NaN;
-				private org.drip.analytics.definition.ExplicitBootDiscountCurve _dcEUR = null;
-				private org.drip.analytics.definition.ExplicitBootDiscountCurve _dcUSD = null;
+				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dcEUR = null;
+				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dcUSD = null;
 				private org.drip.param.valuation.ValuationParams _valParams = null;
 
 				@Override public boolean preRegression()
@@ -211,8 +211,8 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 				private double _dblDCEURBasis = java.lang.Double.NaN;
 				private double _dblDCUSDBasis = java.lang.Double.NaN;
 				private double[] _adblNodes = new double[NUM_FX_NODES];
-				private org.drip.analytics.definition.ExplicitBootDiscountCurve _dcEUR = null;
-				private org.drip.analytics.definition.ExplicitBootDiscountCurve _dcUSD = null;
+				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dcEUR = null;
+				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dcUSD = null;
 				private org.drip.param.valuation.ValuationParams _valParams = null;
 				private org.drip.analytics.definition.FXBasisCurve _fxEURBasisCurve = null;
 				private org.drip.analytics.definition.FXBasisCurve _fxUSDBasisCurve = null;

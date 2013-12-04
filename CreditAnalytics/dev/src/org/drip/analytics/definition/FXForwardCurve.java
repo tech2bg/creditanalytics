@@ -82,8 +82,8 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 
 	public abstract double[] getFullBasis (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom);
 
 	/**
@@ -99,8 +99,8 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 
 	public abstract double[] bootstrapBasis (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom);
 
 	/**
@@ -114,10 +114,10 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 	 * @return Array of the computed basis
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve bootstrapBasisDC (
+	public abstract org.drip.analytics.rates.DiscountCurve bootstrapBasisDC (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom);
 
 	/**
@@ -133,8 +133,8 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 
 	public abstract double[] calcImpliedNodeRates (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom);
 
 	/**
@@ -153,8 +153,8 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 
 	public abstract double rate (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblDate,
 		final boolean bBasisOnDenom)
 		throws java.lang.Exception;

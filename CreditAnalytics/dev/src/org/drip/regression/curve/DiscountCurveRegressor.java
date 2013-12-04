@@ -50,8 +50,8 @@ package org.drip.regression.curve;
 public class DiscountCurveRegressor implements org.drip.regression.core.RegressorSet {
 	private java.lang.String _strCurrency = "";
 	private org.drip.analytics.date.JulianDate _dtStart = null;
-	private org.drip.analytics.definition.DiscountCurve _dc = null;
-	private org.drip.analytics.definition.ExplicitBootDiscountCurve _dcFromFlatRate = null;
+	private org.drip.analytics.rates.DiscountCurve _dc = null;
+	private org.drip.analytics.rates.ExplicitBootDiscountCurve _dcFromFlatRate = null;
 	private java.lang.String _strRegressionScenario = "org.drip.analytics.curve.DiscountCurve";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -294,7 +294,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				private static final int NUM_DC_INSTRUMENTS = 5;
 
 				private double _adblDate[] = new double[NUM_DC_INSTRUMENTS];
-				private org.drip.analytics.definition.DiscountCurve _dcFromDF = null;
+				private org.drip.analytics.rates.DiscountCurve _dcFromDF = null;
 				private double _adblDiscountFactorFlatRate[] = new double[NUM_DC_INSTRUMENTS];
 
 				@Override public boolean preRegression()
@@ -362,7 +362,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 				private double _adblDate[] = new double[NUM_DC_INSTRUMENTS];
 				private double _adblRate[] = new double[NUM_DC_INSTRUMENTS];
-				private org.drip.analytics.definition.DiscountCurve _dcFromRates = null;
+				private org.drip.analytics.rates.DiscountCurve _dcFromRates = null;
 
 				@Override public boolean preRegression()
 				{
@@ -467,11 +467,11 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("ParallelShiftedCurve",
 				_strRegressionScenario)
 			{
-				private org.drip.analytics.definition.DiscountCurve _dcShifted = null;
+				private org.drip.analytics.rates.DiscountCurve _dcShifted = null;
 
 				@Override public boolean execRegression()
 				{
-					return null != (_dcShifted = (org.drip.analytics.definition.DiscountCurve)
+					return null != (_dcShifted = (org.drip.analytics.rates.DiscountCurve)
 						_dc.parallelShiftManifestMeasure (0.0004));
 				}
 
@@ -513,11 +513,11 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("RateShiftedCurve",
 				_strRegressionScenario)
 			{
-				private org.drip.analytics.definition.DiscountCurve _dcShifted = null;
+				private org.drip.analytics.rates.DiscountCurve _dcShifted = null;
 
 				@Override public boolean execRegression()
 				{
-					return null != (_dcShifted = (org.drip.analytics.definition.DiscountCurve)
+					return null != (_dcShifted = (org.drip.analytics.rates.DiscountCurve)
 						_dcFromFlatRate.parallelShiftManifestMeasure (0.0004));
 				}
 
@@ -574,7 +574,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 			{
 				private static final int NUM_DC_INSTRUMENTS = 5;
 
-				private org.drip.analytics.definition.DiscountCurve _dcBasisShifted = null;
+				private org.drip.analytics.rates.DiscountCurve _dcBasisShifted = null;
 				private double _adblDate[] = new double[NUM_DC_INSTRUMENTS];
 				private double _adblBasis[] = new double[NUM_DC_INSTRUMENTS];
 
@@ -642,7 +642,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 				private double _adblDate[] = new double[NUM_DC_INSTRUMENTS];
 				private org.drip.param.definition.ResponseValueTweakParams _ntp = null;
-				private org.drip.analytics.definition.DiscountCurve _dcNTP = null;
+				private org.drip.analytics.rates.DiscountCurve _dcNTP = null;
 
 				@Override public boolean preRegression()
 				{
@@ -662,7 +662,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 				@Override public boolean execRegression()
 				{
-					return null != (_dcNTP = (org.drip.analytics.definition.DiscountCurve)
+					return null != (_dcNTP = (org.drip.analytics.rates.DiscountCurve)
 						_dcFromFlatRate.customTweakManifestMeasure (_ntp));
 				}
 

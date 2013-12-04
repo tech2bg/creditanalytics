@@ -58,7 +58,7 @@ public class AnalyticsHelper {
 			final org.drip.analytics.period.Period period,
 			final double dblPeriodEndDate,
 			final int iPeriodUnit,
-			final org.drip.analytics.definition.DiscountCurve dc,
+			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.definition.CreditCurve cc)
 	{
 		boolean bPeriodDone = false;
@@ -108,7 +108,7 @@ public class AnalyticsHelper {
 			final org.drip.analytics.period.Period period,
 			final double dblPeriodEndDate,
 			final int iPeriodUnit,
-			final org.drip.analytics.definition.DiscountCurve dc,
+			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.definition.CreditCurve cc)
 	{
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLP = new
@@ -164,7 +164,7 @@ public class AnalyticsHelper {
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.analytics.period.Period period,
 			final double dblPeriodEndDate,
-			final org.drip.analytics.definition.DiscountCurve dc,
+			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.definition.CreditCurve cc)
 	{
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLP = new

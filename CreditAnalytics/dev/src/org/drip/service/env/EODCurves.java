@@ -221,7 +221,7 @@ public class EODCurves {
 	public static final org.drip.param.definition.CreditScenarioCurve BuildEODCreditCurve (
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strSPN,
 		final java.lang.String strCurrency)
 	{
@@ -1110,7 +1110,7 @@ public class EODCurves {
 	 * @return The discount curve
 	 */
 
-	public static final org.drip.analytics.definition.DiscountCurve LoadEODIR (
+	public static final org.drip.analytics.rates.DiscountCurve LoadEODIR (
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency,

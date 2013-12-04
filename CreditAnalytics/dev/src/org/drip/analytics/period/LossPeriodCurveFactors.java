@@ -65,7 +65,7 @@ public class LossPeriodCurveFactors extends Period {
 		final double dblEffectiveDCF,
 		final double dblEffectiveNotional,
 		final double dblEffectiveRecovery,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final int iDefaultLag)
 	{
@@ -104,7 +104,7 @@ public class LossPeriodCurveFactors extends Period {
 		final double dblEnd,
 		final double dblEffectiveDCF,
 		final double dblEffectiveNotional,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final int iDefaultLag)
 	{

@@ -43,15 +43,15 @@ package org.drip.param.market;
 public class RatesCurveScenarioContainer extends org.drip.param.definition.RatesScenarioCurve {
 	private static final boolean s_bBlog = false;
 
-	private org.drip.analytics.definition.DiscountCurve _dcBase = null;
-	private org.drip.analytics.definition.DiscountCurve _dcBumpUp = null;
-	private org.drip.analytics.definition.DiscountCurve _dcBumpDn = null;
+	private org.drip.analytics.rates.DiscountCurve _dcBase = null;
+	private org.drip.analytics.rates.DiscountCurve _dcBumpUp = null;
+	private org.drip.analytics.rates.DiscountCurve _dcBumpDn = null;
 	private org.drip.state.estimator.RatesCurveScenarioGenerator _irsg = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		_mapCustomDC = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		_mapDCBumpUp = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		_mapDCBumpDn = null;
 
 	/**
@@ -72,8 +72,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 
 	@Override public boolean cookScenarioDC (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
@@ -150,8 +150,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 		final java.lang.String strCurveName,
 		final java.lang.String strCustomName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
@@ -170,17 +170,17 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 			return false;
 		}
 
-		org.drip.analytics.definition.DiscountCurve dcTSYAdj = (org.drip.analytics.definition.DiscountCurve)
+		org.drip.analytics.rates.DiscountCurve dcTSYAdj = (org.drip.analytics.rates.DiscountCurve)
 			dcTSY.customTweakManifestMeasure (mmtpTSY);
 
 		if (null == dcTSYAdj) dcTSYAdj = dcTSY;
 
-		org.drip.analytics.definition.DiscountCurve dcEDSFAdj = (org.drip.analytics.definition.DiscountCurve)
+		org.drip.analytics.rates.DiscountCurve dcEDSFAdj = (org.drip.analytics.rates.DiscountCurve)
 			dcEDSF.customTweakManifestMeasure (mmtpEDSF);
 
 		if (null == dcEDSFAdj) dcEDSFAdj = dcEDSF;
 
-		org.drip.analytics.definition.DiscountCurve dcBaseCustom = _irsg.createIRCurve (valParams, dcTSYAdj,
+		org.drip.analytics.rates.DiscountCurve dcBaseCustom = _irsg.createIRCurve (valParams, dcTSYAdj,
 			dcEDSFAdj, adblQuotes, 0., astrCalibMeasure, mmFixings, quotingParams);
 
 		if (null == dcBaseCustom) {
@@ -191,9 +191,9 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 
 		if (null == _mapCustomDC)
 			_mapCustomDC = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
-		org.drip.analytics.definition.DiscountCurve dcCustom = (org.drip.analytics.definition.DiscountCurve)
+		org.drip.analytics.rates.DiscountCurve dcCustom = (org.drip.analytics.rates.DiscountCurve)
 			dcBaseCustom.customTweakManifestMeasure (mmtpDC);
 
 		if (null == dcCustom)
@@ -204,30 +204,30 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 		return true;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getDCBase()
+	@Override public org.drip.analytics.rates.DiscountCurve getDCBase()
 	{
 		return _dcBase;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getDCBumpUp()
+	@Override public org.drip.analytics.rates.DiscountCurve getDCBumpUp()
 	{
 		return _dcBumpUp;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getDCBumpDn()
+	@Override public org.drip.analytics.rates.DiscountCurve getDCBumpDn()
 	{
 		return _dcBumpDn;
 	}
 
 	@Override public
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 			getTenorDCBumpUp()
 	{
 		return _mapDCBumpUp;
 	}
 
 	@Override public
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 			getTenorDCBumpDn()
 	{
 		return _mapDCBumpDn;

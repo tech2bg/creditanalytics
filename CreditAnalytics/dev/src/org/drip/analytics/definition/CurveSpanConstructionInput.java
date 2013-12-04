@@ -48,7 +48,7 @@ public abstract class CurveSpanConstructionInput implements
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.valuation.QuotingParams _quotingParam = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
-	private org.drip.state.estimator.RegimeRepresentationSpec[] _aRBS = null;
+	private org.drip.state.estimator.StretchRepresentationSpec[] _aSRS = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
@@ -57,7 +57,7 @@ public abstract class CurveSpanConstructionInput implements
 	/**
 	 * CurveSpanConstructionInput constructor
 	 * 
-	 * @param aRBS Array of RegimeBuilderSet
+	 * @param aSRS Array of Stretch Representation Set
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
 	 * @param quotingParam Quoting Parameters
@@ -67,14 +67,14 @@ public abstract class CurveSpanConstructionInput implements
 	 */
 
 	public CurveSpanConstructionInput (
-		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
+		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.QuotingParams quotingParam,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 		throws java.lang.Exception
 	{
-		if (null == (_aRBS = aRBS) || 0 == _aRBS.length || null == (_valParam = valParam))
+		if (null == (_aSRS = aSRS) || 0 == _aSRS.length || null == (_valParam = valParam))
 			throw new java.lang.Exception ("CurveSpanConstructionInput ctr: Invalid Inputs");
 
 		_cmp = cmp;
@@ -97,7 +97,7 @@ public abstract class CurveSpanConstructionInput implements
 		java.util.List<org.drip.product.definition.CalibratableComponent> lsCC = new
 			java.util.ArrayList<org.drip.product.definition.CalibratableComponent>();
 
-		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : _aRBS) {
+		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
 
 			int iNumComp = aCC.length;
@@ -123,7 +123,7 @@ public abstract class CurveSpanConstructionInput implements
 
 		_mapQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : _aRBS) {
+		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
 
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
@@ -143,7 +143,7 @@ public abstract class CurveSpanConstructionInput implements
 
 		_mapMeasure = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : _aRBS) {
+		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
 
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
@@ -187,14 +187,14 @@ public abstract class CurveSpanConstructionInput implements
 	}
 
 	/**
-	 * Retrieve the Array of RBS
+	 * Retrieve the Array of SRS
 	 * 
-	 * @return The Array of RBS
+	 * @return The Array of SRS
 	 */
 
-	public org.drip.state.estimator.RegimeRepresentationSpec[] getRBS()
+	public org.drip.state.estimator.StretchRepresentationSpec[] getSRS()
 	{
-		return _aRBS;
+		return _aSRS;
 	}
 
 	/**

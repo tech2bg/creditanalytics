@@ -62,12 +62,12 @@ public class DiscountCurveBuilder {
 	 * @param adblDate Array of dates
 	 * @param adblDF array of discount factors
 	 * @param strBootstrapMode Mode of the bootstrapping to be done: "ConstantForward", "LinearForward",
-	 * 			"QuadraticForward", or "CubicForward". Defaults to "ConstantForward".
+	 * 	"QuadraticForward", or "CubicForward". Defaults to "ConstantForward".
 	 * 
 	 * @return Discount Curve
 	 */
 
-	public static final org.drip.analytics.definition.DiscountCurve BuildFromDF (
+	public static final org.drip.analytics.rates.DiscountCurve BuildFromDF (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double adblDate[],
@@ -121,7 +121,7 @@ public class DiscountCurveBuilder {
 	 * @return Discount Curve
 	 */
 
-	public static final org.drip.analytics.definition.ExplicitBootDiscountCurve CreateFromFlatRate (
+	public static final org.drip.analytics.rates.ExplicitBootDiscountCurve CreateFromFlatRate (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double dblRate)
@@ -146,12 +146,12 @@ public class DiscountCurveBuilder {
 	 * @param adblDate array of dates
 	 * @param adblRate array of rates
 	 * @param strBootstrapMode Mode of the bootstrapping to be done: "ConstantForward", "LinearForward",
-	 * 			"QuadraticForward", or "CubicForward". Defaults to "ConstantForward".
+	 * 	"QuadraticForward", or "CubicForward". Defaults to "ConstantForward".
 	 * 
 	 * @return Creates the discount curve
 	 */
 
-	public static final org.drip.analytics.definition.ExplicitBootDiscountCurve CreateDC (
+	public static final org.drip.analytics.rates.ExplicitBootDiscountCurve CreateDC (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double[] adblDate,
@@ -164,8 +164,8 @@ public class DiscountCurveBuilder {
 					adblRate);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
-				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency, adblDate,
-					adblRate);
+				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,
+					adblDate, adblRate);
 
 			return new org.drip.state.curve.ForwardRateDiscountCurve (dtStart, strCurrency, adblDate,
 				adblRate);
@@ -186,7 +186,7 @@ public class DiscountCurveBuilder {
 	 * @return Discount Curve Instance
 	 */
 
-	public static final org.drip.analytics.definition.ExplicitBootDiscountCurve FromByteArray (
+	public static final org.drip.analytics.rates.ExplicitBootDiscountCurve FromByteArray (
 		final byte[] ab,
 		final java.lang.String strBootstrapMode)
 	{

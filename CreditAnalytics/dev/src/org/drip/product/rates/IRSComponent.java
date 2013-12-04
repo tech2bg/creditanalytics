@@ -335,7 +335,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
 
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 				mapResult.put ("Price", dblCleanPrice);
 
@@ -443,7 +443,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		try {
 			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 			for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
 				double dblPeriodPayDate = p.getPayDate();
@@ -513,7 +513,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 				for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
 					double dblPeriodPayDate = p.getPayDate();
@@ -567,25 +567,44 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == lsmm ||
-			!org.drip.analytics.definition.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
-				(lsmm.getID()))
+			!(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
+				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+					(lsmm.getID()))
 			return null;
 
-		if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(lsmm.getQuantificationMetric())) {
-			if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
+
+		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			(ratesLSMM.getQuantificationMetric())) {
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
 				org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 					org.drip.state.estimator.PredictorResponseLinearConstraint();
 
-				for (org.drip.analytics.period.CashflowPeriod period : _fixStream.getCashFlowPeriod()) {
-					if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
-						period.getCouponDCF() * lsmm.getMeasureQuoteValue()))
-						return null;
-				}
+				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
-				return prlc.addPredictorResponseWeight (valParams._dblValue, -1.) &&
-					prlc.addPredictorResponseWeight (getMaturityDate().getJulian(), 1.) ? prlc : null;
+				try {
+					for (org.drip.analytics.period.CashflowPeriod period : _fixStream.getCashFlowPeriod()) {
+						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
+							period.getPayDate());
+
+						if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
+							period.getCouponDCF() * ratesLSMM.getMeasureQuoteValue() * dblPeriodTurnDF))
+							return null;
+					}
+
+					double dblMaturity = getMaturityDate().getJulian();
+
+					double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
+						dblMaturity);
+
+					return prlc.addPredictorResponseWeight (valParams._dblValue, -1.) &&
+						prlc.addPredictorResponseWeight (dblMaturity, dblPeriodMaturityDF) ? prlc : null;
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
 			}
 		}
 

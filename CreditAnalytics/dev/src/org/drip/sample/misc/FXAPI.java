@@ -14,6 +14,7 @@ import java.util.Random;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
+import org.drip.analytics.rates.ExplicitBootDiscountCurve;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
 import org.drip.product.params.*;

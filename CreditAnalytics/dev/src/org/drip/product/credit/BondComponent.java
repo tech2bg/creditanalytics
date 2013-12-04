@@ -273,7 +273,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	private double getIndexRate (
 		final double dblValue,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmMarketFixings,
 		final org.drip.analytics.period.Period period)
@@ -348,7 +348,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == mktParams)
 			throw new java.lang.Exception ("Valid market params needed for floaters to get index rate!");
 
-		org.drip.analytics.definition.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
+		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
 			mktParams.getDiscountCurve() : mktParams.getForwardDiscountCurve();
 
 		double dblIndexRate = getIndexRate (dblValue, dcForward, mktParams.getFixings(), period);
@@ -410,7 +410,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (null == _fltParams) dblPeriodCoupon = getCoupon (valParams._dblValue, mktParams);
 
-				org.drip.analytics.definition.DiscountCurve dcForward = null ==
+				org.drip.analytics.rates.DiscountCurve dcForward = null ==
 					mktParams.getForwardDiscountCurve() ? mktParams.getDiscountCurve() :
 						mktParams.getForwardDiscountCurve();
 
@@ -2028,8 +2028,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		boolean bTerminateCouponFlow = false;
 		double dblCashPayDate = java.lang.Double.NaN;
 		double dblScalingNotional = java.lang.Double.NaN;
-		org.drip.analytics.definition.ZeroCurve zc = null;
-		org.drip.analytics.definition.DiscountCurve dcBase = null;
+		org.drip.analytics.rates.ZeroCurve zc = null;
+		org.drip.analytics.rates.DiscountCurve dcBase = null;
 
 		if (ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE == iZeroCurveBaseDC)
 			dcBase = mktParams.getDiscountCurve();
@@ -2128,10 +2128,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (0. != dblDCBump)
-			dc = (org.drip.analytics.definition.DiscountCurve) dc.parallelShiftManifestMeasure (dblDCBump);
+			dc = (org.drip.analytics.rates.DiscountCurve) dc.parallelShiftManifestMeasure (dblDCBump);
 
 		if (null == dc)
 			throw new java.lang.Exception
@@ -2621,7 +2621,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
 
@@ -4697,12 +4697,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
 
-		org.drip.analytics.definition.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
+		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
 			dc : mktParams.getForwardDiscountCurve();
 
 		return null == _fltParams ? dblYield - dc.libor (((int) (12. / (0 == _periodParams._iFreq ? 2 :
@@ -5714,7 +5714,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					+ LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromYield => Invalid inputs");
 
-		org.drip.analytics.definition.DiscountCurve dcTSY = mktParams.getTSYDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dcTSY = mktParams.getTSYDiscountCurve();
 
 		if (null == dcTSY)
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromYield => Invalid inputs");
@@ -6205,7 +6205,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYield => Invalid inputs");
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYield => Invalid inputs");
@@ -8505,7 +8505,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
 
@@ -9805,12 +9805,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblDiscountMargin))
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
 
-		org.drip.analytics.definition.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
+		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
 			dc : mktParams.getForwardDiscountCurve();
 
 		return null == _fltParams ? dblDiscountMargin + dc.libor (((int) (12. / (0 ==
@@ -9858,7 +9858,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			LEFT_EOS_SNIP || null == mktParams)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromGSpread => Invalid Inputs");
 
-		org.drip.analytics.definition.DiscountCurve dcGovvie = mktParams.getTSYDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dcGovvie = mktParams.getTSYDiscountCurve();
 
 		if (null == dcGovvie)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromGSpread => Invalid Inputs");
@@ -9905,7 +9905,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			LEFT_EOS_SNIP || null == mktParams)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromISpread => Invalid Inputs");
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getTSYDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getTSYDiscountCurve();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromISpread => Invalid Inputs");
@@ -12024,7 +12024,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (null != mapMeasures.get ("FairYield") && !java.lang.Double.isNaN (wiMarket._dblYield)) {
 				org.drip.param.definition.ComponentMarketParams cmpMarket =
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						((org.drip.analytics.definition.DiscountCurve)
+						((org.drip.analytics.rates.DiscountCurve)
 							mktParams.getDiscountCurve().parallelShiftQuantificationMetric
 								(wiMarket._dblYield - mapMeasures.get ("FairYield")),
 									mktParams.getTSYDiscountCurve(), mktParams.getEDSFDiscountCurve(),

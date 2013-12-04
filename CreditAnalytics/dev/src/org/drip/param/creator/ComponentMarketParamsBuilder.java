@@ -47,7 +47,7 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc)
+		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, null, null, null,
 			null);
@@ -63,8 +63,8 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeFloaterDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcForward)
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcForward)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, null, null, null, null,
 			null, null);
@@ -80,8 +80,8 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY)
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, null, null, null, null,
 			null);
@@ -98,9 +98,9 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF)
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, null, null, null,
 			null);
@@ -116,7 +116,7 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeCreditCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, cc, null, null,
@@ -138,9 +138,9 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
@@ -174,10 +174,10 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcForward,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcForward,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>

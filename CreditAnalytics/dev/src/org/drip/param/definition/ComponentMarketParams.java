@@ -66,7 +66,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve getDiscountCurve();
 
 	/**
 	 * (Re)-sets the Component Forward Discount Curve
@@ -77,7 +77,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 */
 
 	public abstract boolean setForwardDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dcForward);
+		final org.drip.analytics.rates.DiscountCurve dcForward);
 
 	/**
 	 * Retrieves the Component Forward Discount Curve
@@ -85,7 +85,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component Forward Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getForwardDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve getForwardDiscountCurve();
 
 	/**
 	 * (Re)-sets the Component Discount Curve
@@ -96,7 +96,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 */
 
 	public abstract boolean setDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dc);
+		final org.drip.analytics.rates.DiscountCurve dc);
 
 	/**
 	 * Retrieves the Component TSY Discount Curve
@@ -104,7 +104,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component TSY Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getTSYDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve getTSYDiscountCurve();
 
 	/**
 	 * (Re)-sets the Component TSY Discount Curve
@@ -115,7 +115,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 */
 
 	public abstract boolean setTSYDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dcTSY);
+		final org.drip.analytics.rates.DiscountCurve dcTSY);
 
 	/**
 	 * Retrieves the Component EDSF Discount Curve
@@ -123,7 +123,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component EDSF Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getEDSFDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve getEDSFDiscountCurve();
 
 	/**
 	 * (Re)-sets the Component EDSF Discount Curve
@@ -134,7 +134,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 */
 
 	public abstract boolean setEDSFDiscountCurve (
-		final org.drip.analytics.definition.DiscountCurve dcEDSF);
+		final org.drip.analytics.rates.DiscountCurve dcEDSF);
 
 	/**
 	 * Retrieves the Component Quote

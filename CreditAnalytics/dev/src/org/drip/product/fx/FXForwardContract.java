@@ -188,8 +188,8 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 
 	@Override public double implyFXForward (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblFXSpot,
 		final boolean bFwdAsPIP)
 		throws java.lang.Exception
@@ -208,8 +208,8 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 
 	@Override public double calcDCBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblFXSpot,
 		final double dblMarketFXFwdPrice,
 		final boolean bBasisOnDenom)
@@ -225,8 +225,8 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblFXSpot)
 	{
 		if (null == valParams || null == dcNum || null == dcDenom || !org.drip.quant.common.NumberUtil.IsValid
@@ -270,17 +270,17 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 
 		private final double calcFXFwd (
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.definition.DiscountCurve dcNum,
-			final org.drip.analytics.definition.DiscountCurve dcDenom,
+			final org.drip.analytics.rates.DiscountCurve dcNum,
+			final org.drip.analytics.rates.DiscountCurve dcDenom,
 			final double dblFXSpot,
 			final double dblBump,
 			final boolean bBasisOnDenom)
 			throws java.lang.Exception {
 			if (bBasisOnDenom)
-				return _fxfwd.implyFXForward (valParams, dcNum, (org.drip.analytics.definition.DiscountCurve)
+				return _fxfwd.implyFXForward (valParams, dcNum, (org.drip.analytics.rates.DiscountCurve)
 					dcDenom.parallelShiftQuantificationMetric (dblBump), dblFXSpot, false);
 
-			return _fxfwd.implyFXForward (valParams, (org.drip.analytics.definition.DiscountCurve)
+			return _fxfwd.implyFXForward (valParams, (org.drip.analytics.rates.DiscountCurve)
 				dcNum.parallelShiftQuantificationMetric (dblBump), dcDenom, dblFXSpot, false);
 		}
 
@@ -317,8 +317,8 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 
 		public double calibrateDCBasisFromFwdPriceNR (
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.definition.DiscountCurve dcNum,
-			final org.drip.analytics.definition.DiscountCurve dcDenom,
+			final org.drip.analytics.rates.DiscountCurve dcNum,
+			final org.drip.analytics.rates.DiscountCurve dcDenom,
 			final double dblFXSpot,
 			final double dblMarketFXFwdPrice,
 			final boolean bBasisOnDenom)

@@ -381,7 +381,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			}
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
 
@@ -454,7 +454,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams) return null;
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) return null;
 
@@ -469,7 +469,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 
-		org.drip.analytics.definition.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
+		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
 			dc : mktParams.getForwardDiscountCurve();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
@@ -675,7 +675,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		try {
 			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
@@ -745,7 +745,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();

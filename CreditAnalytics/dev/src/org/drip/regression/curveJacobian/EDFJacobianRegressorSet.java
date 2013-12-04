@@ -53,7 +53,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 				org.drip.analytics.date.JulianDate dtStart = null;
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.analytics.definition.DiscountCurve dcEDF = null;
+				org.drip.analytics.rates.DiscountCurve dcEDF = null;
 				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
 
 				@Override public boolean preRegression()

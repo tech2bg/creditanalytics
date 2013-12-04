@@ -81,14 +81,14 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		_mapScenCMP = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		getDCSet (
 			final int iBumpType)
 	{
 		if (null == _mapIRCSC.entrySet()) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve> mapDC =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.RatesScenarioCurve> meDCSG :
 			_mapIRCSC.entrySet()) {
@@ -132,14 +132,14 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		return mapCC;
 	}
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		getSpecificIRFlatBumpDCSet (
 			final java.lang.String strIRCurve,
 			final boolean bBumpUp)
 	{
 		if (null == strIRCurve || strIRCurve.isEmpty() || null == _mapIRCSC.get (strIRCurve)) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve> mapDC =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =
 			getDCSet (BASE);
 
 		if (null == mapDC) return null;
@@ -441,9 +441,9 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		if (null == comp || null == strScen || strScen.isEmpty()) return null;
 
 		org.drip.analytics.definition.CreditCurve cc = null;
-		org.drip.analytics.definition.DiscountCurve dc = null;
-		org.drip.analytics.definition.DiscountCurve dcTSY = null;
-		org.drip.analytics.definition.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dc = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
+		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 
 		if (null != comp.getIRCurveName() && null != _mapIRCSC.get (comp.getIRCurveName()))
 			dc = _mapIRCSC.get (comp.getIRCurveName()).getDCBase();
@@ -495,8 +495,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			return null;
 
 		org.drip.analytics.definition.CreditCurve cc = null;
-		org.drip.analytics.definition.DiscountCurve dcTSY = null;
-		org.drip.analytics.definition.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
+		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 
 		if (null != comp.getTreasuryCurveName() && null != _mapIRCSC.get (comp.getTreasuryCurveName()))
 			dcTSY = _mapIRCSC.get (comp.getTreasuryCurveName()).getDCBase();
@@ -516,7 +516,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				(comp.getIRCurveName()).getTenorDCBumpUp().entrySet())
 				return null;
 
-			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.DiscountCurve> meDC :
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
 				_mapIRCSC.get (comp.getIRCurveName()).getTenorDCBumpUp().entrySet()) {
 				if (null == meDC || null == meDC.getKey() || meDC.getKey().isEmpty()) continue;
 
@@ -530,7 +530,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				(comp.getIRCurveName()).getTenorDCBumpDn().entrySet())
 				return null;
 
-			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.DiscountCurve> meDC :
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
 				_mapIRCSC.get (comp.getIRCurveName()).getTenorDCBumpDn().entrySet()) {
 				if (null == meDC || null == meDC.getKey() || meDC.getKey().isEmpty()) continue;
 
@@ -562,9 +562,9 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			_mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpDn().entrySet()))
 			return null;
 
-		org.drip.analytics.definition.DiscountCurve dc = null;
-		org.drip.analytics.definition.DiscountCurve dcTSY = null;
-		org.drip.analytics.definition.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dc = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
+		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 
 		if (null != comp.getIRCurveName() && null != _mapIRCSC.get (comp.getIRCurveName()))
 			dc = _mapIRCSC.get (comp.getIRCurveName()).getDCBase();
@@ -734,7 +734,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				mapTenorBMP = new
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
 
-			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.DiscountCurve> meDC :
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
 				(bBump ? meDCSG.getValue().getTenorDCBumpUp().entrySet() :
 					meDCSG.getValue().getTenorDCBumpDn().entrySet())) {
 				if (null == meDC || null == meDCSG.getKey() || meDCSG.getKey().isEmpty()) continue;

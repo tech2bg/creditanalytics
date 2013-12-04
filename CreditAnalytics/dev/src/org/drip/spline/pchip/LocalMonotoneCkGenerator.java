@@ -29,7 +29,7 @@ package org.drip.spline.pchip;
  */
 
 /**
- * LocalMonotoneCkGenerator generates customized Local Regime by trading off Ck for local control.
+ * LocalMonotoneCkGenerator generates customized Local Stretch by trading off Ck for local control.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -630,7 +630,7 @@ public class LocalMonotoneCkGenerator {
 	 * @param adblFirstDerivative Array of First Derivatives
 	 * @param adblSecondDerivative Array of Second Derivatives
 	 * 
-	 * @return The C1 Slope Quintic Regime
+	 * @return The C1 Slope Quintic Stretch
 	 */
 
 	public static final double[] Hyman89QuinticMonotoneC1 (
@@ -704,7 +704,7 @@ public class LocalMonotoneCkGenerator {
 	}
 
 	/**
-	 * Generate the Local Control Regime in accordance with the desired Customization Parameters
+	 * Generate the Local Control Stretch in accordance with the desired Customization Parameters
 	 * 
 	 * @param adblPredictorOrdinate The Predictor Ordinate Array
 	 * @param adblResponseValue The Response Value Array
@@ -712,7 +712,7 @@ public class LocalMonotoneCkGenerator {
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
-	 * @return Instance of the LocalControlRegime
+	 * @return Instance of the Local Control Stretch
 	 */
 
 	public static final LocalMonotoneCkGenerator Create (
@@ -723,7 +723,8 @@ public class LocalMonotoneCkGenerator {
 		final boolean bApplyMonotoneFilter)
 	{
 		try {
-			LocalMonotoneCkGenerator lcr = new LocalMonotoneCkGenerator (adblPredictorOrdinate, adblResponseValue);
+			LocalMonotoneCkGenerator lcr = new LocalMonotoneCkGenerator (adblPredictorOrdinate,
+				adblResponseValue);
 
 			if (!lcr.generateC1 (strGeneratorType)) return null;
 
@@ -755,7 +756,7 @@ public class LocalMonotoneCkGenerator {
 		int iSize = _adblPredictorOrdinate.length;
 
 		if (0 == iSize || iSize != _adblResponseValue.length)
-			throw new java.lang.Exception ("LocalControlRegime ctr: Invalid Inputs!");
+			throw new java.lang.Exception ("LocalMonotoneCkGenerator ctr: Invalid Inputs!");
 	}
 
 	private boolean generateC1 (

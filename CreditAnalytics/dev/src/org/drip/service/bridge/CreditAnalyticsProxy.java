@@ -42,7 +42,7 @@ public class CreditAnalyticsProxy {
 	private static final java.lang.String DISPLAY_GAP = "   ";
 	private static final double PRICE_DOWNSHIFT_AMPLITUDE = 0.075;
 
-	private static org.drip.analytics.definition.DiscountCurve MakeDC (
+	private static org.drip.analytics.rates.DiscountCurve MakeDC (
 		final org.drip.analytics.date.JulianDate dtStart)
 	{
 		int NUM_DC_INSTR = 30;
@@ -189,7 +189,7 @@ public class CreditAnalyticsProxy {
 
 	public static org.drip.analytics.definition.CreditCurve MakeCC (
 		final org.drip.analytics.date.JulianDate dtStart,
-		final org.drip.analytics.definition.DiscountCurve dc)
+		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		double[] adblQuotes = new double[5];
 		java.lang.String[] astrCalibMeasure = new java.lang.String[5];
@@ -369,14 +369,14 @@ public class CreditAnalyticsProxy {
 			adblRateEDSF[i] = 0.0125 * (i + 1);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc = MakeDC (dtStart);
+		org.drip.analytics.rates.DiscountCurve dc = MakeDC (dtStart);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", adblDate,
 				adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSF =
+		org.drip.analytics.rates.DiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", adblDate,
 				adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);

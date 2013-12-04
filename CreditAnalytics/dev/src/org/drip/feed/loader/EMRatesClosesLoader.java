@@ -44,7 +44,7 @@ public class EMRatesClosesLoader {
 	private static final double calcMeasure (
 		final org.drip.product.definition.Component comp,
 		final org.drip.analytics.date.JulianDate dt,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strMeasure,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
@@ -75,8 +75,8 @@ public class EMRatesClosesLoader {
 		final org.drip.product.definition.Component comp,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2,
-		final org.drip.analytics.definition.DiscountCurve dc1,
-		final org.drip.analytics.definition.DiscountCurve dc2,
+		final org.drip.analytics.rates.DiscountCurve dc1,
+		final org.drip.analytics.rates.DiscountCurve dc2,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
@@ -88,7 +88,7 @@ public class EMRatesClosesLoader {
 		final org.drip.product.definition.Component comp,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
@@ -101,7 +101,7 @@ public class EMRatesClosesLoader {
 		final org.drip.product.definition.Component comp,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
@@ -112,8 +112,8 @@ public class EMRatesClosesLoader {
 	private static final double calcCurveShift (
 		final org.drip.product.definition.Component comp,
 		final org.drip.analytics.date.JulianDate dt,
-		final org.drip.analytics.definition.DiscountCurve dc1,
-		final org.drip.analytics.definition.DiscountCurve dc2,
+		final org.drip.analytics.rates.DiscountCurve dc1,
+		final org.drip.analytics.rates.DiscountCurve dc2,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
@@ -122,7 +122,7 @@ public class EMRatesClosesLoader {
 	}
 
 	private static final double Forward (
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2)
 		throws java.lang.Exception
@@ -136,8 +136,8 @@ public class EMRatesClosesLoader {
 		final org.drip.analytics.date.JulianDate dt0D,
 		final org.drip.analytics.date.JulianDate dt1D,
 		final org.drip.product.definition.Component comp,
-		final org.drip.analytics.definition.DiscountCurve dc0D,
-		final org.drip.analytics.definition.DiscountCurve dc1D,
+		final org.drip.analytics.rates.DiscountCurve dc0D,
+		final org.drip.analytics.rates.DiscountCurve dc1D,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
@@ -218,7 +218,7 @@ public class EMRatesClosesLoader {
 
 	private static final org.drip.service.api.ForwardRates ComputeForwardMetric (
 		final org.drip.product.definition.Component[] aComp,
-		final org.drip.analytics.definition.DiscountCurve dc)
+		final org.drip.analytics.rates.DiscountCurve dc)
 		throws java.lang.Exception
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
@@ -273,8 +273,8 @@ public class EMRatesClosesLoader {
 	private static final void GenerateMetrics (
 		final org.drip.analytics.date.JulianDate dt0D,
 		final org.drip.analytics.date.JulianDate dt1D,
-		final org.drip.analytics.definition.DiscountCurve dc0D,
-		final org.drip.analytics.definition.DiscountCurve dc1D,
+		final org.drip.analytics.rates.DiscountCurve dc0D,
+		final org.drip.analytics.rates.DiscountCurve dc1D,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
@@ -350,7 +350,7 @@ public class EMRatesClosesLoader {
 		return aCalibComp;
 	}
 
-	private static final org.drip.analytics.definition.DiscountCurve BuildCurve (
+	private static final org.drip.analytics.rates.DiscountCurve BuildCurve (
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String[] astrCashTenor,
 		final double[] adblCashQuote,
@@ -358,23 +358,24 @@ public class EMRatesClosesLoader {
 		final double[] adblSwapQuote,
 		final java.lang.String strCurrency)
 	{
-		org.drip.state.estimator.RegimeRepresentationSpec rbsCash =
-			org.drip.state.estimator.RegimeRepresentationSpec.CreateRegimeBuilderSet ("CASH",
-				org.drip.analytics.definition.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						CashInstrumentsFromTenor (dt, astrCashTenor, strCurrency), "Rate", adblCashQuote);
+		org.drip.state.estimator.StretchRepresentationSpec rbsCash =
+			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet ("CASH",
+				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						CashInstrumentsFromTenor (dt, astrCashTenor, strCurrency), "Rate", adblCashQuote,
+							null);
 
-		org.drip.state.estimator.RegimeRepresentationSpec rbsSwap =
-			org.drip.state.estimator.RegimeRepresentationSpec.CreateRegimeBuilderSet ("SWAP",
-				org.drip.analytics.definition.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+		org.drip.state.estimator.StretchRepresentationSpec rbsSwap =
+			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet ("SWAP",
+				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 						SwapInstrumentsFromTenor (dt, astrSwapTenor, adblSwapQuote, strCurrency), "Rate",
-							adblSwapQuote);
+							adblSwapQuote, null);
 
 		if (null == rbsCash || null == rbsSwap) return null;
 
-		org.drip.state.estimator.RegimeRepresentationSpec[] aRRS = new
-			org.drip.state.estimator.RegimeRepresentationSpec[] {rbsCash, rbsSwap};
+		org.drip.state.estimator.StretchRepresentationSpec[] aRRS = new
+			org.drip.state.estimator.StretchRepresentationSpec[] {rbsCash, rbsSwap};
 
 		try {
 			org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
@@ -390,12 +391,12 @@ public class EMRatesClosesLoader {
 			org.drip.state.estimator.LinearCurveCalibrator lcc = new
 				org.drip.state.estimator.LinearCurveCalibrator (new
 					org.drip.spline.params.SegmentCustomBuilderControl
-						(org.drip.spline.regime.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
+						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc),
-					org.drip.spline.regime.BoundarySettings.NaturalStandard(),
-						org.drip.spline.regime.MultiSegmentSequence.CALIBRATE, null);
+					org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
 
-			org.drip.analytics.definition.DiscountCurve dcShapePreserving =
+			org.drip.analytics.rates.DiscountCurve dcShapePreserving =
 				org.drip.param.creator.RatesScenarioCurveBuilder.ShapePreservingBuild (lcc, aRRS, valParams,
 					null, null, null);
 
@@ -404,11 +405,11 @@ public class EMRatesClosesLoader {
 			org.drip.state.estimator.LocalControlCurveParams lccpHyman83 = new
 				org.drip.state.estimator.LocalControlCurveParams
 					(org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,
-						org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE, new
+						org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE, new
 							org.drip.spline.params.SegmentCustomBuilderControl
-								(org.drip.spline.regime.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+								(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 									new org.drip.spline.basis.PolynomialFunctionSetParams (4), sdic, rssc),
-					org.drip.spline.regime.MultiSegmentSequence.CALIBRATE, null, true, true);
+					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, true, true);
 
 			return org.drip.param.creator.RatesScenarioCurveBuilder.SmoothingLocalControlBuild
 				(dcShapePreserving, lcc, lccpHyman83, aRRS, valParams, null, null, null);
@@ -482,7 +483,7 @@ public class EMRatesClosesLoader {
 		java.lang.String[] astrTenor = null;
 		java.io.BufferedReader brSwapCOB = null;
 		org.drip.analytics.date.JulianDate dtPrev = null;
-		org.drip.analytics.definition.DiscountCurve dcPrev = null;
+		org.drip.analytics.rates.DiscountCurve dcPrev = null;
 
 		try {
 			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader ("C:\\IFA\\" + strCurrency +
@@ -550,7 +551,7 @@ public class EMRatesClosesLoader {
 					if (null != dcci) {
 						org.drip.analytics.date.JulianDate dt = dcci.date();
 
-						org.drip.analytics.definition.DiscountCurve dc = BuildCurve (dcci.date(),
+						org.drip.analytics.rates.DiscountCurve dc = BuildCurve (dcci.date(),
 							dcci.cashTenor(), dcci.cashQuote(), dcci.swapTenor(), dcci.swapQuote(), strCurrency);
 
 						System.out.println ("Adding " + dcci.date() + " = " + dc);
@@ -711,7 +712,7 @@ public class EMRatesClosesLoader {
 						org.drip.param.valuation.ValuationParams valParams = new
 							org.drip.param.valuation.ValuationParams (dtCOB, dtCOB, "USD");
 
-						org.drip.analytics.definition.DiscountCurve dc = BuildCurve (dtCOB, dcci.cashTenor(),
+						org.drip.analytics.rates.DiscountCurve dc = BuildCurve (dtCOB, dcci.cashTenor(),
 							dcci.cashQuote(), dcci.swapTenor(), dcci.swapQuote(), "USD");
 
 						System.out.println (dtCOB + " => " + dc);

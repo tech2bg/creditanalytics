@@ -74,7 +74,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == cc || null == dc) return null;
 
@@ -239,7 +239,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 				pricerParams, period, period.getEndDate(), mktParams);
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == sLPSub || 0 == sLPSub.size() || null == dc) return null;
 
@@ -284,7 +284,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 				pricerParams, period, period.getEndDate(), mktParams);
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == sLPSub || 0 == sLPSub.size() || null == dc) return null;
 
@@ -761,7 +761,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == cc || null == dc) return null;
 
@@ -1136,7 +1136,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == cc || null == dc) return null;
 
@@ -1201,7 +1201,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == cc || null == dc) return null;
 

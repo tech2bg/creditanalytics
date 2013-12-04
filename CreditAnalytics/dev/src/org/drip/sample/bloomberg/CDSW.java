@@ -8,6 +8,7 @@ package org.drip.sample.bloomberg;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.period.*;
+import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.pricer.PricerParams;

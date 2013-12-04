@@ -48,7 +48,7 @@ public class ShapePreservingCCIS extends org.drip.analytics.definition.CurveSpan
 	 * ShapePreservingCCIS constructor
 	 * 
 	 * @param lccShapePreserving Shape Preserving LinearCurveCalibrator instance
-	 * @param aRBS Array of RegimeBuilderSet
+	 * @param aSRS Array of Stretch Representations
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
 	 * @param quotingParam Quoting Parameters
@@ -59,14 +59,14 @@ public class ShapePreservingCCIS extends org.drip.analytics.definition.CurveSpan
 
 	public ShapePreservingCCIS (
 		final org.drip.state.estimator.LinearCurveCalibrator lccShapePreserving,
-		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
+		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.QuotingParams quotingParam,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 		throws java.lang.Exception
 	{
-		super (aRBS, valParam, pricerParam, quotingParam, cmp);
+		super (aSRS, valParam, pricerParam, quotingParam, cmp);
 
 		if (null == (_lccShapePreserving = lccShapePreserving))
 			throw new java.lang.Exception ("ShapePreservingCCIS ctr: Invalid Inputs");

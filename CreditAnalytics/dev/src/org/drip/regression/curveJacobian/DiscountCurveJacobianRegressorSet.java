@@ -56,7 +56,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 				org.drip.analytics.date.JulianDate dtStart = null;
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.analytics.definition.DiscountCurve dcIRS = null;
+				org.drip.analytics.rates.DiscountCurve dcIRS = null;
 				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
 				java.util.Map<org.drip.analytics.date.JulianDate,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null;

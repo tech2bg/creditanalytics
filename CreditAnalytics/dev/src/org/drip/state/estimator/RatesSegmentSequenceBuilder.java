@@ -30,22 +30,22 @@ package org.drip.state.estimator;
 
 /**
  * RatesSegmentSequenceBuilder holds the logic behind building the bootstrap segments contained in the given
- * 	regime.
+ * 	Stretch.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.SegmentSequenceBuilder {
+public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.SegmentSequenceBuilder {
 	private double _dblEpochResponse = java.lang.Double.NaN;
-	private org.drip.state.estimator.CurveRegime _cr = null;
-	private org.drip.spline.regime.BoundarySettings _bc = null;
+	private org.drip.spline.stretch.BoundarySettings _bs = null;
+	private org.drip.state.estimator.CurveStretch _stretch = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
-	private org.drip.spline.params.RegimeBestFitResponse _rbfr = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
+	private org.drip.spline.params.StretchBestFitResponse _sbfr = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
-	private org.drip.state.estimator.RegimeRepresentationSpec _rbs = null;
-	private org.drip.spline.regime.MultiSegmentSequence _regimePrev = null;
+	private org.drip.spline.stretch.MultiSegmentSequence _mssPrev = null;
+	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
 
 	private org.drip.spline.params.SegmentResponseValueConstraint GenerateSegmentConstraint (
 		final org.drip.state.estimator.PredictorResponseLinearConstraint prlc)
@@ -72,10 +72,10 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 			double dblDate = me.getKey();
 
 			try {
-				if (null != _regimePrev && _regimePrev.in (dblDate))
-					dblValue -= _regimePrev.responseValue (dblDate) * me.getValue();
-				else if (null != _cr && _cr.inBuiltRange (dblDate))
-					dblValue -= _cr.responseValue (dblDate) * me.getValue();
+				if (null != _mssPrev && _mssPrev.in (dblDate))
+					dblValue -= _mssPrev.responseValue (dblDate) * me.getValue();
+				else if (null != _stretch && _stretch.inBuiltRange (dblDate))
+					dblValue -= _stretch.responseValue (dblDate) * me.getValue();
 				else {
 					lsPredictor.add (dblDate);
 
@@ -100,8 +100,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 		}
 
 		try {
-			return new org.drip.spline.params.SegmentResponseValueConstraint (adblPredictor, adblResponseWeight,
-				prlc.getValue() + dblValue);
+			return new org.drip.spline.params.SegmentResponseValueConstraint (adblPredictor,
+				adblResponseWeight, prlc.getValue() + dblValue);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -113,75 +113,75 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 	 * RatesSegmentSequenceBuilder constructor
 	 * 
 	 * @param dblEpochResponse Segment Sequence Left-most Response Value
-	 * @param RBS Regime Builder Parameters
+	 * @param srs Stretch Representation
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
 	 * @param cmp Component Market Parameter
 	 * @param quotingParams Quoting Parameter
-	 * @param regimePrev The Previous Regime Used to value cash flows that fall in those segments
-	 * @param rbfr Regime Fitness Weighted Response
-	 * @param bc The Calibration Boundary Condition
+	 * @param mssPrev The Previous Stretch Used to value cash flows that fall in those segments
+	 * @param sbfr Stretch Fitness Weighted Response
+	 * @param bs The Calibration Boundary Condition
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
 	public RatesSegmentSequenceBuilder (
 		final double dblEpochResponse,
-		final org.drip.state.estimator.RegimeRepresentationSpec rbs,
+		final org.drip.state.estimator.StretchRepresentationSpec srs,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams cmp,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.spline.regime.MultiSegmentSequence regimePrev,
-		final org.drip.spline.params.RegimeBestFitResponse rbfr,
-		final org.drip.spline.regime.BoundarySettings bc)
+		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final org.drip.spline.stretch.BoundarySettings bs)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochResponse = dblEpochResponse) || null == (_rbs
-			= rbs) || null == (_valParams = valParams) || null == (_bc = bc))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochResponse = dblEpochResponse) || null == (_srs
+			= srs) || null == (_valParams = valParams) || null == (_bs = bs))
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
 		_cmp = cmp;
-		_rbfr = rbfr;
-		_regimePrev = regimePrev;
+		_sbfr = sbfr;
+		_mssPrev = mssPrev;
 		_pricerParams = pricerParams;
 		_quotingParams = quotingParams;
 	}
 
-	@Override public boolean setRegime (
-		final org.drip.spline.regime.MultiSegmentSequence msr)
+	@Override public boolean setStretch (
+		final org.drip.spline.stretch.MultiSegmentSequence mss)
 	{
-		if (null == msr || !(msr instanceof org.drip.state.estimator.CurveRegime)) return false;
+		if (null == mss || !(mss instanceof org.drip.state.estimator.CurveStretch)) return false;
 
-		org.drip.state.estimator.CurveRegime cr = (org.drip.state.estimator.CurveRegime) msr;
+		org.drip.state.estimator.CurveStretch stretch = (org.drip.state.estimator.CurveStretch) mss;
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = cr.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCS = stretch.segments();
 
-		if (null == aCS || aCS.length != _rbs.getCalibComp().length) return false;
+		if (null == aCS || aCS.length != _srs.getCalibComp().length) return false;
 
-		_cr = cr;
+		_stretch = stretch;
 		return true;
 	}
 
-	@Override public org.drip.spline.regime.BoundarySettings getCalibrationBoundaryCondition()
+	@Override public org.drip.spline.stretch.BoundarySettings getCalibrationBoundaryCondition()
 	{
-		return _bc;
+		return _bs;
 	}
 
 	@Override public boolean calibStartingSegment (
 		final double dblLeftSlope)
 	{
-		if (null == _cr || !_cr.setClearBuiltRange()) return false;
+		if (null == _stretch || !_stretch.setClearBuiltRange()) return false;
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = _cr.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCS = _stretch.segments();
 
-		org.drip.product.definition.CalibratableComponent cc = _rbs.getCalibComp (0);
+		org.drip.product.definition.CalibratableComponent cc = _srs.getCalibComp (0);
 
-		org.drip.state.representation.LatentStateMetricMeasure lsmm = _rbs.getLSMM (0);
+		org.drip.state.representation.LatentStateMetricMeasure lsmm = _srs.getLSMM (0);
 
 		org.drip.spline.params.SegmentResponseValueConstraint rvcLeading =
-			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair (_valParams._dblValue,
-				_dblEpochResponse);
+			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
+				(_valParams._dblValue, _dblEpochResponse);
 
 		if (null == aCS || 1 > aCS.length || null == cc | null == lsmm || null == rvcLeading) return false;
 
@@ -194,23 +194,23 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 
 		if (null == rvc) return false;
 
-		return aCS[0].calibrate (rvcLeading, dblLeftSlope, rvc, null == _rbfr ? null : _rbfr.sizeToSegment
-			(aCS[0])) && _cr.setSegmentBuilt (0);
+		return aCS[0].calibrate (rvcLeading, dblLeftSlope, rvc, null == _sbfr ? null : _sbfr.sizeToSegment
+			(aCS[0])) && _stretch.setSegmentBuilt (0);
 	}
 
 	@Override public boolean calibSegmentSequence (
 		final int iStartingSegment)
 	{
-		if (null == _cr) return false;
+		if (null == _stretch) return false;
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = _cr.segments();
+		org.drip.spline.segment.ConstitutiveState[] aCS = _stretch.segments();
 
 		int iNumSegment = aCS.length;
 
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
-			org.drip.product.definition.CalibratableComponent cc = _rbs.getCalibComp (iSegment);
+			org.drip.product.definition.CalibratableComponent cc = _srs.getCalibComp (iSegment);
 
-			org.drip.state.representation.LatentStateMetricMeasure lsmm = _rbs.getLSMM (iSegment);
+			org.drip.state.representation.LatentStateMetricMeasure lsmm = _srs.getLSMM (iSegment);
 
 			if (null == aCS || 1 > aCS.length || null == cc | null == lsmm) return false;
 
@@ -219,12 +219,12 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.regime.Segme
 
 			if (null == prlc) return false;
 
-			org.drip.spline.params.SegmentResponseValueConstraint rvc = GenerateSegmentConstraint (prlc);
+			org.drip.spline.params.SegmentResponseValueConstraint srvc = GenerateSegmentConstraint (prlc);
 
-			if (null == rvc) return false;
+			if (null == srvc) return false;
 
-			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], rvc, null == _rbfr ? null
-				: _rbfr.sizeToSegment (aCS[iSegment])) || !_cr.setSegmentBuilt (iSegment))
+			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], srvc, null == _sbfr ?
+				null : _sbfr.sizeToSegment (aCS[iSegment])) || !_stretch.setSegmentBuilt (iSegment))
 				return false;
 		}
 

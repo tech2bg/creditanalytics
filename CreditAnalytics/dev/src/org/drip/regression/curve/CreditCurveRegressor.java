@@ -52,7 +52,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 	private java.lang.String _strCurrency = "";
 	private org.drip.analytics.date.JulianDate _dtStart = null;
 	private org.drip.analytics.definition.CreditCurve _cc = null;
-	private org.drip.analytics.definition.DiscountCurve _dc = null;
+	private org.drip.analytics.rates.DiscountCurve _dc = null;
 	private java.lang.String _strRegressionScenario = "org.drip.analytics.curve.CreditCurve";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new

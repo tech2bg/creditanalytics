@@ -399,7 +399,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams) return null;
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) return null;
 
@@ -558,7 +558,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		try {
 			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
@@ -628,7 +628,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();

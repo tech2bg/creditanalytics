@@ -106,8 +106,8 @@ public abstract class FXForward extends org.drip.service.stream.Serializer {
 
 	public abstract double implyFXForward (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblFXSpot,
 		final boolean bFwdAsPIP)
 		throws java.lang.Exception;
@@ -130,8 +130,8 @@ public abstract class FXForward extends org.drip.service.stream.Serializer {
 
 	public abstract double calcDCBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblFXSpot,
 		final double dblMarketFXFwdPrice,
 		final boolean bBasisOnDenom)
@@ -150,7 +150,7 @@ public abstract class FXForward extends org.drip.service.stream.Serializer {
 
 	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblFXSpot);
 }

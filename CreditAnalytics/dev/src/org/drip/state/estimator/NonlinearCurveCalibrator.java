@@ -53,11 +53,11 @@ public class NonlinearCurveCalibrator {
 		private double _dblCalibValue = java.lang.Double.NaN;
 		private org.drip.product.definition.Component _comp = null;
 		private org.drip.analytics.definition.ExplicitBootCreditCurve _cc = null;
-		private org.drip.analytics.definition.DiscountCurve _dc = null;
+		private org.drip.analytics.rates.DiscountCurve _dc = null;
 		private org.drip.param.pricer.PricerParams _pricerParams = null;
-		private org.drip.analytics.definition.DiscountCurve _dcTSY = null;
+		private org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 		private org.drip.param.valuation.ValuationParams _valParams = null;
-		private org.drip.analytics.definition.DiscountCurve _dcEDSF = null;
+		private org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 		private org.drip.param.valuation.QuotingParams _quotingParams = null;
 		private java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
@@ -67,9 +67,9 @@ public class NonlinearCurveCalibrator {
 			final org.drip.product.definition.Component comp,
 			final int iInstr,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.definition.DiscountCurve dc,
-			final org.drip.analytics.definition.DiscountCurve dcTSY,
-			final org.drip.analytics.definition.DiscountCurve dcEDSF,
+			final org.drip.analytics.rates.DiscountCurve dc,
+			final org.drip.analytics.rates.DiscountCurve dcTSY,
+			final org.drip.analytics.rates.DiscountCurve dcEDSF,
 			final org.drip.param.pricer.PricerParams pricerParamsIn,
 			final java.lang.String strMeasure,
 			final double dblCalibValue,
@@ -133,8 +133,8 @@ public class NonlinearCurveCalibrator {
 
 	private double calcCalibrationMetric (
 		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,
@@ -170,8 +170,8 @@ public class NonlinearCurveCalibrator {
 
 	private double calibrateIRCurve (
 		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,
@@ -245,9 +245,9 @@ public class NonlinearCurveCalibrator {
 		final org.drip.product.definition.Component comp,
 		final int iInstr,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.param.pricer.PricerParams pricerParamsIn,
 		final java.lang.String strMeasure,
 		final double dblCalibValue,
@@ -301,9 +301,9 @@ public class NonlinearCurveCalibrator {
 	 */
 
 	public double calibrateIRNode (
-		final org.drip.analytics.definition.ExplicitBootDiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.ExplicitBootDiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component comp,
 		final int iInstr,
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -377,9 +377,9 @@ public class NonlinearCurveCalibrator {
 	 */
 
 	public boolean bootstrapInterestRateSequence (
-		final org.drip.analytics.definition.ExplicitBootDiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.ExplicitBootDiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,
@@ -436,8 +436,8 @@ public class NonlinearCurveCalibrator {
 
 	public boolean bootstrapNonlinearInterestRateSequence (
 		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve nldfdc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.Component[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,

@@ -207,12 +207,12 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 	@Override public double[] getFullFXFwd (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom,
 		final boolean bFwdAsPIP)
 	{
-		org.drip.analytics.definition.DiscountCurve dcBasisAdj = null;
+		org.drip.analytics.rates.DiscountCurve dcBasisAdj = null;
 		double[] adblFXFwd = new double[_adblFXBasis.length];
 
 		if (bBasisOnDenom)
@@ -236,14 +236,14 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 				if (bBasisOnDenom) {
 					if (_bIsFXBasisBootstrapped) {
-						if (!(dcBasisAdj instanceof org.drip.analytics.definition.ExplicitBootDiscountCurve))
+						if (!(dcBasisAdj instanceof org.drip.analytics.rates.ExplicitBootDiscountCurve))
 							return null;
 
-						if (((org.drip.analytics.definition.ExplicitBootDiscountCurve)
+						if (((org.drip.analytics.rates.ExplicitBootDiscountCurve)
 							dcBasisAdj).bumpNodeValue (i, _adblFXBasis[i]))
 							return null;;
 					} else
-						dcBasisAdj = (org.drip.analytics.definition.DiscountCurve)
+						dcBasisAdj = (org.drip.analytics.rates.DiscountCurve)
 							dcDenom.parallelShiftQuantificationMetric (_adblFXBasis[i]);
 
 					if (null == dcBasisAdj) {
@@ -258,14 +258,14 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 						bFwdAsPIP);
 				} else {
 					if (_bIsFXBasisBootstrapped) {
-						if (!(dcBasisAdj instanceof org.drip.analytics.definition.ExplicitBootDiscountCurve))
+						if (!(dcBasisAdj instanceof org.drip.analytics.rates.ExplicitBootDiscountCurve))
 							return null;
 
-						if (((org.drip.analytics.definition.ExplicitBootDiscountCurve)
+						if (((org.drip.analytics.rates.ExplicitBootDiscountCurve)
 							dcBasisAdj).bumpNodeValue (i, _adblFXBasis[i]))
 							return null;;
 					} else
-						dcBasisAdj = (org.drip.analytics.definition.DiscountCurve)
+						dcBasisAdj = (org.drip.analytics.rates.DiscountCurve)
 							dcNum.parallelShiftQuantificationMetric (_adblFXBasis[i]);
 
 					if (null == dcBasisAdj) {

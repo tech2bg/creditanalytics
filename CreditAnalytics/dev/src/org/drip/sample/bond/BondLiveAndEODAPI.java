@@ -16,6 +16,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.output.ExerciseInfo;
 import org.drip.analytics.period.*;
+import org.drip.analytics.rates.ExplicitBootDiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.definition.*;
 import org.drip.param.pricer.PricerParams;

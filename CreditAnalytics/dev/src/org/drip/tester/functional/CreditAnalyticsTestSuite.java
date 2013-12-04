@@ -478,28 +478,28 @@ public class CreditAnalyticsTestSuite {
 		java.util.Set<java.lang.String> setstrIRCurves =
 			org.drip.service.api.CreditAnalytics.GetEODIRCurveNames (dt1);
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.service.api.CreditAnalytics.LoadEODFullIRCurve ("EUR", dt1);
 
-		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.definition.DiscountCurve> mapDC
+		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.rates.DiscountCurve> mapDC
 			= org.drip.service.api.CreditAnalytics.LoadEODFullIRCurves ("EUR", dt1, dt2);
 
-		org.drip.analytics.definition.DiscountCurve dcCash =
+		org.drip.analytics.rates.DiscountCurve dcCash =
 			org.drip.service.api.CreditAnalytics.LoadEODIRCashCurve ("EUR", dt1);
 
-		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.definition.DiscountCurve>
+		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.rates.DiscountCurve>
 			mapCashDC = org.drip.service.api.CreditAnalytics.LoadEODIRCashCurves ("EUR", dt1, dt2);
 
-		org.drip.analytics.definition.DiscountCurve dcEDF =
+		org.drip.analytics.rates.DiscountCurve dcEDF =
 			org.drip.service.api.CreditAnalytics.LoadEODEDFCurve ("EUR", dt1);
 
-		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.definition.DiscountCurve>
+		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.rates.DiscountCurve>
 			mapEDFDC = org.drip.service.api.CreditAnalytics.LoadEODEDFCurves ("EUR", dt1, dt2);
 
-		org.drip.analytics.definition.DiscountCurve dcIRS =
+		org.drip.analytics.rates.DiscountCurve dcIRS =
 			org.drip.service.api.CreditAnalytics.LoadEODIRSwapCurve ("EUR", dt1);
 
-		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.definition.DiscountCurve>
+		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.rates.DiscountCurve>
 			mapIRSDC = org.drip.service.api.CreditAnalytics.LoadEODIRSwapCurves ("EUR", dt1, dt2);
 
 		double[] adblDF = new double[5];
@@ -514,24 +514,24 @@ public class CreditAnalyticsTestSuite {
 			adblDF[i] = 1. - 2 * (i + 1) * (adblRate[i] = 0.05);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dcFromDF =
+		org.drip.analytics.rates.DiscountCurve dcFromDF =
 			org.drip.state.creator.DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", adblDate, adblDF,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcFromRate =
+		org.drip.analytics.rates.DiscountCurve dcFromRate =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "EUR", adblDate, adblRate,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcFromFlatRate =
+		org.drip.analytics.rates.DiscountCurve dcFromFlatRate =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", 0.04);
 
 		java.util.Set<java.lang.String> setstrTSYCurves =
 			org.drip.service.api.CreditAnalytics.GetEODTSYCurveNames (dt1);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.service.api.CreditAnalytics.LoadEODTSYCurve ("USD", dt1);
 
-		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.definition.DiscountCurve>
+		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.rates.DiscountCurve>
 			mapTSYDC = org.drip.service.api.CreditAnalytics.LoadEODTSYCurves ("USD", dt1, dt2);
 
 		if (s_bPrintEODIRCurveNames) {
@@ -598,10 +598,10 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bPrintEODIRFullCurves) {
 			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.definition.DiscountCurve> meDC : mapDC.entrySet()) {
+				org.drip.analytics.rates.DiscountCurve> meDC : mapDC.entrySet()) {
 				org.drip.analytics.date.JulianDate dt = meDC.getKey();
 
-				org.drip.analytics.definition.DiscountCurve dcEOD = meDC.getValue();
+				org.drip.analytics.rates.DiscountCurve dcEOD = meDC.getValue();
 
 				try {
 					System.out.println (dt + "[IRS.3Y] => " + dcEOD.manifestMeasure ("IRS.3Y"));
@@ -647,10 +647,10 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bPrintEODIRCashCurves) {
 			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.definition.DiscountCurve> meCashDC : mapCashDC.entrySet()) {
+				org.drip.analytics.rates.DiscountCurve> meCashDC : mapCashDC.entrySet()) {
 				org.drip.analytics.date.JulianDate dt = meCashDC.getKey();
 
-				org.drip.analytics.definition.DiscountCurve dcEOD = meCashDC.getValue();
+				org.drip.analytics.rates.DiscountCurve dcEOD = meCashDC.getValue();
 
 				try {
 					System.out.println (dt + "[3M] => " + (int) (10000. * dcEOD.manifestMeasure ("3M")));
@@ -696,10 +696,10 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bPrintEODIREDFCurves) {
 			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.definition.DiscountCurve> meEDFDC : mapEDFDC.entrySet()) {
+				org.drip.analytics.rates.DiscountCurve> meEDFDC : mapEDFDC.entrySet()) {
 				org.drip.analytics.date.JulianDate dt = meEDFDC.getKey();
 
-				org.drip.analytics.definition.DiscountCurve dcEOD = meEDFDC.getValue();
+				org.drip.analytics.rates.DiscountCurve dcEOD = meEDFDC.getValue();
 
 				try {
 					System.out.println (dt + "[EDZ3] => " + (int) (10000. * dcEOD.manifestMeasure ("EDZ3")));
@@ -745,10 +745,10 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bPrintEODIRSwapCurves) {
 			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.definition.DiscountCurve> meIRSDC : mapIRSDC.entrySet()) {
+				org.drip.analytics.rates.DiscountCurve> meIRSDC : mapIRSDC.entrySet()) {
 				org.drip.analytics.date.JulianDate dt = meIRSDC.getKey();
 
-				org.drip.analytics.definition.DiscountCurve dcEOD = meIRSDC.getValue();
+				org.drip.analytics.rates.DiscountCurve dcEOD = meIRSDC.getValue();
 
 				try {
 					System.out.println (dt + "[IRS.40Y bp] => " + (int) (dcEOD.manifestMeasure ("IRS.40Y") *
@@ -846,10 +846,10 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bPrintEODTSYCurves) {
 			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.definition.DiscountCurve> meTSYDC : mapTSYDC.entrySet()) {
+				org.drip.analytics.rates.DiscountCurve> meTSYDC : mapTSYDC.entrySet()) {
 				org.drip.analytics.date.JulianDate dt = meTSYDC.getKey();
 
-				org.drip.analytics.definition.DiscountCurve dcTSYEOD = meTSYDC.getValue();
+				org.drip.analytics.rates.DiscountCurve dcTSYEOD = meTSYDC.getValue();
 
 				try {
 					System.out.println (dt + "[5Y] => " + (int) (10000. * dcTSYEOD.manifestMeasure ("5Y")));
@@ -1028,7 +1028,7 @@ public class CreditAnalyticsTestSuite {
 
 	public static final void CDSAPISample()
 	{
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05);
 
@@ -1178,11 +1178,11 @@ public class CreditAnalyticsTestSuite {
 			org.drip.param.valuation.ValuationParams.CreateValParams (dtToday, 0, "",
 				org.drip.analytics.daycount.Convention.DR_ACTUAL);
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.03);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
@@ -1508,11 +1508,11 @@ public class CreditAnalyticsTestSuite {
 			org.drip.service.api.CreditAnalytics.PutBond ("CustomBondFromCF", aBond[2] = CreateCustomBond
 				("CustomBondFromCF", org.drip.product.creator.BondBuilder.BOND_TYPE_SIMPLE_FROM_CF));
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.04);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.03);
 
@@ -1690,10 +1690,10 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.05);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
@@ -2715,7 +2715,7 @@ public class CreditAnalyticsTestSuite {
 	{
 		double dblCreditPrice = java.lang.Double.NaN;
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "DKK", 0.04);
 
@@ -2890,11 +2890,11 @@ public class CreditAnalyticsTestSuite {
 
 		java.util.Random rand = new java.util.Random();
 
-		org.drip.analytics.definition.DiscountCurve dcUSD =
+		org.drip.analytics.rates.DiscountCurve dcUSD =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05);
 
-		org.drip.analytics.definition.DiscountCurve dcEUR =
+		org.drip.analytics.rates.DiscountCurve dcEUR =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 				(org.drip.analytics.date.JulianDate.Today(), "EUR", 0.04);
 

@@ -29,13 +29,13 @@ package org.drip.state.estimator;
  */
 
 /**
- * LocalControlCurveParams contains the Parameters needed to hold the regime - the Calibration Boundary
+ * LocalControlCurveParams contains the Parameters needed to hold the Stretch - the Calibration Boundary
  *  Condition, the Calibration Detail, and the BestFitWeightedResponse Instance.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class LocalControlCurveParams extends org.drip.state.estimator.SmoothingCurveRegimeParams {
+public class LocalControlCurveParams extends org.drip.state.estimator.SmoothingCurveStretchParams {
 	private boolean _bApplyMonotoneFilter = false;
 	private boolean _bEliminateSpuriousExtrema = false;
 	private java.lang.String _strC1GeneratorScheme = "";
@@ -43,11 +43,11 @@ public class LocalControlCurveParams extends org.drip.state.estimator.SmoothingC
 	/**
 	 * LocalControlCurveParams constructor
 	 * 
-	 * @param strC1GeneratorScheme C1 Generator Regime
+	 * @param strC1GeneratorScheme C1 Generator Stretch
 	 * @param strSmootheningQuantificationMetric Curve Smoothening Quantification Metric
-	 * @param prbp Segment Builder Parameters
+	 * @param scbc Segment Builder Parameters
 	 * @param iCalibrationDetail The Calibration Detail
-	 * @param rfwr Curve Fitness Weighted Response
+	 * @param sbfr Curve Fitness Weighted Response
 	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
 	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
 	 * 
@@ -57,14 +57,14 @@ public class LocalControlCurveParams extends org.drip.state.estimator.SmoothingC
 	public LocalControlCurveParams (
 		final java.lang.String strC1GeneratorScheme,
 		final java.lang.String strSmootheningQuantificationMetric,
-		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.RegimeBestFitResponse rbfr,
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
 		final boolean bEliminateSpuriousExtrema,
 		final boolean bApplyMonotoneFilter)
 		throws java.lang.Exception
 	{
-		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, rbfr);
+		super (strSmootheningQuantificationMetric, scbc, iCalibrationDetail, sbfr);
 
 		if (null == (_strC1GeneratorScheme = strC1GeneratorScheme))
 			throw new java.lang.Exception ("LocalControlCurveParams ctr: Invalid Inputs!");

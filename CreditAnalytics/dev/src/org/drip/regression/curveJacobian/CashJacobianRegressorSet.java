@@ -54,7 +54,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 				org.drip.analytics.date.JulianDate dtStart = null;
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.analytics.definition.DiscountCurve dcCash = null;
+				org.drip.analytics.rates.DiscountCurve dcCash = null;
 				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
 
 				@Override public boolean preRegression() {

@@ -40,8 +40,8 @@ package org.drip.state.curve;
  * @author Lakshmi Krishnamurthy
  */
 
-public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
-	private org.drip.analytics.definition.DiscountCurve _dc = null;
+public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
+	private org.drip.analytics.rates.DiscountCurve _dc = null;
 
 	private java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> _mapDF = new
 		java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
@@ -114,7 +114,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final double dblZCBump)
 		throws java.lang.Exception
@@ -228,7 +228,7 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;
+		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;
 	}
 
 	@Override public double manifestMeasure (
@@ -275,37 +275,23 @@ public class DerivedZeroRate extends org.drip.analytics.definition.ZeroCurve {
 		 return _dc.setCCIS (ccis);
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve parallelShiftQuantificationMetric (
+	@Override public org.drip.analytics.rates.DiscountCurve parallelShiftQuantificationMetric (
 		final double dblShift)
 	{
-		return (org.drip.analytics.definition.DiscountCurve) _dc.parallelShiftQuantificationMetric
+		return (org.drip.analytics.rates.DiscountCurve) _dc.parallelShiftQuantificationMetric
 			(dblShift);
 	}
 
 	@Override public org.drip.analytics.definition.Curve customTweakQuantificationMetric (
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
-		return (org.drip.analytics.definition.DiscountCurve) _dc.customTweakQuantificationMetric
+		return (org.drip.analytics.rates.DiscountCurve) _dc.customTweakQuantificationMetric
 			(rvtp);
 	}
 
 	@Override public java.lang.String currency()
 	{
 		return _dc.currency();
-	}
-
-	@Override public double df (
-		final org.drip.analytics.date.JulianDate dt)
-		throws java.lang.Exception
-	{
-		return _dc.df (dt);
-	}
-
-	@Override public double df (
-		final java.lang.String strTenor)
-		throws java.lang.Exception
-	{
-		return _dc.df (strTenor);
 	}
 
 	@Override public double effectiveDF (

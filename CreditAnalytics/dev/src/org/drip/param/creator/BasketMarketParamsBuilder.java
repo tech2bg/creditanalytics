@@ -49,7 +49,7 @@ public class BasketMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.BasketMarketParams CreateBasketMarketParams (
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 			mapDC,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 			mapCC,

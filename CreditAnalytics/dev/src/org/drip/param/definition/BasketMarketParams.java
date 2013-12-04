@@ -50,7 +50,7 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 
 	public abstract boolean addDC (
 		final java.lang.String strName,
-		final org.drip.analytics.definition.DiscountCurve dc);
+		final org.drip.analytics.rates.DiscountCurve dc);
 
 	/**
 	 * Adds a named credit curve
@@ -73,7 +73,7 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 	 * @return Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getDC (
+	public abstract org.drip.analytics.rates.DiscountCurve getDC (
 		final java.lang.String strName);
 
 	/**

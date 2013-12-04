@@ -39,7 +39,7 @@ package org.drip.state.curve;
  * @author Lakshmi Krishnamurthy
  */
 
-public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.DiscountCurve {
+public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.DiscountCurve {
 	private org.drip.spline.grid.Span _span = null;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
 	private org.drip.analytics.definition.CurveSpanConstructionInput _rcci = null;
@@ -47,15 +47,15 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 	private DiscountFactorDiscountCurve shiftManifestMeasure (
 		final double[] adblShiftedManifestMeasure)
 	{
-		org.drip.state.estimator.RegimeRepresentationSpec[] aRBS = _rcci.getRBS();
+		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.getSRS();
 
-		org.drip.state.estimator.RegimeRepresentationSpec[] aRBSBumped = new
-			org.drip.state.estimator.RegimeRepresentationSpec[aRBS.length];
+		org.drip.state.estimator.StretchRepresentationSpec[] aRBSBumped = new
+			org.drip.state.estimator.StretchRepresentationSpec[aRBS.length];
 
 		int iRBSIndex = 0;
 		int iCalibInstrIndex = 0;
 
-		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : aRBS) {
+		for (org.drip.state.estimator.StretchRepresentationSpec rbs : aRBS) {
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
 
 			int iNumLSMM = aLSMM.length;
@@ -69,9 +69,9 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 			}
 
 			try {
-				aRBSBumped[iRBSIndex++] = new org.drip.state.estimator.RegimeRepresentationSpec
+				aRBSBumped[iRBSIndex++] = new org.drip.state.estimator.StretchRepresentationSpec
 					(rbs.getName(), aLSMM[0].getID(), aLSMM[0].getQuantificationMetric(), rbs.getCalibComp(),
-						astrManifestMeasure, adblQuoteBumped);
+						astrManifestMeasure, adblQuoteBumped, null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -104,7 +104,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		final org.drip.spline.grid.Span span)
 		throws java.lang.Exception
 	{
-		super (span.left(), strCurrency);
+		super (span.left(), strCurrency, null);
 
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log ((_span = span).calcResponseValue
 			(_span.right())) / (_span.right() - _span.left());
@@ -121,8 +121,9 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 
 		if (dblDate <= dblStartDate) return 1.;
 
-		return dblDate <= _span.right() ? _span.calcResponseValue (dblDate) : java.lang.Math.exp (-1. *
-			_dblRightFlatForwardRate * (dblDate - dblStartDate) / 365.25);
+		return (dblDate <= _span.right() ? _span.calcResponseValue (dblDate) : java.lang.Math.exp (-1. *
+			_dblRightFlatForwardRate * (dblDate - dblStartDate) / 365.25)) * turnAdjust (epoch().getJulian(),
+				dblDate);
 	}
 
 	@Override public double forward (
@@ -157,7 +158,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
+		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
 	}
 
 	@Override public DiscountFactorDiscountCurve parallelShiftManifestMeasure (
@@ -199,7 +200,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		return shiftManifestMeasure (adblShiftedManifestMeasure);
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve customTweakManifestMeasure (
+	@Override public org.drip.analytics.rates.DiscountCurve customTweakManifestMeasure (
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		if (null == rvtp) return null;
@@ -262,9 +263,9 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.definition.D
 		java.util.List<org.drip.state.representation.LatentStateMetricMeasure> lsLSMM = new
 			java.util.ArrayList<org.drip.state.representation.LatentStateMetricMeasure>();
 
-		org.drip.state.estimator.RegimeRepresentationSpec[] aRBS = _rcci.getRBS();
+		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.getSRS();
 
-		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : aRBS) {
+		for (org.drip.state.estimator.StretchRepresentationSpec rbs : aRBS) {
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
 
 			int iNumLSMM = aLSMM.length;

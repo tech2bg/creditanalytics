@@ -52,8 +52,8 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 	private double calcNodeBasis (
 		final int iNode,
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom)
 		throws java.lang.Exception
 	{
@@ -245,8 +245,8 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 	@Override public double[] getFullBasis (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom)
 	{
 		double[] adblBasis = new double[_abIsPIP.length];
@@ -266,15 +266,15 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 	@Override public double[] bootstrapBasis (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom)
 	{
 		double[] adblBasis = new double[_abIsPIP.length];
-		org.drip.analytics.definition.ExplicitBootDiscountCurve dcBasis = null;
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dcBasis = null;
 
 		try {
-			dcBasis = (org.drip.analytics.definition.ExplicitBootDiscountCurve) (bBasisOnDenom ?
+			dcBasis = (org.drip.analytics.rates.ExplicitBootDiscountCurve) (bBasisOnDenom ?
 				dcDenom.parallelShiftQuantificationMetric (0.) : dcNum.parallelShiftQuantificationMetric
 					(0.));
 		} catch (java.lang.Exception e) {
@@ -303,20 +303,20 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return adblBasis;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve bootstrapBasisDC (
+	@Override public org.drip.analytics.rates.DiscountCurve bootstrapBasisDC (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom)
 	{
-		org.drip.analytics.definition.ExplicitBootDiscountCurve dcBasis = null;
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dcBasis = null;
 
 		try {
 			if (bBasisOnDenom)
-				dcBasis = (org.drip.analytics.definition.ExplicitBootDiscountCurve)
+				dcBasis = (org.drip.analytics.rates.ExplicitBootDiscountCurve)
 					dcDenom.parallelShiftManifestMeasure (0.);
 			else
-				dcBasis = (org.drip.analytics.definition.ExplicitBootDiscountCurve)
+				dcBasis = (org.drip.analytics.rates.ExplicitBootDiscountCurve)
 					dcNum.parallelShiftManifestMeasure (0.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -348,8 +348,8 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 	public double rate (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final double dblDate,
 		final boolean bBasisOnDenom)
 		throws java.lang.Exception
@@ -357,7 +357,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FXForwardCurve.rate: Invalid input date!");
 
-		org.drip.analytics.definition.DiscountCurve dcImplied = bootstrapBasisDC (valParam, dcNum, dcDenom,
+		org.drip.analytics.rates.DiscountCurve dcImplied = bootstrapBasisDC (valParam, dcNum, dcDenom,
 			bBasisOnDenom);
 
 		if (null == dcImplied)
@@ -368,8 +368,8 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 	@Override public double[] calcImpliedNodeRates (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom)
 	{
 		double[] adblImpliedNodeRate = new double[_abIsPIP.length];

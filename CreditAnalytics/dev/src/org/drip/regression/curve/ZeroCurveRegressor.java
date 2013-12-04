@@ -40,7 +40,7 @@ package org.drip.regression.curve;
  */
 
 public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet {
-	private org.drip.analytics.definition.ZeroCurve _zc = null;
+	private org.drip.analytics.rates.ZeroCurve _zc = null;
 	private java.lang.String _strRegressionScenario = "org.drip.analytics.curve.ZeroCurve";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -72,7 +72,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				private static final double s_dblZSpread = 0.01;
 
 				private org.drip.analytics.date.JulianDate _dtStart = null;
-				private org.drip.analytics.definition.ExplicitBootDiscountCurve _dc = null;
+				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dc = null;
 				private org.drip.analytics.date.JulianDate _dtPeriodStart = null;
 
 				private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = new

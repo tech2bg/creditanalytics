@@ -321,7 +321,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams) return null;
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) return null;
 
@@ -389,7 +389,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 			double dblPV = mapMeasures.get ("PV");
 
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 			org.drip.quant.calculus.WengertJacobian wjDFDF = dc.dfJack (_dblMaturity);
 
@@ -426,7 +426,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 		if ("Rate".equalsIgnoreCase (strQuote)) {
 			try {
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 				org.drip.quant.calculus.WengertJacobian wjDF = dc.dfJack (_dblMaturity);
 
@@ -457,41 +457,48 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == lsmm ||
-			!org.drip.analytics.definition.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
-				(lsmm.getID()))
+		if (null == valParams || valParams._dblValue >= _dblMaturity || null == lsmm || !(lsmm instanceof
+			org.drip.analytics.rates.RatesLSMM) ||
+				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+					(lsmm.getID()))
 			return null;
 
-		if (org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(lsmm.getQuantificationMetric())) {
+		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
+
+		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			(ratesLSMM.getQuantificationMetric())) {
 			try {
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
+
+				double dblTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue, _dblMaturity);
+
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"Price"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();
 
-					return prlc.addPredictorResponseWeight (_dblMaturity, 1.) && prlc.setValue (0.01 *
-						lsmm.getMeasureQuoteValue()) ? prlc : null;
+					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.setValue (0.01 *
+						ratesLSMM.getMeasureQuoteValue()) ? prlc : null;
 				}
 
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"PV"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();
 
-					return prlc.addPredictorResponseWeight (_dblMaturity, 1.) && prlc.setValue
-						(lsmm.getMeasureQuoteValue()) ? prlc : null;
+					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.setValue
+						(ratesLSMM.getMeasureQuoteValue()) ? prlc : null;
 				}
 
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"Rate"}, false)) {
 					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseLinearConstraint();
 
-					return prlc.addPredictorResponseWeight (_dblMaturity, 1.) && prlc.setValue (1. / (1. +
-						lsmm.getMeasureQuoteValue() * org.drip.analytics.daycount.Convention.YearFraction
-							(_dblEffective, _dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar)))
-								? prlc : null;
+					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.setValue (1. /
+						(1. + ratesLSMM.getMeasureQuoteValue() *
+							org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
+								_strDC, false, _dblMaturity, null, _strCalendar))) ? prlc : null;
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

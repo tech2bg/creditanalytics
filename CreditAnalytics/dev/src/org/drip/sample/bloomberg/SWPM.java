@@ -5,8 +5,8 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
-import org.drip.analytics.definition.DiscountCurve;
 import org.drip.analytics.period.Period;
+import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.definition.ComponentMarketParams;

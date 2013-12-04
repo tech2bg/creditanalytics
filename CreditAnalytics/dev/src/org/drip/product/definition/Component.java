@@ -558,7 +558,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	protected boolean adjustPVDFMicroJackForCashSettle (
 		final double dblSettleDate,
 		final double dblPV,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack)
 	{
 		org.drip.quant.calculus.WengertJacobian wjCashSettleDFDF = dc.dfJack (dblSettleDate);

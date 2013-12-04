@@ -89,8 +89,8 @@ public abstract class RatesScenarioCurve {
 
 	public abstract boolean cookScenarioDC (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
@@ -122,8 +122,8 @@ public abstract class RatesScenarioCurve {
 		final java.lang.String strCurveName,
 		final java.lang.String strCustomName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
@@ -139,7 +139,7 @@ public abstract class RatesScenarioCurve {
 	 * @return The base Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getDCBase();
+	public abstract org.drip.analytics.rates.DiscountCurve getDCBase();
 
 	/**
 	 * Return the Bump Up Discount Curve
@@ -147,7 +147,7 @@ public abstract class RatesScenarioCurve {
 	 * @return The Bump Up Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getDCBumpUp();
+	public abstract org.drip.analytics.rates.DiscountCurve getDCBumpUp();
 
 	/**
 	 * Return the Bump Down Discount Curve
@@ -155,7 +155,7 @@ public abstract class RatesScenarioCurve {
 	 * @return The Bump Down Discount Curve
 	 */
 
-	public abstract org.drip.analytics.definition.DiscountCurve getDCBumpDn();
+	public abstract org.drip.analytics.rates.DiscountCurve getDCBumpDn();
 
 	/**
 	 * Return the map of the tenor Bump Up Discount Curve
@@ -164,7 +164,7 @@ public abstract class RatesScenarioCurve {
 	 */
 
 	public abstract
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 			getTenorDCBumpUp();
 
 	/**
@@ -174,6 +174,6 @@ public abstract class RatesScenarioCurve {
 	 */
 
 	public abstract
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 			getTenorDCBumpDn();
 }

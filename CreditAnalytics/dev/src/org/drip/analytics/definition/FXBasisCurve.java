@@ -89,8 +89,8 @@ public abstract class FXBasisCurve extends org.drip.service.stream.Serializer im
 
 	public abstract double[] getFullFXFwd (
 		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.analytics.definition.DiscountCurve dcNum,
-		final org.drip.analytics.definition.DiscountCurve dcDenom,
+		final org.drip.analytics.rates.DiscountCurve dcNum,
+		final org.drip.analytics.rates.DiscountCurve dcDenom,
 		final boolean bBasisOnDenom,
 		final boolean bFwdAsPIP);
 }

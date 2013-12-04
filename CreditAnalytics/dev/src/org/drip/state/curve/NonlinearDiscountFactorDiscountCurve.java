@@ -42,11 +42,11 @@ package org.drip.state.curve;
  */
 
 public class NonlinearDiscountFactorDiscountCurve extends
-	org.drip.analytics.definition.ExplicitBootDiscountCurve {
+	org.drip.analytics.rates.ExplicitBootDiscountCurve {
 	private double[] _adblDate = null;
 	private double _dblLeftNodeDF = java.lang.Double.NaN;
 	private double _dblLeftNodeDFSlope = java.lang.Double.NaN;
-	private org.drip.spline.regime.MultiSegmentSequence _msr = null;
+	private org.drip.spline.stretch.MultiSegmentSequence _msr = null;
 	private double _dblLeftFlatForwardRate = java.lang.Double.NaN;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
 
@@ -125,7 +125,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		org.drip.spline.params.SegmentCustomBuilderControl sbp = new
 			org.drip.spline.params.SegmentCustomBuilderControl
-				(org.drip.spline.regime.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
+				(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.spline.basis.PolynomialFunctionSetParams (2),
 						org.drip.spline.params.SegmentDesignInelasticControl.Create (0, 2), null);
 
@@ -153,10 +153,10 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log (adblDF[iNumSegment - 1]) /
 			(_adblDate[iNumSegment - 1] - _dblEpochDate);
 
-		_msr = org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateCalibratedRegimeEstimator
+		_msr = org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
 			("POLY_SPLINE_DF_REGIME", adblDate, adblDF, aSBP, null,
-				org.drip.spline.regime.BoundarySettings.NaturalStandard(),
-					org.drip.spline.regime.MultiSegmentSequence.CALIBRATE);
+				org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
 	}
 
 	/**
@@ -255,8 +255,9 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		if (dblDate <= _adblDate[0])
 			return java.lang.Math.exp (-1. * _dblLeftFlatForwardRate * (dblDate - _dblEpochDate) / 365.25);
 
-		return dblDate <= _adblDate[_adblDate.length - 1] ? _msr.responseValue (dblDate) : java.lang.Math.exp (-1.
-			* _dblRightFlatForwardRate * (dblDate - _dblEpochDate) / 365.25);
+		return (dblDate <= _adblDate[_adblDate.length - 1] ? _msr.responseValue (dblDate) :
+			java.lang.Math.exp (-1. * _dblRightFlatForwardRate * (dblDate - _dblEpochDate) / 365.25))  *
+				turnAdjust (epoch().getJulian(), dblDate);
 	}
 
 	@Override public double forward (
@@ -329,7 +330,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		return shiftManifestMeasure (adblShiftedManifestMeasure);
 	}
 
-	@Override public org.drip.analytics.definition.ExplicitBootDiscountCurve customTweakManifestMeasure (
+	@Override public org.drip.analytics.rates.ExplicitBootDiscountCurve customTweakManifestMeasure (
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		if (null == rvtp) return null;
@@ -385,7 +386,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
+		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian dfJack (

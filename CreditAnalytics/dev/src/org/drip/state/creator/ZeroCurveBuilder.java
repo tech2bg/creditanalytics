@@ -64,7 +64,7 @@ public class ZeroCurveBuilder {
 	 * @throws The new Zero Curve instance
 	 */
 
-	public static final org.drip.analytics.definition.ZeroCurve CreateZeroCurve (
+	public static final org.drip.analytics.rates.ZeroCurve CreateZeroCurve (
 		final int iFreqZC,
 		final java.lang.String strDCZC,
 		final java.lang.String strCalendarZC,
@@ -72,7 +72,7 @@ public class ZeroCurveBuilder {
 		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final double dblZCBump)
 	{
@@ -94,7 +94,7 @@ public class ZeroCurveBuilder {
 	 * @return Zero Curve Instance
 	 */
 
-	public static final org.drip.analytics.definition.ZeroCurve FromByteArray (
+	public static final org.drip.analytics.rates.ZeroCurve FromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;

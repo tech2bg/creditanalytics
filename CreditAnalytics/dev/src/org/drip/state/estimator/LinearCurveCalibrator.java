@@ -39,28 +39,28 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	/**
 	 * LinearCurveCalibrator constructor
 	 * 
-	 * @param prbp Segment Builder Parameters
-	 * @param bc The Calibration Boundary Condition
+	 * @param scbc Segment Builder Control Parameters
+	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
-	 * @param rfwr Curve Fitness Weighted Response
+	 * @param sbfr Curve Fitness Weighted Response
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public LinearCurveCalibrator (
-		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
-		final org.drip.spline.regime.BoundarySettings bc,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
+		final org.drip.spline.stretch.BoundarySettings bs,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.RegimeBestFitResponse rfwr)
+		final org.drip.spline.params.StretchBestFitResponse sbfr)
 		throws java.lang.Exception
 	{
-		super ("", prbp, bc, iCalibrationDetail, rfwr);
+		super ("", scbc, bs, iCalibrationDetail, sbfr);
 	}
 
 	/**
-	 * Calibrate the Span from the Instruments in the Regimes, and their Cash Flows.
+	 * Calibrate the Span from the Instruments in the Stretches, and their Cash Flows.
 	 * 
-	 * @param aRBS Array of the Regime Builder Parameters
+	 * @param aSRS Array of the Stretch Builder Parameters
 	 * @param dblEpochResponse Segment Sequence Left-most Response Value
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
@@ -70,48 +70,48 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	 * @return Instance of the Discount Curve Span
 	 */
 
-	public org.drip.spline.grid.OverlappingRegimeSpan calibrateSpan (
-		final org.drip.state.estimator.RegimeRepresentationSpec[] aRBS,
+	public org.drip.spline.grid.OverlappingStretchSpan calibrateSpan (
+		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final double dblEpochResponse,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 	{
-		if (null == aRBS || null == valParams) return null;
+		if (null == aSRS || null == valParams) return null;
 
-		int iNumRegime = aRBS.length;
-		org.drip.spline.grid.OverlappingRegimeSpan span = null;
-		org.drip.spline.regime.MultiSegmentSequence regimePrev = null;
+		int iNumStretch = aSRS.length;
+		org.drip.spline.grid.OverlappingStretchSpan oss = null;
+		org.drip.spline.stretch.MultiSegmentSequence mssPrev = null;
 
-		if (0 == iNumRegime) return null;
+		if (0 == iNumStretch) return null;
 
-		for (org.drip.state.estimator.RegimeRepresentationSpec rbs : aRBS) {
-			if (null == rbs) return null;
+		for (org.drip.state.estimator.StretchRepresentationSpec srs : aSRS) {
+			if (null == srs) return null;
 
-			org.drip.product.definition.CalibratableComponent[] aCalibComp = rbs.getCalibComp();
+			org.drip.product.definition.CalibratableComponent[] aCalibComp = srs.getCalibComp();
 
 			int iNumCalibComp = aCalibComp.length;
-			org.drip.spline.regime.MultiSegmentSequence regime = null;
+			org.drip.spline.stretch.MultiSegmentSequence mss = null;
 			double[] adblPredictorOrdinate = new double[iNumCalibComp + 1];
-			org.drip.spline.params.SegmentCustomBuilderControl[] aPRBP = new
+			org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
 				org.drip.spline.params.SegmentCustomBuilderControl[iNumCalibComp];
 
 			for (int i = 0; i <= iNumCalibComp; ++i) {
 				adblPredictorOrdinate[i] = 0 == i ? valParams._dblValue :
 					aCalibComp[i - 1].getMaturityDate().getJulian();
 
-				if (i != iNumCalibComp) aPRBP[i] = prbp();
+				if (i != iNumCalibComp) aSCBC[i] = segmentBuilderControl();
 			}
 
 			try {
-				regime = new org.drip.state.estimator.CurveRegime (rbs.getName(),
-					org.drip.spline.regime.MultiSegmentSequenceBuilder.CreateSegmentSet (adblPredictorOrdinate, aPRBP),
-						aPRBP);
+				mss = new org.drip.state.estimator.CurveStretch (srs.getName(),
+					org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateSegmentSet
+						(adblPredictorOrdinate, aSCBC), aSCBC);
 
-				if (!regime.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder
-					(dblEpochResponse, rbs, valParams, pricerParams, cmp, quotingParams, regimePrev,
-						bestFitWeightedResponse(), calibrationBoundaryCondition()), calibrationDetail()))
+				if (!mss.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder (dblEpochResponse,
+					srs, valParams, pricerParams, cmp, quotingParams, mssPrev, bestFitWeightedResponse(),
+						calibrationBoundaryCondition()), calibrationDetail()))
 					return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -119,21 +119,21 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 				return null;
 			}
 
-			if (null == span) {
+			if (null == oss) {
 				try {
-					span = new org.drip.spline.grid.OverlappingRegimeSpan (regime);
+					oss = new org.drip.spline.grid.OverlappingStretchSpan (mss);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
 					return null;
 				}
 			} else {
-				if (!span.addRegime (regime)) return null;
+				if (!oss.addStretch (mss)) return null;
 			}
 
-			regimePrev = regime;
+			mssPrev = mss;
 		}
 
-		return span;
+		return oss;
 	}
 }

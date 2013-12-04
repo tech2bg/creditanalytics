@@ -487,7 +487,7 @@ public class ProductTestSuite {
 
 		mpc.addScenDC ("USDTSY", irscUSDTSY);
 
-		org.drip.analytics.definition.DiscountCurve dcBaseTSY = mpc.getScenCMP (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.getScenCMP (aCompCalib[0],
 			"Base").getDiscountCurve();
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -512,7 +512,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_UP01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpUp").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -538,7 +538,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_DN01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpDn").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -759,7 +759,7 @@ public class ProductTestSuite {
 
 		addTSYToMPC (mpc);
 
-		org.drip.analytics.definition.DiscountCurve dcBase = mpc.getScenCMP (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBase = mpc.getScenCMP (aCompCalib[0],
 			"Base").getDiscountCurve();
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -780,7 +780,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpUp").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -805,7 +805,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpDn").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -921,7 +921,7 @@ public class ProductTestSuite {
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
 
-		org.drip.analytics.definition.DiscountCurve dc = mpc.getScenCMP (aCDSBRA[0],
+		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenCMP (aCDSBRA[0],
 			"Base").getDiscountCurve();
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams

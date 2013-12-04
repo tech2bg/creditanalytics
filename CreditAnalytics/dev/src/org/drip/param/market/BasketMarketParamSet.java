@@ -41,7 +41,7 @@ package org.drip.param.market;
 public class BasketMarketParamSet extends org.drip.param.definition.BasketMarketParams {
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> _mapCC =
 		null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		_mapDC = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
@@ -61,7 +61,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	 */
 
 	public BasketMarketParamSet (
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 			mapDC,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
@@ -75,7 +75,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		if (null == (_mapDC = mapDC))
 			_mapDC = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 		if (null == (_mapCQComp = mapCQComp))
 			_mapCQComp = new
@@ -183,7 +183,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 										(astrKVPair[1]))
 						continue;
 
-					org.drip.analytics.definition.DiscountCurve dc =
+					org.drip.analytics.rates.DiscountCurve dc =
 						org.drip.state.creator.DiscountCurveBuilder.FromByteArray
 							(astrKVPair[1].getBytes(),
 								org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
@@ -191,7 +191,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 					if (null != dc) {
 						if (null == _mapDC)
 							_mapDC = new
-								org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+								org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 						_mapDC.put (astrKVPair[0], dc);
 					}
@@ -300,7 +300,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		_mapDC = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 		_mapCQComp = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
@@ -308,7 +308,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 	@Override public boolean addDC (
 		final java.lang.String strName,
-		final org.drip.analytics.definition.DiscountCurve dc)
+		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		if (null == strName || strName.isEmpty() || null == dc) return false;
 
@@ -328,7 +328,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return true;
 	}
 
-	@Override public org.drip.analytics.definition.DiscountCurve getDC (
+	@Override public org.drip.analytics.rates.DiscountCurve getDC (
 		final java.lang.String strName)
 	{
 		if (null == strName || strName.isEmpty()) return null;
@@ -431,7 +431,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 			java.lang.StringBuffer sbMapDC = new java.lang.StringBuffer();
 
-			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.DiscountCurve> me :
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> me :
 				_mapDC.entrySet()) {
 				if (null == me || null == me.getKey() || me.getKey().isEmpty()) continue;
 
@@ -544,23 +544,23 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			adblHazardRate[i] = 0.01 * (i + 1);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc =
+		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
+		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSF =
+		org.drip.analytics.rates.DiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve> mapDC =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 		mapDC.put ("ABC", dc);
 

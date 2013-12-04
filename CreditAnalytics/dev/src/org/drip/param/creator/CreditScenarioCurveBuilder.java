@@ -77,7 +77,7 @@ public class CreditScenarioCurveBuilder {
 		final java.lang.String strName,
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final double dblRecovery,

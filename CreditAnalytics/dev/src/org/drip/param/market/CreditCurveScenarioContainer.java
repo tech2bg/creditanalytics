@@ -85,9 +85,9 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 	@Override public boolean cookScenarioCC (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
@@ -187,9 +187,9 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 		final java.lang.String strName,
 		final java.lang.String strCustomName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
@@ -213,13 +213,13 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			return false;
 		}
 
-		org.drip.analytics.definition.DiscountCurve dcAdj = (org.drip.analytics.definition.DiscountCurve)
+		org.drip.analytics.rates.DiscountCurve dcAdj = (org.drip.analytics.rates.DiscountCurve)
 			dc.customTweakManifestMeasure (mmtpDC);
 
-		org.drip.analytics.definition.DiscountCurve dcTSYAdj = (org.drip.analytics.definition.DiscountCurve)
+		org.drip.analytics.rates.DiscountCurve dcTSYAdj = (org.drip.analytics.rates.DiscountCurve)
 			dcTSY.customTweakManifestMeasure (mmtpTSY);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSFAdj = (org.drip.analytics.definition.DiscountCurve)
+		org.drip.analytics.rates.DiscountCurve dcEDSFAdj = (org.drip.analytics.rates.DiscountCurve)
 			dcEDSF.customTweakManifestMeasure (mmtpEDSF);
 
 		org.drip.analytics.definition.CreditCurve ccBaseCustom = _ccsg.createCC (strName, valParams, null ==

@@ -41,7 +41,7 @@ package org.drip.state.curve;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForwardRateDiscountCurve extends org.drip.analytics.definition.ExplicitBootDiscountCurve {
+public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitBootDiscountCurve {
 	private double _adblDate[] = null;
 	private double _adblRate[] = null;
 
@@ -244,7 +244,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 
 		dblExpArg -= _adblRate[i] * (dblDate - dblStartDate);
 
-		return java.lang.Math.exp (dblExpArg / 365.25);
+		return (java.lang.Math.exp (dblExpArg / 365.25)) * turnAdjust (epoch().getJulian(), dblDate);
 	}
 
 	@Override public double forward (
@@ -318,7 +318,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 		return shiftManifestMeasure (adblShift);
 	}
 
-	@Override public org.drip.analytics.definition.ExplicitBootDiscountCurve customTweakManifestMeasure (
+	@Override public org.drip.analytics.rates.ExplicitBootDiscountCurve customTweakManifestMeasure (
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return shiftManifestMeasure (org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure
@@ -387,7 +387,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.definition.Expl
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.definition.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE;
+		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE;
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
