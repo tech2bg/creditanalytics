@@ -513,7 +513,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final byte[] ab)
 	{
 		try {
-			return new ForwardRateDiscountCurve (ab);
+			return new FlatForwardDiscountCurve (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

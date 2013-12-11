@@ -531,7 +531,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -556,28 +556,28 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"Price"}, false)) {
-					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseLinearConstraint();
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, 0.01 *
-							ratesLSMM.getMeasureQuoteValue()) && prlc.setValue (0.) ? prlc : null;
+							ratesLSMM.getMeasureQuoteValue()) && prlc.updateValue (0.) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"PV"}, false)) {
-					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseLinearConstraint();
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, ratesLSMM.getMeasureQuoteValue()) &&
-							prlc.setValue (0.) ? prlc : null;
+							prlc.updateValue (0.) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"Rate"}, false)) {
-					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseLinearConstraint();
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					double dblTurnEffectiveDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
 						_dblMaturity);
@@ -587,7 +587,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 							ratesLSMM.getMeasureQuoteValue() *
 								org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
 									_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar))) &&
-										prlc.setValue (0.) ? prlc : null;
+										prlc.updateValue (0.) ? prlc : null;
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

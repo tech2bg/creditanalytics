@@ -31,7 +31,7 @@ package org.drip.state.curve;
  */
 
 /**
- * ForwardRateDiscountCurve manages the Discounting Latent State, using the Constant Forward Rate as the
+ * FlatForwardDiscountCurve manages the Discounting Latent State, using the Constant Forward Rate as the
  *  State Response Representation. It exports the following functionality:
  *  - Calculate discount factor / discount factor Jacobian
  *  - Calculate implied forward rate / implied forward rate Jacobian
@@ -41,11 +41,11 @@ package org.drip.state.curve;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitBootDiscountCurve {
+public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitBootDiscountCurve {
 	private double _adblDate[] = null;
 	private double _adblRate[] = null;
 
-	private ForwardRateDiscountCurve shiftManifestMeasure (
+	private FlatForwardDiscountCurve shiftManifestMeasure (
 		final double[] adblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (adblShift) || null == _ccis) return null;
@@ -74,7 +74,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		if (adblShift.length != iNumComp) return null;
 
 		try {
-			ForwardRateDiscountCurve frdc = new ForwardRateDiscountCurve (new
+			FlatForwardDiscountCurve frdc = new FlatForwardDiscountCurve (new
 				org.drip.analytics.date.JulianDate (_dblEpochDate), _strCurrency, _adblDate, _adblRate);
 
 			for (int i = 0; i < iNumComp; ++i) {
@@ -106,7 +106,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	 * @throws java.lang.Exception Thrown if the curve cannot be created
 	 */
 
-	public ForwardRateDiscountCurve (
+	public FlatForwardDiscountCurve (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double[] adblDate,
@@ -116,12 +116,12 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		super (dtStart.getJulian(), strCurrency);
 
 		if (null == adblDate || null == adblRate)
-			throw new java.lang.Exception ("ForwardRateDiscountCurve ctr: Invalid inputs");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve ctr: Invalid inputs");
 
 		int iNumDate = adblDate.length;
 
 		if (0 == iNumDate || iNumDate != adblRate.length)
-			throw new java.lang.Exception ("ForwardRateDiscountCurve ctr: Invalid inputs");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve ctr: Invalid inputs");
 
 		_adblDate = new double[iNumDate];
 		_adblRate = new double[iNumDate];
@@ -132,8 +132,8 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		}
 	}
 
-	protected ForwardRateDiscountCurve (
-		final ForwardRateDiscountCurve dc)
+	protected FlatForwardDiscountCurve (
+		final FlatForwardDiscountCurve dc)
 		throws java.lang.Exception
 	{
 		super (dc.epoch().getJulian(), dc.currency());
@@ -145,14 +145,14 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	}
 
 	/**
-	 * ForwardRateDiscountCurve de-serialization from input byte array
+	 * FlatForwardDiscountCurve de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if ForwardRateDiscountCurve cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if FlatForwardDiscountCurve cannot be properly de-serialized
 	 */
 
-	public ForwardRateDiscountCurve (
+	public FlatForwardDiscountCurve (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
@@ -160,38 +160,38 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
-				("ForwardRateDiscountCurve de-serializer: Invalid input Byte array");
+				("FlatForwardDiscountCurve de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Empty state");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Empty state");
 
 		java.lang.String strSerializedConstantForwardDiscountCurve = strRawString.substring (0,
 			strRawString.indexOf (getObjectTrailer()));
 
 		if (null == strSerializedConstantForwardDiscountCurve ||
 			strSerializedConstantForwardDiscountCurve.isEmpty())
-			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedConstantForwardDiscountCurve, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
-				("ForwardRateDiscountCurve de-serializer: Cannot locate start state");
+				("FlatForwardDiscountCurve de-serializer: Cannot locate start state");
 
 		_dblEpochDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot locate currency");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot locate currency");
 
 		_strCurrency = astrField[2];
 
@@ -201,14 +201,14 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot decode state");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot decode state");
 
 		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate, astrField[3],
 			getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
-			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot decode state");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot decode state");
 
 		if (0 == lsdblDate.size() || 0 == lsdblRate.size() || lsdblDate.size() != lsdblRate.size())
-			throw new java.lang.Exception ("ForwardRateDiscountCurve de-serializer: Cannot decode state");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot decode state");
 
 		_adblDate = new double[lsdblDate.size()];
 
@@ -226,7 +226,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("ForwardRateDiscountCurve::df => Got NaN for date");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve::df => Got NaN for date");
 
 		if (dblDate <= _dblEpochDate) return 1.;
 
@@ -254,7 +254,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2))
-			throw new java.lang.Exception ("ForwardRateDiscountCurve::forward => Invalid input");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve::forward => Invalid input");
 
 		double dblStartDate = epoch().getJulian();
 
@@ -268,7 +268,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("ForwardRateDiscountCurve::zero => Invalid Date");
+			throw new java.lang.Exception ("FlatForwardDiscountCurve::zero => Invalid Date");
 
 		double dblStartDate = epoch().getJulian();
 
@@ -283,7 +283,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		return null;
 	}
 
-	@Override public ForwardRateDiscountCurve parallelShiftManifestMeasure (
+	@Override public FlatForwardDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
@@ -299,7 +299,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		return shiftManifestMeasure (adblShift);
 	}
 
-	@Override public ForwardRateDiscountCurve shiftManifestMeasure (
+	@Override public FlatForwardDiscountCurve shiftManifestMeasure (
 		final int iSpanIndex,
 		final double dblShift)
 	{
@@ -325,7 +325,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			(_adblRate, rvtp));
 	}
 
-	@Override public ForwardRateDiscountCurve parallelShiftQuantificationMetric (
+	@Override public FlatForwardDiscountCurve parallelShiftQuantificationMetric (
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
@@ -337,7 +337,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			adblRate[i] = _adblRate[i] + dblShift;
 
 		try {
-			return new ForwardRateDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
+			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
 				_strCurrency, _adblDate, adblRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -350,7 +350,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		try {
-			return new ForwardRateDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
+			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
 				_strCurrency, _adblDate, org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure
 					(_adblRate, rvtp));
 		} catch (java.lang.Exception e) {
@@ -360,7 +360,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		return null;
 	}
 
-	@Override public ForwardRateDiscountCurve createBasisRateShiftedCurve (
+	@Override public FlatForwardDiscountCurve createBasisRateShiftedCurve (
 		final double[] adblDate,
 		final double[] adblBasis)
 	{
@@ -376,7 +376,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			for (int i = 0; i < adblDate.length; ++i)
 				adblShiftedRate[i] = zero (adblDate[i]) + adblBasis[i];
 
-			return new ForwardRateDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
+			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
 				_strCurrency, adblDate, adblShiftedRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -496,7 +496,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final byte[] ab)
 	{
 		try {
-			return new ForwardRateDiscountCurve (ab);
+			return new FlatForwardDiscountCurve (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -518,7 +518,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			adblRate[i] = 0.01 * (i + 1);
 		}
 
-		ForwardRateDiscountCurve dc = new ForwardRateDiscountCurve
+		FlatForwardDiscountCurve dc = new FlatForwardDiscountCurve
 			(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate);
 
 		byte[] abDC = dc.serialize();
@@ -528,7 +528,7 @@ public class ForwardRateDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		System.out.println ("DF[12/12/20]=" + dc.df
 			(org.drip.analytics.date.JulianDate.CreateFromDDMMMYYYY ("12-DEC-2020")));
 
-		ForwardRateDiscountCurve dcDeser = (ForwardRateDiscountCurve) dc.deserialize (abDC);
+		FlatForwardDiscountCurve dcDeser = (FlatForwardDiscountCurve) dc.deserialize (abDC);
 
 		System.out.println ("Output: " + new java.lang.String (dcDeser.serialize()));
 

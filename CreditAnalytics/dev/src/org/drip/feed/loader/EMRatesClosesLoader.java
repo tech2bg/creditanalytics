@@ -397,8 +397,8 @@ public class EMRatesClosesLoader {
 						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
 
 			org.drip.analytics.rates.DiscountCurve dcShapePreserving =
-				org.drip.param.creator.RatesScenarioCurveBuilder.ShapePreservingBuild (lcc, aRRS, valParams,
-					null, null, null);
+				org.drip.param.creator.RatesScenarioCurveBuilder.ShapePreservingDFBuild (lcc, aRRS, valParams,
+					null, null, null, 1.);
 
 			if (null == dcShapePreserving) return null;
 

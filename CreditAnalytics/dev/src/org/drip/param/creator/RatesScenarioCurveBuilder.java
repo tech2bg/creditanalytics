@@ -177,24 +177,26 @@ public class RatesScenarioCurveBuilder {
 	 * @param pricerParam Pricer Parameters
 	 * @param cmp Component Market Parameters
 	 * @param quotingParam Quoting Parameters
+	 * @param dblEpochResponse The Starting Response Value
 	 * 
 	 * @return Instance of the Shape Preserving Discount Curve
 	 */
 
-	public static final org.drip.analytics.rates.DiscountCurve ShapePreservingBuild (
+	public static final org.drip.analytics.rates.DiscountCurve ShapePreservingDFBuild (
 		final org.drip.state.estimator.LinearCurveCalibrator lcc,
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.valuation.QuotingParams quotingParam)
+		final org.drip.param.valuation.QuotingParams quotingParam,
+		final double dblEpochResponse)
 	{
 		if (null == lcc) return null;
 
 		try {
 			org.drip.state.curve.DiscountFactorDiscountCurve dcdf = new
 				org.drip.state.curve.DiscountFactorDiscountCurve (aSRS[0].getCalibComp()[0].getIRCurveName(),
-					(lcc.calibrateSpan (aSRS, 1., valParam, null, null, null)));
+					(lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
 
 			return dcdf.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
 				pricerParam, quotingParam, cmp)) ? dcdf : null;
@@ -294,8 +296,8 @@ public class RatesScenarioCurveBuilder {
 				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, new
 					org.drip.spline.grid.OverlappingStretchSpan (stretch));
 
-			return dcMultiPass.setCCIS (new org.drip.analytics.rates.SmoothingCCIS (dcShapePreserver,
-				gccp, lcc, aSRS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
+			return dcMultiPass.setCCIS (new org.drip.analytics.rates.SmoothingCCIS (dcShapePreserver, gccp,
+				lcc, aSRS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -413,12 +415,16 @@ public class RatesScenarioCurveBuilder {
 	 * 
 	 * @param strName Curve Name
 	 * @param valParams Valuation Parameters
+	 * @param pricerParam Pricer Parameters
+	 * @param cmp Component Market Parameters
+	 * @param quotingParam Quoting Parameters
 	 * @param strBasisType The Basis Type
 	 * @param fsbp The Function Set Basis Parameters
 	 * @param aCalibComp1 Array of Calibration Components #1
 	 * @param adblQuote1 Array of Calibration Quotes #1
 	 * @param aCalibComp2 Array of Calibration Components #2
 	 * @param adblQuote2 Array of Calibration Quotes #2
+	 * @param dblEpochResponse The Stretch Start DF
 	 * @param bZeroSmooth TRUE => Turn on the Zero Rate Smoothing
 	 * 
 	 * @return Instance of the Shape Preserver of the desired basis type
@@ -427,12 +433,16 @@ public class RatesScenarioCurveBuilder {
 	public static final org.drip.analytics.rates.DiscountCurve DFRateShapePreserver (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParam,
+		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.valuation.QuotingParams quotingParam,
 		final java.lang.String strBasisType,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
 		final org.drip.product.definition.CalibratableComponent[] aCalibComp1,
 		final double[] adblQuote1,
 		final org.drip.product.definition.CalibratableComponent[] aCalibComp2,
 		final double[] adblQuote2,
+		final double dblEpochResponse,
 		final boolean bZeroSmooth)
 	{
 		if (null == strName || strName.isEmpty() || null == strBasisType || strBasisType.isEmpty() || null ==
@@ -483,7 +493,8 @@ public class RatesScenarioCurveBuilder {
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
 									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
 
-			dcShapePreserving = ShapePreservingBuild (lcc, aSRS, valParams, null, null, null);
+			dcShapePreserving = ShapePreservingDFBuild (lcc, aSRS, valParams, pricerParam, cmp, quotingParam,
+				dblEpochResponse);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -538,10 +549,10 @@ public class RatesScenarioCurveBuilder {
 		final boolean bZeroSmooth)
 	{
 		try {
-			return DFRateShapePreserver (strName, valParams,
+			return DFRateShapePreserver (strName, valParams, null, null, null,
 				org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION, new
 					org.drip.spline.basis.ExponentialTensionSetParams (1.), aCalibComp1, adblQuote1,
-						aCalibComp2, adblQuote2, bZeroSmooth);
+						aCalibComp2, adblQuote2, 1., bZeroSmooth);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -574,16 +585,27 @@ public class RatesScenarioCurveBuilder {
 		final boolean bZeroSmooth)
 	{
 		try {
-			return DFRateShapePreserver (strName, valParams,
+			return DFRateShapePreserver (strName, valParams, null, null, null,
 				org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.spline.basis.PolynomialFunctionSetParams (4), aCalibComp1, adblQuote1,
-						aCalibComp2, adblQuote2, bZeroSmooth);
+						aCalibComp2, adblQuote2, 1., bZeroSmooth);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
 	}
+
+	/**
+	 * Smooth the Shape Preserving Discount Curve using the Smoothed Zero Curve
+	 *  
+	 * @param dcShapePreserving The Shape Preserving Discount Curve
+	 * @param lcc The Linear Curve Calibrator
+	 * @param aSRS Array of the Instrument Stretch Representations
+	 * @param valParams The Valuation Parameters
+	 * 
+	 * @return The Zero Smoothed Discount Curve
+	 */
 
 	public static final org.drip.analytics.rates.DiscountCurve ZeroSmooth (
 		final org.drip.analytics.rates.DiscountCurve dcShapePreserving,
@@ -615,6 +637,31 @@ public class RatesScenarioCurveBuilder {
 
 		return SmoothingLocalControlBuild (dcShapePreserving, lcc, lccp, aSRS, valParams, null, null, null);
 	}
+
+	/**
+	 * Customizable DENSE Curve Creation Methodology - the references are:
+	 * 
+	 *  - Sankar, L. (1997): OFUTS – An Alternative Yield Curve Interpolator F. A. S. T. Research
+	 *  	Documentation Bear Sterns.
+	 *  
+	 *  - Nahum, E. (2004): Changes to Yield Curve Construction – Linear Stripping of the Short End of the
+	 *  	Curve F. A. S. T. Research Documentation Bear Sterns.
+	 *  
+	 *  - Kinlay, J., and X. Bai (2009): Yield Curve Construction Models – Tools & Techniques 
+	 *  	(http://www.jonathankinlay.com/Articles/Yield Curve Construction Models.pdf)
+	 *  
+	 * @param strName The Curve Name
+	 * @param valParams Valuation Parameters
+	 * @param aCalibComp1 Array of Stretch #1 Calibration Components
+	 * @param adblQuote1 Array of Stretch #1 Calibration Quotes
+	 * @param strTenor1 Stretch #1 Instrument set re-construction Tenor
+	 * @param aCalibComp2 Array of Stretch #2 Calibration Components
+	 * @param adblQuote2 Array of Stretch #2 Calibration Quotes
+	 * @param strTenor2 Stretch #2 Instrument set re-construction Tenor
+	 * @param tldf The Turns List
+	 * 
+	 * @return The Customized DENSE Curve.
+	 */
 
 	public static final org.drip.analytics.rates.DiscountCurve CustomDENSE (
 		final java.lang.String strName,
@@ -699,6 +746,30 @@ public class RatesScenarioCurveBuilder {
 		return null;
 	}
 
+	/**
+	 * The Standard DENSE Curve Creation Methodology - this uses no re-construction set for the short term,
+	 * 	and uses 3M dense re-construction for the Swap Set. The references are:
+	 * 
+	 *  - Sankar, L. (1997): OFUTS – An Alternative Yield Curve Interpolator F. A. S. T. Research
+	 *  	Documentation Bear Sterns.
+	 *  
+	 *  - Nahum, E. (2004): Changes to Yield Curve Construction – Linear Stripping of the Short End of the
+	 *  	Curve F. A. S. T. Research Documentation Bear Sterns.
+	 *  
+	 *  - Kinlay, J., and X. Bai (2009): Yield Curve Construction Models – Tools & Techniques 
+	 *  	(http://www.jonathankinlay.com/Articles/Yield Curve Construction Models.pdf)
+	 *  
+	 * @param strName The Curve Name
+	 * @param valParams Valuation Parameters
+	 * @param aCalibComp1 Array of Stretch #1 Calibration Components
+	 * @param adblQuote1 Array of Stretch #1 Calibration Quotes
+	 * @param aCalibComp2 Array of Stretch #2 Calibration Components
+	 * @param adblQuote2 Array of Stretch #2 Calibration Quotes
+	 * @param tldf The Turns List
+	 * 
+	 * @return The Customized DENSE Curve.
+	 */
+
 	public static final org.drip.analytics.rates.DiscountCurve DENSE (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -711,6 +782,33 @@ public class RatesScenarioCurveBuilder {
 		return CustomDENSE (strName, valParams, aCalibComp1, adblQuote1, null, aCalibComp2, adblQuote2, "3M",
 			tldf);
 	}
+
+	/**
+	 * The DUAL DENSE Curve Creation Methodology - this uses configurable re-construction set for the short
+	 *  term, and another configurable re-construction for the Swap Set. 1D re-construction tenor for the
+	 *  short end will result in CDF (Constant Daily Forward) Discount Curve. The references are:
+	 * 
+	 *  - Sankar, L. (1997): OFUTS – An Alternative Yield Curve Interpolator F. A. S. T. Research
+	 *  	Documentation Bear Sterns.
+	 *  
+	 *  - Nahum, E. (2004): Changes to Yield Curve Construction – Linear Stripping of the Short End of the
+	 *  	Curve F. A. S. T. Research Documentation Bear Sterns.
+	 *  
+	 *  - Kinlay, J., and X. Bai (2009): Yield Curve Construction Models – Tools & Techniques 
+	 *  	(http://www.jonathankinlay.com/Articles/Yield Curve Construction Models.pdf)
+	 *  
+	 * @param strName The Curve Name
+	 * @param valParams Valuation Parameters
+	 * @param aCalibComp1 Array of Stretch #1 Calibration Components
+	 * @param adblQuote1 Array of Stretch #1 Calibration Quotes
+	 * @param strTenor1 Stretch #1 Instrument set re-construction Tenor
+	 * @param aCalibComp2 Array of Stretch #2 Calibration Components
+	 * @param adblQuote2 Array of Stretch #2 Calibration Quotes
+	 * @param strTenor2 Stretch #2 Instrument set re-construction Tenor
+	 * @param tldf The Turns List
+	 * 
+	 * @return The Customized DENSE Curve.
+	 */
 
 	public static final org.drip.analytics.rates.DiscountCurve DUALDENSE (
 		final java.lang.String strName,
@@ -725,5 +823,175 @@ public class RatesScenarioCurveBuilder {
 	{
 		return CustomDENSE (strName, valParams, aCalibComp1, adblQuote1, strTenor1, aCalibComp2, adblQuote2,
 			strTenor2, tldf);
+	}
+
+	/**
+	 * Construct an instance of the Shape Preserver of the desired basis type, using the specified basis set
+	 * 	builder parameters.
+	 * 
+	 * @param strName Curve Name
+	 * @param valParams Valuation Parameters
+	 * @param strBasisType The Basis Type
+	 * @param fsbp The Function Set Basis Parameters
+	 * @param aCalibComp Array of Calibration Components
+	 * @param adblQuote Array of Calibration Quotes
+	 * 
+	 * @return Instance of the Shape Preserver of the desired basis type
+	 */
+
+	public static final org.drip.analytics.rates.DiscountCurve ForwardRateShapePreserver (
+		final java.lang.String strName,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final java.lang.String strBasisType,
+		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
+		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
+		final double[] adblQuote)
+	{
+		if (null == strName || strName.isEmpty() || null == strBasisType || strBasisType.isEmpty() || null ==
+			valParams || null == fsbp)
+			return null;
+
+		int iNumQuote = null == adblQuote ? 0 : adblQuote.length;
+		int iNumComp = null == aCalibComp ? 0 : aCalibComp.length;
+		org.drip.state.estimator.LinearCurveCalibrator lcc = null;
+
+		if (0 == iNumComp || iNumComp != iNumQuote) return null;
+
+		org.drip.state.estimator.StretchRepresentationSpec srs =
+			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet (strName + "_COMP1",
+				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR, aCalibComp,
+						"Rate", adblQuote, null);
+
+		if (null == srs) return null;
+
+		org.drip.state.estimator.StretchRepresentationSpec[] aSRS = new
+			org.drip.state.estimator.StretchRepresentationSpec[] {srs};
+
+		try {
+			lcc = new org.drip.state.estimator.LinearCurveCalibrator (new
+				org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
+					org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+						org.drip.spline.params.ResponseScalingShapeControl (true, new
+							org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
+								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
+
+			return ShapePreservingDFBuild (lcc, aSRS, valParams, null, null, null, 1.);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Build the Shape Preserving Forward Curve using the Custom Parameters
+	 * 
+	 * @param lcc The Linear Curve Calibrator Instance
+	 * @param aSRS Array of the Instrument Representation Stretches
+	 * @param strTenor Forward Rate Tenor
+	 * @param valParam Valuation Parameters
+	 * @param pricerParam Pricer Parameters
+	 * @param cmp Component Market Parameters
+	 * @param quotingParam Quoting Parameters
+	 * @param dblEpochResponse The Starting Response Value
+	 * 
+	 * @return Instance of the Shape Preserving Discount Curve
+	 */
+
+	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
+		final org.drip.state.estimator.LinearCurveCalibrator lcc,
+		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
+		final java.lang.String strTenor,
+		final org.drip.param.valuation.ValuationParams valParam,
+		final org.drip.param.pricer.PricerParams pricerParam,
+		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.valuation.QuotingParams quotingParam,
+		final double dblEpochResponse)
+	{
+		if (null == lcc) return null;
+
+		try {
+			org.drip.analytics.rates.ForwardCurve fc = new org.drip.state.curve.BasisSplineForwardRate
+				(aSRS[0].getCalibComp()[0].getIRCurveName(), strTenor, (lcc.calibrateSpan (aSRS,
+					dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
+
+			return fc.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
+				pricerParam, quotingParam, cmp)) ? fc : null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct an instance of the Shape Preserver of the desired basis type, using the specified basis set
+	 * 	builder parameters.
+	 * 
+	 * @param strName Curve Name
+	 * @param strTenor Forward Rate Tenor
+	 * @param valParams Valuation Parameters
+	 * @param pricerParam Pricer Parameters
+	 * @param cmp Component Market Parameters
+	 * @param quotingParam Quoting Parameters
+	 * @param strBasisType The Basis Type
+	 * @param fsbp The Function Set Basis Parameters
+	 * @param aCalibComp Array of Calibration Components
+	 * @param adblQuote Array of Calibration Quotes
+	 * @param dblEpochResponse The Stretch Start DF
+	 * 
+	 * @return Instance of the Shape Preserver of the desired basis type
+	 */
+
+	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
+		final java.lang.String strName,
+		final java.lang.String strTenor,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParam,
+		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.valuation.QuotingParams quotingParam,
+		final java.lang.String strBasisType,
+		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
+		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
+		final double[] adblQuote,
+		final double dblEpochResponse)
+	{
+		if (null == strName || strName.isEmpty() || null == strBasisType || strBasisType.isEmpty() || null ==
+			valParams || null == fsbp)
+			return null;
+
+		int iNumQuote = null == adblQuote ? 0 : adblQuote.length;
+		int iNumComp = null == aCalibComp ? 0 : aCalibComp.length;
+
+		if (0 == iNumComp || iNumComp != iNumQuote) return null;
+
+		org.drip.state.estimator.StretchRepresentationSpec srs =
+			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet (strName + "_COMP1",
+				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR, aCalibComp,
+						"Rate", adblQuote, null);
+
+		org.drip.state.estimator.StretchRepresentationSpec[] aSRS = new
+			org.drip.state.estimator.StretchRepresentationSpec[] {srs};
+
+		try {
+			org.drip.state.estimator.LinearCurveCalibrator lcc = new
+				org.drip.state.estimator.LinearCurveCalibrator (new
+					org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
+						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+							org.drip.spline.params.ResponseScalingShapeControl (true, new
+								org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
+									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
+										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
+
+			return ShapePreservingForwardCurve (lcc, aSRS, strTenor, valParams, pricerParam, cmp,
+				quotingParam, dblEpochResponse);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

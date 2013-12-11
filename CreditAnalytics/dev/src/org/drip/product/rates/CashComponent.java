@@ -450,7 +450,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -474,29 +474,29 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"Price"}, false)) {
-					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseLinearConstraint();
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.setValue (0.01 *
-						ratesLSMM.getMeasureQuoteValue()) ? prlc : null;
+					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
+						(0.01 * ratesLSMM.getMeasureQuoteValue()) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"PV"}, false)) {
-					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseLinearConstraint();
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.setValue
+					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
 						(ratesLSMM.getMeasureQuoteValue()) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"Rate"}, false)) {
-					org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseLinearConstraint();
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.setValue (1. /
-						(1. + ratesLSMM.getMeasureQuoteValue() *
+					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue (1.
+						/ (1. + ratesLSMM.getMeasureQuoteValue() *
 							org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
 								_strDC, false, _dblMaturity, null, _strCalendar))) ? prlc : null;
 				}

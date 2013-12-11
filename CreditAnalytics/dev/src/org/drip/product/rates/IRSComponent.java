@@ -559,7 +559,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -578,8 +578,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			(ratesLSMM.getQuantificationMetric())) {
 			if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
-				org.drip.state.estimator.PredictorResponseLinearConstraint prlc = new
-					org.drip.state.estimator.PredictorResponseLinearConstraint();
+				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+					org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 

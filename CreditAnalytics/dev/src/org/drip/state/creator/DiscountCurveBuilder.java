@@ -95,14 +95,14 @@ public class DiscountCurveBuilder {
 
 		try {
 			if (null == strBootstrapMode)
-				return new org.drip.state.curve.ForwardRateDiscountCurve (dtStart, strCurrency, adblDate,
+				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
 					adblRate);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,
 					adblDate, adblRate);
 
-			return new org.drip.state.curve.ForwardRateDiscountCurve (dtStart, strCurrency, adblDate,
+			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
 				adblRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -129,7 +129,7 @@ public class DiscountCurveBuilder {
 		if (null == dtStart || !org.drip.quant.common.NumberUtil.IsValid (dblRate)) return null;
 
 		try {
-			return new org.drip.state.curve.ForwardRateDiscountCurve (dtStart, strCurrency, new double[]
+			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, new double[]
 				{dtStart.getJulian()}, new double[] {dblRate});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -160,14 +160,14 @@ public class DiscountCurveBuilder {
 	{
 		try {
 			if (null == strBootstrapMode)
-				return new org.drip.state.curve.ForwardRateDiscountCurve (dtStart, strCurrency, adblDate,
+				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
 					adblRate);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,
 					adblDate, adblRate);
 
-			return new org.drip.state.curve.ForwardRateDiscountCurve (dtStart, strCurrency, adblDate,
+			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
 				adblRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -193,12 +193,12 @@ public class DiscountCurveBuilder {
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			if (null == strBootstrapMode) return new org.drip.state.curve.ForwardRateDiscountCurve (ab);
+			if (null == strBootstrapMode) return new org.drip.state.curve.FlatForwardDiscountCurve (ab);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (ab);
 
-			return new org.drip.state.curve.ForwardRateDiscountCurve (ab);
+			return new org.drip.state.curve.FlatForwardDiscountCurve (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

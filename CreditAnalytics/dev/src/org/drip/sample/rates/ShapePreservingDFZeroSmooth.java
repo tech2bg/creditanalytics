@@ -149,13 +149,14 @@ public class ShapePreservingDFZeroSmooth {
 			false,
 			false);
 
-		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingBuild (
+		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRRS,
 			new ValuationParams (dtToday, dtToday, "MXN"),
 			null,
 			null,
-			null);
+			null,
+			1.);
 
 		DiscountCurve dcGloballySmooth = RatesScenarioCurveBuilder.SmoothingGlobalControlBuild (
 			dcShapePreserving,

@@ -29,7 +29,7 @@ package org.drip.state.estimator;
  */
 
 /**
- * PredictorResponseRelationConstraint holds the Linearized Constraints necessary needed for the Linear
+ * PredictorResponseWeightConstraint holds the Linearized Constraints necessary needed for the Linear
  * 	Calibration. Linearized Constraints are expressed as
  * 
  * 			Sum_i[Predictor Weight_i * Function (Response_i)] = Constraint Value
@@ -39,15 +39,15 @@ package org.drip.state.estimator;
  * @author Lakshmi Krishnamurthy
  */
 
-public class PredictorResponseLinearConstraint {
+public class PredictorResponseWeightConstraint {
 	private double _dblValue = 0.;
-	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapResponsePredictorWeight = null;
+	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapPredictorResponseWeight = null;
 
 	/**
-	 * Empty PredictorResponseRelationConstraint constructor
+	 * Empty PredictorResponseWeightConstraint constructor
 	 */
 
-	public PredictorResponseLinearConstraint()
+	public PredictorResponseWeightConstraint()
 	{
 	}
 
@@ -68,32 +68,32 @@ public class PredictorResponseLinearConstraint {
 			!org.drip.quant.common.NumberUtil.IsValid (dblResponseWeight))
 			return false;
 
-		if (null == _mapResponsePredictorWeight)
-			_mapResponsePredictorWeight = new java.util.TreeMap<java.lang.Double, java.lang.Double>();
+		if (null == _mapPredictorResponseWeight)
+			_mapPredictorResponseWeight = new java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
-		if (!_mapResponsePredictorWeight.containsKey (dblPredictor))
-			_mapResponsePredictorWeight.put (dblPredictor, dblResponseWeight);
+		if (!_mapPredictorResponseWeight.containsKey (dblPredictor))
+			_mapPredictorResponseWeight.put (dblPredictor, dblResponseWeight);
 		else
-			_mapResponsePredictorWeight.put (dblPredictor, dblResponseWeight +
-				_mapResponsePredictorWeight.get (dblPredictor));
+			_mapPredictorResponseWeight.put (dblPredictor, dblResponseWeight +
+				_mapPredictorResponseWeight.get (dblPredictor));
 
 		return true;
 	}
 
 	/**
-	 * Set the Constraint Value
+	 * Update the Constraint Value
 	 * 
-	 * @param dblValue The Constraint Value
+	 * @param dblValue The Constraint Value Update Increment
 	 * 
-	 * @return The Constraint Value
+	 * @return TRUE => This Update Succeeded
 	 */
 
-	public boolean setValue (
+	public boolean updateValue (
 		final double dblValue)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue)) return false;
 
-		_dblValue = dblValue;
+		_dblValue += dblValue;
 		return true;
 	}
 
@@ -109,14 +109,14 @@ public class PredictorResponseLinearConstraint {
 	}
 
 	/**
-	 * Retrieve the Response <-> Predictor Weight Map
+	 * Retrieve the Predictor <-> Response Weight Map
 	 * 
-	 * @return The Response <-> Predictor Weight Map
+	 * @return The Predictor <-> Response Weight Map
 	 */
 
-	public java.util.TreeMap<java.lang.Double, java.lang.Double> getResponsePredictorWeight()
+	public java.util.TreeMap<java.lang.Double, java.lang.Double> getPredictorResponseWeight()
 	{
-		return _mapResponsePredictorWeight;
+		return _mapPredictorResponseWeight;
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class PredictorResponseLinearConstraint {
 	public void displayString()
 	{
 		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me :
-			_mapResponsePredictorWeight.entrySet()) {
+			_mapPredictorResponseWeight.entrySet()) {
 			try {
 				System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (me.getKey()) + " => " +
 					me.getValue());

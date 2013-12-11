@@ -203,13 +203,14 @@ public class ShapeDFZeroLocalSmooth {
 			true,
 			true);
 
-		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingBuild (
+		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRRS,
 			new ValuationParams (dtToday, dtToday, "MXN"),
 			null,
 			null,
-			null);
+			null,
+			1.);
 
 		DiscountCurve dcLocalAkima = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,

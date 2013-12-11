@@ -371,13 +371,14 @@ public class SwapProductCurveAnalytics {
 			MultiSegmentSequence.CALIBRATE,
 			null);
 
-		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingBuild (
+		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRRS,
 			new ValuationParams (dt, dt, strCurrency),
 			null,
 			null,
-			null);
+			null,
+			1.);
 
 		LocalControlCurveParams lccpHyman83 = new LocalControlCurveParams (
 			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,

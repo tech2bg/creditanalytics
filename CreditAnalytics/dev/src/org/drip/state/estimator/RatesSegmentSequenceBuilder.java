@@ -47,18 +47,18 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.spline.stretch.MultiSegmentSequence _mssPrev = null;
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
 
-	private org.drip.spline.params.SegmentResponseValueConstraint GenerateSegmentConstraint (
-		final org.drip.state.estimator.PredictorResponseLinearConstraint prlc)
+	protected org.drip.spline.params.SegmentResponseValueConstraint GenerateSegmentConstraint (
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc)
 	{
-		java.util.TreeMap<java.lang.Double, java.lang.Double> mapResponsePredictorWeight =
-			prlc.getResponsePredictorWeight();
+		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPredictorResponseWeight =
+			prlc.getPredictorResponseWeight();
 
-		if (null == mapResponsePredictorWeight || 0 == mapResponsePredictorWeight.size()) return null;
+		if (null == mapPredictorResponseWeight || 0 == mapPredictorResponseWeight.size()) return null;
 
-		java.util.Set<java.util.Map.Entry<java.lang.Double, java.lang.Double>> setRP =
-			mapResponsePredictorWeight.entrySet();
+		java.util.Set<java.util.Map.Entry<java.lang.Double, java.lang.Double>> setPredictorResponseWeight =
+			mapPredictorResponseWeight.entrySet();
 
-		if (null == setRP) return null;
+		if (null == setPredictorResponseWeight || 0 == setPredictorResponseWeight.size()) return null;
 
 		double dblValue = 0.;
 
@@ -66,18 +66,18 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		java.util.List<java.lang.Double> lsResponseWeight = new java.util.ArrayList<java.lang.Double>();
 
-		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : setRP) {
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : setPredictorResponseWeight) {
 			if (null == me) return null;
 
-			double dblDate = me.getKey();
+			double dblPredictorDate = me.getKey();
 
 			try {
-				if (null != _mssPrev && _mssPrev.in (dblDate))
-					dblValue -= _mssPrev.responseValue (dblDate) * me.getValue();
-				else if (null != _stretch && _stretch.inBuiltRange (dblDate))
-					dblValue -= _stretch.responseValue (dblDate) * me.getValue();
+				if (null != _mssPrev && _mssPrev.in (dblPredictorDate))
+					dblValue -= _mssPrev.responseValue (dblPredictorDate) * me.getValue();
+				else if (null != _stretch && _stretch.inBuiltRange (dblPredictorDate))
+					dblValue -= _stretch.responseValue (dblPredictorDate) * me.getValue();
 				else {
-					lsPredictor.add (dblDate);
+					lsPredictor.add (dblPredictorDate);
 
 					lsResponseWeight.add (me.getValue());
 				}
@@ -185,17 +185,13 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null == aCS || 1 > aCS.length || null == cc | null == lsmm || null == rvcLeading) return false;
 
-		org.drip.state.estimator.PredictorResponseLinearConstraint prlc = cc.generateCalibPRLC (_valParams,
+		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC (_valParams,
 			_pricerParams, _cmp, _quotingParams, lsmm);
 
 		if (null == prlc) return false;
 
-		org.drip.spline.params.SegmentResponseValueConstraint rvc = GenerateSegmentConstraint (prlc);
-
-		if (null == rvc) return false;
-
-		return aCS[0].calibrate (rvcLeading, dblLeftSlope, rvc, null == _sbfr ? null : _sbfr.sizeToSegment
-			(aCS[0])) && _stretch.setSegmentBuilt (0);
+		return aCS[0].calibrate (rvcLeading, dblLeftSlope, GenerateSegmentConstraint (prlc), null == _sbfr ?
+			null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0);
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -214,7 +210,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			if (null == aCS || 1 > aCS.length || null == cc | null == lsmm) return false;
 
-			org.drip.state.estimator.PredictorResponseLinearConstraint prlc = cc.generateCalibPRLC
+			org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC
 				(_valParams, _pricerParams, _cmp, _quotingParams, lsmm);
 
 			if (null == prlc) return false;

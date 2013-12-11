@@ -136,13 +136,14 @@ public class CustomDiscountCurveBuilder {
 			MultiSegmentSequence.CALIBRATE,
 			null);
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingBuild (
+		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRBS,
 			new ValuationParams (dtToday, dtToday, "USD"),
 			null,
 			null,
-			null);
+			null,
+			1.);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 

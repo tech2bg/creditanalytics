@@ -111,8 +111,11 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 
 				if (!mss.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder (dblEpochResponse,
 					srs, valParams, pricerParams, cmp, quotingParams, mssPrev, bestFitWeightedResponse(),
-						calibrationBoundaryCondition()), calibrationDetail()))
+						calibrationBoundaryCondition()), calibrationDetail())) {
+					System.out.println ("\tMSS Setup Failed!");
+
 					return null;
+				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

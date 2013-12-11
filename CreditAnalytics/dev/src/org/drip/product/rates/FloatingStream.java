@@ -469,8 +469,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 
-		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
-			dc : mktParams.getForwardDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ? dc :
+			mktParams.getForwardDiscountCurve();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblFloatingRate = 0.;
@@ -496,7 +496,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 							org.drip.analytics.date.JulianDate (period.getResetDate())).get
 								(strFullyQualifiedName);
 
-					dblFixing01 = period.getAccrualDCF (valParams._dblValue) * 0.01 * getNotional
+					dblFixing01 = period.getAccrualDCF (valParams._dblValue) * 0.0001 * getNotional
 						(period.getAccrualStartDate(), valParams._dblValue);
 
 					if (period.getStartDate() < valParams._dblValue) dblAccrued01 = dblFixing01;
@@ -505,7 +505,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				} else
 					dblFloatingRate = dcForward.libor (period.getStartDate(), period.getEndDate());
 
-				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * mktParams.getDiscountCurve().df
+				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * mktParams.getDiscountCurve().df
 					(dblPeriodPayDate) * getNotional (period.getAccrualStartDate(), period.getEndDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -525,7 +525,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			}
 
 			dblDirtyDV01 += dblDirtyPeriodDV01;
-			dblDirtyFloatingPV += dblDirtyPeriodDV01 * dblFloatingRate;
+			dblDirtyFloatingPV += dblDirtyPeriodDV01 * 10000. * dblFloatingRate;
 		}
 
 		try {
@@ -542,7 +542,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		dblDirtyDV01 /= dblCashPayDF;
 		dblDirtyFloatingPV /= dblCashPayDF;
-		double dblNotlFactor = _dblNotional * 0.01;
 		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
 		double dblCleanFloatingPV = dblDirtyFloatingPV - dblAccrued01 * (dblResetRate + _dblSpread);
 
@@ -553,29 +552,29 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("ResetRate", dblResetRate);
 
-		mapResult.put ("Accrued01", dblAccrued01 * dblNotlFactor);
+		mapResult.put ("Accrued01", dblAccrued01 * _dblNotional);
 
-		mapResult.put ("Fixing01", dblFixing01 * dblNotlFactor);
+		mapResult.put ("Fixing01", dblFixing01 * _dblNotional);
 
-		mapResult.put ("FloatAccrued", dblAccrued01 * (dblResetRate + _dblSpread) * dblNotlFactor);
+		mapResult.put ("FloatAccrued", dblAccrued01 * 10000. * (dblResetRate + _dblSpread) * _dblNotional);
 
-		mapResult.put ("DV01", dblCleanDV01 * dblNotlFactor);
+		mapResult.put ("DV01", dblCleanDV01 * _dblNotional);
 
-		mapResult.put ("CleanDV01", dblCleanDV01 * dblNotlFactor);
+		mapResult.put ("CleanDV01", dblCleanDV01 * _dblNotional);
 
-		mapResult.put ("DirtyDV01", dblDirtyDV01 * dblNotlFactor);
+		mapResult.put ("DirtyDV01", dblDirtyDV01 * _dblNotional);
 
-		mapResult.put ("CleanFloatingPV", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("CleanFloatingPV", dblCleanFloatingPV * _dblNotional);
 
-		mapResult.put ("DirtyFloatingPV", dblDirtyFloatingPV * dblNotlFactor);
+		mapResult.put ("DirtyFloatingPV", dblDirtyFloatingPV * _dblNotional);
 
-		mapResult.put ("PV", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("PV", dblCleanFloatingPV * _dblNotional);
 
-		mapResult.put ("CleanPV", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("CleanPV", dblCleanFloatingPV * _dblNotional);
 
-		mapResult.put ("DirtyPV", dblDirtyFloatingPV * dblNotlFactor);
+		mapResult.put ("DirtyPV", dblDirtyFloatingPV * _dblNotional);
 
-		mapResult.put ("Upfront", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("Upfront", dblCleanFloatingPV * _dblNotional);
 
 		mapResult.put ("FairPremium", dblCleanFloatingPV / dblCleanDV01);
 
@@ -791,13 +790,68 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
+		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == lsmm ||
+			!(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
+				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+					(lsmm.getID()))
+			return null;
+
+		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
+			(lsmm.getQuantificationMetric()) ||
+				org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+					(lsmm.getQuantificationMetric())) {
+			if (null == mktParams) return null;
+
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+
+			if (null == dc) return null;
+
+			org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+				org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+			double dblDirtyCV100 = 0.;
+			boolean bFirstPeriod = true;
+
+			try {
+				for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+					if (null == period) continue;
+					
+					double dblPayDate = period.getPayDate();
+
+					if (valParams._dblValue > dblPayDate) continue;
+
+					double dblPeriodDCF = period.getCouponDCF();
+
+					if (bFirstPeriod) {
+						bFirstPeriod = false;
+
+						dblPeriodDCF -= period.getAccrualDCF (valParams._dblValue);
+					}
+
+					double dblPeriodCV100 = dblPeriodDCF * dc.df (dblPayDate) * getNotional (dblPayDate);
+
+					dblDirtyCV100 += dblPeriodCV100;
+
+					if (!prwc.addPredictorResponseWeight (dblPayDate, dblPeriodCV100 * _dblNotional))
+						return null;
+				}
+
+				return prwc.updateValue (-1. * dblDirtyCV100 * _dblNotional * lsmm.getMeasureQuoteValue()) ?
+					prwc : null;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
 		return null;
 	}
 

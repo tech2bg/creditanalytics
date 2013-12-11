@@ -478,10 +478,11 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSIBC = null;
 
 		try {
-			if (null != wrvcLeft || null != wrvcRight)
+			if (null != wrvcLeft || null != wrvcRight) {
 				aSIBC = new org.drip.spline.params.SegmentBasisFlexureConstraint[] {null == wrvcLeft ? null :
 					wrvcLeft.responseIndexedBasisConstraint (_be, this), null == wrvcRight ? null :
 						wrvcRight.responseIndexedBasisConstraint (_be, this)};
+			}
 
 			return calibrate (null, null, org.drip.quant.common.CollectionUtil.DerivArrayFromSlope
 				(numParameters() - 2, dblLeftResponseValueSlope), null, aSIBC, sbfr);

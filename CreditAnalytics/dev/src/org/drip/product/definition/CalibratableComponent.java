@@ -136,7 +136,7 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 	 * 	corresponding PV)
 	 */
 
-	public abstract org.drip.state.estimator.PredictorResponseLinearConstraint generateCalibPRLC (
+	public abstract org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
