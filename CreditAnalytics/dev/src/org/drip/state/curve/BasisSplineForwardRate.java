@@ -45,20 +45,18 @@ public class BasisSplineForwardRate extends org.drip.analytics.rates.ForwardCurv
 	/**
 	 * BasisSplineForwardRate constructor
 	 * 
+	 * @param fri The Floating Rate Index
 	 * @param span The Span over which the Forward Rate Representation is valid
-	 * @param strCurrency The Currency of the Forward Rate
-	 * @param strTenor The Tenor of the Forward Rate
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public BasisSplineForwardRate (
-		final java.lang.String strCurrency,
-		final java.lang.String strTenor,
+		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.spline.grid.Span span)
 		throws java.lang.Exception
 	{
-		super (span.left(), strCurrency, strTenor);
+		super (span.left(), fri);
 
 		_span = span;
 	}

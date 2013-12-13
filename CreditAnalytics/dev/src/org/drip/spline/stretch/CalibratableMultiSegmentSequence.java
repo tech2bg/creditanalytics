@@ -752,4 +752,9 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 		return sb.toString();
 	}
+
+	@Override public org.drip.state.representation.MergeSubStretchManager msm()
+	{
+		return null;
+	}
 }

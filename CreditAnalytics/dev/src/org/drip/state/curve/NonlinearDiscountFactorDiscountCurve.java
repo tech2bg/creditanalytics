@@ -290,6 +290,13 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		return -365.25 / (dblDate - dblStartDate) * java.lang.Math.log (df (dblDate));
 	}
 
+	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
+		final double dblDate,
+		final org.drip.product.params.FloatingRateIndex fri)
+	{
+		return null;
+	}
+
 	@Override public NonlinearDiscountFactorDiscountCurve parallelShiftManifestMeasure (
 		final double dblShift)
 	{

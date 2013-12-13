@@ -187,6 +187,13 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return objDF;
 	}
 
+	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
+		final double dblDate,
+		final org.drip.product.params.FloatingRateIndex fri)
+	{
+		return _dc.forwardRateEstimator (dblDate, fri);
+	}
+
 	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
 		final double dblDate)
 	{

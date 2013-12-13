@@ -189,9 +189,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _floatStream.getIRCurveName();
 	}
 
-	@Override public java.lang.String getRatesForwardCurveName()
+	@Override public java.lang.String getForwardCurveName()
 	{
-		return _floatStream.getRatesForwardCurveName();
+		return _floatStream.getForwardCurveName();
 	}
 
 	@Override public java.lang.String getCreditCurveName()
@@ -313,7 +313,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("Upfront", mapFixStreamResult.get ("Upfront") + mapFloatStreamResult.get ("Upfront"));
 
-		double dblFairPremium = java.lang.Math.abs (dblFloatingCleanPV / dblFixedCleanDV01);
+		double dblFairPremium = java.lang.Math.abs (0.0001 * dblFloatingCleanPV / dblFixedCleanDV01);
 
 		mapResult.put ("FairPremium", dblFairPremium);
 

@@ -40,7 +40,7 @@ package org.drip.param.market;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CreditCurveScenarioContainer extends org.drip.param.definition.CreditScenarioCurve {
+public class CreditCurveScenarioContainer extends org.drip.param.definition.ScenarioCreditCurve {
 	private static final boolean s_bBlog = false;
 
 	private double _dblCouponBump = 0.0001;
@@ -114,7 +114,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			return false;
 		}
 
-		if (0 != (org.drip.param.definition.CreditScenarioCurve.CC_FLAT_UP & iCCScenario)) {
+		if (0 != (org.drip.param.definition.ScenarioCreditCurve.CC_FLAT_UP & iCCScenario)) {
 			if (null == (_ccBumpUp = _ccsg.createCC (strName, valParams, dc, dcTSY, dcEDSF,
 				org.drip.analytics.support.AnalyticsHelper.BumpQuotes (adblQuotes, _dblCouponBump, false),
 					dblRecovery, astrCalibMeasure, mmFixings, quotingParams, bFlat))) {
@@ -125,7 +125,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			}
 		}
 
-		if (0 != (org.drip.param.definition.CreditScenarioCurve.CC_FLAT_DN & iCCScenario)) {
+		if (0 != (org.drip.param.definition.ScenarioCreditCurve.CC_FLAT_DN & iCCScenario)) {
 			if (null == (_ccBumpDn = _ccsg.createCC (strName, valParams, dc, dcTSY, dcEDSF,
 				org.drip.analytics.support.AnalyticsHelper.BumpQuotes (adblQuotes, -_dblCouponBump,
 					false), dblRecovery, astrCalibMeasure, mmFixings, quotingParams, bFlat))) {
@@ -136,7 +136,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			}
 		}
 
-		if (0 != (org.drip.param.definition.CreditScenarioCurve.CC_TENOR_UP & iCCScenario)) {
+		if (0 != (org.drip.param.definition.ScenarioCreditCurve.CC_TENOR_UP & iCCScenario)) {
 			if (null == (_mapTenorCCBumpUp = _ccsg.createTenorCCMap (strName, valParams, dc, dcTSY, dcEDSF,
 				adblQuotes, _dblCouponBump, dblRecovery, astrCalibMeasure, mmFixings, quotingParams, bFlat)))
 			{
@@ -148,7 +148,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			}
 		}
 
-		if (0 != (org.drip.param.definition.CreditScenarioCurve.CC_TENOR_DN & iCCScenario)) {
+		if (0 != (org.drip.param.definition.ScenarioCreditCurve.CC_TENOR_DN & iCCScenario)) {
 			if (null == (_mapTenorCCBumpDn = _ccsg.createTenorCCMap (strName, valParams, dc, dcTSY, dcEDSF,
 				adblQuotes, -_dblCouponBump, dblRecovery, astrCalibMeasure, mmFixings, quotingParams,
 					bFlat))) {
@@ -160,7 +160,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			}
 		}
 
-		if (0 != (org.drip.param.definition.CreditScenarioCurve.CC_RR_FLAT_UP & iCCScenario)) {
+		if (0 != (org.drip.param.definition.ScenarioCreditCurve.CC_RR_FLAT_UP & iCCScenario)) {
 			if (null == (_ccRecoveryUp = _ccsg.createCC (strName, valParams, dc, dcTSY, dcEDSF, adblQuotes,
 				dblRecovery + _dblRecoveryBump, astrCalibMeasure, mmFixings, quotingParams, bFlat))) {
 				if (s_bBlog)
@@ -170,7 +170,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Cred
 			}
 		}
 
-		if (0 != (org.drip.param.definition.CreditScenarioCurve.CC_RR_FLAT_DN & iCCScenario)) {
+		if (0 != (org.drip.param.definition.ScenarioCreditCurve.CC_RR_FLAT_DN & iCCScenario)) {
 			if (null == (_ccRecoveryDn = _ccsg.createCC (strName, valParams, dc, dcTSY, dcEDSF, adblQuotes,
 				dblRecovery - _dblRecoveryBump, astrCalibMeasure, mmFixings, quotingParams, bFlat))) {
 				if (s_bBlog)

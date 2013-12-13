@@ -114,7 +114,7 @@ public class RatesScenarioCurveBuilder {
 	 * @return The RatesScenarioCurve instance
 	 */
 
-	public static final org.drip.param.definition.RatesScenarioCurve FromIRCSG (
+	public static final org.drip.param.definition.ScenarioDiscountCurve FromIRCSG (
 		final java.lang.String strCurrency,
 		final java.lang.String strBootstrapMode,
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst)
@@ -157,12 +157,12 @@ public class RatesScenarioCurveBuilder {
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
-		org.drip.param.definition.RatesScenarioCurve irsg = FromIRCSG (strCurrency, strBootstrapMode,
+		org.drip.param.definition.ScenarioDiscountCurve irsg = FromIRCSG (strCurrency, strBootstrapMode,
 			aCalibInst);
 
 		if (null == irsg || !irsg.cookScenarioDC (org.drip.param.valuation.ValuationParams.CreateValParams
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, null, adblQuotes, 0.,
-				astrCalibMeasure, mmFixings, null, org.drip.param.definition.RatesScenarioCurve.DC_BASE))
+				astrCalibMeasure, mmFixings, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
 			return null;
 
 		return irsg.getDCBase();
@@ -890,7 +890,7 @@ public class RatesScenarioCurveBuilder {
 	 * 
 	 * @param lcc The Linear Curve Calibrator Instance
 	 * @param aSRS Array of the Instrument Representation Stretches
-	 * @param strTenor Forward Rate Tenor
+	 * @param fri The Floating Rate Index
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
 	 * @param cmp Component Market Parameters
@@ -903,7 +903,7 @@ public class RatesScenarioCurveBuilder {
 	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
 		final org.drip.state.estimator.LinearCurveCalibrator lcc,
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
-		final java.lang.String strTenor,
+		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.definition.ComponentMarketParams cmp,
@@ -913,9 +913,8 @@ public class RatesScenarioCurveBuilder {
 		if (null == lcc) return null;
 
 		try {
-			org.drip.analytics.rates.ForwardCurve fc = new org.drip.state.curve.BasisSplineForwardRate
-				(aSRS[0].getCalibComp()[0].getIRCurveName(), strTenor, (lcc.calibrateSpan (aSRS,
-					dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
+			org.drip.analytics.rates.ForwardCurve fc = new org.drip.state.curve.BasisSplineForwardRate (fri,
+				(lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
 
 			return fc.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
 				pricerParam, quotingParam, cmp)) ? fc : null;
@@ -931,7 +930,7 @@ public class RatesScenarioCurveBuilder {
 	 * 	builder parameters.
 	 * 
 	 * @param strName Curve Name
-	 * @param strTenor Forward Rate Tenor
+	 * @param fri The Floating Rate Index
 	 * @param valParams Valuation Parameters
 	 * @param pricerParam Pricer Parameters
 	 * @param cmp Component Market Parameters
@@ -947,7 +946,7 @@ public class RatesScenarioCurveBuilder {
 
 	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
 		final java.lang.String strName,
-		final java.lang.String strTenor,
+		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.definition.ComponentMarketParams cmp,
@@ -986,8 +985,8 @@ public class RatesScenarioCurveBuilder {
 									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
 										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
 
-			return ShapePreservingForwardCurve (lcc, aSRS, strTenor, valParams, pricerParam, cmp,
-				quotingParam, dblEpochResponse);
+			return ShapePreservingForwardCurve (lcc, aSRS, fri, valParams, pricerParam, cmp, quotingParam,
+				dblEpochResponse);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -552,7 +552,7 @@ public class CreditAnalytics {
 	{
 		if (null == dtEOD || null == strName || strName.isEmpty() || null == s_stmt) return null;
 
-		org.drip.param.definition.RatesScenarioCurve ircsc =
+		org.drip.param.definition.ScenarioDiscountCurve ircsc =
 			org.drip.service.env.EODCurves.BuildEODIRCurveOfCode (null, s_stmt, dtEOD, strName, "M", "swap",
 				strName);
 
@@ -635,7 +635,7 @@ public class CreditAnalytics {
 	{
 		if (null == dtEOD || null == strName || strName.isEmpty() || null == s_stmt) return null;
 
-		org.drip.param.definition.RatesScenarioCurve ircsc =
+		org.drip.param.definition.ScenarioDiscountCurve ircsc =
 			org.drip.service.env.EODCurves.BuildEODIRCurveOfCode (null, s_stmt, dtEOD, strName, "E", "swap",
 				strName);
 
@@ -730,7 +730,7 @@ public class CreditAnalytics {
 
 		mmFixings.put (dtEOD.addDays (2), mIndexFixings);
 
-		org.drip.param.definition.RatesScenarioCurve ircsc =
+		org.drip.param.definition.ScenarioDiscountCurve ircsc =
 			org.drip.service.env.EODCurves.BuildEODIRCurveOfCode (mmFixings, s_stmt, dtEOD, strName, "S",
 				"swap", strName);
 
@@ -930,7 +930,7 @@ public class CreditAnalytics {
 
 		if (null == dc) return null;
 
-		org.drip.param.definition.CreditScenarioCurve ccsg =
+		org.drip.param.definition.ScenarioCreditCurve ccsg =
 			org.drip.service.env.EODCurves.BuildEODCreditCurve (s_stmt, dtEOD, dc, strName, strCurrency);
 
 		if (null == ccsg) return null;

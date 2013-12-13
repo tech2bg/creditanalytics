@@ -398,7 +398,7 @@ public class EMRatesClosesLoader {
 
 			org.drip.analytics.rates.DiscountCurve dcShapePreserving =
 				org.drip.param.creator.RatesScenarioCurveBuilder.ShapePreservingDFBuild (lcc, aRRS, valParams,
-					null, null, null, 1.);
+					null, null, null, 1.0);
 
 			if (null == dcShapePreserving) return null;
 
@@ -641,7 +641,7 @@ public class EMRatesClosesLoader {
 
 							lsCDXNamedPrice.add (cdxNP);
 
-							System.out.println ("\tAddingCDX: " + cdxNP.display());
+							System.out.println ("\tAdding CDX: " + cdxNP.display());
 						}
 					}
 
@@ -675,9 +675,9 @@ public class EMRatesClosesLoader {
 
 		try {
 			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader
-				("C:\\IFA\\USD_CDS_Fixing_Curve_Orig_1.txt"));
+				("C:\\IFA\\CDXOP\\USD_CDS_Fixing_Curve_Orig_3.txt"));
 
-			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\HY5Y.LAST"));
+			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\CDXOP\\HY5Y.LAST"));
 
 			while (null != (strCOBQuote = brSwapCOB.readLine())) {
 				java.lang.String[] astrCOBRecord = strCOBQuote.split (",");
@@ -767,11 +767,11 @@ public class EMRatesClosesLoader {
 	{
 		org.drip.service.api.CreditAnalytics.Init ("");
 
-		/* java.util.Map<org.drip.analytics.date.JulianDate, java.util.List<CDXNamePrice>> mapDatedCDXClose =
-			LoadCDXCloses ("c:\\IFA\\CDX_HY_PX_5Y_CONTRACTS_LAST_Orig.txt");
+		java.util.Map<org.drip.analytics.date.JulianDate, java.util.List<org.drip.service.api.CDXCOB>>
+			mapDatedCDXClose = LoadCDXCloses ("c:\\IFA\\CDXOP\\CDX_HY_PX_5Y_CONTRACTS_LAST_Orig.txt");
 
-		ProcessCDXQuote (mapDatedCDXClose); */
+		ProcessCDXQuote (mapDatedCDXClose);
 
-		GenerateEMCurveMetrics ("ZAR");
+		// GenerateEMCurveMetrics ("ZAR");
 	}
 }

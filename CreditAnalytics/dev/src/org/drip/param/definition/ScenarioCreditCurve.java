@@ -30,7 +30,7 @@ package org.drip.param.definition;
  */
 
 /**
- * CreditScenarioCurve abstract class exposes the bump parameters and the curves for the following credit
+ * ScenarioCreditCurve abstract class exposes the bump parameters and the curves for the following credit
  *  curve scenarios:
  *  - Base, Flat Spread/Recovery bumps
  *	- Spread/Recovery Tenor bumped up/down credit curve sets keyed using the tenor.
@@ -39,7 +39,7 @@ package org.drip.param.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class CreditScenarioCurve {
+public abstract class ScenarioCreditCurve {
 
 	/**
 	 * CC Scenario Base

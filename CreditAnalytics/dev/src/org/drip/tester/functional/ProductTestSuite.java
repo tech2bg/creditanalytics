@@ -476,7 +476,7 @@ public class ProductTestSuite {
 			astrCalibMeasure[i] = "Yield";
 		}
 
-		org.drip.param.definition.RatesScenarioCurve irscUSDTSY =
+		org.drip.param.definition.ScenarioDiscountCurve irscUSDTSY =
 			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USDTSY",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
@@ -746,7 +746,7 @@ public class ProductTestSuite {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.RatesScenarioCurve irscUSD =
+		org.drip.param.definition.ScenarioDiscountCurve irscUSD =
 			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USD",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
@@ -929,13 +929,13 @@ public class ProductTestSuite {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.CreditScenarioCurve ccscARG =
+		org.drip.param.definition.ScenarioCreditCurve ccscARG =
 			org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDSARG);
 
 		ccscARG.cookScenarioCC ("ARG", valParams, dc, null, null, adblQuotesARG, 0.40, astrCalibMeasure,
 			null, null, false, 63);
 
-		org.drip.param.definition.CreditScenarioCurve ccscBRA =
+		org.drip.param.definition.ScenarioCreditCurve ccscBRA =
 			org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDSBRA);
 
 		ccscBRA.cookScenarioCC ("BRA", valParams, dc, null, null, adblQuotesBRA, 0.40, astrCalibMeasure,

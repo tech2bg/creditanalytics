@@ -37,6 +37,7 @@ package org.drip.state.estimator;
 
 public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegmentSequence {
 	private double _dblBuiltPredictorOrdinateRight = java.lang.Double.NaN;
+	private org.drip.state.representation.MergeSubStretchManager _msm = null;
 
 	/**
 	 * CurveStretch constructor - Construct a sequence of Basis Spline Segments
@@ -63,12 +64,14 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 	 * Mark the Range of the "built" Segments
 	 * 
 	 * @param iSegment The Current Segment Range Built
+	 * @param fri The Floating Rate Index
 	 * 
 	 * @return TRUE => Range successfully marked as "built"
 	 */
 
 	public boolean setSegmentBuilt (
-		final int iSegment)
+		final int iSegment,
+		final org.drip.product.params.FloatingRateIndex fri)
 	{
 		org.drip.spline.segment.ConstitutiveState[] aCS = segments();
 
@@ -76,7 +79,18 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 
 		_dblBuiltPredictorOrdinateRight = aCS[iSegment].right();
 
-		return true;
+		if (null == fri) return true;
+
+		if (null == _msm) _msm = new org.drip.state.representation.MergeSubStretchManager();
+
+		try {
+			return _msm.addMergeStretch (new org.drip.state.representation.LatentStateMergeSubStretch
+				(aCS[iSegment].left(), aCS[iSegment].right(), fri));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	/**
@@ -111,5 +125,10 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 
 		return dblPredictorOrdinate >= getLeftPredictorOrdinateEdge() && dblPredictorOrdinate <=
 			_dblBuiltPredictorOrdinateRight;
+	}
+
+	@Override public org.drip.state.representation.MergeSubStretchManager msm()
+	{
+		return _msm;
 	}
 }

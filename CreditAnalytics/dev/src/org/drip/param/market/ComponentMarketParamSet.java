@@ -53,10 +53,10 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	private org.drip.analytics.rates.DiscountCurve _dc = null;
 
 	/*
-	 * Forward Discount Curve
+	 * Forward Curve
 	 */
 
-	private org.drip.analytics.rates.DiscountCurve _dcForward = null;
+	private org.drip.analytics.rates.ForwardCurve _fc = null;
 
 	/*
 	 * Treasury Discount Curve
@@ -96,7 +96,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	 *  and the double map of date/rate index and fixings.
 	 * 
 	 * @param dc Rates Discount Curve
-	 * @param dcForward Forward Discount Curve
+	 * @param fc Forward Curve
 	 * @param dcTSY Treasury Discount Curve
 	 * @param dcEDSF EDSF Discount Curve
 	 * @param cc Credit Curve
@@ -107,7 +107,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 	public ComponentMarketParamSet (
 		final org.drip.analytics.rates.DiscountCurve dc,
-		final org.drip.analytics.rates.DiscountCurve dcForward,
+		final org.drip.analytics.rates.ForwardCurve fc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
@@ -119,9 +119,9 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	{
 		_cc = cc;
 		_dc = dc;
+		_fc = fc;
 		_dcTSY = dcTSY;
 		_dcEDSF = dcEDSF;
-		_dcForward= dcForward;
 		_compQuote = compQuote;
 		_mmFixings = mmFixings;
 		_mTSYQuotes = mTSYQuotes;
@@ -181,8 +181,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 				("ComponentMarketParams de-serializer: Cannot locate forward curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			_dcForward = org.drip.state.creator.DiscountCurveBuilder.FromByteArray (astrField[3].getBytes(),
-				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+			_fc = null;
 
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception
@@ -336,17 +335,17 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getForwardDiscountCurve()
+	@Override public org.drip.analytics.rates.ForwardCurve getForwardCurve()
 	{
-		return _dcForward;
+		return _fc;
 	}
 
-	@Override public boolean setForwardDiscountCurve (
-		final org.drip.analytics.rates.DiscountCurve dcForward)
+	@Override public boolean setForwardCurve (
+		final org.drip.analytics.rates.ForwardCurve fc)
 	{
-		if (null == dcForward) return false;
+		if (null == _fc) return false;
 
-		_dcForward = dcForward;
+		_fc = fc;
 		return true;
 	}
 
@@ -426,10 +425,10 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		else
 			sb.append (new java.lang.String (_dc.serialize()) + getFieldDelimiter());
 
-		if (null == _dcForward)
+		if (null == _fc)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (new java.lang.String (_dcForward.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_fc.serialize()) + getFieldDelimiter());
 
 		if (null == _dcTSY)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
@@ -544,11 +543,6 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.rates.ExplicitBootDiscountCurve dcForward =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblForward,
-					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
 		org.drip.analytics.rates.ExplicitBootDiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
@@ -590,7 +584,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
-		ComponentMarketParamSet cmp = new ComponentMarketParamSet (dc, dcForward, dcTSY, dcEDSF, cc, cq,
+		ComponentMarketParamSet cmp = new ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, cq,
 			mapTSYQuotes, mmFixings);
 
 		byte[] abCMP = cmp.serialize();

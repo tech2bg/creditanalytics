@@ -42,31 +42,27 @@ package org.drip.analytics.rates;
  */
 
 public abstract class ForwardCurve extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.definition.Curve {
-	private java.lang.String _strTenor = "";
-	private java.lang.String _strCurrency = "";
+	org.drip.analytics.rates.ForwardRateEstimator, org.drip.analytics.definition.Curve {
 	private double _dblEpochDate = java.lang.Double.NaN;
+	private org.drip.product.params.FloatingRateIndex _fri = null;
 
 	protected ForwardCurve (
 		final double dblEpochDate,
-		final java.lang.String strCurrency,
-		final java.lang.String strTenor)
+		final org.drip.product.params.FloatingRateIndex fri)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_strCurrency
-			= strCurrency) || _strCurrency.isEmpty() || null == (_strTenor = strTenor) ||
-				_strTenor.isEmpty())
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_fri = fri))
 			throw new java.lang.Exception ("ForwardCurve ctr: Invalid Inputs");
 	}
 
 	@Override public java.lang.String name()
 	{
-		return _strCurrency + _strTenor;
+		return _fri.fullyQualifiedName();
 	}
 
 	@Override public java.lang.String currency()
 	{
-		return _strCurrency;
+		return _fri.currency();
 	}
 
 	@Override public org.drip.analytics.date.JulianDate epoch()
@@ -80,42 +76,23 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 		return null;
 	}
 
-	/**
-	 * Retrieve the Forward Rate Tenor
-	 * 
-	 * @return The Forward Rate Tenor
-	 */
-
-	public java.lang.String tenor()
+	@Override public java.lang.String tenor()
 	{
-		return _strTenor;
+		return _fri.tenor();
 	}
 
 	/**
-	 * Calculate the Forward Rate to the given Date
+	 * Retrieve the Forward Rate Index
 	 * 
-	 * @param dblDate Date
-	 * 
-	 * @return The Forward Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
+	 * @return The Forward Rate Index
 	 */
 
-	public abstract double forward (
-		final double dblDate)
-		throws java.lang.Exception;
+	@Override public org.drip.product.params.FloatingRateIndex index()
+	{
+		return _fri;
+	}
 
-	/**
-	 * Calculate the Forward Rate to the given date
-	 * 
-	 * @param dt Date
-	 * 
-	 * @return The Forward Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
-	 */
-
-	public double forward (
+	@Override public double forward (
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
@@ -134,7 +111,7 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
 	 */
 
-	public double forward (
+	@Override public double forward (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{

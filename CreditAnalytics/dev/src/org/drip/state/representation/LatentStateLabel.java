@@ -1,5 +1,5 @@
 
-package org.drip.product.definition;
+package org.drip.state.representation;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -7,8 +7,6 @@ package org.drip.product.definition;
 
 /*!
  * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
- * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
  * 		developers - http://www.credit-trader.org
@@ -31,59 +29,30 @@ package org.drip.product.definition;
  */
 
 /**
- * ComponentMarketParamRef interface provides stubs for component name, IR curve, forward curve, credit
- *  curve, TSY curve, and EDSF curve needed to value the component.
+ * LatentStateLabel is an empty interface that contains the labels inside the sub-stretch of the alternate
+ * 	state.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface ComponentMarketParamRef {
+public interface LatentStateLabel {
 
 	/**
-	 * Gets the component name
+	 * Retrieve the Fully Qualified Name
 	 * 
-	 * @return The component name
+	 * @return The Fully Qualified Name
 	 */
 
-	public abstract java.lang.String getComponentName();
+	public abstract java.lang.String fullyQualifiedName();
 
 	/**
-	 * Gets the IR curve name
+	 * Indicate whether this Label matches the supplied.
 	 * 
-	 * @return The IR curve name
+	 * @param lslOther The Supplied Label
+	 * 
+	 * @return TRUE => The Supplied Label matches this.
 	 */
 
-	public abstract java.lang.String getIRCurveName();
-
-	/**
-	 * Get the Forward Curve Name
-	 * 
-	 * @return The Forward Curve Name
-	 */
-
-	public abstract java.lang.String getForwardCurveName();
-
-	/**
-	 * Gets the credit curve name
-	 * 
-	 * @return The credit curve name
-	 */
-
-	public abstract java.lang.String getCreditCurveName();
-
-	/**
-	 * Gets the treasury curve name
-	 * 
-	 * @return The treasury curve name
-	 */
-
-	public abstract java.lang.String getTreasuryCurveName();
-
-	/**
-	 * Gets the EDSF curve name
-	 * 
-	 * @return The EDSF curve name
-	 */
-
-	public abstract java.lang.String getEDSFCurveName();
+	public abstract boolean match (
+		final LatentStateLabel lslOther);
 }

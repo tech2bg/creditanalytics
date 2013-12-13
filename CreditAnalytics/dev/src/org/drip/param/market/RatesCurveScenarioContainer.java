@@ -40,7 +40,7 @@ package org.drip.param.market;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RatesCurveScenarioContainer extends org.drip.param.definition.RatesScenarioCurve {
+public class RatesCurveScenarioContainer extends org.drip.param.definition.ScenarioDiscountCurve {
 	private static final boolean s_bBlog = false;
 
 	private org.drip.analytics.rates.DiscountCurve _dcBase = null;
@@ -99,7 +99,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 			return false;
 		}
 
-		if (0 != (org.drip.param.definition.RatesScenarioCurve.DC_FLAT_UP & iDCMode)) {
+		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_FLAT_UP & iDCMode)) {
 			if (null == (_dcBumpUp = _irsg.createIRCurve (valParams, dcTSY, dcEDSF, adblQuotes, dblBump,
 				astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)
@@ -110,7 +110,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 			}
 		}
 
-		if (0 != (org.drip.param.definition.RatesScenarioCurve.DC_FLAT_DN & iDCMode)) {
+		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_FLAT_DN & iDCMode)) {
 			if (null == (_dcBumpDn = _irsg.createIRCurve (valParams, dcTSY, dcEDSF, adblQuotes, -dblBump,
 				astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)
@@ -121,7 +121,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 			}
 		}
 
-		if (0 != (org.drip.param.definition.RatesScenarioCurve.DC_TENOR_UP & iDCMode)) {
+		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_TENOR_UP & iDCMode)) {
 			if (null == (_mapDCBumpUp = _irsg.createTenorIRCurveMap (valParams, dcTSY, dcEDSF, adblQuotes,
 				dblBump, astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)
@@ -132,7 +132,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Rates
 			}
 		}
 
-		if (0 != (org.drip.param.definition.RatesScenarioCurve.DC_TENOR_DN & iDCMode)) {
+		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_TENOR_DN & iDCMode)) {
 			if (null == (_mapDCBumpDn = _irsg.createTenorIRCurveMap (valParams, dcTSY, dcEDSF, adblQuotes,
 				-dblBump, astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)

@@ -221,14 +221,14 @@ public class BondAnalyticsAPI {
 			bond = BondBuilder.CreateSimpleFloater ( // Simple Floating Rate Bond
 				strName,		// Name
 				"USD",			// Currency
-				"DRIPRI",		// Rate Index
+				"USD-LIBOR-6M", // Rate Index
 				0.01,			// Floating Spread
 				2,				// Coupon Frequency
 				"30/360",		// Day Count
 				JulianDate.CreateFromYMD (2008, 9, 21), // Effective
 				JulianDate.CreateFromYMD (2023, 9, 20),	// Maturity
 				MakeFSPrincipal(),		// Principal Schedule
-				MakeFSCoupon());			// Coupon Schedule
+				MakeFSCoupon());		// Coupon Schedule
 		else if (BondBuilder.BOND_TYPE_SIMPLE_FIXED == iBondType)
 			bond = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				strName,		// Name

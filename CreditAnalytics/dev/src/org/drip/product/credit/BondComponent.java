@@ -273,25 +273,31 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	private double getIndexRate (
 		final double dblValue,
-		final org.drip.analytics.rates.DiscountCurve dc,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmMarketFixings,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.analytics.period.Period period)
 		throws java.lang.Exception
 	{
 		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = _mmFixings;
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null ==
+				_mmFixings ? mktParams.getFixings() : _mmFixings;
 
-		if (null == mmFixings) mmFixings = mmMarketFixings;
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null != period) {
 			if (null == mmFixings || null == mmFixings.get (new org.drip.analytics.date.JulianDate
 				(period.getResetDate())) || null == mmFixings.get (new org.drip.analytics.date.JulianDate
-					(period.getResetDate())).get (_fltParams._strRateIndex)) {
+					(period.getResetDate())).get (_fltParams._fri.fullyQualifiedName())) {
 				if (s_bBlog)
-					System.out.println ("IRS reset for index " + _fltParams._strRateIndex +
+					System.out.println ("IRS reset for index " + _fltParams._fri.fullyQualifiedName() +
 						" and reset date " + org.drip.analytics.date.JulianDate.fromJulian
 							(period.getResetDate()) + " not found; defaulting to implied");
+
+				org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve();
+
+				if (null == fc || !_fltParams._fri.match (fc.index()))
+					fc = dc.forwardRateEstimator (period.getPayDate(), _fltParams._fri);
+
+				if (null != fc) return fc.forward (period.getPayDate());
 
 				if (period.getStartDate() < dblValue && 0 != _periodParams._iFreq)
 					return dc.libor ((12 / _periodParams._iFreq) + "M");
@@ -300,7 +306,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			}
 
 			return mmFixings.get (new org.drip.analytics.date.JulianDate (period.getResetDate())).get
-				(_fltParams._strRateIndex);
+				(_fltParams._fri.fullyQualifiedName());
 		}
 
 		double dblRateRefEndDate = dblValue + LOCAL_FORWARD_RATE_WIDTH;
@@ -348,10 +354,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == mktParams)
 			throw new java.lang.Exception ("Valid market params needed for floaters to get index rate!");
 
-		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
-			mktParams.getDiscountCurve() : mktParams.getForwardDiscountCurve();
-
-		double dblIndexRate = getIndexRate (dblValue, dcForward, mktParams.getFixings(), period);
+		double dblIndexRate = getIndexRate (dblValue, mktParams, period);
 
 		if (java.lang.Double.isNaN (dblIndexRate))
 			throw new java.lang.Exception ("Cannot find the index rate for " + new
@@ -410,12 +413,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (null == _fltParams) dblPeriodCoupon = getCoupon (valParams._dblValue, mktParams);
 
-				org.drip.analytics.rates.DiscountCurve dcForward = null ==
-					mktParams.getForwardDiscountCurve() ? mktParams.getDiscountCurve() :
-						mktParams.getForwardDiscountCurve();
-
-				double dblPeriodIndexRate = getIndexRate (valParams._dblValue, dcForward,
-					mktParams.getFixings(), period);
+				double dblPeriodIndexRate = getIndexRate (valParams._dblValue, mktParams, period);
 
 				if (bPeriodZero) {
 					bPeriodZero = false;
@@ -1350,11 +1348,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return _irValParams._strTradeDiscountCurve;
 	}
 
-	@Override public java.lang.String getRatesForwardCurveName()
+	@Override public java.lang.String getForwardCurveName()
 	{
 		if (null == _fltParams) return "";
 
-		return _fltParams._strRateIndex;
+		return _fltParams._fri.fullyQualifiedName();
 	}
 
 	@Override public java.lang.String getCreditCurveName()
@@ -1463,8 +1461,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					double dblCpnFactor = _cpnParams._fsCoupon.getFactor (fp.getEndDate());
 
 					if (null != mktParams)
-						dblIndexRate = getIndexRate (valParams._dblValue, mktParams.getDiscountCurve(),
-							mktParams.getFixings(), fp) * dblCpnFactor;
+						dblIndexRate = getIndexRate (valParams._dblValue, mktParams, fp) * dblCpnFactor;
 
 					dblFloatSpread = _cpnParams._dblCoupon * dblCpnFactor;
 				}
@@ -1559,7 +1556,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		if (null == _fltParams) return "";
 
-		return _fltParams._strRateIndex;
+		return _fltParams._fri.fullyQualifiedName();
 	}
 
 	@Override public double getCurrentCoupon()
@@ -4702,12 +4699,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
-			dc : mktParams.getForwardDiscountCurve();
-
 		return null == _fltParams ? dblYield - dc.libor (((int) (12. / (0 == _periodParams._iFreq ? 2 :
-			_periodParams._iFreq))) + "M") : dblYield - getIndexRate (valParams._dblValue, dcForward,
-				mktParams.getFixings(), calcCurrentPeriod (valParams._dblValue));
+			_periodParams._iFreq))) + "M") : dblYield - getIndexRate (valParams._dblValue, mktParams,
+				calcCurrentPeriod (valParams._dblValue));
 	}
 
 	@Override public double calcDiscountMarginFromYield (
@@ -9810,13 +9804,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
-			dc : mktParams.getForwardDiscountCurve();
-
-		return null == _fltParams ? dblDiscountMargin + dc.libor (((int) (12. / (0 ==
-			_periodParams._iFreq ? 2 : _periodParams._iFreq))) + "M") : dblDiscountMargin - getIndexRate
-				(valParams._dblValue, dcForward, mktParams.getFixings(), calcCurrentPeriod
-					(valParams._dblValue));
+		return null == _fltParams ? dblDiscountMargin + dc.libor (((int) (12. / (0 == _periodParams._iFreq ?
+			2 : _periodParams._iFreq))) + "M") : dblDiscountMargin - getIndexRate (valParams._dblValue,
+				mktParams, calcCurrentPeriod (valParams._dblValue));
 	}
 
 	@Override public double calcYieldFromDiscountMargin (

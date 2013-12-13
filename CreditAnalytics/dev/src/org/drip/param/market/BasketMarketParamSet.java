@@ -39,10 +39,12 @@ package org.drip.param.market;
  */
 
 public class BasketMarketParamSet extends org.drip.param.definition.BasketMarketParams {
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> _mapCC =
-		null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		_mapDC = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
+		_mapFC = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+		_mapCC = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
@@ -51,10 +53,12 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 	/**
-	 * Constructs the BasketMarketParamSet object from the map of discount curve, the map of credit curve, a
-	 * 	double map of date/rate index and fixings, and a map of the component quotes.
+	 * Constructs the BasketMarketParamSet object from the map of discount curve, the map of forward curve,
+	 *  the map of credit curve, a double map of date/rate index and fixings, and a map of the component
+	 *  quotes.
 	 * 
 	 * @param mapDC Map of discount curve
+	 * @param mapFC Map of Forward curve
 	 * @param mapCC Map of Credit curve
 	 * @param mapCQComp Map of component quotes
 	 * @param mmFixings Double map of date/rate index and fixings
@@ -63,19 +67,26 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	public BasketMarketParamSet (
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 			mapDC,
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
+			mapFC,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+			mapCC,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 			mapCQComp,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
-		if (null == (_mapCC = mapCC))
-			_mapCC = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
-
 		if (null == (_mapDC = mapDC))
 			_mapDC = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
+
+		if (null == (_mapFC = mapFC))
+			_mapFC = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>();
+
+		if (null == (_mapCC = mapCC))
+			_mapCC = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		if (null == (_mapCQComp = mapCQComp))
 			_mapCQComp = new
@@ -113,7 +124,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedBasketMarketParams, getFieldDelimiter());
 
-		if (null == astrField || 5 > astrField.length)
+		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("BasketMarketParamSet de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -200,10 +211,48 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		}
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("BasketMarketParamSet de-serializer: Cannot locate fixings");
+			throw new java.lang.Exception
+				("BasketMarketParamSet de-serializer: Cannot locate Forward curve map");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
+				getCollectionRecordDelimiter());
+
+			if (null != astrRecord && 0 != astrRecord.length) {
+				for (int i = 0; i < astrRecord.length; ++i) {
+					if (null == astrRecord[i] || astrRecord[i].isEmpty() ||
+						org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrRecord[i]))
+						continue;
+
+					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
+						getCollectionKeyValueDelimiter());
+				
+					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
+						astrKVPair[0].isEmpty() ||
+							org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
+								(astrKVPair[0]) || null == astrKVPair[1] || astrKVPair[1].isEmpty() ||
+									org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
+										(astrKVPair[1]))
+						continue;
+
+					/* org.drip.analytics.rates.ForwardCurve fc = null;
+
+					if (null != fc) {
+						if (null == _mapFC)
+							_mapFC = new
+								org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>();
+
+						_mapFC.put (astrKVPair[0], fc);
+					} */
+				}
+			}
+		}
+
+		if (null == astrField[4] || astrField[4].isEmpty())
+			throw new java.lang.Exception ("BasketMarketParamSet de-serializer: Cannot locate fixings");
+
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4])) {
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[4],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -250,12 +299,12 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			}
 		}
 
-		if (null == astrField[4] || astrField[4].isEmpty())
+		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception
 				("BasketMarketParamSet de-serializer: Cannot locate component quote map");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4])) {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[4],
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5])) {
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[5],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -296,11 +345,14 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 	public BasketMarketParamSet()
 	{
-		_mapCC = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
-
 		_mapDC = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
+
+		_mapFC = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>();
+
+		_mapCC = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		_mapCQComp = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
@@ -313,6 +365,17 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		if (null == strName || strName.isEmpty() || null == dc) return false;
 
 		_mapDC.put (strName, dc);
+
+		return true;
+	}
+
+	@Override public boolean addForwardCurve (
+		final java.lang.String strName,
+		final org.drip.analytics.rates.ForwardCurve fc)
+	{
+		if (null == strName || strName.isEmpty() || null == fc) return false;
+
+		_mapFC.put (strName, fc);
 
 		return true;
 	}
@@ -334,6 +397,14 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		if (null == strName || strName.isEmpty()) return null;
 
 		return _mapDC.get (strName);
+	}
+
+	@Override public org.drip.analytics.rates.ForwardCurve getForwardCurve (
+		final java.lang.String strName)
+	{
+		if (null == strName || strName.isEmpty()) return null;
+
+		return _mapFC.get (strName);
 	}
 
 	@Override public org.drip.analytics.definition.CreditCurve getCC (
@@ -366,8 +437,8 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	{
 		if (null == compRef) return null;
 
-		return new ComponentMarketParamSet (_mapDC.get (compRef.getIRCurveName()), _mapDC.get
-			(compRef.getRatesForwardCurveName()), _mapDC.get (compRef.getTreasuryCurveName()), _mapDC.get
+		return new ComponentMarketParamSet (_mapDC.get (compRef.getIRCurveName()), _mapFC.get
+			(compRef.getForwardCurveName()), _mapDC.get (compRef.getTreasuryCurveName()), _mapDC.get
 				(compRef.getEDSFCurveName()), _mapCC.get (compRef.getCreditCurveName()), _mapCQComp.get
 					(compRef.getComponentName()), _mapCQComp, _mmFixings);
 	}
@@ -448,6 +519,32 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 			else
 				sb.append (sbMapDC.toString() + getFieldDelimiter());
+		}
+
+		if (null == _mapFC || null == _mapFC.entrySet())
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		else {
+			boolean bFirstEntry = true;
+
+			java.lang.StringBuffer sbMapFC = new java.lang.StringBuffer();
+
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.ForwardCurve> me :
+				_mapFC.entrySet()) {
+				if (null == me || null == me.getKey() || me.getKey().isEmpty()) continue;
+
+				if (bFirstEntry)
+					bFirstEntry = false;
+				else
+					sbMapFC.append (getCollectionRecordDelimiter());
+
+				sbMapFC.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
+					(me.getValue().serialize()));
+			}
+
+			if (sbMapFC.toString().isEmpty())
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			else
+				sb.append (sbMapFC.toString() + getFieldDelimiter());
 		}
 
 		if (null == _mmFixings || null == _mmFixings.entrySet())
@@ -602,7 +699,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
-		BasketMarketParamSet bmp = new BasketMarketParamSet (mapDC, mapCC, mapTSYQuotes, mmFixings);
+		BasketMarketParamSet bmp = new BasketMarketParamSet (mapDC, null, mapCC, mapTSYQuotes, mmFixings);
 
 		byte[] abBMP = bmp.serialize();
 

@@ -95,6 +95,24 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		return null;
 	}
 
+	@Override public double left()
+		throws java.lang.Exception
+	{
+		if (0 == _lsMSS.size())
+			throw new java.lang.Exception ("OverlappingStretchSpan::left => No valid Stretches found");
+
+		return _lsMSS.get (0).getLeftPredictorOrdinateEdge();
+	}
+
+	@Override public double right()
+		throws java.lang.Exception
+	{
+		if (0 == _lsMSS.size())
+			throw new java.lang.Exception ("OverlappingStretchSpan::right => No valid Stretches found");
+
+		return _lsMSS.get (_lsMSS.size() - 1).getRightPredictorOrdinateEdge();
+	}
+
 	@Override public double calcResponseValue (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
@@ -106,20 +124,23 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		throw new java.lang.Exception ("OverlappingStretchSpan::calcResponseValue => Cannot Calculate!");
 	}
 
-	@Override public double left() throws java.lang.Exception
+	@Override public boolean isMergeState (
+		final double dblPredictorOrdinate,
+		final org.drip.state.representation.LatentStateLabel lsl)
 	{
-		if (0 == _lsMSS.size())
-			throw new java.lang.Exception ("OverlappingStretchSpan::left => No valid Stretches found");
+		try {
+			for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
+				if (mss.in (dblPredictorOrdinate)) {
+					org.drip.state.representation.MergeSubStretchManager msm = mss.msm();
 
-		return _lsMSS.get (0).getLeftPredictorOrdinateEdge();
-	}
+					return null == msm ? false : msm.partOfMergeState (dblPredictorOrdinate, lsl);
+				}
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
 
-	@Override public double right() throws java.lang.Exception
-	{
-		if (0 == _lsMSS.size())
-			throw new java.lang.Exception ("OverlappingStretchSpan::right => No valid Stretches found");
-
-		return _lsMSS.get (_lsMSS.size() - 1).getRightPredictorOrdinateEdge();
+		return false;
 	}
 
 	/**

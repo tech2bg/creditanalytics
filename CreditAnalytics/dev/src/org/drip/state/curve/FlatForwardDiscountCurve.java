@@ -277,6 +277,13 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		return -365.25 / (dblDate - dblStartDate) * java.lang.Math.log (df (dblDate));
 	}
 
+	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
+		final double dblDate,
+		final org.drip.product.params.FloatingRateIndex fri)
+	{
+		return null;
+	}
+
 	@Override public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness (
 		final java.lang.String strLatentQuantificationMetric)
 	{

@@ -781,13 +781,14 @@ public class SerializerTestSuite {
 
 		mapDC.put ("ABCEDSF", dcEDSF);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC =
+			new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		mapCC.put ("ABCSOV", cc);
 
 		byte[] abBMP = org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (mapDC,
-			mapCC, mapTSYQuotes, mmFixings).serialize();
+			null, mapCC, mapTSYQuotes, mmFixings).serialize();
 
 		Verify (abBMP, org.drip.param.creator.BasketMarketParamsBuilder.FromByteArray (abBMP),
 			"BasketMarketParams");

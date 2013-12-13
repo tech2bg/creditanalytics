@@ -316,4 +316,12 @@ public interface MultiSegmentSequence extends org.drip.spline.stretch.SingleSegm
 	 */
 
 	public abstract java.lang.String displayString();
+
+	/**
+	 * Retrieve the Merge Stretch Manager if it exists.
+	 * 
+	 * @return The Merge Stretch Manager
+	 */
+
+	public org.drip.state.representation.MergeSubStretchManager msm();
 }

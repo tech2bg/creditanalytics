@@ -218,7 +218,7 @@ public class EODCurves {
 	 * @return The CreditScenarioCurve object
 	 */
 
-	public static final org.drip.param.definition.CreditScenarioCurve BuildEODCreditCurve (
+	public static final org.drip.param.definition.ScenarioCreditCurve BuildEODCreditCurve (
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final org.drip.analytics.rates.DiscountCurve dc,
@@ -233,7 +233,7 @@ public class EODCurves {
 		java.sql.ResultSet rsCDSPoints = null;
 		double dblRecovery = java.lang.Double.NaN;
 		java.lang.String[] astrCalibMeasure = new java.lang.String[20];
-		org.drip.param.definition.CreditScenarioCurve ccsc = null;
+		org.drip.param.definition.ScenarioCreditCurve ccsc = null;
 		org.drip.product.definition.CalibratableComponent[] aCDS = new
 			org.drip.product.definition.CreditDefaultSwap[20];
 
@@ -722,7 +722,7 @@ public class EODCurves {
 	 * @return The IRCurveScenarioContainer object
 	 */
 
-	public static final org.drip.param.definition.RatesScenarioCurve BuildEODIRCurveOfCode (
+	public static final org.drip.param.definition.ScenarioDiscountCurve BuildEODIRCurveOfCode (
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final java.sql.Statement stmt,
@@ -742,7 +742,7 @@ public class EODCurves {
 
 		int i = 0;
 		java.sql.ResultSet rsCurvePoints = null;
-		org.drip.param.definition.RatesScenarioCurve ircsc = null;
+		org.drip.param.definition.ScenarioDiscountCurve ircsc = null;
 
 		boolean bTSY = strInstrSetType.equalsIgnoreCase ("government");
 
@@ -893,7 +893,7 @@ public class EODCurves {
 	 * @return The IRCurveScenarioContainer object
 	 */
 
-	public static final org.drip.param.definition.RatesScenarioCurve BuildEODIRCurve (
+	public static final org.drip.param.definition.ScenarioDiscountCurve BuildEODIRCurve (
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final java.sql.Statement stmt,
@@ -909,7 +909,7 @@ public class EODCurves {
 
 		int i = 0;
 		java.sql.ResultSet rsCurvePoints = null;
-		org.drip.param.definition.RatesScenarioCurve ircsc = null;
+		org.drip.param.definition.ScenarioDiscountCurve ircsc = null;
 
 		boolean bTSY = strInstrSetType.equalsIgnoreCase ("government");
 
@@ -1133,7 +1133,7 @@ public class EODCurves {
 
 		mmFixings.put (dtEOD.addDays (2), mIndexFixings);
 
-		org.drip.param.definition.RatesScenarioCurve ircsg = BuildEODIRCurve (mmFixings, stmt, dtEOD,
+		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (mmFixings, stmt, dtEOD,
 			strCurrency, strInstrType, strCurveName);
 
 		if (null == ircsg || null == ircsg.getDCBase()) return null;
@@ -1169,7 +1169,7 @@ public class EODCurves {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.RatesScenarioCurve ircsg = BuildEODIRCurve (mpc.getFixings(), stmt, dtEOD,
+		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (mpc.getFixings(), stmt, dtEOD,
 			strCurrency, strInstrType, strCurveName);
 
 		if (null == ircsg) return false;
@@ -1216,7 +1216,7 @@ public class EODCurves {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.RatesScenarioCurve ircsg = BuildEODIRCurveOfCode (mpc.getFixings(), stmt,
+		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurveOfCode (mpc.getFixings(), stmt,
 			dtEOD, strCurrency, strInstrCode, strInstrType, strCurveName);
 
 		if (null == ircsg) {
@@ -1333,7 +1333,7 @@ public class EODCurves {
 				(strCurrency) || null == mpc.getIRSG().get (strCurrency).getDCBase())
 			return false;
 
-		org.drip.param.definition.CreditScenarioCurve ccsg = BuildEODCreditCurve (stmt, dtEOD,
+		org.drip.param.definition.ScenarioCreditCurve ccsg = BuildEODCreditCurve (stmt, dtEOD,
 			mpc.getIRSG().get (strCurrency).getDCBase(), strSPN, strCurrency);
 
 		if (null == ccsg) return false;

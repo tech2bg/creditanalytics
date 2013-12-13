@@ -43,7 +43,7 @@ package org.drip.analytics.rates;
  */
 
 public abstract class DiscountCurve extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.definition.Curve {
+	org.drip.analytics.rates.DiscountFactorEstimator, org.drip.analytics.definition.Curve {
 	private static final int NUM_DF_QUADRATURES = 5;
 
 	/**
@@ -162,31 +162,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return turnAdjust (epoch().getJulian(), dblFinishDate);
 	}
 
-	/**
-	 * Calculate the Discount Factor to the given Date
-	 * 
-	 * @param dblDate Date
-	 * 
-	 * @return Discount Factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the Discount Factor cannot be calculated
-	 */
-
-	public abstract double df (
-		final double dblDate)
-		throws java.lang.Exception;
-
-	/**
-	 * Calculate the discount factor to the given date
-	 * 
-	 * @param dt Date
-	 * 
-	 * @return Discount factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
-	 */
-
-	public double df (
+	@Override public double df (
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
@@ -195,17 +171,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return df (dt.getJulian());
 	}
 
-	/**
-	 * Calculate the Discount Factor to the given Tenor
-	 * 
-	 * @param strTenor Tenor
-	 * 
-	 * @return Discount factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the Discount Factor cannot be calculated
-	 */
-
-	public double df (
+	@Override public double df (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
@@ -215,18 +181,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return df (epoch().addTenor (strTenor));
 	}
 
-	/**
-	 * Compute the time-weighted discount factor between 2 dates
-	 * 
-	 * @param dblDate1 First Date
-	 * @param dblDate2 Second Date
-	 * 
-	 * @return Discount Factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
-	 */
-
-	public double effectiveDF (
+	@Override public double effectiveDF (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
@@ -246,18 +201,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return dblEffectiveDF / (2. * iNumQuadratures);
 	}
 
-	/**
-	 * Compute the time-weighted discount factor between 2 dates
-	 * 
-	 * @param dt1 First Date
-	 * @param dt2 Second Date
-	 * 
-	 * @return Discount Factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
-	 */
-
-	public double effectiveDF (
+	@Override public double effectiveDF (
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2)
 		throws java.lang.Exception
@@ -268,18 +212,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return effectiveDF (dt1.getJulian(), dt2.getJulian());
 	}
 
-	/**
-	 * Compute the time-weighted discount factor between 2 tenors
-	 * 
-	 * @param strTenor1 First Date
-	 * @param strTenor2 Second Date
-	 * 
-	 * @return Discount Factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
-	 */
-
-	public double effectiveDF (
+	@Override public double effectiveDF (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
@@ -292,34 +225,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return effectiveDF (dtStart.addTenor (strTenor1), dtStart.addTenor (strTenor2));
 	}
 
-	/**
-	 * Compute the Forward Rate between two Dates
-	 * 
-	 * @param dblDt1 First Date
-	 * @param dblDt2 Second Date
-	 * 
-	 * @return The Forward Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
-	 */
-
-	public abstract double forward (
-		final double dblDate1,
-		final double dblDate2)
-		throws java.lang.Exception;
-
-	/**
-	 * Compute the Forward Rate between two Tenors
-	 * 
-	 * @param strTenor1 Tenor Start
-	 * @param strTenor2 Tenor End
-	 * 
-	 * @return The Forward Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
-	 */
-
-	public double forward (
+	@Override public double forward (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
@@ -333,31 +239,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			(strTenor2).getJulian());
 	}
 
-	/**
-	 * Calculate the implied rate to the given date
-	 * 
-	 * @param dblDate Date
-	 * 
-	 * @return Implied rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
-	 */
-
-	public abstract double zero (
-		final double dblDate)
-		throws java.lang.Exception;
-
-	/**
-	 * Calculate the implied rate to the given tenor
-	 * 
-	 * @param strTenor Tenor
-	 * 
-	 * @return Implied rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
-	 */
-
-	public double zero (
+	@Override public double zero (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
@@ -369,18 +251,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return forward (dtStart.getJulian(), dtStart.addTenor (strTenor).getJulian());
 	}
 
-	/**
-	 * Compute the LIBOR between 2 dates
-	 * 
-	 * @param dblDt1 First Date
-	 * @param dblDt2 Second Date
-	 * 
-	 * @return LIBOR
-	 * 
-	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
-	 */
-
-	public double libor (
+	@Override public double libor (
 		final double dblDt1,
 		final double dblDt2)
 		throws java.lang.Exception
@@ -398,34 +269,14 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			(dblDt1, dblDt2, "Act/360", false, java.lang.Double.NaN, null, "");
 	}
 
-	/**
-	 * Calculate the LIBOR to the given date
-	 * 
-	 * @param dblDate Date
-	 * 
-	 * @return LIBOR
-	 * 
-	 * @throws java.lang.Exception Thrown if LIBOR cannot be calculated
-	 */
-
-	public double libor (
+	@Override public double libor (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		return libor (epoch().getJulian(), dblDate);
 	}
 
-	/**
-	 * Calculate the LIBOR to the given tenor
-	 * 
-	 * @param strTenor Tenor
-	 * 
-	 * @return LIBOR
-	 * 
-	 * @throws java.lang.Exception Thrown if LIBOR cannot be calculated
-	 */
-
-	public double libor (
+	@Override public double libor (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
@@ -437,18 +288,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return libor (dtStart.getJulian(), dtStart.addTenor (strTenor).getJulian());
 	}
 
-	/**
-	 * Calculate LIBOR between 2 tenors
-	 * 
-	 * @param strTenor1 Tenor start
-	 * @param strTenor2 Tenor end
-	 * 
-	 * @return LIBOR
-	 * 
-	 * @throws java.lang.Exception
-	 */
-
-	public double libor (
+	@Override public double libor (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
@@ -462,17 +302,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			(strTenor2).getJulian());
 	}
 
-	/**
-	 * Calculate the LIBOR DV01 to the given date
-	 * 
-	 * @param dblDate Date
-	 * 
-	 * @return LIBOR DV01
-	 * 
-	 * @throws java.lang.Exception Thrown if LIBOR DV01 cannot be calculated
-	 */
-
-	public double liborDV01 (
+	@Override public double liborDV01 (
 		final double dblDate)
 		throws java.lang.Exception
 	{
@@ -508,17 +338,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
 	}
 
-	/**
-	 * Estimates the estimated calibrated measure value for the given date
-	 * 
-	 * @param dblDate Date
-	 * 
-	 * @return The estimated calibrated measure value
-	 * 
-	 * @throws java.lang.Exception Thrown if the estimated calibrated measure value cannot be computed
-	 */
-
-	public double estimateMeasure (
+	@Override public double estimateMeasure (
 		final double dblDate)
 		throws java.lang.Exception
 	{
@@ -574,6 +394,19 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		return regime.responseValue (dblDate);
 	}
+
+	/**
+	 * Retrieve the Forward Curve that might be implied by the Latent State of this Discount Curve Instance
+	 * 	corresponding to the specified Floating Rate Index
+	 * 
+	 * @param fri The Floating Rate Index
+	 * 
+	 * @return The Forward Curve Implied by the Discount Curve Latent State
+	 */
+
+	public abstract org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
+		final double dblDate,
+		final org.drip.product.params.FloatingRateIndex fri);
 
 	/**
 	 * Retrieve the Latent State Quantification Metric

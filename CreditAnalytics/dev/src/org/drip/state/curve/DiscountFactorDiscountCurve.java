@@ -156,6 +156,21 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		return -365.25 / (dblDate - dblStartDate) * java.lang.Math.log (df (dblDate));
 	}
 
+	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
+		final double dblDate,
+		final org.drip.product.params.FloatingRateIndex fri)
+	{
+		if (null == _span || !_span.isMergeState (dblDate, fri)) return null;
+
+		try {
+			return new org.drip.analytics.rates.DiscountForwardEstimator (this, fri);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;

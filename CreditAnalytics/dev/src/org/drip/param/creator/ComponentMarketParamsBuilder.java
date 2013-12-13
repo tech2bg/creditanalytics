@@ -54,20 +54,20 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve and the forward
+	 * Creates a CMP with the discount curve and the forward Curve
 	 * 
-	 * @param dc Rates Discount Curve
-	 * @param dcForward Forward Discount Curve
+	 * @param dc Discount Curve
+	 * @param fc Forward Curve
 	 * 
 	 * @return CMP
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeFloaterDiscountCMP (
 		final org.drip.analytics.rates.DiscountCurve dc,
-		final org.drip.analytics.rates.DiscountCurve dcForward)
+		final org.drip.analytics.rates.ForwardCurve fc)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, null, null, null, null,
-			null, null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, fc, null, null, null, null, null,
+			null);
 	}
 
 	/**
@@ -163,8 +163,8 @@ public class ComponentMarketParamsBuilder {
 	 *  the EDSF discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
 	 *  and the double map of date/rate index and fixings
 	 * 
-	 * @param dc Rates Discount Curve
-	 * @param dcForward Forward Discount Curve
+	 * @param dc Discount Curve
+	 * @param fc Forward Curve
 	 * @param dcTSY Treasury Discount Curve
 	 * @param dcEDSF EDSF Discount Curve
 	 * @param cc Credit Curve
@@ -175,7 +175,7 @@ public class ComponentMarketParamsBuilder {
 
 	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
 		final org.drip.analytics.rates.DiscountCurve dc,
-		final org.drip.analytics.rates.DiscountCurve dcForward,
+		final org.drip.analytics.rates.ForwardCurve fc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
@@ -186,8 +186,8 @@ public class ComponentMarketParamsBuilder {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, dcTSY, dcEDSF, cc,
-				compQuote, mTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, fc, dcTSY, dcEDSF, cc, compQuote,
+				mTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

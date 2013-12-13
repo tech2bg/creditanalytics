@@ -46,7 +46,7 @@ public class CreditScenarioCurveBuilder {
 	 * @return CreditScenarioCurve object
 	 */
 
-	public static final org.drip.param.definition.CreditScenarioCurve CreateCCSC (
+	public static final org.drip.param.definition.ScenarioCreditCurve CreateCCSC (
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst)
 	{
 		try {
@@ -83,13 +83,13 @@ public class CreditScenarioCurveBuilder {
 		final double dblRecovery,
 		final boolean bFlat)
 	{
-		org.drip.param.definition.CreditScenarioCurve ccsc = CreateCCSC (aCalibInst);
+		org.drip.param.definition.ScenarioCreditCurve ccsc = CreateCCSC (aCalibInst);
 
 		if (null == ccsc || !ccsc.cookScenarioCC (strName,
 			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
 				org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, null, null, adblQuotes,
 					dblRecovery, astrCalibMeasure, null, null, bFlat,
-						org.drip.param.definition.CreditScenarioCurve.CC_BASE))
+						org.drip.param.definition.ScenarioCreditCurve.CC_BASE))
 			return null;
 
 		return ccsc.getCCBase();

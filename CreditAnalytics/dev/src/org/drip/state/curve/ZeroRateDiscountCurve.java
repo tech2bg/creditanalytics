@@ -159,6 +159,13 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		return dblDate <= _span.right() ? _span.calcResponseValue (dblDate) : _dblRightFlatForwardRate;
 	}
 
+	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
+		final double dblDate,
+		final org.drip.product.params.FloatingRateIndex fri)
+	{
+		return null;
+	}
+
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;

@@ -248,7 +248,7 @@ public class StaticBACurves {
 			org.drip.product.definition.CalibratableComponent[6];
 		java.lang.String astrCalibMeasure[] = new java.lang.String[6];
 		double adblCompCalibValue[] = new double[6];
-		org.drip.param.definition.RatesScenarioCurve irscTSY = null;
+		org.drip.param.definition.ScenarioDiscountCurve irscTSY = null;
 		adblCompCalibValue[0] = .0200;
 		adblCompCalibValue[1] = .0250;
 		adblCompCalibValue[2] = .0300;
@@ -327,7 +327,7 @@ public class StaticBACurves {
 		java.lang.String astrCalibMeasure[] = new java.lang.String[8];
 		double adblCompCalibValue[] = new double[8];
 		org.drip.product.definition.CalibratableComponent[] aCompCalib = null;
-		org.drip.param.definition.RatesScenarioCurve irsc = null;
+		org.drip.param.definition.ScenarioDiscountCurve irsc = null;
 		adblCompCalibValue[0] = .0027;
 		adblCompCalibValue[1] = .0032;
 		adblCompCalibValue[2] = .0041;
@@ -401,7 +401,7 @@ public class StaticBACurves {
 			org.drip.product.definition.CalibratableComponent[30];
 		java.lang.String astrCalibMeasure[] = new java.lang.String[30];
 		double adblCompCalibValue[] = new double[30];
-		org.drip.param.definition.RatesScenarioCurve irsc = null;
+		org.drip.param.definition.ScenarioDiscountCurve irsc = null;
 		double adblDate[] = new double[30];
 		adblCompCalibValue[0] = .0013;
 		adblCompCalibValue[1] = .0017;
@@ -632,7 +632,7 @@ public class StaticBACurves {
 				return false;
 
 		double[] adblQuotes = new double[5];
-		org.drip.param.definition.CreditScenarioCurve ccsc = null;
+		org.drip.param.definition.ScenarioCreditCurve ccsc = null;
 		java.lang.String[] astrCalibMeasure = new java.lang.String[5];
 		org.drip.product.definition.CalibratableComponent[] aCDS = new
 			org.drip.product.definition.CreditDefaultSwap[5];

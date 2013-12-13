@@ -98,7 +98,7 @@ public class CDSManager {
 			mpc.getCCSG() || null == mpc.getCCSG().get (strSPN))
 			return false;
 
-		org.drip.param.definition.CreditScenarioCurve ccsg = mpc.getCCSG().get (strSPN);
+		org.drip.param.definition.ScenarioCreditCurve ccsg = mpc.getCCSG().get (strSPN);
 
 		if (null == ccsg.getCCBase() || null == ccsg.getCCBase().calibComp()) return false;
 
@@ -340,7 +340,7 @@ public class CDSManager {
 
 		boolean bAllSPNSuccess = true;
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.CreditScenarioCurve> meCCSG
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG
 			: mpc.getCCSG().entrySet()) {
 			if (null == meCCSG.getKey()) continue;
 

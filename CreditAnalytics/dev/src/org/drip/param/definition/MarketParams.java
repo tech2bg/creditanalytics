@@ -33,6 +33,7 @@ package org.drip.param.definition;
  * MarketParams is the place holder for the comprehensive suite of the market set of curves for the given
  * 	date. It exports the following functionality:
  * 	- add/remove/retrieve scenario discount curve
+ * 	- add/remove/retrieve scenario forward curve
  * 	- add/remove/retrieve scenario zero curve
  * 	- add/remove/retrieve scenario credit curve
  * 	- add/remove/retrieve scenario recovery curve
@@ -61,7 +62,7 @@ public abstract class MarketParams {
 
 	public abstract boolean addScenDC (
 		final java.lang.String strName,
-		final org.drip.param.definition.RatesScenarioCurve irsg);
+		final org.drip.param.definition.ScenarioDiscountCurve irsg);
 
 	/**
 	 * Removes the named scenario DC
@@ -75,6 +76,30 @@ public abstract class MarketParams {
 		final java.lang.String strName);
 
 	/**
+	 * Add Named Scenario Forward Curve
+	 * 
+	 * @param strName Name
+	 * @param sfc Scenario Forward Curve Instance
+	 * 
+	 * @return Added successfully (true)
+	 */
+
+	public abstract boolean addScenFC (
+		final java.lang.String strName,
+		final org.drip.param.definition.ScenarioForwardCurve sfc);
+
+	/**
+	 * Remove the Named Scenario Forward Curve
+	 * 
+	 * @param strName Name
+	 * 
+	 * @return Removed successfully (true)
+	 */
+
+	public abstract boolean removeScenFC (
+		final java.lang.String strName);
+
+	/**
 	 * Adds the named scenario CC
 	 * 
 	 * @param strName Name
@@ -85,7 +110,7 @@ public abstract class MarketParams {
 
 	public abstract boolean addScenCC (
 		final java.lang.String strName,
-		final org.drip.param.definition.CreditScenarioCurve ccsg);
+		final org.drip.param.definition.ScenarioCreditCurve ccsg);
 
 	/**
 	 * Removes the named scenario CC
@@ -325,6 +350,21 @@ public abstract class MarketParams {
 				final boolean bBumpUp);
 
 	/**
+	 * Get the Map of Tenor Forward Rate bumped ComponentMarketParams corresponding to the component
+	 * 
+	 * @param comp Component
+	 * @param bBumpUp Bump up (True)
+	 * 
+	 * @return Map of the Tenor Forward Rate bumped ComponentMarketParams
+	 */
+
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			getForwardTenorCMP (
+				final org.drip.product.definition.Component comp,
+				final boolean bBumpUp);
+
+	/**
 	 * Gets the map of tenor credit bumped ComponentMarketParams corresponding to the component
 	 *  
 	 * @param comp Component
@@ -364,6 +404,21 @@ public abstract class MarketParams {
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
 			getIRBumpBMP (
+				final org.drip.product.definition.BasketProduct bp,
+				final boolean bBump);
+
+	/**
+	 * Get the Map of Forward Rate Tenor Bumped Curves for the given Basket Product
+	 * 
+	 * @param bp BasketProduct
+	 * @param bBump True (Bump Up), False (Bump Down)
+	 * 
+	 * @return Map of the IR Tenor bumped curves
+	 */
+
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			getForwardBumpBMP (
 				final org.drip.product.definition.BasketProduct bp,
 				final boolean bBump);
 
@@ -434,7 +489,7 @@ public abstract class MarketParams {
 	 */
 
 	public abstract
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.RatesScenarioCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioDiscountCurve>
 			getIRSG();
 
 	/**
@@ -444,6 +499,6 @@ public abstract class MarketParams {
 	 */
 
 	public abstract
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.CreditScenarioCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioCreditCurve>
 			getCCSG();
 }

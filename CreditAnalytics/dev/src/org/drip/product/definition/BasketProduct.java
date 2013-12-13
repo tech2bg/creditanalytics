@@ -417,7 +417,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 			sIR.add (aComp[i].getIRCurveName());
 
-			sIR.add (aComp[i].getRatesForwardCurveName());
+			sIR.add (aComp[i].getForwardCurveName());
 
 			sIR.add (aComp[i].getTreasuryCurveName());
 		}

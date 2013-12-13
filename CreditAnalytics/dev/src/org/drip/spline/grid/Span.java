@@ -38,6 +38,55 @@ package org.drip.spline.grid;
 public interface Span {
 
 	/**
+	 * Retrieve the Left Span Edge
+	 * 
+	 * @return The Left Span Edge
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public abstract double left()
+		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Right Span Edge
+	 * 
+	 * @return The Left Span Edge
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public abstract double right()
+		throws java.lang.Exception;
+
+	/**
+	 * Indicate if the specified Label is part of the Merge State at the specified Predictor Ordinate
+	 * 
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * @param lsl Merge State Label
+	 * 
+	 * @return TRUE => The specified Label is part of the Merge State at the specified Predictor Ordinate
+	 */
+
+	public abstract boolean isMergeState (
+		final double dblPredictorOrdinate,
+		final org.drip.state.representation.LatentStateLabel lsl);
+
+	/**
+	 * Compute the Response from the containing Stretches
+	 * 
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * 
+	 * @return The Response
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public abstract double calcResponseValue (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception;
+
+	/**
 	 * Add a Stretch to the Span
 	 * 
 	 * @param mss Stretch to be added
@@ -69,38 +118,4 @@ public interface Span {
 
 	public abstract org.drip.spline.stretch.MultiSegmentSequence getStretch (
 		final java.lang.String strName);
-
-	/**
-	 * Compute the Response from the containing Stretches
-	 * 
-	 * @param dblPredictorOrdinate The Predictor Ordinate
-	 * 
-	 * @return The Response
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are invalid
-	 */
-
-	public abstract double calcResponseValue (
-		final double dblPredictorOrdinate)
-		throws java.lang.Exception;
-
-	/**
-	 * Retrieve the Left Span Edge
-	 * 
-	 * @return The Left Span Edge
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are invalid
-	 */
-
-	public abstract double left() throws java.lang.Exception;
-
-	/**
-	 * Retrieve the Right Span Edge
-	 * 
-	 * @return The Left Span Edge
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are invalid
-	 */
-
-	public abstract double right() throws java.lang.Exception;
 }

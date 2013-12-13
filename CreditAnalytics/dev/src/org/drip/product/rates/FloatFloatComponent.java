@@ -30,15 +30,15 @@ package org.drip.product.rates;
 
 /**
  * FloatFloatComponent contains the implementation of the Float-Float Index Basis Swap product
- *  contract/valuation details. It is made off one Visible Floating stream and one Work-out floating stream.
+ *  contract/valuation details. It is made off one Reference Floating stream and one Derived floating stream.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
 public class FloatFloatComponent extends org.drip.product.definition.RatesComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.rates.FloatingStream _floatVisible = null;
-	private org.drip.product.rates.FloatingStream _floatWorkout = null;
+	private org.drip.product.rates.FloatingStream _floatDerived = null;
+	private org.drip.product.rates.FloatingStream _floatReference = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -50,20 +50,20 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	}
 
 	/**
-	 * Construct the FloatFloatComponent from the fixed and the floating streams
+	 * Construct the FloatFloatComponent from the Reference and the Derived Floating Streams.
 	 * 
-	 * @param floatVisible The Visible Floating Stream (e.g., 6M LIBOR/EURIBOR Leg)
-	 * @param floatWorkout The Visible Floating Stream (e.g., 3M LIBOR/EURIBOR Leg)
+	 * @param floatReference The Reference Floating Stream (e.g., 6M LIBOR/EURIBOR Leg)
+	 * @param floatDerived The Derived Floating Stream (e.g., 3M LIBOR/EURIBOR Leg)
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public FloatFloatComponent (
-		final org.drip.product.rates.FloatingStream floatVisible,
-		final org.drip.product.rates.FloatingStream floatWorkout)
+		final org.drip.product.rates.FloatingStream floatReference,
+		final org.drip.product.rates.FloatingStream floatDerived)
 		throws java.lang.Exception
 	{
-		if (null == (_floatVisible = floatVisible) || null == (_floatWorkout = floatWorkout))
+		if (null == (_floatReference = floatReference) || null == (_floatDerived = floatDerived))
 			throw new java.lang.Exception ("FloatFloatComponent ctr: Invalid Inputs");
 	}
 
@@ -107,18 +107,18 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 				("FloatFloatComponent de-serializer: Cannot locate visible floating stream");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_floatVisible = null;
+			_floatReference = null;
 		else
-			_floatVisible = new org.drip.product.rates.FloatingStream (astrField[1].getBytes());
+			_floatReference = new org.drip.product.rates.FloatingStream (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
 				("FloatFloatComponent de-serializer: Cannot locate work-out floating stream");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_floatWorkout = null;
+			_floatDerived = null;
 		else
-			_floatWorkout = new org.drip.product.rates.FloatingStream (astrField[2].getBytes());
+			_floatDerived = new org.drip.product.rates.FloatingStream (astrField[2].getBytes());
 	}
 
 	@Override public void setPrimaryCode (
@@ -150,14 +150,14 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	@Override public double getInitialNotional()
 		throws java.lang.Exception
 	{
-		return _floatVisible.getInitialNotional();
+		return _floatReference.getInitialNotional();
 	}
 
 	@Override public double getNotional (
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		return _floatVisible.getNotional (dblDate);
+		return _floatReference.getNotional (dblDate);
 	}
 
 	@Override public double getNotional (
@@ -165,7 +165,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		return _floatVisible.getNotional (dblDate1, dblDate2);
+		return _floatReference.getNotional (dblDate1, dblDate2);
 	}
 
 	@Override public boolean setCurves (
@@ -173,8 +173,8 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		final java.lang.String strIRTSY,
 		final java.lang.String strCC)
 	{
-		return _floatVisible.setCurves (strIR, strIRTSY, strCC) && _floatWorkout.setCurves (strIR, strIRTSY,
-			strCC);
+		return _floatReference.setCurves (strIR, strIRTSY, strCC) && _floatDerived.setCurves (strIR,
+			strIRTSY, strCC);
 	}
 
 	@Override public double getCoupon (
@@ -182,17 +182,17 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 		throws java.lang.Exception
 	{
-		return _floatVisible.getCoupon (dblValue, mktParams);
+		return _floatReference.getCoupon (dblValue, mktParams);
 	}
 
 	@Override public java.lang.String getIRCurveName()
 	{
-		return _floatVisible.getIRCurveName();
+		return _floatReference.getIRCurveName();
 	}
 
-	@Override public java.lang.String getRatesForwardCurveName()
+	@Override public java.lang.String getForwardCurveName()
 	{
-		return _floatWorkout.getRatesForwardCurveName();
+		return _floatDerived.getForwardCurveName();
 	}
 
 	@Override public java.lang.String getCreditCurveName()
@@ -202,49 +202,50 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 
 	@Override public org.drip.analytics.date.JulianDate getEffectiveDate()
 	{
-		org.drip.analytics.date.JulianDate dtFloatVisibleEffective = _floatVisible.getEffectiveDate();
+		org.drip.analytics.date.JulianDate dtFloatReferenceEffective = _floatReference.getEffectiveDate();
 
-		org.drip.analytics.date.JulianDate dtFloatWorkoutEffective = _floatWorkout.getEffectiveDate();
+		org.drip.analytics.date.JulianDate dtFloatDerivedEffective = _floatDerived.getEffectiveDate();
 
-		if (null == dtFloatVisibleEffective || null == dtFloatWorkoutEffective) return null;
+		if (null == dtFloatReferenceEffective || null == dtFloatDerivedEffective) return null;
 
-		return dtFloatVisibleEffective.getJulian() < dtFloatWorkoutEffective.getJulian() ?
-			dtFloatVisibleEffective : dtFloatWorkoutEffective;
+		return dtFloatReferenceEffective.getJulian() < dtFloatDerivedEffective.getJulian() ?
+			dtFloatReferenceEffective : dtFloatDerivedEffective;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate getMaturityDate()
 	{
-		org.drip.analytics.date.JulianDate dtFloatVisibleMaturity = _floatVisible.getMaturityDate();
+		org.drip.analytics.date.JulianDate dtFloatReferenceMaturity = _floatReference.getMaturityDate();
 
-		org.drip.analytics.date.JulianDate dtFloatWorkoutMaturity = _floatWorkout.getMaturityDate();
+		org.drip.analytics.date.JulianDate dtFloatDerivedMaturity = _floatDerived.getMaturityDate();
 
-		if (null == dtFloatVisibleMaturity || null == dtFloatWorkoutMaturity) return null;
+		if (null == dtFloatReferenceMaturity || null == dtFloatDerivedMaturity) return null;
 
-		return dtFloatVisibleMaturity.getJulian() > dtFloatWorkoutMaturity.getJulian() ?
-			dtFloatVisibleMaturity : dtFloatWorkoutMaturity;
+		return dtFloatReferenceMaturity.getJulian() > dtFloatDerivedMaturity.getJulian() ?
+			dtFloatReferenceMaturity : dtFloatDerivedMaturity;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate getFirstCouponDate()
 	{
-		org.drip.analytics.date.JulianDate dtFloatVisibleFirstCoupon = _floatVisible.getFirstCouponDate();
+		org.drip.analytics.date.JulianDate dtFloatReferenceFirstCoupon =
+			_floatReference.getFirstCouponDate();
 
-		org.drip.analytics.date.JulianDate dtFloatWorkoutFirstCoupon = _floatWorkout.getFirstCouponDate();
+		org.drip.analytics.date.JulianDate dtFloatDerivedFirstCoupon = _floatDerived.getFirstCouponDate();
 
-		if (null == dtFloatVisibleFirstCoupon || null == dtFloatWorkoutFirstCoupon) return null;
+		if (null == dtFloatReferenceFirstCoupon || null == dtFloatDerivedFirstCoupon) return null;
 
-		return dtFloatVisibleFirstCoupon.getJulian() < dtFloatWorkoutFirstCoupon.getJulian() ?
-			dtFloatVisibleFirstCoupon : dtFloatWorkoutFirstCoupon;
+		return dtFloatReferenceFirstCoupon.getJulian() < dtFloatDerivedFirstCoupon.getJulian() ?
+			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
 		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists
-			(_floatVisible.getCashFlowPeriod(), _floatWorkout.getCashFlowPeriod());
+			(_floatReference.getCashFlowPeriod(), _floatDerived.getCashFlowPeriod());
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams getCashSettleParams()
 	{
-		return _floatVisible.getCashSettleParams();
+		return _floatReference.getCashSettleParams();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -255,95 +256,95 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	{
 		long lStart = System.nanoTime();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatVisibleStreamResult =
-			_floatVisible.value (valParams, pricerParams, mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatReferenceStreamResult =
+			_floatReference.value (valParams, pricerParams, mktParams, quotingParams);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatWorkoutStreamResult =
-			_floatWorkout.value (valParams, pricerParams, mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatDerivedStreamResult =
+			_floatDerived.value (valParams, pricerParams, mktParams, quotingParams);
 
-		if (null == mapFloatVisibleStreamResult || 0 == mapFloatVisibleStreamResult.size() || null ==
-			mapFloatWorkoutStreamResult || 0 == mapFloatWorkoutStreamResult.size())
+		if (null == mapFloatReferenceStreamResult || 0 == mapFloatReferenceStreamResult.size() || null ==
+			mapFloatDerivedStreamResult || 0 == mapFloatDerivedStreamResult.size())
 			return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		mapResult.put ("VisibleAccrued01", mapFloatVisibleStreamResult.get ("Accrued01"));
+		mapResult.put ("ReferenceAccrued01", mapFloatReferenceStreamResult.get ("Accrued01"));
 
-		mapResult.put ("VisibleAccrued", mapFloatVisibleStreamResult.get ("FloatAccrued"));
+		mapResult.put ("ReferenceAccrued", mapFloatReferenceStreamResult.get ("FloatAccrued"));
 
-		double dblVisibleCleanDV01 = mapFloatVisibleStreamResult.get ("CleanDV01");
+		double dblReferenceCleanDV01 = mapFloatReferenceStreamResult.get ("CleanDV01");
 
-		mapResult.put ("VisibleCleanDV01", dblVisibleCleanDV01);
+		mapResult.put ("ReferenceCleanDV01", dblReferenceCleanDV01);
 
-		double dblVisibleCleanPV = mapFloatVisibleStreamResult.get ("CleanPV");
+		double dblReferenceCleanPV = mapFloatReferenceStreamResult.get ("CleanPV");
 
-		mapResult.put ("VisibleCleanPV", dblVisibleCleanPV);
+		mapResult.put ("ReferenceCleanPV", dblReferenceCleanPV);
 
-		mapResult.put ("VisibleDirtyDV01", mapFloatVisibleStreamResult.get ("DirtyDV01"));
+		mapResult.put ("ReferenceDirtyDV01", mapFloatReferenceStreamResult.get ("DirtyDV01"));
 
-		double dblVisibleDirtyPV = mapFloatVisibleStreamResult.get ("DirtyPV");
+		double dblReferenceDirtyPV = mapFloatReferenceStreamResult.get ("DirtyPV");
 
-		mapResult.put ("VisibleDirtyPV", dblVisibleDirtyPV);
+		mapResult.put ("ReferenceDirtyPV", dblReferenceDirtyPV);
 
-		mapResult.put ("VisibleDV01", mapFloatVisibleStreamResult.get ("DV01"));
+		mapResult.put ("ReferenceDV01", mapFloatReferenceStreamResult.get ("DV01"));
 
-		mapResult.put ("VisibleFixing01", mapFloatVisibleStreamResult.get ("Fixing01"));
+		mapResult.put ("ReferenceFixing01", mapFloatReferenceStreamResult.get ("Fixing01"));
 
-		double dblVisiblePV = mapFloatVisibleStreamResult.get ("PV");
+		double dblReferencePV = mapFloatReferenceStreamResult.get ("PV");
 
-		mapResult.put ("VisiblePV", dblVisiblePV);
+		mapResult.put ("ReferencePV", dblReferencePV);
 
-		mapResult.put ("VisibleResetDate", mapFloatVisibleStreamResult.get ("ResetDate"));
+		mapResult.put ("ReferenceResetDate", mapFloatReferenceStreamResult.get ("ResetDate"));
 
-		mapResult.put ("VisibleResetRate", mapFloatVisibleStreamResult.get ("ResetRate"));
+		mapResult.put ("ReferenceResetRate", mapFloatReferenceStreamResult.get ("ResetRate"));
 
-		mapResult.put ("WorkoutAccrued01", mapFloatWorkoutStreamResult.get ("Accrued01"));
+		mapResult.put ("DerivedAccrued01", mapFloatDerivedStreamResult.get ("Accrued01"));
 
-		mapResult.put ("WorkoutAccrued", mapFloatWorkoutStreamResult.get ("FloatAccrued"));
+		mapResult.put ("DerivedAccrued", mapFloatDerivedStreamResult.get ("FloatAccrued"));
 
-		double dblWorkoutCleanDV01 = mapFloatWorkoutStreamResult.get ("CleanDV01");
+		double dblDerivedCleanDV01 = mapFloatDerivedStreamResult.get ("CleanDV01");
 
-		mapResult.put ("WorkoutCleanDV01", dblWorkoutCleanDV01);
+		mapResult.put ("DerivedCleanDV01", dblDerivedCleanDV01);
 
-		double dblWorkoutCleanPV = mapFloatWorkoutStreamResult.get ("CleanPV");
+		double dblDerivedCleanPV = mapFloatDerivedStreamResult.get ("CleanPV");
 
-		mapResult.put ("WorkoutCleanPV", dblWorkoutCleanPV);
+		mapResult.put ("DerivedCleanPV", dblDerivedCleanPV);
 
-		mapResult.put ("WorkoutDirtyDV01", mapFloatWorkoutStreamResult.get ("DirtyDV01"));
+		mapResult.put ("DerivedDirtyDV01", mapFloatDerivedStreamResult.get ("DirtyDV01"));
 
-		double dblWorkoutDirtyPV = mapFloatWorkoutStreamResult.get ("DirtyPV");
+		double dblDerivedDirtyPV = mapFloatDerivedStreamResult.get ("DirtyPV");
 
-		mapResult.put ("WorkoutDirtyPV", dblWorkoutDirtyPV);
+		mapResult.put ("DerivedDirtyPV", dblDerivedDirtyPV);
 
-		mapResult.put ("WorkoutDV01", mapFloatWorkoutStreamResult.get ("DV01"));
+		mapResult.put ("DerivedDV01", mapFloatDerivedStreamResult.get ("DV01"));
 
-		mapResult.put ("WorkoutFixing01", mapFloatWorkoutStreamResult.get ("Fixing01"));
+		mapResult.put ("DerivedFixing01", mapFloatDerivedStreamResult.get ("Fixing01"));
 
-		double dblWorkoutPV = mapFloatWorkoutStreamResult.get ("PV");
+		double dblDerivedPV = mapFloatDerivedStreamResult.get ("PV");
 
-		mapResult.put ("WorkoutPV", dblWorkoutPV);
+		mapResult.put ("DerivedPV", dblDerivedPV);
 
-		mapResult.put ("WorkoutResetDate", mapFloatWorkoutStreamResult.get ("ResetDate"));
+		mapResult.put ("DerivedResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
 
-		mapResult.put ("WorkoutResetRate", mapFloatWorkoutStreamResult.get ("ResetRate"));
+		mapResult.put ("DerivedResetRate", mapFloatDerivedStreamResult.get ("ResetRate"));
 
-		double dblCleanPV = dblVisibleCleanPV + dblWorkoutCleanPV;
+		double dblCleanPV = dblReferenceCleanPV + dblDerivedCleanPV;
 
 		mapResult.put ("CleanPV", dblCleanPV);
 
-		mapResult.put ("DirtyPV", dblWorkoutCleanPV + dblWorkoutDirtyPV);
+		mapResult.put ("DirtyPV", dblDerivedCleanPV + dblDerivedDirtyPV);
 
-		mapResult.put ("PV", dblVisiblePV + dblWorkoutPV);
+		mapResult.put ("PV", dblReferencePV + dblDerivedPV);
 
-		mapResult.put ("Upfront", mapFloatVisibleStreamResult.get ("Upfront") +
-			mapFloatWorkoutStreamResult.get ("Upfront"));
+		mapResult.put ("Upfront", mapFloatReferenceStreamResult.get ("Upfront") +
+			mapFloatDerivedStreamResult.get ("Upfront"));
 
-		mapResult.put ("VisibleParBasisSpread", -1. * (dblVisibleCleanPV + dblWorkoutCleanPV) /
-			dblVisibleCleanDV01);
+		mapResult.put ("ReferenceParBasisSpread", -1. * (dblReferenceCleanPV + dblDerivedCleanPV) /
+			dblReferenceCleanDV01);
 
-		mapResult.put ("WorkoutParBasisSpread", -1. * (dblVisibleCleanPV + dblWorkoutCleanPV) /
-			dblWorkoutCleanDV01);
+		mapResult.put ("DerivedParBasisSpread", -1. * (dblReferenceCleanPV + dblDerivedCleanPV) /
+			dblDerivedCleanDV01);
 
 		double dblValueNotional = java.lang.Double.NaN;
 
@@ -382,61 +383,61 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 
 		setstrMeasureNames.add ("CleanPV");
 
+		setstrMeasureNames.add ("DerivedAccrued01");
+
+		setstrMeasureNames.add ("DerivedAccrued");
+
+		setstrMeasureNames.add ("DerivedCleanDV01");
+
+		setstrMeasureNames.add ("DerivedCleanPV");
+
+		setstrMeasureNames.add ("DerivedDirtyDV01");
+
+		setstrMeasureNames.add ("DerivedDirtyPV");
+
+		setstrMeasureNames.add ("DerivedDV01");
+
+		setstrMeasureNames.add ("DerivedFixing01");
+
+		setstrMeasureNames.add ("DerivedParBasisSpread");
+
+		setstrMeasureNames.add ("DerivedPV");
+
+		setstrMeasureNames.add ("DerivedResetDate");
+
+		setstrMeasureNames.add ("DerivedResetRate");
+
 		setstrMeasureNames.add ("DirtyPV");
 
 		setstrMeasureNames.add ("Price");
 
 		setstrMeasureNames.add ("PV");
 
+		setstrMeasureNames.add ("ReferenceAccrued01");
+
+		setstrMeasureNames.add ("ReferenceAccrued");
+
+		setstrMeasureNames.add ("ReferenceCleanDV01");
+
+		setstrMeasureNames.add ("ReferenceCleanPV");
+
+		setstrMeasureNames.add ("ReferenceDirtyDV01");
+
+		setstrMeasureNames.add ("ReferenceDirtyPV");
+
+		setstrMeasureNames.add ("ReferenceDV01");
+
+		setstrMeasureNames.add ("ReferenceFixing01");
+
+		setstrMeasureNames.add ("ReferenceParBasisSpread");
+
+		setstrMeasureNames.add ("ReferencePV");
+
+		setstrMeasureNames.add ("ReferenceResetDate");
+
+		setstrMeasureNames.add ("ReferenceResetRate");
+
 		setstrMeasureNames.add ("Upfront");
-
-		setstrMeasureNames.add ("VisibleAccrued01");
-
-		setstrMeasureNames.add ("VisibleAccrued");
-
-		setstrMeasureNames.add ("VisibleCleanDV01");
-
-		setstrMeasureNames.add ("VisibleCleanPV");
-
-		setstrMeasureNames.add ("VisibleDirtyDV01");
-
-		setstrMeasureNames.add ("VisibleDirtyPV");
-
-		setstrMeasureNames.add ("VisibleDV01");
-
-		setstrMeasureNames.add ("VisibleFixing01");
-
-		setstrMeasureNames.add ("VisibleParSpread");
-
-		setstrMeasureNames.add ("VisiblePV");
-
-		setstrMeasureNames.add ("VisibleResetDate");
-
-		setstrMeasureNames.add ("VisibleResetRate");
-
-		setstrMeasureNames.add ("WorkoutAccrued01");
-
-		setstrMeasureNames.add ("WorkoutAccrued");
-
-		setstrMeasureNames.add ("WorkoutCleanDV01");
-
-		setstrMeasureNames.add ("WorkoutCleanPV");
-
-		setstrMeasureNames.add ("WorkoutDirtyDV01");
-
-		setstrMeasureNames.add ("WorkoutDirtyPV");
-
-		setstrMeasureNames.add ("WorkoutDV01");
-
-		setstrMeasureNames.add ("WorkoutFixing01");
-
-		setstrMeasureNames.add ("WorkoutParSpread");
-
-		setstrMeasureNames.add ("WorkoutPV");
-
-		setstrMeasureNames.add ("WorkoutResetDate");
-
-		setstrMeasureNames.add ("WorkoutResetRate");
 
 		return setstrMeasureNames;
 	}
@@ -467,17 +468,17 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatWorkout.generateCalibPRLC
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRLC
 			(valParams, pricerParams, mktParams, quotingParams, lsmm);
 
 		if (null == prwc) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapVisibleValue =
-			_floatVisible.value (valParams, null, mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapReferenceValue =
+			_floatReference.value (valParams, null, mktParams, quotingParams);
 
-		if (null == mapVisibleValue || !mapVisibleValue.containsKey ("CleanPV")) return null;
+		if (null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV")) return null;
 
-		return prwc.updateValue (-1. * mapVisibleValue.get ("CleanPV")) ? prwc : null;
+		return prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV")) ? prwc : null;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()
@@ -496,15 +497,15 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
 
-		if (null == _floatVisible)
+		if (null == _floatReference)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (new java.lang.String (_floatVisible.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_floatReference.serialize()) + getFieldDelimiter());
 
-		if (null == _floatWorkout)
+		if (null == _floatDerived)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (new java.lang.String (_floatWorkout.serialize()));
+			sb.append (new java.lang.String (_floatDerived.serialize()));
 
 		return sb.append (getObjectTrailer()).toString().getBytes();
 	}
@@ -522,24 +523,24 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	}
 
 	/**
-	 * Retrieve the Visible Stream
+	 * Retrieve the Reference Stream
 	 * 
-	 * @return The Visible Stream
+	 * @return The Reference Stream
 	 */
 
-	public org.drip.product.rates.FloatingStream getVisibleStream()
+	public org.drip.product.rates.FloatingStream getReferenceStream()
 	{
-		return _floatVisible;
+		return _floatReference;
 	}
 
 	/**
-	 * Retrieve the Work-out Stream
+	 * Retrieve the Derived Stream
 	 * 
-	 * @return The Work-out Stream
+	 * @return The Derived Stream
 	 */
 
-	public org.drip.product.rates.FloatingStream getWorkoutStream()
+	public org.drip.product.rates.FloatingStream getDerivedStream()
 	{
-		return _floatWorkout;
+		return _floatDerived;
 	}
 }

@@ -30,7 +30,7 @@ package org.drip.param.definition;
  */
 
 /**
- * RatesScenarioCurve abstract class exposes the interface the constructs scenario discount curves. The
+ * ScenarioForwardCurve abstract class exposes the interface the constructs scenario Forward curves. The
  *  following curve construction scenarios are supported:
  *  - Base, flat/tenor up/down by arbitrary bumps
  *  - Tenor bumped discount curve set - keyed using the tenor.
@@ -39,81 +39,77 @@ package org.drip.param.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class RatesScenarioCurve {
+public abstract class ScenarioForwardCurve {
 
 	/**
-	 * Base Discount Curve
+	 * Forward Curve - Base
 	 */
 
-	public static final int DC_BASE = 0;
+	public static final int FC_BASE = 0;
 
 	/**
-	 * Discount Curve Parallel Bump Up
+	 * Forward Curve - Parallel Bump Up
 	 */
 
-	public static final int DC_FLAT_UP = 1;
+	public static final int FC_FLAT_UP = 1;
 
 	/**
-	 * Discount Curve Parallel Bump Down
+	 * Forward Curve - Parallel Bump Down
 	 */
 
-	public static final int DC_FLAT_DN = 2;
+	public static final int FC_FLAT_DN = 2;
 
 	/**
-	 * Discount Curve Tenor Bump Up
+	 * Forward Curve - Tenor Bump Up
 	 */
 
-	public static final int DC_TENOR_UP = 4;
+	public static final int FC_TENOR_UP = 4;
 
 	/**
-	 * Discount Curve Tenor Bump Down
+	 * Forward Curve Tenor Bump Down
 	 */
 
-	public static final int DC_TENOR_DN = 8;
+	public static final int FC_TENOR_DN = 8;
 
 	/**
-	 * Generates the set of discount curves from the scenario specified, and the instrument quotes
+	 * Generate the set of Forward curves from the scenario specified, and the instrument quotes.
 	 * 
 	 * @param valParams Valuation Parameters
-	 * @param dcTSY The Treasury Discount Curve
-	 * @param dcEDSF The EDSF Discount Curve
+	 * @param dc Discount Curve
 	 * @param adblQuotes Matched array of the calibration instrument quotes
 	 * @param dblBump Amount of bump to be applied
 	 * @param astrCalibMeasure Matched array of the calibration instrument measures
 	 * @param mmFixings Double map of date/rate index and fixings
 	 * @param quotingParams Quoting Parameters
-	 * @param iDCMode One of the values in the DC_ enum listed above.
+	 * @param iFCMode One of the values in the FC_ enum listed above.
 	 * 
 	 * @return Success (true), failure (false)
 	 */
 
 	public abstract boolean cookScenarioDC (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final int iDCMode);
+		final int iFCMode);
 
 	/**
-	 * Cooks a custom discount curve according to the desired tweak parameters
+	 * Cook a custom Forward curve according to the desired tweak parameters
 	 * 
-	 * @param strCurveName Scenario Discount Curve Name
+	 * @param strCurveName Scenario Forward Curve Name
 	 * @param strCustomName Custom Scenario Name
 	 * @param valParams Valuation Parameters
-	 * @param dcTSY TSY Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
+	 * @param dc Discount Curve
 	 * @param adblQuotes Double array of input quotes
 	 * @param astrCalibMeasure Array of calibration measures
 	 * @param mmFixings Date/Index fixings
 	 * @param quotingParams Calibration quoting parameters
-	 * @param ntpTSY Node Tweak Parameters for the TSY Discount Curve
-	 * @param ntpEDSF Node Tweak Parameters for the EDSF Discount Curve
 	 * @param ntpDC Node Tweak Parameters for the Base Discount Curve
+	 * @param ntpFC Node Tweak Parameters for the Base Forward Curve
 	 * 
 	 * @return Creates a custom discount curve
 	 */
@@ -122,58 +118,56 @@ public abstract class RatesScenarioCurve {
 		final java.lang.String strCurveName,
 		final java.lang.String strCustomName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.QuotingParams quotingParams,
-		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
-		final org.drip.param.definition.ResponseValueTweakParams ntpEDSF,
-		final org.drip.param.definition.ResponseValueTweakParams ntpDC);
+		final org.drip.param.definition.ResponseValueTweakParams ntpDC,
+		final org.drip.param.definition.ResponseValueTweakParams ntpFC);
 
 	/**
-	 * Return the base Discount Curve
+	 * Return the Base Forward Curve
 	 * 
-	 * @return The base Discount Curve
+	 * @return The Base Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDCBase();
+	public abstract org.drip.analytics.rates.ForwardCurve getFCBase();
 
 	/**
-	 * Return the Bump Up Discount Curve
+	 * Return the Bump Up Forward Curve
 	 * 
-	 * @return The Bump Up Discount Curve
+	 * @return The Bump Up Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDCBumpUp();
+	public abstract org.drip.analytics.rates.ForwardCurve getFCBumpUp();
 
 	/**
-	 * Return the Bump Down Discount Curve
+	 * Return the Bump Down Forward Curve
 	 * 
-	 * @return The Bump Down Discount Curve
+	 * @return The Bump Down Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDCBumpDn();
+	public abstract org.drip.analytics.rates.ForwardCurve getFCBumpDn();
 
 	/**
-	 * Return the map of the tenor Bump Up Discount Curve
+	 * Return the map of the tenor Bump Up Forward Curve
 	 * 
-	 * @return The map of the tenor Bump Up Discount Curve
-	 */
-
-	public abstract
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
-			getTenorDCBumpUp();
-
-	/**
-	 * Return the map of the tenor Bump Down Discount Curve
-	 * 
-	 * @return The map of the tenor Bump Down Discount Curve
+	 * @return The map of the tenor Bump Up Forward Curve
 	 */
 
 	public abstract
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
-			getTenorDCBumpDn();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
+			getTenorFCBumpUp();
+
+	/**
+	 * Return the map of the tenor Bump Down Forward Curve
+	 * 
+	 * @return The map of the tenor Bump Down Forward Curve
+	 */
+
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
+			getTenorFCBumpDn();
 }

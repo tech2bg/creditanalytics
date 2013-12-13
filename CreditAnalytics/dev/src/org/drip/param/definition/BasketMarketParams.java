@@ -53,6 +53,19 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 		final org.drip.analytics.rates.DiscountCurve dc);
 
 	/**
+	 * Adds a named Forward curve
+	 * 
+	 * @param strName Name
+	 * @param fc Forward Curve
+	 * 
+	 * @return Success (true) or Failure (false)
+	 */
+
+	public abstract boolean addForwardCurve (
+		final java.lang.String strName,
+		final org.drip.analytics.rates.ForwardCurve fc);
+
+	/**
 	 * Adds a named credit curve
 	 * 
 	 * @param strName Name
@@ -74,6 +87,17 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 	 */
 
 	public abstract org.drip.analytics.rates.DiscountCurve getDC (
+		final java.lang.String strName);
+
+	/**
+	 * Retrieve the Named Forward Curve
+	 * 
+	 * @param strName Name
+	 * 
+	 * @return The Forward Curve
+	 */
+
+	public abstract org.drip.analytics.rates.ForwardCurve getForwardCurve (
 		final java.lang.String strName);
 
 	/**

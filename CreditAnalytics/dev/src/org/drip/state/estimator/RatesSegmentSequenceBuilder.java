@@ -191,7 +191,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		if (null == prlc) return false;
 
 		return aCS[0].calibrate (rvcLeading, dblLeftSlope, GenerateSegmentConstraint (prlc), null == _sbfr ?
-			null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0);
+			null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
+				org.drip.product.params.FloatingRateIndex.Create (cc.getForwardCurveName()));
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -220,7 +221,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			if (null == srvc) return false;
 
 			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], srvc, null == _sbfr ?
-				null : _sbfr.sizeToSegment (aCS[iSegment])) || !_stretch.setSegmentBuilt (iSegment))
+				null : _sbfr.sizeToSegment (aCS[iSegment])) || !_stretch.setSegmentBuilt (iSegment,
+					org.drip.product.params.FloatingRateIndex.Create (cc.getForwardCurveName())))
 				return false;
 		}
 

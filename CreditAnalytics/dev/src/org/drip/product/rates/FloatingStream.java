@@ -393,7 +393,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
-	@Override public java.lang.String getRatesForwardCurveName()
+	@Override public java.lang.String getForwardCurveName()
 	{
 		return _fri.fullyQualifiedName();
 	}
@@ -469,8 +469,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 
-		org.drip.analytics.rates.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ? dc :
-			mktParams.getForwardDiscountCurve();
+		java.lang.String strFRI = _fri.fullyQualifiedName();
+
+		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve();
+
+		if (null != fc && !_fri.match (fc.index())) fc = null;
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblFloatingRate = 0.;
@@ -480,21 +483,21 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			if (dblPeriodPayDate < valParams._dblValue) continue;
 
+			if (null == fc) fc = dc.forwardRateEstimator (dblPeriodPayDate, _fri);
+
 			try {
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					java.lang.String strFullyQualifiedName = _fri.fullyQualifiedName();
-
 					if (null == mktParams.getFixings() || null == mktParams.getFixings().get (new
 						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
 							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
-								(period.getResetDate())).get (strFullyQualifiedName))
-						dblResetRate = dblFloatingRate = dcForward.libor (_fri.tenor());
+								(period.getResetDate())).get (strFRI))
+						dblResetRate = dblFloatingRate = null == fc ? dc.libor (_fri.tenor()) : fc.forward
+							(period.getPayDate());
 					else
 						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
-							org.drip.analytics.date.JulianDate (period.getResetDate())).get
-								(strFullyQualifiedName);
+							org.drip.analytics.date.JulianDate (period.getResetDate())).get (strFRI);
 
 					dblFixing01 = period.getAccrualDCF (valParams._dblValue) * 0.0001 * getNotional
 						(period.getAccrualStartDate(), valParams._dblValue);
@@ -503,7 +506,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 					dblResetDate = period.getResetDate();
 				} else
-					dblFloatingRate = dcForward.libor (period.getStartDate(), period.getEndDate());
+					dblFloatingRate = null == fc ? dc.libor (period.getStartDate(), period.getEndDate()) :
+						fc.forward (period.getPayDate());
 
 				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * mktParams.getDiscountCurve().df
 					(dblPeriodPayDate) * getNotional (period.getAccrualStartDate(), period.getEndDate());
@@ -822,7 +826,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			try {
 				for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 					if (null == period) continue;
-					
+
 					double dblPayDate = period.getPayDate();
 
 					if (valParams._dblValue > dblPayDate) continue;

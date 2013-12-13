@@ -35,7 +35,7 @@ package org.drip.product.params;
  */
 
 public class FloatingRateIndex extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+	org.drip.product.params.Validatable, org.drip.state.representation.LatentStateLabel {
 	private java.lang.String _strIndex = "";
 	private java.lang.String _strTenor = "";
 	private java.lang.String _strCurrency = "";
@@ -211,15 +211,16 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 		return _strTenor;
 	}
 
-	/**
-	 * Retrieve the Fully Qualified Name
-	 * 
-	 * @return The Fully Qualified Name
-	 */
-
-	public java.lang.String fullyQualifiedName()
+	@Override public java.lang.String fullyQualifiedName()
 	{
 		return _strFullyQualifiedName;
+	}
+
+	@Override public boolean match (
+		final org.drip.state.representation.LatentStateLabel lslOther)
+	{
+		return null == lslOther || !(lslOther instanceof org.drip.product.params.FloatingRateIndex) ? false :
+			_strFullyQualifiedName.equalsIgnoreCase (lslOther.fullyQualifiedName());
 	}
 
 	@Override public boolean validate()

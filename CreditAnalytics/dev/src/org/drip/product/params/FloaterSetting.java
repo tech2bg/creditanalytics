@@ -41,10 +41,10 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 	org.drip.product.params.Validatable {
 
 	/**
-	 * Rate Index
+	 * Floating Rate Index
 	 */
 
-	public java.lang.String _strRateIndex = "";
+	public org.drip.product.params.FloatingRateIndex _fri = null;
 
 	/**
 	 * Floating Day Count
@@ -67,7 +67,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 	/**
 	 * Constructs the FloaterSetting from rate index, floating day count, float spread, and current coupon
 	 * 
-	 * @param strRateIndex Rate Index
+	 * @param strRateIndex Fully Qualified Floating Rate Index
 	 * @param strFloatDayCount Floating Day Count
 	 * @param dblFloatSpread Floating Spread
 	 * @param dblCurrentCoupon Current Coupon
@@ -79,10 +79,11 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		final double dblFloatSpread,
 		final double dblCurrentCoupon)
 	{
-		_strRateIndex = strRateIndex;
 		_dblFloatSpread = dblFloatSpread;
 		_strFloatDayCount = strFloatDayCount;
 		_dblCurrentCoupon = dblCurrentCoupon;
+
+		_fri = org.drip.product.params.FloatingRateIndex.Create (strRateIndex);
 	}
 
 	/**
@@ -123,7 +124,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate rate index");
 
-		_strRateIndex = astrField[1];
+		_fri = org.drip.product.params.FloatingRateIndex.Create (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
@@ -150,24 +151,17 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread) &&
-			!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon))
-			return false;
-
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon) && (null == _strRateIndex ||
-			_strRateIndex.isEmpty()))
-			return false;
-
-		return true;
+		return (org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread) ||
+			org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon)) && null != _fri;
 	}
 
 	@Override public byte[] serialize()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strRateIndex +
-			getFieldDelimiter() + _dblFloatSpread + getFieldDelimiter() + _dblCurrentCoupon +
-				getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + new java.lang.String
+			(_fri.serialize()) + getFieldDelimiter() + _dblFloatSpread + getFieldDelimiter() +
+				_dblCurrentCoupon + getFieldDelimiter());
 
 		if (null == _strFloatDayCount || _strFloatDayCount.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
