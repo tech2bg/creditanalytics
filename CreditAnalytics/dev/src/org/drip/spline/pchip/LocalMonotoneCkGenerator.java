@@ -85,6 +85,12 @@ public class LocalMonotoneCkGenerator {
 	public static final java.lang.String C1_KRUGER = "C1_KRUGER";
 
 	/**
+	 * C1 Type: Monotone Convex
+	 */
+
+	public static final java.lang.String C1_MONOTONE_CONVEX = "C1_MONOTONE_CONVEX";
+
+	/**
 	 * C1 Type: Van Leer Limiter
 	 */
 
@@ -728,9 +734,7 @@ public class LocalMonotoneCkGenerator {
 
 			if (!lcr.generateC1 (strGeneratorType)) return null;
 
-			if (bEliminateSpuriousExtrema) {
-				if (!lcr.eliminateSpuriousExtrema()) return null;
-			}
+			if (bEliminateSpuriousExtrema && !lcr.eliminateSpuriousExtrema()) return null;
 
 			if (bApplyMonotoneFilter) {
 				if (!lcr.applyMonotoneFilter()) return null;
@@ -764,13 +768,21 @@ public class LocalMonotoneCkGenerator {
 	{
 		if (null == strGeneratorType || strGeneratorType.isEmpty()) return false;
 
-		if (C1_VANILLA.equalsIgnoreCase (strGeneratorType))
-			return null != (_adblC1 = LinearC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
+		if (C1_AKIMA.equalsIgnoreCase (strGeneratorType))
+			return null != (_adblC1 = AkimaC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
 				_adblC1.length;
 
 		if (C1_BESSEL.equalsIgnoreCase (strGeneratorType))
 			return null != (_adblC1 = BesselC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
 				_adblC1.length;
+
+		if (C1_HARMONIC.equalsIgnoreCase (strGeneratorType))
+			return null != (_adblC1 = HarmonicC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
+				_adblC1.length;
+
+		if (C1_HUYNH_LE_FLOCH.equalsIgnoreCase (strGeneratorType))
+			return null != (_adblC1 = HuynhLeFlochLimiterC1 (_adblPredictorOrdinate, _adblResponseValue)) &&
+				0 != _adblC1.length;
 
 		if (C1_HYMAN83.equalsIgnoreCase (strGeneratorType))
 			return null != (_adblC1 = Hyman83C1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
@@ -780,24 +792,20 @@ public class LocalMonotoneCkGenerator {
 			return null != (_adblC1 = Hyman89C1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
 				_adblC1.length;
 
-		if (C1_HARMONIC.equalsIgnoreCase (strGeneratorType))
-			return null != (_adblC1 = HarmonicC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
-				_adblC1.length;
-
-		if (C1_VAN_LEER.equalsIgnoreCase (strGeneratorType))
-			return null != (_adblC1 = VanLeerLimiterC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
-				_adblC1.length;
-
-		if (C1_HUYNH_LE_FLOCH.equalsIgnoreCase (strGeneratorType))
-			return null != (_adblC1 = HuynhLeFlochLimiterC1 (_adblPredictorOrdinate, _adblResponseValue)) &&
-				0 != _adblC1.length;
-
 		if (C1_KRUGER.equalsIgnoreCase (strGeneratorType))
 			return null != (_adblC1 = KrugerC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
 				_adblC1.length;
 
-		if (C1_AKIMA.equalsIgnoreCase (strGeneratorType))
-			return null != (_adblC1 = AkimaC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
+		if (C1_MONOTONE_CONVEX.equalsIgnoreCase (strGeneratorType))
+			return null != (_adblC1 = BesselC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
+			_adblC1.length;
+
+		if (C1_VANILLA.equalsIgnoreCase (strGeneratorType))
+			return null != (_adblC1 = LinearC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
+				_adblC1.length;
+
+		if (C1_VAN_LEER.equalsIgnoreCase (strGeneratorType))
+			return null != (_adblC1 = VanLeerLimiterC1 (_adblPredictorOrdinate, _adblResponseValue)) && 0 !=
 				_adblC1.length;
 
 		return false;

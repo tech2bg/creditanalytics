@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -452,9 +453,9 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-			org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
+			org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDQuote (_dblEffective);
 
-			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.dfJack
+			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDQuote
 				(getMaturityDate().getJulian());
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
@@ -501,9 +502,9 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-				org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.dfJack (_dblEffective);
+				org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDQuote (_dblEffective);
 
-				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.dfJack
+				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDQuote
 					(getMaturityDate().getJulian());
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;
@@ -561,7 +562,10 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, 0.01 *
-							ratesLSMM.getMeasureQuoteValue()) && prlc.updateValue (0.) ? prlc : null;
+							ratesLSMM.getMeasureQuoteValue()) && prlc.updateValue (0.) &&
+								prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
+									prlc.addDResponseWeightDQuote (_dblEffective, 0.01) &&
+										prlc.updateDValueDQuote (0.) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
@@ -571,7 +575,9 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, ratesLSMM.getMeasureQuoteValue()) &&
-							prlc.updateValue (0.) ? prlc : null;
+							prlc.updateValue (0.) && prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
+								prlc.addDResponseWeightDQuote (_dblEffective, 1.) &&
+									prlc.updateDValueDQuote (0.) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
@@ -582,12 +588,17 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 					double dblTurnEffectiveDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
 						_dblMaturity);
 
+					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
+						_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar);
+
+					double dblDF = 1. / (1. + (ratesLSMM.getMeasureQuoteValue() * dblDCF));
+
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
-						prlc.addPredictorResponseWeight (_dblEffective, dblTurnEffectiveDF / (1. +
-							ratesLSMM.getMeasureQuoteValue() *
-								org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-									_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar))) &&
-										prlc.updateValue (0.) ? prlc : null;
+						prlc.addPredictorResponseWeight (_dblEffective, dblTurnEffectiveDF * dblDF) &&
+							prlc.updateValue (0.) && prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
+								prlc.addDResponseWeightDQuote (_dblEffective, -1. * dblDCF *
+									dblTurnEffectiveDF * dblDF * dblDF) && prlc.updateDValueDQuote (0.) ?
+										prlc : null;
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

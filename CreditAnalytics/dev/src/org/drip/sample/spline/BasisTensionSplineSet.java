@@ -158,7 +158,7 @@ public class BasisTensionSplineSet {
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null);
+		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 
@@ -166,7 +166,7 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
-		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 1 Head: " + seg1.jackDCoeffDEdgeInputs().displayString());
 
 		System.out.println ("Segment 1 Monotone Type: " + seg1.monotoneType());
 
@@ -176,7 +176,7 @@ public class BasisTensionSplineSet {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., null);
+		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., Double.NaN, null, null);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + seg2.responseValue (1.5));
 
@@ -184,13 +184,13 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
-		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + seg2.jackDCoeffDEdgeInputs().displayString());
 
 		System.out.println ("Segment 2 Monotone Type: " + seg2.monotoneType());
 
 		System.out.println ("\tSegment 2 DPE: " + seg2.curvatureDPE());
 
-		seg2.calibrate (seg1, 14., null);
+		seg2.calibrate (seg1, 14., Double.NaN, null, null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
@@ -200,7 +200,7 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeParams (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeInputs (dblX, 1).displayString());
 
 		System.out.println ("\t\tSegment 2 DPE: " + seg2.curvatureDPE());
 	}

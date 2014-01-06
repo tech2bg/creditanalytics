@@ -134,6 +134,7 @@ public class CustomDiscountCurveBuilder {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null);
 
 		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingDFBuild (

@@ -53,12 +53,14 @@ public interface SegmentSequenceBuilder {
 	 * Calibrate the Starting Segment using the LeftSlope
 	 * 
 	 * @param dblLeftSlope The Slope
+	 * @param dblLeftSlopeSensitivity The Slope Sensitivity
 	 * 
 	 * @return TRUE => The Segment was successfully set up.
 	 */
 
 	public abstract boolean calibStartingSegment (
-		final double dblLeftSlope);
+		final double dblLeftSlope,
+		final double dblLeftSlopeSensitivity);
 
 	/**
 	 * Calibrate the Segment Sequence in the Stretch

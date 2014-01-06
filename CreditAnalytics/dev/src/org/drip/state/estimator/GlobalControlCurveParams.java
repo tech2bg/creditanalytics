@@ -45,7 +45,8 @@ public class GlobalControlCurveParams extends org.drip.state.estimator.Smoothing
 	 * @param prbp Segment Builder Parameters
 	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
-	 * @param rfwr Curve Fitness Weighted Response
+	 * @param sbfr Curve Fitness Weighted Response
+	 * @param sbfrSensitivity Curve Fitness Weighted Response Sensitivity
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -55,10 +56,11 @@ public class GlobalControlCurveParams extends org.drip.state.estimator.Smoothing
 		final org.drip.spline.params.SegmentCustomBuilderControl prbp,
 		final org.drip.spline.stretch.BoundarySettings bs,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.StretchBestFitResponse rfwr)
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final org.drip.spline.params.StretchBestFitResponse sbfrSensitivity)
 		throws java.lang.Exception
 	{
-		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, rfwr);
+		super (strSmootheningQuantificationMetric, prbp, iCalibrationDetail, sbfr, sbfrSensitivity);
 
 		if (null == (_bs = bs))
 			throw new java.lang.Exception ("GlobalControlCurveParams ctr: Invalid Inputs");

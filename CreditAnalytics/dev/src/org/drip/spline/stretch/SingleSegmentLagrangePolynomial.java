@@ -183,8 +183,9 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		return dblResponse;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDResponseInput (
-		final double dblPredictorOrdinate)
+	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDCalibrationInput (
+		final double dblPredictorOrdinate,
+		final int iOrder)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate)) return null;
 
@@ -238,6 +239,13 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		}
 
 		return wjDResponseDResponseInput;
+	}
+
+	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+		final double dblPredictorOrdinate,
+		final int iOrder)
+	{
+		return null;
 	}
 
 	@Override public org.drip.spline.segment.Monotonocity monotoneType (

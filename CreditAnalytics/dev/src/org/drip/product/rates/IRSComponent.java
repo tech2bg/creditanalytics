@@ -453,7 +453,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+					(dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -523,7 +524,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+						(dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -588,8 +590,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
 							period.getPayDate());
 
+						double dblPay01 = period.getCouponDCF() * dblPeriodTurnDF;
+
 						if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
-							period.getCouponDCF() * ratesLSMM.getMeasureQuoteValue() * dblPeriodTurnDF))
+							ratesLSMM.getMeasureQuoteValue() * dblPay01) || !prlc.addDResponseWeightDQuote
+								(period.getPayDate(), dblPay01))
 							return null;
 					}
 
@@ -599,7 +604,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 						dblMaturity);
 
 					return prlc.addPredictorResponseWeight (valParams._dblValue, -1.) &&
-						prlc.addPredictorResponseWeight (dblMaturity, dblPeriodMaturityDF) ? prlc : null;
+						prlc.addPredictorResponseWeight (dblMaturity, dblPeriodMaturityDF) &&
+							prlc.addDResponseWeightDQuote (valParams._dblValue, 0.) &&
+								prlc.addDResponseWeightDQuote (dblMaturity, 0.) ? prlc : null;
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

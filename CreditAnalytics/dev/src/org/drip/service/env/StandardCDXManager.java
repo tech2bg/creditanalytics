@@ -695,6 +695,12 @@ public class StandardCDXManager {
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
+			try {
+				bw.close();
+			} catch (java.lang.Exception e1) {
+				e1.printStackTrace();
+			}
+
 			return false;
 		}
 
@@ -713,6 +719,12 @@ public class StandardCDXManager {
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
+				try {
+					bw.close();
+				} catch (java.lang.Exception e1) {
+					e1.printStackTrace();
+				}
+
 				return false;
 			}
 		}
@@ -721,8 +733,6 @@ public class StandardCDXManager {
 			bw.close();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
-
-			return false;
 		}
 
 		return true;

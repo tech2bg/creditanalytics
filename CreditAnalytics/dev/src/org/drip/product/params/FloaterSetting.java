@@ -124,19 +124,19 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate rate index");
 
-		_fri = org.drip.product.params.FloatingRateIndex.Create (astrField[1]);
+		_fri = new org.drip.product.params.FloatingRateIndex (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate float spread");
 
-		_dblFloatSpread = new java.lang.Double (astrField[2]).doubleValue();
+		_dblFloatSpread = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate current coupon");
 
-		_dblCurrentCoupon = new java.lang.Double (astrField[3]).doubleValue();
+		_dblCurrentCoupon = new java.lang.Double (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate float day count");
@@ -187,7 +187,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		FloaterSetting bfp = new FloaterSetting ("ABCD", "HAHA", 1., 0.);
+		FloaterSetting bfp = new FloaterSetting ("USD-LIBOR-6M", "HAHA", 1., 0.);
 
 		byte[] abBFP = bfp.serialize();
 

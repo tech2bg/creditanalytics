@@ -72,7 +72,8 @@ public class LagrangePolynomialStretchRegressor extends org.drip.regression.core
 	@Override public boolean execRegression()
 	{
 		try {
-			if (!org.drip.quant.common.NumberUtil.IsValid (_dblValue = _sss.responseValue (2.16))) return false;
+			if (!org.drip.quant.common.NumberUtil.IsValid (_dblValue = _sss.responseValue (2.16)))
+				return false;
 
 			_bLocallyMonotone = _sss.isLocallyMonotone();
 		} catch (java.lang.Exception e) {
@@ -81,7 +82,7 @@ public class LagrangePolynomialStretchRegressor extends org.drip.regression.core
 			return false;
 		}
 
-		if (null == (_wj = _sss.jackDResponseDResponseInput (2.16))) return false;
+		if (null == (_wj = _sss.jackDResponseDCalibrationInput (2.16, 1))) return false;
 
 		return null != (_sm = _sss.monotoneType (2.16));
 	}

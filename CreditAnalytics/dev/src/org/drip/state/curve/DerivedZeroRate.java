@@ -194,7 +194,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return _dc.forwardRateEstimator (dblDate, fri);
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final double dblDate)
 	{
 		try {
@@ -207,7 +207,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 			return null;
 		}
 
-		return _dc.dfJack (dblDate);
+		return _dc.jackDDFDQuote (dblDate);
 	}
 
 	@Override public double getZeroRate (

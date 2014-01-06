@@ -491,7 +491,7 @@ public class RatesScenarioCurveBuilder {
 						org.drip.spline.params.ResponseScalingShapeControl (true, new
 							org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
-									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
+									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
 			dcShapePreserving = ShapePreservingDFBuild (lcc, aSRS, valParams, pricerParam, cmp, quotingParam,
 				dblEpochResponse);
@@ -514,7 +514,7 @@ public class RatesScenarioCurveBuilder {
 										org.drip.spline.params.ResponseScalingShapeControl (true, new
 											org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
 												org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null,
-													true, true);
+													null, true, true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -628,7 +628,7 @@ public class RatesScenarioCurveBuilder {
 										org.drip.spline.params.ResponseScalingShapeControl (true, new
 											org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
 												org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null,
-													true, true);
+													null, true, true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -875,7 +875,7 @@ public class RatesScenarioCurveBuilder {
 						org.drip.spline.params.ResponseScalingShapeControl (true, new
 							org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
-									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
+									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
 			return ShapePreservingDFBuild (lcc, aSRS, valParams, null, null, null, 1.);
 		} catch (java.lang.Exception e) {
@@ -983,7 +983,7 @@ public class RatesScenarioCurveBuilder {
 							org.drip.spline.params.ResponseScalingShapeControl (true, new
 								org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
 									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
-										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
+										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
 			return ShapePreservingForwardCurve (lcc, aSRS, fri, valParams, pricerParam, cmp, quotingParam,
 				dblEpochResponse);

@@ -104,8 +104,9 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (new double[] {0., 1.}, new double[] {1.,
 				4.}, new double[] {1.}, new double[] {6.}, null, null)) && null != (_wjRight =
 					_seg2.jackDCoeffDEdgeParams (new double[] {1., 2.}, new double[] {4., 15.}, new double[]
-						{6.}, new double[] {17.}, null, null)) && _seg2.calibrate (_seg1, 14., null) && null
-							!= (_wjValue = _seg2.jackDResponseDEdgeParams (1.5));
+						{6.}, new double[] {17.}, null, null)) && _seg2.calibrate (_seg1, 14.,
+							java.lang.Double.NaN, null, null) && null != (_wjValue =
+								_seg2.jackDResponseDEdgeInputs (1.5, 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -123,7 +124,7 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 			if (!rnvd.set (_strName + "_Seg1_Jack", _wjLeft.displayString()));
 
-			if (!rnvd.set (_strName + "_Seg1_Head_Jack", _seg1.jackDCoeffDEdgeParams().displayString()));
+			if (!rnvd.set (_strName + "_Seg1_Head_Jack", _seg1.jackDCoeffDEdgeInputs().displayString()));
 
 			if (!rnvd.set (_strName + "_Seg1_Monotone", _seg1.monotoneType().toString()));
 
@@ -133,7 +134,7 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 			if (!rnvd.set (_strName + "_Seg2_Jack", _wjRight.displayString()));
 
-			if (!rnvd.set (_strName + "_Seg2_Head_Jack", _seg2.jackDCoeffDEdgeParams().displayString()));
+			if (!rnvd.set (_strName + "_Seg2_Head_Jack", _seg2.jackDCoeffDEdgeInputs().displayString()));
 
 			if (!rnvd.set (_strName + "_Seg2_Monotone", _seg2.monotoneType().toString()));
 

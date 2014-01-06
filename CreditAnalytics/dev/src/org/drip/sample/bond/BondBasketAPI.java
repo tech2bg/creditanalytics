@@ -330,7 +330,7 @@ public class BondBasketAPI {
 		BondComponent bond4 = BondBuilder.CreateSimpleFloater ( // Simple Floating Rate Bond
 				"FLOATER1",		// Name
 				"USD",			// Currency
-				"DRIPRI",		// Rate Index
+				"USD-LIBOR-6M",		// Rate Index
 				0.01,			// Floating Spread
 				2,				// Coupon Frequency
 				"30/360",		// Day Count

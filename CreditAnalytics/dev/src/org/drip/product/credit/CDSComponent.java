@@ -247,7 +247,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVDF = null;
 
 		for (org.drip.analytics.period.LossPeriodCurveFactors lpcf : sLPSub) {
-			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (0.5 *
+			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote (0.5 *
 				(lpcf.getStartDate() + lpcf.getEndDate()) + _crValParams._iDefPayLag);
 
 			try {
@@ -298,8 +298,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			double dblPeriodEffectiveDate = 0.5 * (lpcf.getStartDate() + lpcf.getEndDate());
 
-			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodEffectiveDate
-				+ _crValParams._iDefPayLag);
+			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+				(dblPeriodEffectiveDate + _crValParams._iDefPayLag);
 
 			try {
 				dblPeriodNotional = getNotional (lpcf.getStartDate(), lpcf.getEndDate());
@@ -1157,7 +1157,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 				if (dblPeriodPayDate < valParams._dblValue) continue;
 
-				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+					(dblPeriodPayDate);
 
 				org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVMicroJack =
 					calcPeriodOnDefaultPVDFMicroJack (dblFairPremium, p, valParams, pricerParams, mktParams);
@@ -1223,7 +1224,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 					if (dblPeriodPayDate < valParams._dblValue) continue;
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (p.getEndDate());
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+						(p.getEndDate());
 
 					PeriodLossMicroJack plmj = calcPeriodLossMicroJack (p, valParams, pricerParams, mktParams);
 

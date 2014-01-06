@@ -390,7 +390,7 @@ public class CreditAnalyticsTestSuite {
 
 			for (int i = 0; i < aiWkendDays.length; ++i) {
 				try {
-					System.out.println (org.drip.analytics.date.JulianDate.getDayChars (aiWkendDays[i]));
+					System.out.println (org.drip.analytics.date.JulianDate.DayChars (aiWkendDays[i]));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("CalendarAPISample failed.");

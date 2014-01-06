@@ -122,7 +122,7 @@ public class DayCountAndCalendarAPI {
 		int[] aiWkendDays = CreditAnalytics.GetWeekendDays ("USD,GBP");
 
 		for (int i = 0; i < aiWkendDays.length; ++i)
-			System.out.println (JulianDate.getDayChars (aiWkendDays[i]));
+			System.out.println (JulianDate.DayChars (aiWkendDays[i]));
 
 		System.out.println ("USD,GBP has " + aiWkendDays.length + " weekend days");
 

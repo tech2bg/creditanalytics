@@ -230,6 +230,16 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 				!_strFullyQualifiedName.isEmpty();
 	}
 
+	@Override public java.lang.String getFieldDelimiter()
+	{
+		return ",";
+	}
+
+	@Override public java.lang.String getObjectTrailer()
+	{
+		return "'";
+	}
+
 	@Override public byte[] serialize()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
@@ -251,5 +261,20 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 		}
 
 		return null;
+	}
+
+	public static final void main (
+		final java.lang.String[] astrArgs)
+		throws java.lang.Exception
+	{
+		FloatingRateIndex fri = Create ("USD-LIBOR-6M");
+
+		byte[] abFRI = fri.serialize();
+
+		System.out.println (new java.lang.String (abFRI));
+
+		FloatingRateIndex friDeser = new FloatingRateIndex (abFRI);
+
+		System.out.println (new java.lang.String (friDeser.serialize()));
 	}
 }

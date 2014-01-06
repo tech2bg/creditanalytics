@@ -6,6 +6,7 @@ package org.drip.analytics.date;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,7 +32,8 @@ package org.drip.analytics.date;
  */
 
 /**
- * This class provides the representation of the instantiation-time date and time objects.
+ * This class provides the representation of the instantiation-time date and time objects. It simply holds
+ * 	the (double version of) date and time values.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -70,7 +72,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Invalid DateTime ctr params!");
+			throw new java.lang.Exception ("DateTime ctr: Invalid Inputs!");
 
 		_lTime = lTime;
 		_dblDate = dblDate;
@@ -156,7 +158,8 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new DateTime (ab);
 		} catch (java.lang.Exception e) {

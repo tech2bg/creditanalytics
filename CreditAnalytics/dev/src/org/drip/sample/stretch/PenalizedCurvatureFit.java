@@ -210,15 +210,15 @@ public class PenalizedCurvatureFit {
 		while (dblX <= dblXMax) {
 			System.out.println (
 				"\t\tJacobian Y[" + FormatUtil.FormatDouble (dblX, 2, 2, 1.) + "] => " +
-					mssBase1.jackDResponseDResponseInput (dblX).displayString());
+					mssBase1.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			System.out.println (
 				"\t\tJacobian Y[" + FormatUtil.FormatDouble (dblX, 2, 2, 1.) + "] => " +
-					mssBase2.jackDResponseDResponseInput (dblX).displayString());
+					mssBase2.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			System.out.println (
 				"\t\tJacobian Y[" + FormatUtil.FormatDouble (dblX, 2, 2, 1.) + "] => " +
-					mssBestFit.jackDResponseDResponseInput (dblX).displayString());
+					mssBestFit.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			System.out.println ("\t\t----\n\t\t----");
 

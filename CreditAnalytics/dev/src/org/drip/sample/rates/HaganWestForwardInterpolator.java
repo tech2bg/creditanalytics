@@ -2,7 +2,11 @@
 package org.drip.sample.rates;
 
 import org.drip.quant.common.FormatUtil;
-import org.drip.spline.pchip.MonotoneConvexHaganWest;
+import org.drip.quant.function1D.LinearRationalShapeControl;
+import org.drip.spline.basis.ExponentialTensionSetParams;
+import org.drip.spline.params.*;
+import org.drip.spline.pchip.*;
+import org.drip.spline.stretch.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -44,18 +48,20 @@ import org.drip.spline.pchip.MonotoneConvexHaganWest;
 public class HaganWestForwardInterpolator {
 	private static void DisplayOP (
 		final MonotoneConvexHaganWest mchw,
+		final MultiSegmentSequence mss,
 		final double[] adblTime)
 		throws Exception
 	{
 		double dblTimeBegin = 0.;
-		double dblTimeFinish = 3.;
-		double dblTimeDelta = 0.25;
+		double dblTimeFinish = 30.;
+		double dblTimeDelta = 3.00;
 		double dblTime = dblTimeBegin;
 
 		while (dblTime <= dblTimeFinish) {
 			System.out.println ("\t\tResponse[" +
-				FormatUtil.FormatDouble (dblTime, 1, 2, 1.) + "]: " +
-				FormatUtil.FormatDouble (mchw.responseValue (dblTime), 1, 6, 1.));
+				FormatUtil.FormatDouble (dblTime, 2, 2, 1.) + "]: " +
+				FormatUtil.FormatDouble (mchw.evaluate (dblTime), 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (mss.responseValue (dblTime), 1, 6, 1.));
 
 			dblTime += dblTimeDelta;
 		}
@@ -70,8 +76,9 @@ public class HaganWestForwardInterpolator {
 
 		while (dblTime <= dblTimeFinish) {
 			System.out.println ("\t\tPositivity Enforced Response[" +
-				FormatUtil.FormatDouble (dblTime, 1, 2, 1.) + "]: " +
-				FormatUtil.FormatDouble (mchw.responseValue (dblTime), 1, 6, 1.));
+				FormatUtil.FormatDouble (dblTime, 2, 2, 1.) + "]: " +
+				FormatUtil.FormatDouble (mchw.evaluate (dblTime), 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (mss.responseValue (dblTime), 1, 6, 1.));
 
 			dblTime += dblTimeDelta;
 		}
@@ -81,8 +88,56 @@ public class HaganWestForwardInterpolator {
 		final String[] astrArgs)
 		throws Exception
 	{
-		double[] adblTime = new double[] {0., 0.5, 1.0, 1.5, 2.0, 2.5, 3.0};
-		double[] adblForwardRate = new double[] {0.02, 0.027, 0.034, 0.009, 0.0002, 0.044};
+		double[] adblTime = new double[] {0., 0.10, 1.0, 4.0, 9.0, 20.0, 30.0};
+		double[] adblForwardRate = new double[] {1.008, 1.073, 1.221, 1.878, 2.226, 2.460};
+
+		double dblShapeControllerTension = 1.;
+
+		ResponseScalingShapeControl rssc = new ResponseScalingShapeControl (
+			false,
+			new LinearRationalShapeControl (dblShapeControllerTension));
+
+		int iK = 2;
+		int iCurvaturePenaltyDerivativeOrder = 2;
+
+		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (
+			iK,
+			iCurvaturePenaltyDerivativeOrder);
+
+		double dblKLKTension = 1.;
+
+		SegmentCustomBuilderControl scbc = new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
+				new ExponentialTensionSetParams (dblKLKTension),
+				sdic,
+				rssc);
+
+		SegmentCustomBuilderControl[] aSCBC = new SegmentCustomBuilderControl[adblForwardRate.length];
+
+		for (int i = 0; i < adblForwardRate.length; ++i)
+			aSCBC[i] = scbc;
+
+		MultiSegmentSequence mssLinear = LocalControlStretchBuilder.CreateMonotoneConvexStretch (
+			"MSS_LINEAR",
+			adblTime,
+			adblForwardRate,
+			aSCBC,
+			null,
+			MultiSegmentSequence.CALIBRATE,
+			false,
+			false,
+			false);
+
+		MultiSegmentSequence mssHarmonic = LocalControlStretchBuilder.CreateMonotoneConvexStretch (
+			"MSS_HARMONIC",
+			adblTime,
+			adblForwardRate,
+			aSCBC,
+			null,
+			MultiSegmentSequence.CALIBRATE,
+			true,
+			false,
+			false);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -90,7 +145,7 @@ public class HaganWestForwardInterpolator {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		DisplayOP (MonotoneConvexHaganWest.Create (adblTime, adblForwardRate, false), adblTime);
+		DisplayOP (MonotoneConvexHaganWest.Create (adblTime, adblForwardRate, false), mssLinear, adblTime);
 
 		System.out.println ("\n\n\t----------------------------------------------------------------");
 
@@ -98,6 +153,6 @@ public class HaganWestForwardInterpolator {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		DisplayOP (MonotoneConvexHaganWest.Create (adblTime, adblForwardRate, true), adblTime);
+		DisplayOP (MonotoneConvexHaganWest.Create (adblTime, adblForwardRate, true), mssHarmonic, adblTime);
 	}
 }

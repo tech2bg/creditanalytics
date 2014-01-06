@@ -245,7 +245,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		return null;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final double dblDate)
 	{
 		return null;

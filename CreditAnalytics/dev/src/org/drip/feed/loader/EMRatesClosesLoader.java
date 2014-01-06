@@ -204,16 +204,21 @@ public class EMRatesClosesLoader {
 			if (null != _writeLog) _writeLog.write (sb.toString());
 		}
 
-		org.drip.service.api.ProductDailyPnL pnlOP = new org.drip.service.api.ProductDailyPnL (dbl1DReturn, dbl1DCarry,
-			dbl1DRollDown, dbl1DCurveShift, dbl1MCarry, dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01);
+		try {
+			org.drip.service.api.ProductDailyPnL pnlOP = new org.drip.service.api.ProductDailyPnL (dbl1DReturn, dbl1DCarry,
+				dbl1DRollDown, dbl1DCurveShift, dbl1MCarry, dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01);
 
-		if (null != _writeCOB) {
-			_writeCOB.write (pnlOP.toString());
+			if (null != _writeCOB) {
+				_writeCOB.write (pnlOP.toString());
 
-			_writeCOB.flush();
+				_writeCOB.flush();
+			}
+
+			return pnlOP;
+		} catch (java.lang.Exception e) {
 		}
 
-		return pnlOP;
+		return null;
 	}
 
 	private static final org.drip.service.api.ForwardRates ComputeForwardMetric (
@@ -394,7 +399,7 @@ public class EMRatesClosesLoader {
 						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc),
 					org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
-						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null);
+						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
 			org.drip.analytics.rates.DiscountCurve dcShapePreserving =
 				org.drip.param.creator.RatesScenarioCurveBuilder.ShapePreservingDFBuild (lcc, aRRS, valParams,
@@ -409,10 +414,13 @@ public class EMRatesClosesLoader {
 							org.drip.spline.params.SegmentCustomBuilderControl
 								(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 									new org.drip.spline.basis.PolynomialFunctionSetParams (4), sdic, rssc),
-					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, true, true);
+					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null, true, true);
 
-			return org.drip.param.creator.RatesScenarioCurveBuilder.SmoothingLocalControlBuild
-				(dcShapePreserving, lcc, lccpHyman83, aRRS, valParams, null, null, null);
+			org.drip.analytics.rates.DiscountCurve dcHyman83Smooth =
+				org.drip.param.creator.RatesScenarioCurveBuilder.SmoothingLocalControlBuild
+					(dcShapePreserving, lcc, lccpHyman83, aRRS, valParams, null, null, null);
+
+			return null == dcHyman83Smooth ? dcShapePreserving : dcHyman83Smooth;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -486,10 +494,11 @@ public class EMRatesClosesLoader {
 		org.drip.analytics.rates.DiscountCurve dcPrev = null;
 
 		try {
-			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader ("C:\\IFA\\" + strCurrency +
-				"_Swap_Curve_Orig.txt"));
+			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader ("C:\\IFA\\G10Rates\\" +
+				strCurrency + "_Single_Discount_Curve.txt"));
 
-			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\SPCA." + strCurrency));
+			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter
+				("C:\\IFA\\G10Rates\\Single_Discount_Curve." + strCurrency));
 
 			while (null != (strCOBQuote = brSwapCOB.readLine())) {
 				java.lang.String[] astrCOBRecord = strCOBQuote.split (",");
@@ -717,8 +726,8 @@ public class EMRatesClosesLoader {
 
 						System.out.println (dtCOB + " => " + dc);
 
-						java.util.List<org.drip.service.api.CDXCOB> lsCDXNamedPrice =
-							mapDatedCDXClose.get (dtCOB);
+						java.util.List<org.drip.service.api.CDXCOB> lsCDXNamedPrice = mapDatedCDXClose.get
+							(dtCOB);
 
 						if (null != lsCDXNamedPrice && 0 != lsCDXNamedPrice.size()) {
 							for (org.drip.service.api.CDXCOB cdxNP : lsCDXNamedPrice) {
@@ -767,11 +776,11 @@ public class EMRatesClosesLoader {
 	{
 		org.drip.service.api.CreditAnalytics.Init ("");
 
-		java.util.Map<org.drip.analytics.date.JulianDate, java.util.List<org.drip.service.api.CDXCOB>>
+		/* java.util.Map<org.drip.analytics.date.JulianDate, java.util.List<org.drip.service.api.CDXCOB>>
 			mapDatedCDXClose = LoadCDXCloses ("c:\\IFA\\CDXOP\\CDX_HY_PX_5Y_CONTRACTS_LAST_Orig.txt");
 
-		ProcessCDXQuote (mapDatedCDXClose);
+		ProcessCDXQuote (mapDatedCDXClose); */
 
-		// GenerateEMCurveMetrics ("ZAR");
+		GenerateEMCurveMetrics ("USD");
 	}
 }

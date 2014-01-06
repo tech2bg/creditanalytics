@@ -43,6 +43,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * @param sbfr Curve Fitness Weighted Response
+	 * @param sbfrSensitivity Curve Fitness Weighted Response Sensitivity
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -51,10 +52,11 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
 		final org.drip.spline.stretch.BoundarySettings bs,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.StretchBestFitResponse sbfr)
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final org.drip.spline.params.StretchBestFitResponse sbfrSensitivity)
 		throws java.lang.Exception
 	{
-		super ("", scbc, bs, iCalibrationDetail, sbfr);
+		super ("", scbc, bs, iCalibrationDetail, sbfr, sbfrSensitivity);
 	}
 
 	/**
@@ -81,8 +83,8 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		if (null == aSRS || null == valParams) return null;
 
 		int iNumStretch = aSRS.length;
+		org.drip.state.estimator.CurveStretch csPrev = null;
 		org.drip.spline.grid.OverlappingStretchSpan oss = null;
-		org.drip.spline.stretch.MultiSegmentSequence mssPrev = null;
 
 		if (0 == iNumStretch) return null;
 
@@ -92,7 +94,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 			org.drip.product.definition.CalibratableComponent[] aCalibComp = srs.getCalibComp();
 
 			int iNumCalibComp = aCalibComp.length;
-			org.drip.spline.stretch.MultiSegmentSequence mss = null;
+			org.drip.state.estimator.CurveStretch cs = null;
 			double[] adblPredictorOrdinate = new double[iNumCalibComp + 1];
 			org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
 				org.drip.spline.params.SegmentCustomBuilderControl[iNumCalibComp];
@@ -105,13 +107,14 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 			}
 
 			try {
-				mss = new org.drip.state.estimator.CurveStretch (srs.getName(),
+				cs = new org.drip.state.estimator.CurveStretch (srs.getName(),
 					org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateSegmentSet
 						(adblPredictorOrdinate, aSCBC), aSCBC);
 
-				if (!mss.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder (dblEpochResponse,
-					srs, valParams, pricerParams, cmp, quotingParams, mssPrev, bestFitWeightedResponse(),
-						calibrationBoundaryCondition()), calibrationDetail())) {
+				if (!cs.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder (dblEpochResponse,
+					srs, valParams, pricerParams, cmp, quotingParams, csPrev, bestFitWeightedResponse(),
+						bestFitWeightedResponseSensitivity(), calibrationBoundaryCondition()),
+							calibrationDetail())) {
 					System.out.println ("\tMSS Setup Failed!");
 
 					return null;
@@ -124,17 +127,17 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 
 			if (null == oss) {
 				try {
-					oss = new org.drip.spline.grid.OverlappingStretchSpan (mss);
+					oss = new org.drip.spline.grid.OverlappingStretchSpan (cs);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
 					return null;
 				}
 			} else {
-				if (!oss.addStretch (mss)) return null;
+				if (!oss.addStretch (cs)) return null;
 			}
 
-			mssPrev = mss;
+			csPrev = cs;
 		}
 
 		return oss;

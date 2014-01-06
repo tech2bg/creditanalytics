@@ -95,7 +95,7 @@ public class PolynomialBasisSpline {
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., 0., 20.25, null);
+		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + ecs1.responseValue (1.));
 
@@ -103,7 +103,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 1 Jacobian: " + wj1.displayString());
 
-		System.out.println ("Segment 1 Head: " + ecs1.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 1 Head: " + ecs1.jackDCoeffDEdgeInputs().displayString());
 
 		System.out.println ("Segment 1 Monotone Type: " + ecs1.monotoneType());
 
@@ -113,7 +113,7 @@ public class PolynomialBasisSpline {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, 16., null);
+		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, 16., Double.NaN, null, null);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + ecs2.responseValue (1.5));
 
@@ -121,13 +121,13 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 2 Jacobian: " + wj2.displayString());
 
-		System.out.println ("Segment 2 Regular Jacobian: " + ecs2.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + ecs2.jackDCoeffDEdgeInputs().displayString());
 
 		System.out.println ("Segment 2 Monotone Type: " + ecs2.monotoneType());
 
 		System.out.println ("Segment 2 DPE: " + ecs2.curvatureDPE());
 
-		ecs2.calibrate (ecs1, 14., null);
+		ecs2.calibrate (ecs1, 14., Double.NaN, null, null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
@@ -137,7 +137,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + ecs2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeParams (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeInputs (dblX, 1).displayString());
 
 		System.out.println ("\t\tSegment 2 DPE: " + ecs2.curvatureDPE());
 	}
@@ -190,18 +190,21 @@ public class PolynomialBasisSpline {
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		ecs1.calibrate (
-			new double[] {0., 1.}, // Segment Calibration Nodes
-			new double[] {1., 4.}, // Segment Calibration Values
-			new double[] {1.}, // Segment Left Derivative
-			new double[] {6.}, // Segment Left Derivative
-			null, null); // Segment Constraint AND Fitness Penalty Response
+		ecs1.calibrateState (
+			new SegmentStateCalibration (
+				new double[] {0., 1.}, // Segment Calibration Nodes
+				new double[] {1., 4.}, // Segment Calibration Values
+				new double[] {1.}, // Segment Left Derivative
+				new double[] {6.}, // Segment Left Derivative
+				null, null // Segment Constraint AND Fitness Penalty Response
+			)
+		);
 
 		System.out.println ("\tY[" + 0.0 + "]: " + ecs1.responseValue (0.0));
 
 		System.out.println ("\tY[" + 1.0 + "]: " + ecs1.responseValue (1.0));
 
-		System.out.println ("Segment 1 Head: " + ecs1.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 1 Head: " + ecs1.jackDCoeffDEdgeInputs().displayString());
 
 		System.out.println ("Segment 1 Monotone Type: " + ecs1.monotoneType());
 
@@ -211,25 +214,28 @@ public class PolynomialBasisSpline {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian
 		 */
 
-		ecs2.calibrate (
-			new double[] {1., 2.}, // Segment Calibration Nodes
-			new double[] {4., 15.}, // Segment Calibration Values
-			new double[] {6.}, // Segment Left Derivative
-			new double[] {17.}, // Segment Left Derivative
-			null, // Segment Constraint
-			null); // Fitness Penalty Response
+		ecs2.calibrateState (
+			new SegmentStateCalibration (
+				new double[] {1., 2.}, // Segment Calibration Nodes
+				new double[] {4., 15.}, // Segment Calibration Values
+				new double[] {6.}, // Segment Left Derivative
+				new double[] {17.}, // Segment Left Derivative
+				null, // Segment Constraint
+				null // Fitness Penalty Response
+			)
+		);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + ecs2.responseValue (1.0));
 
 		System.out.println ("\tY[" + 2.0 + "]: " + ecs2.responseValue (2.0));
 
-		System.out.println ("Segment 2 Regular Jacobian: " + ecs2.jackDCoeffDEdgeParams().displayString());
+		System.out.println ("Segment 2 Regular Jacobian: " + ecs2.jackDCoeffDEdgeInputs().displayString());
 
 		System.out.println ("Segment 2 Monotone Type: " + ecs2.monotoneType());
 
 		System.out.println ("Segment 2 DPE: " + ecs2.curvatureDPE());
 
-		ecs2.calibrate (ecs1, 14., null);
+		ecs2.calibrate (ecs1, 14., Double.NaN, null, null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
@@ -239,7 +245,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + ecs2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeParams (dblX).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeInputs (dblX, 1).displayString());
 
 		System.out.println ("\t\tSegment 2 DPE: " + ecs2.curvatureDPE());
 	}

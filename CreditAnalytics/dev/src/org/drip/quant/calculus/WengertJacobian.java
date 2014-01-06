@@ -234,7 +234,7 @@ public class WengertJacobian {
 		for (int iWengertIndex = 0; iWengertIndex < _aadblDWengertDParameter.length; ++iWengertIndex) {
 			java.lang.StringBuffer sbDWengertDParameter = new java.lang.StringBuffer();
 
-			sbDWengertDParameter.append ("\nWengert{" + iWengertIndex + "} => [");
+			sbDWengertDParameter.append ("Wengert{" + iWengertIndex + "} => [");
 
 			for (int iParameterIndex = 0; iParameterIndex < _aadblDWengertDParameter[0].length;
 				++iParameterIndex) {

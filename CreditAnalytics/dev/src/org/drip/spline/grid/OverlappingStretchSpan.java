@@ -182,4 +182,52 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 
 		return oss;
 	}
+
+	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+		final double dblPredictorOrdinate,
+		final int iOrder)
+	{
+		if (0 == _lsMSS.size()) return null;
+
+		java.util.List<org.drip.quant.calculus.WengertJacobian> lsWJ = new
+			java.util.ArrayList<org.drip.quant.calculus.WengertJacobian>();
+
+		boolean bPredictorOrdinateCovered = false;
+
+		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
+			if (null == mss) continue;
+
+			try {
+				org.drip.quant.calculus.WengertJacobian wj = null;
+
+				if (!bPredictorOrdinateCovered && mss.in (dblPredictorOrdinate)) {
+					wj = mss.jackDResponseDQuote (dblPredictorOrdinate, iOrder);
+
+					bPredictorOrdinateCovered = true;
+				} else
+					wj = new org.drip.quant.calculus.WengertJacobian (1, mss.segments().length);
+
+				if (null != wj) lsWJ.add (wj);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return org.drip.quant.common.CollectionUtil.AppendWengert (lsWJ);
+	}
+
+	@Override public void displayString()
+	{
+		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
+			try {
+				System.out.println (new org.drip.analytics.date.JulianDate
+					(mss.getLeftPredictorOrdinateEdge()) + " => " + new org.drip.analytics.date.JulianDate
+						(mss.getRightPredictorOrdinateEdge()));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

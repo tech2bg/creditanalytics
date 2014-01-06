@@ -116,7 +116,7 @@ public class RegressionSplineEstimator {
 			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (mss.responseValue (dblX), 1, 2, 1.) + " | " +
 				mss.monotoneType (dblX));
 
-			System.out.println ("\t\tJacobian Y[" + dblX + "]=" + mss.jackDResponseDResponseInput (dblX).displayString());
+			System.out.println ("\t\tJacobian Y[" + dblX + "]=" + mss.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			dblX += 1.;
 		}

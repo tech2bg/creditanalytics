@@ -417,47 +417,47 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	public abstract java.lang.String latentStateQuantificationMetric();
 
 	/**
-	 * Retrieve the Jacobian for the DF to the given date
+	 * Retrieve the Quote Jacobian of the Discount Factor to the given date
 	 * 
 	 * @param dblDate Date
 	 * 
-	 * @return The Jacobian
+	 * @return The Quote Jacobian of the Discount Factor to the given date
 	 */
 
-	public abstract org.drip.quant.calculus.WengertJacobian dfJack (
+	public abstract org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final double dblDate);
 
 	/**
-	 * Retrieve the Jacobian for the DF for the given date
+	 * Retrieve the Quote Jacobian of the Discount Factor to the given date
 	 * 
-	 * @param dt Date
+	 * @param dblDate Date
 	 * 
-	 * @return The Jacobian
+	 * @return The Quote Jacobian of the Discount Factor to the given date
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian dfJack (
+	public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		if (null == dt) return null;
 
-		return dfJack (dt.getJulian());
+		return jackDDFDQuote (dt.getJulian());
 	}
 
 	/**
-	 * Retrieve the Jacobian for the DF for the given tenor
+	 * Retrieve the Quote Jacobian of the Discount Factor to the date implied by the given Tenor
 	 * 
-	 * @param strTenor Tenor
+	 * @param dblDate Date
 	 * 
-	 * @return The Jacobian
+	 * @return The Quote Jacobian of the Discount Factor to the date implied by the given Tenor
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian dfJack (
+	public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final java.lang.String strTenor)
 	{
 		if (null == strTenor || strTenor.isEmpty()) return null;
 
 		try {
-			return dfJack (epoch().addTenor (strTenor));
+			return jackDDFDQuote (epoch().addTenor (strTenor));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -551,11 +551,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate2) || dblDate1 == dblDate2)
 			return null;
 
-		org.drip.quant.calculus.WengertJacobian wj1 = dfJack (dblDate1);
+		org.drip.quant.calculus.WengertJacobian wj1 = jackDDFDQuote (dblDate1);
 
 		if (null == wj1) return null;
 
-		org.drip.quant.calculus.WengertJacobian wj2 = dfJack (dblDate2);
+		org.drip.quant.calculus.WengertJacobian wj2 = jackDDFDQuote (dblDate2);
 
 		if (null == wj2) return null;
 

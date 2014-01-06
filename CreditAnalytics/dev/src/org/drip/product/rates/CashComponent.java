@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -391,7 +392,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			org.drip.quant.calculus.WengertJacobian wjDFDF = dc.dfJack (_dblMaturity);
+			org.drip.quant.calculus.WengertJacobian wjDFDF = dc.jackDDFDQuote (_dblMaturity);
 
 			if (null == wjDFDF) return null;
 
@@ -428,7 +429,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				org.drip.quant.calculus.WengertJacobian wjDF = dc.dfJack (_dblMaturity);
+				org.drip.quant.calculus.WengertJacobian wjDF = dc.jackDDFDQuote (_dblMaturity);
 
 				if (null == wjDF) return null;
 
@@ -478,7 +479,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
-						(0.01 * ratesLSMM.getMeasureQuoteValue()) ? prlc : null;
+						(0.01 * ratesLSMM.getMeasureQuoteValue()) && prlc.addDResponseWeightDQuote
+							(_dblMaturity, 0.) && prlc.updateDValueDQuote (0.01) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
@@ -487,7 +489,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
-						(ratesLSMM.getMeasureQuoteValue()) ? prlc : null;
+						(ratesLSMM.getMeasureQuoteValue()) && prlc.addDResponseWeightDQuote (_dblMaturity,
+							0.) && prlc.updateDValueDQuote (1.) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
@@ -495,10 +498,14 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue (1.
-						/ (1. + ratesLSMM.getMeasureQuoteValue() *
-							org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
-								_strDC, false, _dblMaturity, null, _strCalendar))) ? prlc : null;
+					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
+						_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar);
+
+					double dblDF = 1. / (1. + ratesLSMM.getMeasureQuoteValue() * dblDCF);
+
+					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
+						(dblDF) && prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
+							prlc.updateDValueDQuote (-1. * dblDCF * dblDF * dblDF) ? prlc : null;
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

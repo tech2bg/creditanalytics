@@ -79,14 +79,16 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.stretch.Segment
 	}
 
 	@Override public boolean calibStartingSegment (
-		final double dblLeftSlope)
+		final double dblLeftSlope,
+		final double dblLeftSlopeSensitivity)
 	{
 		if (null == _mss) return false;
 
 		org.drip.spline.segment.ConstitutiveState[] aCS = _mss.segments();
 
-		return null != aCS && 1 <= aCS.length ? aCS[0].calibrate (_srvcLeading, dblLeftSlope, null == _aSRVC
-			? null : _aSRVC[0], null == _rbfr ? null : _rbfr.sizeToSegment (aCS[0])) : false;
+		return null != aCS && 1 <= aCS.length ? aCS[0].calibrate (_srvcLeading, null, dblLeftSlope,
+			dblLeftSlopeSensitivity, null == _aSRVC ? null : _aSRVC[0], null, null == _rbfr ? null :
+				_rbfr.sizeToSegment (aCS[0]), null) : false;
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -100,7 +102,7 @@ public class CkSegmentSequenceBuilder implements org.drip.spline.stretch.Segment
 
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
 			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], null == _aSRVC ? null :
-				_aSRVC[iSegment], null == _rbfr ? null : _rbfr.sizeToSegment (aCS[iSegment])))
+				_aSRVC[iSegment], null, null == _rbfr ? null : _rbfr.sizeToSegment (aCS[iSegment]), null))
 				return false;
 		}
 

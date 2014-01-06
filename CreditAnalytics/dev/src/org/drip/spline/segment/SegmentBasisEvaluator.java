@@ -103,9 +103,10 @@ public class SegmentBasisEvaluator implements org.drip.spline.segment.BasisEvalu
 
 		int iNumBasis = numBasis();
 
-		for (int i = 0; i < iNumBasis; ++i)
+		for (int i = 0; i < iNumBasis; ++i) {
 			dblResponse += adblResponseBasisCoeff[i] * _fs.indexedBasisFunction (i).evaluate (null == _ics ?
 				dblPredictorOrdinate : _ics.localize (dblPredictorOrdinate));
+		}
 
 		return dblResponse;
 	}

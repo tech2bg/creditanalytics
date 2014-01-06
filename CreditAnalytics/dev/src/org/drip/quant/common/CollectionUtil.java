@@ -501,4 +501,53 @@ public class CollectionUtil {
 
 		return adblDeriv;
 	}
+
+	/**
+	 * Append the Wengert Jacobians inside the list onto one single composite
+	 * 
+	 * @param lsWJ List of Wengert Jacobians
+	 * 
+	 * @return The Composite Wengert Jacobian
+	 */
+
+	public static final org.drip.quant.calculus.WengertJacobian AppendWengert (
+		final java.util.List<org.drip.quant.calculus.WengertJacobian> lsWJ)
+	{
+		if (null == lsWJ || 0 == lsWJ.size()) return null;
+
+		int iNumQuote = 0;
+		int iQuoteCursor = 0;
+		org.drip.quant.calculus.WengertJacobian wjCombined = null;
+
+		for (org.drip.quant.calculus.WengertJacobian wj : lsWJ)
+			if (null != wj) iNumQuote += wj.numParameters();
+
+		try {
+			wjCombined = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		for (org.drip.quant.calculus.WengertJacobian wj : lsWJ) {
+			if (null == wj) continue;
+
+			int iNumParams = wj.numParameters();
+
+			for (int i = 0; i < iNumParams; ++i) {
+				try {
+					if (!wjCombined.accumulatePartialFirstDerivative (0, iQuoteCursor++,
+						wj.getFirstDerivative (0, i)))
+						return null;
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+		}
+
+		return wjCombined;
+	}
 }

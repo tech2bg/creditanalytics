@@ -40,6 +40,7 @@ public abstract class SmoothingCurveStretchParams {
 	private java.lang.String _strSmootheningQuantificationMetric = "";
 	private org.drip.spline.params.StretchBestFitResponse _sbfr = null;
 	private org.drip.spline.params.SegmentCustomBuilderControl _scbc = null;
+	private org.drip.spline.params.StretchBestFitResponse _sbfrSensitivity = null;
 
 	/**
 	 * SmoothingCurveStretchParams constructor
@@ -48,6 +49,7 @@ public abstract class SmoothingCurveStretchParams {
 	 * @param scbc Segment Builder Parameters
 	 * @param iCalibrationDetail The Calibration Detail
 	 * @param sbfr Stretch Fitness Weighted Response
+	 * @param sbfrSensitivity Stretch Fitness Weighted Response Sensitivity
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -56,13 +58,15 @@ public abstract class SmoothingCurveStretchParams {
 		final java.lang.String strSmootheningQuantificationMetric,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
 		final int iCalibrationDetail,
-		final org.drip.spline.params.StretchBestFitResponse sbfr)
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final org.drip.spline.params.StretchBestFitResponse sbfrSensitivity)
 		throws java.lang.Exception
 	{
 		if (null == (_scbc = scbc))
 			throw new java.lang.Exception ("SmoothingCurveStretchParams ctr: Invalid Inputs");
 
 		_sbfr = sbfr;
+		_sbfrSensitivity = sbfrSensitivity;
 		_iCalibrationDetail = iCalibrationDetail;
 		_strSmootheningQuantificationMetric = strSmootheningQuantificationMetric;
 	}
@@ -109,5 +113,16 @@ public abstract class SmoothingCurveStretchParams {
 	public org.drip.spline.params.StretchBestFitResponse bestFitWeightedResponse()
 	{
 		return _sbfr;
+	}
+
+	/**
+	 * Retrieve the Best Fit Weighted Response Sensitivity
+	 * 
+	 * @return The Best Fit Weighted Response Sensitivity
+	 */
+
+	public org.drip.spline.params.StretchBestFitResponse bestFitWeightedResponseSensitivity()
+	{
+		return _sbfrSensitivity;
 	}
 }

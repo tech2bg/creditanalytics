@@ -41,6 +41,8 @@ package org.drip.state.estimator;
 
 public class PredictorResponseWeightConstraint {
 	private double _dblValue = 0.;
+	private double _dblDValueDQuote = 0.;
+	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapDResponseWeightDQuote = null;
 	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapPredictorResponseWeight = null;
 
 	/**
@@ -52,7 +54,7 @@ public class PredictorResponseWeightConstraint {
 	}
 
 	/**
-	 * Adds a Predictor/Response Weight entry to the Linearized Constraint
+	 * Add a Predictor/Response Weight entry to the Linearized Constraint
 	 * 
 	 * @param dblPredictor The Predictor Node
 	 * @param dblResponseWeight The Response Weight at the Node
@@ -81,6 +83,35 @@ public class PredictorResponseWeightConstraint {
 	}
 
 	/**
+	 * Add a Predictor/Response Weight entry to the Linearized Constraint
+	 * 
+	 * @param dblPredictor The Predictor Node
+	 * @param dblDResponseWeightDQuote The Response Weight-to-Quote Sensitivity at the Node
+	 * 
+	 * @return TRUE => Successfully added
+	 */
+
+	public boolean addDResponseWeightDQuote (
+		final double dblPredictor,
+		final double dblDResponseWeightDQuote)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictor) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDResponseWeightDQuote))
+			return false;
+
+		if (null == _mapDResponseWeightDQuote)
+			_mapDResponseWeightDQuote = new java.util.TreeMap<java.lang.Double, java.lang.Double>();
+
+		if (!_mapDResponseWeightDQuote.containsKey (dblPredictor))
+			_mapDResponseWeightDQuote.put (dblPredictor, dblDResponseWeightDQuote);
+		else
+			_mapDResponseWeightDQuote.put (dblPredictor, dblDResponseWeightDQuote +
+				_mapDResponseWeightDQuote.get (dblPredictor));
+
+		return true;
+	}
+
+	/**
 	 * Update the Constraint Value
 	 * 
 	 * @param dblValue The Constraint Value Update Increment
@@ -98,6 +129,23 @@ public class PredictorResponseWeightConstraint {
 	}
 
 	/**
+	 * Update the Constraint Value Sensitivity
+	 * 
+	 * @param dblDValueDQuote The Constraint Value Sensitivity Update Increment
+	 * 
+	 * @return TRUE => This Sensitivity Update Succeeded
+	 */
+
+	public boolean updateDValueDQuote (
+		final double dblDValueDQuote)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDValueDQuote)) return false;
+
+		_dblDValueDQuote += dblDValueDQuote;
+		return true;
+	}
+
+	/**
 	 * Retrieve the Constraint Value
 	 * 
 	 * @return The Constraint Value
@@ -109,6 +157,17 @@ public class PredictorResponseWeightConstraint {
 	}
 
 	/**
+	 * Retrieve the Constraint Value Sensitivity
+	 * 
+	 * @return The Constraint Value Sensitivity
+	 */
+
+	public double getDValueDQuote()
+	{
+		return _dblDValueDQuote;
+	}
+
+	/**
 	 * Retrieve the Predictor <-> Response Weight Map
 	 * 
 	 * @return The Predictor <-> Response Weight Map
@@ -117,6 +176,17 @@ public class PredictorResponseWeightConstraint {
 	public java.util.TreeMap<java.lang.Double, java.lang.Double> getPredictorResponseWeight()
 	{
 		return _mapPredictorResponseWeight;
+	}
+
+	/**
+	 * Retrieve the Predictor <-> Response Weight Sensitivity Map
+	 * 
+	 * @return The Predictor <-> Response Weight Sensitivity Map
+	 */
+
+	public java.util.TreeMap<java.lang.Double, java.lang.Double> getDResponseWeightDQuote()
+	{
+		return _mapDResponseWeightDQuote;
 	}
 
 	/**

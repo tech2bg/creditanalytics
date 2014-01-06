@@ -228,7 +228,7 @@ public class StretchEstimation {
 			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (mss.responseValue (dblX), 1, 2, 1.) + " | " +
 				mss.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + mss.jackDResponseDResponseInput (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + mss.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			dblX += 1.;
 		}
@@ -373,7 +373,7 @@ public class StretchEstimation {
 			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (mss.responseValue (dblX), 1, 2, 1.) + " | " +
 				mss.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + mss.jackDResponseDResponseInput (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + mss.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			dblX += 0.5;
 		}
@@ -474,7 +474,7 @@ public class StretchEstimation {
 
 		System.out.println ("Value = " + sslp.responseValue (2.16));
 
-		System.out.println ("Value Jacobian = " + sslp.jackDResponseDResponseInput (2.16).displayString());
+		System.out.println ("Value Jacobian = " + sslp.jackDResponseDCalibrationInput (2.16, 1).displayString());
 
 		System.out.println ("Value Monotone Type: " + sslp.monotoneType (2.16));
 
@@ -553,7 +553,7 @@ public class StretchEstimation {
 				"Y[" + dblX + "] => " + FormatUtil.FormatDouble (mss.responseValue (dblX), 1, 2, 1.) + " | " +
 				mss.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + mss.jackDResponseDResponseInput (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + mss.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			dblX += 1.;
 		}

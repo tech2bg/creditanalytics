@@ -688,7 +688,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+					(dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -758,7 +759,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.dfJack (dblPeriodPayDate);
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+						(dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 

@@ -123,6 +123,7 @@ public class ShapeDFZeroLocalSmooth {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null);
 
 		LocalControlCurveParams lccpAkima = new LocalControlCurveParams (
@@ -134,6 +135,7 @@ public class ShapeDFZeroLocalSmooth {
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null,
 			true,
 			true);
@@ -148,6 +150,7 @@ public class ShapeDFZeroLocalSmooth {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.CALIBRATE,
 			null,
+			null,
 			true,
 			true);
 
@@ -160,6 +163,7 @@ public class ShapeDFZeroLocalSmooth {
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null,
 			true,
 			true);
@@ -174,6 +178,7 @@ public class ShapeDFZeroLocalSmooth {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.CALIBRATE,
 			null,
+			null,
 			true,
 			true);
 
@@ -187,6 +192,7 @@ public class ShapeDFZeroLocalSmooth {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.CALIBRATE,
 			null,
+			null,
 			true,
 			true);
 
@@ -199,6 +205,7 @@ public class ShapeDFZeroLocalSmooth {
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null,
 			true,
 			true);

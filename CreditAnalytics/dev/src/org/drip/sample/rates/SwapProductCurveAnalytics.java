@@ -369,6 +369,7 @@ public class SwapProductCurveAnalytics {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 				BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null);
 
 		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
@@ -389,6 +390,7 @@ public class SwapProductCurveAnalytics {
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 				MultiSegmentSequence.CALIBRATE,
+			null,
 			null,
 			true,
 			true);

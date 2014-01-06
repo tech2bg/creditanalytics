@@ -396,7 +396,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final double dblDate)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
@@ -429,7 +429,8 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			}
 		}
 
-		if (dblDate <= _adblDate[_adblDate.length - 1]) return _msr.jackDResponseDResponseInput (dblDate);
+		if (dblDate <= _adblDate[_adblDate.length - 1])
+			return _msr.jackDResponseDCalibrationInput (dblDate, 1);
 
 		try {
 			return wj.accumulatePartialFirstDerivative (0, _adblDate.length - 1, (dblDate - _dblEpochDate) /

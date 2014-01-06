@@ -174,7 +174,7 @@ public class StretchAdjuster {
 			System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (mssBase.responseValue (dblX), 1, 2, 1.) + " | "
 				+ mssBase.monotoneType (dblX));
 
-			System.out.println ("Jacobian Y[" + dblX + "]=" + mssBase.jackDResponseDResponseInput (dblX).displayString());
+			System.out.println ("Jacobian Y[" + dblX + "]=" + mssBase.jackDResponseDCalibrationInput (dblX, 1).displayString());
 
 			dblX += 1.;
 		}
@@ -192,7 +192,7 @@ public class StretchAdjuster {
 				System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (mssLeftClipped.responseValue (dblX), 1, 2, 1.) + " | "
 					+ mssLeftClipped.monotoneType (dblX));
 
-				System.out.println ("Jacobian Y[" + dblX + "]=" + mssLeftClipped.jackDResponseDResponseInput (dblX).displayString());
+				System.out.println ("Jacobian Y[" + dblX + "]=" + mssLeftClipped.jackDResponseDCalibrationInput (dblX, 1).displayString());
 			}
 
 			dblX += 1.;
@@ -211,7 +211,7 @@ public class StretchAdjuster {
 				System.out.println ("Y[" + dblX + "] " + FormatUtil.FormatDouble (mssRightClipped.responseValue (dblX), 1, 2, 1.) + " | "
 					+ mssRightClipped.monotoneType (dblX));
 
-				System.out.println ("Jacobian Y[" + dblX + "]=" + mssRightClipped.jackDResponseDResponseInput (dblX).displayString());
+				System.out.println ("Jacobian Y[" + dblX + "]=" + mssRightClipped.jackDResponseDCalibrationInput (dblX, 1).displayString());
 			}
 
 			dblX += 1.;

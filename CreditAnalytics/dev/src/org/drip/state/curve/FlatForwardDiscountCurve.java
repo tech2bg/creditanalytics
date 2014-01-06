@@ -397,7 +397,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian dfJack (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final double dblDate)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;

@@ -38,7 +38,7 @@ package org.drip.spline.pchip;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MonotoneConvexHaganWest {
+public class MonotoneConvexHaganWest extends org.drip.quant.function1D.AbstractUnivariate {
 	private double[] _adblObservation = null;
 	private double[] _adblResponseValue = null;
 	private boolean _bLinearNodeInference = true;
@@ -250,6 +250,7 @@ public class MonotoneConvexHaganWest {
 	 * 
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblObservation Array of Observations
+	 * @param bLinearNodeInference Apply Linear Node Inference from Observations
 	 * 
 	 * @return Instance of MonotoneConvexHaganWest
 	 */
@@ -280,6 +281,8 @@ public class MonotoneConvexHaganWest {
 		final boolean bLinearNodeInference)
 		throws java.lang.Exception
 	{
+		super (null);
+
 		if (null == (_adblObservation = adblObservation) || null == (_adblPredictorOrdinate =
 			adblPredictorOrdinate))
 			throw new java.lang.Exception ("MonotoneConvexHaganWest ctr: Invalid Inputs!");
@@ -444,17 +447,7 @@ public class MonotoneConvexHaganWest {
 			("MonotoneConvexHaganWest::containingIndex => Cannot locate Containing Index");
 	}
 
-	/**
-	 * Calculate the Response Value given the Predictor Ordinate
-	 * 
-	 * @param dblPredictorOrdinate The Predictor Ordinate
-	 * 
-	 * @return The Response Value
-	 * 
-	 * @throws java.lang.Exception Thrown if the input is invalid
-	 */
-
-	public double responseValue (
+	@Override public double evaluate (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
@@ -555,5 +548,27 @@ public class MonotoneConvexHaganWest {
 		}
 
 		return mchwAmeliorated;
+	}
+
+	/**
+	 * Retrieve the Array of Predictor Ordinates
+	 * 
+	 * @return The Array of Predictor Ordinates
+	 */
+
+	public double[] predictorOrdinates()
+	{
+		return _adblPredictorOrdinate;
+	}
+
+	/**
+	 * Retrieve the Array of Response Values
+	 * 
+	 * @return The Array of Response Values
+	 */
+
+	public double[] responseValues()
+	{
+		return _adblResponseValue;
 	}
 }

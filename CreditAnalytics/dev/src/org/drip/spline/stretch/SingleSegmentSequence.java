@@ -81,15 +81,30 @@ public interface SingleSegmentSequence {
 		throws java.lang.Exception;
 
 	/**
-	 * Calculate the Response Derivative to the Calibration Response Inputs at the specified Ordinate
+	 * Calculate the Response Derivative to the Calibration Inputs at the specified Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * @param Order of Derivative desired
 	 * 
-	 * @return Jacobian of the Response Derivative to the Calibration Response Inputs at the Ordinate
+	 * @return Jacobian of the Response Derivative to the Calibration Inputs at the Ordinate
 	 */
 
-	public abstract org.drip.quant.calculus.WengertJacobian jackDResponseDResponseInput (
-		final double dblPredictorOrdinate);
+	public abstract org.drip.quant.calculus.WengertJacobian jackDResponseDCalibrationInput (
+		final double dblPredictorOrdinate,
+		final int iOrder);
+
+	/**
+	 * Calculate the Response Derivative to the Quote at the specified Ordinate
+	 * 
+	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * @param Order of Derivative desired
+	 * 
+	 * @return Jacobian of the Response Derivative to the Quote at the Ordinate
+	 */
+
+	public abstract org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+		final double dblPredictorOrdinate,
+		final int iOrder);
 
 	/**
 	 * Identify the Monotone Type for the Segment underlying the given Predictor Ordinate

@@ -393,4 +393,52 @@ public class LocalControlStretchBuilder {
 		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, adblPredictorOrdinate,
 			adblResponseValue, lmcg.C1(), aSCBC, sbfr, iSetupMode);
 	}
+
+	/**
+	 * Generate the local control C1 Slope using the Hagan-West Monotone COnvex Algorithm. The references
+	 *  are:
+	 * 
+	 * 	Hagan, P., and G. West (2006): Interpolation Methods for Curve Construction, Applied Mathematical
+	 * 	 Finance 13 (2): 89-129.
+	 * 
+	 * 	Hagan, P., and G. West (2008): Methods for Curve a Yield Curve, Wilmott Magazine: 70-81.
+	 * 
+	 * @param strName Stretch Name
+	 * @param adblObservation Array of Observations
+	 * @param adblResponseValue Array of Response Values
+	 * @param aSCBC Array of Segment Builder Parameters
+	 * @param sbfr Stretch Fitness Weighted Response
+	 * @param iSetupMode Segment Setup Mode
+	 * @param bLinearNodeInference Apply Linear Node Inference from Observations
+	 * @param bEliminateSpuriousExtrema TRUE => Eliminate Spurious Extrema
+	 * @param bApplyMonotoneFilter TRUE => Apply Monotone Filter
+	 * 
+	 * @return The Monotone-Convex Local Control Stretch Instance
+	 */
+
+	public static final org.drip.spline.stretch.MultiSegmentSequence CreateMonotoneConvexStretch (
+		final java.lang.String strName,
+		final double[] adblPredictorOrdinate,
+		final double[] adblObservation,
+		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC,
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final int iSetupMode,
+		final boolean bLinearNodeInference,
+		final boolean bEliminateSpuriousExtrema,
+		final boolean bApplyMonotoneFilter)
+	{
+		org.drip.spline.pchip.MonotoneConvexHaganWest mchw =
+			org.drip.spline.pchip.MonotoneConvexHaganWest.Create (adblPredictorOrdinate, adblObservation,
+				bLinearNodeInference);
+
+		if (null == mchw) return null;
+
+		org.drip.spline.pchip.LocalMonotoneCkGenerator lmcg =
+			org.drip.spline.pchip.LocalMonotoneCkGenerator.Create (mchw.predictorOrdinates(),
+				mchw.responseValues(), org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_MONOTONE_CONVEX,
+					bEliminateSpuriousExtrema, bApplyMonotoneFilter);
+
+		return null == lmcg ? null : CustomSlopeHermiteSpline (strName, mchw.predictorOrdinates(),
+			mchw.responseValues(), lmcg.C1(), aSCBC, sbfr, iSetupMode);
+	}
 }

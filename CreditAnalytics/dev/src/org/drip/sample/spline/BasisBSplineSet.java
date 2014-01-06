@@ -63,7 +63,7 @@ public class BasisBSplineSet {
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		System.out.println (seg1.calibrate (25., 0., 20.25, null));
+		System.out.println (seg1.calibrate (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null));
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 

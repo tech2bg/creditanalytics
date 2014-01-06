@@ -118,4 +118,23 @@ public interface Span {
 
 	public abstract org.drip.spline.stretch.MultiSegmentSequence getStretch (
 		final java.lang.String strName);
+
+	/**
+	 * Calculate the Response Derivative to the Quote at the specified Ordinate
+	 * 
+	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * @param Order of Derivative desired
+	 * 
+	 * @return Jacobian of the Response Derivative to the Quote at the Ordinate
+	 */
+
+	public abstract org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+		final double dblPredictorOrdinate,
+		final int iOrder);
+
+	/**
+	 * Display the Span Edge Coordinates
+	 */
+
+	public void displayString();
 }

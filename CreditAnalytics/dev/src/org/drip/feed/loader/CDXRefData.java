@@ -473,6 +473,8 @@ public class CDXRefData {
 			bw.write ("\t\treturn true;\n\t}\n}\n");
 
 			bw.close();
+
+			iobrCDXRefData.close();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

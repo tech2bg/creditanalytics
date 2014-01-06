@@ -123,6 +123,7 @@ public class ShapePreservingDFZeroSmooth {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null);
 
 		GlobalControlCurveParams gccp = new GlobalControlCurveParams (
@@ -134,6 +135,7 @@ public class ShapePreservingDFZeroSmooth {
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null);
 
 		LocalControlCurveParams lccp = new LocalControlCurveParams (
@@ -145,6 +147,7 @@ public class ShapePreservingDFZeroSmooth {
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			MultiSegmentSequence.CALIBRATE,
+			null,
 			null,
 			false,
 			false);

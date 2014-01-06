@@ -68,7 +68,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			}
 
 			if (!rrd.set (getName() + "_" + strStretchName + "_" + dblX + "_Jack",
-				mss.jackDResponseDResponseInput (dblX).displayString()))
+				mss.jackDResponseDCalibrationInput (dblX, 1).displayString()))
 				return false;
 
 			dblX += 0.5;
