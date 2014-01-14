@@ -6,6 +6,7 @@ package org.drip.spline.grid;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,10 @@ package org.drip.spline.grid;
  */
 
 /**
- * OverlappingStretchSpan implements a collection of overlapping Stretches.
+ * OverlappingStretchSpan implements the Span interface, and the collection functionality of overlapping
+ *  Stretches. In addition to providing a custom implementation of all the Span interface stubs, it also
+ *  converts the Overlapping Stretch Span to a non-overlapping Stretch Span. Overlapping Stretches are
+ *  clipped from the Left.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -41,7 +45,7 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 	/**
 	 * OverlappingStretchSpan constructor
 	 * 
-	 * @param strtch The Initial Stretch in the Span
+	 * @param mss The Initial Stretch in the Span
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
@@ -143,46 +147,6 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		return false;
 	}
 
-	/**
-	 * Convert the Overlapping Stretch Span to a non-overlapping Stretch Span. Overlapping Stretches are
-	 *  clipped from the Left.
-	 *  
-	 * @return The Non-overlapping Stretch Span Instance
-	 */
-
-	public org.drip.spline.grid.Span toNonOverlapping()
-	{
-		if (0 == _lsMSS.size()) return null;
-
-		org.drip.spline.grid.OverlappingStretchSpan oss = null;
-		org.drip.spline.stretch.MultiSegmentSequence mssPrev = null;
-
-		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
-			if (null == mss) continue;
-
-			if (null == oss) {
-				try {
-					oss = new org.drip.spline.grid.OverlappingStretchSpan (mssPrev = mss);
-				} catch (java.lang.Exception e) {
-					e.printStackTrace();
-
-					return null;
-				}
-			} else {
-				double dblPrevRightPredictorOrdinateEdge = mssPrev.getRightPredictorOrdinateEdge();
-
-				double dblCurrentLeftPredictorOrdinateEdge = mss.getLeftPredictorOrdinateEdge();
-
-				if (dblCurrentLeftPredictorOrdinateEdge >= dblPrevRightPredictorOrdinateEdge)
-					oss.addStretch (mss);
-				else
-					oss.addStretch (mss.clipLeft (mss.name(), dblPrevRightPredictorOrdinateEdge));
-			}
-		}
-
-		return oss;
-	}
-
 	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
 		final double dblPredictorOrdinate,
 		final int iOrder)
@@ -229,5 +193,45 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Convert the Overlapping Stretch Span to a non-overlapping Stretch Span. Overlapping Stretches are
+	 *  clipped from the Left.
+	 *  
+	 * @return The Non-overlapping Stretch Span Instance
+	 */
+
+	public org.drip.spline.grid.Span toNonOverlapping()
+	{
+		if (0 == _lsMSS.size()) return null;
+
+		org.drip.spline.grid.OverlappingStretchSpan oss = null;
+		org.drip.spline.stretch.MultiSegmentSequence mssPrev = null;
+
+		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
+			if (null == mss) continue;
+
+			if (null == oss) {
+				try {
+					oss = new org.drip.spline.grid.OverlappingStretchSpan (mssPrev = mss);
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			} else {
+				double dblPrevRightPredictorOrdinateEdge = mssPrev.getRightPredictorOrdinateEdge();
+
+				double dblCurrentLeftPredictorOrdinateEdge = mss.getLeftPredictorOrdinateEdge();
+
+				if (dblCurrentLeftPredictorOrdinateEdge >= dblPrevRightPredictorOrdinateEdge)
+					oss.addStretch (mss);
+				else
+					oss.addStretch (mss.clipLeft (mss.name(), dblPrevRightPredictorOrdinateEdge));
+			}
+		}
+
+		return oss;
 	}
 }

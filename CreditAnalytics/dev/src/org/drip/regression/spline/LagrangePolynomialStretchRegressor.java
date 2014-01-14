@@ -6,6 +6,7 @@ package org.drip.regression.spline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -42,9 +43,9 @@ package org.drip.regression.spline;
 public class LagrangePolynomialStretchRegressor extends org.drip.regression.core.UnitRegressionExecutor {
 	private boolean _bLocallyMonotone = false;
 	private double _dblValue = java.lang.Double.NaN;
-	private org.drip.spline.stretch.SingleSegmentSequence _sss = null;
 	private org.drip.spline.segment.Monotonocity _sm = null;
 	private org.drip.quant.calculus.WengertJacobian _wj = null;
+	private org.drip.spline.stretch.SingleSegmentSequence _sss = null;
 
 	public LagrangePolynomialStretchRegressor (
 		final java.lang.String strName,

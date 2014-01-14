@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,15 @@ package org.drip.state.estimator;
  */
 
 /**
- * CurveStretch expands the normal Multi-Segment Stretch by implementing the calibrated Stretch for
- *  Boot-strapped Instruments. 
+ * CurveStretch expands the regular Multi-Segment Stretch to aid the calibration of Boot-strapped
+ *  Instruments.
+ *  
+ * In particular, CurveStretch implements the following functions that are used at different stages of
+ * 	curve construction sequence:
+ * 	- Mark the Range of the "built" Segments
+ * 	- Clear the built range mark to signal the start of a fresh calibration run
+ * 	- Indicate if the specified Predictor Ordinate is inside the "Built" Range
+ * 	- Retrieve the MergeSubStretchManager
  *
  * @author Lakshmi Krishnamurthy
  */

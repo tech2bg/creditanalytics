@@ -6,6 +6,7 @@ package org.drip.state.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,13 +32,16 @@ package org.drip.state.curve;
  */
 
 /**
- * ForwardHazardCreditCurve manages the Credit Latent State, using the Constant Forward Hazard Rate and the
- *  Recovery rate as the State Response Representation. It exports the following functionality:
- *  - Calculate survival probability / survival probability Jacobian
- *  - Calculate recovery / recovery Jacobian
- *  - Calculate hazard rate / hazard rate Jacobian
- *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
- *  - Optionally provide the calibration instruments and quotes used to build the curve.
+ * ForwardHazardCreditCurve manages the Survival Latent State, using the Hazard Rate as the State Response
+ *  Representation. It exports the following functionality:
+ *  - Boot Methods - Set/Bump Specific Node Quantification Metric, or Set Flat Value
+ *  - Boot Calibration - Initialize Run, Compute Calibration Metric
+ *  - Compute the survival probability, recovery rate, or the hazard rate from the Hazard Rate Latent State
+ *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve the Curve Construction Input Set
+ *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
+ *  - Synthesize scenario Latent State by parallel/custom shifting/custom tweaking the manifest measure
+ *  - Serialize into and de-serialize out of byte array
  *
  * @author Lakshmi Krishnamurthy
  */

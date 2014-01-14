@@ -21,15 +21,11 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*
- * DRIP Math Support
- */
-
-
-/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -175,10 +171,25 @@ public class TreasuryCurveAPI {
 		return adblYield;
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample illustrates the construction and validation of the Treasury Curve API. It demonstrates the
+	 * 	following:
+	 * 	- Create the on-the-run treasury bonds.
+	 * 	- Create the on-the-run treasury discount curve from the treasury bonds.
+	 * 	- Compare the implied and the input yields for the on-the-run's.
+	 * 	- Calculate the yield of an off-the-run instrument off of the on-the-run yield discount curve and
+	 * 		cross verify it with the price.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void TreasuryCurveSample()
 		throws Exception
 	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
 		String strConfig = "";
 
 		CreditAnalytics.Init (strConfig);
@@ -264,7 +275,7 @@ public class TreasuryCurveAPI {
 				null);
 
 		/*
-		 * Calculate yield for off-the-run
+		 * Calculate price for off-the-run
 		 */
 
 		double dblPrice = bondOffTheRun.calcPriceFromBumpedDC (
@@ -276,6 +287,10 @@ public class TreasuryCurveAPI {
 
 		System.out.println ("\nOff-The-Run Price[" + iOffTheRunMaturityYears + "Y]: " + dblPrice);
 
+		/*
+		 * Calculate yield for off-the-run
+		 */
+
 		double dblYieldOffTheRun = bondOffTheRun.calcYieldFromPrice (
 			new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 			ComponentMarketParamsBuilder.MakeDiscountCMP (dcTSY),
@@ -285,5 +300,12 @@ public class TreasuryCurveAPI {
 		System.out.println ("\nOff-The-Run Yield[" + iOffTheRunMaturityYears + "Y]: " + dblYieldOffTheRun);
 
 		System.out.println ("\tTime => " + (System.nanoTime() - lTime) * 1.e-06 + " ms");
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		TreasuryCurveSample();
 	}
 }

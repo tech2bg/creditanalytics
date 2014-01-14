@@ -6,6 +6,7 @@ package org.drip.quant.solver1D;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -304,7 +305,7 @@ public class ExecutionInitializer {
 	}
 
 	/**
-	 * Sets up the bracket to be used for the eventual search kick-off
+	 * Set up the bracket to be used for the eventual search kick-off
 	 * 
 	 * @param ih Optional InitializationHeuristics instance
 	 * @param dblOFGoal The OF Goal
@@ -449,7 +450,7 @@ public class ExecutionInitializer {
 	}
 
 	/**
-	 * Initializes the starting bracket within the specified boundary
+	 * Initialize the starting bracket within the specified boundary
 	 * 
 	 * @param ih Initialization Heuristics containing the hard search edges
 	 * @param dblOFGoal The OF Goal

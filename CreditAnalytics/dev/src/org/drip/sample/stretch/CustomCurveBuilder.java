@@ -22,6 +22,7 @@ import org.drip.spline.stretch.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -63,7 +64,7 @@ import org.drip.spline.stretch.*;
 
 public class CustomCurveBuilder {
 
-	/**
+	/*
 	 * Sample API demonstrating the creation of the segment builder parameters based on Koch-Lyche-Kvasov tension spline.
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -82,7 +83,7 @@ public class CustomCurveBuilder {
 				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
 	}
 
-	/**
+	/*
 	 * Sample API demonstrating the creation of the segment builder parameters based on polynomial spline.
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -101,7 +102,7 @@ public class CustomCurveBuilder {
 				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
 	}
 
-	/**
+	/*
 	 * Sample API demonstrating the creation of the segment builder parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -132,8 +133,8 @@ public class CustomCurveBuilder {
 		return null;
 	}
 
-	/**
-	 * Generates the sample Swap Cash Flows to a given maturity, for the frequency/coupon.
+	/*
+	 * Generate the sample Swap Cash Flows to a given maturity, for the frequency/coupon.
 	 * 	Cash Flow is in the form of <Date, Cash Amount> Map.
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -157,7 +158,7 @@ public class CustomCurveBuilder {
 	}
 
 	/**
-	 * Generates the DRIP linear constraint corresponding to an exclusive swap segment. This constraint is
+	 * Generate the DRIP linear constraint corresponding to an exclusive swap segment. This constraint is
 	 * 	used to calibrate the discount curve in this segment.
 	 *  
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -436,17 +437,40 @@ public class CustomCurveBuilder {
 		return mssCash;
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample demonstrates the usage construction and usage of Custom Curve Building. It shows the following:
+	 * 	- Construct the Cash Curve Sequence with the Standard Natural Boundary Condition.
+	 * 	- Construct the Cash Curve Sequence with the Standard Financial Boundary Condition.
+	 * 	- Construct the Cash Curve Sequence with the Standard Not-A-Knot Boundary Condition.
+	 * 	- Display the DF and the monotonicity for the cash instruments.
+	 * 	- Construct the Swap Curve Sequence with the Standard Natural Boundary Condition.
+	 * 	- Construct the Swap Curve Sequence with the Standard Financial Boundary Condition.
+	 * 	- Construct the Swap Curve Sequence with the Standard Not-A-Knot Boundary Condition.
+	 * 	- Display the DF and the monotonicity for the swap instruments.
+	 */
+
+	private static final void CustomCurveBuilderTest()
 		throws Exception
 	{
+		/*
+		 * Construct the Cash Curve Sequence with the Standard Natural Boundary Condition
+		 */
+
 		MultiSegmentSequence mssNaturalCash = BuildCashCurve (
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE);
 
+		/*
+		 * Construct the Cash Curve Sequence with the Standard Financial Boundary Condition
+		 */
+
 		MultiSegmentSequence mssFinancialCash = BuildCashCurve (
 			BoundarySettings.FinancialStandard(),
 			MultiSegmentSequence.CALIBRATE);
+
+		/*
+		 * Construct the Cash Curve Sequence with the Standard Not-A-Knot Boundary Condition
+		 */
 
 		MultiSegmentSequence mssNotAKnotCash = BuildCashCurve (
 			BoundarySettings.NotAKnotStandard (1, 1),
@@ -461,7 +485,7 @@ public class CustomCurveBuilder {
 		System.out.println ("\t\t\t----------------       <====>    ------------------       <====>    ------------------\n");
 
 		/*
-		 * Display the DF, the monotonicity, and the convexity for the cash instruments.
+		 * Display the DF and the monotonicity for the cash instruments.
 		 */
 
 		for (double dblX = mssNaturalCash.getLeftPredictorOrdinateEdge(); dblX <= mssNaturalCash.getRightPredictorOrdinateEdge(); dblX = dblX + dblXShift)
@@ -476,15 +500,27 @@ public class CustomCurveBuilder {
 
 		System.out.println ("\n");
 
+		/*
+		 * Construct the Swap Curve Sequence with the Standard Natural Boundary Condition
+		 */
+
 		MultiSegmentSequence mssNaturalSwap = BuildSwapCurve (
 			mssNaturalCash,
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE);
 
+		/*
+		 * Construct the Swap Curve Sequence with the Standard Financial Boundary Condition
+		 */
+
 		MultiSegmentSequence mssFinancialSwap = BuildSwapCurve (
 			mssFinancialCash,
 			BoundarySettings.FinancialStandard(),
 			MultiSegmentSequence.CALIBRATE);
+
+		/*
+		 * Construct the Swap Curve Sequence with the Standard Not-A-Knot Boundary Condition
+		 */
 
 		MultiSegmentSequence mssNotAKnotSwap = BuildSwapCurve (
 			mssNotAKnotCash,
@@ -492,7 +528,7 @@ public class CustomCurveBuilder {
 			MultiSegmentSequence.CALIBRATE);
 
 		/*
-		 * Display the DF, the monotonicity, and the convexity for the swaps.
+		 * Display the DF and the monotonicity for the swaps.
 		 */
 
 		dblXShift = 0.05 * (mssNaturalSwap.getRightPredictorOrdinateEdge() - mssNaturalSwap.getLeftPredictorOrdinateEdge());
@@ -506,5 +542,12 @@ public class CustomCurveBuilder {
 				mssNotAKnotSwap.monotoneType (dblX) + "  <====>  " +
 				FormatUtil.FormatDouble (mssFinancialSwap.responseValue (dblX), 1, 6, 1.) + " | " +
 				mssFinancialSwap.monotoneType (dblX));
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		CustomCurveBuilderTest();
 	}
 }

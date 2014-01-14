@@ -29,15 +29,11 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*
- * DRIP Math Support
- */
-
-
-/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -76,13 +72,13 @@ import org.drip.state.creator.*;
 
 public class FXAPI {
 
-	/**
+	/*
 	 * Sample demonstrating the creation/usage of the FX API
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void DisplayFXAPI()
+	private static final void DisplayFXAPI()
 		throws Exception
 	{
 		/*
@@ -92,6 +88,10 @@ public class FXAPI {
 		CurrencyPair cp = new CurrencyPair ("EUR", "USD", "USD", 10000.);
 
 		Random rand = new Random();
+
+		/*
+		 * Create a the USD and EUR discount curves
+		 */
 
 		ExplicitBootDiscountCurve dcUSD = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "USD", 0.05);
 
@@ -169,7 +169,7 @@ public class FXAPI {
 		 * Calculate the array of the USD basis
 		 */
 
-		double[] adblFullUSDBasis = fxCurve.getFullBasis (valParams, dcEUR, dcUSD, true);
+		double[] adblFullUSDBasis = fxCurve.zeroBasis (valParams, dcEUR, dcUSD, true);
 
 		for (int i = 0; i < adblFullUSDBasis.length; ++i)
 			System.out.println ("FullUSDBasis[" + (i + 1) + "Y]=" +
@@ -179,7 +179,7 @@ public class FXAPI {
 		 * Calculate the array of the EUR basis
 		 */
 
-		double[] adblFullEURBasis = fxCurve.getFullBasis (valParams, dcEUR, dcUSD, false);
+		double[] adblFullEURBasis = fxCurve.zeroBasis (valParams, dcEUR, dcUSD, false);
 
 		for (int i = 0; i < adblFullEURBasis.length; ++i)
 			System.out.println ("FullEURBasis[" + (i + 1) + "Y]=" +
@@ -216,7 +216,7 @@ public class FXAPI {
 		 * Re-calculate the array of FX Forward from USD Basis Curve
 		 */
 
-		double[] adblFXFwdFromUSDBasis = fxUSDBasisCurve.getFullFXFwd (valParams, dcEUR, dcUSD, true, false);
+		double[] adblFXFwdFromUSDBasis = fxUSDBasisCurve.fxForward (valParams, dcEUR, dcUSD, true, false);
 
 		for (int i = 0; i < adblFXFwdFromUSDBasis.length; ++i)
 			System.out.println ("FX Fwd from Bootstrapped USD Basis: " + cp.getCode() + "[" + (i + 1) + "Y]=" +
@@ -233,7 +233,7 @@ public class FXAPI {
 		 * Re-calculate the array of FX Forward from EUR Basis Curve
 		 */
 
-		double[] adblFXFwdFromEURBasis = fxEURBasisCurve.getFullFXFwd (valParams, dcEUR, dcUSD, false, false);
+		double[] adblFXFwdFromEURBasis = fxEURBasisCurve.fxForward (valParams, dcEUR, dcUSD, false, false);
 
 		for (int i = 0; i < adblFXFwdFromEURBasis.length; ++i)
 			System.out.println ("FX Fwd from Bootstrapped EUR Basis: " + cp.getCode() + "[" + (i + 1) + "Y]=" +

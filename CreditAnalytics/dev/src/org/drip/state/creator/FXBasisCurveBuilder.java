@@ -6,6 +6,7 @@ package org.drip.state.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -42,7 +43,7 @@ package org.drip.state.creator;
 public class FXBasisCurveBuilder {
 
 	/**
-	 * Constructs an FXBasis instance from the currency pair, FX Spot, and FX basis parameters
+	 * Construct an FXBasis instance from the currency pair, FX Spot, and FX basis parameters
 	 * 
 	 * @param cp Currency Pair
 	 * @param dtSpot Spot Date
@@ -73,7 +74,7 @@ public class FXBasisCurveBuilder {
 	}
 
 	/**
-	 * Creates the FXBasisCurve from the given byte array
+	 * Create the FXBasisCurve from the given byte array
 	 * 
 	 * @param ab Byte Array
 	 * 

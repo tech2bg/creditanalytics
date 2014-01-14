@@ -12,6 +12,7 @@ import org.drip.spline.stretch.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -38,30 +39,22 @@ import org.drip.spline.stretch.*;
  * StretchEstimation demonstrates the Stretch builder and usage API. It shows the following:
  * 	- Construction of segment control parameters - polynomial (regular/Bernstein) segment control,
  * 		exponential/hyperbolic tension segment control, Kaklis-Pandelis tension segment control.
- * 	- Control the segment using the rational shape controller, and the appropriate Ck
- * 	- Construct a calibrated Stretch Estimator.
- * 	- Insert a knot into the Stretch
- * 	- Estimate the node value and the node value Jacobian
- * 	- Calculate the segment/Stretch monotonicity
+ * 	- Tension Basis Spline Test using the specified predictor/response set and the array of segment custom
+ * 		builder control parameters.
+ * 	- Complete the full tension stretch estimation sample test.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class TensionStretchEstimation {
 
-	/**
+	/*
 	 * Build KLK Exponential Tension Segment Control Parameters
 	 * 
-	 * @param dblTension Segment Tension
-	 * @param sdic Inelastic Segment Parameters
-	 * @param rssc Shape Controller
-	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
-	 * 
-	 * @return KLK Exponential Tension Segment Control Parameters
 	 */
 
-	public static final SegmentCustomBuilderControl KLKExponentialTensionSegmentControlParams (
+	private static final SegmentCustomBuilderControl KLKExponentialTensionSegmentControlParams (
 		final double dblTension,
 		final SegmentDesignInelasticControl sdic,
 		final ResponseScalingShapeControl rssc)
@@ -74,19 +67,13 @@ public class TensionStretchEstimation {
 			rssc);
 	}
 
-	/**
+	/*
 	 * Build KLK Hyperbolic Tension Segment Control Parameters
 	 * 
-	 * @param dblTension Segment Tension
-	 * @param sdic Inelastic Segment Parameters
-	 * @param rssc Shape Controller
-	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
-	 * 
-	 * @return KLK Hyperbolic Tension Segment Control Parameters
 	 */
 
-	public static final SegmentCustomBuilderControl KLKHyperbolicTensionSegmentControlParams (
+	private static final SegmentCustomBuilderControl KLKHyperbolicTensionSegmentControlParams (
 		final double dblTension,
 		final SegmentDesignInelasticControl sdic,
 		final ResponseScalingShapeControl rssc)
@@ -99,19 +86,13 @@ public class TensionStretchEstimation {
 			rssc);
 	}
 
-	/**
+	/*
 	 * Build KLK Rational Linear Tension Segment Control Parameters
 	 * 
-	 * @param dblTension Segment Tension
-	 * @param sdic Inelastic Segment Parameters
-	 * @param rssc Shape Controller
-	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
-	 * 
-	 * @return KLK Rational Linear Tension Segment Control Parameters
 	 */
 
-	public static final SegmentCustomBuilderControl KLKRationalLinearTensionSegmentControlParams (
+	private static final SegmentCustomBuilderControl KLKRationalLinearTensionSegmentControlParams (
 		final double dblTension,
 		final SegmentDesignInelasticControl sdic,
 		final ResponseScalingShapeControl rssc)
@@ -124,19 +105,13 @@ public class TensionStretchEstimation {
 			rssc);
 	}
 
-	/**
+	/*
 	 * Build KLK Rational Quadratic Tension Segment Control Parameters
 	 * 
-	 * @param dblTension Segment Tension
-	 * @param sdic Inelastic Segment Parameters
-	 * @param rssc Shape Controller
-	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
-	 * 
-	 * @return KLK Rational Quadratic Tension Segment Control Parameters
 	 */
 
-	public static final SegmentCustomBuilderControl KLKRationalQuadraticTensionSegmentControlParams (
+	private static final SegmentCustomBuilderControl KLKRationalQuadraticTensionSegmentControlParams (
 		final double dblTension,
 		final SegmentDesignInelasticControl sdic,
 		final ResponseScalingShapeControl rssc)
@@ -149,21 +124,19 @@ public class TensionStretchEstimation {
 			rssc);
 	}
 
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Stretch Jacobian
-	 *  - Stretch knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param scbc The Segment Builder Parameters
+	/*
+	 * Tension Basis Spline Test using the specified predictor/response set and the array of segment custom
+	 * 	builder control parameters. It consists of the following steps:
+	 * 	- Array of Segment Builder Parameters - one per segment
+	 *  - Construct a Stretch instance
+	 *  - Estimate, compute the segment-by-segment monotonicity and the Stretch Jacobian
+	 *  - Construct a new Stretch instance by inserting a pair of of predictor/response knots
+	 *  - Estimate, compute the segment-by-segment monotonicity and the Stretch Jacobian
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
-	public static final void BasisSplineStretchTest (
+	private static final void BasisSplineStretchTest (
 		final double[] adblX,
 		final double[] adblY,
 		final SegmentCustomBuilderControl scbc)
@@ -235,8 +208,19 @@ public class TensionStretchEstimation {
 		System.out.println ("\t\tSPLINE_STRETCH_INSERT DPE: " + mssInsert.curvatureDPE());
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * Complete the full tension stretch estimation sample test by doing the following:
+	 * 	- Composing the array of predictor/responses
+	 * 	- Construct a rational shape controller with the desired shape controller tension
+	 * 	- Construct the Segment Inelastic Parameter that is C2 (iK = 2 sets it to C2), with Second Order
+	 * 		Curvature Penalty Derivative, and without constraint
+	 * 	- KLK Hyperbolic Tension Basis Spline Stretch Test
+	 * 	- KLK Exponential Tension Basis Spline Stretch Test
+	 * 	- KLK Rational Linear Tension Basis Spline Stretch Test
+	 * 	- KLK Rational Quadratic Tension Basis Spline Stretch Test
+	 */
+
+	public static final void TensionStretchEstimationSample()
 		throws Exception
 	{
 		/*
@@ -275,20 +259,43 @@ public class TensionStretchEstimation {
 
 		double dblKLKTension = 1.;
 
+		/*
+		 * KLK Hyperbolic Tension Basis Spline Stretch Test
+		 */
+
 		System.out.println (" \n---------- \n KLK HYPERBOLIC TENSION \n ---------- \n");
 
 		BasisSplineStretchTest (adblX, adblY, KLKHyperbolicTensionSegmentControlParams (dblKLKTension, segParams, rssc));
+
+		/*
+		 * KLK Exponential Tension Basis Spline Stretch Test
+		 */
 
 		System.out.println (" \n---------- \n KLK EXPONENTIAL TENSION \n ---------- \n");
 
 		BasisSplineStretchTest (adblX, adblY, KLKExponentialTensionSegmentControlParams (dblKLKTension, segParams, rssc));
 
+		/*
+		 * KLK Rational Linear Tension Basis Spline Stretch Test
+		 */
+
 		System.out.println (" \n---------- \n KLK RATIONAL LINEAR TENSION \n ---------- \n");
 
 		BasisSplineStretchTest (adblX, adblY, KLKRationalLinearTensionSegmentControlParams (dblKLKTension, segParams, rssc));
 
+		/*
+		 * KLK Rational Quadratic Tension Basis Spline Stretch Test
+		 */
+
 		System.out.println (" \n---------- \n KLK RATIONAL QUADRATIC TENSION \n ---------- \n");
 
 		BasisSplineStretchTest (adblX, adblY, KLKRationalQuadraticTensionSegmentControlParams (dblKLKTension, segParams, rssc));
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		TensionStretchEstimationSample();
 	}
 }

@@ -6,6 +6,7 @@ package org.drip.regression.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -99,8 +100,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						adblRate[i] = 0.05 + 0.001 * (NUM_DC_NODES - i);
 					}
 
-					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (_dtStart,
-						"CHF", adblDate, adblRate,
+					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (_dtStart, "CHF",
+						adblDate, adblRate,
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD)))
 						return false;
 

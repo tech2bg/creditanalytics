@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -33,11 +34,16 @@ package org.drip.analytics.definition;
  * 	contains the following:
  *  - Calibration Valuation Parameters
  *  - Calibration Quoting Parameters
- *  - Array of Calibration Instruments
+ *  - Calibration Market Parameters
+ *  - Calibration Pricing Parameters
+ *  - Array of Calibration Stretch Representation
  *  - Map of Calibration Quotes
  *  - Map of Calibration Measures
  *  - Double Map of the Date/Index Fixings
  *
+ * Additional functions provide for retrieval of the above and specific instrument quotes. Derived Classes
+ *  implement Targeted Curve Calibrators.
+ *  
  * @author Lakshmi Krishnamurthy
  */
 
@@ -94,19 +100,29 @@ public abstract class CurveSpanConstructionInput implements
 
 	@Override public org.drip.product.definition.CalibratableComponent[] getComponent()
 	{
+		if (null == _aSRS || 0 == _aSRS.length) return null;
+
 		java.util.List<org.drip.product.definition.CalibratableComponent> lsCC = new
 			java.util.ArrayList<org.drip.product.definition.CalibratableComponent>();
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
+			if (null == rbs) continue;
+
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
 
+			if (null == aCC) continue;
+
 			int iNumComp = aCC.length;
+
+			if (0 == iNumComp) continue;
 
 			for (int i = 0; i < iNumComp; ++i)
 				lsCC.add (aCC[i]);
 		}
 
 		int iNumComp = lsCC.size();
+
+		if (0 == iNumComp) return null;
 
 		org.drip.product.definition.CalibratableComponent[] aCC = new
 			org.drip.product.definition.CalibratableComponent[iNumComp];
@@ -121,14 +137,22 @@ public abstract class CurveSpanConstructionInput implements
 	{
 		if (null != _mapQuote) return _mapQuote;
 
+		if (null == _aSRS || 0 == _aSRS.length) return null;
+
 		_mapQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
+			if (null == rbs) continue;
+
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
+
+			if (null == aCC) continue;
 
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
 
 			int iNumComp = aCC.length;
+
+			if (0 == iNumComp || iNumComp != aLSMM.length) continue;
 
 			for (int i = 0; i < iNumComp; ++i)
 				_mapQuote.put (aCC[i].getPrimaryCode(), aLSMM[i].getMeasureQuoteValue());
@@ -141,14 +165,22 @@ public abstract class CurveSpanConstructionInput implements
 	{
 		if (null != _mapMeasure) return _mapMeasure;
 
+		if (null == _aSRS || 0 == _aSRS.length) return null;
+
 		_mapMeasure = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
+			if (null == rbs) continue;
+
 			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
+
+			if (null == aCC) continue;
 
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
 
 			int iNumComp = aCC.length;
+
+			if (0 == iNumComp || iNumComp != aLSMM.length) continue;
 
 			for (int i = 0; i < iNumComp; ++i)
 				_mapMeasure.put (aCC[i].getPrimaryCode(), aLSMM[i].getManifestMeasure());

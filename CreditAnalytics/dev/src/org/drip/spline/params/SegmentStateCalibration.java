@@ -29,7 +29,13 @@ package org.drip.spline.params;
  */
 
 /**
- * SegmentStateCalibration implements basis per-segment Calibration Parameter Set.
+ * SegmentStateCalibration implements basis per-segment Calibration Parameter Set. It exposes the following
+ *  functionality:
+ *  - Retrieve the Array of the Calibration Predictor Ordinates.
+ *  - Retrieve the Array of the Calibration Response Values.
+ *  - Retrieve the Array of the Left/Right Edge Derivatives.
+ *  - Retrieve the Segment Best Fit Response.
+ *  - Retrieve the Array of Segment Basis Flexure Constraints.
  *
  * @author Lakshmi Krishnamurthy
  */

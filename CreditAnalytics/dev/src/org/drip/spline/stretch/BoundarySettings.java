@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,10 @@ package org.drip.spline.stretch;
 
 /**
  * This class implements the Boundary Settings that determine the full extent of description of the regime's
- * 	State.
+ * 	State. It exports functions that:
+ * 	- Specify the type of the boundary condition (NATURAL/FLOATING/IS-A-KNOT)
+ * 	- Boundary COndition specific additional parameters (e.g., Derivative Orders and Matches)
+ * 	- Static methods that help construct standard boundary settings
  *
  * @author Lakshmi Krishnamurthy
  */

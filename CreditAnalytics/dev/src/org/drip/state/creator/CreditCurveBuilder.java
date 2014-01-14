@@ -6,6 +6,7 @@ package org.drip.state.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -43,7 +44,7 @@ package org.drip.state.creator;
 public class CreditCurveBuilder {
 
 	/**
-	 * Creates a CreditCurve instance from a single node hazard rate
+	 * Create a CreditCurve instance from a single node hazard rate
 	 * 
 	 * @param dblStartDate Curve epoch date
 	 * @param strName Credit Curve Name
@@ -86,7 +87,7 @@ public class CreditCurveBuilder {
 	}
 
 	/**
-	 * Creates a CreditCurve instance from the input array of survival probabilities
+	 * Create a CreditCurve instance from the input array of survival probabilities
 	 * 
 	 * @param dblStartDate Start Date
 	 * @param strName Credit Curve Name
@@ -139,7 +140,7 @@ public class CreditCurveBuilder {
 	}
 
 	/**
-	 * Creates an instance of the CreditCurve object from a solitary hazard rate node
+	 * Create an instance of the CreditCurve object from a solitary hazard rate node
 	 * 
 	 * @param dblStartDate The Curve epoch date
 	 * @param strName Credit Curve Name
@@ -185,7 +186,7 @@ public class CreditCurveBuilder {
 	}
 
 	/**
-	 * Creates a credit curve from an array of dates and hazard rates
+	 * Create a credit curve from an array of dates and hazard rates
 	 * 
 	 * @param dtStart Curve epoch date
 	 * @param strName Credit Curve Name
@@ -226,7 +227,7 @@ public class CreditCurveBuilder {
 	}
 
 	/**
-	 * Creates the credit curve from the given byte array
+	 * Create the credit curve from the given byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
@@ -248,7 +249,7 @@ public class CreditCurveBuilder {
 	}
 
 	/**
-	 * Creates a credit curve from hazard rate and recovery rate term structures
+	 * Create a credit curve from hazard rate and recovery rate term structures
 	 * 
 	 * @param dblStart Curve Epoch date
 	 * @param strName Credit Curve Name

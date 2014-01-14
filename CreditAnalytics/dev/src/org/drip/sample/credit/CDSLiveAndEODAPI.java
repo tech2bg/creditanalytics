@@ -28,6 +28,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -68,13 +69,13 @@ import org.drip.service.api.CreditAnalytics;
 
 public class CDSLiveAndEODAPI {
 
-	/**
+	/*
 	 * Sample API demonstrating the creation/usage of the credit curve API
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void CreditCurveEODAPISample()
+	private static final void CreditCurveEODAPISample()
 		throws Exception
 	{
 		JulianDate dt = JulianDate.CreateFromYMD (2011, 7, 21);
@@ -130,13 +131,13 @@ public class CDSLiveAndEODAPI {
 		}
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the calculation of the CDS EOD measures from price
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void CDSEODMeasuresAPISample()
+	private static final void CDSEODMeasuresAPISample()
 	{
 		JulianDate dtEOD = JulianDate.CreateFromYMD (2011, 7, 21); // EOD
 

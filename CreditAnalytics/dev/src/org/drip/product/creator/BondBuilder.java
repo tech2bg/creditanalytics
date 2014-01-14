@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -61,7 +62,7 @@ public class BondBuilder {
 	private static final boolean s_bLog = false;
 
 	/**
-	 * Creates the full generic bond object from the complete set of parameters
+	 * Create the full generic bond object from the complete set of parameters
 	 * 
 	 * @param tsyParams Bond Treasury Parameters
 	 * @param idParams Bond Identifier Parameters
@@ -183,7 +184,7 @@ public class BondBuilder {
 	}
 
 	/**
-	 * Creates a simple floating rate bond
+	 * Create a simple floating rate bond
 	 * 
 	 * @param strName Bond Name
 	 * @param strCurrency Bond Currency
@@ -240,7 +241,7 @@ public class BondBuilder {
 	}
 
 	/**
-	 * Creates a bond from custom/user-defined cash flows and coupon conventions
+	 * Create a bond from custom/user-defined cash flows and coupon conventions
 	 * 
 	 * @param strName Bond Name
 	 * @param dtEffective Effective Date

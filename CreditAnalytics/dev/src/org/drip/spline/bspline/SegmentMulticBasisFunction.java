@@ -6,6 +6,7 @@ package org.drip.spline.bspline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,9 @@ package org.drip.spline.bspline;
  */
 
 /**
- * SegmentMulticBasisFunction implements the local quadratic B Spline that envelopes the predictor ordinates, and the
- *  corresponding set of ordinates/basis functions.
+ * SegmentMulticBasisFunction implements the local quadratic B Spline that envelopes the predictor ordinates,
+ *  and the corresponding set of ordinates/basis functions. SegmentMulticBasisFunction uses the left/right
+ *  SegmentBasisFunction instances to achieve its implementation goals.
  *
  * @author Lakshmi Krishnamurthy
  */

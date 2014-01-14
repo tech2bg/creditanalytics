@@ -6,6 +6,7 @@ package org.drip.analytics.output;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -411,7 +412,7 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Returns the state as a measure map
+	 * Return the state as a measure map
 	 * 
 	 * @param strPrefix Measure name prefix
 	 * 

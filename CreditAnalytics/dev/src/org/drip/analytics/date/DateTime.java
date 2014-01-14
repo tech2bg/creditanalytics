@@ -32,8 +32,11 @@ package org.drip.analytics.date;
  */
 
 /**
- * This class provides the representation of the instantiation-time date and time objects. It simply holds
- * 	the (double version of) date and time values.
+ * This class provides the representation of the instantiation-time date and time objects. It provides the
+ *  following functionality:
+ *  - Instantiation-time and Explicit Date/Time Construction
+ *  - Retrieval of Date/Time Fields
+ *  - Serialization/De-serialization to and from Byte Arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -60,10 +63,10 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	/**
 	 * Constructs DateTime from separate date and time inputs 
 	 * 
-	 * @param dblDate date
-	 * @param lTime time
+	 * @param dblDate Date
+	 * @param lTime Time
 	 * 
-	 * @throws java.lang.Exception thrown on invalid inputs
+	 * @throws java.lang.Exception Thrown on Invalid Inputs
 	 */
 
 	public DateTime (
@@ -126,7 +129,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the Date
+	 * Retrieve the Date
 	 * 
 	 * @return date
 	 */
@@ -137,7 +140,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the time
+	 * Retrieve the time
 	 * 
 	 * @return time
 	 */

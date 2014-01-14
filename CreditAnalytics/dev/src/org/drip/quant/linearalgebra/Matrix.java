@@ -6,6 +6,7 @@ package org.drip.quant.linearalgebra;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -33,12 +34,14 @@ package org.drip.quant.linearalgebra;
  * 	- Matrix Inversion using Closed form solutions (for low-dimension matrices), or using Gaussian
  * 		elimination
  * 	- Matrix Product
- * 	- Matrix Diagonalization, Regularization, and Diagonal Pivoting
+ * 	- Matrix Diagonalization and Diagonal Pivoting
+ * 	- Matrix Regularization through Row Addition/Row Swap
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class Matrix {
+
 	/**
 	 * Diagonalize the specified row in the source matrix, and apply comparable operations to the target
 	 * 

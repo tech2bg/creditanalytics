@@ -6,6 +6,7 @@ package org.drip.analytics.holiday;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,26 +32,31 @@ package org.drip.analytics.holiday;
  */
 
 /**
- * Weekend holds the left and the right weekend days
+ * Weekend holds the left and the right weekend days. It provides functionality to retrieve them, check if
+ *  the given day is a weekend, and serialize/de-serialize weekend days.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class Weekend extends org.drip.service.stream.Serializer {
-	private int[] _aiDays = null;
+	private int[] _aiDay = null;
 
 	/**
-	 * Creates a Weekend with SATURDAY and SUNDAY
+	 * Create a Weekend Instance with SATURDAY and SUNDAY
 	 * 
 	 * @return Weekend object
 	 */
 
 	public static final Weekend StandardWeekend()
 	{
-		int[] aiWeekend = new int[] {org.drip.analytics.date.JulianDate.SUNDAY,
-			org.drip.analytics.date.JulianDate.SATURDAY};
+		try {
+			return new Weekend (new int[] {org.drip.analytics.date.JulianDate.SUNDAY,
+				org.drip.analytics.date.JulianDate.SATURDAY});
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
 
-		return new Weekend (aiWeekend);
+		return null;
 	}
 
 	/**
@@ -93,38 +99,45 @@ public class Weekend extends org.drip.service.stream.Serializer {
 				getCollectionRecordDelimiter()))
 			throw new java.lang.Exception ("Weekend de-serializer: Cannot decode state");
 
-		_aiDays = new int[lsi.size()];
+		_aiDay = new int[lsi.size()];
 
-		for (int i = 0; i < _aiDays.length; ++i)
-			_aiDays[i] = lsi.get (i);
+		for (int i = 0; i < _aiDay.length; ++i)
+			_aiDay[i] = lsi.get (i);
 	}
 
 	/**
-	 * Creates the weekend instance object from the array of the weekend days
+	 * Create the weekend instance object from the array of the weekend days
 	 * 
-	 * @param aiDays Array of the weekend days
+	 * @param aiDay Array of the weekend days
+	 * 
+	 * @throws java.lang.Exception Thrown if cannot properly de-serialize Weekend
 	 */
 
 	public Weekend (
-		final int[] aiDays)
+		final int[] aiDay)
+		throws java.lang.Exception
 	{
-		if (null == aiDays || 0 == aiDays.length) return;
+		if (null == aiDay) throw new java.lang.Exception ("Weekend ctr: Invalid Inputs");
 
-		_aiDays = new int[aiDays.length];
+		int iNumWeekendDays = aiDay.length;;
 
-		for (int i = 0; i < aiDays.length; ++i)
-			_aiDays[i] = aiDays[i];
+		if (0 == iNumWeekendDays) throw new java.lang.Exception ("Weekend ctr: Invalid Inputs");
+
+		_aiDay = new int[iNumWeekendDays];
+
+		for (int i = 0; i < iNumWeekendDays; ++i)
+			_aiDay[i] = aiDay[i];
 	}
 
 	/**
-	 * Retrieves the weekend days
+	 * Retrieve the weekend days
 	 * 
 	 * @return Array of the weekend days
 	 */
 
 	public int[] getDays()
 	{
-		return _aiDays;
+		return _aiDay;
 	}
 
 	/**
@@ -138,9 +151,9 @@ public class Weekend extends org.drip.service.stream.Serializer {
 	public boolean isLeftWeekend (
 		final double dblDate)
 	{
-		if (null == _aiDays || 0 == _aiDays.length) return false;
+		if (null == _aiDay || 0 == _aiDay.length) return false;
 
-		if (_aiDays[0] == (dblDate % 7)) return true;
+		if (_aiDay[0] == (dblDate % 7)) return true;
 
 		return false;
 	}
@@ -156,9 +169,9 @@ public class Weekend extends org.drip.service.stream.Serializer {
 	public boolean isRightWeekend (
 		final double dblDate)
 	{
-		if (null == _aiDays || 1 >= _aiDays.length) return false;
+		if (null == _aiDay || 1 >= _aiDay.length) return false;
 
-		if (_aiDays[1] == (dblDate % 7)) return true;
+		if (_aiDay[1] == (dblDate % 7)) return true;
 
 		return false;
 	}
@@ -183,10 +196,10 @@ public class Weekend extends org.drip.service.stream.Serializer {
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
 
-		for (int i = 0; i < _aiDays.length; ++i) {
+		for (int i = 0; i < _aiDay.length; ++i) {
 			if (0 != i) sb.append (getCollectionRecordDelimiter());
 
-			sb.append (_aiDays[i]);
+			sb.append (_aiDay[i]);
 		}
 
 		return sb.append (getObjectTrailer()).toString().getBytes();

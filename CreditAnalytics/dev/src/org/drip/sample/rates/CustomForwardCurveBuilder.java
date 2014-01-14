@@ -22,6 +22,7 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -48,10 +49,42 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  * CustomForwardCurveBuilder contains the sample demonstrating the full functionality behind creating highly
  * 	customized spline based forward curves.
  * 
+ * The first sample illustrates the creation and usage of the xM-6M Tenor Basis Swap:
+ * 	- Construct the 6M-xM float-float basis swap.
+ * 	- Calculate the corresponding starting forward rate off of the discount curve.
+ * 	- Construct the shape preserving forward curve off of Cubic Polynomial Basis Spline.
+ * 	- Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
+ * 	- Construct the shape preserving forward curve off of Hyperbolic Tension Based Basis Spline.
+ * 	- Set the discount curve based component market parameters.
+ * 	- Set the discount curve + cubic polynomial forward curve based component market parameters.
+ * 	- Set the discount curve + quartic polynomial forward curve based component market parameters.
+ * 	- Set the discount curve + hyperbolic tension forward curve based component market parameters.
+ * 	- Compute the following forward curve metrics for each of cubic polynomial forward, quartic
+ * 		polynomial forward, and KLK Hyperbolic tension forward curves:
+ * 		- Reference Basis Par Spread
+ * 		- Derived Basis Par Spread
+ * 	- Compare these with a) the forward rate off of the discount curve, b) The LIBOR rate, and c) The
+ * 		Input Basis Swap Quote.
+ * 
+ * The second sample illustrates how to build and test the forward curves across various tenor basis. It
+ * 	shows the following steps:
+ * 	- Construct the Discount Curve using its instruments and quotes.
+ * 	- Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
+ * 	- Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
+ * 	- Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
+ * 	- Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
+ * 
  * @author Lakshmi Krishnamurthy
  */
 
 public class CustomForwardCurveBuilder {
+
+	/*
+	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
@@ -71,6 +104,12 @@ public class CustomForwardCurveBuilder {
 
 		return aCalibComp;
 	}
+
+	/*
+	 * Construct the Array of Swap Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
 
 	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
@@ -106,11 +145,24 @@ public class CustomForwardCurveBuilder {
 		return aCalibComp;
 	}
 
+	/*
+	 * Construct the discount curve using the following steps:
+	 * 	- Construct the array of cash instruments and their quotes.
+	 * 	- Construct the array of swap instruments and their quotes.
+	 * 	- Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final DiscountCurve MakeDC (
 		final JulianDate dtSpot,
 		final String strCurrency)
 		throws Exception
 	{
+		/*
+		 * Construct the array of cash instruments and their quotes.
+		 */
+
 		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtSpot,
 			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
@@ -120,6 +172,10 @@ public class CustomForwardCurveBuilder {
 		double[] adblCashQuote = new double[] {
 			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850, // Cash
 			0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+
+		/*
+		 * Construct the array of Swap instruments and their quotes.
+		 */
 
 		double[] adblSwapQuote = new double[] {
 			0.02604,    //  4Y
@@ -145,6 +201,10 @@ public class CustomForwardCurveBuilder {
 			adblSwapQuote,
 			strCurrency);
 
+		/*
+		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
+		 */
+
 		return RatesScenarioCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			new ValuationParams (dtSpot, dtSpot, "USD"),
@@ -154,6 +214,12 @@ public class CustomForwardCurveBuilder {
 			adblSwapQuote,
 			true);
 	}
+
+	/*
+	 * Construct an array of float-float swaps from the corresponding reference (6M) and the derived legs.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
 
 	private static final FloatFloatComponent[] MakexM6MBasisSwap (
 		final JulianDate dtEffective,
@@ -169,15 +235,27 @@ public class CustomForwardCurveBuilder {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
+			/*
+			 * The Reference 6M Leg
+			 */
+
 			FloatingStream fsReference = new FloatingStream (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
 					2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
 						null, null, -1., strCurrency, strCurrency);
 
+			/*
+			 * The Derived Leg
+			 */
+
 			FloatingStream fsDerived = new FloatingStream (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					12 / iTenorInMonths, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
 						null, null, 1., strCurrency, strCurrency);
+
+			/*
+			 * The float-float swap instance
+			 */
 
 			aFFC[i] = new FloatFloatComponent (fsReference, fsDerived);
 		}
@@ -185,7 +263,28 @@ public class CustomForwardCurveBuilder {
 		return aFFC;
 	}
 
-	private static final void TestxM6MBasis (
+	/*
+	 * This sample illustrates the creation and usage of the xM-6M Tenor Basis Swap. It shows the following:
+	 * 	- Construct the 6M-xM float-float basis swap.
+	 * 	- Calculate the corresponding starting forward rate off of the discount curve.
+	 * 	- Construct the shape preserving forward curve off of Cubic Polynomial Basis Spline.
+	 * 	- Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
+	 * 	- Construct the shape preserving forward curve off of Hyperbolic Tension Based Basis Spline.
+	 * 	- Set the discount curve based component market parameters.
+	 * 	- Set the discount curve + cubic polynomial forward curve based component market parameters.
+	 * 	- Set the discount curve + quartic polynomial forward curve based component market parameters.
+	 * 	- Set the discount curve + hyperbolic tension forward curve based component market parameters.
+	 * 	- Compute the following forward curve metrics for each of cubic polynomial forward, quartic
+	 * 		polynomial forward, and KLK Hyperbolic tension forward curves:
+	 * 		- Reference Basis Par Spread
+	 * 		- Derived Basis Par Spread
+	 * 	- Compare these with a) the forward rate off of the discount curve, b) The LIBOR rate, and c) The
+	 * 		Input Basis Swap Quote.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void xM6MBasisSample (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final DiscountCurve dc,
@@ -204,15 +303,31 @@ public class CustomForwardCurveBuilder {
 
 		System.out.println ("-----------------------------------------------------------------------------------------------------------------------------");
 
+		/*
+		 * Construct the 6M-xM float-float basis swap.
+		 */
+
 		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (dtSpot, strCurrency, astrxM6MFwdTenor, iTenorInMonths);
 
 		String strBasisTenor = iTenorInMonths + "M";
 
 		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
 
+		/*
+		 * Calculate the starting forward rate off of the discount curve.
+		 */
+
 		double dblStartingFwd = dc.forward (dtSpot.getJulian(), dtSpot.addTenor (strBasisTenor).getJulian());
 
+		/*
+		 * Set the discount curve based component market parameters.
+		 */
+
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+
+		/*
+		 * Construct the shape preserving forward curve off of Cubic Polynomial Basis Spline.
+		 */
 
 		ForwardCurve fcxMCubic = RatesScenarioCurveBuilder.ShapePreservingForwardCurve (
 			"CUBIC_FWD" + strBasisTenor,
@@ -227,8 +342,16 @@ public class CustomForwardCurveBuilder {
 			adblxM6MBasisSwapQuote,
 			dblStartingFwd);
 
+		/*
+		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
+		 */
+
 		ComponentMarketParams cmpCubicFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, fcxMCubic, null, null, null, null, null, null);
+
+		/*
+		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
+		 */
 
 		ForwardCurve fcxMQuartic = RatesScenarioCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
@@ -243,8 +366,16 @@ public class CustomForwardCurveBuilder {
 			adblxM6MBasisSwapQuote,
 			dblStartingFwd);
 
+		/*
+		 * Set the discount curve + quartic polynomial forward curve based component market parameters.
+		 */
+
 		ComponentMarketParams cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, fcxMQuartic, null, null, null, null, null, null);
+
+		/*
+		 * Construct the shape preserving forward curve off of Hyperbolic Tension Based Basis Spline.
+		 */
 
 		ForwardCurve fcxMKLKHyper = RatesScenarioCurveBuilder.ShapePreservingForwardCurve (
 			"KLKHYPER_FWD" + strBasisTenor,
@@ -259,11 +390,25 @@ public class CustomForwardCurveBuilder {
 			adblxM6MBasisSwapQuote,
 			dblStartingFwd);
 
+		/*
+		 * Set the discount curve + hyperbolic tension forward curve based component market parameters.
+		 */
+
 		ComponentMarketParams cmpKLKHyperFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, fcxMKLKHyper, null, null, null, null, null, null);
 
 		int i = 0;
 		int iFreq = 12 / iTenorInMonths;
+
+		/*
+		 * Compute the following forward curve metrics for each of cubic polynomial forward, quartic
+		 * 	polynomial forward, and KLK Hyperbolic tension forward curves:
+		 * 	- Reference Basis Par Spread
+		 * 	- Derived Basis Par Spread
+		 * 
+		 * Further compare these with a) the forward rate off of the discount curve, b) the LIBOR rate, and
+		 * 	c) Input Basis Swap Quote.
+		 */
 
 		for (String strMaturityTenor : astrxM6MFwdTenor) {
 			double dblFwdEndDate = dtSpot.addTenor (strMaturityTenor).getJulian();
@@ -294,15 +439,34 @@ public class CustomForwardCurveBuilder {
 		}
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample illustrates how to build and test the forward curves across various tenor basis. It shows
+	 * 	the following steps:
+	 * 	- Construct the Discount Curve using its instruments and quotes.
+	 * 	- Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
+	 * 	- Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
+	 * 	- Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
+	 * 	- Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void CustomForwardCurveBuilderSample()
 		throws Exception
 	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
 		CreditAnalytics.Init ("");
 
 		String strCurrency = "EUR";
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+
+		/*
+		 * Construct the Discount Curve using its instruments and quotes
+		 */
 
 		DiscountCurve dc = MakeDC (dtToday, strCurrency);
 
@@ -310,7 +474,11 @@ public class CustomForwardCurveBuilder {
 
 		System.out.println ("---------------------------------------------------    1M-6M Basis Swap    --------------------------------------------------");
 
-		TestxM6MBasis (
+		/*
+		 * Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
+		 */
+
+		xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -336,11 +504,15 @@ public class CustomForwardCurveBuilder {
 				}
 			);
 
+		/*
+		 * Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
+		 */
+
 		System.out.println ("\n-----------------------------------------------------------------------------------------------------------------------------");
 
 		System.out.println ("---------------------------------------------------    3M-6M Basis Swap    --------------------------------------------------");
 
-		TestxM6MBasis (
+		xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -366,11 +538,15 @@ public class CustomForwardCurveBuilder {
 				}
 			);
 
+		/*
+		 * Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
+		 */
+
 		System.out.println ("\n-----------------------------------------------------------------------------------------------------------------------------");
 
 		System.out.println ("---------------------------------------------------    6M-6M Basis Swap    --------------------------------------------------");
 
-		TestxM6MBasis (
+		xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -396,11 +572,15 @@ public class CustomForwardCurveBuilder {
 				}
 			);
 
+		/*
+		 * Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
+		 */
+
 		System.out.println ("\n-----------------------------------------------------------------------------------------------------------------------------");
 
 		System.out.println ("---------------------------------------------------   12M-6M Basis Swap    --------------------------------------------------");
 
-		TestxM6MBasis (
+		xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -428,5 +608,12 @@ public class CustomForwardCurveBuilder {
 				-0.00022,    // 40Y Extrapolated
 				}
 			);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		CustomForwardCurveBuilderSample();
 	}
 }

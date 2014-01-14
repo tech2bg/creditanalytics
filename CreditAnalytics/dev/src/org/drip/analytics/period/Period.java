@@ -6,6 +6,7 @@ package org.drip.analytics.period;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,8 +33,10 @@ package org.drip.analytics.period;
 
 /**
  * 
- * Period serves as a holder for the period dates: period start/end, period accrual start/end, pay, and
- * 	full period day count fraction.
+ * Period serves as a holder for the period dates. It implements the following functionality:
+ * 	- API for period start/end, period accrual start/end, pay, and period day count fraction/containment
+ *  - Comparison with the Other, equals/hash-code/comparator
+ *  - Serialization/De-serialization to and from Byte Arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -47,7 +50,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	protected double _dblAccrualStart = java.lang.Double.NaN;
 
 	/**
-	 * Constructs a period object instance from the corresponding date parameters
+	 * Construct a period object instance from the corresponding date parameters
 	 * 
 	 * @param dblStart Period Start Date
 	 * @param dblEnd Period End Date
@@ -155,7 +158,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 
 	/**
-	 * Returns the period Start Date
+	 * Return the period Start Date
 	 * 
 	 * @return Period Start Date
 	 */
@@ -166,7 +169,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 
 	/**
-	 * Returns the period End Date
+	 * Return the period End Date
 	 * 
 	 * @return Period End Date
 	 */
@@ -177,7 +180,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 
 	/**
-	 * Returns the period Accrual Start Date
+	 * Return the period Accrual Start Date
 	 * 
 	 * @return Period Accrual Start Date
 	 */
@@ -203,7 +206,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 
 	/**
-	 * Returns the period Accrual End Date
+	 * Return the period Accrual End Date
 	 * 
 	 * @return Period Accrual End Date
 	 */
@@ -214,7 +217,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 
 	/**
-	 * Returns the period Reset Date
+	 * Return the period Reset Date
 	 * 
 	 * @return Period Reset Date
 	 */
@@ -225,7 +228,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 
 	/**
-	 * Returns the period Pay Date
+	 * Return the period Pay Date
 	 * 
 	 * @return Period Pay Date
 	 */
@@ -272,7 +275,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 
 	/**
-	 * Gets the coupon DCF
+	 * Get the coupon DCF
 	 * 
 	 * @return The coupon DCF
 	 */
@@ -283,7 +286,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	}
 	
 	/**
-	 * Checks whether the supplied date is inside the period specified
+	 * Check whether the supplied date is inside the period specified
 	 * 
 	 * @param dblDate Date input
 	 * 
@@ -325,6 +328,7 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 
 		return sb.append (super.getObjectTrailer()).toString().getBytes();
 	}
+
 	@Override public int hashCode()
 	{
 		long lBits = java.lang.Double.doubleToLongBits ((int) _dblPay);

@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -43,7 +44,7 @@ package org.drip.product.creator;
 public class RatesStreamBuilder {
 
 	/**
-	 * Creates a Fixed Stream instance from effective/maturity dates, coupon, and IR curve name
+	 * Create a Fixed Stream instance from effective/maturity dates, coupon, and IR curve name
 	 * 
 	 * @param dtEffective JulianDate effective
 	 * @param dtMaturity JulianDate maturity
@@ -77,8 +78,8 @@ public class RatesStreamBuilder {
 	}
 
 	/**
-	 * Creates a Floating Stream instance from effective/maturity dates, coupon, IR curve name, and
-	 * 	floater index
+	 * Create a Floating Stream instance from effective/maturity dates, coupon, IR curve name, and floater
+	 *  index
 	 * 
 	 * @param dtEffective JulianDate effective
 	 * @param dtMaturity JulianDate maturity
@@ -115,7 +116,7 @@ public class RatesStreamBuilder {
 	}
 
 	/**
-	 * Creates an IRS product from effective/maturity dates, coupon, and IR curve name/rate index
+	 * Create an IRS product from effective/maturity dates, coupon, and IR curve name/rate index
 	 * 
 	 * @param dtEffective JulianDate effective
 	 * @param dtMaturity JulianDate maturity
@@ -159,7 +160,7 @@ public class RatesStreamBuilder {
 	}
 
 	/**
-	 * Creates an IRS product from effective date, tenor, coupon, and IR curve name/rate index
+	 * Create an IRS product from effective date, tenor, coupon, and IR curve name/rate index
 	 * 
 	 * @param dtEffective JulianDate effective
 	 * @param strTenor String tenor

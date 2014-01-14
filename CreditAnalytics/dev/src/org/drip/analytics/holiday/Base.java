@@ -6,6 +6,7 @@ package org.drip.analytics.holiday;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -94,7 +95,7 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Rolls the date to a non-holiday according to the rule specified
+	 * Roll the date to a non-holiday according to the rule specified
 	 * 
 	 * @param dblDate Date to be rolled
 	 * @param bBalkOnYearShift Throw an exception if the year change happens
@@ -105,14 +106,14 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	 * @throws java.lang.Exception Thrown if the holiday cannot be rolled
 	 */
 
-	public static final double RollHoliday (
+	public static final double rollHoliday (
 		final double dblDate,
 		final boolean bBalkOnYearShift,
 		final Weekend wkend)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Base::RollHoliday => Cannot Roll NaN date!");
+			throw new java.lang.Exception ("Base::rollHoliday => Cannot Roll NaN date!");
 
 		double dblRolledDate = dblDate;
 
@@ -128,7 +129,7 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Returns the description
+	 * Return the description
 	 * 
 	 * @return Description
 	 */
@@ -139,7 +140,7 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Generates the full date specific to the input year
+	 * Generate the full date specific to the input year
 	 * 
 	 * @param iYear Input Year
 	 * @param bAdjusted Whether adjustment is desired

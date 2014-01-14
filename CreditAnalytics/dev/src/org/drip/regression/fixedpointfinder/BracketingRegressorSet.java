@@ -6,6 +6,7 @@ package org.drip.regression.fixedpointfinder;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -163,8 +164,9 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbQuadratic = new org.drip.quant.solver1D.FixedPointFinderBracketing (0., _of, null,
-							org.drip.quant.solver1D.VariateIteratorPrimitive.QUADRATIC_INTERPOLATION, true);
+						fpfbQuadratic = new org.drip.quant.solver1D.FixedPointFinderBracketing (0., _of,
+							null, org.drip.quant.solver1D.VariateIteratorPrimitive.QUADRATIC_INTERPOLATION,
+								true);
 
 						return true;
 					} catch (java.lang.Exception e) {

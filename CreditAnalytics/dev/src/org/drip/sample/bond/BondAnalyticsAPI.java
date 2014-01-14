@@ -28,14 +28,11 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*
- * DRIP Math Support
- */
-
-/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -197,18 +194,13 @@ public class BondAnalyticsAPI {
 		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
 	}
 
-	/**
-	 * Creates a custom named bond from the bond type and parameters
-	 * 
-	 * @param strName String representing the bond name
-	 * @param iBondType Integer representing the bond type (fixed/floating/custom)
+	/*
+	 * Sample creates a custom named bond from the bond type and parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 * 
-	 * @return The created Bond
 	 */
 
-	public static final Bond CreateCustomBond (
+	private static final Bond CreateCustomBond (
 		final String strName,
 		final int iBondType)
 		throws Exception
@@ -307,13 +299,13 @@ public class BondAnalyticsAPI {
 		return (Bond) bond;
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the creation/usage of the custom bond API
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void CustomBondAPISample()
+	private static final void CustomBondAPISample()
 		throws Exception
 	{
 		Bond[] aBond = new Bond[3];
@@ -415,37 +407,37 @@ public class BondAnalyticsAPI {
 
 			WorkoutInfo wi = aBond[i].calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
 
-			System.out.println ("Workout Date: " + JulianDate.fromJulian (wi._dblDate));
+			System.out.println ("Workout Date: " + JulianDate.fromJulian (wi.date()));
 
-			System.out.println ("Workout Factor: " + wi._dblExerciseFactor);
+			System.out.println ("Workout Factor: " + wi.factor());
 
-			System.out.println ("Workout Yield: " + FormatUtil.FormatDouble (wi._dblYield, 1, 2, 100.));
+			System.out.println ("Workout Yield: " + FormatUtil.FormatDouble (wi.yield(), 1, 2, 100.));
 
 			System.out.println ("Workout Yield From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcYieldFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 2, 100.));
+				(aBond[i].calcYieldFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 2, 100.));
 
 			if (!aBond[i].isFloater()) {
 				System.out.println ("Z Spread From Price: " + FormatUtil.FormatDouble
-					(aBond[i].calcZSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.));
+					(aBond[i].calcZSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 				/* System.out.println ("OAS From Price: " + FormatUtil.FormatDouble
 					(aBond[i].calcOASFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.)); */
 			}
 
 			System.out.println ("I Spread From Price: " + FormatUtil.FormatDouble (aBond[i].calcISpreadFromPrice
-				(valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.));
+				(valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Discount Margin From Price: " + FormatUtil.FormatDouble (aBond[i].calcDiscountMarginFromPrice
-				(valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.));
+				(valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("TSY Spread From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcTSYSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.));
+				(aBond[i].calcTSYSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("ASW From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcASWFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.));
+				(aBond[i].calcASWFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Credit Basis From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcCreditBasisFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.));
+				(aBond[i].calcCreditBasisFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Price From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].calcPriceFromTSYSpread (valParams, cmp, null, 0.0188), 1, 3, 100.));
@@ -463,17 +455,17 @@ public class BondAnalyticsAPI {
 				(aBond[i].calcPECSFromTSYSpread (valParams, cmp, null, 0.0188))); */
 
 			System.out.println ("Theoretical Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcPriceFromCreditBasis (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 0.), 1, 3, 100.));
+				(aBond[i].calcPriceFromCreditBasis (valParams, cmp, null, wi.date(), wi.factor(), 0.), 1, 3, 100.));
 		}
 	}
 
-	/**
+	/*
 	 * API demonstrating how to calibrate a CDS curve from CDS and bond quotes
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static void BondCDSCurveCalibration()
+	private static void BondCDSCurveCalibration()
 		throws Exception
 	{
 		/*
@@ -603,6 +595,6 @@ public class BondAnalyticsAPI {
 
 		CustomBondAPISample();
 
-		// BondCDSCurveCalibration();
+		BondCDSCurveCalibration();
 	}
 }

@@ -6,6 +6,7 @@ package org.drip.regression.curveJacobian;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -42,11 +43,13 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
 		java.util.ArrayList<org.drip.regression.core.UnitRegressor>();
 
-	@Override public java.util.List<org.drip.regression.core.UnitRegressor> getRegressorSet() {
+	@Override public java.util.List<org.drip.regression.core.UnitRegressor> getRegressorSet()
+	{
 		return _setRegressors;
 	}
 
-	@Override public boolean setupRegressors() {
+	@Override public boolean setupRegressors()
+	{
 		try {
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("IRSJacobian",
 				_strRegressionScenario) {

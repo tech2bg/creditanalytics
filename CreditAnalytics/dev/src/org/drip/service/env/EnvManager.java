@@ -6,6 +6,7 @@ package org.drip.service.env;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -41,7 +42,7 @@ public class EnvManager {
 	private static final boolean s_bBuildCC = true;
 
 	/**
-	 * Initializes the logger, the database connections, the day count parameters, and day count objects
+	 * Initialize the logger, the database connections, the day count parameters, and day count objects.
 	 * 
 	 * @param strConfig String representing the full path of the configuration file
 	 * 
@@ -61,16 +62,12 @@ public class EnvManager {
 			return null;
 		}
 
-		java.sql.Statement stmt = org.drip.param.config.ConfigLoader.OracleInit (strConfig);
-
-		System.out.println ("Stmt: " + stmt);
-
-		return stmt;
+		return org.drip.param.config.ConfigLoader.OracleInit (strConfig);
 	}
 
 	/**
-	 * Populates the MarketParams with the closing discount curves, closing credit curves, and other
-	 *  market objects for the given EOD
+	 * Populate the MarketParams with the closing discount curves, closing credit curves, and other market
+	 *  objects for the given EOD.
 	 *  
 	 * @param stmt SQL Statement representing the executable query
 	 * @param dt EOD

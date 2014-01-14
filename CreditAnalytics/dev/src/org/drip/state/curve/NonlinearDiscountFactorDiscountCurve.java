@@ -6,6 +6,7 @@ package org.drip.state.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,14 +30,18 @@ package org.drip.state.curve;
  */
 
 /**
- * NonlinearDiscountFactorDiscountCurve manages the Discounting Latent State, using the Discount Factor as
- *  the State Response Representation. The class constructs the discount curve using generic polynomial
- *  splines (arbitrary degree, variable shape control, custom segment knot constraints, user specified
- *  variational penalty optimization, and segment tension). It exports the following functionality:
- *  - Calculate discount factor / discount factor Jacobian
- *  - Calculate implied forward rate / implied forward rate Jacobian
- *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
- *  - Optionally provide the calibration instruments and quotes used to build the curve.
+ * NonlinearDiscountFactorDiscountCurve manages the Discounting Latent State, using the Forward Rate as the
+ *  State Response Representation. It exports the following functionality:
+ *  - Boot Methods - Set/Bump Specific Node Quantification Metric, or Set Flat Value
+ *  - Boot Calibration - Initialize Run, Compute Calibration Metric
+ *  - Compute the discount factor, forward rate, or the zero rate from the Forward Rate Latent State
+ *  - Create a ForwardRateEstimator instance for the given Index
+ *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve the Curve Construction Input Set
+ *  - Compute the Jacobian of the Discount Factor Latent State to the input Quote
+ *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
+ *  - Synthesize scenario Latent State by parallel/custom shifting/custom tweaking the manifest measure
+ *  - Serialize into and de-serialize out of byte array
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -46,9 +51,9 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	private double[] _adblDate = null;
 	private double _dblLeftNodeDF = java.lang.Double.NaN;
 	private double _dblLeftNodeDFSlope = java.lang.Double.NaN;
-	private org.drip.spline.stretch.MultiSegmentSequence _msr = null;
 	private double _dblLeftFlatForwardRate = java.lang.Double.NaN;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
+	private org.drip.spline.stretch.MultiSegmentSequence _msr = null;
 
 	private NonlinearDiscountFactorDiscountCurve shiftManifestMeasure (
 		final double[] adblShiftedManifestMeasure)

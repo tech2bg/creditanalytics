@@ -7,7 +7,7 @@ package org.drip.service.api;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
  * 		developers - http://www.credit-trader.org
@@ -30,64 +30,68 @@ package org.drip.service.api;
  */
 
 /**
- * CDXCOB contains the Name and the COB Price for a given CDX.
+ * DateDiscountCurvePair contains the COB/Discount Curve Pair, and the corresponding computed outputs.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CDXCOB {
-	private java.lang.String _strCDXName = "";
-	private double _dblPrice = java.lang.Double.NaN;
+public class DateDiscountCurvePair {
+	private org.drip.analytics.date.JulianDate _dt = null;
+	private org.drip.analytics.rates.DiscountCurve _dc = null;
+	private java.util.List<java.lang.String> _lsstrDump = null;
 
 	/**
-	 * CDXCOB constructor
+	 * DateDiscountCurvePair constructor
 	 * 
-	 * @param strCDXName The CDX Name
-	 * @param dblPrice The COB Price
+	 * @param dt The COB
+	 * @param dc The COB Discount Curve
+	 * @param lsstrDump List of Output String Dump
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public CDXCOB (
-		final java.lang.String strCDXName,
-		final double dblPrice)
+	public DateDiscountCurvePair (
+		final org.drip.analytics.date.JulianDate dt,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final java.util.List<java.lang.String> lsstrDump)
 		throws java.lang.Exception
 	{
-		if (null == (_strCDXName = strCDXName) || _strCDXName.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblPrice = dblPrice))
-			throw new java.lang.Exception ("CDXCOB ctr: Invalid Inputs");
+		if (null == (_dt = dt)) throw new java.lang.Exception ("DateDiscountCurvePair ctr: Invalid Inputs");
+
+		_dc = dc;
+		_lsstrDump = lsstrDump;
 	}
 
 	/**
-	 * The CDX Name
+	 * Retrieve the COB
 	 * 
-	 * @return The CDX Name
+	 * @return The COB
 	 */
 
-	public java.lang.String name()
+	public org.drip.analytics.date.JulianDate date()
 	{
-		return _strCDXName;
+		return _dt;
 	}
 
 	/**
-	 * The COB Price
+	 * Retrieve the Discount Curve
 	 * 
-	 * @return The COB Price
+	 * @return The Discount Curve
 	 */
 
-	public double price()
+	public org.drip.analytics.rates.DiscountCurve dc()
 	{
-		return _dblPrice;
+		return _dc;
 	}
 
 	/**
-	 * Display the CDXCOB Content
+	 * Retrieve the Output Dump
 	 * 
-	 * @return The CDXCOB Content
+	 * @return The Output Dump
 	 */
 
-	public java.lang.String display()
+	public java.util.List<java.lang.String> output()
 	{
-		return _strCDXName + " => " + _dblPrice;
+		return _lsstrDump;
 	}
 }

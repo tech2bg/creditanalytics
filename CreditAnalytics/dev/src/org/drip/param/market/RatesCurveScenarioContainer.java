@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -164,11 +165,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		if (null == strCustomName || strCustomName.isEmpty() || null == _irsg || null == adblQuotes || 0 ==
 			adblQuotes.length || null == astrCalibMeasure || 0 == astrCalibMeasure.length ||
 				astrCalibMeasure.length != adblQuotes.length || (null == mmtpTSY && null == mmtpEDSF && null
-					== mmtpDC)) {
-			if (s_bBlog) System.out.println ("Bad RatesCurveScenarioContainer.cookCustomDC Input params!");
-
+					== mmtpDC))
 			return false;
-		}
 
 		org.drip.analytics.rates.DiscountCurve dcTSYAdj = (org.drip.analytics.rates.DiscountCurve)
 			dcTSY.customTweakManifestMeasure (mmtpTSY);
@@ -183,11 +181,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		org.drip.analytics.rates.DiscountCurve dcBaseCustom = _irsg.createIRCurve (valParams, dcTSYAdj,
 			dcEDSFAdj, adblQuotes, 0., astrCalibMeasure, mmFixings, quotingParams);
 
-		if (null == dcBaseCustom) {
-			if (s_bBlog) System.out.println ("Cannot create RatesCurveScenarioContainer.customBaseDC!");
-
-			return false;
-		}
+		if (null == dcBaseCustom) return false;
 
 		if (null == _mapCustomDC)
 			_mapCustomDC = new

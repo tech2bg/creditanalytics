@@ -6,6 +6,7 @@ package org.drip.spline.bspline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,11 @@ package org.drip.spline.bspline;
  */
 
 /**
- * BasisFunctionGenerator generates B Spline Functions of different order.
+ * SegmentBasisFunctionGenerator generates B Spline Functions of different order. It provides the following
+ * 	functionality:
+ * 	- Create a Tension Monic B Spline Basis Function.
+ * 	- Construct a Sequence of Monic Basis Functions.
+ * 	- Create a sequence of B Splines of the specified order from the given inputs.
  *
  * @author Lakshmi Krishnamurthy
  */

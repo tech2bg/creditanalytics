@@ -1,13 +1,12 @@
 
 package org.drip.spline.tension;
 
-import org.drip.spline.bspline.SegmentBasisFunctionSet;
-
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -33,6 +32,12 @@ import org.drip.spline.bspline.SegmentBasisFunctionSet;
 /**
  * This class implements the basic framework and the family of C2 Tension Splines outlined in Koch and Lyche
  * 	(1989), Koch and Lyche (1993), and Kvasov (2000) Papers.
+ * 
+ * Functions exposed here implement the Basis Function Set from:
+ * 	- Hyperbolic Hat Primitive Set
+ * 	- Cubic Polynomial Numerator and Linear Rational Denominator
+ * 	- Cubic Polynomial Numerator and Quadratic Rational Denominator
+ * 	- Cubic Polynomial Numerator and Exponential Denominator
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -164,7 +169,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new SegmentBasisFunctionSet (2, etsp.tension(), new
+			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -301,7 +306,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new SegmentBasisFunctionSet (2, etsp.tension(), new
+			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -439,7 +444,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new SegmentBasisFunctionSet (2, etsp.tension(), new
+			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -557,7 +562,7 @@ public class KochLycheKvasovFamily {
 		};
 
 		try {
-			return new SegmentBasisFunctionSet (2, etsp.tension(), new
+			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
 				org.drip.quant.function1D.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

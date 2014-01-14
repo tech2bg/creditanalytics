@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -58,7 +59,7 @@ public class PeriodGenerator extends PeriodSet {
 	private org.drip.analytics.daycount.DateAdjustParams _dapAccrualStart = null;
 
 	/**
-	 * Generates the coupon periods from the date rules and the date adjustment rules for the different
+	 * Generate the coupon periods from the date rules and the date adjustment rules for the different
 	 * 	period dates
 	 * 
 	 * @param dblMaturity Maturity Date

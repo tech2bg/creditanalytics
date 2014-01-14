@@ -6,6 +6,7 @@ package org.drip.spline.bspline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,13 @@ package org.drip.spline.bspline;
 
 /**
  * SegmentBasisFunction is the abstract class over which the local ordered envelope functions for the B Splines
- * 	are implemented.
+ * 	are implemented. It exposes the following stubs:
+ * 	- Retrieve the Order of the B Spline.
+ * 	- Retrieve the Leading Predictor Ordinate.
+ * 	- Retrieve the Following Predictor Ordinate.
+ * 	- Retrieve the Trailing Predictor Ordinate.
+ * 	- Compute the complete Envelope Integrand - this will serve as the Envelope Normalizer.
+ * 	- Evaluate the Cumulative Normalized Integrand up to the given ordinate.
  *
  * @author Lakshmi Krishnamurthy
  */

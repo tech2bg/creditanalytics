@@ -9,6 +9,7 @@ import org.drip.quant.common.FormatUtil;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -42,7 +43,20 @@ import org.drip.quant.common.FormatUtil;
  */
 
 public class BasisMonicBSpline {
-	public static final void TestMonicHatBasis (
+
+	/*
+	 * This sample illustrates the construction and the usage of the monic basis B Splines. It shows the
+	 * 	following:
+	 * 	- Construct the segment basis monic function from the specified hat type, the shape controller, the
+	 * 		derivative order, and the tension.
+	 * 	- Compare the responses emitted by the basis hat functions and the monic basis functions.
+	 * 	- Compute the normalized cumulative emitted by the monic basis functions.
+	 * 	- Compute the ordered derivative emitted by the monic basis functions.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void TestMonicHatBasis (
 		final String strHatType,
 		final String strShapeController,
 		final TensionBasisHat[] aTBH,
@@ -50,12 +64,21 @@ public class BasisMonicBSpline {
 		final String strTest)
 		throws Exception
 	{
+		/*
+		 * Construct the segment basis monic function from the specified hat type, the shape controller, the
+		 *  derivative order, and the tension.
+		 */
+
 		SegmentBasisFunction me = SegmentBasisFunctionGenerator.Monic (
 			strHatType,
 			strShapeController,
 			adblPredictorOrdinate,
 			2,
 			aTBH[0].tension());
+
+		/*
+		 * Compare the responses emitted by the basis hat functions and the monic basis functions.
+		 */
 
 		double dblX = 1.0;
 		double dblXIncrement = 0.25;
@@ -80,6 +103,10 @@ public class BasisMonicBSpline {
 
 		System.out.println ("\n\t------------------------------------------------\n");
 
+		/*
+		 * Compute the normalized cumulative emitted by the monic basis functions.
+		 */
+
 		dblX = 1.0;
 
 		while (dblX <= 3.0) {
@@ -91,6 +118,10 @@ public class BasisMonicBSpline {
 		}
 
 		System.out.println ("\n\t------------------------------------------------\n");
+
+		/*
+		 * Compute the ordered derivative emitted by the monic basis functions.
+		 */
 
 		dblX = 1.0;
 		int iOrder = 1;
@@ -106,11 +137,45 @@ public class BasisMonicBSpline {
 		System.out.println ("\n\t-----------------------------------------------\n");
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample illustrates the construction and usage of raw/processed basis tension splines, and their
+	 * 	comparisons with the correspondingly constructed monic hat basis functions. It shows the following:
+	 * 	- Construct the Processed Hyperbolic Tension Hat Pair from the co-ordinate arrays, the Ck, and the
+	 * 		tension.
+	 * 	- Implement and test the basis monic spline function using the constructed Processed Hyperbolic
+	 * 		Tension Hat Pair and the Rational Linear Shape Controller.
+	 * 	- Construct the Raw Hyperbolic Tension Hat Pair from the co-ordinate arrays and the tension.
+	 * 	- Implement and test the basis monic spline function using the constructed Raw Hyperbolic Tension Hat
+	 * 		Pair and the Rational Linear Shape Controller.
+	 * 	- Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Linear
+	 * 		Rational Shape Controller, and no tension.
+	 * 	- Implement and test the basis monic spline function using the constructed Flat Processed Cubic
+	 * 		Tension Hat Pair and the Rational Linear Shape Controller.
+	 * 	- Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Linear
+	 * 		Rational Shape Controller, and non-zero tension.
+	 * 	- Implement and test the basis monic spline function using the constructed Processed Cubic Rational
+	 * 		Tension Hat Pair and the Rational Linear Shape Controller.
+	 * 	- Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Quadratic
+	 * 		Rational Shape Controller, and the tension.
+	 * 	- Implement and test the basis monic spline function using the constructed Processed Cubic Rational
+	 * 		Tension Hat Pair and the Quadratic Linear Shape Controller.
+	 * 	- Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Exponential
+	 * 		Rational Shape Controller, and the tension.
+	 * 	- Implement and test the basis monic spline function using the constructed Processed Cubic Rational
+	 * 		Tension Hat Pair and the Rational Exponential Shape Controller.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void BasisMonicBSplineSample()
 		throws Exception
 	{
 		double[] adblPredictorOrdinate = new double[] {1., 2., 3.};
+
+		/*
+		 * Construct the Processed Hyperbolic Tension Hat Pair from the co-ordinate arrays, the Ck, and the
+		 *  tension.
+		 */
 
 		TensionBasisHat[] aTBHProcessed = BasisHatPairGenerator.ProcessedHyperbolicTensionHatPair (
 			adblPredictorOrdinate[0],
@@ -119,6 +184,11 @@ public class BasisMonicBSpline {
 			2,
 			1.);
 
+		/*
+		 * Implement and test the basis monic spline function using the constructed Processed Hyperbolic
+		 * 	Tension Hat Pair and the Rational Linear Shape Controller.
+		 */
+
 		TestMonicHatBasis (
 			BasisHatPairGenerator.PROCESSED_TENSION_HYPERBOLIC,
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
@@ -126,11 +196,20 @@ public class BasisMonicBSpline {
 			adblPredictorOrdinate,
 			" PROCESSED HYPERBOLIC ");
 
+		/*
+		 * Construct the Raw Hyperbolic Tension Hat Pair from the co-ordinate arrays and the tension.
+		 */
+
 		TensionBasisHat[] aTBHStraight = BasisHatPairGenerator.HyperbolicTensionHatPair (
 			adblPredictorOrdinate[0],
 			adblPredictorOrdinate[1],
 			adblPredictorOrdinate[2],
 			1.);
+
+		/*
+		 * Implement and test the basis monic spline function using the constructed Raw Hyperbolic Tension
+		 * 	Hat Pair and the Rational Linear Shape Controller.
+		 */
 
 		TestMonicHatBasis (
 			BasisHatPairGenerator.RAW_TENSION_HYPERBOLIC,
@@ -138,6 +217,11 @@ public class BasisMonicBSpline {
 			aTBHStraight,
 			adblPredictorOrdinate,
 			" STRAIGHT  HYPERBOLIC ");
+
+		/*
+		 * Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Linear
+		 * 	Rational Shape Controller, and no tension.
+		 */
 
 		TensionBasisHat[] aTBHCubicRationalPlain = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
@@ -147,12 +231,22 @@ public class BasisMonicBSpline {
 			2,
 			0.);
 
+		/*
+		 * Implement and test the basis monic spline function using the constructed Flat Processed Cubic
+		 * 	Tension Hat Pair and the Rational Linear Shape Controller.
+		 */
+
 		TestMonicHatBasis (
 			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			aTBHCubicRationalPlain,
 			adblPredictorOrdinate,
 			"     CUBIC     FLAT   ");
+
+		/*
+		 * Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Linear
+		 * 	Rational Shape Controller, and non-zero tension.
+		 */
 
 		TensionBasisHat[] aTBHCubicRationalLinear = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
@@ -162,12 +256,22 @@ public class BasisMonicBSpline {
 			2,
 			1.);
 
+		/*
+		 * Implement and test the basis monic spline function using the constructed Processed Cubic Rational
+		 * 	Tension Hat Pair and the Rational Linear Shape Controller.
+		 */
+
 		TestMonicHatBasis (
 			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			aTBHCubicRationalLinear,
 			adblPredictorOrdinate,
 			" CUBIC LINEAR RATIONAL ");
+
+		/*
+		 * Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Quadratic
+		 * 	Rational Shape Controller, and the tension.
+		 */
 
 		TensionBasisHat[] aTBHCubicRationalQuadratic = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_QUADRATIC,
@@ -177,12 +281,22 @@ public class BasisMonicBSpline {
 			2,
 			1.);
 
+		/*
+		 * Implement and test the basis monic spline function using the constructed Processed Cubic Rational
+		 * 	Tension Hat Pair and the Quadratic Linear Shape Controller.
+		 */
+
 		TestMonicHatBasis (
 			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_QUADRATIC,
 			aTBHCubicRationalQuadratic,
 			adblPredictorOrdinate,
 			" CUBIC  QUAD  RATIONAL ");
+
+		/*
+		 * Construct the Processed Cubic Rational Tension Hat Pair from the co-ordinate arrays, Exponential
+		 * 	Rational Shape Controller, and the tension.
+		 */
 
 		TensionBasisHat[] aTBHCubicRationalExponential = BasisHatPairGenerator.ProcessedCubicRationalHatPair (
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_EXPONENTIAL,
@@ -192,11 +306,23 @@ public class BasisMonicBSpline {
 			2,
 			1.);
 
+		/*
+		 * Implement and test the basis monic spline function using the constructed Processed Cubic Rational
+		 * 	Tension Hat Pair and the Rational Exponential Shape Controller.
+		 */
+
 		TestMonicHatBasis (
 			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_EXPONENTIAL,
 			aTBHCubicRationalExponential,
 			adblPredictorOrdinate,
 			" CUBIC  EXP  RATIONAL ");
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		BasisMonicBSplineSample();
 	}
 }

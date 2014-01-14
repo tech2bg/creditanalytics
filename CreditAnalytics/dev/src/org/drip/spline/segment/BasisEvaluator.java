@@ -6,6 +6,7 @@ package org.drip.spline.segment;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,18 @@ package org.drip.spline.segment;
  */
 
 /**
- * This Interface implements the Segment's Basis Evaluator Functions.
+ * This Interface implements the Segment's Basis Evaluator Functions. It exports the following functions:
+ * 	- Retrieve the number of Segment's Basis Functions.
+ * 	- Set the Inelastics that provides the enveloping Context the Basis Evaluation.
+ * 	- Clone/Replicate the current Basis Evaluator Instance.
+ * 	- Compute the Response Value of the indexed Basis Function at the specified Predictor Ordinate.
+ * 	- Compute the Basis Function Value at the specified Predictor Ordinate.
+ * 	- Compute the Response Value at the specified Predictor Ordinate.
+ * 	- Compute the Ordered Derivative of the Response Value off of the indexed Basis Function at the
+ * 		specified Predictor Ordinate.
+ * 	- Compute the Ordered Derivative of the Response Value off of the Basis Function Set at the specified
+ * 		Predictor Ordinate.
+ * 	- Compute the Response Value Derivative at the specified Predictor Ordinate.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -45,7 +57,7 @@ public interface BasisEvaluator {
 	public abstract int numBasis();
 
 	/**
-	 * Sets the Inelastics that provides the enveloping Context the Basis Evaluation
+	 * Set the Inelastics that provides the enveloping Context the Basis Evaluation
 	 * 
 	 * @return TRUE => The inelastics has been set
 	 */

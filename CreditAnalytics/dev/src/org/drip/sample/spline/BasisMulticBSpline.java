@@ -9,6 +9,7 @@ import org.drip.quant.common.FormatUtil;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -42,7 +43,30 @@ import org.drip.quant.common.FormatUtil;
  */
 
 public class BasisMulticBSpline {
-	public static final void RunMulticBSplineTest (
+
+	/*
+	 * This sample illustrates the construction and the usage of multic basis functions, and their eventual
+	 * 	response/derivative computation and comparison with the corresponding raw/processed and monic basis.
+	 * 	It shows the following:
+	 * 	- Construct the hyperbolic tension basis hat pair using the left predictor ordinates and the tension.
+	 * 	- Construct the hyperbolic tension basis hat pair using the right predictor ordinates and the
+	 * 		tension.
+	 * 	- Generate the left monic basis function from the hat type, left predictor ordinates, shape control,
+	 * 		and the tension parameters.
+	 * 	- Generate the right monic basis function from the hat type, right predictor ordinates, shape
+	 * 		control, and the tension parameters.
+	 * 	- Run a response value calculation comparison across the predictor ordinates for each of the left
+	 * 		basis hat and the monic basis functions.
+	 * 	- Run a response value calculation comparison across the predictor ordinates for each of the right
+	 * 		basis hat and the monic basis functions.
+	 * 	- Construct a multic basis function using the left/right monic basis functions, and the multic order.
+	 * 	- Display the multic Basis Function response as well as normalized Cumulative across the specified
+	 * 		variate range.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void RunMulticBSplineTest (
 		final String strHatType,
 		final String strShapeControlType,
 		final double dblTension,
@@ -52,17 +76,32 @@ public class BasisMulticBSpline {
 		double[] adblPredictorOrdinateLeft = new double[] {1., 2., 3.};
 		double[] adblPredictorOrdinateRight = new double[] {2., 3., 4.};
 
+		/*
+		 * Construct the hyperbolic tension basis hat pair using the left predictor ordinates and the
+		 * 	tension.
+		 */
+
 		TensionBasisHat[] aTBHLeft = BasisHatPairGenerator.HyperbolicTensionHatPair (
 			adblPredictorOrdinateLeft[0],
 			adblPredictorOrdinateLeft[1],
 			adblPredictorOrdinateLeft[2],
 			dblTension);
 
+		/*
+		 * Construct the hyperbolic tension basis hat pair using the right predictor ordinates and the
+		 *  tension.
+		 */
+
 		TensionBasisHat[] aTBHRight = BasisHatPairGenerator.HyperbolicTensionHatPair (
 			adblPredictorOrdinateRight[0],
 			adblPredictorOrdinateRight[1],
 			adblPredictorOrdinateRight[2],
 			dblTension);
+
+		/*
+		 * Generate the left monic basis function from the hat type, left predictor ordinates, shape control,
+		 * 	and the tension parameters.
+		 */
 
 		SegmentBasisFunction sbfMonicLeft = SegmentBasisFunctionGenerator.Monic (
 			strHatType,
@@ -71,12 +110,22 @@ public class BasisMulticBSpline {
 			2,
 			dblTension);
 
+		/*
+		 * Generate the right monic basis function from the hat type, right predictor ordinates, shape
+		 * 	control, and the tension parameters.
+		 */
+
 		SegmentBasisFunction sbfMonicRight = SegmentBasisFunctionGenerator.Monic (
 			strHatType,
 			strShapeControlType,
 			adblPredictorOrdinateRight,
 			2,
 			dblTension);
+
+		/*
+		 * Run a response value calculation comparison across the predictor ordinates for each of the left
+		 * 	basis hat and the monic basis functions.
+		 */
 
 		System.out.println ("\n\t-------------------------------------------------");
 
@@ -97,6 +146,11 @@ public class BasisMulticBSpline {
 			dblX += dblXIncrement;
 		}
 
+		/*
+		 * Run a response value calculation comparison across the predictor ordinates for each of the right
+		 * 	basis hat and the monic basis functions.
+		 */
+
 		System.out.println ("\n\t-------------------------------------------------");
 
 		System.out.println ("\t            X    |   LEFT   |   RIGHT  |   MONIC  ");
@@ -115,9 +169,19 @@ public class BasisMulticBSpline {
 			dblX += dblXIncrement;
 		}
 
+		/*
+		 * Construct a multic basis function using the left/right monic basis functions, and the multic
+		 * 	order.
+		 */
+
 		SegmentBasisFunction[] sbfMultic = SegmentBasisFunctionGenerator.MulticSequence (
 			iMulticBSplineOrder,
 			new SegmentBasisFunction[] {sbfMonicLeft, sbfMonicRight});
+
+		/*
+		 * Display the multic Basis Function response as well as normalized Cumulative across the specified
+		 * 	variate range.
+		 */
 
 		System.out.println ("\n\t-------------------------------------------------");
 
@@ -140,10 +204,33 @@ public class BasisMulticBSpline {
 		System.out.println ("\n\t-------------------------------------------------\n");
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample illustrates a sequence of tests using basis multic B Splines. In particular it shows the
+	 * 	following:
+	 * 	- Creation and usage of Multic B Spline built off of raw hyperbolic tension basis function, rational
+	 * 		linear shape controller, tension = 1.0, and 3rd order multic.
+	 * 	- Creation and usage of Multic B Spline built off of processed hyperbolic tension basis function,
+	 * 		rational linear shape controller, tension = 1.0, and 3rd order multic.
+	 * 	- Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+	 * 		linear shape controller, tension = 0.0, and 3rd order multic.
+	 * 	- Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+	 * 		linear shape controller, tension = 1.0, and 3rd order multic.
+	 * 	- Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+	 * 		quadratic shape controller, tension = 1.0, and 3rd order multic.
+	 * 	- Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+	 * 		exponential shape controller, tension = 1.0, and 3rd order multic.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void BasisMulticBSplineSample()
 		throws Exception
 	{
+		/*
+		 * Creation and usage of Multic B Spline built off of raw hyperbolic tension basis function,
+		 *  rational linear shape controller, tension = 1.0, and 3rd order multic.
+		 */
+
 		System.out.println ("\n    RAW TENSION HYPERBOLIC | LINEAR SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
 
 		RunMulticBSplineTest (
@@ -151,6 +238,11 @@ public class BasisMulticBSpline {
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			1.,
 			3);
+
+		/*
+		 * Creation and usage of Multic B Spline built off of processed hyperbolic tension basis function,
+		 *  rational linear shape controller, tension = 1.0, and 3rd order multic.
+		 */
 
 		System.out.println ("\n   PROC TENSION HYPERBOLIC | LINEAR SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
 
@@ -160,6 +252,11 @@ public class BasisMulticBSpline {
 			1.,
 			3);
 
+		/*
+		 * Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+		 *  linear shape controller, tension = 0.0, and 3rd order multic.
+		 */
+
 		System.out.println ("\n   RAW CUBIC RATIONAL | LINEAR SHAPE CONTROL | TENSION = 0.0 | CUBIC B SPLINE");
 
 		RunMulticBSplineTest (
@@ -167,6 +264,11 @@ public class BasisMulticBSpline {
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
 			0.,
 			3);
+
+		/*
+		 * Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+		 *  linear shape controller, tension = 1.0, and 3rd order multic.
+		 */
 
 		System.out.println ("\n   RAW CUBIC RATIONAL | LINEAR SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
 
@@ -176,6 +278,11 @@ public class BasisMulticBSpline {
 			1.,
 			3);
 
+		/*
+		 * Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+		 *  quadratic shape controller, tension = 1.0, and 3rd order multic.
+		 */
+
 		System.out.println ("\n   RAW CUBIC RATIONAL | QUADRATIC SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
 
 		RunMulticBSplineTest (
@@ -184,6 +291,11 @@ public class BasisMulticBSpline {
 			1.,
 			3);
 
+		/*
+		 * Creation and usage of Multic B Spline built off of raw cubic tension basis function, rational
+		 *  exponential shape controller, tension = 1.0, and 3rd order multic.
+		 */
+
 		System.out.println ("\n   RAW CUBIC RATIONAL | EXPONENTIAL SHAPE CONTROL | TENSION = 1.0 | CUBIC B SPLINE");
 
 		RunMulticBSplineTest (
@@ -191,5 +303,12 @@ public class BasisMulticBSpline {
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_EXPONENTIAL,
 			1.,
 			3);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		BasisMulticBSplineSample();
 	}
 }

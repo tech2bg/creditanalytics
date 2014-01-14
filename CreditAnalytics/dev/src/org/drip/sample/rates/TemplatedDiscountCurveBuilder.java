@@ -19,6 +19,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -42,13 +43,35 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * TemplatedDiscountCurveBuilder contains the sample demonstrating the templated discount curve builder
- * 	parameters.
+ * TemplatedDiscountCurveBuilder sample demonstrates the usage of the different pre-built Discount Curve
+ * 	Builders. It shows the following:
+ * 	- Construct the Array of Cash Instruments and their Quotes from the given set of parameters.
+ * 	- Construct the Array of Swap Instruments and their Quotes from the given set of parameters.
+ * 	- Construct the Cubic Tension KLK Hyperbolic Discount Factor Shape Preserver.
+ * 	- Construct the Cubic Tension KLK Hyperbolic Discount Factor Shape Preserver with Zero Rate
+ * 		Smoothening applied.
+ * 	- Construct the Cubic Polynomial Discount Factor Shape Preserver.
+ * 	- Construct the Cubic Polynomial Discount Factor Shape Preserver with Zero Rate Smoothening applied.
+ * 	- Construct the Discount Curve using the Bear Sterns' DENSE Methodology.
+ * 	- Construct the Discount Curve using the Bear Sterns' DUALDENSE Methodology.
+ * 	- Cross-Comparison of the Cash Calibration Instrument "Rate" metric across the different curve
+ * 		construction methodologies.
+ * 	- Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+ * 		construction methodologies.
+ * 	- Cross-Comparison of the generated Discount Factor across the different curve construction
+ * 		Methodologies for different node points.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
 public class TemplatedDiscountCurveBuilder {
+
+	/*
+	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
@@ -68,6 +91,12 @@ public class TemplatedDiscountCurveBuilder {
 		return aCalibComp;
 	}
 
+	/*
+	 * Construct the Array of Swap Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor)
@@ -81,6 +110,12 @@ public class TemplatedDiscountCurveBuilder {
 
 		return aCalibComp;
 	}
+
+	/*
+	 * Compute the desired component Metric
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
 
 	private static final double ComponentMetric (
 		final Component comp,
@@ -97,15 +132,44 @@ public class TemplatedDiscountCurveBuilder {
 			strMeasure);
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample demonstrates the usage of the different pre-built Discount Curve Builders. It shows the
+	 * 	following:
+	 * 	- Construct the Array of Cash Instruments and their Quotes from the given set of parameters.
+	 * 	- Construct the Array of Swap Instruments and their Quotes from the given set of parameters.
+	 * 	- Construct the Cubic Tension KLK Hyperbolic Discount Factor Shape Preserver.
+	 * 	- Construct the Cubic Tension KLK Hyperbolic Discount Factor Shape Preserver with Zero Rate
+	 * 		Smoothening applied.
+	 * 	- Construct the Cubic Polynomial Discount Factor Shape Preserver.
+	 * 	- Construct the Cubic Polynomial Discount Factor Shape Preserver with Zero Rate Smoothening applied.
+	 * 	- Construct the Discount Curve using the Bear Sterns' DENSE Methodology.
+	 * 	- Construct the Discount Curve using the Bear Sterns' DUALDENSE Methodology.
+	 * 	- Cross-Comparison of the Cash Calibration Instrument "Rate" metric across the different curve
+	 * 		construction methodologies.
+	 * 	- Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+	 * 		construction methodologies.
+	 * 	- Cross-Comparison of the generated Discount Factor across the different curve construction
+	 * 		Methodologies for different node points.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	public static final void TemplatedDiscountCurveBuilderSample()
 		throws Exception
 	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
 		CreditAnalytics.Init ("");
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
+
+		/*
+		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
+		 */
 
 		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtToday,
@@ -116,11 +180,19 @@ public class TemplatedDiscountCurveBuilder {
 			0.0013, 0.0017, 0.0017, 0.0018, 0.0020, 0.0023, // Cash Rate
 			0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160}; // EDF Rate;
 
+		/*
+		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
+		 */
+
 		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"});
 
 		double[] adblSwapQuote = new double[]
 			{0.0166, 0.0206, 0.0241, 0.0269, 0.0292, 0.0311, 0.0326, 0.0340, 0.0351, 0.0375, 0.0393, 0.0402, 0.0407, 0.0409, 0.0409};
+
+		/*
+		 * Construct the Cubic Tension KLK Hyperbolic Discount Factor Shape Preserver
+		 */
 
 		DiscountCurve dcKLKHyperbolicShapePreserver = RatesScenarioCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
@@ -131,6 +203,11 @@ public class TemplatedDiscountCurveBuilder {
 			adblSwapQuote,
 			false);
 
+		/*
+		 * Construct the Cubic Tension KLK Hyperbolic Discount Factor Shape Preserver with Zero Rate
+		 * 	Smoothening applied
+		 */
+
 		DiscountCurve dcKLKHyperbolicSmoother = RatesScenarioCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SMOOTH_TEMPLATE",
 			valParams,
@@ -139,6 +216,10 @@ public class TemplatedDiscountCurveBuilder {
 			aSwapComp,
 			adblSwapQuote,
 			true);
+
+		/*
+		 * Construct the Cubic Polynomial Discount Factor Shape Preserver
+		 */
 
 		DiscountCurve dcCubicPolyShapePreserver = RatesScenarioCurveBuilder.CubicPolyDFRateShapePreserver (
 			"CUBIC_POLY_SHAPE_TEMPLATE",
@@ -149,6 +230,10 @@ public class TemplatedDiscountCurveBuilder {
 			adblSwapQuote,
 			false);
 
+		/*
+		 * Construct the Cubic Polynomial Discount Factor Shape Preserver with Zero Rate Smoothening applied.
+		 */
+
 		DiscountCurve dcCubicPolySmoother = RatesScenarioCurveBuilder.CubicPolyDFRateShapePreserver (
 			"CUBIC_POLY_SMOOTH_TEMPLATE",
 			valParams,
@@ -158,6 +243,10 @@ public class TemplatedDiscountCurveBuilder {
 			adblSwapQuote,
 			true);
 
+		/*
+		 * Construct the Discount Curve using the Bear Sterns' DENSE Methodology.
+		 */
+
 		DiscountCurve dcDENSE = RatesScenarioCurveBuilder.DENSE (
 			"DENSE",
 			valParams,
@@ -166,6 +255,10 @@ public class TemplatedDiscountCurveBuilder {
 			aSwapComp,
 			adblSwapQuote,
 			null);
+
+		/*
+		 * Construct the Discount Curve using the Bear Sterns' DUAL DENSE Methodology.
+		 */
 
 		DiscountCurve dcDualDENSE = RatesScenarioCurveBuilder.DUALDENSE (
 			"DENSE",
@@ -177,6 +270,11 @@ public class TemplatedDiscountCurveBuilder {
 			adblSwapQuote,
 			"3M",
 			null);
+
+		/*
+		 * Cross-Comparison of the Cash Calibration Instrument "Rate" metric across the different curve
+		 * 	construction methodologies.
+		 */
 
 		System.out.println ("\n\t---------------------------------------------------------------------------------------------------------------------------------------");
 
@@ -198,6 +296,11 @@ public class TemplatedDiscountCurveBuilder {
 				FormatUtil.FormatDouble (ComponentMetric (aCashComp[i], valParams, dcDualDENSE, "Rate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.));
 
+		/*
+		 * Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+		 * 	construction methodologies.
+		 */
+
 		System.out.println ("\n\t---------------------------------------------------------------------------------------------------------------------------------------");
 
 		System.out.println ("\t\t\t\t\t\t\tSWAP INSTRUMENTS CALIBRATION RECOVERY");
@@ -217,6 +320,11 @@ public class TemplatedDiscountCurveBuilder {
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcDENSE, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcDualDENSE, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
+
+		/*
+		 * Cross-Comparison of the generated Discount Factor across the different curve construction
+		 * 	methodologies for different node points.
+		 */
 
 		System.out.println ("\n\t-----------------------------------------------------------------------------------------------------------------------------------");
 
@@ -239,5 +347,12 @@ public class TemplatedDiscountCurveBuilder {
 					FormatUtil.FormatDouble (dcDENSE.df (dblDate), 1, 8, 1.) + "    |    " +
 					FormatUtil.FormatDouble (dcDualDENSE.df (dblDate), 1, 8, 1.));
 		}
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		TemplatedDiscountCurveBuilderSample();
 	}
 }

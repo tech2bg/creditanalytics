@@ -6,6 +6,7 @@ package org.drip.service.bridge;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -528,17 +529,17 @@ public class CreditAnalyticsProxy {
 
 		try {
 			System.out.println (strPrefix + "Workout Date: " + new org.drip.analytics.date.JulianDate
-				(rv._wi._dblDate));
+				(rv._wi.date()));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
-		System.out.println (strPrefix + "Workout Factor: " + rv._wi._dblExerciseFactor);
+		System.out.println (strPrefix + "Workout Factor: " + rv._wi.factor());
 
-		System.out.println (strPrefix + "Workout Type: " + rv._wi._iWOType);
+		System.out.println (strPrefix + "Workout Type: " + rv._wi.type());
 
 		System.out.println (strPrefix + "Workout Yield: " + org.drip.quant.common.FormatUtil.FormatDouble
-			(rv._wi._dblYield, 0, 3, 100.));
+			(rv._wi.yield(), 0, 3, 100.));
 
 		System.out.println (strPrefix + "Yield01: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblYield01, 0, 2, 10000.));
@@ -570,7 +571,7 @@ public class CreditAnalyticsProxy {
 			org.drip.analytics.output.BondRVMeasures rv = me.getValue();
 
 			System.out.println (me.getKey() + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
-				(rv._wi._dblYield, 0, 2, 100.) + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
+				(rv._wi.yield(), 0, 2, 100.) + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
 					(rv._dblZSpread, 0, 0, 10000.) + DISPLAY_GAP +
 						org.drip.quant.common.FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.) +
 							DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble (rv._dblCreditBasis,
@@ -627,7 +628,7 @@ public class CreditAnalyticsProxy {
 				(creResponse.getSerializedMsg());
 
 			try {
-				mapRVM.put (new org.drip.analytics.date.JulianDate (rv._wi._dblDate), rv);
+				mapRVM.put (new org.drip.analytics.date.JulianDate (rv._wi.date()), rv);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}

@@ -31,6 +31,9 @@ package org.drip.state.estimator;
 /**
  * RatesSegmentSequenceBuilder holds the logic behind building the bootstrap segments contained in the given
  * 	Stretch.
+ * 
+ * It extends SegmentSequenceBuilder by implementing/customizing the calibration of the starting as well as
+ *  the subsequent segments.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -200,11 +203,11 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		org.drip.spline.params.SegmentResponseValueConstraint rvcLeading =
 			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-				(_valParams._dblValue, _dblEpochResponse);
+				(_valParams.valueDate(), _dblEpochResponse);
 
 		org.drip.spline.params.SegmentResponseValueConstraint rvcLeadingQuoteSensitivity =
 			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-				(_valParams._dblValue, 0.);
+				(_valParams.valueDate(), 0.);
 
 		if (null == aCS || 1 > aCS.length || null == cc | null == lsmm || null == rvcLeading) return false;
 

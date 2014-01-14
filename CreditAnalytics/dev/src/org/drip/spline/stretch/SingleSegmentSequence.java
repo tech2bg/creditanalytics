@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -34,12 +35,12 @@ package org.drip.spline.stretch;
  * 	the spanning Jacobian. SingleSegmentSequence exports the following group of functionality:
  * 	- Construct adjoining segment sequences in accordance with the segment control parameters
  * 	- Calibrate according to a varied set of (i.e., NATURAL/FINANCIAL) boundary conditions
- * 	- Estimate both the value, the ordered derivatives, and the Jacobian at the given ordinate
+ * 	- Estimate both the value, the ordered derivatives, and the Jacobian (quote/coefficient) at the given
+ * 		ordinate
  * 	- Compute the monotonicity details - segment/Stretch level monotonicity, co-monotonicity, local
  * 		monotonicity.
- * 
- * It also exports several static Stretch creation/calibration methods to generate customized basis splines,
- * 	with customized segment behavior using the segment control.
+ * 	- Predictor Ordinate Details - identify the left/right predictor ordinate edges, and whether the given
+ * 		predictor ordinate is a knot
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -84,7 +85,7 @@ public interface SingleSegmentSequence {
 	 * Calculate the Response Derivative to the Calibration Inputs at the specified Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate
-	 * @param Order of Derivative desired
+	 * @param iOrder Order of Derivative desired
 	 * 
 	 * @return Jacobian of the Response Derivative to the Calibration Inputs at the Ordinate
 	 */
@@ -97,7 +98,7 @@ public interface SingleSegmentSequence {
 	 * Calculate the Response Derivative to the Quote at the specified Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate
-	 * @param Order of Derivative desired
+	 * @param iOrder Order of Derivative desired
 	 * 
 	 * @return Jacobian of the Response Derivative to the Quote at the Ordinate
 	 */
@@ -169,7 +170,7 @@ public interface SingleSegmentSequence {
 	/**
 	 * Reset the Predictor Ordinate Node Index with the given Segment Constraint
 	 * 
-	 * @param iPredictorOrdinateNodeIndex The Predictor Ordinate Node Index whose Response is to be reset
+	 * @param iNodeIndex The Predictor Ordinate Node Index whose Response is to be reset
 	 * @param srvcReset The Segment Constraint
 	 * 
 	 * @return TRUE => Reset succeeded

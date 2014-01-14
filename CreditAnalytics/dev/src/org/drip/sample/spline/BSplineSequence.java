@@ -9,6 +9,7 @@ import org.drip.spline.bspline.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -41,7 +42,15 @@ import org.drip.spline.bspline.*;
  */
 
 public class BSplineSequence {
-	public static final void ComputeResponseMetric (
+
+	/*
+	 * This sample shows the computation of the response value, the normalized cumulative, and the ordered
+	 * 	derivative of the specified Segment Basis Function.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void ComputeResponseMetric (
 		final SegmentBasisFunction me,
 		final String strComment)
 		throws Exception
@@ -70,11 +79,24 @@ public class BSplineSequence {
 		}
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample demonstrates the construction and usage of the following monic/multic basis spline arrays:
+	 * 	- Hyperbolic Rational Linear Monic.
+	 * 	- Multic basis functions of 3rd degree (i.e., quadratic).
+	 * 	- Multic basis functions of 4th degree (i.e., cubic).
+	 * 	- Multic basis functions of 5th degree (i.e., quartic).
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void BSplineSequenceSample()
 		throws Exception
 	{
 		double[] adblPredictorOrdinate = new double[] {1., 2., 3., 4., 5., 6.};
+
+		/*
+		 * Construct the Array of Hyperbolic Rational Linear Monic Segment Basis Functions. 
+		 */
 
 		SegmentBasisFunction[] aMonic = SegmentBasisFunctionGenerator.MonicSequence (
 			BasisHatPairGenerator.RAW_TENSION_HYPERBOLIC,
@@ -83,28 +105,67 @@ public class BSplineSequence {
 			0,
 			1.);
 
+		/*
+		 * Display the response value, the normalized cumulative, and the ordered derivative of the Monic
+		 * 	Segment Basis Function.
+		 */
+
 		for (int i = 0; i < aMonic.length; ++i)
 			ComputeResponseMetric (aMonic[i], "   MONIC   ");
+
+		/*
+		 * Construct the array of multic basis functions of 3rd degree (i.e., quadratic).
+		 */
 
 		SegmentBasisFunction[] aQuadratic = SegmentBasisFunctionGenerator.MulticSequence (
 			3,
 			aMonic);
 
+		/*
+		 * Display the response value, the normalized cumulative, and the ordered derivative of the Quadratic
+		 * 	Multic Segment Basis Function.
+		 */
+
 		for (int i = 0; i < aQuadratic.length; ++i)
 			ComputeResponseMetric (aQuadratic[i], " QUADRATIC ");
+
+		/*
+		 * Construct the array of multic basis functions of 4th degree (i.e., cubic).
+		 */
 
 		SegmentBasisFunction[] aCubic = SegmentBasisFunctionGenerator.MulticSequence (
 			4,
 			aQuadratic);
 
+		/*
+		 * Display the response value, the normalized cumulative, and the ordered derivative of the Cubic
+		 * 	Multic Segment Basis Function.
+		 */
+
 		for (int i = 0; i < aCubic.length; ++i)
 			ComputeResponseMetric (aCubic[i], "   CUBIC   ");
+
+		/*
+		 * Construct the array of multic basis functions of 5th degree (i.e., quartic).
+		 */
 
 		SegmentBasisFunction[] aQuartic = SegmentBasisFunctionGenerator.MulticSequence (
 			5,
 			aCubic);
 
+		/*
+		 * Display the response value, the normalized cumulative, and the ordered derivative of the Quartic
+		 * 	Multic Segment Basis Function.
+		 */
+
 		for (int i = 0; i < aQuartic.length; ++i)
 			ComputeResponseMetric (aQuartic[i], "  QUARTIC  ");
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		BSplineSequenceSample();
 	}
 }

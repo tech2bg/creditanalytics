@@ -6,6 +6,7 @@ package org.drip.regression.core;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -56,7 +57,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Adds another run execution time
+	 * Add another run execution time
 	 * 
 	 * @param lExecTime Execution Time
 	 * 
@@ -118,7 +119,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Gets the number of runs for the statistics
+	 * Get the number of runs for the statistics
 	 * 
 	 * @return Number of runs
 	 */
@@ -129,7 +130,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Gets the Mean in the execution time
+	 * Get the Mean in the execution time
 	 * 
 	 * @return Execution Time Mean
 	 */
@@ -140,7 +141,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Gets the Minimum in the execution time
+	 * Get the Minimum in the execution time
 	 * 
 	 * @return Execution Time Minimum
 	 */
@@ -151,7 +152,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Gets the Maximum in the execution time
+	 * Get the Maximum in the execution time
 	 * 
 	 * @return Execution Time Maximum
 	 */
@@ -162,7 +163,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Gets the variance in the execution time
+	 * Get the variance in the execution time
 	 * 
 	 * @return Execution Time Variance
 	 */
@@ -173,7 +174,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Gets the delay when the regressor is invoked for the first time
+	 * Get the delay when the regressor is invoked for the first time
 	 * 
 	 * @return Initialization Delay
 	 */
@@ -184,7 +185,7 @@ public class UnitRegressionStat {
 	}
 
 	/**
-	 * Returns the string version of the statistics
+	 * Return the string version of the statistics
 	 * 
 	 * @param strRegressionUnit Name the unit for which the regression run was done
 	 * 

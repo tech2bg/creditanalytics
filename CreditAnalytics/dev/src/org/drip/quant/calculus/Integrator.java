@@ -6,6 +6,7 @@ package org.drip.quant.calculus;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,6 +31,7 @@ package org.drip.quant.calculus;
 
 /**
  * Integrator implements the following routines for integrating the objective function:
+ * 	- Linear Quadrature
  * 	- Mid-Point Scheme
  * 	- Trapezoidal Scheme
  * 	- Simpson/Simpson38 schemes

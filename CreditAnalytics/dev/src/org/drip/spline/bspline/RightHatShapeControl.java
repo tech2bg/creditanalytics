@@ -6,6 +6,7 @@ package org.drip.spline.bspline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,9 @@ package org.drip.spline.bspline;
  */
 
 /**
- * RightHatShapeControl implements the shape control function for the right hat basis set as laid out in the
- *  basic framework outlined in Koch and Lyche (1989), Koch and Lyche (1993), and Kvasov (2000) Papers.
+ * RightHatShapeControl implements the BasisHatShapeControl interface for the right hat basis set as laid out
+ *  in the basic framework outlined in Koch and Lyche (1989), Koch and Lyche (1993), and Kvasov (2000)
+ *  Papers.
  *
  * @author Lakshmi Krishnamurthy
  */

@@ -6,6 +6,7 @@ package org.drip.spline.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -80,18 +81,18 @@ public class SegmentBestFitResponse {
 	 */
 
 	public static final SegmentBestFitResponse Create (
-		final double[] adblLocalPredictorOrdinate,
+		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (adblLocalPredictorOrdinate)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblPredictorOrdinate)) return null;
 
-		int iNumWeight = adblLocalPredictorOrdinate.length;
+		int iNumWeight = adblPredictorOrdinate.length;
 		double[] adblWeight = new double[iNumWeight];
 
 		for (int i = 0; i < iNumWeight; ++i)
 			adblWeight[i] = 1.;
 
-		return Create (adblLocalPredictorOrdinate, adblResponseValue, adblWeight);
+		return Create (adblPredictorOrdinate, adblResponseValue, adblWeight);
 	}
 
 	private SegmentBestFitResponse (

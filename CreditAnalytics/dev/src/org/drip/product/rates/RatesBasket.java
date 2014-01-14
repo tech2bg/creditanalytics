@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,17 @@ package org.drip.product.rates;
 
 /**
  * RatesBasket contains the implementation of the Basket of Rates Component legs. RatesBasket is made from
- * 	zero/more fixed and floating streams.
+ * 	zero/more fixed and floating streams. It exports the following functionality:
+ *  - Standard/Custom Constructor for the RatesBasket
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Retrieve the constituent fixed and floating streams
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */

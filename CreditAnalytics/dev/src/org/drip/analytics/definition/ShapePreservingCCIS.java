@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,14 +30,8 @@ package org.drip.analytics.definition;
  */
 
 /**
- * ShapePreservingCCIS contains the Parameters needed for the Curve Calibration/Estimation. It contains the
- *  following:
- *  - Calibration Valuation Parameters
- *  - Calibration Quoting Parameters
- *  - Array of Calibration Instruments
- *  - Map of Calibration Quotes
- *  - Map of Calibration Measures
- *  - Double Map of the Date/Index Fixings
+ * ShapePreservingCCIS extends the CurveSpanConstructionInput Instance. Additionally, it exposes the Shape
+ *  Preserving Linear Curv Calibrator.
  *
  * @author Lakshmi Krishnamurthy
  */

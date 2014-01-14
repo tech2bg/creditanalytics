@@ -6,6 +6,7 @@ package org.drip.spline.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,8 @@ package org.drip.spline.params;
 
 /**
  * SegmentResponseConstraintSet holds the set of SegmentResponseValueConstraint (Base + One/more
- *  Sensitivities) for the given Segment.
+ *  Sensitivities) for the given Segment. It exposes functions to add/retrieve the base RVC as well as
+ *  additional RVC sensitivities.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -67,7 +69,7 @@ public class SegmentResponseConstraintSet {
 	/**
 	 * Add the Base Segment Response Value Constraint Sensitivity
 	 * 
-	 * @param srvcBase The Base Segment Response Value Constraint Sensitivity
+	 * @param srvcSensitivity The Base Segment Response Value Constraint Sensitivity
 	 * 
 	 * @return TRUE => The Base Segment Response Value Constraint Sensitivity Successfully Set
 	 */

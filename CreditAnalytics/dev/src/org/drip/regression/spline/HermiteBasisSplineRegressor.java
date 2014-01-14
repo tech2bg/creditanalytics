@@ -1,10 +1,12 @@
 
 package org.drip.regression.spline;
+
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -47,7 +49,7 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	private org.drip.quant.calculus.WengertJacobian _wjValue = null;
 
 	/**
-	 * Creates an instance of Hermite BasisSplineRegressor
+	 * Create an instance of Hermite BasisSplineRegressor
 	 * 
 	 * @param strName Regressor Name
 	 * @param strScenarioName Regressor Scenario Name
@@ -93,8 +95,8 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
 		if (null == (_seg1 = org.drip.spline.segment.ConstitutiveState.Create (0.0, 1.0, fs, rssc,
-			segParams)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (1.0,
-				2.0, fs, rssc, segParams)))
+			segParams)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (1.0, 2.0, fs,
+				rssc, segParams)))
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
 

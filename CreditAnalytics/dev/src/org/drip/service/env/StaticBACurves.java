@@ -6,6 +6,7 @@ package org.drip.service.env;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -145,7 +146,7 @@ public class StaticBACurves {
 	}
 
 	/**
-	 * Adds custom treasuries to the org.drip.param.definition.MarketParams
+	 * Add custom treasuries to the org.drip.param.definition.MarketParams
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams to be added to
 	 * 
@@ -227,8 +228,8 @@ public class StaticBACurves {
 	}
 
 	/**
-	 * Builds the treasury curve from custom/user defined marks and adds it to the MarketParams for
-	 *  the given EOD and currency
+	 * Build the treasury curve from custom/user defined marks and adds it to the MarketParams for the given
+	 *  EOD and currency
 	 *  
 	 * @param mpc org.drip.param.definition.MarketParams to which the treasury is to be added to 
 	 * @param dt EOD JulianDate
@@ -307,8 +308,8 @@ public class StaticBACurves {
 	}
 
 	/**
-	 * Builds the EDSF curve from custom/user defined marks and adds it to the MarketParams for the
-	 *  given EOD and currency
+	 * Build the EDSF curve from custom/user defined marks and adds it to the MarketParams for the given EOD
+	 *  and currency
 	 *  
 	 * @param mpc org.drip.param.definition.MarketParams to which the treasury is to be added to 
 	 * @param dt EOD JulianDate
@@ -380,8 +381,8 @@ public class StaticBACurves {
 	}
 
 	/**
-	 * Builds the full IR curve from custom/user defined marks and adds it to the MarketParams for
-	 *  the given EOD and currency
+	 * Build the full IR curve from custom/user defined marks and adds it to the MarketParams for the given
+	 *  EOD and currency
 	 *  
 	 * @param mpc org.drip.param.definition.MarketParams to which the treasury is to be added to 
 	 * @param dt EOD JulianDate
@@ -603,7 +604,7 @@ public class StaticBACurves {
 	}
 
 	/**
-	 * Builds the credit curve from a set of custom/user-defined quotes for a given EOD and loads them onto
+	 * Build the credit curve from a set of custom/user-defined quotes for a given EOD and loads them onto
 	 *  the MPC
 	 *  
 	 * @param mpc org.drip.param.definition.MarketParams to be loaded into

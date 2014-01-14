@@ -6,6 +6,7 @@ package org.drip.param.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -84,7 +85,7 @@ public abstract class ScenarioCreditCurve {
 	public static final int CC_RR_FLAT_DN = 32;
 
 	/**
-	 * Cooks and saves the credit curves corresponding to the scenario specified
+	 * Cook and save the credit curves corresponding to the scenario specified
 	 * 
 	 * @param strName Credit Curve Name
 	 * @param valParams ValuationParams

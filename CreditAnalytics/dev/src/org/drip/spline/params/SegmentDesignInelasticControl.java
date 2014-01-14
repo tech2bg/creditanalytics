@@ -6,6 +6,7 @@ package org.drip.spline.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,12 @@ package org.drip.spline.params;
  */
 
 /**
- * SegmentDesignInelasticControl implements basis per-segment inelastic parameter set. Currently it contains
- *  Ck and roughness penalty derivative order.
+ * SegmentDesignInelasticControl implements basis per-segment inelastic parameter set. It exports the
+ *  following functionality:
+ *  - Retrieve the Continuity Order.
+ *  - Retrieve the Length Penalty and the Curvature Penalty Parameters.
+ *  - Create the C2 Design Inelastic Parameters.
+ *  - Create the Design Inelastic Parameters for the desired Ck Criterion and the Roughness Penalty Order.
  *
  * @author Lakshmi Krishnamurthy
  */

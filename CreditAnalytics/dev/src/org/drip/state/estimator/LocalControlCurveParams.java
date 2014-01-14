@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,13 @@ package org.drip.state.estimator;
  */
 
 /**
- * LocalControlCurveParams contains the Parameters needed to hold the Stretch - the Calibration Boundary
- *  Condition, the Calibration Detail, and the BestFitWeightedResponse Instance.
+ * LocalControlCurveParams enhances the SmoothingCurveStretchParams to produce locally customized curve
+ *  smoothing.
+ * 
+ * Flags implemented by LocalControlCurveParams control the following:
+ *  - The C1 generator scheme to be used
+ *  - Whether to eliminate spurious extrema, 
+ *  - Whether or not to apply monotone filtering
  *
  * @author Lakshmi Krishnamurthy
  */

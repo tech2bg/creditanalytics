@@ -27,6 +27,7 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -256,16 +257,16 @@ public class BondRVMeasuresAPI {
 		System.out.println (strPrefix + "TSY Spread: " + FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.));
 
 		try {
-			System.out.println (strPrefix + "Workout Date: " + new JulianDate (rv._wi._dblDate));
+			System.out.println (strPrefix + "Workout Date: " + new JulianDate (rv._wi.date()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		System.out.println (strPrefix + "Workout Factor: " + rv._wi._dblExerciseFactor);
+		System.out.println (strPrefix + "Workout Factor: " + rv._wi.factor());
 
-		System.out.println (strPrefix + "Workout Type: " + rv._wi._iWOType);
+		System.out.println (strPrefix + "Workout Type: " + rv._wi.type());
 
-		System.out.println (strPrefix + "Workout Yield: " + FormatUtil.FormatDouble (rv._wi._dblYield, 0, 3, 100.));
+		System.out.println (strPrefix + "Workout Yield: " + FormatUtil.FormatDouble (rv._wi.yield(), 0, 3, 100.));
 
 		System.out.println (strPrefix + "Yield01: " + FormatUtil.FormatDouble (rv._dblYield01, 0, 2, 10000.));
 

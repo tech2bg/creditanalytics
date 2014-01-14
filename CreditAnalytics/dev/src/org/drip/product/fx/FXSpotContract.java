@@ -6,6 +6,7 @@ package org.drip.product.fx;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,7 +32,8 @@ package org.drip.product.fx;
  */
 
 /**
- *  FXSpotContract contains the FX spot contract parameters - the spot date and the currency pair.
+ * FXSpotContract contains the FX spot contract parameters - the spot date and the currency pair. Additional
+ *  functions serialize into and de-serialize out of byte arrays.
  *  
  * @author Lakshmi Krishnamurthy
  */
@@ -41,7 +43,7 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 	private org.drip.product.params.CurrencyPair _ccyPair = null;
 
 	/**
-	 * Constructor: Creates the FX spot object from the spot date and the currency pair.
+	 * Constructor: Create the FX spot object from the spot date and the currency pair.
 	 * 
 	 * @param dtSpot Spot date
 	 * @param ccyPair CurrencyPair
@@ -55,7 +57,7 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 		throws java.lang.Exception
 	{
 		if (null == dtSpot || null == ccyPair)
-			throw new java.lang.Exception ("Invalid params into FXSpot ctr!");
+			throw new java.lang.Exception ("FXSpotContract ctr: Invalid params");
 
 		_ccyPair = ccyPair;
 
@@ -63,11 +65,11 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 	}
 
 	/**
-	 * FXSpot de-serialization from input byte array
+	 * FXSpotContract de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if FXSpot cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if FXSpotContract cannot be properly de-serialized
 	 */
 
 	public FXSpotContract (
@@ -75,36 +77,36 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FXSpot de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("FXSpotContract de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FXSpot de-serializer: Empty state");
+			throw new java.lang.Exception ("FXSpotContract de-serializer: Empty state");
 
 		java.lang.String strSerializedFXSpot = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedFXSpot || strSerializedFXSpot.isEmpty())
-			throw new java.lang.Exception ("FXSpot de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("FXSpotContract de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFXSpot,
 			getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("FXSpot de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("FXSpotContract de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FXSpot de-serializer: Cannot locate Spot Date");
+			throw new java.lang.Exception ("FXSpotContract de-serializer: Cannot locate Spot Date");
 
 		_dblSpotDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("FXSpot de-serializer: Cannot locate Currency Pair");
+			throw new java.lang.Exception ("FXSpotContract de-serializer: Cannot locate Currency Pair");
 
 		_ccyPair = new org.drip.product.params.CurrencyPair (astrField[2].getBytes());
 	}
@@ -130,7 +132,8 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new FXSpotContract (ab);
 		} catch (java.lang.Exception e) {

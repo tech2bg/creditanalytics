@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,17 @@ package org.drip.product.rates;
 
 /**
  * IRSComponent contains the implementation of the Interest Rate Swap product contract/valuation details. It
- * 	is made off one fixed stream and one floating stream.
+ *  exports the following functionality:
+ *  - Standard/Custom Constructor for the IRSComponent
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Retrieve the constituent fixed and floating streams
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -326,7 +337,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		double dblValueNotional = java.lang.Double.NaN;
 
 		try {
-			dblValueNotional = getNotional (valParams._dblValue);
+			dblValueNotional = getNotional (valParams.valueDate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -343,9 +354,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblStartDate = getEffectiveDate().getJulian();
 
-				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > valParams._dblValue ? dblStartDate :
-					valParams._dblValue) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
-						(valParams._dblValue) * 0.01);
+				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > valParams.valueDate() ? dblStartDate :
+					valParams.valueDate()) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
+						(valParams.valueDate()) * 0.01);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -427,7 +438,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == mktParams ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams ||
 			null == mktParams.getDiscountCurve())
 			return null;
 
@@ -448,7 +459,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
 				double dblPeriodPayDate = p.getPayDate();
 
-				if (dblPeriodPayDate < valParams._dblValue) continue;
+				if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
@@ -481,7 +492,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				}
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams._dblCashPay, dblPV, dc, wjPVDFMicroJack) ?
+			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
 				wjPVDFMicroJack : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -497,7 +508,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == strQuote ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
 			null == mktParams || null == mktParams.getDiscountCurve())
 			return null;
 
@@ -519,7 +530,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
 					double dblPeriodPayDate = p.getPayDate();
 
-					if (dblPeriodPayDate < valParams._dblValue) continue;
+					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
@@ -568,7 +579,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == lsmm ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == lsmm ||
 			!(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
 				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
 					(lsmm.getID()))
@@ -587,7 +598,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				try {
 					for (org.drip.analytics.period.CashflowPeriod period : _fixStream.getCashFlowPeriod()) {
-						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
+						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
 							period.getPayDate());
 
 						double dblPay01 = period.getCouponDCF() * dblPeriodTurnDF;
@@ -600,12 +611,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 					double dblMaturity = getMaturityDate().getJulian();
 
-					double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
+					double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
 						dblMaturity);
 
-					return prlc.addPredictorResponseWeight (valParams._dblValue, -1.) &&
+					return prlc.addPredictorResponseWeight (valParams.valueDate(), -1.) &&
 						prlc.addPredictorResponseWeight (dblMaturity, dblPeriodMaturityDF) &&
-							prlc.addDResponseWeightDQuote (valParams._dblValue, 0.) &&
+							prlc.addDResponseWeightDQuote (valParams.valueDate(), 0.) &&
 								prlc.addDResponseWeightDQuote (dblMaturity, 0.) ? prlc : null;
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();

@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -59,8 +60,8 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Scen
 		_mapTenorCCBumpDn = null;
 
 	/**
-	 * Constructs CreditCurveScenarioContainer from the array of calibration instruments, the coupon bump
-	 * 		parameter, and the recovery bump parameter
+	 * Construct CreditCurveScenarioContainer from the array of calibration instruments, the coupon bump
+	 * 	parameter, and the recovery bump parameter
 	 * 
 	 * @param aCalibInst Array of calibration instruments
 	 * @param dblCouponBump Coupon Bump

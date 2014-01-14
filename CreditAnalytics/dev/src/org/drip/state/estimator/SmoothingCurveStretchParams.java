@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,11 @@ package org.drip.state.estimator;
  */
 
 /**
- * SmoothingCurveStretchParams contains the Parameters needed to hold the Stretch - the Calibration Boundary
- *  Condition, the Calibration Detail, and the BestFitWeightedResponse Instance.
+ * SmoothingCurveStretchParams contains the Parameters needed to hold the Stretch. It provides functionality
+ * 	to:
+ * 	- The Stretch Best fit Response and the corresponding Quote Sensitivity
+ * 	- The Calibration Detail and the Curve Smoothening Quantification Metric
+ * 	- The Segment Builder Parameters
  *
  * @author Lakshmi Krishnamurthy
  */

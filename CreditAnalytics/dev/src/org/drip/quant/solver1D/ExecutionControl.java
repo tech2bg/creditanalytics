@@ -6,6 +6,7 @@ package org.drip.quant.solver1D;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -131,7 +132,7 @@ public class ExecutionControl {
 	}
 
 	/**
-	 * Checks to see if the OF has reached the goal
+	 * Check to see if the OF has reached the goal
 	 * 
 	 * @param dblAbsoluteTolerance Absolute Tolerance
 	 * @param dblOF OF Value
@@ -157,7 +158,7 @@ public class ExecutionControl {
 	}
 
 	/**
-	 * Indicates if the variate convergence check has been turned on
+	 * Indicate if the variate convergence check has been turned on
 	 * 
 	 * @return TRUE => Variate convergence check has been turned on
 	 */

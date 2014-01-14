@@ -6,6 +6,7 @@ package org.drip.state.representation;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,12 @@ package org.drip.state.representation;
 
 /**
  * LatentStateMergeSubStretch implements merged stretch that is common to multiple latent states. It is
- *  identified by the start/end date predictor ordinates, and the Latent State Label.
+ *  identified by the start/end date predictor ordinates, and the Latent State Label. Its methods provide the
+ *  following functionality:
+ *  - Identify if the specified predictor ordinate belongs to the sub stretch
+ *  - Shift that sub stretch start/end
+ *  - Identify if the this overlaps the supplied sub stretch, and coalesce them if possible
+ *  - Retrieve the label, start, and end
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -130,7 +136,7 @@ public class LatentStateMergeSubStretch {
 	}
 
 	/**
-	 * Indicates whether Specified Merge Stretch's Label matches with the current one
+	 * Indicate whether Specified Merge Stretch's Label matches with the current one
 	 * 
 	 * @param lsmsOther The Supplied Merge Stretch
 	 * 
@@ -144,7 +150,7 @@ public class LatentStateMergeSubStretch {
 	}
 
 	/**
-	 * Indicates whether the specified Date is "inside" the Stretch Range.
+	 * Indicate whether the specified Date is "inside" the Stretch Range.
 	 * 
 	 * @param dblDate Date whose "inside"ness is asked for
 	 * 
@@ -174,7 +180,7 @@ public class LatentStateMergeSubStretch {
 	}
 
 	/**
-	 * Coalesces the supplied Merge Stretch with the current one (if possible) to create a new Merge Stretch
+	 * Coalesce the supplied Merge Stretch with the current one (if possible) to create a new Merge Stretch
 	 * 
 	 * @param lsmlOther The Supplied Merge Stretch
 	 * 

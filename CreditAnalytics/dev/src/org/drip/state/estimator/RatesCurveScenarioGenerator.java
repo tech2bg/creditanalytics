@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,8 +32,8 @@ package org.drip.state.estimator;
  */
 
 /**
- * This calls contains the interest rate calibration instruments to be used with the component calibrator to
- * 	produce scenario interest rate curves.
+ * RatesCurveScenarioGenerator uses the interest rate calibration instruments along with the component
+ *  calibrator to produce scenario interest rate curves.
  *
  * RatesCurveScenarioGenerator typically first constructs the actual curve calibrator instance to localize
  * 	the intelligence around curve construction. It then uses this curve calibrator instance to build
@@ -54,7 +55,7 @@ public class RatesCurveScenarioGenerator {
 		org.drip.state.estimator.NonlinearCurveCalibrator();
 
 	/**
-	 * Constructs a CreditCurveScenarioGenerator instance from the calibratable instrument array
+	 * Construct a RatesCurveScenarioGenerator instance from the calibratable instrument array
 	 * 
 	 * @param strCurrency Currency
 	 * @param strBootstrapMode Bootstrap Mode - one of the choices in DiscountCurveBuilder.BOOTSTRAP_MODE_xxx
@@ -81,7 +82,7 @@ public class RatesCurveScenarioGenerator {
 	}
 
 	/**
-	 * Returns an array of the calibration instruments
+	 * Return the array of the calibration instruments
 	 * 
 	 * @return Array of the calibration instruments
 	 */
@@ -92,7 +93,7 @@ public class RatesCurveScenarioGenerator {
 	}
 
 	/**
-	 * Calibrates a discount curve
+	 * Calibrate a discount curve
 	 * 
 	 * @param valParams ValuationParams
 	 * @param dcTSY Treasury Discount Curve
@@ -143,7 +144,7 @@ public class RatesCurveScenarioGenerator {
 
 		try {
 			dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (new
-				org.drip.analytics.date.JulianDate (valParams._dblValue), _strCurrency, adblDates,
+				org.drip.analytics.date.JulianDate (valParams.valueDate()), _strCurrency, adblDates,
 					adblRates, _strBootstrapMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -174,7 +175,7 @@ public class RatesCurveScenarioGenerator {
 	}
 
 	/**
-	 * Calibrates an array of tenor bumped discount curves
+	 * Calibrate an array of tenor bumped discount curves
 	 * 
 	 * @param valParams ValuationParams
 	 * @param dcTSY Treasury Discount Curve
@@ -229,7 +230,7 @@ public class RatesCurveScenarioGenerator {
 	}
 
 	/**
-	 * Calibrates a tenor map of tenor bumped discount curves
+	 * Calibrate a tenor map of tenor bumped discount curves
 	 * 
 	 * @param valParams ValuationParams
 	 * @param dcTSY Treasury Discount Curve

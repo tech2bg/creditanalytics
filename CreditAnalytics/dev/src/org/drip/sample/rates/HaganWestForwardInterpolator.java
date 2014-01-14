@@ -13,6 +13,7 @@ import org.drip.spline.stretch.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -38,20 +39,40 @@ import org.drip.spline.stretch.*;
 /**
  * This sample illustrates using the Hagan and West (2006) Estimator. It provides the following
  *  functionality:
- * 	- Ensure that the estimated regime is monotone an convex.
- * 	- If need be, enforce positivity.
- * 	- Apply segment-by-segment range bounds as needed.
+ * 	- Set up the Predictor ordinates and the response values..
+ * 	- Construct the rational linear shape control with the specified tension.
+ * 	- Create the Segment Inelastic design using the Ck and Curvature Penalty Derivatives.
+ * 	- Build the Array of Segment Custom Builder Control Parameters of the KLK Hyperbolic Tension Basis
+ * 		Type, the tension, the segment inelastic design control, and the shape controller.
+ * 	- Setup the monotone convex stretch using the above settings, and with no linear inference, no
+ * 		spurious extrema, or no monotone filtering applied.
+ * 	- Setup the monotone convex stretch using the above settings, and with linear inference, no spurious
+ * 		extrema, or no monotone filtering applied.
+ * 	- Compute and display the monotone convex output with the linear forward state.
+ * 	- Compute and display the monotone convex output with the harmonic forward state.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class HaganWestForwardInterpolator {
+
+	/*
+	 * Display the monotone convex response value pre- and post- positivity enforcement.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static void DisplayOP (
 		final MonotoneConvexHaganWest mchw,
 		final MultiSegmentSequence mss,
 		final double[] adblTime)
 		throws Exception
 	{
+		/*
+		 * Compare the stretch response values with that of the Monotone Convex across the range of the
+		 * 	predictor ordinates pre-positivity enforcement.
+		 */
+
 		double dblTimeBegin = 0.;
 		double dblTimeFinish = 30.;
 		double dblTimeDelta = 3.00;
@@ -66,6 +87,10 @@ public class HaganWestForwardInterpolator {
 			dblTime += dblTimeDelta;
 		}
 
+		/*
+		 * Verify if the monotone convex positivity enforcement succeeded
+		 */
+
 		System.out.println ("\t----------------------------------------------------------------");
 
 		System.out.println ("\t\tPositivity enforced? " + mchw.enforcePositivity());
@@ -73,6 +98,11 @@ public class HaganWestForwardInterpolator {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		dblTime = dblTimeBegin;
+
+		/*
+		 * Compare the stretch response values with that of the Monotone Convex across the range of the
+		 * 	predictor ordinates post-positivity enforcement.
+		 */
 
 		while (dblTime <= dblTimeFinish) {
 			System.out.println ("\t\tPositivity Enforced Response[" +
@@ -84,12 +114,37 @@ public class HaganWestForwardInterpolator {
 		}
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample demonstrates the construction and usage of the Monotone Hagan West Functionality. It shows
+	 * 	the following:
+	 * 	- Set up the Predictor ordinates and the response values..
+	 * 	- Construct the rational linear shape control with the specified tension.
+	 * 	- Create the Segment Inelastic design using the Ck and Curvature Penalty Derivatives.
+	 * 	- Build the Array of Segment Custom Builder Control Parameters of the KLK Hyperbolic Tension Basis
+	 * 		Type, the tension, the segment inelastic design control, and the shape controller.
+	 * 	- Setup the monotone convex stretch using the above settings, and with no linear inference, no
+	 * 		spurious extrema, or no monotone filtering applied.
+	 * 	- Setup the monotone convex stretch using the above settings, and with linear inference, no spurious
+	 * 		extrema, or no monotone filtering applied.
+	 * 	- Compute and display the monotone convex output with the linear forward state.
+	 * 	- Compute and display the monotone convex output with the harmonic forward state.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void MonotoneHaganWestInterpolatorSample()
 		throws Exception
 	{
+		/*
+		 * Set up the Predictor ordinates and the response values.
+		 */
+
 		double[] adblTime = new double[] {0., 0.10, 1.0, 4.0, 9.0, 20.0, 30.0};
 		double[] adblForwardRate = new double[] {1.008, 1.073, 1.221, 1.878, 2.226, 2.460};
+
+		/*
+		 * Construct the rational linear shape control with the specified tension.
+		 */
 
 		double dblShapeControllerTension = 1.;
 
@@ -100,9 +155,18 @@ public class HaganWestForwardInterpolator {
 		int iK = 2;
 		int iCurvaturePenaltyDerivativeOrder = 2;
 
+		/*
+		 * Create the Segment Inelastic design using the Ck and Curvature Penalty Derivatives.
+		 */
+
 		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (
 			iK,
 			iCurvaturePenaltyDerivativeOrder);
+
+		/*
+		 * Build the Array of Segment Custom Builder Control Parameters of the KLK Hyperbolic Tension Basis
+		 * 	Type, the tension, the segment inelastic design control, and the shape controller.
+		 */
 
 		double dblKLKTension = 1.;
 
@@ -117,6 +181,11 @@ public class HaganWestForwardInterpolator {
 		for (int i = 0; i < adblForwardRate.length; ++i)
 			aSCBC[i] = scbc;
 
+		/*
+		 * Setup the monotone convex stretch using the above settings, and with no linear inference, no
+		 * 	spurious extrema, or no monotone filtering applied.
+		 */
+
 		MultiSegmentSequence mssLinear = LocalControlStretchBuilder.CreateMonotoneConvexStretch (
 			"MSS_LINEAR",
 			adblTime,
@@ -127,6 +196,11 @@ public class HaganWestForwardInterpolator {
 			false,
 			false,
 			false);
+
+		/*
+		 * Setup the monotone convex stretch using the above settings, and with linear inference, no
+		 * 	spurious extrema, or no monotone filtering applied.
+		 */
 
 		MultiSegmentSequence mssHarmonic = LocalControlStretchBuilder.CreateMonotoneConvexStretch (
 			"MSS_HARMONIC",
@@ -139,11 +213,19 @@ public class HaganWestForwardInterpolator {
 			false,
 			false);
 
+		/*
+		 * Compute and display the monotone convex output with the linear forward state.
+		 */
+
 		System.out.println ("\n\t----------------------------------------------------------------");
 
 		System.out.println ("\t     MONOTONE CONVEX HAGAN WEST WITH LINEAR FORWARD STATE");
 
 		System.out.println ("\t----------------------------------------------------------------");
+
+		/*
+		 * Compute and display the monotone convex output with the harmonic forward state.
+		 */
 
 		DisplayOP (MonotoneConvexHaganWest.Create (adblTime, adblForwardRate, false), mssLinear, adblTime);
 
@@ -154,5 +236,12 @@ public class HaganWestForwardInterpolator {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		DisplayOP (MonotoneConvexHaganWest.Create (adblTime, adblForwardRate, true), mssHarmonic, adblTime);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		MonotoneHaganWestInterpolatorSample();
 	}
 }

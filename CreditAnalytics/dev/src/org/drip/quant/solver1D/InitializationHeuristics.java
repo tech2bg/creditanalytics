@@ -6,6 +6,7 @@ package org.drip.quant.solver1D;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -100,7 +101,7 @@ public class InitializationHeuristics {
 	private org.drip.quant.solver1D.BracketingControlParams _bcpCustom = null;
 
 	/**
-	 * Constructs an Initialization Heuristics Instance from the hard search edges
+	 * Construct an Initialization Heuristics Instance from the hard search edges
 	 * 
 	 * @param dblSearchStartLeft Search Start Left Edge
 	 * @param dblSearchStartRight Search Start Right Edge
@@ -124,7 +125,7 @@ public class InitializationHeuristics {
 	}
 
 	/**
-	 * Constructs an Initialization Heuristics Instance from the bracketing edge soft hints
+	 * Construct an Initialization Heuristics Instance from the bracketing edge soft hints
 	 * 
 	 * @param dblStartingBracketLeft Starting Soft Left Bracketing Edge Hint
 	 * @param dblStartingBracketRight Starting Soft Right Bracketing Edge Hint
@@ -148,7 +149,7 @@ public class InitializationHeuristics {
 	}
 
 	/**
-	 * Constructs an Initialization Heuristics Instance from the bracketing mid hint
+	 * Construct an Initialization Heuristics Instance from the bracketing mid hint
 	 * 
 	 * @param dblStartingBracketMid Starting Soft Right Bracketing Mid Hint
 	 * 
@@ -170,7 +171,7 @@ public class InitializationHeuristics {
 	}
 
 	/**
-	 * Constructs an Initialization Heuristics Instance from the bracketing hard floor/ceiling
+	 * Construct an Initialization Heuristics Instance from the bracketing hard floor/ceiling
 	 * 
 	 * @param dblBracketFloor Starting Hard Left Bracketing Floor
 	 * @param dblBracketCeiling Starting Hard Right Bracketing Ceiling
@@ -194,7 +195,7 @@ public class InitializationHeuristics {
 	}
 
 	/**
-	 * Constructs an Initialization Heuristics Instance from Custom Bracketing Control Parameters
+	 * Construct an Initialization Heuristics Instance from Custom Bracketing Control Parameters
 	 * 
 	 * @param bcpCustom Custom Bracketing Control Parameters
 	 * 
@@ -216,7 +217,7 @@ public class InitializationHeuristics {
 	}
 
 	/**
-	 * Constructs an Initialization Heuristics Instance from the set of Heuristics Parameters
+	 * Construct an Initialization Heuristics Instance from the set of Heuristics Parameters
 	 * 
 	 * @param iDeterminant Initialization Heuristics Instance Type
 	 * @param dblSearchStartLeft Hard Search Start Left Edge

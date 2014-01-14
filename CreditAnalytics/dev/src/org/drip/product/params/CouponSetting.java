@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,8 @@ package org.drip.product.params;
 
 /**
  * CouponSetting contains the coupon type, schedule, and the coupon amount for the component. If available
- *  floor and/or ceiling may also be applied to the coupon, in a pre-determined order of precedence.
+ *  floor and/or ceiling may also be applied to the coupon, in a pre-determined order of precedence. It
+ *  exports serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -71,7 +73,7 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 	public double _dblCouponCeiling = java.lang.Double.NaN;
 
 	/**
-	 * Constructs the CouponSetting from the coupon schedule, coupon type, and the coupon amount
+	 * Construct the CouponSetting from the coupon schedule, coupon type, and the coupon amount
 	 * 
 	 * @param fsCoupon Coupon schedule
 	 * @param strCouponType Coupon Type

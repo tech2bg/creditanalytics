@@ -27,14 +27,11 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*
- * DRIP Math Support
- */
-
-/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -244,13 +241,13 @@ public class BondBasketAPI {
 		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the creation/usage of the bond basket API
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void BasketBondAPISample()
+	private static final void BasketBondAPISample()
 		throws Exception
 	{
 		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
@@ -360,9 +357,9 @@ public class BondBasketAPI {
 
 		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
 
-		bmp.addDC ("USD", dc);
+		bmp.addDiscountCurve ("USD", dc);
 
-		bmp.addDC ("USDTSY", dcTSY);
+		bmp.addDiscountCurve ("USDTSY", dcTSY);
 
 		/*
 		 * Construct the Valuation and the Pricing Parameters

@@ -6,6 +6,7 @@ package org.drip.param.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -39,7 +40,7 @@ package org.drip.param.creator;
 public class ComponentMarketParamsBuilder {
 
 	/**
-	 * Creates a CMP with the rates discount curve alone
+	 * Create a CMP with the rates discount curve alone
 	 * 
 	 * @param dc Rates Discount Curve
 	 * 
@@ -54,7 +55,7 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the discount curve and the forward Curve
+	 * Create a CMP with the discount curve and the forward Curve
 	 * 
 	 * @param dc Discount Curve
 	 * @param fc Forward Curve
@@ -71,7 +72,7 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve and the treasury discount curve alone
+	 * Create a CMP with the rates discount curve and the treasury discount curve alone
 	 * 
 	 * @param dc Rates Discount Curve
 	 * @param dcTSY Treasury Discount Curve
@@ -88,7 +89,7 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve, the treasury discount curve, and the EDSF discount curve
+	 * Create a CMP with the rates discount curve, the treasury discount curve, and the EDSF discount curve
 	 * 
 	 * @param dc Rates Discount Curve
 	 * @param dcTSY Treasury Discount Curve
@@ -107,7 +108,7 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the discount curve and the credit curve
+	 * Create a CMP with the discount curve and the credit curve
 	 * 
 	 * @param dc Discount Curve
 	 * @param cc Credit Curve
@@ -124,7 +125,7 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve, the treasury discount curve, the EDSF discount curve, the
+	 * Create a CMP with the rates discount curve, the treasury discount curve, the EDSF discount curve, the
 	 * 	credit curve, the component quote, the map of treasury benchmark quotes, and the double map of
 	 * 	date/rate index and fixings
 	 * 
@@ -159,7 +160,7 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
+	 * Create a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
 	 *  the EDSF discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
 	 *  and the double map of date/rate index and fixings
 	 * 

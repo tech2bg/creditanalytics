@@ -26,15 +26,11 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*
- * DRIP Math Support
- */
-
-
-/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -71,13 +67,13 @@ import org.drip.state.creator.*;
 public class CreditAnalyticsAPI {
 	private static final java.lang.String FIELD_SEPARATOR = "   ";
 
-	/**
+	/*
 	 * Sample API demonstrating the creation/usage of the credit curve from survival and hazard rates
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void CreditCurveAPISample()
+	private static final void CreditCurveAPISample()
 		throws Exception
 	{
 		JulianDate dtStart = JulianDate.Today();
@@ -113,13 +109,13 @@ public class CreditAnalyticsAPI {
 			ccFromSurvival.getSurvival ("10Y") + "; Hazard=" + ccFromSurvival.calcHazard ("10Y"));
 	}
 
-	/**
+	/*
 	 * Sample API demonstrating the creation of the Credit Curve from the CDS instruments
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static void CreateCreditCurveFromCDSInstruments()
+	private static void CreateCreditCurveFromCDSInstruments()
 		throws Exception
 	{
 		JulianDate dtStart = JulianDate.Today();
@@ -188,13 +184,13 @@ public class CreditAnalyticsAPI {
 					(dc, null, null, cc, null, null, null), null, astrCalibMeasure[i]));
 	}
 
-	/**
+	/*
 	 * Sample API demonstrating the display of the CDS coupon and loss cash flow
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void CDSAPISample()
+	private static final void CDSAPISample()
 		throws Exception
 	{
 		JulianDate dtStart = JulianDate.Today();
@@ -269,11 +265,11 @@ public class CreditAnalyticsAPI {
 				JulianDate.fromJulian (dp.getEndDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (dp.getPayDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEffectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEffectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.effectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.effectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getStartSurvival(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.)
+				FormatUtil.FormatDouble (dp.startSurvival(), 1, 4, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.endSurvival(), 1, 4, 1.)
 			);
 	}
 

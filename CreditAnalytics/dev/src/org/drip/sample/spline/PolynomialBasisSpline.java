@@ -12,6 +12,7 @@ import org.drip.spline.segment.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -41,7 +42,7 @@ import org.drip.spline.segment.*;
  * 		function.
  * 	- Demonstrate the variational shape optimization behavior.
  * 	- Estimate the node value and the node value Jacobian with the segment, as well as at the boundaries.
- * 	- Calculate the segment monotonicity.
+ * 	- Calculate the segment monotonicity and the curvature penalty.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -54,7 +55,7 @@ public class PolynomialBasisSpline {
 	 * 	- Construction of two segments, 1 and 2.
 	 *  - Calibration of the segments to the left and the right node values
 	 *  - Extraction of the segment Jacobians and segment monotonicity
-	 *  - Estimate point value and the Jacobian
+	 *  - Estimate point value and the Jacobian, monotonicity, and curvature penalty
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
@@ -92,7 +93,7 @@ public class PolynomialBasisSpline {
 		ConstitutiveState ecs2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, sdic);
 
 		/*
-		 * Calibrate the left segment using the node values, and compute the segment Jacobian
+		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
 		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null);
@@ -110,7 +111,7 @@ public class PolynomialBasisSpline {
 		System.out.println ("Segment 1 DPE: " + ecs1.curvatureDPE());
 
 		/*
-		 * Calibrate the right segment using the node values, and compute the segment Jacobian
+		 * Calibrate the right segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
 		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, 16., Double.NaN, null, null);
@@ -127,10 +128,14 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 2 DPE: " + ecs2.curvatureDPE());
 
+		/*
+		 * Re-calibrate Segment #2 with a new Response Value
+		 */
+
 		ecs2.calibrate (ecs1, 14., Double.NaN, null, null);
 
 		/*
-		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
+		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian, and curvature penalty
 		 */
 
 		double dblX = 2.0;
@@ -149,7 +154,7 @@ public class PolynomialBasisSpline {
 	 * 	- Construction of two segments, 1 and 2.
 	 *  - Calibration of the segments to the left and the right node values
 	 *  - Extraction of the segment Jacobians and segment monotonicity
-	 *  - Estimate point value and the Jacobian
+	 *  - Estimate point value and the Jacobian, monotonicity, and curvature penalty
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
@@ -187,7 +192,7 @@ public class PolynomialBasisSpline {
 		ConstitutiveState ecs2 = ConstitutiveState.Create (1.0, 2.0, fs, rssc, sdic);
 
 		/*
-		 * Calibrate the left segment using the node values, and compute the segment Jacobian
+		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
 		ecs1.calibrateState (
@@ -211,7 +216,7 @@ public class PolynomialBasisSpline {
 		System.out.println ("Segment 1 DPE: " + ecs1.curvatureDPE());
 
 		/*
-		 * Calibrate the right segment using the node values, and compute the segment Jacobian
+		 * Calibrate the right segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
 		ecs2.calibrateState (
@@ -235,10 +240,14 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("Segment 2 DPE: " + ecs2.curvatureDPE());
 
+		/*
+		 * Re-calibrate Segment #2 with a new Response Value
+		 */
+
 		ecs2.calibrate (ecs1, 14., Double.NaN, null, null);
 
 		/*
-		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
+		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian, monotonicity, and curvature penalty
 		 */
 
 		double dblX = 2.0;
@@ -250,8 +259,18 @@ public class PolynomialBasisSpline {
 		System.out.println ("\t\tSegment 2 DPE: " + ecs2.curvatureDPE());
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample illustrates the construction and usage for polynomial basis splines. It shows the
+	 * 	following:
+	 * 	- Construct a rational shape controller with the specified shape controller tension.
+	 * 	- Set the Roughness Penalty to 2nd order Roughness Penalty Derivative Order.
+	 * 	- Test the polynomial spline across different polynomial degrees and Ck's.
+	 * 	- Test the C1 Hermite spline.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void PolynomialBasisSplineSample()
 		throws Exception
 	{
 		/*
@@ -323,5 +342,12 @@ public class PolynomialBasisSpline {
 		System.out.println (" -------------------- \n Ck HERMITE \n -------------------- \n");
 
 		TestC1HermiteSpline (4, 1, iRoughnessPenaltyDerivativeOrder, rssc);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		PolynomialBasisSplineSample();
 	}
 }

@@ -6,6 +6,7 @@ package org.drip.spline.grid;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,15 @@ package org.drip.spline.grid;
 
 /**
  * Span is the interface that exposes the functionality behind the collection of Stretches that may be
- *  overlapping or non-overlapping.
+ *  overlapping or non-overlapping. It exposes the following stubs:
+ *  - Retrieve the Left/Right Span Edge.
+ *  - Indicate if the specified Label is part of the Merge State at the specified Predictor Ordinate.
+ *  - Compute the Response from the containing Stretches.
+ *  - Add a Stretch to the Span.
+ *  - Retrieve the first Stretch that contains the Predictor Ordinate.
+ *  - Retrieve the Stretch by Name.
+ *  - Calculate the Response Derivative to the Quote at the specified Ordinate.
+ *  - Display the Span Edge Coordinates.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -123,7 +132,7 @@ public interface Span {
 	 * Calculate the Response Derivative to the Quote at the specified Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate
-	 * @param Order of Derivative desired
+	 * @param iOrder Order of Derivative desired
 	 * 
 	 * @return Jacobian of the Response Derivative to the Quote at the Ordinate
 	 */

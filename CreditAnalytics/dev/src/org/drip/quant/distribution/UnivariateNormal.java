@@ -6,6 +6,7 @@ package org.drip.quant.distribution;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -138,7 +139,7 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 	}
 
 	/**
-	 * Generates a N (0, 1) distribution
+	 * Generate a N (0, 1) distribution
 	 * 
 	 * @return The N (0, 1) distribution
 	 */
@@ -155,7 +156,7 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 	}
 
 	/**
-	 * Constructs a univariate Gaussian/normal distribution
+	 * Construct a univariate Gaussian/normal distribution
 	 * 
 	 * @param dblMean Mean of the Distribution
 	 * @param dblVariance Variance of the DIstribution

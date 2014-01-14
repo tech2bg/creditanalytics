@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -41,6 +42,8 @@ package org.drip.product.params;
  *  - Component Details => Original Count, Defaulted Count
  *  - Payoff Details => Knock-out on Default, Pay Accrued Amount, Recovery on Default
  *  - Other => Index Life Span, Index Factor
+ *  
+ *  It also exports serialization into and de-serialization out of byte arrays.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -234,7 +237,7 @@ public class CDXRefDataParams {
 	public java.lang.String _strShortName = "";
 
 	/**
-	 * Creates a CDXRefData instance from valid individual parameters (so no additional validation is
+	 * Create a CDXRefData instance from valid individual parameters (so no additional validation is
 	 * 	performed).
 	 * 
 	 * @param strCurveID Index Curve ID
@@ -389,7 +392,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Curve ID
+	 * Set the Index Curve ID
 	 * 
 	 * @param strCurveID Index Curve ID
 	 * 
@@ -405,7 +408,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index SPN
+	 * Set the Index SPN
 	 * 
 	 * @param strSPN Index SPN
 	 * 
@@ -421,7 +424,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Label
+	 * Set the Index Label
 	 * 
 	 * @param strIndexLabel Index Label
 	 * 
@@ -437,7 +440,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Name
+	 * Set the Index Name
 	 * 
 	 * @param strIndexName Index Name
 	 * 
@@ -453,7 +456,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Curve Name
+	 * Set the Index Curve Name
 	 * 
 	 * @param strCurveName Index Curve Name
 	 * 
@@ -469,7 +472,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Issue Date
+	 * Set the Index Issue Date
 	 * 
 	 * @param dtIssue Index Issue Date
 	 * 
@@ -485,7 +488,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Maturity Date
+	 * Set the Index Maturity Date
 	 * 
 	 * @param dtMaturity Index Maturity Date
 	 * 
@@ -501,7 +504,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Coupon
+	 * Set the Index Coupon
 	 * 
 	 * @param dblCoupon Index Coupon
 	 * 
@@ -515,7 +518,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Currency
+	 * Set the Index Currency
 	 * 
 	 * @param strCurrency Index Currency
 	 * 
@@ -531,7 +534,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Day Count
+	 * Set the Index Day Count
 	 * 
 	 * @param strDayCount Index Day Count
 	 * 
@@ -547,7 +550,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the flag indicating whether the Index has a Full First Stub
+	 * Set the flag indicating whether the Index has a Full First Stub
 	 * 
 	 * @param bFullFirstStub Flag indicating whether the Index has a Full First Stub
 	 * 
@@ -562,7 +565,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Recovery
+	 * Set the Index Recovery
 	 * 
 	 * @param dblRecovery Index Recovery
 	 * 
@@ -576,7 +579,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Coupon Frequency
+	 * Set the Index Coupon Frequency
 	 * 
 	 * @param iFrequency Index Coupon Frequency
 	 * 
@@ -591,7 +594,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Red ID
+	 * Set the Index Red ID
 	 * 
 	 * @param strRedID Index Red ID
 	 * 
@@ -607,7 +610,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Class
+	 * Set the Index Class
 	 * 
 	 * @param strIndexClass Index Class
 	 * 
@@ -623,7 +626,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Series
+	 * Set the Index Series
 	 * 
 	 * @param iIndexSeries Index Series
 	 * 
@@ -638,7 +641,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Group Name
+	 * Set the Index Group Name
 	 * 
 	 * @param strIndexGroupName Index Group Name
 	 * 
@@ -654,7 +657,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Short Name
+	 * Set the Index Short Name
 	 * 
 	 * @param strIndexShortName Index Short Name
 	 * 
@@ -670,7 +673,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Short Group Name
+	 * Set the Index Short Group Name
 	 * 
 	 * @param strIndexShortGroupName Index Short Group Name
 	 * 
@@ -687,7 +690,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Version
+	 * Set the Index Version
 	 * 
 	 * @param iIndexVersion Index Version
 	 * 
@@ -702,7 +705,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Life Span
+	 * Set the Index Life Span
 	 * 
 	 * @param iIndexLifeSpan Index Life Span
 	 * 
@@ -717,7 +720,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Composite Curve ID
+	 * Set the Index Composite Curve ID
 	 * 
 	 * @param strCurvyCurveID Index Composite Curve ID
 	 * 
@@ -733,7 +736,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Factor
+	 * Set the Index Factor
 	 * 
 	 * @param dblIndexFactor Index Factor
 	 * 
@@ -747,7 +750,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Number of Original Components in the Index
+	 * Set the Number of Original Components in the Index
 	 * 
 	 * @param iOriginalComponentCount Number of Original Components in the Index
 	 * 
@@ -762,7 +765,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Number of Defaulted Components in the Index
+	 * Set the Number of Defaulted Components in the Index
 	 * 
 	 * @param iDefaultedComponentCount Number of Defaulted Components in the Index
 	 * 
@@ -777,7 +780,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the Index Location
+	 * Set the Index Location
 	 * 
 	 * @param strLocation Index Location
 	 * 
@@ -793,7 +796,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets if the Index pays accrued on termination
+	 * Set if the Index pays accrued on termination
 	 * 
 	 * @param bPayAccrued Flag indicating if the Index pays accrued on termination
 	 * 
@@ -808,7 +811,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets if the Index knocks out on Default
+	 * Set if the Index knocks out on Default
 	 * 
 	 * @param bKnockOutOnDefault Flag indicating if the Index knocks out on Default
 	 * 
@@ -823,7 +826,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets whether the quote is marked as a CDS
+	 * Set whether the quote is marked as a CDS
 	 * 
 	 * @param bQuoteAsCDS Flag indicating whether the quote is marked as a CDS
 	 * 
@@ -854,7 +857,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Sets the index short name
+	 * Set the index short name
 	 * 
 	 * @param strShortName Index Short Name
 	 * 
@@ -870,7 +873,7 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Validates the CDXRefData instance
+	 * Validate the CDXRefData instance
 	 * 
 	 * @return TRUE if successful
 	 */
@@ -893,8 +896,8 @@ public class CDXRefDataParams {
 	}
 
 	/**
-	 * Returns the stringified set of parameters in a java call that can be statically used to
-	 * 		re-construct the index.
+	 * Return the stringified set of parameters in a java call that can be statically used to re-construct
+	 *  the index.
 	 * 
 	 * @return Set of Stringified parameters as a java call. 
 	 */

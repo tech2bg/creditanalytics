@@ -6,6 +6,7 @@ package org.drip.state.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -55,7 +56,7 @@ public class DiscountCurveBuilder {
 	public static final java.lang.String BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF = "PolynomialSplineDF";
 
 	/**
-	 * Builds a Discount Curve from an array of discount factors
+	 * Build a Discount Curve from an array of discount factors
 	 * 
 	 * @param dtStart Start Date
 	 * @param strCurrency Currency
@@ -112,7 +113,7 @@ public class DiscountCurveBuilder {
 	}
 
 	/**
-	 * Creates a discount curve from the flat rate
+	 * Create a discount curve from the flat rate
 	 * 
 	 * @param dtStart Start Date
 	 * @param strCurrency Currency
@@ -139,7 +140,7 @@ public class DiscountCurveBuilder {
 	}
 
 	/**
-	 * Creates a discount curve from an array of dates/rates
+	 * Create a discount curve from an array of dates/rates
 	 * 
 	 * @param dtStart Start Date
 	 * @param strCurrency Currency
@@ -181,7 +182,7 @@ public class DiscountCurveBuilder {
 	 * 
 	 * @param ab Byte Array
 	 * @param strBootstrapMode Mode of the bootstrapping to be done: "ConstantForward", "LinearForward",
-	 * 			"QuadraticForward", or "CubicForward". Defaults to "ConstantForward".
+	 * 	"QuadraticForward", or "CubicForward". Defaults to "ConstantForward".
 	 * 
 	 * @return Discount Curve Instance
 	 */

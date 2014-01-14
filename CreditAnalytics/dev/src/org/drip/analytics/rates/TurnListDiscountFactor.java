@@ -6,6 +6,7 @@ package org.drip.analytics.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,9 @@ package org.drip.analytics.rates;
  */
 
 /**
- * TurnListDiscountFactor implements the discounting based off of the turns list.
+ * TurnListDiscountFactor implements the discounting based off of the turns list. Its functions add a turn
+ * 	instance to the current set, and concurrently apply the discount factor inside the range to each relevant
+ * 	turn.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -46,7 +49,7 @@ public class TurnListDiscountFactor {
 	}
 
 	/**
-	 * Adds a Turn Instance to the Discount Curve
+	 * Add a Turn Instance to the Discount Curve
 	 * 
 	 * @param turn The Turn Instance to be added
 	 * 

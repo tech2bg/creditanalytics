@@ -6,6 +6,7 @@ package org.drip.product.credit;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -726,7 +727,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 	{
 		if (null == strName || strName.isEmpty() || null == aBond || 0 == aBond.length || null == adblWeights
 			|| 0 == adblWeights.length || aBond.length != adblWeights.length || null == dtEffective)
-			throw new java.lang.Exception ("Invalid inputs into BasketBond!");
+			throw new java.lang.Exception ("BasketBond ctr: Invalid inputs");
 
 		_aBond = aBond;
 		_strName = strName;
@@ -737,12 +738,12 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 
 		for (int i = 0; i < adblWeights.length; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (adblWeights[i]))
-				throw new java.lang.Exception ("Invalid BondBasket weights!");
+				throw new java.lang.Exception ("BasketBond ctr: Invalid weights");
 
 			dblCumulativeWeight += adblWeights[i];
 		}
 
-		if (0. == dblCumulativeWeight) throw new java.lang.Exception ("Invalid BondBasket weights!");
+		if (0. == dblCumulativeWeight) throw new java.lang.Exception ("BasketBond ctr: Invalid weights");
 
 		for (int i = 0; i < adblWeights.length; ++i)
 			_adblNormWeights[i] = adblWeights[i] / dblCumulativeWeight;
@@ -838,7 +839,8 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new BondBasket (ab);
 		} catch (java.lang.Exception e) {

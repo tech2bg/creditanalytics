@@ -6,6 +6,7 @@ package org.drip.product.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -54,7 +55,7 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 	public abstract java.lang.String getPrimaryCode();
 
 	/**
-	 * Sets the component's primary code
+	 * Set the component's primary code
 	 * 
 	 * @param strCode Primary Code
 	 */
@@ -63,7 +64,7 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 		final java.lang.String strCode);
 
 	/**
-	 * Gets the component's secondary codes
+	 * Get the component's secondary codes
 	 * 
 	 * @return Array of strings containing the secondary codes
 	 */

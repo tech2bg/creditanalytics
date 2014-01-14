@@ -30,6 +30,7 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -207,7 +208,7 @@ public class MultiLegSwapAPI {
 
 		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
 
-		bmp.addDC ("USD", dc);
+		bmp.addDiscountCurve ("USD", dc);
 
 		/*
 		 * Create the Rates Basket from the streams

@@ -6,6 +6,7 @@ package org.drip.quant.solver1D;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -127,7 +128,7 @@ public class BracketingOutput extends org.drip.quant.solver1D.ExecutionInitializ
 	}
 
 	/**
-	 * Makes a ConvergenceOutput for the Open Method from the bracketing output
+	 * Make a ConvergenceOutput for the Open Method from the bracketing output
 	 * 
 	 * @return The ConvergenceOutput object
 	 */

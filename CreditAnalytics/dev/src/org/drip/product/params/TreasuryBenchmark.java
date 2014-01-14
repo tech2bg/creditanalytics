@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,8 @@ package org.drip.product.params;
 
 /**
  * TreasuryBenchmark contains component treasury benchmark parameters - the treasury benchmark set, and the
- *  names of the treasury and the EDSF IR curves.
+ *  names of the treasury and the EDSF IR curves. It also exports serialization into and de-serialization out
+ *  of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -59,7 +61,7 @@ public class TreasuryBenchmark extends org.drip.service.stream.Serializer implem
 	public java.lang.String _strIREDSF = "";
 
 	/**
-	 * Creates the TreasuryBenchmark object from the treasury benchmark set, and the names of the
+	 * Create the TreasuryBenchmark object from the treasury benchmark set, and the names of the
 	 * 	treasury and the EDF IR curves.
 	 * 
 	 * @param tsyBmkSet Treasury Benchmark Set

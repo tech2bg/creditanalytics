@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -54,11 +55,11 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 	}
 
 	/**
-	 * ComponentQuote de-serialization from input byte array
+	 * ComponentMultiMeasureQuote de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if ComponentQuote cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if ComponentMultiMeasureQuote cannot be properly de-serialized
 	 */
 
 	public ComponentMultiMeasureQuote (
@@ -66,41 +67,46 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ComponentQuote de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception
+				("ComponentMultiMeasureQuote de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ComponentQuote de-serializer: Empty state");
+			throw new java.lang.Exception ("ComponentMultiMeasureQuote de-serializer: Empty state");
 
 		java.lang.String strSerializedComponentQuote = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedComponentQuote || strSerializedComponentQuote.isEmpty())
-			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("ComponentMultiMeasureQuote de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedComponentQuote,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("ComponentQuote de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception
+				("ComponentMultiMeasureQuote de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate market quote");
+			throw new java.lang.Exception
+				("ComponentMultiMeasureQuote de-serializer: Cannot locate market quote");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_mktQuote = new MultiSidedQuote (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate market quote field");
+			throw new java.lang.Exception
+				("ComponentMultiMeasureQuote de-serializer: Cannot locate market quote field");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strMarketQuoteField = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("ComponentQuote de-serializer: Cannot locate map of quotes");
+			throw new java.lang.Exception
+				("ComponentMultiMeasureQuote de-serializer: Cannot locate map of quotes");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
@@ -175,7 +181,8 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		return _strMarketQuoteField;
 	}
 
-	@Override public boolean removeQuote (final java.lang.String strQuoteField)
+	@Override public boolean removeQuote (
+		final java.lang.String strQuoteField)
 	{
 		if (null == strQuoteField || strQuoteField.isEmpty()) return false;
 
@@ -244,7 +251,8 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new ComponentMultiMeasureQuote (ab);
 		} catch (java.lang.Exception e) {

@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -34,7 +35,7 @@ package org.drip.analytics.definition;
  * FXForwardCurve implements the curve representing the FXForward nodes. It extends the Curve class, and
  * 	exposes the following functionality:
  * 	- Retrieve the spot parameters (FX Spot, Spot Date, and the currency pair)
- *  - Calculate the Full set of FX Basis/Zero Rate nodes corresponding to each basis node
+ *  - Calculate the Zero set of FX Basis/Zero Rate nodes corresponding to each basis node
  *  - Bootstrap basis points/discount curves corresponding to the FXForward node set
  *  - Imply the zero rate to a given date from the FXForward curve
  *
@@ -46,31 +47,31 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 
 	/**
 	 * 
-	 * Returns the Spot Date
+	 * Return the Spot Date
 	 * 
 	 * @return Spot Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getSpotDate();
+	public abstract org.drip.analytics.date.JulianDate spotDate();
 
 	/**
-	 * Returns the FX Spot
+	 * Return the FX Spot
 	 * 
 	 * @return FXSpot
 	 */
 
-	public abstract double getFXSpot();
+	public abstract double fxSpot();
 
 	/**
-	 * Returns the CurrencyPair
+	 * Return the CurrencyPair
 	 * 
 	 * @return CurrencyPair
 	 */
 
-	public abstract org.drip.product.params.CurrencyPair getCurrencyPair();
+	public abstract org.drip.product.params.CurrencyPair currencyPair();
 
 	/**
-	 * Calculates the set of full basis given the input discount curves
+	 * Calculate the set of Zero basis given the input discount curves
 	 * 
 	 * @param valParam ValuationParams
 	 * @param dcNum Discount Curve Numerator
@@ -80,7 +81,7 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 	 * @return Array of the computed basis
 	 */
 
-	public abstract double[] getFullBasis (
+	public abstract double[] zeroBasis (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,
@@ -131,7 +132,7 @@ public abstract class FXForwardCurve extends org.drip.service.stream.Serializer 
 	 * @return Array of the computed implied rates
 	 */
 
-	public abstract double[] calcImpliedNodeRates (
+	public abstract double[] impliedNodeRates (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,

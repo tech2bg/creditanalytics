@@ -32,7 +32,17 @@ package org.drip.product.rates;
  */
 
 /**
- * CashComponent contains the implementation of the Cash IR product and its contract/valuation details.
+ * CashComponent contains the implementation of the Cash IR product and its contract/valuation details. It
+ *  exports the following functionality:
+ *  - Standard/Custom Constructor for the Cash Component
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -49,7 +59,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
 	/**
-	 * Constructs a CashComponent instance
+	 * Construct a CashComponent instance
 	 * 
 	 * @param dtEffective Effective Date
 	 * @param dtMaturity Maturity Date
@@ -320,7 +330,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams) return null;
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -332,8 +342,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		try {
-			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
-				_settleParams.cashSettleDate (valParams._dblValue);
+			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
+				_settleParams.cashSettleDate (valParams.valueDate());
 
 			double dblUnadjustedAnnuity = dc.df (_dblMaturity) / dc.df (_dblEffective) / dc.df
 				(dblCashSettle);
@@ -378,7 +388,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams || null ==
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
 			mktParams.getDiscountCurve())
 			return null;
 
@@ -405,7 +415,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 					return null;
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams._dblCashPay, dblPV, dc, wjPVDFMicroJack) ?
+			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
 				wjPVDFMicroJack : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -421,7 +431,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == strQuote || null == mktParams
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null == mktParams
 			|| null == mktParams.getDiscountCurve())
 			return null;
 
@@ -458,7 +468,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == lsmm || !(lsmm instanceof
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == lsmm || !(lsmm instanceof
 			org.drip.analytics.rates.RatesLSMM) ||
 				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
 					(lsmm.getID()))
@@ -471,7 +481,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
-				double dblTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue, _dblMaturity);
+				double dblTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(), _dblMaturity);
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
 					java.lang.String[] {"Price"}, false)) {

@@ -27,15 +27,11 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*
- * DRIP Math Support
- */
-
-
-/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -132,7 +128,7 @@ public class CDSBasketAPI {
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the creation/usage of the Credit Curve from CDS Instruments
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -164,7 +160,7 @@ public class CDSBasketAPI {
 			adblQuote, astrCalibMeasure, dblRecovery, false);
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the creation/usage of the bond basket API
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -224,19 +220,19 @@ public class CDSBasketAPI {
 
 		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
 
-		bmp.addDC ("USD", dc);
+		bmp.addDiscountCurve ("USD", dc);
 
-		bmp.addCC ("CHN", ccCHN);
+		bmp.addCreditCurve ("CHN", ccCHN);
 
-		bmp.addCC ("IND", ccIND);
+		bmp.addCreditCurve ("IND", ccIND);
 
-		bmp.addCC ("BRA", ccBRA);
+		bmp.addCreditCurve ("BRA", ccBRA);
 
-		bmp.addCC ("RUS", ccRUS);
+		bmp.addCreditCurve ("RUS", ccRUS);
 
-		bmp.addCC ("KOR", ccKOR);
+		bmp.addCreditCurve ("KOR", ccKOR);
 
-		bmp.addCC ("TUR", ccTUR);
+		bmp.addCreditCurve ("TUR", ccTUR);
 
 		/*
 		 * Create the CDS basket from the component CDS and their weights

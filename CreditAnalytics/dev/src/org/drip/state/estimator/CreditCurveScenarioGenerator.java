@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,9 +32,9 @@ package org.drip.state.estimator;
  */
 
 /**
- * This calls contains the credit calibration instruments to be used with the component calibrator to produce
- * 	scenario credit curves.
- * 
+ * CreditCurveScenarioGenerator uses the hazard rate calibration instruments along with the component
+ *  calibrator to produce scenario hazard rate curves.
+ *
  * CreditCurveScenarioGenerator typically first constructs the actual curve calibrator instance to localize
  * 	the intelligence around curve construction. It then uses this curve calibrator instance to build
  *  individual curves or the sequence of node bumped scenario curves. The curves in the set may be an array,
@@ -84,7 +85,7 @@ public class CreditCurveScenarioGenerator {
 		org.drip.state.estimator.NonlinearCurveCalibrator();
 
 	/**
-	 * Constructs a CreditCurveScenarioGenerator instance from the calibratable instrument array
+	 * Construct a CreditCurveScenarioGenerator instance from the calibratable instrument array
 	 * 
 	 * @param aCalibInst Array of calibration instruments
 	 * 
@@ -100,7 +101,7 @@ public class CreditCurveScenarioGenerator {
 	}
 
 	/**
-	 * Returns an array of the calibration instruments
+	 * Return an array of the calibration instruments
 	 * 
 	 * @return Array of the calibration instruments
 	 */
@@ -111,7 +112,7 @@ public class CreditCurveScenarioGenerator {
 	}
 
 	/**
-	 * Calibrates a create curve
+	 * Calibrate a Credit Curve
 	 * 
 	 * @param strName Credit Curve name
 	 * @param valParams ValuationParams
@@ -163,7 +164,7 @@ public class CreditCurveScenarioGenerator {
 
 		try {
 			cc = org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (new
-				org.drip.analytics.date.JulianDate (valParams._dblValue), strName, dc.currency(),
+				org.drip.analytics.date.JulianDate (valParams.valueDate()), strName, dc.currency(),
 					adblDate, adblHazardRate, dblRecovery);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -192,7 +193,7 @@ public class CreditCurveScenarioGenerator {
 	}
 
 	/**
-	 * Creates an array of tenor bumped credit curves
+	 * Create an array of tenor bumped credit curves
 	 * 
 	 * @param strName Credit Curve Name
 	 * @param valParams ValuationParams
@@ -251,7 +252,7 @@ public class CreditCurveScenarioGenerator {
 	}
 
 	/**
-	 * Creates an tenor named map of tenor bumped credit curves
+	 * Create an tenor named map of tenor bumped credit curves
 	 * 
 	 * @param strName Credit Curve name
 	 * @param valParams ValuationParams

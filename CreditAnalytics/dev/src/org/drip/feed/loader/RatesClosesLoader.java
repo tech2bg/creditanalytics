@@ -34,7 +34,7 @@ package org.drip.feed.loader;
  * @author Lakshmi Krishnamurthy
  */
 
-public class EMRatesClosesLoader {
+public class RatesClosesLoader {
 	private static final boolean s_bBlog = true;
 	private static java.io.BufferedWriter _writeCOB = null;
 	private static java.io.BufferedWriter _writeLog = null;
@@ -71,6 +71,27 @@ public class EMRatesClosesLoader {
 		return mapSwapCalc.get (strMeasure);
 	}
 
+	private static final double calcCarry (
+		final org.drip.product.definition.Component comp,
+		final org.drip.analytics.date.JulianDate dt1,
+		final org.drip.analytics.date.JulianDate dt2,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final java.lang.String strCurrency)
+		throws java.lang.Exception
+	{
+		org.drip.product.rates.IRSComponent irs = (org.drip.product.rates.IRSComponent) comp;
+
+		double dblFixedCoupon = irs.getFixedStream().getCoupon (dt1.getJulian(), null);
+
+		double dblFloatingRate = irs.getFloatStream().getCoupon (dt1.getJulian(), new
+			org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, null, null, null, null));
+
+		return dblFixedCoupon * org.drip.analytics.daycount.Convention.YearFraction (dt1.getJulian(),
+			dt2.getJulian(), "30/360", false, java.lang.Double.NaN, null, strCurrency) - dblFloatingRate *
+				org.drip.analytics.daycount.Convention.YearFraction (dt1.getJulian(), dt2.getJulian(),
+					"Act/360", false, java.lang.Double.NaN, null, strCurrency);
+	}
+
 	private static final double calcReturn (
 		final org.drip.product.definition.Component comp,
 		final org.drip.analytics.date.JulianDate dt1,
@@ -80,21 +101,8 @@ public class EMRatesClosesLoader {
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		return calcMeasure (comp, dt2, dc2, "DirtyPV", strCurrency) - calcMeasure (comp, dt1, dc1, "DirtyPV",
-			strCurrency);
-	}
-
-	private static final double calcCarry (
-		final org.drip.product.definition.Component comp,
-		final org.drip.analytics.date.JulianDate dt1,
-		final org.drip.analytics.date.JulianDate dt2,
-		final org.drip.analytics.rates.DiscountCurve dc,
-		final java.lang.String strCurrency)
-		throws java.lang.Exception
-	{
-		return calcMeasure (comp, dt2, dc, "FixAccrued", strCurrency) + calcMeasure (comp, dt2, dc,
-			"FloatAccrued", strCurrency) - calcMeasure (comp, dt1, dc, "FixAccrued", strCurrency) -
-				calcMeasure (comp, dt1, dc, "FloatAccrued", strCurrency);
+		return calcCarry (comp, dt1, dt2, dc1, strCurrency) + calcMeasure (comp, dt2, dc2, "CleanPV",
+			strCurrency) - calcMeasure (comp, dt1, dc1, "CleanPV", strCurrency);
 	}
 
 	private static final double calcRollDown (
@@ -132,7 +140,7 @@ public class EMRatesClosesLoader {
 		return dc.forward (dt1.getJulian(), dt2.getJulian());
 	}
 
-	private static final org.drip.service.api.ProductDailyPnL ComputePnLMetrics (
+	private static final java.lang.String ComputePnLMetrics (
 		final org.drip.analytics.date.JulianDate dt0D,
 		final org.drip.analytics.date.JulianDate dt1D,
 		final org.drip.product.definition.Component comp,
@@ -205,23 +213,15 @@ public class EMRatesClosesLoader {
 		}
 
 		try {
-			org.drip.service.api.ProductDailyPnL pnlOP = new org.drip.service.api.ProductDailyPnL (dbl1DReturn, dbl1DCarry,
-				dbl1DRollDown, dbl1DCurveShift, dbl1MCarry, dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01);
-
-			if (null != _writeCOB) {
-				_writeCOB.write (pnlOP.toString());
-
-				_writeCOB.flush();
-			}
-
-			return pnlOP;
+			return new org.drip.service.api.ProductDailyPnL (dbl1DReturn, dbl1DCarry, dbl1DRollDown,
+				dbl1DCurveShift, dbl1MCarry, dbl1MRollDown, dbl3MCarry, dbl3MRollDown, dblDV01).toString();
 		} catch (java.lang.Exception e) {
 		}
 
 		return null;
 	}
 
-	private static final org.drip.service.api.ForwardRates ComputeForwardMetric (
+	private static final java.lang.String ComputeForwardMetric (
 		final org.drip.product.definition.Component[] aComp,
 		final org.drip.analytics.rates.DiscountCurve dc)
 		throws java.lang.Exception
@@ -266,16 +266,10 @@ public class EMRatesClosesLoader {
 			if (null != _writeLog) _writeLog.write (sb.toString());
 		}
 
-		if (null != _writeCOB) {
-			_writeCOB.write (fmOP.toString());
-
-			_writeCOB.flush();
-		}
-
-		return fmOP;
+		return fmOP.toString();
 	}
 
-	private static final void GenerateMetrics (
+	private static final java.util.List<java.lang.String> GenerateMetrics (
 		final org.drip.analytics.date.JulianDate dt0D,
 		final org.drip.analytics.date.JulianDate dt1D,
 		final org.drip.analytics.rates.DiscountCurve dc0D,
@@ -284,6 +278,8 @@ public class EMRatesClosesLoader {
 		throws java.lang.Exception
 	{
 		_writeLog = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\Metric.PnL"));
+
+		java.util.List<java.lang.String> lsstrDump = new java.util.ArrayList<java.lang.String>();
 
 		org.drip.product.definition.Component[] aComp = new
 			org.drip.product.definition.Component[s_astrFwdTenor.length];
@@ -297,20 +293,13 @@ public class EMRatesClosesLoader {
 				System.out.println ("\n\t----\n\tComputing PnL Metrics for " + aComp[i].getComponentName() +
 					"\n\t----");
 
-			_writeCOB.write (dt0D.toString() + "," + aComp[i].tenor() + ",");
-
-			ComputePnLMetrics (dt0D, dt1D, aComp[i], dc0D, dc1D, strCurrency);
-
-			_writeCOB.write (",");
-
-			ComputeForwardMetric (aComp, dc0D);
-
-			_writeCOB.newLine();
-
-			_writeCOB.flush();
+			lsstrDump.add (dt0D.toString() + "," + aComp[i].tenor() + "," + ComputePnLMetrics (dt0D, dt1D,
+				aComp[i], dc0D, dc1D, strCurrency) + "," + ComputeForwardMetric (aComp, dc0D) + "\n");
 		}
 
 		_writeLog.flush();
+
+		return lsstrDump;
 	}
 
 	private static final org.drip.product.definition.CalibratableComponent[] CashInstrumentsFromTenor (
@@ -376,6 +365,8 @@ public class EMRatesClosesLoader {
 					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 						SwapInstrumentsFromTenor (dt, astrSwapTenor, adblSwapQuote, strCurrency), "Rate",
 							adblSwapQuote, null);
+
+		System.out.println ("RBS Cash: " + rbsCash);
 
 		if (null == rbsCash || null == rbsSwap) return null;
 
@@ -483,22 +474,96 @@ public class EMRatesClosesLoader {
 		return null;
 	}
 
-	public static final void GenerateEMCurveMetrics (
+	public static final org.drip.service.api.DateDiscountCurvePair ProcessRecord (
+		final org.drip.service.api.DateDiscountCurvePair ddcpPrev,
+		final java.lang.String[] astrTenor,
+		final java.lang.String[] astrCOBRecord,
+		final java.lang.String strCurrency,
+		boolean bDumpOnDemand)
+	{
+		org.drip.service.api.DiscountCurveInputInstrument dcci = ProcessCOBInput (astrTenor, astrCOBRecord);
+
+		if (null == dcci) return null;
+
+		org.drip.analytics.date.JulianDate dt = dcci.date();
+
+		org.drip.analytics.rates.DiscountCurve dc = BuildCurve (dt, dcci.cashTenor(), dcci.cashQuote(),
+			dcci.swapTenor(), dcci.swapQuote(), strCurrency);
+
+		System.out.println ("Adding " + dt + " = " + dc);
+
+		if (null != ddcpPrev) System.out.println ("\tPrev: " + ddcpPrev.dc() + "; Current: " + dc);
+
+		java.util.List<java.lang.String> lsstrDump = null;
+
+		if (null != ddcpPrev && null != ddcpPrev.date() && null != dt && null != ddcpPrev.dc() && null != dc) {
+			try {
+				lsstrDump = GenerateMetrics (ddcpPrev.date(), dt, ddcpPrev.dc(), dc, strCurrency);
+
+				for (java.lang.String strDump : lsstrDump) {
+					if (bDumpOnDemand) {
+						_writeCOB.write (strDump);
+
+						_writeCOB.newLine();
+
+						_writeCOB.flush();
+					}
+				}
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			return new org.drip.service.api.DateDiscountCurvePair (dt, dc, lsstrDump);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static final java.util.Map<java.lang.String, java.util.List<java.lang.String>> ExecUnitSequence()
+	{
+		org.drip.service.api.DateDiscountCurvePair ddcp = null;
+		java.lang.String[] astrTenor = new java.lang.String[] {"1M", "1Y", "5Y", "10Y"};
+		java.lang.String[][] aastrCOBRecord = new java.lang.String[][] {
+			new java.lang.String[] {"3/28/2013", "0.21", "0.52", "1.17", "1.68"},
+			new java.lang.String[] {"3/29/2013", "0.21", "0.53", "1.19", "1.71"}
+		};
+
+		java.util.Map<java.lang.String, java.util.List<java.lang.String>> mapOP = new
+			java.util.HashMap<java.lang.String, java.util.List<java.lang.String>>();
+
+		for (int i = 0; i < aastrCOBRecord.length; ++i) {
+			ddcp = ProcessRecord (ddcp, astrTenor, aastrCOBRecord[i], "USD", false);
+
+			if (null != ddcp && null != ddcp.output()) {
+				mapOP.put (ddcp.date().toString(), ddcp.output());
+
+				for (java.lang.String strDump : ddcp.output())
+					System.out.println (strDump);
+			}
+		}
+
+		return mapOP;
+	}
+
+	public static final void GenerateDiscountCurveMetrics (
 		final java.lang.String strCurrency)
 	{
 		boolean bIsHeader = true;
 		java.lang.String strCOBQuote = "";
 		java.lang.String[] astrTenor = null;
 		java.io.BufferedReader brSwapCOB = null;
-		org.drip.analytics.date.JulianDate dtPrev = null;
-		org.drip.analytics.rates.DiscountCurve dcPrev = null;
+		org.drip.service.api.DateDiscountCurvePair ddcpPrev = null;
 
 		try {
-			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader ("C:\\IFA\\G10Rates\\" +
+			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader ("C:\\IFA\\EMRates\\" +
 				strCurrency + "_Single_Discount_Curve.txt"));
 
 			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter
-				("C:\\IFA\\G10Rates\\Single_Discount_Curve." + strCurrency));
+				("C:\\IFA\\EMRates\\Single_Discount_Curve." + strCurrency));
 
 			while (null != (strCOBQuote = brSwapCOB.readLine())) {
 				java.lang.String[] astrCOBRecord = strCOBQuote.split (",");
@@ -553,28 +618,8 @@ public class EMRatesClosesLoader {
 					_writeCOB.newLine();
 
 					_writeCOB.flush();
-				} else {
-					org.drip.service.api.DiscountCurveInputInstrument dcci = ProcessCOBInput (astrTenor,
-						astrCOBRecord);
-
-					if (null != dcci) {
-						org.drip.analytics.date.JulianDate dt = dcci.date();
-
-						org.drip.analytics.rates.DiscountCurve dc = BuildCurve (dcci.date(),
-							dcci.cashTenor(), dcci.cashQuote(), dcci.swapTenor(), dcci.swapQuote(), strCurrency);
-
-						System.out.println ("Adding " + dcci.date() + " = " + dc);
-
-						System.out.println ("\tPrev: " + dcPrev + "; Current: " + dc);
-
-						if (null != dtPrev && null != dt && null != dcPrev && null != dc)
-							GenerateMetrics (dtPrev, dt, dcPrev, dc, strCurrency);
-
-						dcPrev = dc;
-
-						dtPrev = dcci.date();
-					}
-				}
+				} else
+					ddcpPrev = ProcessRecord (ddcpPrev, astrTenor, astrCOBRecord, strCurrency, true);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -781,6 +826,8 @@ public class EMRatesClosesLoader {
 
 		ProcessCDXQuote (mapDatedCDXClose); */
 
-		GenerateEMCurveMetrics ("USD");
+		GenerateDiscountCurveMetrics ("ZAR");
+
+		// ExecUnitSequence();
 	}
 }

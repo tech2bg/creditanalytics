@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -45,12 +46,12 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 	{
 	}
 
-	@Override public java.lang.String getBaseCalculationType()
+	@Override public java.lang.String baseCalculationType()
 	{
 		return "DCAct_365L";
 	}
 
-	@Override public java.lang.String[] getAlternateNames()
+	@Override public java.lang.String[] alternateNames()
 	{
 		return new java.lang.String[] {"Act/365L", "Actual/365L", "ISMA-Year", "Actual/Actual AFB",
 			"DCAct_365L"};
@@ -73,18 +74,18 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_365L.yearFraction: Cannot create DateEOMAdjustment!");
 
-		if (1 == actactParams._iFreq) {
+		if (1 == actactParams.freq()) {
 			if (org.drip.analytics.date.JulianDate.ContainsFeb29 (dblStart, dblEnd,
 				org.drip.analytics.date.JulianDate.RIGHT_INCLUDE))
-				return (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj) / 366.;
+				return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 366.;
 
-			return (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj) / 365.;
+			return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 365.;
 		}
 
 		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
-			return (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj) / 366.;
+			return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 366.;
 
-		return (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj) / 365.;
+		return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 365.;
 	}
 
 	@Override public int daysAccrued (
@@ -104,17 +105,17 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_365L.daysAccrued: Cannot create DateEOMAdjustment!");
 
-		if (1 == actactParams._iFreq) {
+		if (1 == actactParams.freq()) {
 			if (org.drip.analytics.date.JulianDate.ContainsFeb29 (dblStart, dblEnd,
 				org.drip.analytics.date.JulianDate.RIGHT_INCLUDE))
-				return (int) (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj);
+				return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());
 
-			return (int) (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj);
+			return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());
 		}
 
 		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
-			return (int) (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj);
+			return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());
 
-		return (int) (dblEnd - dblStart + dm._iD2Adj - dm._iD1Adj);
+		return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());
 	}
 }

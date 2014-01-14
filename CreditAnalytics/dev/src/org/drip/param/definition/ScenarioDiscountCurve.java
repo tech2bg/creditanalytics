@@ -6,6 +6,7 @@ package org.drip.param.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -72,7 +73,7 @@ public abstract class ScenarioDiscountCurve {
 	public static final int DC_TENOR_DN = 8;
 
 	/**
-	 * Generates the set of discount curves from the scenario specified, and the instrument quotes
+	 * Generate the set of discount curves from the scenario specified, and the instrument quotes
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param dcTSY The Treasury Discount Curve
@@ -100,7 +101,7 @@ public abstract class ScenarioDiscountCurve {
 		final int iDCMode);
 
 	/**
-	 * Cooks a custom discount curve according to the desired tweak parameters
+	 * Cook a custom discount curve according to the desired tweak parameters
 	 * 
 	 * @param strCurveName Scenario Discount Curve Name
 	 * @param strCustomName Custom Scenario Name

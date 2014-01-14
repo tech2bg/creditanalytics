@@ -30,7 +30,8 @@ package org.drip.analytics.rates;
 
 /**
  * ForwardRateEstimator is the interface that exposes the calculation of the Forward Rate for a specific
- *  Index.
+ *  Index. It exposes methods to compute forward rates to a given date/tenor, extract the forward rate index
+ *  and the Tenor.
  *
  * @author Lakshmi Krishnamurthy
  */

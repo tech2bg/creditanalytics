@@ -6,6 +6,7 @@ package org.drip.state.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,12 +32,16 @@ package org.drip.state.curve;
  */
 
 /**
- * This class contains the constant forward based FX Forward Curve holder object. It exports the following
- *  functionality:
- *  - Calculate FX Forward / FX Forward Jacobian
- *  - Calculate Forward Basis / Forward Basis Jacobian
- *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
- *  - Optionally provide the calibration instruments and quotes used to build the curve.
+ * DerivedFXForward manages the constant forward based FX Forward Curve holder object. It exports the
+ *  following functionality:
+ *  - Extract currency, currency pair, spot epoch and spot FX
+ *  - Compute Zero/boot-strap Basis, as well as boot-strap basis DC
+ *  - Compute the spot implied rate/implied rate nodes
+ *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve the Curve Construction Input Set
+ *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
+ *  - Synthesize scenario Latent State by parallel/custom shifting/custom tweaking the manifest measure
+ *  - Serialize into and de-serialize out of byte array
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -217,12 +222,12 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		_cp = new org.drip.product.params.CurrencyPair (astrField[5].getBytes());
 	}
 
-	@Override public org.drip.product.params.CurrencyPair getCurrencyPair()
+	@Override public org.drip.product.params.CurrencyPair currencyPair()
 	{
 		return _cp;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getSpotDate()
+	@Override public org.drip.analytics.date.JulianDate spotDate()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblSpotDate);
@@ -233,7 +238,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return null;
 	}
 
-	@Override public double getFXSpot()
+	@Override public double fxSpot()
 	{
 		return _dblFXSpot;
 	}
@@ -243,7 +248,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return _cp.getDenomCcy();
 	}
 
-	@Override public double[] getFullBasis (
+	@Override public double[] zeroBasis (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,
@@ -366,7 +371,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return dcImplied.zero (dblDate);
 	}
 
-	@Override public double[] calcImpliedNodeRates (
+	@Override public double[] impliedNodeRates (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,

@@ -6,6 +6,7 @@ package org.drip.product.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -43,7 +44,7 @@ package org.drip.product.definition;
 public interface BondProduct {
 
 	/**
-	 * Sets the bond treasury benchmark
+	 * Set the bond treasury benchmark
 	 * 
 	 * @param tsyBmk Bond treasury benchmark
 	 * 
@@ -55,7 +56,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond treasury benchmark
+	 * Retrieve the bond treasury benchmark
 	 * 
 	 * @return Bond treasury benchmark
 	 */
@@ -63,7 +64,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.TreasuryBenchmark getTreasuryBenchmark();
 
 	/**
-	 * Sets the bond identifier set
+	 * Set the bond identifier set
 	 * 
 	 * @param idSet Bond identifier set
 	 * 
@@ -75,7 +76,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond identifier set
+	 * Retrieve the bond identifier set
 	 * 
 	 * @return Bond identifier set
 	 */
@@ -83,7 +84,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.IdentifierSet getIdentifierSet();
 
 	/**
-	 * Sets the bond coupon setting
+	 * Set the bond coupon setting
 	 * 
 	 * @param cpnSetting Bond coupon setting
 	 * 
@@ -95,7 +96,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond coupon setting
+	 * Retrieve the bond coupon setting
 	 * 
 	 * @return Bond Coupon setting
 	 */
@@ -103,7 +104,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.CouponSetting getCouponSetting();
 
 	/**
-	 * Sets the bond currency set
+	 * Set the bond currency set
 	 * 
 	 * @param ccySet Bond currency set
 	 * 
@@ -115,7 +116,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond currency set
+	 * Retrieve the bond currency set
 	 * 
 	 * @return Bond Currency Set
 	 */
@@ -123,7 +124,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.CurrencySet getCurrencyParams();
 
 	/**
-	 * Sets the bond floater setting
+	 * Set the bond floater setting
 	 * 
 	 * @param fltSetting Bond floater setting
 	 * 
@@ -135,7 +136,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond floater setting
+	 * Retrieve the bond floater setting
 	 * 
 	 * @return Bond Floater setting
 	 */
@@ -143,7 +144,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.FloaterSetting getFloaterSetting();
 
 	/**
-	 * Sets the bond fixings
+	 * Set the bond fixings
 	 * 
 	 * @param mmFixings Bond fixings
 	 * 
@@ -156,7 +157,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond fixings
+	 * Retrieve the bond fixings
 	 * 
 	 * @return Bond fixings
 	 */
@@ -165,7 +166,7 @@ public interface BondProduct {
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> getFixings();
 
 	/**
-	 * Sets the Bond's Market Convention
+	 * Set the Bond's Market Convention
 	 * 
 	 * @param mktConv Bond's Market Convention
 	 * 
@@ -177,7 +178,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the Bond's Market Convention
+	 * Retrieve the Bond's Market Convention
 	 * 
 	 * @return Bond's Market Convention
 	 */
@@ -185,7 +186,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.QuoteConvention getMarketConvention();
 
 	/**
-	 * Sets the Bond Rates Setting
+	 * Ses the Bond Rates Setting
 	 * 
 	 * @param ratesSetting Bond Rates Setting
 	 * 
@@ -197,7 +198,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the Bond Rates Setting
+	 * Retrieve the Bond Rates Setting
 	 * 
 	 * @return Bond Rates Setting
 	 */
@@ -205,7 +206,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.RatesSetting setRatesSetting();
 
 	/**
-	 * Sets the bond Credit Setting
+	 * Set the bond Credit Setting
 	 * 
 	 * @param creditSetting Bond credit Setting
 	 * 
@@ -217,7 +218,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond credit Setting
+	 * Retrieve the bond credit Setting
 	 * 
 	 * @return Bond credit Setting
 	 */
@@ -225,7 +226,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.CreditSetting getCreditSetting();
 
 	/**
-	 * Sets the bond termination setting
+	 * Set the bond termination setting
 	 * 
 	 * @param termSetting Bond termination setting
 	 * 
@@ -237,7 +238,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond termination setting
+	 * Retrieve the bond termination setting
 	 * 
 	 * @return Bond termination setting
 	 */
@@ -245,7 +246,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.TerminationSetting getTerminationSetting();
 
 	/**
-	 * Sets the bond Period Set
+	 * Set the bond Period Set
 	 * 
 	 * @param periodSet Bond Period Set
 	 * 
@@ -257,7 +258,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond period Set
+	 * Retrieve the bond period Set
 	 * 
 	 * @return Bond period Set
 	 */
@@ -265,7 +266,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.PeriodSet getPeriodSet();
 
 	/**
-	 * Sets the bond notional Setting
+	 * Set the bond notional Setting
 	 * 
 	 * @param notlSetting Bond Notional Setting
 	 * 
@@ -277,7 +278,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond notional Setting
+	 * Retrieve the bond notional Setting
 	 * 
 	 * @return Bond notional Setting
 	 */
@@ -285,7 +286,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.NotionalSetting getNotionalSetting();
 
 	/**
-	 * Sets the bond's embedded call schedule
+	 * Set the bond's embedded call schedule
 	 * 
 	 * @param eos Bond's embedded call schedule
 	 */
@@ -295,7 +296,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond embedded call schedule parameters
+	 * Retrieve the bond embedded call schedule parameters
 	 * 
 	 * @return Bond embedded call schedule parameters
 	 */
@@ -303,7 +304,7 @@ public interface BondProduct {
 	public abstract org.drip.product.params.EmbeddedOptionSchedule getEmbeddedCallSchedule();
 
 	/**
-	 * Sets the bond's embedded put schedule
+	 * Set the bond's embedded put schedule
 	 * 
 	 * @param eos Bond's embedded put schedule
 	 */
@@ -313,7 +314,7 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieves the bond embedded put schedule parameters
+	 * Retrieve the bond embedded put schedule parameters
 	 * 
 	 * @return Bond embedded put schedule parameters
 	 */

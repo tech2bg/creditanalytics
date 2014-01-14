@@ -6,6 +6,7 @@ package org.drip.state.representation;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,12 @@ package org.drip.state.representation;
  */
 
 /**
- * LatentState exposes the functionality to manipulate the hidden Variable's Latent State.
+ * LatentState exposes the functionality to manipulate the hidden Variable's Latent State. Specifically it
+ * 	exports functions to:
+ * 	- Retrieve the Array of the LatentStateMetricMeasure
+ * 	- Produce node shifted, parallel shifted, and custom manifest-measure tweaked variants of the Latent
+ * 		State
+ * 	- Produce parallel shifted and custom quantification metric tweaked variants of the Latent State
  *
  * @author Lakshmi Krishnamurthy
  */

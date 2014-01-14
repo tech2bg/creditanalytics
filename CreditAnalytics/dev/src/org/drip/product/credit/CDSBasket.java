@@ -6,6 +6,7 @@ package org.drip.product.credit;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,9 +32,10 @@ package org.drip.product.credit;
  */
 
 /**
- * 	CDSBasket implements the basket default swap product contract details. Contains effective date, maturity
- * 		date, coupon, coupon day count, coupon frequency, basket components, basket notional, loss pay lag,
- * 		and optionally the outstanding notional schedule and the flat basket recovery.
+ * CDSBasket implements the basket default swap product contract details. It contains effective date,
+ *  maturity date, coupon, coupon day count, coupon frequency, basket components, basket notional, loss pay
+ *  lag, and optionally the outstanding notional schedule and the flat basket recovery. It also contains
+ *  methods to serialize out of and de-serialize into byte arrays.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -209,7 +211,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	}
 
 	/**
-	 * Constructs a CDS Basket from the components and their weights
+	 * Construct a CDS Basket from the components and their weights
 	 * 
 	 * @param dtEffective Effective
 	 * @param dtMaturity Maturity
@@ -519,7 +521,8 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new CDSBasket (ab);
 		} catch (java.lang.Exception e) {

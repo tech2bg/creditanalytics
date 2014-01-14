@@ -29,6 +29,7 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -221,7 +222,7 @@ public class YAS {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void BondPricerSample()
+	private static final void BondPricerSample()
 		throws Exception
 	{
 		JulianDate dtCurve = JulianDate.Today();
@@ -292,37 +293,37 @@ public class YAS {
 
 		double dblPrice = 0.97828;
 
-		double dblAccrued = bond.calcAccrued (valParams._dblValue, cmp);
+		double dblAccrued = bond.calcAccrued (valParams.valueDate(), cmp);
 
 		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
 
-		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblGSpread = bond.calcGSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblGSpread = bond.calcGSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblISpread = bond.calcISpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblISpread = bond.calcISpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblZSpread = bond.calcZSpreadFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblZSpread = bond.calcZSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblASW = bond.calcASWFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblASW = bond.calcASWFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblOAS = bond.calcOASFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblOAS = bond.calcOASFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblModDur = bond.calcModifiedDurationFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblModDur = bond.calcModifiedDurationFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblMacDur = bond.calcMacaulayDurationFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblMacDur = bond.calcMacaulayDurationFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblYield01 = bond.calcYield01FromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblYield01 = bond.calcYield01FromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblConvexity = bond.calcConvexityFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, dblPrice);
+		double dblConvexity = bond.calcConvexityFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
 
 		System.out.println ("Price          : " + FormatUtil.FormatDouble (dblPrice, 1, 3, 100.));
 
-		System.out.println ("Yield          : " + FormatUtil.FormatDouble (wi._dblYield, 1, 3, 100.));
+		System.out.println ("Yield          : " + FormatUtil.FormatDouble (wi.yield(), 1, 3, 100.));
 
-		System.out.println ("Workout Date   : " + new JulianDate (wi._dblDate));
+		System.out.println ("Workout Date   : " + new JulianDate (wi.date()));
 
-		System.out.println ("Workout Factor : " + FormatUtil.FormatDouble (wi._dblExerciseFactor, 1, 2, 100.));
+		System.out.println ("Workout Factor : " + FormatUtil.FormatDouble (wi.factor(), 1, 2, 100.));
 
 		System.out.println ("\n--SPREAD AND YIELD CALCULATIONS--\n");
 

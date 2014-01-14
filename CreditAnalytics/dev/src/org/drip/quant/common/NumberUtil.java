@@ -6,6 +6,7 @@ package org.drip.quant.common;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -31,9 +32,10 @@ package org.drip.quant.common;
 
 /**
  * NumberUtil implements number utility functions. It exposes the following functions:
- *	- Verify number/number array validity, and closeness match
+ *	- Verify number/number array validity, and closeness/sign match
  *	- Factorial Permutation/Combination functionality
  *	- Dump multi-dimensional array contents
+ *	- Min/Max/Bound the array entries within limits
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -77,7 +79,7 @@ public class NumberUtil {
 	}
 
 	/**
-	 * Compares and checks if the two input numbers fall within a specified tolerance
+	 * Compare and checks if the two input numbers fall within a specified tolerance
 	 * 
 	 * @param dbl1 Number #1
 	 * @param dbl2 Number #2
@@ -107,7 +109,7 @@ public class NumberUtil {
 	}
 
 	/**
-	 * Compares and checks if the two input numbers fall within a specified tolerance
+	 * Compare and checks if the two input numbers fall within a specified tolerance
 	 * 
 	 * @param dbl1 Number #1
 	 * @param dbl2 Number #2

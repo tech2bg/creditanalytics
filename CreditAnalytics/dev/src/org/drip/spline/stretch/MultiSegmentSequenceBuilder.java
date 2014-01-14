@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,18 @@ package org.drip.spline.stretch;
  */
 
 /**
- * MultiSegmentSequenceBuilder exports Stretch creation/calibration methods to generate customized basis splines, with
- *  customized segment behavior using the segment control.
+ * MultiSegmentSequenceBuilder exports Stretch creation/calibration methods to generate customized basis
+ *  splines, with customized segment behavior using the segment control. It exports the following
+ *  method of Stretch Creation:
+ *  - Create an uncalibrated Stretch instance over the specified Predictor Ordinate Array using the specified
+ *  	Basis Spline Parameters for the Segment.
+ *  - Create a calibrated Stretch Instance over the specified array of Predictor Ordinates and Response
+ *  	Values using the specified Basis Splines.
+ *  - Create a calibrated Stretch Instance over the specified Predictor Ordinates, Response Values, and their
+ * 		Constraints, using the specified Segment Builder Parameters.
+ * 	- Create a Calibrated Stretch Instance from the Array of Predictor Ordinates and a flat Response Value.
+ * 	- Create a Regression Spline Instance over the specified array of Predictor Ordinate Knot Points and the
+ *  	Set of the Points to be Best Fit.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -107,7 +118,6 @@ public class MultiSegmentSequenceBuilder {
 	 * Create an uncalibrated Stretch instance over the specified Predictor Ordinate Array using the
 	 *  specified Basis Spline Parameters for the Segment.
 	 * 
-	 * @param strName Name of the Stretch
 	 * @param adblPredictorOrdinate Predictor Ordinate Array
 	 * @param aSCBC Array of Segment Builder Parameters
 	 * 

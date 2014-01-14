@@ -6,6 +6,7 @@ package org.drip.analytics.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,12 +32,14 @@ package org.drip.analytics.rates;
 /**
  * ForwardCurve is the stub for the forward curve functionality. It extends the Curve object by exposing the
  * 	following functions:
- * 	- The tenor associated with the forward rate instance.
+ * 	- The name/epoch of the forward rate instance.
+ * 	- The index/currency/tenor associated with the forward rate instance.
  *  - Forward Rate to a specific date/tenor.
- *  - Generate scenario curves from the base forward curve (flat/parallel/custom)
- *  - Value Jacobian.
- *  - Cross Jacobian.
- *  - Quote Jacobian.
+ *  - Generate scenario tweaked Latent State from the base forward curve corresponding to mode adjusted
+ *  	(flat/parallel/custom) manifest measure/quantification metric.
+ *  - Retrieve array of latent state manifest measure, instrument quantification metric, and the array of
+ *  	calibration components.
+ *  - Set/retrieve curve construction input instrument sets.
  *
  * @author Lakshmi Krishnamurthy
  */

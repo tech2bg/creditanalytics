@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -33,7 +34,8 @@ package org.drip.product.params;
 /**
  * PeriodSet is the place-holder for the component’s period generation parameters. Contains the component's
  * 	date adjustment parameters for period start/end, period accrual start/end, effective, maturity, pay and
- * 	reset, first coupon date, and interest accrual start date.
+ * 	reset, first coupon date, and interest accrual start date. It exports serialization into and
+ *  de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -92,8 +94,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	protected java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
 	/**
-	 * Constructs PeriodSet from the effective date, day count, frequency, and the list
-	 * 	of coupon periods
+	 * Construct PeriodSet from the effective date, day count, frequency, and the list of coupon periods
 	 * 
 	 * @param dblEffective Effective Date
 	 * @param strDC Day count
@@ -246,7 +247,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Retrieves a list of the component's coupon periods
+	 * Retrieve a list of the component's coupon periods
 	 * 
 	 * @return List of Coupon Period
 	 */
@@ -257,7 +258,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Returns the first Coupon period
+	 * Return the first Coupon period
 	 * 
 	 * @return The first Coupon period
 	 */
@@ -279,7 +280,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Returns the period index containing the specified date
+	 * Return the period index containing the specified date
 	 * 
 	 * @param dblDate Date input
 	 * 
@@ -308,7 +309,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	}
 	
 	/**
-	 * Retrieves the period corresponding to the given index
+	 * Retrieve the period corresponding to the given index
 	 * 
 	 * @param iIndex Period index
 	 * 

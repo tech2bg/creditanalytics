@@ -6,6 +6,7 @@ package org.drip.service.api;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -1461,9 +1462,9 @@ public class CreditAnalytics {
 
 		if (null == wi)
 			throw new java.lang.Exception ("Cannot calc wi for bond " + strBondId + " priced at " +
-				dblPrice + " on " + new org.drip.analytics.date.JulianDate (valParams._dblValue));
+				dblPrice + " on " + new org.drip.analytics.date.JulianDate (valParams.valueDate()));
 
-		return wi._dblYield;
+		return wi.yield();
 	}
 
 	/**
@@ -3842,7 +3843,7 @@ public class CreditAnalytics {
 			throw new java.lang.Exception ("Cannot calc wi for bond " + strBondId + " priced at " + dblPrice
 				+ " on " + dtEOD);
 
-		return wi._dblYield;
+		return wi.yield();
 	}
 
 	/**

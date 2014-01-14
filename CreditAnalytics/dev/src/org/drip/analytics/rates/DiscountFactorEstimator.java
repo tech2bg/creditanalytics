@@ -6,6 +6,7 @@ package org.drip.analytics.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,14 @@ package org.drip.analytics.rates;
 
 /**
  * DiscountFactorEstimator is the interface that exposes the calculation of the Discount Factor for a
- *  specific Sovereign/Jurisdiction Span.
+ *  specific Sovereign/Jurisdiction Span. It exposes the following functionality:
+ *  
+ *  - Curve Epoch Date
+ *  - Discount Factor Target/Effective Variants - to Specified Julian Dates and/or Tenors
+ *  - Forward Rate Target/Effective Variants - to Specified Julian Dates and/or Tenors
+ *  - Zero Rate Target/Effective Variants - to Specified Julian Dates and/or Tenors
+ *  - LIBOR Rate and LIBOR01 Target/Effective Variants - to Specified Julian Dates and/or Tenors
+ *  - Curve Implied Arbitrary Measure Estimates
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -138,8 +146,8 @@ public interface DiscountFactorEstimator {
 	/**
 	 * Compute the Forward Rate between two Dates
 	 * 
-	 * @param dblDt1 First Date
-	 * @param dblDt2 Second Date
+	 * @param dblDate1 First Date
+	 * @param dblDate2 Second Date
 	 * 
 	 * @return The Forward Rate
 	 * 

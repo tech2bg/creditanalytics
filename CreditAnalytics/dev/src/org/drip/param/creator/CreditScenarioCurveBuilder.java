@@ -6,6 +6,7 @@ package org.drip.param.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -39,7 +40,7 @@ package org.drip.param.creator;
 public class CreditScenarioCurveBuilder {
 
 	/**
-	 * Creates CreditScenarioCurve from the array of calibration instruments
+	 * Create CreditScenarioCurve from the array of calibration instruments
 	 * 
 	 * @param aCalibInst Array of calibration instruments
 	 * 
@@ -59,7 +60,7 @@ public class CreditScenarioCurveBuilder {
 	}
 
 	/**
-	 * Calibrates the base credit curve from the input credit instruments, measures, and the quotes
+	 * Calibrate the base credit curve from the input credit instruments, measures, and the quotes
 	 * 
 	 * @param strName Credit Curve Name
 	 * @param dt Valuation Date

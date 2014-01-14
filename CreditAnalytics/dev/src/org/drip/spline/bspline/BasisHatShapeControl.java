@@ -6,6 +6,7 @@ package org.drip.spline.bspline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,6 +32,11 @@ package org.drip.spline.bspline;
 /**
  * BasisHatShapeControl implements the shape control function for the hat basis set as laid out in the
  *  framework outlined in Koch and Lyche (1989), Koch and Lyche (1993), and Kvasov (2000) Papers.
+ *  
+ *  Currently BasisHatShapeControl implements the following shape control customizers:
+ *  - Cubic Polynomial with Rational Linear Shape Controller.
+ *  - Cubic Polynomial with Rational Quadratic Shape Controller.
+ *  - Cubic Polynomial with Rational Exponential Shape Controller.
  *
  * @author Lakshmi Krishnamurthy
  */

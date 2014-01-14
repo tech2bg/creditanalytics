@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -44,7 +45,7 @@ public interface DCFCalculator {
 	 * @return Name of the base calculation type
 	 */
 
-	public abstract java.lang.String getBaseCalculationType();
+	public abstract java.lang.String baseCalculationType();
 
 	/**
 	 * Retrieves the full set of alternate names corresponding to the DCF Calculator
@@ -52,7 +53,7 @@ public interface DCFCalculator {
 	 * @return Array of alternate names
 	 */
 
-	public abstract java.lang.String[] getAlternateNames();
+	public abstract java.lang.String[] alternateNames();
 
 	/**
 	 * Calculates the accrual fraction in years between 2 given days

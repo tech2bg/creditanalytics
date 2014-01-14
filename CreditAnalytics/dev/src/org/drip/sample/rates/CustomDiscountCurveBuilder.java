@@ -20,6 +20,7 @@ import org.drip.state.estimator.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -43,13 +44,31 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * CustomDiscountCurveBuilder contains the sample demonstrating the full functionality behind creating highly
- * 	customized spline based discount curves.
+ * CustomDiscountCurveBuilder discount curve calibration and input instrument calibration quote recovery. It
+ * 	shows the following:
+ * 	- Construct the Array of Cash/Swap Instruments and their Quotes from the given set of parameters.
+ * 	- Construct the Cash/Swap Instrument Set Stretch Builder.
+ * 	- Set up the Linear Curve Calibrator using the following parameters:
+ * 		- Cubic Exponential Mixture Basis Spline Set
+ * 		- Ck = 2, Segment Curvature Penalty = 2
+ * 		- Quadratic Rational Shape Controller
+ * 		- Natural Boundary Setting
+ * 	- Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
+ * 		of Cash and Swap Stretches.
+ * 	- Cross-Comparison of the Cash/Swap Calibration Instrument "Rate" metric across the different curve
+ * 		construction methodologies.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
 public class CustomDiscountCurveBuilder {
+
+	/*
+	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
@@ -69,6 +88,12 @@ public class CustomDiscountCurveBuilder {
 		return aCalibComp;
 	}
 
+	/*
+	 * Construct the Array of Swap Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor)
@@ -83,13 +108,38 @@ public class CustomDiscountCurveBuilder {
 		return aCalibComp;
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample demonstrates discount curve calibration and input instrument calibration quote recovery.
+	 * 	It shows the following:
+	 * 	- Construct the Array of Cash/Swap Instruments and their Quotes from the given set of parameters.
+	 * 	- Construct the Cash/Swap Instrument Set Stretch Builder.
+	 * 	- Set up the Linear Curve Calibrator using the following parameters:
+	 * 		- Cubic Exponential Mixture Basis Spline Set
+	 * 		- Ck = 2, Segment Curvature Penalty = 2
+	 * 		- Quadratic Rational Shape Controller
+	 * 		- Natural Boundary Setting
+	 * 	- Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
+	 * 		of Cash and Swap Stretches.
+	 * 	- Cross-Comparison of the Cash/Swap Calibration Instrument "Rate" metric across the different curve
+	 * 		construction methodologies.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void CustomDiscountCurveBuilderSample()
 		throws Exception
 	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
 		CreditAnalytics.Init ("");
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
+
+		/*
+		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
+		 */
 
 		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtToday,
@@ -100,6 +150,10 @@ public class CustomDiscountCurveBuilder {
 			0.0013, 0.0017, 0.0017, 0.0018, 0.0020, 0.0023, // Cash Rate
 			0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160}; // EDF Rate;
 
+		/*
+		 * Construct the Cash Instrument Set Stretch Builder
+		 */
+
 		StretchRepresentationSpec rbsCash = StretchRepresentationSpec.CreateStretchBuilderSet (
 			"CASH",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
@@ -109,11 +163,19 @@ public class CustomDiscountCurveBuilder {
 			adblCashQuote,
 			null);
 
+		/*
+		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
+		 */
+
 		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"});
 
 		double[] adblSwapQuote = new double[]
 			{0.0166, 0.0206, 0.0241, 0.0269, 0.0292, 0.0311, 0.0326, 0.0340, 0.0351, 0.0375, 0.0393, 0.0402, 0.0407, 0.0409, 0.0409};
+
+		/*
+		 * Construct the Swap Instrument Set Stretch Builder
+		 */
 
 		StretchRepresentationSpec rbsSwap = StretchRepresentationSpec.CreateStretchBuilderSet (
 			"SWAP",
@@ -126,6 +188,14 @@ public class CustomDiscountCurveBuilder {
 
 		StretchRepresentationSpec[] aRBS = new StretchRepresentationSpec[] {rbsCash, rbsSwap};
 
+		/*
+		 * Set up the Linear Curve Calibrator using the following parameters:
+		 * 	- Cubic Exponential Mixture Basis Spline Set
+		 * 	- Ck = 2, Segment Curvature Penalty = 2
+		 * 	- Quadratic Rational Shape Controller
+		 * 	- Natural Boundary Setting
+		 */
+
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
@@ -137,6 +207,11 @@ public class CustomDiscountCurveBuilder {
 			null,
 			null);
 
+		/*
+		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
+		 *  of Cash and Swap Stretches.
+		 */
+
 		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRBS,
@@ -145,6 +220,11 @@ public class CustomDiscountCurveBuilder {
 			null,
 			null,
 			1.);
+
+		/*
+		 * Cross-Comparison of the Cash Calibration Instrument "Rate" metric across the different curve
+		 * 	construction methodologies.
+		 */
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -158,6 +238,11 @@ public class CustomDiscountCurveBuilder {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.));
 
+		/*
+		 * Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+		 * 	construction methodologies.
+		 */
+
 		System.out.println ("\n\t----------------------------------------------------------------");
 
 		System.out.println ("\t     SWAP INSTRUMENTS CALIBRATION RECOVERY");
@@ -169,5 +254,12 @@ public class CustomDiscountCurveBuilder {
 				FormatUtil.FormatDouble (aSwapComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		CustomDiscountCurveBuilderSample();
 	}
 }

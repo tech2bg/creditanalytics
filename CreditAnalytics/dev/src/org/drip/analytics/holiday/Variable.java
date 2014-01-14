@@ -7,6 +7,7 @@ package org.drip.analytics.holiday;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -46,7 +47,7 @@ public class Variable extends Base {
 	private Weekend _wkend = null;
 
 	/**
-	 * Constructs the object from the week, day, month, from front/back, week end, and description
+	 * Construct the object from the week, day, month, from front/back, week end, and description
 	 * 
 	 * @param iWeekInMonth Week of the Month
 	 * @param iWeekDay Day of the Week
@@ -66,9 +67,9 @@ public class Variable extends Base {
 	{
 		super (strDescription);
 
+		_wkend = wkend;
 		_iMonth = iMonth;
 		_iWeekDay = iWeekDay;
-		_wkend = wkend;
 		_bFromFront = bFromFront;
 		_iWeekInMonth = iWeekInMonth;
 	}
@@ -88,49 +89,49 @@ public class Variable extends Base {
 		super (ab);
 
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FloatingHoliday de-serialize: Invalid byte stream input");
+			throw new java.lang.Exception ("Variable de-serialize: Invalid byte stream input");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FloatingHoliday de-serializer: Empty state");
+			throw new java.lang.Exception ("Variable de-serializer: Empty state");
 
 		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
 
 		if (null == strFH || strFH.isEmpty())
-			throw new java.lang.Exception ("FloatingHoliday de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("Variable de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("FloatingHoliday de-serialize: Invalid number of fields");
+			throw new java.lang.Exception ("Variable de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FloatingHoliday de-serializer: Cannot locate month");
+			throw new java.lang.Exception ("Variable de-serializer: Cannot locate month");
 
 		_iMonth = new java.lang.Integer (astrField[1]).intValue();
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("FloatingHoliday de-serializer: Cannot locate week day");
+			throw new java.lang.Exception ("Variable de-serializer: Cannot locate week day");
 
 		_iWeekDay = new java.lang.Integer (astrField[2]).intValue();
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("FloatingHoliday de-serializer: Cannot locate week in month");
+			throw new java.lang.Exception ("Variable de-serializer: Cannot locate week in month");
 
 		_iWeekInMonth = new java.lang.Integer (astrField[3]).intValue();
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("FloatingHoliday de-serializer: Cannot locate from front flag");
+			throw new java.lang.Exception ("Variable de-serializer: Cannot locate from front flag");
 
 		_bFromFront = new java.lang.Boolean (astrField[4]).booleanValue();
 
 		if (null == astrField[5] || astrField[5].isEmpty())
-			throw new java.lang.Exception ("FloatingHoliday de-serializer: Cannot locate wkend");
+			throw new java.lang.Exception ("Variable de-serializer: Cannot locate wkend");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			_wkend = null;
@@ -156,7 +157,7 @@ public class Variable extends Base {
 				while (_iWeekDay != (dblDate % 7)) --dblDate;
 			}
 
-			if (bAdjustForWeekend) return Base.RollHoliday (dblDate, true, _wkend);
+			if (bAdjustForWeekend) return Base.rollHoliday (dblDate, true, _wkend);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

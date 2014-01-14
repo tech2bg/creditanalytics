@@ -6,6 +6,7 @@ package org.drip.param.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -33,7 +34,7 @@ package org.drip.param.definition;
  * ScenarioForwardCurve abstract class exposes the interface the constructs scenario Forward curves. The
  *  following curve construction scenarios are supported:
  *  - Base, flat/tenor up/down by arbitrary bumps
- *  - Tenor bumped discount curve set - keyed using the tenor.
+ *  - Tenor bumped forward curve set - keyed using the tenor.
  *	- NTP-based custom scenario curves.
  *
  * @author Lakshmi Krishnamurthy

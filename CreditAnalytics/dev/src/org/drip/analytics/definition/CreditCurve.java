@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -32,11 +33,14 @@ package org.drip.analytics.definition;
 /**
  * CreditCurve is the stub for the survival curve functionality. It extends the Curve object by exposing the
  * 	following functions:
- * 	- Recovery to a specific date/tenor, and effective recovery between a date interval.
- * 	- Hazard Rate to a specific date/tenor, and effective hazard rate between a date interval.
- * 	- Survival to a specific date/tenor, and effective survival between a date interval.
+ * 	- Set of curve and market identifiers
+ * 	- Recovery to a specific date/tenor, and effective recovery between a date interval
+ * 	- Hazard Rate to a specific date/tenor, and effective hazard rate between a date interval
+ * 	- Survival to a specific date/tenor, and effective survival between a date interval
  *  - Set/unset date of specific default
  *  - Generate scenario curves from the base credit curve (flat/parallel/custom)
+ *  - Set/unset the Curve Construction Inputs, Latent State, and the Manifest Metrics
+ *  - Serialization/De-serialization to and from Byte Arrays
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -102,7 +106,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Sets the Specific Default Date
+	 * Set the Specific Default Date
 	 * 
 	 * @param dblSpecificDefaultDate Date of Specific Default
 	 * 
@@ -117,7 +121,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Removes the Specific Default Date
+	 * Remove the Specific Default Date
 	 * 
 	 * @return TRUE if successful
 	 */
@@ -129,7 +133,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the survival to the given date
+	 * Calculate the survival to the given date
 	 * 
 	 * @param dblDate Date
 	 * 
@@ -143,7 +147,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		throws java.lang.Exception;
 
 	/**
-	 * Calculates the survival to the given date
+	 * Calculate the survival to the given date
 	 * 
 	 * @param dt Date
 	 * 
@@ -162,7 +166,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the survival to the given tenor
+	 * Calculate the survival to the given tenor
 	 * 
 	 * @param strTenor Tenor
 	 * 
@@ -182,7 +186,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the time-weighted survival between a pair of 2 dates
+	 * Calculate the time-weighted survival between a pair of 2 dates
 	 * 
 	 * @param dblDate1 First Date
 	 * @param dblDate2 Second Date
@@ -213,7 +217,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the time-weighted survival between a pair of 2 dates
+	 * Calculate the time-weighted survival between a pair of 2 dates
 	 * 
 	 * @param dt1 First Date
 	 * @param dt2 Second Date
@@ -235,7 +239,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the time-weighted survival between a pair of 2 tenors
+	 * Calculate the time-weighted survival between a pair of 2 tenors
 	 * 
 	 * @param strTenor1 First tenor
 	 * @param strTenor2 Second tenor
@@ -258,7 +262,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the recovery rate to the given date
+	 * Calculate the recovery rate to the given date
 	 * 
 	 * @param dblDate Date
 	 * 
@@ -272,7 +276,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		throws java.lang.Exception;
 
 	/**
-	 * Calculates the recovery rate to the given date
+	 * Calculate the recovery rate to the given date
 	 * 
 	 * @param dt Date
 	 * 
@@ -291,7 +295,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the recovery rate to the given tenor
+	 * Calculate the recovery rate to the given tenor
 	 * 
 	 * @param strTenor Tenor
 	 * 
@@ -311,7 +315,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the time-weighted recovery between a pair of dates
+	 * Calculate the time-weighted recovery between a pair of dates
 	 * 
 	 * @param dblDate1 First Date
 	 * @param dblDate2 Second Date
@@ -342,7 +346,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the time-weighted recovery between a pair of dates
+	 * Calculate the time-weighted recovery between a pair of dates
 	 * 
 	 * @param dt1 First Date
 	 * @param dt2 Second Date
@@ -364,7 +368,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the time-weighted recovery between a pair of tenors
+	 * Calculate the time-weighted recovery between a pair of tenors
 	 * 
 	 * @param strTenor1 First Tenor
 	 * @param strTenor2 Second Tenor
@@ -387,7 +391,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the hazard rate between a pair of forward dates
+	 * Calculate the hazard rate between a pair of forward dates
 	 * 
 	 * @param dt1 First Date
 	 * @param dt2 Second Date
@@ -412,7 +416,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the hazard rate to the given date
+	 * Calculate the hazard rate to the given date
 	 * 
 	 * @param dt Date
 	 * 
@@ -429,7 +433,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Calculates the hazard rate to the given tenor
+	 * Calculate the hazard rate to the given tenor
 	 * 
 	 * @param strTenor Tenor
 	 * 
@@ -449,7 +453,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	/**
-	 * Creates a flat hazard curve from the inputs
+	 * Create a flat hazard curve from the inputs
 	 * 
 	 * @param dblFlatNodeValue Flat hazard node value
 	 * @param bSingleNode Uses a single node for Calibration (True)
@@ -464,7 +468,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		final double dblRecovery);
 
 	/**
-	 * Sets the calibration inputs for the CreditCurve
+	 * Set the calibration inputs for the CreditCurve
 	 * 
 	 * @param valParam ValuationParams
 	 * @param bFlat Flat calibration desired (True)

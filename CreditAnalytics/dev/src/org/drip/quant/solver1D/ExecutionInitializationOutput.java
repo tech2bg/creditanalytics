@@ -6,6 +6,7 @@ package org.drip.quant.solver1D;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -159,7 +160,7 @@ public abstract class ExecutionInitializationOutput {
 	}
 
 	/**
-	 * Returns the time elapsed for the execution initialization operation
+	 * Return the time elapsed for the execution initialization operation
 	 * 
 	 * @return execution initialization time
 	 */

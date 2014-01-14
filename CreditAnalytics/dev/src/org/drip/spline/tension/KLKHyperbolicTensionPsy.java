@@ -6,6 +6,7 @@ package org.drip.spline.tension;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -32,6 +33,9 @@ package org.drip.spline.tension;
  * KLKHyperbolicTensionPsy implements the basic framework and the family of C2 Tension Splines outlined in
  *  Koch and Lyche (1989), Koch and Lyche (1993), and Kvasov (2000) Papers.
  *
+ * KLKHyperbolicTensionPsy implements the custom evaluator, differentiator, and integrator for the KLK
+ *  Tension Psy Functions outlined in the publications above.
+ *  
  * @author Lakshmi Krishnamurthy
  */
 

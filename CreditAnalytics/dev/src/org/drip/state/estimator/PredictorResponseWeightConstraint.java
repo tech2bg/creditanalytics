@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,12 +30,17 @@ package org.drip.state.estimator;
  */
 
 /**
- * PredictorResponseWeightConstraint holds the Linearized Constraints necessary needed for the Linear
- * 	Calibration. Linearized Constraints are expressed as
+ * PredictorResponseWeightConstraint holds the Linearized Constraints (and, optionally, their quote
+ *  sensitivities) necessary needed for the Linear Calibration. Linearized Constraints are expressed as
  * 
  * 			Sum_i[Predictor Weight_i * Function (Response_i)] = Constraint Value
  * 
  * 	where Function can either be univariate function, or weighted spline basis set.
+ * 
+ * To this end, it implements the following functionality:
+ * 	- Update/Retrieve Predictor/Response Weights and their Quote Sensitivities
+ * 	- Update/Retrieve Predictor/Response Constraint Values and their Quote Sensitivities
+ * 	- Display the contents of PredictorResponseWeightConstraint
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -190,7 +196,7 @@ public class PredictorResponseWeightConstraint {
 	}
 
 	/**
-	 * Display to Constraints and the corresponding Weights
+	 * Display the Constraints and the corresponding Weights
 	 */
 
 	public void displayString()

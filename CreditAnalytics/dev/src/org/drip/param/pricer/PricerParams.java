@@ -6,6 +6,7 @@ package org.drip.param.pricer;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -92,7 +93,7 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	public int _iDiscretizationScheme = PERIOD_DISCRETIZATION_DAY_STEP;
 
 	/**
-	 * Creates the standard pricer parameters object instance
+	 * Create the standard pricer parameters object instance
 	 * 
 	 * @return PricerParams object instance
 	 */
@@ -103,7 +104,7 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates the pricer parameters from the discrete unit size, calibration mode on/off, survival to
+	 * Create the pricer parameters from the discrete unit size, calibration mode on/off, survival to
 	 * 	pay/end date, and the discretization scheme
 	 * 
 	 * @param iUnitSize Discretization Unit Size

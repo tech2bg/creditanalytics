@@ -6,6 +6,7 @@ package org.drip.regression.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -50,9 +51,9 @@ package org.drip.regression.curve;
 
 public class CreditCurveRegressor implements org.drip.regression.core.RegressorSet {
 	private java.lang.String _strCurrency = "";
+	private org.drip.analytics.rates.DiscountCurve _dc = null;
 	private org.drip.analytics.date.JulianDate _dtStart = null;
 	private org.drip.analytics.definition.CreditCurve _cc = null;
-	private org.drip.analytics.rates.DiscountCurve _dc = null;
 	private java.lang.String _strRegressionScenario = "org.drip.analytics.curve.CreditCurve";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -192,9 +193,8 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 
 				@Override public boolean execRegression()
 				{
-					return null != (_ccFromSurvival =
-						org.drip.state.creator.CreditCurveBuilder.FromSurvival (_dtStart.getJulian(),
-							"CORP", "USD", _adblDate, _adblSurvival, 0.4));
+					return null != (_ccFromSurvival = org.drip.state.creator.CreditCurveBuilder.FromSurvival
+						(_dtStart.getJulian(), "CORP", "USD", _adblDate, _adblSurvival, 0.4));
 				}
 
 				@Override public boolean postRegression (
@@ -516,8 +516,8 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 							return false;
 						}
 
-						rnvd.set ("UntweakedHazard[" + dt + "]", org.drip.quant.common.FormatUtil.FormatDouble
-							(dblBaseHazard, 1, 5, 1));
+						rnvd.set ("UntweakedHazard[" + dt + "]",
+							org.drip.quant.common.FormatUtil.FormatDouble (dblBaseHazard, 1, 5, 1));
 
 						rnvd.set ("TweakedHazard[" + dt + "]", org.drip.quant.common.FormatUtil.FormatDouble
 							(dblShiftedHazard, 1, 5, 1));

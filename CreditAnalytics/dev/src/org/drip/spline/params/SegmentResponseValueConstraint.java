@@ -6,6 +6,7 @@ package org.drip.spline.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -39,6 +40,15 @@ package org.drip.spline.params;
  * 	y_j => Response j
  * 	W_j => Weight at ordinate j
  * 	V => Value of the Constraint
+ * 
+ * SegmentResponseValueConstraint exports the following functionality:
+ * 	- Retrieve the Array of Predictor Ordinates.
+ * 	- Retrieve the Array of Response Weights at each Predictor Ordinate.
+ * 	- Retrieve the Constraint Value.
+ * 	- Convert the Segment Constraint onto Local Predictor Ordinates, the corresponding Response Basis
+ * 		Function, and the Shape Controller Realizations.
+ * 	- Get the Position of the Predictor Knot relative to the Constraints.
+ * 	- Generate a SegmentResponseValueConstraint instance from the given predictor/response pair.
  * 
  * SegmentResponseValueConstraint can be viewed as the global response point value transform of
  *  SegmentBasisFlexureConstraint.

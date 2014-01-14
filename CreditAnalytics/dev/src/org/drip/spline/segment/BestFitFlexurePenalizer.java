@@ -6,6 +6,7 @@ package org.drip.spline.segment;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,13 @@ package org.drip.spline.segment;
  */
 
 /**
- * This Class implements the Segment's Best Fit, Curvature, and Length Penalizers.
+ * This Class implements the Segment's Best Fit, Curvature, and Length Penalizers. It provides the
+ * 	following functionality:
+ * 	- Compute the Cross-Curvature Penalty for the given Basis Pair.
+ * 	- Compute the Cross-Length Penalty for the given Basis Pair.
+ * 	- Compute the Best Fit Cross-Product Penalty for the given Basis Pair.
+ * 	- Compute the Basis Pair Penalty Coefficient for the Best Fit and the Curvature Penalties.
+ * 	- Compute the Penalty Constraint for the Basis Pair.
  * 
  * @author Lakshmi Krishnamurthy
  */

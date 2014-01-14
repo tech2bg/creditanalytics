@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,8 +33,9 @@ package org.drip.param.market;
 
 /**
  * BasketMarketParamSet provides an implementation of BasketMarketParamsRef for a specific scenario. It
- *  contains maps holding named discount curves, named credit curves, named component quote, and fixings
- *  object.
+ *  contains maps holding named discount curves, named forward curves, named credit curves, named component
+ *  quotes, and fixings object. Further, BasketMarketParamSet implements the component market parameters
+ *  corresponding to a particulat reference.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -53,7 +55,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 	/**
-	 * Constructs the BasketMarketParamSet object from the map of discount curve, the map of forward curve,
+	 * Construct the BasketMarketParamSet object from the map of discount curve, the map of forward curve,
 	 *  the map of credit curve, a double map of date/rate index and fixings, and a map of the component
 	 *  quotes.
 	 * 
@@ -340,7 +342,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	}
 
 	/**
-	 * Empty BasketMarketParams object
+	 * Empty BasketMarketParamSet object
 	 */
 
 	public BasketMarketParamSet()
@@ -358,7 +360,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 	}
 
-	@Override public boolean addDC (
+	@Override public boolean addDiscountCurve (
 		final java.lang.String strName,
 		final org.drip.analytics.rates.DiscountCurve dc)
 	{
@@ -380,7 +382,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return true;
 	}
 
-	@Override public boolean addCC (
+	@Override public boolean addCreditCurve (
 		final java.lang.String strName,
 		final org.drip.analytics.definition.CreditCurve cc)
 	{
@@ -391,7 +393,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getDC (
+	@Override public org.drip.analytics.rates.DiscountCurve getDiscountCurve (
 		final java.lang.String strName)
 	{
 		if (null == strName || strName.isEmpty()) return null;
@@ -407,7 +409,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return _mapFC.get (strName);
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve getCC (
+	@Override public org.drip.analytics.definition.CreditCurve getCreditCurve (
 		final java.lang.String strName)
 	{
 		if (null == strName || strName.isEmpty()) return null;

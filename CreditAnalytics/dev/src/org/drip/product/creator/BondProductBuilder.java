@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -258,7 +259,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates BondProductBuilder from the SQL ResultSet and the input MPC
+	 * Create BondProductBuilder from the SQL ResultSet and the input MPC
 	 * 
 	 * @param rs SQL ResultSet
 	 * @param mpc org.drip.param.definition.MarketParams to help fill some of the fields in
@@ -434,7 +435,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates BondProductBuilder from the JSON Map and the input MPC
+	 * Create BondProductBuilder from the JSON Map and the input MPC
 	 * 
 	 * @param mapJSON The JSON Ref Data Map
 	 * @param mpc org.drip.param.definition.MarketParams to help fill some of the fields in
@@ -834,7 +835,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond ISIN
+	 * Set the Bond ISIN
 	 * 
 	 * @param strISIN ISIN input
 	 * 
@@ -852,7 +853,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond CUSIP
+	 * Set the Bond CUSIP
 	 * 
 	 * @param strCUSIP CUSIP input
 	 * 
@@ -870,7 +871,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Ticker
+	 * Set the Bond Ticker
 	 * 
 	 * @param strTicker Ticker input
 	 * 
@@ -886,7 +887,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Coupon
+	 * Set the Bond Coupon
 	 * 
 	 * @param strCoupon Coupon input
 	 * 
@@ -911,7 +912,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Maturity
+	 * Set the Bond Maturity
 	 * 
 	 * @param strMaturity Maturity input
 	 * 
@@ -936,7 +937,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Coupon Frequency
+	 * Set the Bond Coupon Frequency
 	 * 
 	 * @param strCouponFreq Coupon Frequency input
 	 * 
@@ -962,7 +963,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Coupon Type
+	 * Set the Bond Coupon Type
 	 * 
 	 * @param strCouponType Coupon Type input
 	 * 
@@ -978,7 +979,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Maturity Type
+	 * Set the Bond Maturity Type
 	 * 
 	 * @param strMaturityType Maturity Type input
 	 * 
@@ -994,7 +995,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Calculation Type
+	 * Set the Bond Calculation Type
 	 * 
 	 * @param strCalculationType Calculation Type input
 	 * 
@@ -1010,7 +1011,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Day Count Code
+	 * Set the Bond Day Count Code
 	 * 
 	 * @param strDayCountCode Day Count Code input
 	 * 
@@ -1034,7 +1035,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Redemption Value
+	 * Set the Bond Redemption Value
 	 * 
 	 * @param strRedemptionValue Redemption Value input
 	 * 
@@ -1056,7 +1057,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Announce
+	 * Set the Bond Announce
 	 * 
 	 * @param strAnnounce Announce Date String
 	 * 
@@ -1079,7 +1080,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond First Settle
+	 * Set the Bond First Settle
 	 * 
 	 * @param strFirstSettle First Settle Date String
 	 * 
@@ -1102,7 +1103,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond First Coupon Date
+	 * Set the Bond First Coupon Date
 	 * 
 	 * @param strFirstCoupon First Coupon Date String
 	 * 
@@ -1125,7 +1126,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Interest Accrual Start Date
+	 * Set the Bond Interest Accrual Start Date
 	 * 
 	 * @param strInterestAccrualStart Interest Accrual Start Date String
 	 * 
@@ -1149,7 +1150,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Issue Date
+	 * Set the Bond Issue Date
 	 * 
 	 * @param strIssue Issue Date String
 	 * 
@@ -1172,7 +1173,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the Bond Is Callable
+	 * Set whether the Bond Is Callable
 	 * 
 	 * @param strCallable Callable String
 	 * 
@@ -1193,7 +1194,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the Bond Is Putable
+	 * Set whether the Bond Is Putable
 	 * 
 	 * @param strPutable Putable String
 	 * 
@@ -1214,7 +1215,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the Bond Is Sinkable
+	 * Set whether the Bond Is Sinkable
 	 * 
 	 * @param strSinkable Sinkable String
 	 * 
@@ -1235,7 +1236,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets The redemption Currency
+	 * Set The redemption Currency
 	 * 
 	 * @param strRedemptionCurrency Redemption Currency String
 	 * 
@@ -1253,7 +1254,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets The Coupon Currency
+	 * Set The Coupon Currency
 	 * 
 	 * @param strCouponCurrency Coupon Currency String
 	 * 
@@ -1271,7 +1272,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets The Trade Currency
+	 * Set The Trade Currency
 	 * 
 	 * @param strTradeCurrency Trade Currency String
 	 * 
@@ -1289,7 +1290,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond Has Been Called
+	 * Set whether the bond Has Been Called
 	 * 
 	 * @param strHasBeenCalled Has Been Called String
 	 * 
@@ -1310,7 +1311,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Float Coupon Convention
+	 * Set the bond's Float Coupon Convention
 	 * 
 	 * @param strFloatCouponConvention Float Coupon Convention String
 	 * 
@@ -1327,7 +1328,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Current Coupon
+	 * Set the bond's Current Coupon
 	 * 
 	 * @param strCurrentCoupon Current Coupon String
 	 * 
@@ -1355,7 +1356,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond is a floater or not
+	 * Set whether the bond is a floater or not
 	 * 
 	 * @param strIsFloater String indicating whether the bond is a floater
 	 * 
@@ -1376,7 +1377,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the final maturity of the bond
+	 * Set the final maturity of the bond
 	 * 
 	 * @param strFinalMaturity String representing the bond's final maturity
 	 * 
@@ -1400,7 +1401,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond is perpetual or not
+	 * Set whether the bond is perpetual or not
 	 * 
 	 * @param strIsPerpetual String representing whether the bond is perpetual or not
 	 * 
@@ -1421,7 +1422,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond is defaulted or not
+	 * Set whether the bond is defaulted or not
 	 * 
 	 * @param strIsDefaulted String representing whether the bond is defaulted or not
 	 * 
@@ -1442,7 +1443,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's floating rate spread
+	 * Set the bond's floating rate spread
 	 * 
 	 * @param strFloatSpread String representing the bond's floating spread
 	 * 
@@ -1464,7 +1465,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's floating rate spread from the MPC
+	 * Set the bond's floating rate spread from the MPC
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams
 	 * 
@@ -1504,7 +1505,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Rate Index
+	 * Set the bond's Rate Index
 	 * 
 	 * @param strRateIndex Rate Index
 	 * 
@@ -1520,7 +1521,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Issuer SPN
+	 * Set the bond's Issuer SPN
 	 * 
 	 * @param strIssuerSPN Issuer SPN String
 	 * 
@@ -2020,7 +2021,8 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new BondProductBuilder (ab);
 		} catch (java.lang.Exception e) {

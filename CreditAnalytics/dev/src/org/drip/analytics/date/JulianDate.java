@@ -39,7 +39,10 @@ package org.drip.analytics.date;
  *  - Leap Year Functionality (number of leap days in the given interval, is the given year a leap year etc.)
  *  - Generate the subsequent IMM date (EDF/CME IMM date, CDS/Credit ISDA IMM date etc)
  *  - Year/Month/Day in numbers/characters
- *  - Export the date to a variety of date formats.
+ *  - Days Elapsed/Remaining, is EOM
+ *  - Comparison with the Other, equals/hash-code/comparator
+ *  - Export the date to a variety of date formats (Oracle, Julian, Bloomberg)
+ *  - Serialization/De-serialization to and from Byte Arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -335,7 +338,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	}
 
 	/**
-	 * Return the day corresponding to the Julain double
+	 * Return the day corresponding to the Julian double
 	 *  
 	 * @param dblJulianIn double representing the Julian date
 	 * 

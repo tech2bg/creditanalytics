@@ -13,6 +13,7 @@ import org.drip.spline.tension.KochLycheKvasovFamily;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -136,6 +137,7 @@ public class BasisTensionSplineSet {
 	 *  - Calibration of the segments to the left and the right node values
 	 *  - Extraction of the segment Jacobians and segment monotonicity
 	 *  - Estimate point value and the Jacobian
+	 *  - Estimate the curvature penalty
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
@@ -155,7 +157,7 @@ public class BasisTensionSplineSet {
 		ConstitutiveState seg2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, segParams);
 
 		/*
-		 * Calibrate the left segment using the node values, and compute the segment Jacobian
+		 * Calibrate the left segment using the node values, and compute the segment Jacobian, the monotonicity, and the curvature penalty
 		 */
 
 		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null);
@@ -173,7 +175,7 @@ public class BasisTensionSplineSet {
 		System.out.println ("\tSegment 1 DPE: " + seg1.curvatureDPE());
 
 		/*
-		 * Calibrate the right segment using the node values, and compute the segment Jacobian
+		 * Calibrate the right segment using the node values, and compute the segment Jacobian, the monotonicity, and the curvature penalty
 		 */
 
 		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., Double.NaN, null, null);
@@ -190,10 +192,14 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("\tSegment 2 DPE: " + seg2.curvatureDPE());
 
+		/*
+		 * Re-calibrate Segment #2 with a different response value
+		 */
+
 		seg2.calibrate (seg1, 14., Double.NaN, null, null);
 
 		/*
-		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian
+		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian and the curvature penalty
 		 */
 
 		double dblX = 2.0;
@@ -205,8 +211,21 @@ public class BasisTensionSplineSet {
 		System.out.println ("\t\tSegment 2 DPE: " + seg2.curvatureDPE());
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample illustrates the construction and the usage of basis splines (all types, really). It shows
+	 *  the following:
+	 * 	- Construct a rational shape controller with the specified shape controller tension.
+	 * 	- Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with second order
+	 * 		curvature penalty, and without constraint.
+	 * 	- Test the KLK Hyperbolic Tension basis tension spline.
+	 * 	- Test the KLK Rational Linear basis tension spline.
+	 * 	- Test the KLK Rational Quadratic basis tension spline.
+	 * 	- Test the KLK Exponential Tension basis tension spline.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void BasisTensionSplineSetSample()
 		throws Exception
 	{
 		/*
@@ -262,5 +281,12 @@ public class BasisTensionSplineSet {
 		System.out.println ( " ----------- \n KLK EXPONENTIAL \n ----------- \n");
 
 		TestSpline (KLKExponentialTensionSpline(), rssc, segParams);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		BasisTensionSplineSetSample();
 	}
 }

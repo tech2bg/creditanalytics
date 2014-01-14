@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,7 @@ package org.drip.product.params;
 
 /**
  * CurrencyPair class contains the numerator currency, the denominator currency, the quote currency, and the
- * 	PIP Factor.
+ * 	PIP Factor. It exports serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -44,7 +45,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	private double _dblPIPFactor = java.lang.Double.NaN;
 
 	/**
-	 * Constructs the currency pair from the numerator currency, the denominator currency, the quote
+	 * Construct the currency pair from the numerator currency, the denominator currency, the quote
 	 * 	currency, and the PIP Factor
 	 * 
 	 * @param strNumCcy Numerator currency
@@ -134,7 +135,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the numerator currency
+	 * Get the numerator currency
 	 * 
 	 * @return Numerator currency
 	 */
@@ -145,7 +146,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the denominator currency
+	 * Get the denominator currency
 	 * 
 	 * @return Denominator currency
 	 */
@@ -156,7 +157,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the quote currency
+	 * Get the quote currency
 	 * 
 	 * @return Quote currency
 	 */
@@ -167,7 +168,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the currency pair code
+	 * Get the currency pair code
 	 * 
 	 * @return Currency pair code
 	 */
@@ -178,7 +179,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the PIP Factor
+	 * Get the PIP Factor
 	 * 
 	 * @return PIP Factor
 	 */

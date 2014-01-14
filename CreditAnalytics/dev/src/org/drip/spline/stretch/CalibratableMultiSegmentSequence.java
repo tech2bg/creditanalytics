@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,18 +30,10 @@ package org.drip.spline.stretch;
  */
 
 /**
- * This class implements the span that spans multiple segments. It holds the ordered segment sequence, the
- * 	segment control parameters, and, if available, the spanning Jacobian. It exports the following group of
- * 	functionality:
- * 	- Construct adjoining segment sequences in accordance with the segment control parameters
- * 	- Calibrate according to a varied set of (i.e., FLOATING/NATURAL/FINANCIAL) boundary conditions
- * 	- Estimate both the value, the ordered derivatives, and the Jacobian at the given ordinate
- * 	- Compute the monotonicity details - segment/span level monotonicity, co-monotonicity, local
- * 		monotonicity.
- * 	- Insert knots
- * 
- * It also exports several static Stretch creation/calibration methods to generate customized basis splines,
- * 	with customized segment behavior using the segment control.
+ * CalibratableMultiSegmentSequence implements the MultiSegmentSequence span that spans multiple segments. It
+ *  holds the ordered segment sequence, segment sequence builder, the segment control parameters, and, if
+ *  available, the spanning Jacobian. It provides a variety of customization for the segment construction and
+ *  state r4epresentation control.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -369,7 +362,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblEnd))
-			throw new java.lang.Exception ("HyperbolicTension::integrate => Invalid Inputs");
+			throw new java.lang.Exception ("CalibratableMultiSegmentSequence::integrate => Invalid Inputs");
 
 		return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
 	}

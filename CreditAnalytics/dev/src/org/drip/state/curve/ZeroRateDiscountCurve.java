@@ -6,6 +6,7 @@ package org.drip.state.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,10 +32,14 @@ package org.drip.state.curve;
 /**
  * ZeroRateDiscountCurve manages the Discounting Latent State, using the Zero Rate as the State
  *  Response Representation. It exports the following functionality:
- *  - Calculate Zero Rate / Zero Rate Jacobian
- *  - Calculate implied forward rate / implied forward rate Jacobian
- *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
- *  - Optionally provide the calibration instruments and quotes used to build the curve.
+ *  - Compute the discount factor, forward rate, or the zero rate from the Zero Rate Latent State
+ *  - Create a ForwardRateEstimator instance for the given Index
+ *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve the Curve Construction Input Set
+ *  - Compute the Jacobian of the Discount Factor Latent State to the input Quote
+ *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
+ *  - Synthesize scenario Latent State by parallel/custom shifting/custom tweaking the manifest measure
+ *  - Serialize into and de-serialize out of byte array
  *
  * @author Lakshmi Krishnamurthy
  */

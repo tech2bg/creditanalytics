@@ -6,6 +6,7 @@ package org.drip.param.quoting;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -157,7 +158,7 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 		throws java.lang.Exception
 	{
 		if (null == (_strDC = strDC) || _strDC.isEmpty() || 0 == (_iFreq = iFreq))
-			throw new java.lang.Exception ("YieldInterpreter constructor: Invalid quoting params!");
+			throw new java.lang.Exception ("YieldInterpreter ctr: Invalid quoting params!");
 
 		_aap = aap;
 		_strCalendar = strCalendar;

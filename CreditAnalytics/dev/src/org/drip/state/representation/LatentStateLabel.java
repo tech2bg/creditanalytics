@@ -6,6 +6,7 @@ package org.drip.state.representation;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,8 @@ package org.drip.state.representation;
  */
 
 /**
- * LatentStateLabel is an empty interface that contains the labels inside the sub-stretch of the alternate
- * 	state.
+ * LatentStateLabel is the interface that contains the labels inside the sub-stretch of the alternate state.
+ *  The functionality its derivations implement provide fully qualified label names and their matches.
  *
  * @author Lakshmi Krishnamurthy
  */

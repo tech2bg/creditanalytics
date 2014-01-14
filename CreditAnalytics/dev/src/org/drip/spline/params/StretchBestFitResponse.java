@@ -6,6 +6,7 @@ package org.drip.spline.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -32,6 +33,19 @@ package org.drip.spline.params;
  * StretchBestFitResponse implements basis per-Stretch Fitness Penalty Parameter Set. Currently it contains
  *  the Best Fit Penalty Weight Grid Matrix and the corresponding Local Predictor Ordinate/Response Match
  *  Pair.
+ *  
+ *  StretchBestFitResponse exports the following methods:
+ *  - Retrieve the Array of the Fitness Weights.
+ *  - Retrieve the Indexed Fitness Weight Element.
+ *  - Retrieve the Array of Predictor Ordinates.
+ *  - Retrieve the Indexed Predictor Ordinate Element.
+ *  - Retrieve the Array of Responses.
+ *  - Retrieve the Indexed Response Element.
+ *  - Retrieve the Number of Fitness Points.
+ *  - Generate the Segment Local Best Fit Weighted Response contained within the specified Segment.
+ *  - Construct the StretchBestFitResponse Instance from the given Inputs.
+ *  - Construct the StretchBestFitResponse Instance from the given Predictor Ordinate/Response Pairs, using
+ *  	Uniform Weightings.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -80,18 +94,18 @@ public class StretchBestFitResponse {
 	 */
 
 	public static final StretchBestFitResponse Create (
-		final double[] adblLocalPredictorOrdinate,
+		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (adblLocalPredictorOrdinate)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblPredictorOrdinate)) return null;
 
-		int iNumWeight = adblLocalPredictorOrdinate.length;
+		int iNumWeight = adblPredictorOrdinate.length;
 		double[] adblWeight = new double[iNumWeight];
 
 		for (int i = 0; i < iNumWeight; ++i)
 			adblWeight[i] = 1.;
 
-		return Create (adblLocalPredictorOrdinate, adblResponseValue, adblWeight);
+		return Create (adblPredictorOrdinate, adblResponseValue, adblWeight);
 	}
 
 	private StretchBestFitResponse (
@@ -107,8 +121,8 @@ public class StretchBestFitResponse {
 
 		int iNumPointsToFit = _adblWeight.length;
 
-		if (0 == iNumPointsToFit || _adblResponse.length != iNumPointsToFit ||
-			_adblPredictorOrdinate.length != iNumPointsToFit)
+		if (0 == iNumPointsToFit || _adblResponse.length != iNumPointsToFit || _adblPredictorOrdinate.length
+			!= iNumPointsToFit)
 			throw new java.lang.Exception ("StretchBestFitResponse ctr: Invalid Inputs");
 	}
 

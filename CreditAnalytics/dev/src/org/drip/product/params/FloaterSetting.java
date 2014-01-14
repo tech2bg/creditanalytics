@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,8 @@ package org.drip.product.params;
 
 /**
  * FloaterSetting contains the component's floating rate parameters. It holds the rate index, floater day
- * 	count, and one of either the coupon spread or the full current coupon.
+ * 	count, and one of either the coupon spread or the full current coupon. It also provides for serialization
+ *  into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -65,7 +67,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 	public double _dblCurrentCoupon = java.lang.Double.NaN;
 
 	/**
-	 * Constructs the FloaterSetting from rate index, floating day count, float spread, and current coupon
+	 * Construct the FloaterSetting from rate index, floating day count, float spread, and current coupon
 	 * 
 	 * @param strRateIndex Fully Qualified Floating Rate Index
 	 * @param strFloatDayCount Floating Day Count

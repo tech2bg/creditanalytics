@@ -6,6 +6,7 @@ package org.drip.spline.segment;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,8 @@ package org.drip.spline.segment;
  */
 
 /**
- * This Class implements the Segment's Basis Evaluator Functions.
+ * This Class implements the BasisEvaluator interface for the given set of the Segment Basis Evaluator
+ * 	Functions.
  * 
  * @author Lakshmi Krishnamurthy
  */

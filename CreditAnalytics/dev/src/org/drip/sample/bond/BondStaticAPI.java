@@ -12,6 +12,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -50,7 +51,7 @@ public class BondStaticAPI {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void DisplayBondStatic()
+	private static final void DisplayBondStatic()
 		throws Exception
 	{
 		String strBondISIN = "US001383CA43";

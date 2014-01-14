@@ -6,6 +6,7 @@ package org.drip.regression.curveJacobian;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -144,8 +145,8 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>()).put
 							(dtStart.addDays (2), mIndexFixings);
 
-					return null != (dcIRS =
-						org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
+					return null != (dcIRS = org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild
+						(dtStart, "USD",
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings));
 				}

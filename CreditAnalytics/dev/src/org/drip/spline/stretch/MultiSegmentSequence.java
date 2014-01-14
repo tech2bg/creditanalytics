@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -32,14 +33,20 @@ package org.drip.spline.stretch;
  * MultiSegmentSequence is the interface that exposes functionality that spans multiple segments. Its derived
  *  instances hold the ordered segment sequence, the segment control parameters, and, if available, the
  *  spanning Jacobian. MultiSegmentSequence exports the following group of functionality:
- * 	- Construct adjoining segment sequences in accordance with the segment control parameters
- * 	- Calibrate according to a varied set of (i.e., NATURAL/FINANCIAL) boundary conditions
- * 	- Estimate both the value, the ordered derivatives, and the Jacobian at the given ordinate
+ * 	- Retrieve the Segments and their Builder Parameters.
  * 	- Compute the monotonicity details - segment/Stretch level monotonicity, co-monotonicity, local
  * 		monotonicity.
- * 
- * It also exports several static Stretch creation/calibration methods to generate customized basis splines,
- * 	with customized segment behavior using the segment control.
+ * 	- Check if the Predictor Ordinate is in the Stretch Range, and return the segment index in that case.
+ * 	- Set up (i.e., calibrate) the individual Segments in the Stretch by specifying one/or more of the node
+ * 		parameters and Target Constraints.
+ * 	- Set up (i.e., calibrate) the individual Segment in the Stretch to the Target Segment Edge Values and
+ * 		Constraints. This is also called the Hermite setup - where the segment boundaries are entirely
+ * 		locally set.
+ * 	- Generate a new Stretch by clipping all the Segments to the Left/Right of the specified Predictor
+ * 		Ordinate. Smoothness Constraints will be maintained.
+ * 	- Retrieve the Span Curvature/Length, and the Best Fit DPE's.
+ * 	- Retrieve the Merge Stretch Manager.
+ *  - Display the Segments.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -59,20 +66,20 @@ public interface MultiSegmentSequence extends org.drip.spline.stretch.SingleSegm
 	public static final int CALIBRATE_JACOBIAN = 2;
 
 	/**
-	 * Retrieve the Segment Builder Parameters
-	 * 
-	 * @return The Segment Builder Parameters
-	 */
-
-	public abstract org.drip.spline.params.SegmentCustomBuilderControl[] segmentBuilderControl();
-
-	/**
 	 * Retrieve the Stretch Name
 	 * 
 	 * @return The Stretch Name
 	 */
 
 	public abstract java.lang.String name();
+
+	/**
+	 * Retrieve the Segment Builder Parameters
+	 * 
+	 * @return The Segment Builder Parameters
+	 */
+
+	public abstract org.drip.spline.params.SegmentCustomBuilderControl[] segmentBuilderControl();
 
 	/**
 	 * Retrieve the Stretch Segments
@@ -194,34 +201,6 @@ public interface MultiSegmentSequence extends org.drip.spline.stretch.SingleSegm
 		throws java.lang.Exception;
 
 	/**
-	 * Generate a new Stretch by clipping all the Segments to the Left of the specified Predictor Ordinate.
-	 *  Smoothness Constraints will be maintained.
-	 * 
-	 * @param strName Name of the Clipped Stretch 
-	 * @param dblPredictorOrdinate Predictor Ordinate Left of which the Clipping is to be applied
-	 * 
-	 * @return The Clipped Stretch
-	 */
-
-	public abstract MultiSegmentSequence clipLeft (
-		final java.lang.String strName,
-		final double dblPredictorOrdinate);
-
-	/**
-	 * Generate a new Stretch by clipping all the Segments to the Right of the specified Predictor Ordinate.
-	 * 	Smoothness Constraints will be maintained.
-	 * 
-	 * @param strName Name of the Clipped Stretch 
-	 * @param dblPredictorOrdinate Predictor Ordinate Right of which the Clipping is to be applied
-	 * 
-	 * @return The Clipped Stretch
-	 */
-
-	public abstract MultiSegmentSequence clipRight (
-		final java.lang.String strName,
-		final double dblPredictorOrdinate);
-
-	/**
 	 * Set up (i.e., calibrate) the individual Segments in the Stretch to the Stretch Edge, the Target
 	 *  Constraints, and the custom segment sequence builder.
 	 * 
@@ -241,7 +220,7 @@ public interface MultiSegmentSequence extends org.drip.spline.stretch.SingleSegm
 	 * 
 	 * @param srvcLeading Stretch Left-most Segment Response Value Constraint
 	 * @param aSRVC Array of Segment Response Value Constraints
-	 * @param rbfr Stretch Fitness Weighted Response
+	 * @param sbfr Stretch Fitness Weighted Response
 	 * @param bs The Calibration Boundary Condition
 	 * @param iCalibrationDetail The Calibration Detail
 	 * 
@@ -274,6 +253,34 @@ public interface MultiSegmentSequence extends org.drip.spline.stretch.SingleSegm
 		final org.drip.spline.params.StretchBestFitResponse sbfr,
 		final org.drip.spline.stretch.BoundarySettings bs,
 		final int iCalibrationDetail);
+
+	/**
+	 * Generate a new Stretch by clipping all the Segments to the Left of the specified Predictor Ordinate.
+	 *  Smoothness Constraints will be maintained.
+	 * 
+	 * @param strName Name of the Clipped Stretch 
+	 * @param dblPredictorOrdinate Predictor Ordinate Left of which the Clipping is to be applied
+	 * 
+	 * @return The Clipped Stretch
+	 */
+
+	public abstract MultiSegmentSequence clipLeft (
+		final java.lang.String strName,
+		final double dblPredictorOrdinate);
+
+	/**
+	 * Generate a new Stretch by clipping all the Segments to the Right of the specified Predictor Ordinate.
+	 * 	Smoothness Constraints will be maintained.
+	 * 
+	 * @param strName Name of the Clipped Stretch 
+	 * @param dblPredictorOrdinate Predictor Ordinate Right of which the Clipping is to be applied
+	 * 
+	 * @return The Clipped Stretch
+	 */
+
+	public abstract MultiSegmentSequence clipRight (
+		final java.lang.String strName,
+		final double dblPredictorOrdinate);
 
 	/**
 	 * Retrieve the Span Curvature DPE
@@ -312,16 +319,16 @@ public interface MultiSegmentSequence extends org.drip.spline.stretch.SingleSegm
 		throws java.lang.Exception;
 
 	/**
-	 * Display the Segments
-	 */
-
-	public abstract java.lang.String displayString();
-
-	/**
 	 * Retrieve the Merge Stretch Manager if it exists.
 	 * 
 	 * @return The Merge Stretch Manager
 	 */
 
 	public org.drip.state.representation.MergeSubStretchManager msm();
+
+	/**
+	 * Display the Segments
+	 */
+
+	public abstract java.lang.String displayString();
 }

@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,8 +30,11 @@ package org.drip.state.estimator;
  */
 
 /**
- * GlobalControlCurveParams contains the Parameters needed to hold the regime - the Calibration Boundary
- *  Condition, the Calibration Detail, and the BestFitWeightedResponse Instance.
+ * GlobalControlCurveParams enhances the SmoothingCurveStretchParams to produce globally customized curve
+ *  smoothing.
+ * 
+ * Currently, GlobalControlCurveParams uses custom boundary setting and spline details to implement the
+ * 	global smoothing pass.
  *
  * @author Lakshmi Krishnamurthy
  */

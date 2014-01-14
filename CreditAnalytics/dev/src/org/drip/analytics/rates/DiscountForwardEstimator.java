@@ -6,6 +6,7 @@ package org.drip.analytics.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,9 @@ package org.drip.analytics.rates;
  */
 
 /**
- * DiscountCurveFRE exposes the "native" forward curve associated with the specified discount curve.
+ * DiscountForwardEstimator exposes the "native" forward curve associated with the specified discount curve.
+ * 	It exposes functionality to extract forward rate index/tenor, as well as to compute the forward rate
+ * 	implied off of the discount curve.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -39,9 +42,9 @@ public class DiscountForwardEstimator implements org.drip.analytics.rates.Forwar
 	private org.drip.analytics.rates.DiscountFactorEstimator _dfe = null;
 
 	/**
-	 * DiscountCurveFRE constructor
+	 * DiscountForwardEstimator constructor
 	 * 
-	 * @param dc The Discount Factor Estimator
+	 * @param dfe The Discount Factor Estimator
 	 * @param fri The Floating Rate Index
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
@@ -53,7 +56,7 @@ public class DiscountForwardEstimator implements org.drip.analytics.rates.Forwar
 		throws java.lang.Exception
 	{
 		if (null == (_dfe = dfe) || null == (_fri = fri))
-			throw new java.lang.Exception ("DiscountCurveFRE ctr: Invalid Inputs");
+			throw new java.lang.Exception ("DiscountForwardEstimator ctr: Invalid Inputs");
 	}
 
 	@Override public org.drip.product.params.FloatingRateIndex index()
@@ -70,7 +73,8 @@ public class DiscountForwardEstimator implements org.drip.analytics.rates.Forwar
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
-		if (null == dt) throw new java.lang.Exception ("DiscountCurveFRE::forward => Invalid Inputs!");
+		if (null == dt)
+			throw new java.lang.Exception ("DiscountForwardEstimator::forward => Invalid Inputs!");
 
 		return _dfe.forward (dt.subtractTenor (_fri.tenor()).getJulian(), dt.getJulian());
 	}
@@ -80,7 +84,7 @@ public class DiscountForwardEstimator implements org.drip.analytics.rates.Forwar
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountCurveFRE::forward => Invalid Inputs!");
+			throw new java.lang.Exception ("DiscountForwardEstimator::forward => Invalid Inputs!");
 
 		return forward (new org.drip.analytics.date.JulianDate (dblDate));
 	}
@@ -90,7 +94,7 @@ public class DiscountForwardEstimator implements org.drip.analytics.rates.Forwar
 		throws java.lang.Exception
 	{
 		if (null == strTenor || strTenor.isEmpty())
-			throw new java.lang.Exception ("DiscountCurveFRE::forward => Invalid Inputs!");
+			throw new java.lang.Exception ("DiscountForwardEstimator::forward => Invalid Inputs!");
 
 		return forward (_dfe.epoch().addTenor (strTenor));
 	}

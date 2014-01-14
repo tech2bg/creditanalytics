@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,6 +32,11 @@ package org.drip.state.estimator;
 /**
  * StretchRepresentationSpec carries the calibration instruments and the corresponding calibration parameter
  *  set in LSMM instances. Together, these inputs are used for constructing an entire latent state stretch.
+ *  
+ * StretchRepresentationSpec exports the following functionality:
+ * 	- Alternate ways of constructing custom Stretch representations
+ * 	- Retrieve indexed instrument/LSMM
+ * 	- Retrieve the full set calibratable instrument/LSMM
  *
  * @author Lakshmi Krishnamurthy
  */

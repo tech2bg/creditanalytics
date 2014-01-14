@@ -6,6 +6,7 @@ package org.drip.spline.pchip;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,16 @@ package org.drip.spline.pchip;
  */
 
 /**
- * LocalMonotoneCkGenerator generates customized Local Stretch by trading off Ck for local control.
+ * LocalMonotoneCkGenerator generates customized Local Stretch by trading off Ck for local control. This
+ * 	class implements the following variants: Akima, Bessel, Harmonic, Hyman83, Hyman89, Kruger, Monotone
+ *  Convex, as well as the Van Leer and the Huynh/LeFloch limiters.
+ *  
+ *  It also provides the following custom control on the resulting C1:
+ *  - Eliminate the Spurious Extrema in the Input C1 Entry.
+ *  - Apply the Monotone Filter in the Input C1 Entry.
+ *  - Generate a Vanilla C1 Array from the specified Array of Predictor Ordinates and the Response Values.
+ *  - Verify if the given Quintic Polynomial is Monotone using the Hyman89 Algorithm, and generate it if
+ *  	necessary.
  *
  * @author Lakshmi Krishnamurthy
  */

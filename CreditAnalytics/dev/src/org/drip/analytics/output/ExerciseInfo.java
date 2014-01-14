@@ -6,6 +6,7 @@ package org.drip.analytics.output;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,31 +32,17 @@ package org.drip.analytics.output;
  */
 
 /**
- * ExerciseInfo is a place-holder for the full set of exercise information. It contains the exercise date,
- * 	the exercise factor, and the exercise type.
+ * ExerciseInfo is a place-holder for the set of exercise information. It contains the exercise date, the
+ * 	exercise factor, and the exercise type. It also exposes methods to serialize/de-serialize off of byte
+ * 	arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class ExerciseInfo extends org.drip.service.stream.Serializer {
-
-	/**
-	 * Work-out Date
-	 */
-
-	public double _dblDate = java.lang.Double.NaN;
-
-	/**
-	 * Work-out Factor
-	 */
-
-	public double _dblExerciseFactor = java.lang.Double.NaN;
-
-	/**
-	 * Work out Type
-	 */
-
-	public int _iWOType = org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY;
+	private double _dblDate = java.lang.Double.NaN;
+	private double _dblExerciseFactor = java.lang.Double.NaN;
+	private int _iWOType = org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY;
 
 	/**
 	 * Constructs the ExerciseInfo from the work-out date, type, and the exercise factor
@@ -85,7 +72,7 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if NextExerciseInfo cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if ExerciseInfo cannot be properly de-serialized
 	 */
 
 	public ExerciseInfo (
@@ -131,6 +118,39 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("ExerciseInfo de-serializer: Cannot locate work out type");
 
 		_iWOType = new java.lang.Integer (astrField[3]);
+	}
+
+	/**
+	 * Retrieve the Exercise Date
+	 * 
+	 * @return The Exercise Date
+	 */
+
+	public double date()
+	{
+		return _dblDate;
+	}
+
+	/**
+	 * Retrieve the Exercise Factor
+	 * 
+	 * @return The Exercise Factor
+	 */
+
+	public double factor()
+	{
+		return _dblExerciseFactor;
+	}
+
+	/**
+	 * Retrieve the Work-out Type
+	 * 
+	 * @return The Work-out Type
+	 */
+
+	public int workoutType()
+	{
+		return _iWOType;
 	}
 
 	@Override public byte[] serialize()

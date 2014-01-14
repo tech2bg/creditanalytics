@@ -20,6 +20,7 @@ import org.drip.state.estimator.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -42,7 +43,53 @@ import org.drip.state.estimator.*;
  *  	limitations under the License.
  */
 
+/**
+ * ShapePreservingDFZeroSmooth demonstrates the usage of different shape preserving and smoothing techniques
+ *  involved in the discount curve creation. It shows the following:
+ * 	- Construct the Array of Cash/Swap Instruments and their Quotes from the given set of parameters.
+ * 	- Construct the Cash/Swap Instrument Set Stretch Builder.
+ * 	- Set up the Linear Curve Calibrator using the following parameters:
+ * 		- Cubic Exponential Mixture Basis Spline Set
+ * 		- Ck = 2, Segment Curvature Penalty = 2
+ * 		- Quadratic Rational Shape Controller
+ * 		- Natural Boundary Setting
+ * 	- Set up the Global Curve Control parameters as follows:
+ * 		- Zero Rate Quantification Metric
+ * 		- Cubic Polynomial Basis Spline Set
+ * 		- Ck = 2, Segment Curvature Penalty = 2
+ * 		- Quadratic Rational Shape Controller
+ * 		- Natural Boundary Setting
+ * 	- Set up the Local Curve Control parameters as follows:
+ * 		- C1 Bessel Monotone Smoothener with no spurious extrema elimination and no monotone filter
+ * 		- Zero Rate Quantification Metric
+ * 		- Cubic Polynomial Basis Spline Set
+ * 		- Ck = 2, Segment Curvature Penalty = 2
+ * 		- Quadratic Rational Shape Controller
+ * 		- Natural Boundary Setting
+ * 	- Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array of
+ * 		Cash and Swap Stretches.
+ * 	- Construct the Globally Smoothened Discount Curve by applying the linear curve calibrator and the Global
+ * 		Curve Control parameters to the array of Cash and Swap Stretches and the shape preserving discount
+ * 		curve.
+ * 	- Construct the Locally Smoothened Discount Curve by applying the linear curve calibrator and the Local
+ * 		Curve Control parameters to the array of Cash and Swap Stretches and the shape preserving discount
+ *  	curve.
+ * 	- Cross-Comparison of the Cash/Swap Calibration Instrument "Rate" metric across the different curve
+ * 		construction methodologies.
+ *  - Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+ *  	construction methodologies for a sequence of bespoke swap instruments.
+ * 
+ * @author Lakshmi Krishnamurthy
+ */
+
 public class ShapePreservingDFZeroSmooth {
+
+	/*
+	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final java.lang.String[] astrTenor)
@@ -55,6 +102,12 @@ public class ShapePreservingDFZeroSmooth {
 
 		return aCash;
 	}
+
+	/*
+	 * Construct the Array of Swap Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
 
 	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
@@ -75,19 +128,69 @@ public class ShapePreservingDFZeroSmooth {
 		return aSwap;
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample demonstrates the usage of different shape preserving and smoothing techniques involved in
+	 * 	the discount curve creation. It shows the following:
+	 * 	- Construct the Array of Cash/Swap Instruments and their Quotes from the given set of parameters.
+	 * 	- Construct the Cash/Swap Instrument Set Stretch Builder.
+	 * 	- Set up the Linear Curve Calibrator using the following parameters:
+	 * 		- Cubic Exponential Mixture Basis Spline Set
+	 * 		- Ck = 2, Segment Curvature Penalty = 2
+	 * 		- Quadratic Rational Shape Controller
+	 * 		- Natural Boundary Setting
+	 * 	- Set up the Global Curve Control parameters as follows:
+	 * 		- Zero Rate Quantification Metric
+	 * 		- Cubic Polynomial Basis Spline Set
+	 * 		- Ck = 2, Segment Curvature Penalty = 2
+	 * 		- Quadratic Rational Shape Controller
+	 * 		- Natural Boundary Setting
+	 * 	- Set up the Local Curve Control parameters as follows:
+	 * 		- C1 Bessel Monotone Smoothener with no spurious extrema elimination and no monotone filter
+	 * 		- Zero Rate Quantification Metric
+	 * 		- Cubic Polynomial Basis Spline Set
+	 * 		- Ck = 2, Segment Curvature Penalty = 2
+	 * 		- Quadratic Rational Shape Controller
+	 * 		- Natural Boundary Setting
+	 * 	- Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
+	 * 		of Cash and Swap Stretches.
+	 * 	- Construct the Globally Smoothened Discount Curve by applying the linear curve calibrator and the
+	 * 		Global Curve Control parameters to the array of Cash and Swap Stretches and the shape preserving
+	 * 		discount curve.
+	 * 	- Construct the Locally Smoothened Discount Curve by applying the linear curve calibrator and the
+	 * 		Local Curve Control parameters to the array of Cash and Swap Stretches and the shape preserving
+	 *  	discount curve.
+	 * 	- Cross-Comparison of the Cash/Swap Calibration Instrument "Rate" metric across the different curve
+	 * 		construction methodologies.
+	 *  - Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+	 *  	construction methodologies for a sequence of bespoke swap instruments.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void ShapePreservingDFZeroSmoothSample()
 		throws Exception
 	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
 		CreditAnalytics.Init ("");
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "MXN");
+
+		/*
+		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
+		 */
 
 		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtToday,
 			new java.lang.String[] {"1M"});
 
 		double[] adblCashQuote = new double[] {0.0403};
+
+		/*
+		 * Construct the Cash Instrument Set Stretch Builder
+		 */
 
 		StretchRepresentationSpec rrsCash = StretchRepresentationSpec.CreateStretchBuilderSet (
 			"CASH",
@@ -98,11 +201,19 @@ public class ShapePreservingDFZeroSmooth {
 			adblCashQuote,
 			null);
 
+		/*
+		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
+		 */
+
 		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"3M", "6M", "9M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "30Y"});
 
 		double[] adblSwapQuote = new double[]
 			{0.0396, 0.0387, 0.0388, 0.0389, 0.04135, 0.04455, 0.0486, 0.0526, 0.0593, 0.0649, 0.0714596, 0.0749596, 0.0776};
+
+		/*
+		 * Construct the Swap Instrument Set Stretch Builder
+		 */
 
 		StretchRepresentationSpec rrsSwap = StretchRepresentationSpec.CreateStretchBuilderSet (
 			"SWAP",
@@ -115,6 +226,14 @@ public class ShapePreservingDFZeroSmooth {
 
 		StretchRepresentationSpec[] aRRS = new StretchRepresentationSpec[] {rrsCash, rrsSwap};
 
+		/*
+		 * Set up the Linear Curve Calibrator using the following parameters:
+		 * 	- Cubic Exponential Mixture Basis Spline Set
+		 * 	- Ck = 2, Segment Curvature Penalty = 2
+		 * 	- Quadratic Rational Shape Controller
+		 * 	- Natural Boundary Setting
+		 */
+
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_MIXTURE,
@@ -125,6 +244,15 @@ public class ShapePreservingDFZeroSmooth {
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null);
+
+		/*
+		 * Set up the Global Curve Control parameters as follows:
+		 * 	- Zero Rate Quantification Metric
+		 * 	- Cubic Polynomial Basis Spline Set
+		 * 	- Ck = 2, Segment Curvature Penalty = 2
+		 * 	- Quadratic Rational Shape Controller
+		 * 	- Natural Boundary Setting
+		 */
 
 		GlobalControlCurveParams gccp = new GlobalControlCurveParams (
 			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
@@ -137,6 +265,16 @@ public class ShapePreservingDFZeroSmooth {
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null);
+
+		/*
+		 * Set up the Local Curve Control parameters as follows:
+		 * 	- C1 Bessel Monotone Smoothener with no spurious extrema elimination and no monotone filter
+		 * 	- Zero Rate Quantification Metric
+		 * 	- Cubic Polynomial Basis Spline Set
+		 * 	- Ck = 2, Segment Curvature Penalty = 2
+		 * 	- Quadratic Rational Shape Controller
+		 * 	- Natural Boundary Setting
+		 */
 
 		LocalControlCurveParams lccp = new LocalControlCurveParams (
 			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_BESSEL,
@@ -152,6 +290,11 @@ public class ShapePreservingDFZeroSmooth {
 			false,
 			false);
 
+		/*
+		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
+		 *  of Cash and Swap Stretches.
+		 */
+
 		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRRS,
@@ -160,6 +303,12 @@ public class ShapePreservingDFZeroSmooth {
 			null,
 			null,
 			1.);
+
+		/*
+		 * Construct the Globally Smoothened Discount Curve by applying the linear curve calibrator and the
+		 * 	Global Curve Control parameters to the array of Cash and Swap Stretches and the shape preserving
+		 * 	discount curve.
+		 */
 
 		DiscountCurve dcGloballySmooth = RatesScenarioCurveBuilder.SmoothingGlobalControlBuild (
 			dcShapePreserving,
@@ -171,6 +320,12 @@ public class ShapePreservingDFZeroSmooth {
 			null,
 			null);
 
+		/*
+		 * Construct the Locally Smoothened Discount Curve by applying the linear curve calibrator and the
+		 * 	Local Curve Control parameters to the array of Cash and Swap Stretches and the shape preserving
+		 *  discount curve.
+		 */
+
 		DiscountCurve dcLocallySmooth = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
@@ -180,6 +335,11 @@ public class ShapePreservingDFZeroSmooth {
 			null,
 			null,
 			null);
+
+		/*
+		 * Cross-Comparison of the Cash Calibration Instrument "Rate" metric across the different curve
+		 * 	construction methodologies.
+		 */
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -221,6 +381,11 @@ public class ShapePreservingDFZeroSmooth {
 				FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.)
 			);
 
+		/*
+		 * Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+		 * 	construction methodologies.
+		 */
+
 		System.out.println ("\n\t----------------------------------------------------------------");
 
 		System.out.println ("\t----------------------------------------------------------------");
@@ -261,6 +426,11 @@ public class ShapePreservingDFZeroSmooth {
 				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.)
 			);
 
+		/*
+		 * Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
+		 * 	construction methodologies for a sequence of bespoke swap instruments.
+		 */
+
 		CalibratableComponent[] aCC = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"3Y", "6Y", "9Y", "12Y", "15Y", "18Y", "21Y", "24Y", "27Y", "30Y"});
 
@@ -299,5 +469,12 @@ public class ShapePreservingDFZeroSmooth {
 					"CalibSwapRate"),
 				1, 6, 1.)
 			);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		ShapePreservingDFZeroSmoothSample();
 	}
 }

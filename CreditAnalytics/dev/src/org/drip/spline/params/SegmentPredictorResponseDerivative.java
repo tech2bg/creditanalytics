@@ -6,6 +6,7 @@ package org.drip.spline.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,6 +32,10 @@ package org.drip.spline.params;
 /**
  * SegmentPredictorResponseDerivative contains the segment local parameters used for the segment calibration. It
  * 	holds the edge Y value and the derivatives.
+ * 
+ * It exposes the following functions:
+ * 	- Retrieve the Response Value as well as the DResponseDPredictorOrdinate Array.
+ * 	- Aggregate the 2 Predictor Ordinate Response Derivatives by applying the Cardinal Tension Weight.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -42,8 +47,8 @@ public class SegmentPredictorResponseDerivative {
 	/**
 	 * Aggregate the 2 Predictor Ordinate Response Derivatives by applying the Cardinal Tension Weight
 	 * 
-	 * @param pordA Predictor Ordinate Response Derivative A
-	 * @param pordB Predictor Ordinate Response Derivative B
+	 * @param sprdA Predictor Ordinate Response Derivative A
+	 * @param sprdB Predictor Ordinate Response Derivative B
 	 * @param dblCardinalTension Cardinal Tension
 	 * 
 	 * @return The Aggregated Predictor Ordinate Response Derivatives
@@ -115,7 +120,7 @@ public class SegmentPredictorResponseDerivative {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblResponseValue = dblResponseValue))
-			throw new java.lang.Exception ("SegmentPredictorResponseDerivative ctr: Ivalid Inputs!");
+			throw new java.lang.Exception ("SegmentPredictorResponseDerivative ctr: Invalid Inputs!");
 
 		_adblDResponseDPredictorOrdinate = adblDResponseDPredictorOrdinate;
 	}

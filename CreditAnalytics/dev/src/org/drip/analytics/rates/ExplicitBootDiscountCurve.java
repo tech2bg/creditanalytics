@@ -6,6 +6,7 @@ package org.drip.analytics.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,6 +31,12 @@ package org.drip.analytics.rates;
 
 /**
  * ExplicitBootDiscountCurve exposes the functionality associated with the bootstrapped Discount Curve.
+ *  - Generate a curve shifted using targeted basis at specific nodes.
+ *  - Generate scenario tweaked Latent State from the base forward curve corresponding to mode adjusted
+ *  	(flat/parallel/custom) manifest measure/quantification metric.
+ *  - Retrieve array of latent state manifest measure, instrument quantification metric, and the array of
+ *  	calibration components.
+ *  - Set/retrieve curve construction input instrument sets.
  *
  * @author Lakshmi Krishnamurthy
  */

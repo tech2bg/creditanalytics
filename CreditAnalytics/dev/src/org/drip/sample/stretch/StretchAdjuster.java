@@ -12,6 +12,7 @@ import org.drip.spline.stretch.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -48,19 +49,13 @@ import org.drip.spline.stretch.*;
 
 public class StretchAdjuster {
 
-	/**
+	/*
 	 * Build Polynomial Segment Control Parameters
 	 * 
-	 * @param iNumBasis Number of Polynomial Basis Functions
-	 * @param sdic Inelastic Segment Parameters
-	 * @param rssc Shape Controller
-	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
-	 * 
-	 * @return Polynomial Segment Control Parameters
 	 */
 
-	public static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
+	private static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
 		final SegmentDesignInelasticControl sdic,
 		final ResponseScalingShapeControl rssc)
@@ -73,21 +68,15 @@ public class StretchAdjuster {
 			rssc);
 	}
 
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Stretch Jacobian
-	 *  - Stretch knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param scbc The Segment Builder Parameters
+	/*
+	 * Basis Spline Stretch Test Sample. Performs the following:
+	 * 	- Construct the Array of Segment Builder Parameters - one per segment.
+	 *  - Construct the Stretch instance.
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
-	public static final MultiSegmentSequence BasisSplineStretchTest (
+	private static final MultiSegmentSequence BasisSplineStretchTest (
 		final double[] adblX,
 		final double[] adblY,
 		final SegmentCustomBuilderControl scbc)
@@ -116,8 +105,11 @@ public class StretchAdjuster {
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Stretch predictors to the responses
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * The Stretch Adjuster Test - this brings it altogether.
+	 */
+
+	private static final void StretchAdjusterTest()
 		throws Exception
 	{
 		/*
@@ -154,6 +146,10 @@ public class StretchAdjuster {
 			iK,
 			iRoughnessPenaltyDerivativeOrder);
 
+		/*
+		 * Build the polynomial basis spline segment control parameters, and set up the stretch
+		 */
+
 		System.out.println (" \n---------- \n POLYNOMIAL \n ---------- \n");
 
 		int iPolyNumBasis = 4;
@@ -179,6 +175,10 @@ public class StretchAdjuster {
 			dblX += 1.;
 		}
 
+		/*
+		 * Clip part of the stretch left of the specified predictor ordinate
+		 */
+
 		System.out.println ("\tSPLINE_STRETCH_BASE DPE: " + mssBase.curvatureDPE());
 
 		System.out.println (" \n---------- \n LEFT CLIPPED \n ---------- \n");
@@ -186,6 +186,10 @@ public class StretchAdjuster {
 		MultiSegmentSequence mssLeftClipped = mssBase.clipLeft ("LEFT_CLIP", 1.66);
 
 		dblX = mssBase.getLeftPredictorOrdinateEdge();
+
+		/*
+		 * Estimate, compute the segment-by-segment monotonicity and the Stretch Jacobian of the left clipped stretch
+		 */
 
 		while (dblX <= dblXMax) {
 			if (mssLeftClipped.in (dblX)) {
@@ -198,11 +202,23 @@ public class StretchAdjuster {
 			dblX += 1.;
 		}
 
+		/*
+		 * Left clipped stretch DPE
+		 */
+
 		System.out.println ("\tSPLINE_STRETCH_LEFT DPE: " + mssLeftClipped.curvatureDPE());
+
+		/*
+		 * Clip part of the stretch right of the specified predictor ordinate
+		 */
 
 		System.out.println (" \n---------- \n RIGHT CLIPPED \n ---------- \n");
 
 		MultiSegmentSequence mssRightClipped = mssBase.clipRight ("RIGHT_CLIP", 7.48);
+
+		/*
+		 * Estimate, compute the segment-by-segment monotonicity and the Stretch Jacobian of the right clipped stretch
+		 */
 
 		dblX = mssBase.getLeftPredictorOrdinateEdge();
 
@@ -217,7 +233,15 @@ public class StretchAdjuster {
 			dblX += 1.;
 		}
 
+		/*
+		 * Right clipped stretch DPE
+		 */
+
 		System.out.println ("\tSPLINE_STRETCH_RIGHT DPE: " + mssRightClipped.curvatureDPE());
+
+		/*
+		 * Ordered Side by side Comparison of left clipped - unclipped - right clipped response values
+		 */
 
 		dblX = mssBase.getLeftPredictorOrdinateEdge();
 
@@ -235,15 +259,27 @@ public class StretchAdjuster {
 			java.lang.String strLeftClippedMonotonocity = "             ";
 			java.lang.String strRightClippedMonotonocity = "             ";
 
+			/*
+			 * Unclipped
+			 */
+
 			java.lang.String strDisplay = "Y[" + FormatUtil.FormatDouble (dblX, 2, 3, 1.) + "] => "
 				+ FormatUtil.FormatDouble (mssBase.responseValue (dblX), 2, 6, 1.) + " | "
 				+ mssBase.monotoneType (dblX);
+
+			/*
+			 * Left clipped
+			 */
 
 			if (mssLeftClipped.in (dblX)) {
 				strLeftClippedValue = FormatUtil.FormatDouble (mssLeftClipped.responseValue (dblX), 2, 6, 1.);
 
 				strLeftClippedMonotonocity = mssLeftClipped.monotoneType (dblX).toString();
 			}
+
+			/*
+			 * Right clipped
+			 */
 
 			if (mssRightClipped.in (dblX)) {
 				strRightClippedValue = FormatUtil.FormatDouble (mssRightClipped.responseValue (dblX), 2, 6, 1.);
@@ -256,5 +292,12 @@ public class StretchAdjuster {
 
 			dblX += 0.5;
 		}
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		StretchAdjusterTest();
 	}
 }

@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -35,7 +36,7 @@ package org.drip.analytics.definition;
  * 	the following functionality:
  * 	- Retrieve the spot parameters (FX Spot, Spot Date, and the currency pair)
  *  - Indicate if the basis has been bootstrapped
- *  - Calculate the Full set of FX Forward corresponding to each basis node
+ *  - Calculate the Complete set of FX Forward corresponding to each basis node
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -49,34 +50,34 @@ public abstract class FXBasisCurve extends org.drip.service.stream.Serializer im
 	 * @return Spot Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getSpotDate();
+	public abstract org.drip.analytics.date.JulianDate spotDate();
 
 	/**
-	 * Gets the FX Spot
+	 * Get the FX Spot
 	 * 
 	 * @return FX Spot
 	 */
 
-	public abstract double getFXSpot();
+	public abstract double fxSpot();
 
 	/**
-	 * Returns the currency pair instance
+	 * Return the currency pair instance
 	 * 
 	 * @return CurrencyPair object instance
 	 */
 
-	public abstract org.drip.product.params.CurrencyPair getCurrencyPair();
+	public abstract org.drip.product.params.CurrencyPair currencyPair();
 
 	/**
-	 * Returns if the inputs are for bootstrapped FX basis
+	 * Return if the inputs are for bootstrapped FX basis
 	 * 
 	 * @return True if the inputs are for bootstrapped FX basis
 	 */
 
-	public abstract boolean IsBasisBootstrapped();
+	public abstract boolean isBasisBootstrapped();
 
 	/**
-	 * Returns the array of full FX Forwards
+	 * Return the array of full FX Forwards
 	 * 
 	 * @param valParam ValuationParams
 	 * @param dcNum Discount Curve Numerator
@@ -87,7 +88,7 @@ public abstract class FXBasisCurve extends org.drip.service.stream.Serializer im
 	 * @return Array of FXForward
 	 */
 
-	public abstract double[] getFullFXFwd (
+	public abstract double[] fxForward (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,

@@ -4,12 +4,13 @@ package org.drip.sample.quant;
 import org.drip.quant.calculus.Integrator;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.*;
-/*
 
+/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -43,7 +44,14 @@ import org.drip.quant.function1D.*;
  */
 
 public class IntegrandQuadrature {
-	public static void ComputeQuadrature (
+
+	/*
+	 * Compute the Integrand Quadrature for the specified Univariate Function using the various methods.
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
+
+	private static void ComputeQuadrature (
 		final AbstractUnivariate au,
 		final double dblActual,
 		final double dblStart,
@@ -81,8 +89,13 @@ public class IntegrandQuadrature {
 			1, iRightDecimal, 1.));
 	}
 
-	public static void main (
-		final String astrArgs[])
+	/*
+	 * Compute the Integrand Quadrature for the various Univariate Functions using the different methods.
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
+
+	private static void IntegrandQuadratureSample()
 		throws Exception
 	{
 		double dblStart = 0.;
@@ -135,5 +148,12 @@ public class IntegrandQuadrature {
 			dblEnd);
 
 		System.out.println ("\n\t-------------------------------------\n");
+	}
+
+	public static void main (
+		final String astrArgs[])
+		throws Exception
+	{
+		IntegrandQuadratureSample();
 	}
 }

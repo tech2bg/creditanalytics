@@ -6,6 +6,7 @@ package org.drip.param.valuation;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -57,32 +58,13 @@ public class WorkoutInfo extends org.drip.service.stream.Serializer {
 
 	public static final int WO_TYPE_MATURITY = 3;
 
-	/**
-	 * Work-out Date
-	 */
-
-	public double _dblDate = java.lang.Double.NaN;
-
-	/**
-	 * Work-out Yield
-	 */
-
-	public double _dblYield = java.lang.Double.NaN;
+	private int _iWOType = WO_TYPE_MATURITY;
+	private double _dblDate = java.lang.Double.NaN;
+	private double _dblYield = java.lang.Double.NaN;
+	private double _dblExerciseFactor = java.lang.Double.NaN;
 
 	/**
-	 * Work-out Factor
-	 */
-
-	public double _dblExerciseFactor = java.lang.Double.NaN;
-
-	/**
-	 * Work out Type
-	 */
-
-	public int _iWOType = WO_TYPE_MATURITY;
-
-	/**
-	 * Constructor: Constructs the class from the work-out date, yield, exercise factor, and type
+	 * Constructor: Construct the class from the work-out date, yield, exercise factor, and type
 	 * 
 	 * @param dblDate Work-out Date
 	 * @param dblYield Work-out Yield
@@ -164,6 +146,50 @@ public class WorkoutInfo extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("WorkoutInfo de-serializer: Cannot locate work out type");
 
 		_iWOType = new java.lang.Integer (astrField[4]);
+	}
+
+	/**
+	 * Retrieve the Work-out Date
+	 * 
+	 * @return The Work-out Date
+	 */
+
+	public double date()
+	{
+		return _dblDate;
+	}
+
+	/**
+	 * Retrieve the Work-out Yield
+	 * 
+	 * @return The Work-out Yield
+	 */
+
+	public double yield()
+	{
+		return _dblYield;
+	}
+
+	/**
+	 * Retrieve the Work-out Factor
+	 * 
+	 * @return The Work-out Factor
+	 */
+
+	public double factor()
+	{
+		return _dblExerciseFactor;
+	}
+
+	/**
+	 * Retrieve the Work-out Type
+	 * 
+	 * @return The Work-out Type
+	 */
+
+	public int type()
+	{
+		return _iWOType;
 	}
 
 	@Override public byte[] serialize()

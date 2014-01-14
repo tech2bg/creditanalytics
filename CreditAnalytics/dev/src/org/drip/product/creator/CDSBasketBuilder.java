@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -40,8 +41,8 @@ package org.drip.product.creator;
 public class CDSBasketBuilder {
 
 	/**
-	 * Creates the named CDX from effective, maturity, coupon, IR curve name, credit curve name set, and
-	 * 		their weights.
+	 * Create the named CDX from effective, maturity, coupon, IR curve name, credit curve name set, and their
+	 * 	weights.
 	 * 
 	 * @param dtEffective JulianDate Effective
 	 * @param dtMaturity JulianDate Maturity
@@ -94,7 +95,7 @@ public class CDSBasketBuilder {
 	}
 
 	/**
-	 * Creates the named CDX from effective, maturity, coupon, IR curve name, credit curve name set.
+	 * Create the named CDX from effective, maturity, coupon, IR curve name, credit curve name set.
 	 * 
 	 * @param dtEffective JulianDate Effective
 	 * @param dtMaturity JulianDate Maturity
@@ -149,7 +150,7 @@ public class CDSBasketBuilder {
 	}
 
 	/**
-	 * Creates the basket default swap from effective, maturity, and an array of the credit components.
+	 * Create the basket default swap from effective, maturity, and an array of the credit components.
 	 * 
 	 * @param dtEffective JulianDate Effective
 	 * @param dtMaturity JulianDate Maturity

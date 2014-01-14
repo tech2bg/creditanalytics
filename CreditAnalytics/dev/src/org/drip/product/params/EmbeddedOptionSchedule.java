@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -35,7 +36,8 @@ package org.drip.product.params;
  *  the schedule of exercise dates and factors, the exercise notice period, and the option is to call or put.
  *  Further, if the option is of the type fix-to-float on exercise, contains the post-exercise floater index
  *  and floating spread. If the exercise is not discrete (American option), the exercise dates/factors are
- *  discretized according to a pre-specified discretization grid.
+ *  discretized according to a pre-specified discretization grid. It exports serialization into and
+ *  de-serialization out of byte arrays.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -53,7 +55,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	private double _dblFixToFloatExerciseDate = java.lang.Double.NaN;
 
 	/**
-	 * Creates the EOS from the dates/factors string arrays
+	 * Create the EOS from the dates/factors string arrays
 	 * 
 	 * @param strDates String representing the date array
 	 * @param strFactors String representing the factor array
@@ -111,7 +113,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates the discretized American EOS schedule from the array of dates and factors
+	 * Create the discretized American EOS schedule from the array of dates and factors
 	 * 
 	 * @param dblValDate Valuation Date - date to which the component is assumed to not have been exercised
 	 * @param adblDate Array of dates
@@ -190,7 +192,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Constructs the EOS from the array of dates and factors
+	 * Construct the EOS from the array of dates and factors
 	 * 
 	 * @param adblDate Array of dates
 	 * @param adblFactor Matched Array of Factors
@@ -236,7 +238,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Constructs a Deep Copy EOS from another EOS
+	 * Construct a Deep Copy EOS from another EOS
 	 * 
 	 * @param eosOther The Other EOS
 	 */
@@ -378,7 +380,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the array of dates
+	 * Get the array of dates
 	 * 
 	 * @return The array of dates
 	 */
@@ -389,7 +391,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the array of factors
+	 * Get the array of factors
 	 * 
 	 * @return The array of factors
 	 */
@@ -400,7 +402,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Gets the specific indexed factor
+	 * Get the specific indexed factor
 	 * 
 	 * @param iIndex Factor index
 	 * 
@@ -414,7 +416,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the exercise notice period
+	 * Retrieve the exercise notice period
 	 * 
 	 * @return Minimum Exercise Notice Period in Days
 	 */
@@ -425,7 +427,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Returns whether the component is fix to float on exercise
+	 * Return whether the component is fix to float on exercise
 	 * 
 	 * @return True (component becomes a floater on call), False (component does not change)
 	 */

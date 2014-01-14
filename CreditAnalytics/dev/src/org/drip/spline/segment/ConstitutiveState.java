@@ -6,6 +6,7 @@ package org.drip.spline.segment;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,14 +30,41 @@ package org.drip.spline.segment;
  */
 
 /**
- * This class contains the basis spline segment in-elastic ordinates. Estimate segment spline functions and
- *  their coefficients are implemented/calibrated in the overriding spline classes. It provides functionality
- *  for assessing the various segment attributes:
- *  - Segment Monotonicity
- *  - Estimate Function Value, the ordered derivative, and the corresponding Jacobian
- *  - Segment Local/Global Derivative
- *  - Evaluation of the Segment Micro-Jack
- *  - Head / Regular Segment calibration - both of the basis function coefficients and the Jacobian
+ * ConstitutiveState implements the single segment basis calibration and inference functionality. It exports
+ * 	the following functionality:
+ * 	- Build the ConstitutiveState instance from the Basis Function/Shape Controller Set.
+ * 	- Build the ConstitutiveState instance from the Basis Evaluator Set.
+ * 	- Retrieve the Number of Parameters, Basis Evaluator, Array of the Response Basis Coefficients, and
+ * 		Segment Design Inelastic Control.
+ * 	- Calibrate the Segment State from the Calibration Parameter Set.
+ * 	- Sensitivity Calibrator: Calibrate the Segment Quote Jacobian from the Calibration Parameter Set.
+ * 	- Calibrate the coefficients from the prior Predictor/Response Segment, the Constraint, and fitness
+ *		Weights
+ *	- Calibrate the coefficients from the prior Segment and the Response Value at the Right Predictor
+ *		Ordinate.
+ *	- Calibrate the Coefficients from the Edge Response Values and the Left Edge Response Slope.
+ *	- Calibrate the coefficients from the Left Edge Response Value Constraint, the Left Edge Response Value
+ *		Slope, and the Right Edge Response Value Constraint.
+ *	- Retrieve the Segment Curvature, Length, and the Best Fit DPE.
+ *	- Calculate the Response Value and its Derivative at the given Predictor Ordinate.
+ *	- Calculate the Ordered Derivative of the Coefficient to the Quote.
+ *	- Calculate the Jacobian of the Segment's Response Basis Function Coefficients to the Edge Inputs.
+ *	- Calculate the Jacobian of the Response to the Edge Inputs at the given Predictor Ordinate.
+ *	- Calculate the Jacobian of the Response to the Basis Coefficients at the given Predictor Ordinate.
+ *	- Calibrate the segment and calculate the Jacobian of the Segment's Response Basis Function Coefficients
+ *		to the Edge Parameters.
+ *	- Calibrate the Coefficients from the Edge Response Values and the Left Edge Response Value Slope and
+ *		calculate the Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters.
+ *	- Calibrate the coefficients from the prior Segment and the Response Value at the Right Predictor
+ *		Ordinate and calculate the Jacobian of the Segment's Response Basis Function Coefficients to the Edge
+ *  	Parameters.
+ *  - Indicate whether the given segment is monotone. If monotone, may optionally indicate the nature of the
+ *  	extrema contained inside (maxima/minima/infection).
+ *  - Clip the part of the Segment to the Right of the specified Predictor Ordinate. Retain all other
+ *  	constraints the same.
+ *  - Clip the part of the Segment to the Left of the specified Predictor Ordinate. Retain all other
+ *  	constraints the same.
+ *  - Display the string representation for diagnostic purposes.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -63,7 +91,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	private org.drip.quant.calculus.WengertJacobian _wjDBasisCoeffDEdgeValue = null;
 
 	/**
-	 * Build the ConstitutiveState instance from the Basis Set
+	 * Build the ConstitutiveState instance from the Basis Function/Shape Controller Set
 	 * 
 	 * @param dblLeftPredictorOrdinate Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate Right Predictor Ordinate
@@ -97,7 +125,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	}
 
 	/**
-	 * Build the ConstitutiveState instance from the Basis Set
+	 * Build the ConstitutiveState instance from the Basis Evaluator Set
 	 * 
 	 * @param dblLeftPredictorOrdinate Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate Right Predictor Ordinate
@@ -628,7 +656,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @param dblLeftValue Left Edge Response Value
 	 * @param dblLeftQuoteSensitivity Left Edge Response Value Quote Sensitivity
 	 * @param dblLeftSlope Left Edge Response Slope
-	 * @param dblLeftQuoteSensitivity Left Edge Response Slope Quote Sensitivity
+	 * @param dblLeftSlopeQuoteSensitivity Left Edge Response Slope Quote Sensitivity
 	 * @param dblRightValue Right Edge Response Value
 	 * @param dblRightQuoteSensitivity Right Edge Response Value Quote Sensitivity
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
@@ -1031,7 +1059,12 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * Calibrate the segment and calculate the Jacobian of the Segment's Response Basis Function Coefficients
 	 *  to the Edge Parameters
 	 * 
-	 * @param scis Segment Calibration Parameters
+	 * @param adblPredictorOrdinate Array of Predictor Ordinates
+	 * @param adblResponseValue Array of Response Values
+	 * @param adblLeftEdgeDeriv Array of Left Edge Derivatives
+	 * @param adblRightEdgeDeriv Array of Right Edge Derivatives
+	 * @param aSIBC Array of Segment Flexure Constraints, expressed as Basis Coefficients
+	 * @param sbfr Segment Best Fit Response Instance
 	 * 
 	 * @return The Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
 	 */
@@ -1062,7 +1095,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @param dblLeftValue Left Edge Response Value
 	 * @param dblLeftQuoteSensitivity Left Edge Response Value Quote Sensitivity
 	 * @param dblLeftSlope Left Edge Response Slope
-	 * @param dblLeftQuoteSensitivity Left Edge Response Slope Quote Sensitivity
+	 * @param dblLeftSlopeQuoteSensitivity Left Edge Response Slope Quote Sensitivity
 	 * @param dblRightValue Right Edge Response Value
 	 * @param dblRightQuoteSensitivity Right Edge Response Value Quote Sensitivity
 	 * @param sbfrState Segment's Best Fit Weighted Response Values

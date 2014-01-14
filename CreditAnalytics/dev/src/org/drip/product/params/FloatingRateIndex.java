@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,10 @@ package org.drip.product.params;
  */
 
 /**
- * FloatingRateIndex contains the Index Parameters corresponding to a Floating Stream.
+ * FloatingRateIndex contains the Index Parameters corresponding to a Floating Stream. It provides the
+ *  following functionality:
+ *  - Retrieve Index, Tenor, Currency, and Fully Qualified Name.
+ *  - Serialization into and de-serialization out of byte arrays.
  *  
  * @author Lakshmi Krishnamurthy
  */

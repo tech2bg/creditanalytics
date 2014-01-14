@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,17 @@ package org.drip.product.rates;
  */
 
 /**
- * FixedStream contains an implementation of the Fixed leg cash flow stream.
+ * FixedStream contains an implementation of the Fixed leg cash flow stream. It exports the following
+ * functionality:
+ *  - Standard/Custom Constructor for the FixedStream Component
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -414,15 +425,15 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 			double dblPeriodPayDate = period.getPayDate();
 
-			if (dblPeriodPayDate < valParams._dblValue) continue;
+			if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 			try {
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (period.getStartDate() < valParams._dblValue)
-						dblAccrued01 = period.getAccrualDCF (valParams._dblValue) * 0.01 * getNotional
-							(period.getAccrualStartDate(), valParams._dblValue);
+					if (period.getStartDate() < valParams.valueDate())
+						dblAccrued01 = period.getAccrualDCF (valParams.valueDate()) * 0.01 * getNotional
+							(period.getAccrualStartDate(), valParams.valueDate());
 				}
 
 				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * getNotional
@@ -439,9 +450,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		double dblCashPayDF = java.lang.Double.NaN;
 
 		try {
-			double dblCashSettle = valParams._dblCashPay;
+			double dblCashSettle = valParams.cashPayDate();
 
-			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams._dblValue);
+			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams.valueDate());
 
 			dblCashPayDF = dc.df (dblCashSettle);
 		} catch (java.lang.Exception e) {
@@ -482,7 +493,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		double dblValueNotional = java.lang.Double.NaN;
 
 		try {
-			dblValueNotional = getNotional (valParams._dblValue);
+			dblValueNotional = getNotional (valParams.valueDate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -542,7 +553,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams || null ==
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
 			mktParams.getDiscountCurve())
 			return null;
 
@@ -563,7 +574,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
 
-				if (dblPeriodPayDate < valParams._dblValue) continue;
+				if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
@@ -596,7 +607,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 				}
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams._dblCashPay, dblPV, dc, wjPVDFMicroJack) ?
+			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
 				wjPVDFMicroJack : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -612,7 +623,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == strQuote || null == mktParams
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null == mktParams
 			|| null == mktParams.getDiscountCurve())
 			return null;
 
@@ -634,7 +645,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();
 
-					if (dblPeriodPayDate < valParams._dblValue) continue;
+					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());

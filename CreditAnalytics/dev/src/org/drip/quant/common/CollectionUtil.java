@@ -6,6 +6,7 @@ package org.drip.quant.common;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -36,6 +37,8 @@ package org.drip.quant.common;
  *  - Map Key Functionality - key-value flatteners, key prefixers
  *  - Decompose/transform List/Set/Array Contents
  *  - Multi-Dimensional Map Manipulator Routines
+ *  - Construct n-derivatives array from Slope
+ *  - Collate Wengerts to a bigger Wengert
  * 
  * @author Lakshmi Krishnamurthy
  */

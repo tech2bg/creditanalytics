@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,11 +32,11 @@ package org.drip.analytics.definition;
  */
 
 /**
- * Curve implements the interfaces across all curve instances. It exposes the following functionality:
- *  - Set the effective/start date
- *  - Set up calibration run framework (initialize the build run, build the estimator etc.)
- *  - Generate scenario curves from the base curve (flat/parallel/custom)
- *  - Set/retrieve the components and their quotes
+ * Curve extends the Latent State to abstract the functionality required among all financial curve. It
+ *  exposes the following functionality:
+ *  - Set the Epoch and the Identifiers
+ *  - Set up/retrieve the Calibration Inputs
+ *  - Retrieve the Latent State Metric Measures
  *
  * @author Lakshmi Krishnamurthy
  */

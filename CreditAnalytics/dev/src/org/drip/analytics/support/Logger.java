@@ -6,6 +6,7 @@ package org.drip.analytics.support;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -81,7 +82,7 @@ public class Logger {
 	}
 
 	/**
-	 * Initializes the logger from a configuration file
+	 * Initialize the logger from a configuration file
 	 * 
 	 * @param strConfigFile Configuration file containing the logger file location
 	 * 
@@ -106,7 +107,7 @@ public class Logger {
 	}
 
 	/**
-	 * Logs a specific message to the level
+	 * Log a specific message to the level
 	 * 
 	 * @param iLevel the level of message (ERROR/WARNING/INFO/DEBUG)
 	 * @param bHardLog whether the logging is to file/DB (true) or to screen (false)

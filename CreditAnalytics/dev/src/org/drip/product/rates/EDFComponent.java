@@ -32,7 +32,17 @@ package org.drip.product.rates;
  */
 
 /**
- * EDFComponent contains the implementation of the Euro-dollar future contract/valuation (EDF).
+ * EDFComponent contains the implementation of the Euro-dollar future contract/valuation (EDF). It exports
+ *  the following functionality:
+ *  - Standard/Custom Constructor for the EDFComponent
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -58,7 +68,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
-	 * Constructs an EDFComponent Component
+	 * Construct an EDFComponent Instance
 	 * 
 	 * @param dtEffective Effective Date
 	 * @param dtMaturity Maturity Date
@@ -88,7 +98,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
-	 * Constructs an EDFComponent Component
+	 * Construct an EDFComponent Component
 	 * 
 	 * @param strFullEDCode EDF Component Code
 	 * @param dt Start Date
@@ -377,7 +387,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || valParams._dblValue >= _dblMaturity) return null;
+		if (null == valParams || null == mktParams || valParams.valueDate() >= _dblMaturity) return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -389,8 +399,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		try {
-			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
-				_settleParams.cashSettleDate (valParams._dblValue);
+			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
+				_settleParams.cashSettleDate (valParams.valueDate());
 
 			double dblUnadjustedAnnuity = dc.df (_dblMaturity) / dc.df (_dblEffective) / dc.df
 				(dblCashSettle);
@@ -435,7 +445,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == mktParams ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams ||
 			null == mktParams.getDiscountCurve())
 			return null;
 
@@ -474,7 +484,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 					return null;
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams._dblCashPay, dblPV, dc, wjPVDFMicroJack) ?
+			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
 				wjPVDFMicroJack : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -490,7 +500,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == strQuote ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
 			null == mktParams || null == mktParams.getDiscountCurve())
 			return null;
 
@@ -539,7 +549,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == lsmm || !(lsmm instanceof
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == lsmm || !(lsmm instanceof
 			org.drip.analytics.rates.RatesLSMM) ||
 				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
 					(lsmm.getID()))
@@ -552,7 +562,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
-				double dblTurnMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
+				double dblTurnMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
 					_dblMaturity);
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
@@ -585,7 +595,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-					double dblTurnEffectiveDF = null == tldf ? 1. : tldf.turnAdjust (valParams._dblValue,
+					double dblTurnEffectiveDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
 						_dblMaturity);
 
 					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,

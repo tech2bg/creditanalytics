@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -33,7 +34,7 @@ package org.drip.product.creator;
 /**
  * CDSBuilder contains the suite of helper functions for creating the CreditDefaultSwap product from the
  * 	parameters/byte array streams. It also creates the standard EU, NA, ASIA contracts, CDS with amortization
- *  schedules, and CDS from product codes/tenors.
+ *  schedules, and custom CDS from product codes/tenors.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -41,7 +42,7 @@ package org.drip.product.creator;
 public class CDSBuilder {
 
 	/**
-	 * Creates the credit default swap from the effective/maturity dates, coupon, IR curve name, and
+	 * Create the credit default swap from the effective/maturity dates, coupon, IR curve name, and
 	 * 	component credit valuation parameters.
 	 * 
 	 * @param dtEffective JulianDate effective
@@ -94,7 +95,7 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates the credit default swap from the effective/maturity dates, coupon, IR curve name, and
+	 * Create the credit default swap from the effective/maturity dates, coupon, IR curve name, and
 	 * 	credit curve.
 	 * 
 	 * @param dtEffective JulianDate effective
@@ -139,7 +140,7 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates an SNAC style CDS contract with full first stub
+	 * Create an SNAC style CDS contract with full first stub
 	 * 
 	 * @param dtEffective CDS Effective date
 	 * @param strTenor CDS Tenor
@@ -159,7 +160,7 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates an SNAC style CDS contract with full first stub
+	 * Create an SNAC style CDS contract with full first stub
 	 * 
 	 * @param dtEffective CDS Effective date
 	 * @param strTenor CDS Tenor
@@ -194,7 +195,7 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates an Standard EU CDS contract with full first stub
+	 * Create an Standard EU CDS contract with full first stub
 	 * 
 	 * @param dtEffective CDS Effective date
 	 * @param strTenor CDS Tenor
@@ -225,7 +226,7 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates an Standard Asia Pacific CDS contract with full first stub
+	 * Create an Standard Asia Pacific CDS contract with full first stub
 	 * 
 	 * @param dtEffective CDS Effective date
 	 * @param strTenor CDS Tenor
@@ -256,7 +257,7 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates an Standard Emerging Market CDS contract with full first stub
+	 * Create an Standard Emerging Market CDS contract with full first stub
 	 * 
 	 * @param dtEffective CDS Effective date
 	 * @param strTenor CDS Tenor
@@ -288,8 +289,8 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates the credit default swap from the effective date, tenor, coupon, IR curve name, and
-	 * 	component credit valuation parameters.
+	 * Create the credit default swap from the effective date, tenor, coupon, IR curve name, and component
+	 * 	credit valuation parameters.
 	 * 
 	 * @param dtEffective JulianDate effective
 	 * @param strTenor String tenor
@@ -333,8 +334,8 @@ public class CDSBuilder {
 	}
 
 	/**
-	 * Creates the credit default swap from the effective/maturity dates, coupon, IR curve name, and
-	 * 	credit curve.
+	 * Create the credit default swap from the effective/maturity dates, coupon, IR curve name, and credit
+	 * 	curve.
 	 * 
 	 * @param dtEffective JulianDate effective
 	 * @param strTenor String tenor

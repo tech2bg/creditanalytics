@@ -6,6 +6,7 @@ package org.drip.service.env;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -273,7 +274,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Sets the option schedule for all the bonds by extracting them from the database
+	 * Set the option schedule for all the bonds by extracting them from the database
 	 * 
 	 * @param stmt SQL Statement object representing the query to be executed
 	 * 
@@ -309,7 +310,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates the full set of calculable bond measures given the bond, the valuation parameters, and the
+	 * Calculate the full set of calculable bond measures given the bond, the valuation parameters, and the
 	 *  prices. Optionally, depending on the setting, it also displays formatted runs.
 	 *  
 	 * @param strBondDescription String describing the bond
@@ -360,7 +361,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates the full set of calculable bond measures given the CUSIP, the valuation parameters, and the
+	 * Calculate the full set of calculable bond measures given the CUSIP, the valuation parameters, and the
 	 *  prices. Optionally, depending on the setting, it also displays formatted runs.
 	 *  
 	 * @param strCUSIPIn Bond CUSIP/ISIN
@@ -401,15 +402,15 @@ public class BondManager {
 
 			try {
 				java.lang.String strRunName = bond.getTicker() + "  " + df2p.format (100. * bond.getCoupon
-					(valParams._dblValue, null)) + " " + (org.drip.analytics.date.JulianDate.Year
+					(valParams.valueDate(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
 						(bond.getMaturityDate().getJulian()) - 2000);
 
 				if (bond.isFloater()) {
 					if (s_bBlog)
 						System.out.println ("Setting rate for index " + bond.getRateIndex() + " and date " +
-							bond.getPeriodResetDate (valParams._dblValue));
+							bond.getPeriodResetDate (valParams.valueDate()));
 
-					mpc.addFixings (bond.getPeriodResetDate (valParams._dblValue), bond.getRateIndex(),
+					mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
 						0.0042);
 				}
 
@@ -424,7 +425,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates the full set of bond measures for all available bonds given the same bid and ask prices.
+	 * Calculate the full set of bond measures for all available bonds given the same bid and ask prices.
 	 *  Depending upon the setting, may also generate the runs.
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams containing the curves
@@ -473,11 +474,11 @@ public class BondManager {
 
 				try {
 					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.getCoupon
-						(valParams._dblValue, null)) + " " + (org.drip.analytics.date.JulianDate.Year
+						(valParams.valueDate(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
 							(bond.getMaturityDate().getJulian()) - 2000);
 
 					if (bond.isFloater())
-						mpc.addFixings (bond.getPeriodResetDate (valParams._dblValue), bond.getRateIndex(),
+						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
 							0.0042);
 
 					CalcBondMeasures (strRunName, bond, valParams, mpc, 0.01 * dblBidPrice, 0.01 *
@@ -494,7 +495,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates the complete set of bond measures for all the bonds from their closing bid/ask prices.
+	 * Calculate the complete set of bond measures for all the bonds from their closing bid/ask prices.
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams containing the curves
 	 * @param dt Valuation Date
@@ -545,7 +546,7 @@ public class BondManager {
 						org.drip.param.valuation.ValuationParams (dt, dt.addBusDays (3, "USD"), "USD");
 
 					if (bond.isFloater())
-						mpc.addFixings (bond.getPeriodResetDate (valParams._dblValue), bond.getRateIndex(),
+						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
 							0.0042);
 
 					double dblMidPrice = java.lang.Double.NaN;
@@ -574,7 +575,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Retrieves the mid marks (price/spreads) for the given ISIN/CUSIP and the valuation date
+	 * Retrieve the mid marks (price/spreads) for the given ISIN/CUSIP and the valuation date
 	 * 
 	 * @param strCUSIP ISIN/CUSIP string
 	 * @param dt Valuation Date
@@ -606,7 +607,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Loads all the mid bond marks for the given EOD
+	 * Load all the mid bond marks for the given EOD
 	 * 
 	 * @param dt EOD date
 	 * @param stmt SQL Statement object representing the query
@@ -635,7 +636,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Builds a bond from the input result set
+	 * Build a bond from the input result set
 	 * 
 	 * @param rs ResultSet containing the list of queried bonds
 	 * @param mpc org.drip.param.definition.MarketParams containing the closing curves
@@ -732,7 +733,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Loads the bond object using its ID
+	 * Load the bond object using its ID
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams containing the closing curves
 	 * @param stmt SQL Statement object representing the query
@@ -811,7 +812,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Loads the reference data corresponding to the input bond ID
+	 * Load the reference data corresponding to the input bond ID
 	 * 
 	 * @param stmt SQL Statement representing the query
 	 * @param strBondId Bond ID
@@ -894,7 +895,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Retrieves all the ISINs for the given ticker
+	 * Retrieve all the ISINs for the given ticker
 	 * 
 	 * @param stmt SQL Statement object representing the executable query
 	 * @param strTicker String representing the ticker
@@ -926,7 +927,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Creates all the bonds, and loads them onto the memory
+	 * Create all the bonds, and loads them onto the memory
 	 * 
 	 * @param mpc MarketParamasContainer containing the closing curves
 	 * @param stmt SQL Statement object representing the executable query
@@ -993,7 +994,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates the bond measures corresponding to the bonds in the ticker from the given price
+	 * Calculate the bond measures corresponding to the bonds in the ticker from the given price
 	 * 
 	 * @param strTicker Ticker string
 	 * @param mpc MarketParamasContainer containing the closing curves
@@ -1042,7 +1043,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates the bond measures corresponding to the bonds in the ticker from their market prices
+	 * Calculate the bond measures corresponding to the bonds in the ticker from their market prices
 	 * 
 	 * @param strTicker Ticker string
 	 * @param mpc MarketParamasContainer containing the closing curves
@@ -1100,7 +1101,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates the bond measures for the given bond and price, and loads them onto the DB
+	 * Calculate the bond measures for the given bond and price, and loads them onto the DB
 	 * 
 	 * @param stmt SQL Statement object representing the executable query
 	 * @param bond Input bond
@@ -1135,7 +1136,7 @@ public class BondManager {
 		org.drip.param.valuation.WorkoutInfo wi = null;
 
 		try {
-			strOracleEOD = (new org.drip.analytics.date.JulianDate (valParams._dblValue)).toOracleDate();
+			strOracleEOD = (new org.drip.analytics.date.JulianDate (valParams.valueDate())).toOracleDate();
 
 			stmt.executeQuery ("delete from BondHist where ISIN = '" + bond.getISIN() + "' and EOD = '" +
 				strOracleEOD + "'");
@@ -1168,37 +1169,37 @@ public class BondManager {
 
 		try {
 			dblZSpread = bond.calcZSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				wi.date(), wi.factor(), dblPrice);
 
 			dblGSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				wi.date(), wi.factor(), dblPrice);
 
 			dblISpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				wi.date(), wi.factor(), dblPrice);
 
 			dblTSYSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				wi.date(), wi.factor(), dblPrice);
 
 			dblASWSpread = bond.calcASWFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				wi.date(), wi.factor(), dblPrice);
 
 			dblCreditBasis = bond.calcCreditBasisFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi._dblDate, wi._dblExerciseFactor, dblPrice);
+				wi.date(), wi.factor(), dblPrice);
 
-			AppendField (sbSQLInsertBondClose, wi._dblYield, false);
+			AppendField (sbSQLInsertBondClose, wi.yield(), false);
 
-			if (java.lang.Double.isNaN (wi._dblDate))
+			if (java.lang.Double.isNaN (wi.date()))
 				sbSQLInsertBondClose.append ("'', ");
 			else
 				sbSQLInsertBondClose.append ("'" + (new org.drip.analytics.date.JulianDate
-					(wi._dblDate).toOracleDate()) + "', ");
+					(wi.date()).toOracleDate()) + "', ");
 		} catch (java.lang.Exception e) {
 			System.out.println (e.getMessage() + "; " + bond.getComponentName() + " for price=" + dblPrice);
 
 			return false;
 		}
 
-		AppendField (sbSQLInsertBondClose, wi._dblExerciseFactor, false);
+		AppendField (sbSQLInsertBondClose, wi.factor(), false);
 
 		AppendField (sbSQLInsertBondClose, dblZSpread, false);
 
@@ -1226,7 +1227,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates and saves the measures for all the bonds form their market prices for a given EOD
+	 * Calculate and saves the measures for all the bonds form their market prices for a given EOD
 	 * 
 	 * @param stmt SQL Statement object representing the executable query
 	 * @param dtEOD EOD Date
@@ -1279,7 +1280,7 @@ public class BondManager {
 
 				try {
 					if (bond.isFloater())
-						mpc.addFixings (bond.getPeriodResetDate (valParams._dblValue), bond.getRateIndex(),
+						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
 							0.0042);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
@@ -1307,7 +1308,7 @@ public class BondManager {
 	}
 
 	/**
-	 * Calculates and saves the measures for all the bonds from their market prices for all EODs between a
+	 * Calculate and saves the measures for all the bonds from their market prices for all EODs between a
 	 * 	given pair of dates
 	 * 
 	 * @param mpc MarketParams containing the curves
@@ -1359,7 +1360,7 @@ public class BondManager {
 	}
 	
 	/**
-	 * Generates the bond creator file
+	 * Generate the bond creator file
 	 * 
 	 * @param mpc MarketParamasContainer containing the closing curves
 	 * @param stmt SQL Statement object representing the executable query

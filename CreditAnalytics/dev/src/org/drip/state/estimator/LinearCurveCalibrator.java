@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,8 @@ package org.drip.state.estimator;
  */
 
 /**
- * LinearCurveCalibrator creates the discount curve span from the instrument cash flows.
+ * LinearCurveCalibrator creates the discount curve span from the instrument cash flows. The span
+ * 	construction may be customized using specific settings provided in GlobalControlCurveParams.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -100,7 +102,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 				org.drip.spline.params.SegmentCustomBuilderControl[iNumCalibComp];
 
 			for (int i = 0; i <= iNumCalibComp; ++i) {
-				adblPredictorOrdinate[i] = 0 == i ? valParams._dblValue :
+				adblPredictorOrdinate[i] = 0 == i ? valParams.valueDate() :
 					aCalibComp[i - 1].getMaturityDate().getJulian();
 
 				if (i != iNumCalibComp) aSCBC[i] = segmentBuilderControl();

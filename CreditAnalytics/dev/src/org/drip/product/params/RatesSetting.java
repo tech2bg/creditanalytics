@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,8 @@ package org.drip.product.params;
 
 /**
  * RatesSetting contains the rate related valuation parameters - the discount curves to be used for
- *  discounting the coupon, the redemption, the principal, and the settle cash flows.
+ *  discounting the coupon, the redemption, the principal, and the settle cash flows. It exports
+ *  serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */

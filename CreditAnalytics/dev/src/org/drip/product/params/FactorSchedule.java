@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,7 +32,9 @@ package org.drip.product.params;
  */
 
 /**
- * FactorSchedule the contains array of dates and factors.
+ * FactorSchedule the contains array of dates and factors. It provides methods to create/access different
+ * 	varieties of factor schedule creation It exports serialization into and de-serialization out of byte
+ *  arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -41,7 +44,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	private double _adblFactor[] = null;
 
 	/**
-	 * Creates the factor schedule from a matched string array of dates and factors
+	 * Create the factor schedule from a matched string array of dates and factors
 	 * 
 	 * @param strDates String array of dates
 	 * @param strFactors String array of Factors
@@ -69,7 +72,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates the factor schedule from a matched array of dates and factors
+	 * Create the factor schedule from a matched array of dates and factors
 	 * 
 	 * @param adblDate Array of dates
 	 * @param adblFactor Array of Factors
@@ -91,7 +94,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates the factor schedule from a matched array of dates and factor deltas
+	 * Create the factor schedule from a matched array of dates and factor deltas
 	 * 
 	 * @param adblDate Array of dates
 	 * @param adblFactorDelta Array of Factor Deltas
@@ -128,7 +131,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates factor schedule of flat unit notional
+	 * Create factor schedule of flat unit notional
 	 * 
 	 * @return FactorSchedule object
 	 */
@@ -229,7 +232,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the notional factor for a given date
+	 * Retrieve the notional factor for a given date
 	 * 
 	 * @param dblDate Date
 	 * 
@@ -255,7 +258,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the index that corresponds to the given date
+	 * Retrieve the index that corresponds to the given date
 	 * 
 	 * @param dblDate Date
 	 * 
@@ -281,7 +284,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the time-weighted notional factor between 2 dates
+	 * Retrieve the time-weighted notional factor between 2 dates
 	 * 
 	 * @param dblStartDate Start Date
 	 * @param dblEndDate End Date
@@ -316,7 +319,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the array of dates
+	 * Retrieve the array of dates
 	 * 
 	 * @return Double array of JulianDate
 	 */
@@ -327,7 +330,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the array of notional factors
+	 * Retrieve the array of notional factors
 	 * 
 	 * @return Double array of notional factors
 	 */

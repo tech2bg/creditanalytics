@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -91,7 +92,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
 	/**
-	 * Creates a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
+	 * Create a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
 	 *  the EDSF discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
 	 *  and the double map of date/rate index and fixings.
 	 * 
@@ -128,7 +129,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	}
 
 	/**
-	 * ComponentMarketParams de-serialization from input byte array
+	 * ComponentMarketParamSet de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
@@ -140,37 +141,38 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception
+				("ComponentMarketParamSet de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Empty state");
+			throw new java.lang.Exception ("ComponentMarketParamSet de-serializer: Empty state");
 
 		java.lang.String strSerializedComponentMarketParams = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedComponentMarketParams || strSerializedComponentMarketParams.isEmpty())
-			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("ComponentMarketParamSet de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedComponentMarketParams, getFieldDelimiter());
 
 		if (null == astrField || 9 > astrField.length)
-			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("ComponentMarketParamSet de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate credit curve");
+				("ComponentMarketParamSet de-serializer: Cannot locate credit curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_cc = org.drip.state.creator.CreditCurveBuilder.FromByteArray (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate discount curve");
+				("ComponentMarketParamSet de-serializer: Cannot locate discount curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_dc = org.drip.state.creator.DiscountCurveBuilder.FromByteArray (astrField[2].getBytes(),
@@ -178,14 +180,14 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate forward curve");
+				("ComponentMarketParamSet de-serializer: Cannot locate forward curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_fc = null;
 
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate TSY discount curve");
+				("ComponentMarketParamSet de-serializer: Cannot locate TSY discount curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_dcTSY = org.drip.state.creator.DiscountCurveBuilder.FromByteArray (astrField[4].getBytes(),
@@ -193,7 +195,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate EDSF discount curve");
+				("ComponentMarketParamSet de-serializer: Cannot locate EDSF discount curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			_dcEDSF = org.drip.state.creator.DiscountCurveBuilder.FromByteArray (astrField[5].getBytes(),
@@ -201,13 +203,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		if (null == astrField[6] || astrField[6].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMarketParams de-serializer: Cannot locate component quote");
+				("ComponentMarketParamSet de-serializer: Cannot locate component quote");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_compQuote = new org.drip.param.market.ComponentMultiMeasureQuote (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate fixings");
+			throw new java.lang.Exception ("ComponentMarketParamSet de-serializer: Cannot locate fixings");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[7],
@@ -258,7 +260,8 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		}
 
 		if (null == astrField[8] || astrField[8].isEmpty())
-			throw new java.lang.Exception ("ComponentMarketParams de-serializer: Cannot locate TSY quotes");
+			throw new java.lang.Exception
+				("ComponentMarketParamSet de-serializer: Cannot locate TSY quotes");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[8],

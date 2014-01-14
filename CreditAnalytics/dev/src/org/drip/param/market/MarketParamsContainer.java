@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -237,7 +238,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	}
 
 	/**
-	 * Constructs an empty MarketParamsContainer instance
+	 * Construct an empty MarketParamsContainer instance
 	 */
 
 	public MarketParamsContainer()
@@ -941,7 +942,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				org.drip.param.definition.BasketMarketParams bmp = getScenBMP (bp, "Base");
 
 				if (null != bmp) {
-					bmp.addDC (meDCSG.getKey(), meDC.getValue());
+					bmp.addDiscountCurve (meDCSG.getKey(), meDC.getValue());
 
 					mapTenorBMP.put (meDC.getKey(), bmp);
 				}
@@ -985,7 +986,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				org.drip.param.definition.BasketMarketParams bmp = getScenBMP (bp, "Base");
 
 				if (null != bmp) {
-					bmp.addCC (meCCSG.getKey(), meCC.getValue());
+					bmp.addCreditCurve (meCCSG.getKey(), meCC.getValue());
 
 					mapTenorBMP.put (meCC.getKey(), bmp);
 				}

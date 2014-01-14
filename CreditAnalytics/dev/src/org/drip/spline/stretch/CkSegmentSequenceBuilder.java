@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -26,6 +27,15 @@ package org.drip.spline.stretch;
  *  
  *  See the License for the specific language governing permissions and
  *  	limitations under the License.
+ */
+
+/**
+ * CkSegmentSequenceBuilder implements the SegmentSequenceBuilder interface to customize segment sequence
+ *  construction. Customization is applied at several levels:
+ * 	- Segment Calibration Boundary Setting/Segment Best Fit Response Settings
+ * 	- Segment Response Value Constraints for the starting and the subsequent Segments
+ *
+ * @author Lakshmi Krishnamurthy
  */
 
 public class CkSegmentSequenceBuilder implements org.drip.spline.stretch.SegmentSequenceBuilder {

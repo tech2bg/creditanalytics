@@ -6,6 +6,7 @@ package org.drip.service.bridge;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -46,8 +47,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	private java.lang.String _strID = "";
 	private java.lang.String _strTime = "";
 	private org.drip.product.definition.Component _comp = null;
-	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
+	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 

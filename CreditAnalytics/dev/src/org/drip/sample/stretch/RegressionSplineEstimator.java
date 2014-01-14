@@ -11,6 +11,7 @@ import org.drip.spline.stretch.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -34,25 +35,21 @@ import org.drip.spline.stretch.*;
  */
 
 /**
- * RegressionSplineEstimator shows the sample construction and usage of RegressionSplines.
+ * RegressionSplineEstimator shows the sample construction and usage of RegressionSplines. It demonstrates
+ * 	construction of the segment's predictor ordinate/response value combination, and eventual calibration.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class RegressionSplineEstimator {
 
-	/**
+	/*
 	 * Build Polynomial Segment Control Parameters
 	 * 
-	 * @param iNumBasis Number of Polynomial Basis Functions
-	 * @param sdic Inelastic Segment Parameters
-	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
-	 * 
-	 * @return Polynomial Segment Control Parameters
 	 */
 
-	public static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
+	private static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
 		final SegmentDesignInelasticControl sdic)
 		throws Exception
@@ -64,21 +61,17 @@ public class RegressionSplineEstimator {
 			null);
 	}
 
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Stretch Jacobian
-	 *  - Stretch knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param scbc The Segment Builder Parameters
-	 * @param sbfr The Fitness Weighted Response Instance
+	/*
+	 * Basis Spline Stretch Test Sample. Performs the following:
+	 * 	- Construct the Array of Segment Builder Parameters - one per segment.
+	 *  - Construct a Stretch instance using the predictor ordinate array and the Segment Best Fit Response Values.
+	 *  - Estimate, compute the segment-by-segment monotonicity and the Stretch Jacobian
+	 *  - Compute the Segment Curvature Penalty Estimate.
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
 
-	public static final void BasisSplineStretchTest (
+	private static final void BasisSplineStretchTest (
 		final double[] adblX,
 		final SegmentCustomBuilderControl scbc,
 		final StretchBestFitResponse sbfr)
@@ -97,7 +90,7 @@ public class RegressionSplineEstimator {
 			aSCBC[i] = scbc;
 
 		/*
-		 * Construct a Stretch instance 
+		 * Construct a Stretch instance using the predictor ordinate array and the Segment Best Fit Response Values
 		 */
 
 		MultiSegmentSequence mss = MultiSegmentSequenceBuilder.CreateRegressionSplineEstimator (
@@ -121,11 +114,26 @@ public class RegressionSplineEstimator {
 			dblX += 1.;
 		}
 
+		/*
+		 * Compute the Segment Curvature Penalty Estimate
+		 */
+
 		System.out.println ("\tSPLINE_STRETCH DPE: " + mss.curvatureDPE());
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * Bring together to compose the Regression Spline Estimator Test. It is made up of the following steps:
+	 * 	- Set the Predictor Ordinate Knot Points.
+	 * 	- Construct a set of Predictor Ordinates, their Responses, and corresponding Weights to serve as
+	 * 		weighted closeness of fit.
+	 * 	- Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
+	 * 		roughness penalty derivative, and without constraint.
+	 * 	- Basis Spline Stretch Test Using the Segment Best Fit Response.
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
+
+	private static final void RegressionSplineEstimatorTest()
 		throws Exception
 	{
 		/*
@@ -157,6 +165,17 @@ public class RegressionSplineEstimator {
 
 		int iPolyNumBasis = 4;
 
+		/*
+		 * Basis Spline Stretch Test Using the Segment Best Fit Response
+		 */
+
 		BasisSplineStretchTest (adblX, PolynomialSegmentControlParams (iPolyNumBasis, sdic), sbfr);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		RegressionSplineEstimatorTest();
 	}
 }

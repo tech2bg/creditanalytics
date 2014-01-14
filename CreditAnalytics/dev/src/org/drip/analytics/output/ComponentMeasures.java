@@ -6,6 +6,7 @@ package org.drip.analytics.output;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -38,6 +39,8 @@ package org.drip.analytics.output;
  *	- Tenor bump double maps for IR/credit curves
  *	- Flat/recovery bumped measure maps for recovery bumped credit curves
  *	- Measure Maps generated for Custom Scenarios
+ *	- Accessor Functions for the above fields
+ *	- Serialize into and de-serialize out of byte arrays
  *
  * @author Lakshmi Krishnamurthy
  */

@@ -11,6 +11,7 @@ import org.drip.spline.segment.ConstitutiveState;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -47,6 +48,14 @@ import org.drip.spline.segment.ConstitutiveState;
  */
 
 public class BasisBSplineSet {
+
+	/*
+	 * This sample demonstrates construction and usage of B Spline hat functions over solitary segments. It
+	 * 	shows the constructions of left/right segments, their calibration, and Jacobian evaluation.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
 	private static final void TestSpline (
 		final FunctionSet fs,
 		final ResponseScalingShapeControl rssc,
@@ -70,10 +79,27 @@ public class BasisBSplineSet {
 		System.out.println ("\tY[" + 1.5 + "]: " + seg1.responseValue (1.5));
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * This sample demonstrates the construction and usage of the Basis B Spline Set Functionality. It shows
+	 * 	the following:
+	 * 	- Set up the B Spline Sequence Parameters for the Cubic Rational Hat Type, Linear Shape Controller,
+	 * 		using the specified tension and derivative order parameters.
+	 * 	- Setup the B Spline Basis Set.
+	 * 	- Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with second order
+	 * 		curvature penalty, and without constraint.
+	 * 	- Construct and Evaluate the B Spline.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final void BasisBSplineSetSample()
 		throws Exception
 	{
+		/*
+		 * Set up the B Spline Sequence Parameters for the Cubic Rational Hat Type, Linear Shape Controller,
+		 * 	using the specified tension and derivative order parameters.
+		 */
+
 		BSplineSequenceParams bssp = new BSplineSequenceParams (
 			BasisHatPairGenerator.PROCESSED_CUBIC_RATIONAL,
 			BasisHatShapeControl.SHAPE_CONTROL_RATIONAL_LINEAR,
@@ -82,11 +108,11 @@ public class BasisBSplineSet {
 			1.,
 			2);
 
-		FunctionSet fsBSS = FunctionSetBuilder.BSplineBasisSet (bssp);
+		/*
+		 * Setup the B Spline Basis Set
+		 */
 
-		/* for (double dbl = 0.; dbl <= 1.; dbl += 0.25)
-			System.out.println ("\tFunc[" + fsBSS.indexedBasisFunction (3) + "] => " + fsBSS.indexedBasisFunction (3).calcDerivative (1., 2));
-		*/
+		FunctionSet fsBSS = FunctionSetBuilder.BSplineBasisSet (bssp);
 
 		/*
 		 * Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with second order
@@ -100,6 +126,17 @@ public class BasisBSplineSet {
 			iK,
 			iCurvaturePenaltyDerivativeOrder);
 
+		/*
+		 * Construct and Evaluate the B Spline
+		 */
+
 		TestSpline (fsBSS, null, segParams);
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		BasisBSplineSetSample();
 	}
 }

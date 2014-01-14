@@ -7,6 +7,7 @@ package org.drip.param.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -31,8 +32,9 @@ package org.drip.param.definition;
  */
 
 /**
- * CreditNodeTweakParams contains the place holder for the credit curve scenario tweak parameters: the
- *  measure, the curve node, and the nodal calibration type (entire curve/flat or a given tenor point).
+ * CreditManifestMeasureTweak contains the place holder for the credit curve scenario tweak parameters: in
+ *  addition to the ResponseValueTweakParams fields, this exposes the calibration manifest measure, the curve
+ *  node, and the nodal calibration type (entire curve/flat or a given tenor point).
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -82,7 +84,7 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 	public boolean _bSingleNodeCalib = false;
 
 	/**
-	 * CreditNodeTweakParams constructor
+	 * CreditManifestMeasureTweak constructor
 	 * 
 	 * @param strTweakParamType Node Tweak Parameter Type
 	 * @param strTweakMeasureType Node Tweak Measure Type
@@ -107,22 +109,23 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 		if (null == (_strTweakParamType = strTweakParamType) ||
 			!CREDIT_TWEAK_NODE_PARAM_QUOTE.equalsIgnoreCase (_strTweakParamType) ||
 				!CREDIT_TWEAK_NODE_PARAM_QUOTE.equalsIgnoreCase (_strTweakParamType))
-			throw new java.lang.Exception ("CreditNodeTweakParams ctr => Invalid Tweak Parameter Type!");
+			throw new java.lang.Exception
+				("CreditManifestMeasureTweak ctr => Invalid Tweak Parameter Type!");
 
 		if (null == (_strTweakMeasureType = strTweakMeasureType) ||
 			!CREDIT_TWEAK_NODE_PARAM_QUOTE.equalsIgnoreCase (_strTweakMeasureType) ||
 				!CREDIT_TWEAK_NODE_PARAM_QUOTE.equalsIgnoreCase (_strTweakMeasureType))
-			throw new java.lang.Exception ("CreditNodeTweakParams ctr => Invalid Tweak Measure Type!");
+			throw new java.lang.Exception ("CreditManifestMeasureTweak ctr => Invalid Tweak Measure Type!");
 
 		_bSingleNodeCalib = bSingleNodeCalib;
 	}
 
 	/**
-	 * CreditNodeTweakParams de-serialization from input byte array
+	 * CreditManifestMeasureTweak de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if CreditNodeTweakParams cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if CreditManifestMeasureTweak cannot be properly de-serialized
 	 */
 
 	public CreditManifestMeasureTweak (
@@ -132,45 +135,47 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 		super (ab);
 
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CreditNodeTweakParams de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception
+				("CreditManifestMeasureTweak de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CreditNodeTweakParams de-serializer: Empty state");
+			throw new java.lang.Exception ("CreditManifestMeasureTweak de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditNodeTweakParams = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedCreditNodeTweakParams || strSerializedCreditNodeTweakParams.isEmpty())
-			throw new java.lang.Exception ("CreditNodeTweakParams de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("CreditManifestMeasureTweak de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedCreditNodeTweakParams, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("CreditNodeTweakParams de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception
+				("CreditManifestMeasureTweak de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
-				("ProductCouponPeriodCurveMeasures de-serializer: Cannot locate Tweak Parameter Type");
+				("CreditManifestMeasureTweak de-serializer: Cannot locate Tweak Parameter Type");
 
 		_strTweakParamType = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
-				("ProductCouponPeriodCurveMeasures de-serializer: Cannot locate Tweak Measure Type");
+				("CreditManifestMeasureTweak de-serializer: Cannot locate Tweak Measure Type");
 
 		_strTweakMeasureType = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
-				("ProductCouponPeriodCurveMeasures de-serializer: Cannot locate Tweak Measure Type");
+				("CreditManifestMeasureTweak de-serializer: Cannot locate Tweak Measure Type");
 
 		_bSingleNodeCalib = new java.lang.Boolean (astrField[3]);
 	}

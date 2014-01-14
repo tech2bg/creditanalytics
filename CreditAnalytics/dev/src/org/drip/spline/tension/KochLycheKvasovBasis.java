@@ -6,6 +6,7 @@ package org.drip.spline.tension;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -32,10 +33,21 @@ package org.drip.spline.tension;
  * This class implements the basic framework and the family of C2 Tension Splines outlined in Koch and Lyche
  * 	(1989), Koch and Lyche (1993), and Kvasov (2000) Papers.
  * 
+ * Currently, this class exposes functions to create monic and quadratic tension B Spline Basis Function Set.
+ * 
  * @author Lakshmi Krishnamurthy
  */
 
 public class KochLycheKvasovBasis {
+
+	/**
+	 * Generate the Monic BSpline Basis Function Set
+	 * 
+	 * @param dblTension The Tension Parameter
+	 * 
+	 * @return The Monic BSpline Basis Function Set
+	 */
+
 	public static final org.drip.quant.function1D.AbstractUnivariate[] GenerateMonicBSplineSet (
 		final double dblTension)
 	{
@@ -49,6 +61,14 @@ public class KochLycheKvasovBasis {
 
 		return null;
 	}
+
+	/**
+	 * Generate the Quadratic BSpline Basis Function Set
+	 * 
+	 * @param dblTension The Tension Parameter
+	 * 
+	 * @return The Quadratic BSpline Basis Function Set
+	 */
 
 	public static final org.drip.quant.function1D.AbstractUnivariate[] GenerateQuadraticBSplineSet (
 		final double dblTension)

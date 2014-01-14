@@ -6,6 +6,7 @@ package org.drip.state.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -30,12 +31,8 @@ package org.drip.state.curve;
  */
 
 /**
- * This class implements the zero rate curve. It exports the following functionality:
- *  - Calculate discount factor / discount factor Jacobian
- *  - Calculate zero/forward rate / zero/forward rate Jacobian
- *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
- *  - Optionally provide the calibration instruments, the quotes, the base discount curve, and the zero bump
- *  	used to build the curve.
+ * DerivedZeroRate implements the delegated ZeroCurve functionality. Beyond discount factor/zero rate
+ * 	computation at specific cash pay nodes, all other functions are delegated to the embedded discount curve.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -134,10 +131,13 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		java.lang.String strDC = null == strDCZC || strDCZC.isEmpty() ? "30/360" : strDCZC;
 
 		if (null != quotingParams) {
-			strDC = quotingParams._strYieldDC;
-			iFreq = quotingParams._iYieldFrequency;
-			strCalendar = quotingParams._strYieldCalendar;
-			bApplyCpnEOMAdj = quotingParams._bYieldApplyEOMAdj;
+			strDC = quotingParams.yieldDayCount();
+
+			iFreq = quotingParams.yieldFreq();
+
+			bApplyCpnEOMAdj = quotingParams.applyYieldEOMAdj();
+
+			strCalendar = quotingParams.yieldCalendar();
 		}
 
 		for (org.drip.analytics.period.CashflowPeriod period : lsCouponPeriod)
@@ -240,7 +240,8 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 
 	@Override public double manifestMeasure (
 		final java.lang.String strInstr)
-		throws java.lang.Exception {
+		throws java.lang.Exception
+	{
 		return _dc.manifestMeasure (strInstr);
 	}
 

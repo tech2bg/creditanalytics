@@ -6,6 +6,7 @@ package org.drip.quant.solver1D;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -68,7 +69,7 @@ public class ConvergenceControlParams {
 	}
 
 	/**
-	 * Full ConvergenceControlParams constructor
+	 * ConvergenceControlParams constructor
 	 * 
 	 * @param iFixedPointConvergenceIterations Iterations to locate a variate inside the convergence zone
 	 * @param dblConvergenceZoneVariateBegin Starting variate for convergence zone determination

@@ -6,6 +6,7 @@ package org.drip.spline.pchip;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,9 +32,11 @@ package org.drip.spline.pchip;
 /**
  * This class implements the regime using the Hagan and West (2006) Estimator. It provides the following
  * 	functionality:
+ * 	- Static Method to Create an instance of MonotoneConvexHaganWest.
  * 	- Ensure that the estimated regime is monotone an convex.
- * 	- If need be, enforce positivity.
+ * 	- If need be, enforce positivity and/or apply amelioration.
  * 	- Apply segment-by-segment range bounds as needed.
+ * 	- Retrieve predictor ordinates/response values.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -457,7 +460,7 @@ public class MonotoneConvexHaganWest extends org.drip.quant.function1D.AbstractU
 	}
 
 	/**
-	 * Enforces the Positivity of the Inferred Response Values
+	 * Enforce the Positivity of the Inferred Response Values
 	 * 
 	 * @return TRUE => Positivity Enforcement is successful
 	 */

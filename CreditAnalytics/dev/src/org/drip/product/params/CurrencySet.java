@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,7 +32,8 @@ package org.drip.product.params;
  */
 
 /**
- * CurrencySet contains the component's trade, the coupon, and the redemption currencies.
+ * CurrencySet contains the component's trade, the coupon, and the redemption currencies. It exports
+ *  serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -58,7 +60,7 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 	public java.lang.String _strRedemptionCurrency = "";
 
 	/**
-	 * Constructs the CurrencySet object from the trade, the coupon, and the redemption currencies.
+	 * Construct the CurrencySet object from the trade, the coupon, and the redemption currencies.
 	 * 
 	 * @param strTradeCurrency Trade Currency
 	 * @param strCouponCurrency Coupon Currency

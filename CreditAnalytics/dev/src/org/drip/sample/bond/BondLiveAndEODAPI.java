@@ -33,15 +33,11 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
 
 /*
- * DRIP Math Support
- */
-
-
-/*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -75,13 +71,13 @@ import org.drip.state.creator.*;
 public class BondLiveAndEODAPI {
 	private static final String FIELD_SEPARATOR = "    ";
 
-	/**
+	/*
 	 * Sample demonstrating the calculation of the bond's EOD yield measures from price
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void BondEODMeasuresAPISample()
+	private static final void BondEODMeasuresAPISample()
 		throws Exception
 	{
 		String strISIN = "008686AA5"; // Amortizer
@@ -112,13 +108,13 @@ public class BondLiveAndEODAPI {
 			(CreditAnalytics.BondEODYieldFromPrice (strISIN, JulianDate.CreateFromYMD (2011, 12, 16), 1.), 2, 3, 100.));
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the calculation of the bond's full EOD measures from price, TSY spread, or yield
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void BondEODSample()
+	private static final void BondEODSample()
 	{
 		JulianDate dtEOD = JulianDate.CreateFromYMD (2012, 1, 13);
 
@@ -148,7 +144,7 @@ public class BondLiveAndEODAPI {
 			System.out.println (me.getKey() + "=" + me.getValue());
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the calculation of analytics for the set of bonds associated with the ticker
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -252,14 +248,14 @@ public class BondLiveAndEODAPI {
 			System.out.println ("[" + JulianDate.Today() + "=>" + me.getKey() + "] = " + me.getValue());
 	}
 
-	/**
+	/*
 	 * Sample demonstrating the usage of the (full set of) bond analytics API. Also shows the usage of the
 	 * 		bond loss and coupon flow functionality
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void BondAPISample()
+	private static final void BondAPISample()
 		throws Exception
 	{
 		Set<String> setstrTickers = CreditAnalytics.GetAvailableTickers();
@@ -378,15 +374,15 @@ public class BondLiveAndEODAPI {
 		ExerciseInfo nei = CreditAnalytics.NextExerciseInfo (strISIN, dtToday);
 
 		System.out.println (strISIN + "    " + bond.getTicker() + " " + FormatUtil.FormatDouble (bond.getCoupon
-			(valParams._dblValue, cmp), 2, 3, 100.) + " " + bond.getMaturityDate());
+			(valParams.valueDate(), cmp), 2, 3, 100.) + " " + bond.getMaturityDate());
 
-		System.out.println ("Work-out date From Price: " + new JulianDate (wi._dblDate));
+		System.out.println ("Work-out date From Price: " + new JulianDate (wi.date()));
 
-		System.out.println ("Work-out factor From Price: " + wi._dblExerciseFactor);
+		System.out.println ("Work-out factor From Price: " + wi.factor());
 
-		System.out.println ("Work-out Yield From Price: " + FormatUtil.FormatDouble (wi._dblYield, 2, 3, 100.));
+		System.out.println ("Work-out Yield From Price: " + FormatUtil.FormatDouble (wi.yield(), 2, 3, 100.));
 
-		System.out.println ("Work-out Type for Price: " + org.drip.analytics.support.AnalyticsHelper.WorkoutTypeToString (wi._iWOType));
+		System.out.println ("Work-out Type for Price: " + org.drip.analytics.support.AnalyticsHelper.WorkoutTypeToString (wi.type()));
 
 		System.out.println ("Yield From Price: " + FormatUtil.FormatDouble (dblYieldFromPrice, 2, 3, 100.) + " / " + FormatUtil.FormatDouble (dblYTMFromPrice, 2, 3, 100.));
 
@@ -442,11 +438,11 @@ public class BondLiveAndEODAPI {
 
 		System.out.println ("Next Coupon Date: " + dtNextCoupon);
 
-		System.out.println ("Next Exercise Date: " + new JulianDate (nei._dblDate));
+		System.out.println ("Next Exercise Date: " + new JulianDate (nei.date()));
 
-		System.out.println ("Next Exercise Factor: " + nei._dblExerciseFactor);
+		System.out.println ("Next Exercise Factor: " + nei.factor());
 
-		System.out.println ("Next Exercise Type: " + org.drip.analytics.support.AnalyticsHelper.WorkoutTypeToString (nei._iWOType));
+		System.out.println ("Next Exercise Type: " + org.drip.analytics.support.AnalyticsHelper.WorkoutTypeToString (nei.workoutType()));
 
 		if (bond.isFloater()) {
 			System.out.println ("Acc Start       Acc End     Pay Date    Index   Spread   Cpn DCF    Pay01    Surv01");
@@ -490,11 +486,11 @@ public class BondLiveAndEODAPI {
 				JulianDate.fromJulian (dp.getEndDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (dp.getPayDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEffectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEffectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.effectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.effectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getStartSurvival(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getEndSurvival(), 1, 4, 1.)
+				FormatUtil.FormatDouble (dp.startSurvival(), 1, 4, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.endSurvival(), 1, 4, 1.)
 			);
 	}
 

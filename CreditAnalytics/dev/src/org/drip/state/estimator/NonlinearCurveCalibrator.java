@@ -6,6 +6,7 @@ package org.drip.state.estimator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -39,6 +40,8 @@ package org.drip.state.estimator;
  * 	- In conjunction with splining estimation techniques, it may also be used to perform dual sweep
  * 		calibration. The inner sweep achieves the calibration of the segment spline parameters, while the
  * 		outer sweep calibrates iteratively for the targeted boundary conditions.
+ * 	- It may also be used to custom calibrate a single Interest Rate/Hazard Rate Node from the corresponding
+ * 		Component
  * 
  * CurveCalibrator bootstraps/cooks both discount curves and credit curves.
  *

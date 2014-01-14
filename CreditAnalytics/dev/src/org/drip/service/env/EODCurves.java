@@ -6,6 +6,7 @@ package org.drip.service.env;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -206,8 +207,8 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the credit curve's CreditScenarioCurve for the given EOD and currency from the
-	 *  corresponding marks
+	 * Build the credit curve's CreditScenarioCurve for the given EOD and currency from the corresponding
+	 *  marks
 	 * 
 	 * @param stmt SQL Statement representing executable query
 	 * @param dtEOD EOD Date
@@ -392,7 +393,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Adds the TSY quotes to the specified MPC
+	 * Add the TSY quotes to the specified MPC
 	 * 
 	 * @param mpc MPC
 	 * @param stmt SQL statement object to retrieve the MPC quotes from
@@ -514,7 +515,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Retrieves the treasury quotes for the specified EOD and currency
+	 * Retrieve the treasury quotes for the specified EOD and currency
 	 * 
 	 * @param stmt SQL Statement
 	 * @param dtEOD EOD
@@ -708,7 +709,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the closing IRCurveScenarioContainer for the specific discount curve instruments given the EOD
+	 * Build the closing IRCurveScenarioContainer for the specific discount curve instruments given the EOD
 	 *  and the currency
 	 *  
 	 * @param mmFixings The fixings object
@@ -880,7 +881,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the closing IRCurveScenarioContainer for the specific discount curve instrument set type
+	 * Build the closing IRCurveScenarioContainer for the specific discount curve instrument set type
 	 * 	(treasury or rates instruments), given the EOD and the currency
 	 *  
 	 * @param mmFixings The fixings object
@@ -1099,7 +1100,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Creates the named base IR curve based on the set of instruments and their types for a given EOD
+	 * Create the named base IR curve based on the set of instruments and their types for a given EOD
 	 * 
 	 * @param stmt SQL Statement representing the executable query
 	 * @param dtEOD EOD Date
@@ -1142,7 +1143,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the closing IRCurveScenarioContainer for the specific discount curve instrument set type
+	 * Build the closing IRCurveScenarioContainer for the specific discount curve instrument set type
 	 * 	(treasury or rates instruments), the given EOD, and the currency, and loads it to the input MPC
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams to be loaded into
@@ -1183,7 +1184,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the closing IRCurveScenarioContainer for the specific discount curve instrument set (cash or
+	 * Build the closing IRCurveScenarioContainer for the specific discount curve instrument set (cash or
 	 *  EDF or swaps), the EOD, and the currency, and loads it to the input MPC
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams to be loaded into
@@ -1238,7 +1239,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the complete set of treasury EOD curves for the given currency, and loads them to the MPC
+	 * Build the complete set of treasury EOD curves for the given currency, and loads them to the MPC
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams to be loaded into
 	 * @param stmt SQL Statement containing the executable query
@@ -1261,7 +1262,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the complete set of rates EOD curves for the given currency, and loads them to the MPC
+	 * Build the complete set of rates EOD curves for the given currency, and loads them to the MPC
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams to be loaded into
 	 * @param stmt SQL Statement containing the executable query
@@ -1310,7 +1311,7 @@ public class EODCurves {
 	}
 
 	/**
-	 * Builds the EOD credit curve, and loads it to the MPC
+	 * Build the EOD credit curve, and loads it to the MPC
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams to be loaded into
 	 * @param stmt SQL Statement containing the executable query

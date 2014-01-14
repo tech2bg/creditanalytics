@@ -6,6 +6,7 @@ package org.drip.spline.bspline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,12 @@ package org.drip.spline.bspline;
  */
 
 /**
- * BasisHatPairGenerator implements the generation functionality behind the hat basis function pair.
+ * BasisHatPairGenerator implements the generation functionality behind the hat basis function pair. It
+ * 	provides the following functionality:
+ * 	- Generate the array of the Hyperbolic Phy and Psy Hat Function Pair.
+ * 	- Generate the array of the Hyperbolic Phy and Psy Hat Function Pair From their Raw Counterparts.
+ * 	- Generate the array of the Cubic Rational Phy and Psy Hat Function Pair From their Raw Counterparts.
+ * 	- Generate the array of the Custom Phy and Psy Hat Function Pair From their Raw Counterparts.
  *
  * @author Lakshmi Krishnamurthy
  */

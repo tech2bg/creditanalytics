@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,11 +30,9 @@ package org.drip.spline.stretch;
  */
 
 /**
- * This class implements the Stretch using the Lagrange Polynomial Estimator. It provides the following
- * 	functionality:
- * 	- At any location inside the Stretch calculate the estimated value and the Jacobian to the input.
- * 	- Estimate convexity, and if it is co-convex.
- * 	- Estimate monotonicity, if it is co-monotone, and it if is locally monotone.
+ * SingleSegmentLagrangePolynomial implements the SingleSegmentSequence Stretch interface using the Lagrange
+ *  Polynomial Estimator. As such it provides a perfect fit that travels through all the predictor/response
+ *  pairs causing Runge's instability.
  *
  * @author Lakshmi Krishnamurthy
  */

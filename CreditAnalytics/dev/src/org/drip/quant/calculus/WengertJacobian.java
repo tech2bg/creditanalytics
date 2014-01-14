@@ -6,6 +6,7 @@ package org.drip.quant.calculus;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -32,11 +33,12 @@ package org.drip.quant.calculus;
 /**
  * WengertJacobian contains the Jacobian of the given set of Wengert variables to the set of parameters. It
  * 	exposes the following functionality:
- * 	- Set the Wengert variables
+ * 	- Set/Retrieve the Wengert variables
  * 	- Accumulate the Partials
  * 	- Scale the partial entries
  * 	- Merge the Jacobian with another
  * 	- Retrieve the WengertJacobian elements
+ * 	- Display the contents of the WengertJacobian
  *
  * @author Lakshmi Krishnamurthy
  */

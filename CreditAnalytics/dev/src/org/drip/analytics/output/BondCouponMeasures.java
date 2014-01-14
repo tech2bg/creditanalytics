@@ -6,6 +6,7 @@ package org.drip.analytics.output;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -147,7 +148,7 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Adjusts the bond coupon measures by a cash settlement discount factor
+	 * Adjust the bond coupon measures by a cash settlement discount factor
 	 * 
 	 * @param dblCashPayDF Cash Pay discount factor
 	 * 
@@ -221,7 +222,7 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Returns the state as a named measure map
+	 * Return the state as a named measure map
 	 * 
 	 * @param strPrefix Measure name prefix
 	 * 

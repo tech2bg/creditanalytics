@@ -6,6 +6,7 @@ package org.drip.spline.basis;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,15 @@ package org.drip.spline.basis;
  */
 
 /**
- * This class implements the parameter set for constructing the B Spline Sequence.
+ * This class implements the parameter set for constructing the B Spline Sequence. It provides functionality
+ * 	to:
+ * 	- Retrieve the B Spline Order
+ * 	- Retrieve the Number of Basis Functions
+ * 	- Retrieve the Processed Basis Derivative Order
+ * 	- Retrieve the Basis Hat Type
+ * 	- Retrieve the Shape Control Type
+ * 	- Retrieve the Tension
+ * 	- Retrieve the Array of Predictor Ordinates
  * 
  * @author Lakshmi Krishnamurthy
  */

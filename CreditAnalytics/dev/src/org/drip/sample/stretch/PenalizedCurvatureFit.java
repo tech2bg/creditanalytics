@@ -12,6 +12,7 @@ import org.drip.spline.stretch.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -36,23 +37,31 @@ import org.drip.spline.stretch.*;
 
 /**
  * PenalizedCurvatureFit demonstrates the setting up and the usage of the curvature and closeness of fit
- * 	penalizing spline.
+ * 	penalizing spline. It illustrates in detail the follwoing steps:
+ * 	- Set up the X Predictor Ordinate and the Y Response Value Set.
+ * 	- Construct a set of Predictor Ordinates, their Responses, and corresponding Weights to serve as
+ * 		weighted closeness of fit.
+ * 	- Construct a rational shape controller with the desired shape controller tension parameters and Global
+ * 		Scaling.
+ * 	- Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order roughness
+ * 		penalty derivative, and without constraint.
+ * 	- Construct the base, the base + 1 degree segment builder control.
+ * 	- Construct the base, the elevated, and the best fit basis spline stretches.
+ * 	- Compute the segment-by-segment monotonicity for all the three stretches.
+ * 	- Compute the Stretch Jacobian for all the three stretches.
+ * 	- Compute the Base Stretch Curvature Penalty Estimate.
+ * 	- Compute the Elevated Stretch Curvature Penalty Estimate.
+ * 	- Compute the Best Fit Stretch Curvature Penalty Estimate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class PenalizedCurvatureFit {
 
-	/**
+	/*
 	 * Build Polynomial Segment Control Parameters
 	 * 
-	 * @param iNumBasis Number of Polynomial Basis Functions
-	 * @param sdic Inelastic Segment Parameters
-	 * @param rssc Shape Controller
-	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
-	 * 
-	 * @return Polynomial Segment Control Parameters
 	 */
 
 	public static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
@@ -68,17 +77,10 @@ public class PenalizedCurvatureFit {
 			rssc);
 	}
 
-	/**
-	 * Perform the following sequence of tests for a given segment control for a predictor/response range
-	 * 	- Estimate
-	 *  - Compute the segment-by-segment monotonicity
-	 *  - Stretch Jacobian
-	 *  - Stretch knot insertion
-	 * 
-	 * @param adblX The Predictor Array
-	 * @param adblY The Response Array
-	 * @param scbc The Segment Builder Parameters
-	 * @param sbfr The Fitness Weighted Response Instance
+	/*
+	 * Construct the Basis Spline Stretch Instance using the following inputs:
+	 * 	- Array of Segment Builder Parameters - one per segment
+	 *  - Construct a Calibrated Stretch instance
 	 * 
 	 * 	WARNING: Insufficient Error Checking, so use caution
 	 */
@@ -100,7 +102,7 @@ public class PenalizedCurvatureFit {
 			aSCBC[i] = scbc;
 
 		/*
-		 * Construct a Stretch instance 
+		 * Construct a Calibrated Stretch instance 
 		 */
 
 		return MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator (
@@ -113,8 +115,24 @@ public class PenalizedCurvatureFit {
 			MultiSegmentSequence.CALIBRATE); // Calibrate the Stretch predictors to the responses
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	/*
+	 * Bring it all together in the Penalized Curvature Fit Test using the following steps:
+	 * 	- Set up the X Predictor Ordinate and the Y Response Value Set.
+	 * 	- Construct a set of Predictor Ordinates, their Responses, and corresponding Weights to serve as
+	 * 		weighted closeness of fit.
+	 * 	- Construct a rational shape controller with the desired shape controller tension parameters and Global Scaling.
+	 * 	- Construct the segment inelastic parameter that is C2 (iK = 2 sets it to C2), with 2nd order
+	 * 		roughness penalty derivative, and without constraint.
+	 * 	- Construct the base, the base + 1 degree segment builder control.
+	 * 	- Construct the base, the elevated, and the best fit basis spline stretches.
+	 * 	- Compute the segment-by-segment monotonicity for all the three stretches.
+	 * 	- Compute the Stretch Jacobian for all the three stretches.
+	 * 	- Compute the Base Stretch Curvature Penalty Estimate.
+	 * 	- Compute the Elevated Stretch Curvature Penalty Estimate.
+	 * 	- Compute the Best Fit Stretch Curvature Penalty Estimate.
+	 */
+
+	public static final void PenalizedCurvatureFitTest()
 		throws Exception
 	{
 		/*
@@ -170,9 +188,17 @@ public class PenalizedCurvatureFit {
 
 		int iPolyNumBasis = 4;
 
+		/* 
+		 * Construct the base, the base + 1 degree segment builder control
+		 */
+
 		SegmentCustomBuilderControl scbc1 = PolynomialSegmentControlParams (iPolyNumBasis, sdic, rssc);
 
 		SegmentCustomBuilderControl scbc2 = PolynomialSegmentControlParams (iPolyNumBasis + 1, sdic, rssc);
+
+		/* 
+		 * Construct the base, the elevated, and the best fit basis spline stretches
+		 */
 
 		MultiSegmentSequence mssBase1 = BasisSplineStretchTest (adblX, adblY, scbc1, null);
 
@@ -181,7 +207,7 @@ public class PenalizedCurvatureFit {
 		MultiSegmentSequence mssBestFit = BasisSplineStretchTest (adblX, adblY, scbc2, sbfr);
 
 		/*
-		 * Compute the segment-by-segment monotonicity
+		 * Compute the segment-by-segment monotonicity for all the three stretches
 		 */
 
 		double dblX = mssBase1.getLeftPredictorOrdinateEdge();
@@ -202,7 +228,7 @@ public class PenalizedCurvatureFit {
 		}
 
 		/*
-		 * Compute the Stretch Jacobian
+		 * Compute the Stretch Jacobian for all the three stretches
 		 */
 
 		dblX = mssBase1.getLeftPredictorOrdinateEdge();
@@ -225,10 +251,29 @@ public class PenalizedCurvatureFit {
 			dblX += 0.25;
 		}
 
+		/*
+		 * Compute the Base Stretch Curvature Penalty Estimate
+		 */
+
 		System.out.println ("\tBASE #1  DPE: " + FormatUtil.FormatDouble (mssBase1.curvatureDPE(), 10, 0, 1.));
+
+		/*
+		 * Compute the Elevated Stretch Curvature Penalty Estimate
+		 */
 
 		System.out.println ("\tBASE #2  DPE: " + FormatUtil.FormatDouble (mssBase2.curvatureDPE(), 10, 0, 1.));
 
+		/*
+		 * Compute the Best Fit Stretch Curvature Penalty Estimate
+		 */
+
 		System.out.println ("\tBEST FIT DPE: " + FormatUtil.FormatDouble (mssBestFit.curvatureDPE(), 10, 0, 1.));
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		PenalizedCurvatureFitTest();
 	}
 }

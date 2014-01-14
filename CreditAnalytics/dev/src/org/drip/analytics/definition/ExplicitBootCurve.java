@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,9 @@ package org.drip.analytics.definition;
 
 /**
  * In ExplicitBootCurve, the segment boundaries explicitly line up with the instrument maturity boundaries.
- * 	This feature is exploited in building a boot-strappable curve.
+ * 	This feature is exploited in building a boot-strappable curve. Functionality is provides set the Latent
+ * 	State at the Explicit Node, adjust the Latent State at the given Node, or set a common Flat Value across
+ * 	all Nodes.
  *
  * @author Lakshmi Krishnamurthy
  */

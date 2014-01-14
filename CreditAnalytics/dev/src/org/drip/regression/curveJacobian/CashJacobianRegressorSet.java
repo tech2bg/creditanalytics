@@ -6,6 +6,7 @@ package org.drip.regression.curveJacobian;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -42,7 +43,8 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
 		java.util.ArrayList<org.drip.regression.core.UnitRegressor>();
 
-	@Override public java.util.List<org.drip.regression.core.UnitRegressor> getRegressorSet() {
+	@Override public java.util.List<org.drip.regression.core.UnitRegressor> getRegressorSet()
+	{
 		return _setRegressors;
 	}
 
@@ -52,9 +54,9 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("CashJacobian",
 				_strRegressionScenario) {
 				org.drip.analytics.date.JulianDate dtStart = null;
+				org.drip.analytics.rates.DiscountCurve dcCash = null;
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.analytics.rates.DiscountCurve dcCash = null;
 				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
 
 				@Override public boolean preRegression() {

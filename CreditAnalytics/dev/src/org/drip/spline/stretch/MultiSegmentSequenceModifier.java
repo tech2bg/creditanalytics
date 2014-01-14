@@ -6,6 +6,7 @@ package org.drip.spline.stretch;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,14 @@ package org.drip.spline.stretch;
 
 /**
  * MultiSegmentSequenceModifier exports Stretch modification/alteration methods to generate customized basis
- *  splines, with customized segment behavior using the segment control.
+ *  splines, with customized segment behavior using the segment control. It exposes the following stretch
+ *  modification methods:
+ *  - Insert the specified Predictor Ordinate Knot into the specified Stretch, using the specified Response
+ *  	Value.
+ * 	- Append a Segment to the Right of the Specified Stretch using the Supplied Constraint.
+ * 	- Insert the Predictor Ordinate Knot into the specified Stretch.
+ * 	- Insert a Cardinal Knot into the specified Stretch at the specified Predictor Ordinate Location.
+ * 	- Insert a Catmull-Rom Knot into the specified Stretch at the specified Predictor Ordinate Location.
  *
  * @author Lakshmi Krishnamurthy
  */

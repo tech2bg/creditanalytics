@@ -6,6 +6,7 @@ package org.drip.spline.pchip;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,18 @@ package org.drip.spline.pchip;
 
 /**
  * LocalControlStretchBuilder exports Stretch creation/calibration methods to generate customized basis
- *  splines, with customized segment behavior using the segment control.
+ *  splines, with customized segment behavior using the segment control. It provides the following
+ *  local-control functionality:
+ *  - Create a Stretch off of Hermite Splines from the specified the Predictor Ordinates, the Response
+ *  	Values, the Custom Slopes, and the Segment Builder Parameters.
+ *  - Create Hermite/Bessel C1 Cubic Spline Stretch.
+ *  - Create Hyman (1983) Monotone Preserving Stretch.
+ *  - Create Hyman (1989) enhancement to the Hyman (1983) Monotone Preserving Stretch.
+ *  - Create the Harmonic Monotone Preserving Stretch.
+ *  - Create the Van Leer Limiter Stretch.
+ *  - Create the Huynh Le Floch Limiter Stretch.
+ *  - Generate the local control C1 Slope using the Akima Cubic Algorithm.
+ *  - Generate the local control C1 Slope using the Hagan-West Monotone Convex Algorithm.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -395,7 +407,7 @@ public class LocalControlStretchBuilder {
 	}
 
 	/**
-	 * Generate the local control C1 Slope using the Hagan-West Monotone COnvex Algorithm. The references
+	 * Generate the local control C1 Slope using the Hagan-West Monotone Convex Algorithm. The references
 	 *  are:
 	 * 
 	 * 	Hagan, P., and G. West (2006): Interpolation Methods for Curve Construction, Applied Mathematical
@@ -405,7 +417,6 @@ public class LocalControlStretchBuilder {
 	 * 
 	 * @param strName Stretch Name
 	 * @param adblObservation Array of Observations
-	 * @param adblResponseValue Array of Response Values
 	 * @param aSCBC Array of Segment Builder Parameters
 	 * @param sbfr Stretch Fitness Weighted Response
 	 * @param iSetupMode Segment Setup Mode

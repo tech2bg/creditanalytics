@@ -6,6 +6,7 @@ package org.drip.state.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,12 +32,15 @@ package org.drip.state.curve;
  */
 
 /**
- * This class contains the constant forward basis based FX Basis Curve holder object. It exports the
+ * DerivedFXBasis manages the constant forward basis based FX Basis Curve holder object. It exports the
  *  following functionality:
- *  - Calculate FX Forward / FX Forward Jacobian
- *  - Calculate Forward Basis / Forward Basis Jacobian
- *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
- *  - Optionally provide the calibration instruments and quotes used to build the curve.
+ *  - Extract currency, currency pair, spot epoch, spot FX, and whether the basis is boot-strapped
+ *  - Compute the FX Forward Array
+ *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve the Curve Construction Input Set
+ *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
+ *  - Synthesize scenario Latent State by parallel/custom shifting/custom tweaking the manifest measure
+ *  - Serialize into and de-serialize out of byte array
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -50,7 +54,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	private org.drip.product.params.CurrencyPair _cp = null;
 
 	/**
-	 * Constructs an DerivedFXBasis instance from the currency pair, FX Spot, and FX basis parameters
+	 * Construct an DerivedFXBasis instance from the currency pair, FX Spot, and FX basis parameters
 	 * 
 	 * @param cp Currency Pair
 	 * @param dtSpot Spot Date
@@ -174,12 +178,12 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		_cp = new org.drip.product.params.CurrencyPair (astrField[5].getBytes());
 	}
 
-	@Override public org.drip.product.params.CurrencyPair getCurrencyPair()
+	@Override public org.drip.product.params.CurrencyPair currencyPair()
 	{
 		return _cp;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getSpotDate()
+	@Override public org.drip.analytics.date.JulianDate spotDate()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblSpotDate);
@@ -190,7 +194,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return null;
 	}
 
-	@Override public double getFXSpot()
+	@Override public double fxSpot()
 	{
 		return _dblFXSpot;
 	}
@@ -200,12 +204,12 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return _cp.getDenomCcy();
 	}
 
-	@Override public boolean IsBasisBootstrapped()
+	@Override public boolean isBasisBootstrapped()
 	{
 		return _bIsFXBasisBootstrapped;
 	}
 
-	@Override public double[] getFullFXFwd (
+	@Override public double[] fxForward (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,

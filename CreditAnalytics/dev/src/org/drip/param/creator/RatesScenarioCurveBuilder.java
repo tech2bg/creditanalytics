@@ -6,6 +6,7 @@ package org.drip.param.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -31,7 +32,14 @@ package org.drip.param.creator;
 
 /**
  * RatesScenarioCurveBuilder implements the the construction of the scenario discount curve using the input
- * 	discount curve instruments.
+ * 	discount curve instruments, and a wide variety of custom builds. It implements the following
+ * 	functionality:
+ * 	- Non-linear Custom Discount Curve
+ * 	- Shape Preserving Discount Curve Builds - Standard Cubic Polynomial/Cubic KLK Hyperbolic Tension, and
+ * 	 	other Custom Builds
+ * 	- Smoothing Local/Control Custom Build - DC/Forward/Zero Rate LSQM's
+ * 	- "Industry Standard Methodologies" - DENSE/DUALDENSE/CUSTOMDENSE and Hagan-West Forward Interpolator
+ * 		Schemes
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -104,7 +112,7 @@ public class RatesScenarioCurveBuilder {
 	}
 
 	/**
-	 * Creates an RatesScenarioCurve Instance from the currency and the array of the calibration
+	 * Create an RatesScenarioCurve Instance from the currency and the array of the calibration
 	 * 	instruments
 	 * 
 	 * @param strCurrency Currency
@@ -134,7 +142,7 @@ public class RatesScenarioCurveBuilder {
 	}
 
 	/**
-	 * Creates Discount Curve from the Rates Calibration Instruments
+	 * Create Discount Curve from the Rates Calibration Instruments
 	 * 
 	 * @param dt Valuation Date
 	 * @param strCurrency Currency
@@ -736,7 +744,7 @@ public class RatesScenarioCurveBuilder {
 
 		try {
 			return RatesScenarioCurveBuilder.NonlinearBuild (new org.drip.analytics.date.JulianDate
-				(valParams._dblValue), strCurrency,
+				(valParams.valueDate()), strCurrency,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCalibComp,
 						adblCalibQuote, astrCalibMeasure, null);
 		} catch (java.lang.Exception e) {

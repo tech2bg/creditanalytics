@@ -6,6 +6,7 @@ package org.drip.analytics.period;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,8 +32,12 @@ package org.drip.analytics.period;
  */
 
 /**
- * CashflowPeriodCurveFactors is an enhancement of the period class using the following period measures:
- *  start/end survival probabilities, start/end notionals, and period start/end discount factor.
+ * CashflowPeriodCurveFactors is an enhancement of the period class for holding the curve period measures. It
+ * 	exposes the following functionality:
+ * 
+ * 	- Start/end survival probabilities, start/end notional, and period start/end discount factor.
+ * 	- Period Reference Index Rate, Spread, and the full Coupon Rate
+ * 	- Serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -49,7 +54,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	protected double _dblFullCouponRate = java.lang.Double.NaN;
 
 	/**
-	 * Constructs the CashflowPeriodCurveFactors class using the corresponding period curve measures.
+	 * Construct the CashflowPeriodCurveFactors class using the corresponding period curve measures.
 	 * 
 	 * @param dblStart Period Start date
 	 * @param dblEnd Period end date
@@ -203,7 +208,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Gets the period full coupon rate (annualized quote)
+	 * Get the period full coupon rate (annualized quote)
 	 * 
 	 * @return Period Full Coupon Rate
 	 */
@@ -214,7 +219,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Gets the period spread over the floating index
+	 * Get the period spread over the floating index
 	 * 
 	 * @return Period Spread
 	 */
@@ -225,7 +230,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Gets the period index rate
+	 * Get the period index rate
 	 * 
 	 * @return Period Index Reference Rate
 	 */
@@ -236,7 +241,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Gets the period start Notional
+	 * Get the period start Notional
 	 * 
 	 * @return Period Start Notional
 	 */
@@ -247,7 +252,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Gets the period end Notional
+	 * Get the period end Notional
 	 * 
 	 * @return Period end Notional
 	 */
@@ -258,7 +263,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Gets the period end discount factor
+	 * Get the period end discount factor
 	 * 
 	 * @return Period end discount factor
 	 */
@@ -269,7 +274,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Gets the period end survival probability
+	 * Get the period end survival probability
 	 * 
 	 * @return Period end survival probability
 	 */

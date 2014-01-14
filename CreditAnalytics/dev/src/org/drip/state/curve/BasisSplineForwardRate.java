@@ -6,6 +6,7 @@ package org.drip.state.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,12 +30,10 @@ package org.drip.state.curve;
  */
 
 /**
- * BasisSplineForwardRate manages the Discounting Latent State, using the Forward Rate as the State
- *  Response Representation. It exports the following functionality:
- *  - Calculate discount factor / discount factor Jacobian
+ * BasisSplineForwardRate manages the Forward Latent State, using the Forward Rate as the State Response
+ *  Representation. It exports the following functionality:
  *  - Calculate implied forward rate / implied forward rate Jacobian
- *  - Construct tweaked curve instances (parallel/tenor/custom tweaks)
- *  - Optionally provide the calibration instruments and quotes used to build the curve.
+ *  - Serialize into and de-serialize out of byte arrays
  *
  * @author Lakshmi Krishnamurthy
  */

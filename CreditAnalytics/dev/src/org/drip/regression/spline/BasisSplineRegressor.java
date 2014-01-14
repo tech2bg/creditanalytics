@@ -6,6 +6,7 @@ package org.drip.regression.spline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -41,14 +42,14 @@ package org.drip.regression.spline;
 
 public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressionExecutor {
 	private java.lang.String _strName = "";
+	private org.drip.spline.segment.ConstitutiveState _seg1 = null;
+	private org.drip.spline.segment.ConstitutiveState _seg2 = null;
 	private org.drip.quant.calculus.WengertJacobian _wjLeft = null;
 	private org.drip.quant.calculus.WengertJacobian _wjRight = null;
 	private org.drip.quant.calculus.WengertJacobian _wjValue = null;
-	private org.drip.spline.segment.ConstitutiveState _seg1 = null;
-	private org.drip.spline.segment.ConstitutiveState _seg2 = null;
 
 	/**
-	 * Creates an instance of Polynomial BasisSplineRegressor
+	 * Create an instance of Polynomial BasisSplineRegressor
 	 * 
 	 * @param strName Regressor Name
 	 * @param strScenarioName Regressor Scenario Name
@@ -78,7 +79,7 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	}
 
 	/**
-	 * Creates an instance of Bernstein Polynomial BasisSplineRegressor
+	 * Create an instance of Bernstein Polynomial BasisSplineRegressor
 	 * 
 	 * @param strName Regressor Name
 	 * @param strScenarioName Regressor Scenario Name
@@ -108,7 +109,7 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	}
 
 	/**
-	 * Creates an instance of Exponential BasisSplineRegressor
+	 * Create an instance of Exponential BasisSplineRegressor
 	 * 
 	 * @param strName Regressor Name
 	 * @param strScenarioName Regressor Scenario Name
@@ -136,7 +137,7 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	}
 
 	/**
-	 * Creates an instance of Hyperbolic BasisSplineRegressor
+	 * Create an instance of Hyperbolic BasisSplineRegressor
 	 * 
 	 * @param strName Regressor Name
 	 * @param strScenarioName Regressor Scenario Name
@@ -164,7 +165,7 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	}
 
 	/**
-	 * Creates an instance of the Kaklis-Pandelis BasisSplineRegressor
+	 * Create an instance of the Kaklis-Pandelis BasisSplineRegressor
 	 * 
 	 * @param strName Regressor Name
 	 * @param strScenarioName Regressor Scenario Name
@@ -222,10 +223,10 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	{
 		try {
 			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (25., java.lang.Double.NaN, 0.,
-				java.lang.Double.NaN, 20.25, java.lang.Double.NaN, null, null)) && null !=
-				(_wjRight = _seg2.jackDCoeffDEdgeParams (_seg1, 16., java.lang.Double.NaN, null, null)) &&
-					_seg2.calibrate (_seg1, 14., java.lang.Double.NaN, null, null) && null != (_wjValue =
-						_seg2.jackDResponseDEdgeInputs (5., 1));
+				java.lang.Double.NaN, 20.25, java.lang.Double.NaN, null, null)) && null != (_wjRight =
+					_seg2.jackDCoeffDEdgeParams (_seg1, 16., java.lang.Double.NaN, null, null)) &&
+						_seg2.calibrate (_seg1, 14., java.lang.Double.NaN, null, null) && null != (_wjValue =
+							_seg2.jackDResponseDEdgeInputs (5., 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

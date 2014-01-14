@@ -6,6 +6,7 @@ package org.drip.state.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -42,7 +43,7 @@ package org.drip.state.creator;
 public class FXForwardCurveBuilder {
 
 	/**
-	 * Creates an FXForwardCurve from the CurrencyPair, FX Spot, and the FX Forward parameters
+	 * Create an FXForwardCurve from the CurrencyPair, FX Spot, and the FX Forward parameters
 	 * 
 	 * @param cp CurrencyPair
 	 * @param dtSpot Spot Date
@@ -55,12 +56,12 @@ public class FXForwardCurveBuilder {
 	 */
 
 	public static final org.drip.analytics.definition.FXForwardCurve CreateFXForwardCurve (
-			final org.drip.product.params.CurrencyPair cp,
-			final org.drip.analytics.date.JulianDate dtSpot,
-			final double dblFXSpot,
-			final double[] adblDate,
-			final double[] adblFXFwd,
-			final boolean[] abIsPIP)
+		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.analytics.date.JulianDate dtSpot,
+		final double dblFXSpot,
+		final double[] adblDate,
+		final double[] adblFXFwd,
+		final boolean[] abIsPIP)
 	{
 		try {
 			return new org.drip.state.curve.DerivedFXForward (cp, dtSpot, dblFXSpot, adblDate,
@@ -73,7 +74,7 @@ public class FXForwardCurveBuilder {
 	}
 
 	/**
-	 * Creates the FXForwardCurve from the given byte array
+	 * Create the FXForwardCurve from the given byte array
 	 * 
 	 * @param ab Byte Array
 	 * 

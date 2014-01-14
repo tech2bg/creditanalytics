@@ -6,6 +6,7 @@ package org.drip.product.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -31,7 +32,8 @@ package org.drip.product.definition;
 
 /**
  * CreditDefaultSwap is the base abstract class implements the pricing, the valuation, and the RV analytics
- *  functionality for the CDS product.
+ *  functionality for the CDS product. Targeted functions calibrate the flat spread and reset coupon (for
+ *  calibration purposes).
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -39,7 +41,7 @@ package org.drip.product.definition;
 public abstract class CreditDefaultSwap extends org.drip.product.definition.CreditComponent {
 
 	/**
-	 * Resets the CDS's coupon
+	 * Reset the CDS's coupon
 	 * 
 	 * @param dblCoupon The new Coupon
 	 * 
@@ -53,7 +55,7 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 		throws java.lang.Exception;
 
 	/**
-	 * Calibrates the CDS's flat spread from the calculated up-front points
+	 * Calibrate the CDS's flat spread from the calculated up-front points
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams

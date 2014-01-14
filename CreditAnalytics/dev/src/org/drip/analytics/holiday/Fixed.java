@@ -7,6 +7,7 @@ package org.drip.analytics.holiday;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -44,7 +45,7 @@ public class Fixed extends Base {
 	private Weekend _wkend = null;
 
 	/**
-	 * Constructs the object from the day, month, weekend, and description
+	 * Construct the object from the day, month, weekend, and description
 	 * 
 	 * @param iDay Day
 	 * @param iMonth Month
@@ -80,37 +81,37 @@ public class Fixed extends Base {
 		super (ab);
 
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FixedHoliday de-serialize: Invalid byte stream input");
+			throw new java.lang.Exception ("Fixed de-serialize: Invalid byte stream input");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FixedHoliday de-serializer: Empty state");
+			throw new java.lang.Exception ("Fixed de-serializer: Empty state");
 
 		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
 
 		if (null == strFH || strFH.isEmpty())
-			throw new java.lang.Exception ("FixedHoliday de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("FixedHoliday de-serialize: Invalid number of fields");
+			throw new java.lang.Exception ("Fixed de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FixedHoliday de-serializer: Cannot locate day");
+			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate day");
 
 		_iDay = new java.lang.Integer (astrField[1]).intValue();
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("FixedHoliday de-serializer: Cannot locate month");
+			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate month");
 
 		_iMonth = new java.lang.Integer (astrField[2]).intValue();
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("FixedHoliday de-serializer: Cannot locate wkend");
+			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate wkend");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_wkend = null;
@@ -127,7 +128,7 @@ public class Fixed extends Base {
 		try {
 			dblDate = org.drip.analytics.date.JulianDate.CreateFromYMD (iYear, _iMonth, _iDay).getJulian();
 
-			if (bAdjust) return Base.RollHoliday (dblDate, true, _wkend);
+			if (bAdjust) return Base.rollHoliday (dblDate, true, _wkend);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

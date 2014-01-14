@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,6 +32,17 @@ package org.drip.product.rates;
 /**
  * FloatFloatComponent contains the implementation of the Float-Float Index Basis Swap product
  *  contract/valuation details. It is made off one Reference Floating stream and one Derived floating stream.
+ *  It exports the following functionality:
+ *  - Standard/Custom Constructor for the IRSComponent
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Retrieve the constituent floating streams
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -200,6 +212,28 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		return "";
 	}
 
+	/**
+	 * Retrieve the Reference Stream
+	 * 
+	 * @return The Reference Stream
+	 */
+
+	public org.drip.product.rates.FloatingStream getReferenceStream()
+	{
+		return _floatReference;
+	}
+
+	/**
+	 * Retrieve the Derived Stream
+	 * 
+	 * @return The Derived Stream
+	 */
+
+	public org.drip.product.rates.FloatingStream getDerivedStream()
+	{
+		return _floatDerived;
+	}
+
 	@Override public org.drip.analytics.date.JulianDate getEffectiveDate()
 	{
 		org.drip.analytics.date.JulianDate dtFloatReferenceEffective = _floatReference.getEffectiveDate();
@@ -349,7 +383,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		double dblValueNotional = java.lang.Double.NaN;
 
 		try {
-			dblValueNotional = getNotional (valParams._dblValue);
+			dblValueNotional = getNotional (valParams.valueDate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -520,27 +554,5 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		}
 
 		return null;
-	}
-
-	/**
-	 * Retrieve the Reference Stream
-	 * 
-	 * @return The Reference Stream
-	 */
-
-	public org.drip.product.rates.FloatingStream getReferenceStream()
-	{
-		return _floatReference;
-	}
-
-	/**
-	 * Retrieve the Derived Stream
-	 * 
-	 * @return The Derived Stream
-	 */
-
-	public org.drip.product.rates.FloatingStream getDerivedStream()
-	{
-		return _floatDerived;
 	}
 }

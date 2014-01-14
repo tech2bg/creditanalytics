@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,9 +32,9 @@ package org.drip.product.params;
  */
 
 /**
- * CreditSetting contains the credit related valuation parameters - use default pay lag, use
- * 		curve or the component recovery, component recovery, credit curve name, and whether there is accrual
- * 		on default.
+ * CreditSetting contains the credit related valuation parameters - use default pay lag, use curve or the
+ *  component recovery, component recovery, credit curve name, and whether there is accrual on default. It
+ *  exports serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -72,8 +73,8 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 	public double _dblRecovery = java.lang.Double.NaN;
 
 	/**
-	 * Constructs the CreditSetting from the default pay lag, use curve or the component
-	 * 		recovery flag, component recovery, credit curve name, and whether there is accrual on default
+	 * Construct the CreditSetting from the default pay lag, use curve or the component recovery flag,
+	 *  component recovery, credit curve name, and whether there is accrual on default
 	 * 
 	 * @param iDefPayLag Default Pay Lag
 	 * @param dblRecovery Component Recovery

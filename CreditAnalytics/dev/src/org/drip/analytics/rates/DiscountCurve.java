@@ -6,6 +6,7 @@ package org.drip.analytics.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,15 +30,18 @@ package org.drip.analytics.rates;
  */
 
 /**
- * DiscountCurve is the stub for the discount curve functionality. It extends the Curve object by exposing
- * 	the following functions:
+ * DiscountCurve is the stub for the discount curve functionality. It extends the both the Curve and the
+ *  DiscountFactorEstimator instances by implementing their functions, and exposing the following:
  * 	- Forward Rate to a specific date/tenor, and effective rate between a date interval.
  * 	- Discount Factor to a specific date/tenor, and effective discount factor between a date interval.
  * 	- Zero Rate to a specific date/tenor.
- *  - Generate scenario curves from the base discount curve (flat/parallel/custom)
  *  - Value Jacobian for Forward rate, discount factor, and zero rate.
  *  - Cross Jacobian between each of Forward rate, discount factor, and zero rate.
  *  - Quote Jacobian to Forward rate, discount factor, and zero rate.
+ *  - QM (DF/Zero/Forward) to Quote Jacobian.
+ *  - Latent State Quantification Metric, and the canonical truthness transformations.
+ *  - Implied/embedded ForwardRateEstimator
+ *  - Turns - set/unset/adjust.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -260,11 +264,6 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			(dblDt2))
 			throw new java.lang.Exception ("DiscountCurve::libor => Invalid input dates");
 
-		double dblStartDate = epoch().getJulian();
-
-		if (dblDt1 < dblStartDate || dblDt2 < dblStartDate)
-			throw new java.lang.Exception ("DiscountCurve::libor => Invalid input dates");
-
 		return ((df (dblDt1) / df (dblDt2)) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
 			(dblDt1, dblDt2, "Act/360", false, java.lang.Double.NaN, null, "");
 	}
@@ -430,7 +429,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	/**
 	 * Retrieve the Quote Jacobian of the Discount Factor to the given date
 	 * 
-	 * @param dblDate Date
+	 * @param dt Date
 	 * 
 	 * @return The Quote Jacobian of the Discount Factor to the given date
 	 */
@@ -446,7 +445,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	/**
 	 * Retrieve the Quote Jacobian of the Discount Factor to the date implied by the given Tenor
 	 * 
-	 * @param dblDate Date
+	 * @param strTenor Tenor
 	 * 
 	 * @return The Quote Jacobian of the Discount Factor to the date implied by the given Tenor
 	 */

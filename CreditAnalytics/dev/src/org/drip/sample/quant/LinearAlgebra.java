@@ -10,6 +10,7 @@ import org.drip.quant.linearalgebra.*;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -42,6 +43,12 @@ import org.drip.quant.linearalgebra.*;
  */
 
 public class LinearAlgebra {
+
+	/*
+	 * Sample illustrating the Invocation of Base Matrix Inversion and Product Computation Verification.
+	 * 
+	 * 	WARNING: Insufficient Error Checking, so use caution
+	 */
 
 	private static final void InverseVerifyDump (
 		final String strLabel,

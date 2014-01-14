@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -44,12 +45,12 @@ public class DC28_360 implements org.drip.analytics.daycount.DCFCalculator {
 	{
 	}
 
-	@Override public java.lang.String getBaseCalculationType()
+	@Override public java.lang.String baseCalculationType()
 	{
 		return "DC28_360";
 	}
 
-	@Override public java.lang.String[] getAlternateNames()
+	@Override public java.lang.String[] alternateNames()
 	{
 		return new java.lang.String[] {"28/360", "DC28_360"};
 	}
@@ -66,13 +67,13 @@ public class DC28_360 implements org.drip.analytics.daycount.DCFCalculator {
 		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA30_360 (dblStart, dblEnd, bApplyEOMAdj);
 
 		if (null == dm)
-			throw new java.lang.Exception ("DC28_360.yearFraction: Cannot create DateEOMAdjustment!");
+			throw new java.lang.Exception ("DC28_360::yearFraction => Cannot create DateEOMAdjustment!");
 
 		return (360.* (org.drip.analytics.date.JulianDate.Year (dblEnd) -
 			org.drip.analytics.date.JulianDate.Year (dblStart)) + 28. *
 				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart) + dm._iD2Adj - dm._iD1Adj) + (org.drip.analytics.date.JulianDate.Day (dblEnd)
-						- org.drip.analytics.date.JulianDate.Day (dblStart))) / 360.;
+					(dblStart) + dm.posterior() - dm.anterior()) + (org.drip.analytics.date.JulianDate.Day
+						(dblEnd) - org.drip.analytics.date.JulianDate.Day (dblStart))) / 360.;
 	}
 
 	@Override public int daysAccrued (
@@ -92,7 +93,7 @@ public class DC28_360 implements org.drip.analytics.daycount.DCFCalculator {
 		return 360 * (org.drip.analytics.date.JulianDate.Year (dblEnd) -
 			org.drip.analytics.date.JulianDate.Year (dblStart)) + 28 *
 				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart) + dm._iD2Adj - dm._iD1Adj) + (org.drip.analytics.date.JulianDate.Day (dblEnd)
-						- org.drip.analytics.date.JulianDate.Day (dblStart));
+					(dblStart) + dm.posterior() - dm.anterior()) + (org.drip.analytics.date.JulianDate.Day
+						(dblEnd) - org.drip.analytics.date.JulianDate.Day (dblStart));
 	}
 }

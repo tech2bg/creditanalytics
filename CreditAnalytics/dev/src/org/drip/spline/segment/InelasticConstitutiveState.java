@@ -6,6 +6,7 @@ package org.drip.spline.segment;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,13 @@ package org.drip.spline.segment;
  */
 
 /**
- * This class contains the spline segment in-elastic fields - in this case the start/end ranges.
+ * This class contains the spline segment in-elastic fields - in this case the start/end ranges. It exports
+ * 	the following functions:
+ * 	- Retrieve the Segment Left/Right Predictor Ordinate
+ * 	- Find out if the Predictor Ordinate is inside the segment - inclusive of left/right.
+ * 	- Get the Width of the Predictor Ordinate in this Segment
+ * 	- Transform the Predictor Ordinate to the Local Segment Predictor Ordinate
+ * 	- Transform the Local Predictor Ordinate to the Segment Ordinate
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -102,7 +109,7 @@ public class InelasticConstitutiveState implements java.lang.Comparable<Inelasti
 	}
 
 	/**
-	 * Gets the Width of the Predictor Ordinate in this Segment
+	 * Get the Width of the Predictor Ordinate in this Segment
 	 * 
 	 * @return Segment Width
 	 */

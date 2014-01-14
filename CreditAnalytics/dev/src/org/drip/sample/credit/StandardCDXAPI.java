@@ -27,6 +27,7 @@ import org.drip.service.env.StandardCDXManager;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -64,13 +65,13 @@ import org.drip.service.env.StandardCDXManager;
 
 public class StandardCDXAPI {
 
-	/**
+	/*
 	 * Sample demonstrating the creation/usage of the CDX API
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void BasketCDSAPISample()
+	private static final void BasketCDSAPISample()
 	{
 		JulianDate dtToday = JulianDate.CreateFromYMD (2013, JulianDate.MAY, 10);
 

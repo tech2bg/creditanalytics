@@ -6,6 +6,7 @@ package org.drip.analytics.period;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,9 +32,12 @@ package org.drip.analytics.period;
  */
 
 /**
- * CashflowPeriod extends the period class with the following cash-flow day-count specific parameters:
- *  frequency, reset date, and accrual day-count convention. It also exposes static methods to construct
- *  cash-flow period sets starting backwards/forwards, as well as merge cash-flow periods.
+ * CashflowPeriod extends the period class with the cash-flow specific fields. It exposes the following
+ * 	functionality:
+ * 
+ * 	- Frequency, reset date, and accrual day-count convention
+ * 	- Static methods to construct cash-flow period sets starting backwards/forwards, generate single period
+ * 	 sets, as well as merge cash-flow periods.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -57,7 +61,7 @@ public class CashflowPeriod extends Period {
 		if (null == dap) return dblDate;
 
 		try {
-			return dap.Roll (dblDate);
+			return dap.roll (dblDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -101,7 +105,7 @@ public class CashflowPeriod extends Period {
 		return null;
 	}
 
-	/** Generates the period list backward starting from the end.
+	/** Generate the period list backward starting from the end.
 	 * 
 	 * @param dblEffective Effective date
 	 * @param dblMaturityIn Maturity date
@@ -253,7 +257,7 @@ public class CashflowPeriod extends Period {
 	}
 
 	/**
-	 * Generates the period list forward starting from the start.
+	 * Generate the period list forward starting from the start.
 	 * 
 	 * @param dblEffective Effective date
 	 * @param dblMaturity Maturity date
@@ -361,7 +365,7 @@ public class CashflowPeriod extends Period {
 	}
 
 	/**
-	 * Generates a single Cash Flow period between the effective and the maturity dates
+	 * Generate a single Cash Flow period between the effective and the maturity dates
 	 * 
 	 * @param dblEffective Effective date
 	 * @param dblMaturity Maturity date
@@ -395,7 +399,7 @@ public class CashflowPeriod extends Period {
 	}
 
 	/**
-	 * Constructs a CashflowPeriod instance from the specified dates
+	 * Construct a CashflowPeriod instance from the specified dates
 	 * 
 	 * @param dblStart Period Start Date
 	 * @param dblEnd Period End Date

@@ -6,6 +6,7 @@ package org.drip.param.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -39,7 +40,7 @@ package org.drip.param.creator;
 public class BasketMarketParamsBuilder {
 
 	/**
-	 * Constructs the BasketMarketParams object from the map of discount curve, the map of Forward curve, the
+	 * Construct a BasketMarketParams instance from the map of discount curve, the map of Forward curve, the
 	 *  map of credit curve, and a double map of date/rate index and fixings.
 	 * 
 	 * @param mapDC Map of discount curve
@@ -71,7 +72,7 @@ public class BasketMarketParamsBuilder {
 	}
 
 	/**
-	 * Constructs the empty BasketMarketParams object.
+	 * Construct an empty instance of the BasketMarketParams object.
 	 * 
 	 * @return Instance of the Basket Market Params interface
 	 */

@@ -6,6 +6,7 @@ package org.drip.quant.solver1D;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -39,6 +40,7 @@ package org.drip.quant.solver1D;
  */
 
 public class ConvergenceOutput extends org.drip.quant.solver1D.ExecutionInitializationOutput {
+
 	/**
 	 * Default ConvergenceOutput constructor: Initializes the output object
 	 */
@@ -49,7 +51,7 @@ public class ConvergenceOutput extends org.drip.quant.solver1D.ExecutionInitiali
 	}
 
 	/**
-	 * Initializes off of an existing EIOP
+	 * Initialize off of an existing EIOP
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 * 

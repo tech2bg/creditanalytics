@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,26 +32,19 @@ package org.drip.analytics.daycount;
  */
 
 /**
- * This class contains the parameters needed for adjusting dates – holiday calendar and adjustment type.
+ * This class contains the parameters needed for adjusting dates. It exports the following functionality:
+ * 	- Accessor for holiday calendar and adjustment type
+ *  - Serialization/De-serialization to and from Byte Arrays
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class DateAdjustParams extends org.drip.service.stream.Serializer {
-	/**
-	 * The Roll mode
-	 */
-
-	public int _iRollMode = 0;
+	private int _iRollMode = 0;
+	private java.lang.String _strCalendar = "";
 
 	/**
-	 * Roll calendar
-	 */
-
-	public java.lang.String _strCalendar = "";
-
-	/**
-	 * Creates a DateAdjustParams class from the roll mode and the calendar
+	 * Create a DateAdjustParams instance from the roll mode and the calendar
 	 * 
 	 * @param iRollMode Roll Mode
 	 * @param strCalendar Calendar
@@ -110,7 +104,29 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Rolls the given date
+	 * Retrieve the Roll Mode
+	 * 
+	 * @return The Roll Mode
+	 */
+
+	public int rollMode()
+	{
+		return _iRollMode;
+	}
+
+	/**
+	 * Retrieve the Roll Holiday Calendar
+	 * 
+	 * @return The Roll Holiday Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _strCalendar;
+	}
+
+	/**
+	 * Roll the given date
 	 * 
 	 * @param dblDate Input date
 	 * 
@@ -119,7 +135,7 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 	 * @throws java.lang.Exception Thrown if the date cannot be rolled
 	 */
 
-	public double Roll (
+	public double roll (
 		final double dblDate)
 		throws java.lang.Exception
 	{
@@ -147,7 +163,8 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new DateAdjustParams (ab);
 		} catch (java.lang.Exception e) {
