@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,8 @@ package org.drip.product.params;
 
 /**
  * CouponSetting contains the coupon type, schedule, and the coupon amount for the component. If available
- *  floor and/or ceiling may also be applied to the coupon, in a pre-determined order of precedence.
+ *  floor and/or ceiling may also be applied to the coupon, in a pre-determined order of precedence. It
+ *  exports serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -71,7 +73,7 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 	public double _dblCouponCeiling = java.lang.Double.NaN;
 
 	/**
-	 * Constructs the CouponSetting from the coupon schedule, coupon type, and the coupon amount
+	 * Construct the CouponSetting from the coupon schedule, coupon type, and the coupon amount
 	 * 
 	 * @param fsCoupon Coupon schedule
 	 * @param strCouponType Coupon Type
@@ -120,7 +122,7 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 		if (null == strSerializedCouponSetting || strSerializedCouponSetting.isEmpty())
 			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCouponSetting,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCouponSetting,
 			getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
@@ -179,18 +181,18 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblCoupon) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblCoupon) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate))
 			throw new java.lang.Exception ("CouponSetting::processCouponWindow => Invalid Inputs");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCouponCeiling) &&
-			!org.drip.math.common.NumberUtil.IsValid (_dblCouponFloor))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeiling) &&
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloor))
 			return dblCoupon;
 
-		if (!!org.drip.math.common.NumberUtil.IsValid (_dblCouponCeiling) && dblCoupon > _dblCouponCeiling)
+		if (!!org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeiling) && dblCoupon > _dblCouponCeiling)
 			return _dblCouponCeiling;
 
-		if (!!org.drip.math.common.NumberUtil.IsValid (_dblCouponFloor) && dblCoupon < _dblCouponFloor)
+		if (!!org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloor) && dblCoupon < _dblCouponFloor)
 			return _dblCouponFloor;
 
 		return dblCoupon;
@@ -233,12 +235,12 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCoupon)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon)) return false;
 
 		if (null == _fsCoupon) _fsCoupon = FactorSchedule.CreateBulletSchedule();
 
-		if (org.drip.math.common.NumberUtil.IsValid (_dblCouponCeiling) &&
-			org.drip.math.common.NumberUtil.IsValid (_dblCouponFloor) && _dblCouponCeiling < _dblCouponFloor)
+		if (org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeiling) &&
+			org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloor) && _dblCouponCeiling < _dblCouponFloor)
 			return false;
 
 		return true;

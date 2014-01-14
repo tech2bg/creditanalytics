@@ -6,6 +6,7 @@ package org.drip.service.bridge;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -31,9 +32,11 @@ package org.drip.service.bridge;
 /**
  * CreditAnalyticsResponse contains the response from the Credit Analytics server to the client. It contains
  * 	the following parameters:
+ * 	- Compose Specific Response Messages - STATUS, FAILURE and SUCCESS messages.
  * 	- The GUID and of the request.
  * 	- The type and time-stamp of the response.
- * 	- The string version of the response body.
+ * 	- The string and byte array version of the response body.
+ * 	- Serlization into and de-serialization out of byte arrays.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -90,7 +93,7 @@ public class CreditAnalyticsResponse extends org.drip.service.stream.Serializer 
 		if (null == strSerializedCreditAnalyticsResponse || strSerializedCreditAnalyticsResponse.isEmpty())
 			throw new java.lang.Exception ("CreditAnalyticsResponse de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedCreditAnalyticsResponse, getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)

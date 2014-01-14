@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,7 +32,8 @@ package org.drip.product.params;
  */
 
 /**
- * IdentifierSet contains the component's identifier parameters - ISIN, CUSIP, ID, and ticker.
+ * IdentifierSet contains the component's identifier parameters - ISIN, CUSIP, ID, and ticker. It exports
+ *  serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -63,7 +65,7 @@ public class IdentifierSet extends org.drip.service.stream.Serializer implements
 	public java.lang.String _strTicker = "";
 
 	/**
-	 * Constructs the IdentifierSet from ISIN, CUSIP, ID, and ticker.
+	 * Construct the IdentifierSet from ISIN, CUSIP, ID, and ticker.
 	 * 
 	 * @param strISIN ISIN
 	 * @param strCUSIP CUSIP
@@ -109,7 +111,7 @@ public class IdentifierSet extends org.drip.service.stream.Serializer implements
 		if (null == strSerializedIdentifierSet || strSerializedIdentifierSet.isEmpty())
 			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedIdentifierSet,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedIdentifierSet,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)

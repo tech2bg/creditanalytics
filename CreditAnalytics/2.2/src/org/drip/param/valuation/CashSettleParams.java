@@ -6,6 +6,7 @@ package org.drip.param.valuation;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -38,27 +39,12 @@ package org.drip.param.valuation;
  */
 
 public class CashSettleParams extends org.drip.service.stream.Serializer {
+	private int _iLag = 3;
+	private java.lang.String _strCalendar = "";
+	private int _iAdjustMode = org.drip.analytics.daycount.Convention.DR_FOLL;
 
 	/**
-	 * Cash Settle Lag
-	 */
-
-	public int _iLag = 3;
-
-	/**
-	 * Cash Settle Calendar
-	 */
-
-	public java.lang.String _strCalendar = "";
-
-	/**
-	 * Cash Settle Adjust Mode
-	 */
-
-	public int _iAdjustMode = org.drip.analytics.daycount.Convention.DR_FOLL;
-
-	/**
-	 * Constructs the CashSettleParams object from the settle lag and the settle calendar objects
+	 * Construct the CashSettleParams object from the settle lag and the settle calendar objects
 	 * 
 	 * @param iLag Cash Settle Lag
 	 * @param iAdjustMode Settle adjust Mode
@@ -101,7 +87,7 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCashSettleParams || strSerializedCashSettleParams.isEmpty())
 			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCashSettleParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCashSettleParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -131,7 +117,40 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Constructs and returns the cash settle date from the valuation date
+	 * Retrieve the Settle Lag
+	 * 
+	 * @return The Settle Lag
+	 */
+
+	public int lag()
+	{
+		return _iLag;
+	}
+
+	/**
+	 * Retrieve the Settle Calendar
+	 * 
+	 * @return The Settle Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _strCalendar;
+	}
+
+	/**
+	 * Retrieve the Adjustment Mode
+	 * 
+	 * @return The Adjustment Mode
+	 */
+
+	public int adjustMode()
+	{
+		return _iAdjustMode;
+	}
+
+	/**
+	 * Construct and return the cash settle date from the valuation date
 	 * 
 	 * @param dblValue Valuation Date
 	 * 
@@ -142,8 +161,8 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		final double dblValue)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue))
-			throw new java.lang.Exception ("Invalid input valuation date");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue))
+			throw new java.lang.Exception ("CashSettleParams ctr: Invalid input valuation date");
 
 		return org.drip.analytics.daycount.Convention.Adjust (dblValue + _iLag, _strCalendar, _iAdjustMode);
 	}

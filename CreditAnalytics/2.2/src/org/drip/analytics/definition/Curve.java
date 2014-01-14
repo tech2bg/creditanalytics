@@ -6,6 +6,7 @@ package org.drip.analytics.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,169 +32,69 @@ package org.drip.analytics.definition;
  */
 
 /**
- * Curve implements the interfaces across all curve instances. It exposes the following functionality:
- *  - Set the effective/start date
- *  - Set up calibration run framework (initialize the build run, build the interpolator etc.)
- *  - Generate scenario curves from the base curve (flat/parallel/custom)
- *  - Set/retrieve the components and their quotes
+ * Curve extends the Latent State to abstract the functionality required among all financial curve. It
+ *  exposes the following functionality:
+ *  - Set the Epoch and the Identifiers
+ *  - Set up/retrieve the Calibration Inputs
+ *  - Retrieve the Latent State Metric Measures
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface Curve {
+public interface Curve extends org.drip.state.representation.LatentState {
 
 	/**
-	 * Initialize the Calibration Run with the Left Slope 
+	 * Get the Curve Name
 	 * 
-	 * @param dblLeftSlope Left Slope
-	 * 
-	 * @return Success (true), failure (false)
+	 * @return The Curve Name
 	 */
 
-	public abstract boolean initializeCalibrationRun (
-		final double dblLeftSlope);
+	public abstract java.lang.String name();
 
 	/**
-	 * Retrieve the number of calibration nodes 
+	 * Get the Epoch Date
 	 * 
-	 * @return Number of calibration nodes
+	 * @return The Epoch Date
 	 */
 
-	public abstract int numCalibNodes();
+	public abstract org.drip.analytics.date.JulianDate epoch();
 
 	/**
-	 * Set the Value/Slope at the Node specified by the Index
+	 * Get the Currency
 	 * 
-	 * @param iIndex Node Index
-	 * @param dblValue Node Value
-	 * 
-	 * @return Success (true), failure (false)
+	 * @return Currency
 	 */
 
-	public abstract boolean setNodeValue (
-		final int iIndex,
-		final double dblValue);
+	public abstract java.lang.String currency();
 
 	/**
-	 * Bump the node value at the node specified the index by the value
+	 * Set the Curve Construction Input Set Parameters
 	 * 
-	 * @param iIndex node index
-	 * @param dblValue node bump value
+	 * @param ccis The Curve Construction Input Set Parameters
 	 * 
-	 * @return Success (true), failure (false)
+	 * @return TRUE => Inputs successfully Set
 	 */
 
-	public abstract boolean bumpNodeValue (
-		final int iIndex,
-		final double dblValue);
+	public boolean setCCIS (
+		final org.drip.analytics.definition.CurveConstructionInputSet ccis);
 
 	/**
-	 * Set the flat value across all the nodes
+	 * Retrieve the Calibration Components
 	 * 
-	 * @param dblValue node value
-	 * 
-	 * @return Success (true), failure (false)
+	 * @return Array of Calibration Components
 	 */
 
-	public abstract boolean setFlatValue (
-		final double dblValue);
+	public abstract org.drip.product.definition.CalibratableComponent[] calibComp();
 
 	/**
-	 * Get the display String - mostly for informational purposes
+	 * Retrieve the Manifest Measure of the given Instrument used to construct the Curve
 	 * 
-	 * @return Stringified node=rate pairs
+	 * @param strInstrumentCode The Calibration Instrument's Code whose Manifest Measure is sought
+	 * 
+	 * @return The Manifest Measure of the given Instrument used to construct the Curve
 	 */
 
-	public abstract java.lang.String displayString();
-
-	/**
-	 * Retrieve all the calibration quotes
-	 * 
-	 * @return Array of the calibration quotes
-	 */
-
-	public abstract double[] getCompQuotes();
-
-	/**
-	 * Retrieve all the calibration measures
-	 * 
-	 * @return Array of the calibration measures
-	 */
-
-	public abstract java.lang.String[] getCompMeasures();
-
-	/**
-	 * Retrieve the calibration quote of the given instrument
-	 * 
-	 * @return The calibration quote of the given instrument
-	 */
-
-	public abstract double getQuote (
-		final java.lang.String strInstr)
+	public abstract double manifestMeasure (
+		final java.lang.String strInstrumentCode)
 		throws java.lang.Exception;
-
-	/**
-	 * Get the date at the node specified by the index
-	 * 
-	 * @param iIndex node index
-	 * 
-	 * @return Date corresponding to the bootstrap node
-	 */
-
-	public abstract org.drip.analytics.date.JulianDate getNodeDate (
-		final int iIndex);
-
-	/**
-	 * Retrieve all the calibration components
-	 * 
-	 * @return Array of the calibration components
-	 */
-
-	public abstract org.drip.product.definition.CalibratableComponent[] getCalibComponents();
-
-	/**
-	 * Gets the curve name
-	 * 
-	 * @return Name
-	 */
-
-	public abstract java.lang.String getName();
-
-	/**
-	 * Create a parallel quote shifted  curve
-	 * 
-	 * @param dblShift Parallel shift
-	 * 
-	 * @return Curve
-	 */
-
-	public abstract Curve createParallelShiftedCurve (
-		final double dblShift);
-
-	/**
-	 * Create the curve from the tweaked parameters
-	 * 
-	 * @param ntp Node Tweak Parameters
-	 * 
-	 * @return New Curve instance
-	 */
-
-	public abstract Curve createTweakedCurve (
-		final org.drip.param.definition.NodeTweakParams ntp);
-
-	/**
-	 * Get the epoch date
-	 * 
-	 * @return Epoch date
-	 */
-
-	public abstract org.drip.analytics.date.JulianDate getStartDate();
-
-	/**
-	 * Build the interpolator post the curve sweeping build
-	 * 
-	 * @return TRUE => Build-out successful
-	 */
-
-	public boolean buildInterpolator();
 }

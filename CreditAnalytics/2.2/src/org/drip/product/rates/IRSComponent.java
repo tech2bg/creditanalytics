@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,17 @@ package org.drip.product.rates;
 
 /**
  * IRSComponent contains the implementation of the Interest Rate Swap product contract/valuation details. It
- * 	is made off one fixed stream and one floating stream.
+ *  exports the following functionality:
+ *  - Standard/Custom Constructor for the IRSComponent
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Retrieve the constituent fixed and floating streams
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -95,7 +106,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (null == strSerializedInterestRateSwap || strSerializedInterestRateSwap.isEmpty())
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedInterestRateSwap,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedInterestRateSwap,
 			getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
@@ -189,9 +200,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _floatStream.getIRCurveName();
 	}
 
-	@Override public java.lang.String getRatesForwardCurveName()
+	@Override public java.lang.String getForwardCurveName()
 	{
-		return _floatStream.getRatesForwardCurveName();
+		return _floatStream.getForwardCurveName();
 	}
 
 	@Override public java.lang.String getCreditCurveName()
@@ -233,10 +244,10 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			dtFloatFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
-		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixStream.getCouponPeriod(),
-			_floatStream.getCouponPeriod());
+		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixStream.getCashFlowPeriod(),
+			_floatStream.getCashFlowPeriod());
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams getCashSettleParams()
@@ -313,7 +324,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("Upfront", mapFixStreamResult.get ("Upfront") + mapFloatStreamResult.get ("Upfront"));
 
-		double dblFairPremium = java.lang.Math.abs (dblFloatingCleanPV / dblFixedCleanDV01);
+		double dblFairPremium = java.lang.Math.abs (0.0001 * dblFloatingCleanPV / dblFixedCleanDV01);
 
 		mapResult.put ("FairPremium", dblFairPremium);
 
@@ -326,18 +337,26 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		double dblValueNotional = java.lang.Double.NaN;
 
 		try {
-			dblValueNotional = getNotional (valParams._dblValue);
+			dblValueNotional = getNotional (valParams.valueDate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		try {
-			if (org.drip.math.common.NumberUtil.IsValid (dblValueNotional)) {
+			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
+
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 				mapResult.put ("Price", dblCleanPrice);
 
 				mapResult.put ("CleanPrice", dblCleanPrice);
+
+				double dblStartDate = getEffectiveDate().getJulian();
+
+				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > valParams.valueDate() ? dblStartDate :
+					valParams.valueDate()) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
+						(valParams.valueDate()) * 0.01);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -413,13 +432,13 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == mktParams ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams ||
 			null == mktParams.getDiscountCurve())
 			return null;
 
@@ -433,28 +452,29 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 		try {
-			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = null;
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			for (org.drip.analytics.period.Period p : getCouponPeriod()) {
+			for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
 				double dblPeriodPayDate = p.getPayDate();
 
-				if (dblPeriodPayDate < valParams._dblValue) continue;
+				if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+					(dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-				double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+				double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-				double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+				double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 				if (null == wjPVDFMicroJack)
-					wjPVDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+					wjPVDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 						wjPeriodFwdRateDF.numParameters());
 
 				double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
@@ -472,7 +492,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				}
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams._dblCashPay, dblPV, dc, wjPVDFMicroJack) ?
+			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
 				wjPVDFMicroJack : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -481,14 +501,14 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == strQuote ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
 			null == mktParams || null == mktParams.getDiscountCurve())
 			return null;
 
@@ -503,29 +523,29 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 			try {
-				org.drip.math.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
+				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				for (org.drip.analytics.period.Period p : getCouponPeriod()) {
+				for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
 					double dblPeriodPayDate = p.getPayDate();
 
-					if (dblPeriodPayDate < valParams._dblValue) continue;
+					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
 						(dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-					double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
-						wjSwapRateDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
 					double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
@@ -546,6 +566,63 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				return wjSwapRateDFMicroJack;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
+	{
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == lsmm ||
+			!(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
+				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+					(lsmm.getID()))
+			return null;
+
+		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
+
+		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			(ratesLSMM.getQuantificationMetric())) {
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
+				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+					org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
+
+				try {
+					for (org.drip.analytics.period.CashflowPeriod period : _fixStream.getCashFlowPeriod()) {
+						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
+							period.getPayDate());
+
+						double dblPay01 = period.getCouponDCF() * dblPeriodTurnDF;
+
+						if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
+							ratesLSMM.getMeasureQuoteValue() * dblPay01) || !prlc.addDResponseWeightDQuote
+								(period.getPayDate(), dblPay01))
+							return null;
+					}
+
+					double dblMaturity = getMaturityDate().getJulian();
+
+					double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
+						dblMaturity);
+
+					return prlc.addPredictorResponseWeight (valParams.valueDate(), -1.) &&
+						prlc.addPredictorResponseWeight (dblMaturity, dblPeriodMaturityDF) &&
+							prlc.addDResponseWeightDQuote (valParams.valueDate(), 0.) &&
+								prlc.addDResponseWeightDQuote (dblMaturity, 0.) ? prlc : null;
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
 			}
 		}
 
@@ -593,6 +670,28 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	/**
+	 * Retrieve the Fixed Stream
+	 * 
+	 * @return The Fixed Stream
+	 */
+
+	public org.drip.product.definition.RatesComponent getFixedStream()
+	{
+		return _fixStream;
+	}
+
+	/**
+	 * Retrieve the Floating Stream
+	 * 
+	 * @return The Floating Stream
+	 */
+
+	public org.drip.product.definition.RatesComponent getFloatStream()
+	{
+		return _floatStream;
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
@@ -606,8 +705,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				null, null, null, null, null, null, 100., "JPY", "JPY");
 
 		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
-			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01, 4, "Act/360", "Act/360", "JPY-LIBOR",
-				false, null, null, null, null, null, null, null, null, null, -100., "JPY", "JPY");
+			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01,
+				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-3M"), 4, "Act/360", "Act/360",
+					false, null, null, null, null, null, null, null, null, null, -100., "JPY", "JPY");
 
 		IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
 

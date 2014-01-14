@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -33,7 +34,8 @@ package org.drip.product.params;
 /**
  * NotionalSetting contains the product's notional schedule and the amount. It also incorporates hints on how
  * 	the notional factors are to be interpreted - off of the original or the current notional. Further flags
- * 	tell whether the notional factor is to be applied at the start/end/average of the coupon period.
+ * 	tell whether the notional factor is to be applied at the start/end/average of the coupon period. It
+ *  exports serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -84,7 +86,7 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 	public FactorSchedule _fsPrincipalOutstanding = null;
 
 	/**
-	 * Constructs the NotionalSetting from the notional schedule and the amount.
+	 * Construct the NotionalSetting from the notional schedule and the amount.
 	 * 
 	 * @param fsPrincipalOutstanding Notional Schedule
 	 * @param dblNotional Notional Amount
@@ -130,7 +132,7 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 		if (null == strSerializedNotionalSetting || strSerializedNotionalSetting.isEmpty())
 			throw new java.lang.Exception ("NotionalSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedNotionalSetting,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNotionalSetting,
 			getFieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
@@ -191,7 +193,7 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblNotional)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional)) return false;
 
 		if (null == _fsPrincipalOutstanding) _fsPrincipalOutstanding = FactorSchedule.CreateBulletSchedule();
 

@@ -6,6 +6,7 @@ package org.drip.analytics.holiday;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -40,7 +41,7 @@ public class Static extends Base {
 	private double _dblDate = java.lang.Double.NaN;
 
 	/**
-	 * Creates a static holiday from the date string and the description
+	 * Create a static holiday from the date string and the description
 	 * 
 	 * @param strDate Date string
 	 * @param strDescription Description
@@ -67,10 +68,12 @@ public class Static extends Base {
 	}
 
 	/**
-	 * Constructs a static holiday from the date and the description
+	 * Construct a static holiday from the date and the description
 	 * 
 	 * @param dt Date
 	 * @param strDescription Description
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
 	public Static (
@@ -80,7 +83,7 @@ public class Static extends Base {
 	{
 		super (strDescription);
 
-		if (null == dt) throw new java.lang.Exception ("Null date into Static Holiday");
+		if (null == dt) throw new java.lang.Exception ("Static ctr: Null date into Static Holiday");
 
 		_dblDate = dt.getJulian();
 	}
@@ -100,26 +103,26 @@ public class Static extends Base {
 		super (ab);
 
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("StaticHoliday de-serialize: Invalid byte stream input");
+			throw new java.lang.Exception ("Static de-serialize: Invalid byte stream input");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("StaticHoliday de-serializer: Empty state");
+			throw new java.lang.Exception ("Static de-serializer: Empty state");
 
 		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
 
 		if (null == strFH || strFH.isEmpty())
-			throw new java.lang.Exception ("StaticHoliday de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("Static de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strFH, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, getFieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("StaticHoliday de-serialize: Invalid number of fields");
+			throw new java.lang.Exception ("Static de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("StaticHoliday de-serializer: Cannot locate static holiday date");
+			throw new java.lang.Exception ("Static de-serializer: Cannot locate static holiday date");
 
 		_dblDate = new java.lang.Double (astrField[1]);
 	}

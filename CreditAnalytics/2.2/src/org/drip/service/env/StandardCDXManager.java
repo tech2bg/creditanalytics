@@ -6,6 +6,7 @@ package org.drip.service.env;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
@@ -695,6 +696,12 @@ public class StandardCDXManager {
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
+			try {
+				bw.close();
+			} catch (java.lang.Exception e1) {
+				e1.printStackTrace();
+			}
+
 			return false;
 		}
 
@@ -713,6 +720,12 @@ public class StandardCDXManager {
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
+				try {
+					bw.close();
+				} catch (java.lang.Exception e1) {
+					e1.printStackTrace();
+				}
+
 				return false;
 			}
 		}
@@ -721,15 +734,13 @@ public class StandardCDXManager {
 			bw.close();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
-
-			return false;
 		}
 
 		return true;
 	}
 
 	/**
-	 * Creates a standard CDX from the index code, the index series, and the tenor.
+	 * Create a standard CDX from the index code, the index series, and the tenor.
 	 * 
 	 * @param strIndex The Index Code (CDX.NA.IG, CDX.NA.HY, etc)
 	 * @param iSeries Index Series Number
@@ -743,7 +754,8 @@ public class StandardCDXManager {
 		final int iSeries,
 		final java.lang.String strTenor)
 	{
-		org.drip.product.definition.BasketProduct bpCDX = MakePresetStandardCDX (strIndex, iSeries, strTenor);
+		org.drip.product.definition.BasketProduct bpCDX = MakePresetStandardCDX (strIndex, iSeries,
+			strTenor);
 
 		if (null != bpCDX) return bpCDX;
 
@@ -751,7 +763,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Retrieves the on-the-run for the index and tenor corresponding to the specified date
+	 * Retrieve the on-the-run for the index and tenor corresponding to the specified date
 	 * 
 	 * @param strIndex CDX/ITRAXX index
 	 * @param dt Specified date
@@ -773,7 +785,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Retrieves a set of all the pre-set CDX index names
+	 * Retrieve a set of all the pre-set CDX index names
 	 * 
 	 * @return Set of the pre-set CDX index names
 	 */
@@ -784,7 +796,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Retrieves a set of all the pre-loaded CDX index names
+	 * Retrieve a set of all the pre-loaded CDX index names
 	 * 
 	 * @return Set of the pre-loaded CDX index names
 	 */
@@ -795,7 +807,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Retrieves the comprehensive set of pre-set and pre-loaded CDX index names
+	 * Retrieve the comprehensive set of pre-set and pre-loaded CDX index names
 	 * 
 	 * @return Set of the pre-set and the pre-loaded CDX index names
 	 */
@@ -812,7 +824,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Returns the full set of pre-set CDX series/first coupon date pairs for the given CDX
+	 * Return the full set of pre-set CDX series/first coupon date pairs for the given CDX
 	 * 
 	 * @param strCDXName CDX Name
 	 * 
@@ -829,7 +841,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Returns the full set of pre-loaded CDX series/first coupon date pairs for the given CDX
+	 * Return the full set of pre-loaded CDX series/first coupon date pairs for the given CDX
 	 * 
 	 * @param strCDXName CDX Name
 	 * 
@@ -846,7 +858,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Returns the full set of CDX series/first coupon date pairs for the given CDX
+	 * Return the full set of CDX series/first coupon date pairs for the given CDX
 	 * 
 	 * @param strCDXName CDX Name
 	 * 
@@ -876,7 +888,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Retrieves the name/description map for all the pre-set CDS indices
+	 * Retrieve the name/description map for all the pre-set CDS indices
 	 * 
 	 * @return Name/description map for all the pre-set CDS indices
 	 */
@@ -895,7 +907,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Retrieves the name/description map for all the pre-loaded CDS indices
+	 * Retrieve the name/description map for all the pre-loaded CDS indices
 	 * 
 	 * @return Name/description map for all the pre-loaded CDS indices
 	 */
@@ -914,7 +926,7 @@ public class StandardCDXManager {
 	}
 
 	/**
-	 * Retrieves the name/description map for all the CDS indices
+	 * Retrieve the name/description map for all the CDS indices
 	 * 
 	 * @return Name/description map for all the CDS indices
 	 */

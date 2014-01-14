@@ -6,6 +6,7 @@ package org.drip.analytics.output;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -180,10 +181,10 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 		throws java.lang.Exception
 	{
 		if (null == (_bcmCreditRisklessDirty = bcmCreditRisklessDirty) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblCreditRisklessParPV = dblCreditRisklessParPV) ||
-				!org.drip.math.common.NumberUtil.IsValid (_dblCreditRisklessPrincipalPV =
-					dblCreditRisklessPrincipalPV) || !org.drip.math.common.NumberUtil.IsValid (_dblAccrued01
-						= dblAccrued01) || !org.drip.math.common.NumberUtil.IsValid (_dblFirstCouponRate =
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCreditRisklessParPV = dblCreditRisklessParPV) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblCreditRisklessPrincipalPV =
+					dblCreditRisklessPrincipalPV) || !org.drip.quant.common.NumberUtil.IsValid (_dblAccrued01
+						= dblAccrued01) || !org.drip.quant.common.NumberUtil.IsValid (_dblFirstCouponRate =
 							dblFirstCouponRate))
 			throw new java.lang.Exception ("BondWorkoutMeasures ctr: Invalid Inputs!");
 
@@ -244,7 +245,7 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 		if (null == strSerializedBondWorkoutMeasures || strSerializedBondWorkoutMeasures.isEmpty())
 			throw new java.lang.Exception ("BondWorkoutMeasures de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedBondWorkoutMeasures, getFieldDelimiter());
 
 		if (null == astrField || 17 > astrField.length)
@@ -411,7 +412,7 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Returns the state as a measure map
+	 * Return the state as a measure map
 	 * 
 	 * @param strPrefix Measure name prefix
 	 * 
@@ -478,10 +479,10 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 
 		mapMeasures.put (strPrefix + "RecoveryPV", _dblRecoveryPV);
 
-		org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessDirty.toMap (strPrefix +
+		org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessDirty.toMap (strPrefix +
 			"RisklessDirty"));
 
-		org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessClean.toMap (strPrefix +
+		org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessClean.toMap (strPrefix +
 			"RisklessClean"));
 
 		if (null != _bcmCreditRiskyDirty) {
@@ -513,10 +514,10 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 
 			mapMeasures.put (strPrefix + "PV", _bcmCreditRiskyClean._dblPV);
 
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyDirty.toMap (strPrefix +
+			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyDirty.toMap (strPrefix +
 				"RiskyDirty"));
 
-			org.drip.math.common.MapUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyClean.toMap (strPrefix +
+			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyClean.toMap (strPrefix +
 				"RiskyClean"));
 		}
 

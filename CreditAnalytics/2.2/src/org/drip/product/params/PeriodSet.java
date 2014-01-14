@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -33,7 +34,8 @@ package org.drip.product.params;
 /**
  * PeriodSet is the place-holder for the component’s period generation parameters. Contains the component's
  * 	date adjustment parameters for period start/end, period accrual start/end, effective, maturity, pay and
- * 	reset, first coupon date, and interest accrual start date.
+ * 	reset, first coupon date, and interest accrual start date. It exports serialization into and
+ *  de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -89,11 +91,10 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 
 	public double _dblFinalMaturity = java.lang.Double.NaN;
 
-	protected java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
+	protected java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
 	/**
-	 * Constructs PeriodSet from the effective date, day count, frequency, and the list
-	 * 	of coupon periods
+	 * Construct PeriodSet from the effective date, day count, frequency, and the list of coupon periods
 	 * 
 	 * @param dblEffective Effective Date
 	 * @param strDC Day count
@@ -105,7 +106,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		final double dblEffective,
 		final java.lang.String strDC,
 		final int iFreq,
-		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod)
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod)
 	{
 		_iFreq = iFreq;
 		_strCouponDC = strDC;
@@ -140,7 +141,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		if (null == strSerializedPeriodSet || strSerializedPeriodSet.isEmpty())
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedPeriodSet,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedPeriodSet,
 			getFieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
@@ -211,7 +212,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_lsCouponPeriod = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[9],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[9],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -221,9 +222,9 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 						continue;
 
 					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-					_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod
+					_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -233,11 +234,11 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	@Override public boolean validate()
 	{
 		if (null == _lsCouponPeriod || 0 == _lsCouponPeriod.size() ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblEffective) || 0 == _iFreq)
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEffective) || 0 == _iFreq)
 			return false;
 
 		for (org.drip.analytics.period.Period fp : _lsCouponPeriod) {
-			if (null == fp || !org.drip.math.common.NumberUtil.IsValid (_dblMaturity = fp.getEndDate()))
+			if (null == fp || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = fp.getEndDate()))
 				return false;
 		}
 
@@ -246,23 +247,23 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Retrieves a list of the component's coupon periods
+	 * Retrieve a list of the component's coupon periods
 	 * 
 	 * @return List of Coupon Period
 	 */
 
-	public java.util.List<org.drip.analytics.period.CouponPeriod> getPeriods()
+	public java.util.List<org.drip.analytics.period.CashflowPeriod> getPeriods()
 	{
 		return _lsCouponPeriod;
 	}
 
 	/**
-	 * Returns the first Coupon period
+	 * Return the first Coupon period
 	 * 
 	 * @return The first Coupon period
 	 */
 
-	public org.drip.analytics.period.CouponPeriod getFirstPeriod()
+	public org.drip.analytics.period.CashflowPeriod getFirstPeriod()
 	{
 		return _lsCouponPeriod.get (0);
 	}
@@ -273,13 +274,13 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	 * @return The final Coupon period
 	 */
 
-	public org.drip.analytics.period.CouponPeriod getLastPeriod()
+	public org.drip.analytics.period.CashflowPeriod getLastPeriod()
 	{
 		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
 	}
 
 	/**
-	 * Returns the period index containing the specified date
+	 * Return the period index containing the specified date
 	 * 
 	 * @param dblDate Date input
 	 * 
@@ -292,12 +293,12 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("PeriodSet::getPeriodIndex => Input date is NaN!");
 
 		int i = 0;
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			if (period.contains (dblDate)) return i;
 
 			++i;
@@ -308,14 +309,14 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	}
 	
 	/**
-	 * Retrieves the period corresponding to the given index
+	 * Retrieve the period corresponding to the given index
 	 * 
 	 * @param iIndex Period index
 	 * 
 	 * @return Period object corresponding to the input index
 	 */
 
-	public org.drip.analytics.period.CouponPeriod getPeriod (
+	public org.drip.analytics.period.CashflowPeriod getPeriod (
 		final int iIndex)
 	{
 		try {
@@ -359,7 +360,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				if (null == p) continue;
 
 				if (bFirstEntry)
@@ -397,13 +398,13 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	{
 		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 		int i = 5;
 
 		while (0 != i--) {
-			lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
+			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 				dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360",
 					true, dblStart + 1825, "GBP"));
 

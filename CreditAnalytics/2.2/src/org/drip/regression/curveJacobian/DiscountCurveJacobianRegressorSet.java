@@ -6,6 +6,7 @@ package org.drip.regression.curveJacobian;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -54,9 +55,9 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 				_strRegressionScenario)
 			{
 				org.drip.analytics.date.JulianDate dtStart = null;
-				org.drip.math.calculus.WengertJacobian wjPVDF = null;
-				org.drip.math.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.analytics.definition.DiscountCurve dcIRS = null;
+				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
+				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
+				org.drip.analytics.rates.DiscountCurve dcIRS = null;
 				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
 				java.util.Map<org.drip.analytics.date.JulianDate,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null;
@@ -67,7 +68,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 					double adblDate[] = new double[NUM_DC_INSTR];
 					double adblRate[] = new double[NUM_DC_INSTR];
 					double adblCompCalibValue[] = new double[NUM_DC_INSTR];
-					aWJComp = new org.drip.math.calculus.WengertJacobian[NUM_DC_INSTR];
+					aWJComp = new org.drip.quant.calculus.WengertJacobian[NUM_DC_INSTR];
 					java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
 					aCompCalib = new org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
 
@@ -144,9 +145,9 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>()).put
 							(dtStart.addDays (2), mIndexFixings);
 
-					return null != (dcIRS =
-						org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
-							org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+					return null != (dcIRS = org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild
+						(dtStart, "USD",
+							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings));
 				}
 
@@ -166,7 +167,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						}
 					}
 
-					return null != (wjPVDF = dcIRS.compPVDFJacobian (dtStart));
+					return null != (wjPVDF = dcIRS.compPVDFJack (dtStart));
 				}
 
 				@Override public boolean postRegression (

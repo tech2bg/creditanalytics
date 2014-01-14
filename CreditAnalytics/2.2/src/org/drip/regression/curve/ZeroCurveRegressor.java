@@ -6,6 +6,7 @@ package org.drip.regression.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -40,7 +41,7 @@ package org.drip.regression.curve;
  */
 
 public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet {
-	private org.drip.analytics.definition.ZeroCurve _zc = null;
+	private org.drip.analytics.rates.ZeroCurve _zc = null;
 	private java.lang.String _strRegressionScenario = "org.drip.analytics.curve.ZeroCurve";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -72,11 +73,11 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				private static final double s_dblZSpread = 0.01;
 
 				private org.drip.analytics.date.JulianDate _dtStart = null;
-				private org.drip.analytics.definition.DiscountCurve _dc = null;
+				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dc = null;
 				private org.drip.analytics.date.JulianDate _dtPeriodStart = null;
 
-				private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = new
-					java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+				private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = new
+					java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 				@Override public boolean preRegression()
 				{
@@ -99,9 +100,9 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						adblRate[i] = 0.05 + 0.001 * (NUM_DC_NODES - i);
 					}
 
-					if (null == (_dc = org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (_dtStart,
-						"CHF", adblDate, adblRate,
-							org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD)))
+					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (_dtStart, "CHF",
+						adblDate, adblRate,
+							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD)))
 						return false;
 
 					for (int i = 0; i < NUM_PERIOD_NODES; ++i) {
@@ -112,7 +113,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						double dblEnd = dtEnd.getJulian();
 
 						try {
-							_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart,
+							_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart,
 								dblEnd, dblStart, dblEnd, dblEnd, dblStart, 2, 0.5, "30/360", false,
 									"30/360", false, java.lang.Double.NaN, "ZAR"));
 						} catch (java.lang.Exception e) {
@@ -130,8 +131,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				@Override public boolean execRegression()
 				{
 					try {
-						if (null == (_zc = org.drip.analytics.creator.ZeroCurveBuilder.CreateZeroCurve (2,
-							"30/360", _dc.getCurrency(), true, _lsCouponPeriod, _dtPeriodStart.getJulian(),
+						if (null == (_zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (2,
+							"30/360", _dc.currency(), true, _lsCouponPeriod, _dtPeriodStart.getJulian(),
 								_dtStart.addDays (2).getJulian(), _dc, null, s_dblZSpread)))
 							return false;
 					} catch (java.lang.Exception e) {
@@ -173,7 +174,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				{
 					try {
 						for (int i = 0; i < NUM_DF_NODES; ++i)
-							_adblDiscFactor[i] = _zc.getDF (_adblDate[i]);
+							_adblDiscFactor[i] = _zc.df (_adblDate[i]);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 

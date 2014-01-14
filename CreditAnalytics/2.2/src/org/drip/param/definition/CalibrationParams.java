@@ -6,6 +6,7 @@ package org.drip.param.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -38,23 +39,9 @@ package org.drip.param.definition;
 
 public class CalibrationParams extends org.drip.service.stream.Serializer {
 
-	/**
-	 * Calibration Measure
-	 */
-
-	public java.lang.String _strMeasure = "";
-
-	/**
-	 * Calibration Type
-	 */
-
-	public int _iType = 0;
-
-	/**
-	 * (Optional) Calibration Workout Info
-	 */
-
-	public org.drip.param.valuation.WorkoutInfo _wi = null;
+	private int _iType = 0;
+	private java.lang.String _strMeasure = "";
+	private org.drip.param.valuation.WorkoutInfo _wi = null;
 
 	/**
 	 * Creates a standard calibration parameter instance around the price measure and base type
@@ -121,7 +108,7 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCalibrationParams || strSerializedCalibrationParams.isEmpty())
 			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedCalibrationParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCalibrationParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -139,7 +126,7 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate calib type");
 
-		_iType = new java.lang.Integer (astrField[2]).intValue();
+		_iType = new java.lang.Integer (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate work-out info");
@@ -148,6 +135,39 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 			_wi = null;
 		else
 			_wi = new org.drip.param.valuation.WorkoutInfo (astrField[3].getBytes());
+	}
+
+	/**
+	 * Retrieve the Calibration Type
+	 * 
+	 * @return The Calibration Type
+	 */
+
+	public int type()
+	{
+		return _iType;
+	}
+
+	/**
+	 * Retrieve the Calibration Measure
+	 * 
+	 * @return The Calibration Measure
+	 */
+
+	public java.lang.String measure()
+	{
+		return _strMeasure;
+	}
+
+	/**
+	 * Retrieve the Work-out Info
+	 * 
+	 * @return The Work-out Info
+	 */
+
+	public org.drip.param.valuation.WorkoutInfo workout()
+	{
+		return _wi;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()

@@ -6,6 +6,8 @@ package org.drip.analytics.period;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
+ * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
@@ -30,8 +32,11 @@ package org.drip.analytics.period;
  */
 
 /**
- * LossPeriodCurveFactors is an implementation of the period class enhanced by the following period measures:
- *  start/end survival probabilities, period effective notional/recovery/discount factor
+ * LossPeriodCurveFactors is an implementation of the period class enhanced by the loss period measures. It
+ * 	exports the following functionality:
+ * 
+ * 	- Start/end survival probabilities, period effective notional/recovery/discount factor
+ * 	- Serialization into and de-serialization out of byte arrays
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -44,8 +49,8 @@ public class LossPeriodCurveFactors extends Period {
 	protected double _dblEffectiveDF = java.lang.Double.NaN;
 
 	/**
-	 * Creates an instance of the LossPeriodCurveFactors class using the period's dates and curves to
-	 * 		generate the curve measures
+	 * Create an instance of the LossPeriodCurveFactors class using the period's dates and curves to
+	 * 	generate the curve measures
 	 * 
 	 * @param dblStart Period Start Date
 	 * @param dblEnd Period End Date
@@ -65,7 +70,7 @@ public class LossPeriodCurveFactors extends Period {
 		final double dblEffectiveDCF,
 		final double dblEffectiveNotional,
 		final double dblEffectiveRecovery,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final int iDefaultLag)
 	{
@@ -77,7 +82,7 @@ public class LossPeriodCurveFactors extends Period {
 		try {
 			return new LossPeriodCurveFactors (dblStart, dblEnd, dblStart, dblEnd, dblStart + iDefaultLag,
 				dblEffectiveDCF, cc.getSurvival (dblStart), cc.getSurvival (dblEnd), dblEffectiveNotional,
-					dblEffectiveRecovery, dc.getEffectiveDF (dblStart + iDefaultLag, dblEnd + iDefaultLag));
+					dblEffectiveRecovery, dc.effectiveDF (dblStart + iDefaultLag, dblEnd + iDefaultLag));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -86,7 +91,7 @@ public class LossPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Creates a LossPeriodCurveFactors instance from the period dates and the curve measures
+	 * Create a LossPeriodCurveFactors instance from the period dates and the curve measures
 	 * 
 	 * @param dblStart Period Start Date
 	 * @param dblEnd Period End Date
@@ -104,7 +109,7 @@ public class LossPeriodCurveFactors extends Period {
 		final double dblEnd,
 		final double dblEffectiveDCF,
 		final double dblEffectiveNotional,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final int iDefaultLag)
 	{
@@ -115,7 +120,7 @@ public class LossPeriodCurveFactors extends Period {
 		try {
 			return new LossPeriodCurveFactors (dblStart, dblEnd, dblStart, dblEnd, dblStart + iDefaultLag,
 				dblEffectiveDCF, cc.getSurvival (dblStart), cc.getSurvival (dblEnd), dblEffectiveNotional,
-					cc.getEffectiveRecovery (dblStart + iDefaultLag, dblEnd + iDefaultLag), dc.getEffectiveDF
+					cc.getEffectiveRecovery (dblStart + iDefaultLag, dblEnd + iDefaultLag), dc.effectiveDF
 						(dblStart + iDefaultLag, dblEnd + iDefaultLag));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -192,7 +197,7 @@ public class LossPeriodCurveFactors extends Period {
 		if (null == strCP || strCP.isEmpty())
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strCP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, getFieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serialize: Invalid number of fields");
@@ -239,7 +244,7 @@ public class LossPeriodCurveFactors extends Period {
 	 * @return Survival at the period beginning
 	 */
 
-	public double getStartSurvival()
+	public double startSurvival()
 	{
 		return _dblStartSurvival;
 	}
@@ -250,51 +255,51 @@ public class LossPeriodCurveFactors extends Period {
 	 * @return Survival at the period end
 	 */
 
-	public double getEndSurvival()
+	public double endSurvival()
 	{
 		return _dblEndSurvival;
 	}
 
 	/**
-	 * Gets the period's effective notional
+	 * Get the period's effective notional
 	 * 
 	 * @return Period's effective notional
 	 */
 
-	public double getEffectiveNotional()
+	public double effectiveNotional()
 	{
 		return _dblEffectiveNotional;
 	}
 
 	/**
-	 * Gets the period's effective recovery
+	 * Get the period's effective recovery
 	 * 
 	 * @return Period's effective recovery
 	 */
 
-	public double getEffectiveRecovery()
+	public double effectiveRecovery()
 	{
 		return _dblEffectiveRecovery;
 	}
 
 	/**
-	 * Gets the period's effective discount factor
+	 * Get the period's effective discount factor
 	 * 
 	 * @return Period's effective discount factor
 	 */
 
-	public double getEffectiveDF()
+	public double effectiveDF()
 	{
 		return _dblEffectiveDF;
 	}
 
 	/**
-	 * Gets the period's accrual day count factor
+	 * Get the period's accrual day count factor
 	 * 
 	 * @return Period's accrual day count factor
 	 */
 
-	public double getAccrualDCF()
+	public double accrualDCF()
 	{
 		return _dblDCF;
 	}

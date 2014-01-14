@@ -6,6 +6,7 @@ package org.drip.analytics.date;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,7 +32,11 @@ package org.drip.analytics.date;
  */
 
 /**
- * This class provides the representation of the instantiation-time date and time objects.
+ * This class provides the representation of the instantiation-time date and time objects. It provides the
+ *  following functionality:
+ *  - Instantiation-time and Explicit Date/Time Construction
+ *  - Retrieval of Date/Time Fields
+ *  - Serialization/De-serialization to and from Byte Arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -51,17 +56,17 @@ public class DateTime extends org.drip.service.stream.Serializer {
 
 		java.util.Date dtNow = new java.util.Date();
 
-		_dblDate = JulianDate.toJulian (org.drip.math.common.DateUtil.GetYear (dtNow),
-			org.drip.math.common.DateUtil.GetMonth (dtNow), org.drip.math.common.DateUtil.GetDate (dtNow));
+		_dblDate = JulianDate.toJulian (org.drip.quant.common.DateUtil.GetYear (dtNow),
+			org.drip.quant.common.DateUtil.GetMonth (dtNow), org.drip.quant.common.DateUtil.GetDate (dtNow));
 	}
 
 	/**
 	 * Constructs DateTime from separate date and time inputs 
 	 * 
-	 * @param dblDate date
-	 * @param lTime time
+	 * @param dblDate Date
+	 * @param lTime Time
 	 * 
-	 * @throws java.lang.Exception thrown on invalid inputs
+	 * @throws java.lang.Exception Thrown on Invalid Inputs
 	 */
 
 	public DateTime (
@@ -69,8 +74,8 @@ public class DateTime extends org.drip.service.stream.Serializer {
 		final long lTime)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Invalid DateTime ctr params!");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("DateTime ctr: Invalid Inputs!");
 
 		_lTime = lTime;
 		_dblDate = dblDate;
@@ -102,7 +107,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 		if (null == strSerializedDateTime || strSerializedDateTime.isEmpty())
 			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedDateTime,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedDateTime,
 			super.getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
@@ -124,7 +129,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the Date
+	 * Retrieve the Date
 	 * 
 	 * @return date
 	 */
@@ -135,7 +140,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieves the time
+	 * Retrieve the time
 	 * 
 	 * @return time
 	 */
@@ -156,7 +161,8 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new DateTime (ab);
 		} catch (java.lang.Exception e) {

@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,7 @@ package org.drip.product.params;
 
 /**
  * TerminationSetting class contains the current "liveness" state of the component, and, if inactive, how it
- *  entered that state.
+ *  entered that state. It exports serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -59,8 +60,8 @@ public class TerminationSetting extends org.drip.service.stream.Serializer imple
 	public boolean _bHasBeenExercised = false;
 
 	/**
-	 * Constructs the TerminationSetting object from the perpetual flag, defaulted flag, and the has
-	 * 		been exercised flag.
+	 * Construct the TerminationSetting object from the perpetual flag, defaulted flag, and the has
+	 * 	been exercised flag.
 	 * 
 	 * @param bIsPerpetual True (component is perpetual)
 	 * @param bIsDefaulted True (component has defaulted)
@@ -104,7 +105,7 @@ public class TerminationSetting extends org.drip.service.stream.Serializer imple
 			strSerializedTerminationSetting.isEmpty())
 			throw new java.lang.Exception ("TerminationSetting de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedTerminationSetting, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)

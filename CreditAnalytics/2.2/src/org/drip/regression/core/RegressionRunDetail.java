@@ -6,6 +6,7 @@ package org.drip.regression.core;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -48,6 +49,8 @@ public class RegressionRunDetail {
 	}
 
 	/**
+	 * Set the Key Value Map Entry
+	 * 
 	 * @param strKey Name of the regression detail field
 	 * @param strValue Value of the regression detail field
 	 *
@@ -66,7 +69,7 @@ public class RegressionRunDetail {
 	}
 
 	/**
-	 * Retrieves the field map
+	 * Retrieve the field map
 	 * 
 	 * @return The Field Map
 	 */

@@ -85,7 +85,7 @@ class CreditStaticAndMarks {
 		java.lang.String strORAMarkDate = "";
 
 		try {
-			strORAMarkDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate (astrRecord[3].trim());
+			strORAMarkDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate (astrRecord[3].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad mark date " + astrRecord[1] + " for " + strIDType + " " + strID);
 
@@ -118,7 +118,7 @@ class CreditStaticAndMarks {
 		java.lang.String strORAMarkDate = "";
 
 		try {
-			strORAMarkDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate (astrRecord[3].trim());
+			strORAMarkDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate (astrRecord[3].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad mark date " + astrRecord[1] + " for " + strIDType + " " + strID);
 
@@ -180,7 +180,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleMaturity = "";
 
 		try {
-			strOracleMaturity = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleMaturity = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[6].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad maturity " + astrValRecord[6] + " for ISIN " + strISIN);
@@ -191,7 +191,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleAnnounce = "";
 
 		try {
-			strOracleAnnounce = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleAnnounce = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[7].trim());
 		} catch (java.lang.Exception e) {
 			if (m_bBlog)
@@ -201,7 +201,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleFirstSettle = "";
 
 		try {
-			strOracleFirstSettle = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleFirstSettle = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[8].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad first settle " + astrValRecord[8] + " for ISIN " + strISIN);
@@ -212,7 +212,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleFirstCoupon = "";
 
 		try {
-			strOracleFirstCoupon = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleFirstCoupon = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[9].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad first coupon " + astrValRecord[9] + " for ISIN " + strISIN);
@@ -285,7 +285,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleIssue = "";
 
 		try {
-			strOracleIssue = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleIssue = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[26].trim());
 		} catch (java.lang.Exception e) {
 			if (m_bBlog) System.out.println ("Bad issue date " + astrValRecord[26] + " for ISIN " + strISIN);
@@ -417,7 +417,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleMaturity = "";
 
 		try {
-			strOracleMaturity = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleMaturity = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[5].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad maturity " + astrValRecord[5] + " for ISIN " + strISIN);
@@ -428,7 +428,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleAnnounce = "";
 
 		try {
-			strOracleAnnounce = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleAnnounce = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[29].trim());
 		} catch (java.lang.Exception e) {
 			if (m_bBlog)
@@ -438,7 +438,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleFirstSettle = "";
 
 		try {
-			strOracleFirstSettle = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleFirstSettle = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[31].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad first settle " + astrValRecord[31] + " for ISIN " + strISIN);
@@ -449,7 +449,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleFirstCoupon = "";
 
 		try {
-			strOracleFirstCoupon = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleFirstCoupon = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[33].trim());
 		} catch (java.lang.Exception e) {
 		}
@@ -522,7 +522,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleIssue = "";
 
 		try {
-			strOracleIssue = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleIssue = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrValRecord[29].trim());
 		} catch (java.lang.Exception e) {
 			if (m_bBlog) System.out.println ("Bad issue date " + astrValRecord[29] + " for ISIN " + strISIN);
@@ -614,7 +614,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleExerciseStartDate = "";
 
 		try {
-			strOracleExerciseStartDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleExerciseStartDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrEOS[2].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad exercise date " + astrEOS[2] + " for ISIN " + strISIN);
@@ -625,7 +625,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleExerciseEndDate = "";
 
 		try {
-			strOracleExerciseEndDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleExerciseEndDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrEOS[4].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad exercise date " + astrEOS[4] + " for ISIN " + strISIN);
@@ -650,7 +650,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleExerciseStartDate = "";
 
 		try {
-			strOracleExerciseStartDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleExerciseStartDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrEOS[2].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad exercise start " + astrEOS[2] + " for ISIN " + strISIN);
@@ -661,7 +661,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleExerciseEndDate = "";
 
 		try {
-			strOracleExerciseEndDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleExerciseEndDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrEOS[4].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad exercise end " + astrEOS[4] + " for ISIN " + strISIN);
@@ -710,7 +710,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleCloseDate = "";
 
 		try {
-			strOracleCloseDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleCloseDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrIREOD[1].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad date " + astrIREOD[1] + " for " + strCurrency);
@@ -757,7 +757,7 @@ class CreditStaticAndMarks {
 		double dbl40Y = java.lang.Double.NaN;
 
 		try {
-			strOracleCloseDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleCloseDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrIREOD[1].trim());
 
 			dbl1D = new java.lang.Double (astrIREOD[5].trim()).doubleValue();
@@ -986,7 +986,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleCloseDate = "";
 
 		try {
-			strOracleCloseDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleCloseDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrCREOD[2].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad date " + astrCREOD[2] + " for " + strSPN);
@@ -1028,7 +1028,7 @@ class CreditStaticAndMarks {
 		double dblCR40Y = java.lang.Double.NaN;
 
 		try {
-			strOracleCloseDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleCloseDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrCREOD[2].trim());
 
 			dblRecRate = new java.lang.Double (astrCREOD[7].trim()).doubleValue();
@@ -1180,7 +1180,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleMaturity = "";
 
 		try {
-			strOracleMaturity = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleMaturity = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrBondRef2[8].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad maturity " + astrBondRef2[8] + " for ISIN " + strISIN);
@@ -1191,7 +1191,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleFirstSettle = "";
 
 		try {
-			strOracleFirstSettle = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleFirstSettle = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrBondRef2[6].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad first settle " + astrBondRef2[6] + " for ISIN " + strISIN);
@@ -1202,7 +1202,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleFirstCoupon = "";
 
 		try {
-			strOracleFirstCoupon = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleFirstCoupon = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrBondRef2[6].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad first coupon " + astrBondRef2[6] + " for ISIN " + strISIN);
@@ -1259,7 +1259,7 @@ class CreditStaticAndMarks {
 		java.lang.String strOracleIssue = "";
 
 		try {
-			strOracleIssue = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleIssue = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrBondRef2[6].trim());
 		} catch (java.lang.Exception e) {
 			if (m_bBlog) System.out.println ("Bad issue date " + astrBondRef2[6] + " for ISIN " + strISIN);
@@ -1357,7 +1357,7 @@ class CreditStaticAndMarks {
 		java.lang.StringBuilder sb = new java.lang.StringBuilder();
 
 		try {
-			strOracleAmortizationDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleAmortizationDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrAmortizationSchedule[2].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad date " + astrAmortizationSchedule[2] + " for CUSIP " + strCUSIP);
@@ -1382,7 +1382,7 @@ class CreditStaticAndMarks {
 		double dblPrincipalPaydown = java.lang.Double.NaN;
 
 		try {
-			strOracleAmortizationDate = org.drip.math.common.DateUtil.MakeOracleDateFromBBGDate
+			strOracleAmortizationDate = org.drip.quant.common.DateUtil.MakeOracleDateFromBBGDate
 				(astrAmortizationSchedule[2].trim());
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad date " + astrAmortizationSchedule[2] + " for CUSIP " + strCUSIP);
@@ -1653,11 +1653,11 @@ class CreditStaticAndMarks {
 				java.lang.String strTextHol = astrHolFields[0].trim();
 
 				try {
-					strORAHoliday = org.drip.math.common.DateUtil.MakeOracleDateFromYYYYMMDD (strTextHol);
+					strORAHoliday = org.drip.quant.common.DateUtil.MakeOracleDateFromYYYYMMDD (strTextHol);
 				} catch (java.lang.Exception e) {
 					java.util.StringTokenizer stTextHol = new java.util.StringTokenizer (strTextHol, " ");
 
-					strORAHoliday = org.drip.math.common.DateUtil.MakeOracleDateFromYYYYMMDD
+					strORAHoliday = org.drip.quant.common.DateUtil.MakeOracleDateFromYYYYMMDD
 						(stTextHol.nextToken().trim());
 				}
 
@@ -1716,11 +1716,11 @@ class CreditStaticAndMarks {
 				java.lang.String strTextHol = astrHolFields[0].trim();
 
 				try {
-					strORAHoliday = org.drip.math.common.DateUtil.MakeOracleDateFromYYYYMMDD (strTextHol);
+					strORAHoliday = org.drip.quant.common.DateUtil.MakeOracleDateFromYYYYMMDD (strTextHol);
 				} catch (java.lang.Exception e) {
 					java.util.StringTokenizer stTextHol = new java.util.StringTokenizer (strTextHol, " ");
 
-					strORAHoliday = org.drip.math.common.DateUtil.MakeOracleDateFromYYYYMMDD
+					strORAHoliday = org.drip.quant.common.DateUtil.MakeOracleDateFromYYYYMMDD
 						(stTextHol.nextToken().trim());
 				}
 

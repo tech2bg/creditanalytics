@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -61,7 +62,7 @@ public class BondBuilder {
 	private static final boolean s_bLog = false;
 
 	/**
-	 * Creates the full generic bond object from the complete set of parameters
+	 * Create the full generic bond object from the complete set of parameters
 	 * 
 	 * @param tsyParams Bond Treasury Parameters
 	 * @param idParams Bond Identifier Parameters
@@ -153,7 +154,7 @@ public class BondBuilder {
 		final org.drip.product.params.FactorSchedule fsCoupon)
 	{
 		if (null == strName || strName.isEmpty() || null == strCurrency || strCurrency.isEmpty() || null ==
-			dtEffective || null == dtMaturity || !org.drip.math.common.NumberUtil.IsValid (dblCoupon))
+			dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon))
 			return null;
 
 		return BondBuilder.CreateBondFromParams (new org.drip.product.params.TreasuryBenchmark (null,
@@ -183,7 +184,7 @@ public class BondBuilder {
 	}
 
 	/**
-	 * Creates a simple floating rate bond
+	 * Create a simple floating rate bond
 	 * 
 	 * @param strName Bond Name
 	 * @param strCurrency Bond Currency
@@ -212,7 +213,7 @@ public class BondBuilder {
 		final org.drip.product.params.FactorSchedule fsCoupon)
 	{
 		if (null == strName || strName.isEmpty() || null == strCurrency || strCurrency.isEmpty() || null ==
-			dtEffective || null == dtMaturity || !org.drip.math.common.NumberUtil.IsValid (dblSpread))
+			dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblSpread))
 			return null;
 
 		return BondBuilder.CreateBondFromParams (new org.drip.product.params.TreasuryBenchmark (null,
@@ -240,7 +241,7 @@ public class BondBuilder {
 	}
 
 	/**
-	 * Creates a bond from custom/user-defined cash flows and coupon conventions
+	 * Create a bond from custom/user-defined cash flows and coupon conventions
 	 * 
 	 * @param strName Bond Name
 	 * @param dtEffective Effective Date
@@ -271,8 +272,8 @@ public class BondBuilder {
 				adt.length != adblPrincipal.length || null == dtEffective || 0 == iFreq)
 			return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 		double dblTotalPrincipal = 0.;
 		double[] adblDate = new double[adt.length];
@@ -320,7 +321,7 @@ public class BondBuilder {
 			}
 
 			try {
-				lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblPeriodStart, adblDate[i],
+				lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblPeriodStart, adblDate[i],
 					dblPeriodStart, adblDate[i], adblDate[i], dblPeriodStart, iFreq, 1. / iFreq, "30/360",
 						false, "30/360", false, java.lang.Double.NaN, ""));
 			} catch (java.lang.Exception e) {

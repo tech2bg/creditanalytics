@@ -6,6 +6,7 @@ package org.drip.tester.functional;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -201,34 +202,32 @@ public class SerializerTestSuite {
 
 		Verify (abCP, new org.drip.product.params.CurrencyPair (abCP), "CurrencyPair");
 
-		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (dtToday, "ABC", adblDCDate,
-				adblDCRate, org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+		org.drip.analytics.rates.DiscountCurve dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC
+			(dtToday, "ABC", adblDCDate, adblDCRate,
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		byte[] abDC = dc.serialize();
 
-		Verify (abDC, org.drip.analytics.creator.DiscountCurveBuilder.FromByteArray (abDC,
-			org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD),
-				"DiscountCurve");
+		Verify (abDC, org.drip.state.creator.DiscountCurveBuilder.FromByteArray (abDC,
+			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD), "DiscountCurve");
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.CreateCreditCurve (dblStart, "XXS", adblHazardRate,
-				adblHazardDate, adblRecoveryRate, adblRecoveryDate, java.lang.Double.NaN);
+			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve (dblStart, "XXS", "USD",
+				adblHazardRate, adblHazardDate, adblRecoveryRate, adblRecoveryDate, java.lang.Double.NaN);
 
 		byte[] abCC = cc.serialize();
 
-		Verify (abCC, org.drip.analytics.creator.CreditCurveBuilder.FromByteArray (abCC), "CreditCurve");
+		Verify (abCC, org.drip.state.creator.CreditCurveBuilder.FromByteArray (abCC), "CreditCurve");
 
-		byte[] abFxBasis = org.drip.analytics.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp, dtToday,
+		byte[] abFxBasis = org.drip.state.creator.FXBasisCurveBuilder.CreateFXBasisCurve (cp, dtToday,
 			53.51, adblFXBasisDate, adblFXBasis, true).serialize();
 
-		Verify (abFxBasis, org.drip.analytics.creator.FXBasisCurveBuilder.FromByteArray (abFxBasis),
-			"FXBasis");
+		Verify (abFxBasis, org.drip.state.creator.FXBasisCurveBuilder.FromByteArray (abFxBasis), "FXBasis");
 
-		byte[] abFxCurve = org.drip.analytics.creator.FXForwardCurveBuilder.CreateFXForwardCurve (cp,
-			dtToday, 53.51, adblFXFwdDate, adblFXFwd, abIsPIP).serialize();
+		byte[] abFxCurve = org.drip.state.creator.FXForwardCurveBuilder.CreateFXForwardCurve (cp, dtToday,
+			53.51, adblFXFwdDate, adblFXFwd, abIsPIP).serialize();
 
-		Verify (abFxCurve, org.drip.analytics.creator.FXForwardCurveBuilder.FromByteArray (abFxCurve),
+		Verify (abFxCurve, org.drip.state.creator.FXForwardCurveBuilder.FromByteArray (abFxCurve),
 			"FXCurve");
 
 		byte[] abAAP = new org.drip.analytics.daycount.ActActDCParams (2, dblStart, dblStart +
@@ -263,17 +262,18 @@ public class SerializerTestSuite {
 
 		Verify (abPeriod, new org.drip.analytics.period.Period (abPeriod), "Period");
 
-		byte[] abCouponPeriod = new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
+		byte[] abCouponPeriod = new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 			dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360", true,
 				dblStart + 1825, "GBP").serialize();
 
-		Verify (abCouponPeriod, new org.drip.analytics.period.CouponPeriod (abCouponPeriod), "CouponPeriod");
+		Verify (abCouponPeriod, new org.drip.analytics.period.CashflowPeriod (abCouponPeriod),
+			"CouponPeriod");
 
-		byte[] abPCPCM = new org.drip.analytics.period.CouponPeriodCurveFactors (dblStart, dblStart + 180.,
+		byte[] abPCPCM = new org.drip.analytics.period.CashflowPeriodCurveFactors (dblStart, dblStart + 180.,
 			dblStart, dblStart + 180., dblStart + 180., 0.5, 0.05, 1000000., 100000.,0.985, 0.97, 0.99, 0.98,
 				java.lang.Double.NaN, java.lang.Double.NaN).serialize();
 
-		Verify (abPCPCM, new org.drip.analytics.period.CouponPeriodCurveFactors (abPCPCM),
+		Verify (abPCPCM, new org.drip.analytics.period.CashflowPeriodCurveFactors (abPCPCM),
 			"CouponPeriodCurveFactors");
 
 		byte[] abPLPCM = new org.drip.analytics.period.LossPeriodCurveFactors (dblStart, dblStart + 180.,
@@ -291,7 +291,7 @@ public class SerializerTestSuite {
 		Verify (abEDF, org.drip.product.creator.EDFutureBuilder.FromByteArray (abEDF), "EDFuture");
 
 		byte[] abIRS = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtToday, "4Y", 0.03, "JPY",
-			"JPY-LIBOR", "JPY").serialize();
+			"JPY-LIBOR-3M", "JPY").serialize();
 
 		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
 			"InterestRateSwap");
@@ -315,16 +315,19 @@ public class SerializerTestSuite {
 				null, 100., "MNO", "PQR");
 
 		aFloatStream[0] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
-			("3Y").getJulian(), 0.03, 4, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
-				null, null, null, -100., "ABC", "DEF");
+			("3Y").getJulian(), 0.03, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), 4,
+				"Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
+					"DEF");
 
 		aFloatStream[1] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
-			("5Y").getJulian(), 0.05, 4, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
-				null, null, null, -100., "ABC", "DEF");
+			("5Y").getJulian(), 0.05, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), 4,
+				"Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
+					"DEF");
 
 		aFloatStream[2] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
-			("7Y").getJulian(), 0.07, 1, "Act/360", "Act/360", "RI", false, null, null, dap, dap, dap, dap,
-				null, null, null, -100., "ABC", "DEF");
+			("7Y").getJulian(), 0.07, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-12M"), 1,
+				"Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
+					"DEF");
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
 			aFloatStream).serialize();
@@ -374,14 +377,14 @@ public class SerializerTestSuite {
 
 		co._dblCalcTime = 433.7;
 
-		Set2DMapValues (co._mBase = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
-			0.3601, 537.500);
+		Set2DMapValues (co._mBase = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.3601, 537.500);
 
-		Set2DMapValues (co._mRRDelta = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
-			0.0015, 0.020);
+		Set2DMapValues (co._mRRDelta = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.0015, 0.020);
 
-		Set2DMapValues (co._mRRGamma = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
-			0.0006, 0.003);
+		Set2DMapValues (co._mRRGamma = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.0006, 0.003);
 
 		Set2DMapValues (co._mFlatIRDelta = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), -0.0007, 0.006);
@@ -419,10 +422,9 @@ public class SerializerTestSuite {
 
 		Verify (abCO, new org.drip.analytics.output.ComponentMeasures (abCO), "ComponentOutput");
 
-		byte[] abBDS = ((org.drip.product.credit.CDSBasket)
-			org.drip.product.creator.CDSBasketBuilder.MakeCDX (dtToday, dtToday.addYears (5), 0.01, "USD",
-				new java.lang.String[] {"CHN", "IND", "INDO", "PAK", "BNG", "JPN"},
-					"CDX_ASIA_SOV")).serialize();
+		byte[] abBDS = ((org.drip.product.credit.CDSBasket) org.drip.product.creator.CDSBasketBuilder.MakeCDX
+			(dtToday, dtToday.addYears (5), 0.01, "USD", new java.lang.String[] {"CHN", "IND", "INDO", "PAK",
+				"BNG", "JPN"}, "CDX_ASIA_SOV")).serialize();
 
 		Verify (abBDS, new org.drip.product.credit.CDSBasket (abBDS), "BasketDefaultSwap");
 
@@ -430,8 +432,8 @@ public class SerializerTestSuite {
 
 		bo._dblCalcTime = 433.7;
 
-		Set2DMapValues (bo._mBase = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(),
-			0.3601, 537.500);
+		Set2DMapValues (bo._mBase = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.3601, 537.500);
 
 		Set2DMapValues (bo._mFlatRRDelta = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>(), 0.0015, 0.020);
@@ -597,8 +599,8 @@ public class SerializerTestSuite {
 
 		Verify (abFS, new org.drip.product.params.FactorSchedule (abFS), "FactorSchedule");
 
-		org.drip.product.params.NotionalSetting bnp = new org.drip.product.params.NotionalSetting (fs,
-			1., org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+		org.drip.product.params.NotionalSetting bnp = new org.drip.product.params.NotionalSetting (fs, 1.,
+			org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 
 		byte[] abBNP = bnp.serialize();
 
@@ -629,13 +631,12 @@ public class SerializerTestSuite {
 			System.exit (130);
 		}
 
-		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet
-			("USD", "USD", "USD");
+		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet ("USD",
+			"USD", "USD");
 
 		byte[] abCcyParams = ccyParams.serialize();
 
-		Verify (abCcyParams, new org.drip.product.params.CurrencySet (abCcyParams),
-			"BondCurrencyParams");
+		Verify (abCcyParams, new org.drip.product.params.CurrencySet (abCcyParams), "BondCurrencyParams");
 
 		if (!bond.setCurrencySet (ccyParams)) {
 			System.out.println ("Cannot initialize bond currency params!");
@@ -656,10 +657,9 @@ public class SerializerTestSuite {
 			System.exit (132);
 		}
 
-		org.drip.product.params.QuoteConvention mktConv = new
-			org.drip.product.params.QuoteConvention (new org.drip.param.valuation.QuotingParams ("30/360",
-				2, true, null, "DKK", false), "REGULAR", dblStart + 2, 1., 3, "USD",
-					org.drip.analytics.daycount.Convention.DR_FOLL);
+		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (new
+			org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "DKK", false), "REGULAR",
+				dblStart + 2, 1., 3, "USD", org.drip.analytics.daycount.Convention.DR_FOLL);
 
 		byte[] abMktConv = mktConv.serialize();
 
@@ -671,8 +671,8 @@ public class SerializerTestSuite {
 			System.exit (133);
 		}
 
-		org.drip.product.params.RatesSetting crvp = new
-			org.drip.product.params.RatesSetting ("USD", "USD", "USD", "USD");
+		org.drip.product.params.RatesSetting crvp = new org.drip.product.params.RatesSetting ("USD", "USD",
+			"USD", "USD");
 
 		byte[] abCRVP = crvp.serialize();
 
@@ -685,9 +685,8 @@ public class SerializerTestSuite {
 			System.exit (133);
 		}
 
-		org.drip.product.params.CreditSetting crValParams = new
-			org.drip.product.params.CreditSetting (30, java.lang.Double.NaN, true, "IBMSUB",
-				false);
+		org.drip.product.params.CreditSetting crValParams = new org.drip.product.params.CreditSetting (30,
+			java.lang.Double.NaN, true, "IBMSUB", false);
 
 		byte[] abCCVP = crValParams.serialize();
 
@@ -700,8 +699,8 @@ public class SerializerTestSuite {
 			System.exit (134);
 		}
 
-		org.drip.product.params.TerminationSetting cfte = new
-			org.drip.product.params.TerminationSetting (false, false, false);
+		org.drip.product.params.TerminationSetting cfte = new org.drip.product.params.TerminationSetting
+			(false, false, false);
 
 		byte[] abCFTE = cfte.serialize();
 
@@ -746,18 +745,19 @@ public class SerializerTestSuite {
 			adblRateEDSF[i] = 0.0125 * (i + 1);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+		org.drip.analytics.rates.DiscountCurve dcTSY =
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDCDate, adblRateTSY,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSF =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+		org.drip.analytics.rates.DiscountCurve dcEDSF =
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDCDate, adblRateEDSF,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
-			= new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mapTSYQuotes = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cq);
 
@@ -769,8 +769,8 @@ public class SerializerTestSuite {
 		Verify (abCMP, org.drip.param.creator.ComponentMarketParamsBuilder.FromByteArray (abCMP),
 			"ComponentMarketParams");
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve> mapDC =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 		mapDC.put ("ABC", dc);
 
@@ -778,21 +778,22 @@ public class SerializerTestSuite {
 
 		mapDC.put ("ABCEDSF", dcEDSF);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		mapCC.put ("ABCSOV", cc);
 
 		byte[] abBMP = org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (mapDC,
-			mapCC, mapTSYQuotes, mmFixings).serialize();
+			null, mapCC, mapTSYQuotes, mmFixings).serialize();
 
 		Verify (abBMP, org.drip.param.creator.BasketMarketParamsBuilder.FromByteArray (abBMP),
 			"BasketMarketParams");
 
-		byte[] abNTP = new org.drip.param.definition.NodeTweakParams
-			(org.drip.param.definition.NodeTweakParams.NODE_FLAT_TWEAK, false, 0.1).serialize();
+		byte[] abNTP = new org.drip.param.definition.ResponseValueTweakParams
+			(org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK, false,
+				0.1).serialize();
 
-		Verify (abNTP, new org.drip.param.definition.NodeTweakParams (abNTP), "NodeTweakParams");
+		Verify (abNTP, new org.drip.param.definition.ResponseValueTweakParams (abNTP), "NodeTweakParams");
 
 		byte[] abPricer = new org.drip.param.pricer.PricerParams (7, new
 			org.drip.param.definition.CalibrationParams ("KOOL", 1, new
@@ -801,13 +802,13 @@ public class SerializerTestSuite {
 
 		Verify (abPricer, new org.drip.param.pricer.PricerParams (abPricer), "PricerParams");
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 		int i = 5;
 
 		while (0 != i--) {
-			lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
+			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 				dblStart, dblStart + 180, dblStart + 180, dblStart, 2, 0.5, "30/360", false, "30/360",
 					false, java.lang.Double.NaN, "ZAR"));
 

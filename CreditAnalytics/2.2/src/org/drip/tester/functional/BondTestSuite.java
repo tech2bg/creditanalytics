@@ -6,6 +6,7 @@ package org.drip.tester.functional;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -37,6 +38,18 @@ package org.drip.tester.functional;
  */
 
 public class BondTestSuite {
+
+	/**
+	 * Run the Full Suite of Bond Tests for the given price set
+	 * 
+	 * @param mpc Market Parameter Container
+	 * @param dt Date
+	 * @param dblBidPrice Bid Price
+	 * @param dblAskPrice Ask Price
+	 * 
+	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 */
+
 	public static final void RunFullBondTests (
 		final org.drip.param.definition.MarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
@@ -54,6 +67,15 @@ public class BondTestSuite {
 		System.out.println ("Run on " + iNumProcessed + " bonds took " + lNanos * 1.e-09 + " sec - " +
 			+ (lNanos / iNumProcessed) * 1.e-06 + " msec per bond\n");
 	}
+
+	/**
+	 * Run the Full Suite of Bond Market Tests
+	 * 
+	 * @param mpc Market Parameter Container
+	 * @param dt Date
+	 * 
+	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 */
 
 	public static final void RunFullMarketBondTests (
 		final org.drip.param.definition.MarketParams mpc,

@@ -6,6 +6,7 @@ package org.drip.tester.functional;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -476,9 +477,9 @@ public class ProductTestSuite {
 			astrCalibMeasure[i] = "Yield";
 		}
 
-		org.drip.param.definition.RatesScenarioCurve irscUSDTSY =
+		org.drip.param.definition.ScenarioDiscountCurve irscUSDTSY =
 			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USDTSY",
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSDTSY.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,
 			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);
@@ -487,7 +488,7 @@ public class ProductTestSuite {
 
 		mpc.addScenDC ("USDTSY", irscUSDTSY);
 
-		org.drip.analytics.definition.DiscountCurve dcBaseTSY = mpc.getScenCMP (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.getScenCMP (aCompCalib[0],
 			"Base").getDiscountCurve();
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -500,7 +501,7 @@ public class ProductTestSuite {
 			System.out.println ("\n\n------------------\nTesting Base TSY DC Curve\n--------\n");
 
 			for (int i = 0; i < aCompCalib.length; ++i) {
-				System.out.println ("TSYRate[" + i + "] = " + dcBaseTSY.calcImpliedRate
+				System.out.println ("TSYRate[" + i + "] = " + dcBaseTSY.zero
 					(aCompCalib[i].getMaturityDate().getJulian()));
 
 				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].calcMeasureValue
@@ -512,7 +513,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_UP01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpUp").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -538,7 +539,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_DN01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpDn").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -746,9 +747,9 @@ public class ProductTestSuite {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.RatesScenarioCurve irscUSD =
+		org.drip.param.definition.ScenarioDiscountCurve irscUSD =
 			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USD",
-				org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSD.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,
 			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);
@@ -759,7 +760,7 @@ public class ProductTestSuite {
 
 		addTSYToMPC (mpc);
 
-		org.drip.analytics.definition.DiscountCurve dcBase = mpc.getScenCMP (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBase = mpc.getScenCMP (aCompCalib[0],
 			"Base").getDiscountCurve();
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -780,7 +781,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpUp").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -805,7 +806,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
-			org.drip.analytics.definition.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
 				"FlatIRBumpDn").getDiscountCurve();
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -921,7 +922,7 @@ public class ProductTestSuite {
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
 
-		org.drip.analytics.definition.DiscountCurve dc = mpc.getScenCMP (aCDSBRA[0],
+		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenCMP (aCDSBRA[0],
 			"Base").getDiscountCurve();
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
@@ -929,13 +930,13 @@ public class ProductTestSuite {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.CreditScenarioCurve ccscARG =
+		org.drip.param.definition.ScenarioCreditCurve ccscARG =
 			org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDSARG);
 
 		ccscARG.cookScenarioCC ("ARG", valParams, dc, null, null, adblQuotesARG, 0.40, astrCalibMeasure,
 			null, null, false, 63);
 
-		org.drip.param.definition.CreditScenarioCurve ccscBRA =
+		org.drip.param.definition.ScenarioCreditCurve ccscBRA =
 			org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDSBRA);
 
 		ccscBRA.cookScenarioCC ("BRA", valParams, dc, null, null, adblQuotesBRA, 0.40, astrCalibMeasure,

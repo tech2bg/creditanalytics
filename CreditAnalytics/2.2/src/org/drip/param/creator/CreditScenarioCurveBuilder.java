@@ -6,6 +6,7 @@ package org.drip.param.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -39,14 +40,14 @@ package org.drip.param.creator;
 public class CreditScenarioCurveBuilder {
 
 	/**
-	 * Creates CreditScenarioCurve from the array of calibration instruments
+	 * Create CreditScenarioCurve from the array of calibration instruments
 	 * 
 	 * @param aCalibInst Array of calibration instruments
 	 * 
 	 * @return CreditScenarioCurve object
 	 */
 
-	public static final org.drip.param.definition.CreditScenarioCurve CreateCCSC (
+	public static final org.drip.param.definition.ScenarioCreditCurve CreateCCSC (
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst)
 	{
 		try {
@@ -59,7 +60,7 @@ public class CreditScenarioCurveBuilder {
 	}
 
 	/**
-	 * Calibrates the base credit curve from the input credit instruments, measures, and the quotes
+	 * Calibrate the base credit curve from the input credit instruments, measures, and the quotes
 	 * 
 	 * @param strName Credit Curve Name
 	 * @param dt Valuation Date
@@ -77,19 +78,19 @@ public class CreditScenarioCurveBuilder {
 		final java.lang.String strName,
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final double dblRecovery,
 		final boolean bFlat)
 	{
-		org.drip.param.definition.CreditScenarioCurve ccsc = CreateCCSC (aCalibInst);
+		org.drip.param.definition.ScenarioCreditCurve ccsc = CreateCCSC (aCalibInst);
 
 		if (null == ccsc || !ccsc.cookScenarioCC (strName,
 			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
 				org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, null, null, adblQuotes,
 					dblRecovery, astrCalibMeasure, null, null, bFlat,
-						org.drip.param.definition.CreditScenarioCurve.CC_BASE))
+						org.drip.param.definition.ScenarioCreditCurve.CC_BASE))
 			return null;
 
 		return ccsc.getCCBase();

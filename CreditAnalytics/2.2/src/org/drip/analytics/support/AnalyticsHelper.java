@@ -6,6 +6,7 @@ package org.drip.analytics.support;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -34,10 +35,14 @@ package org.drip.analytics.support;
  * AnalyticsHelper contains the collection of the analytics related utility functions used by the modules.
  * 	The following are the functionality that it exposes:
  * 	- Yield to Discount Factor, and vice versa.
- * 	- Map Bloomberg Codes to CreditAnalytics Codes
- * 	- Generate rule-based curve bumped nodes
+ * 	- Map Bloomberg Day Count Codes to Credit Analytics Day Count Codes
+ * 	- Generate rule-based curve node manifest measure bumps
  * 	- Generate loss periods using a variety of different schemes
- * 	- Aggregate/disaggregate coupon period lists
+ * 	- Aggregate/disaggregate/merge coupon period lists
+ * 	- Create fixings objects, rate index from currency/coupon/frequency
+ * 	- Construct JulianDate from BBG dates and other formats, off of RS Entries
+ * 	- String Tenor/Month Code/Work-out
+ * 	- Standard Treasury Bench-mark off of Maturity
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -58,12 +63,12 @@ public class AnalyticsHelper {
 			final org.drip.analytics.period.Period period,
 			final double dblPeriodEndDate,
 			final int iPeriodUnit,
-			final org.drip.analytics.definition.DiscountCurve dc,
+			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.definition.CreditCurve cc)
 	{
 		boolean bPeriodDone = false;
 
-		double dblSubPeriodStart = period.getStartDate() < valParams._dblValue ? valParams._dblValue :
+		double dblSubPeriodStart = period.getStartDate() < valParams.valueDate() ? valParams.valueDate() :
 			period.getStartDate();
 
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLP = new
@@ -72,7 +77,7 @@ public class AnalyticsHelper {
 		while (!bPeriodDone) {
 			double dblSubPeriodEnd = dblSubPeriodStart + iPeriodUnit;
 
-			if (dblSubPeriodEnd < valParams._dblValue) return null;
+			if (dblSubPeriodEnd < valParams.valueDate()) return null;
 
 			try {
 				if (dblSubPeriodEnd >= period.getEndDate()) {
@@ -108,7 +113,7 @@ public class AnalyticsHelper {
 			final org.drip.analytics.period.Period period,
 			final double dblPeriodEndDate,
 			final int iPeriodUnit,
-			final org.drip.analytics.definition.DiscountCurve dc,
+			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.definition.CreditCurve cc)
 	{
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLP = new
@@ -116,9 +121,9 @@ public class AnalyticsHelper {
 
 		boolean bPeriodDone = false;
 
-		if (period.getEndDate() < valParams._dblValue) return null;
+		if (period.getEndDate() < valParams.valueDate()) return null;
 
-		double dblSubPeriodStart = period.getStartDate() < valParams._dblValue ? valParams._dblValue :
+		double dblSubPeriodStart = period.getStartDate() < valParams.valueDate() ? valParams.valueDate() :
 			period.getStartDate();
 
 		int iDayStep = (int) ((period.getEndDate() - dblSubPeriodStart) / (iPeriodUnit));
@@ -129,7 +134,7 @@ public class AnalyticsHelper {
 		while (!bPeriodDone) {
 			double dblSubPeriodEnd = dblSubPeriodStart + iDayStep;
 
-			if (dblSubPeriodEnd < valParams._dblValue) return null;
+			if (dblSubPeriodEnd < valParams.valueDate()) return null;
 
 			try {
 				if (dblSubPeriodEnd >= dblPeriodEndDate) {
@@ -164,15 +169,15 @@ public class AnalyticsHelper {
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.analytics.period.Period period,
 			final double dblPeriodEndDate,
-			final org.drip.analytics.definition.DiscountCurve dc,
+			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.definition.CreditCurve cc)
 	{
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLP = new
 			java.util.ArrayList<org.drip.analytics.period.LossPeriodCurveFactors>();
 
 		try {
-			double dblPeriodStartDate = period.getStartDate() < valParams._dblValue ? valParams._dblValue :
-				period.getStartDate();
+			double dblPeriodStartDate = period.getStartDate() < valParams.valueDate() ? valParams.valueDate()
+				: period.getStartDate();
 
 			org.drip.analytics.period.LossPeriodCurveFactors lp =
 				org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblPeriodStartDate,
@@ -192,7 +197,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Initializes IR switcher and Bloomberg day count maps
+	 * Initialize IR switcher and Bloomberg day count maps
 	 */
 
 	public static final void Init()
@@ -333,7 +338,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Calculates the discount factor from the specified frequency, yield, and accrual year fraction
+	 * Calculate the discount factor from the specified frequency, yield, and accrual year fraction
 	 * 
 	 * @param iFreqIn Input frequency - if zero, set to semi-annual.
 	 * @param dblYield Yield
@@ -350,7 +355,7 @@ public class AnalyticsHelper {
 		final double dblTime)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblYield) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblYield) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblTime))
 			throw new java.lang.Exception ("CurveProductHelper.YieldDF: Bad yield/time");
 
@@ -360,7 +365,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Calculates the yield from the specified discount factor to the given time.
+	 * Calculate the yield from the specified discount factor to the given time.
 	 * 
 	 * @param iFreqIn Yield calculation frequency - defaults to semi-annual if zero.
 	 * @param dblDF Discount Factor
@@ -377,7 +382,7 @@ public class AnalyticsHelper {
 		final double dblTime)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDF) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDF) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblTime))
 			throw new java.lang.Exception ("CurveProductHelper.DFYield: Bad yield/time");
 
@@ -399,7 +404,7 @@ public class AnalyticsHelper {
 		final double dblValue,
 		final double dblMaturity)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValue) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblMaturity))
 			return null;
 
@@ -421,7 +426,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Turns the work out type to string
+	 * Turn the work out type to string
 	 * 
 	 * @param iWOType One of the WO_TYPE_* fields in the WorkoutInfo class
 	 * 
@@ -441,7 +446,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Converts the Bloomberg day count code to DRIP day count code.
+	 * Convert the Bloomberg day count code to DRIP day count code.
 	 *  
 	 * @param strBBGDCCode String representing the Bloomberg day count code.
 	 * 
@@ -462,7 +467,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Retrieves the tenor from the frequency
+	 * Retrieve the tenor from the frequency
 	 * 
 	 * @param iFreq Integer frequency
 	 * 
@@ -488,7 +493,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Retrieves the month code from input frequency
+	 * Retrieve the month code from input frequency
 	 * 
 	 * @param iFreq Integer frequency
 	 * 
@@ -514,7 +519,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Calculates the rate index from the coupon currency and the frequency
+	 * Calculate the rate index from the coupon currency and the frequency
 	 * 
 	 * @param strCouponCurrency String representing the coupon currency
 	 * @param iCouponFreq Integer representing the coupon frequency
@@ -527,7 +532,7 @@ public class AnalyticsHelper {
 		final int iCouponFreq)
 	{
 		if (null == strCouponCurrency || strCouponCurrency.isEmpty()) {
-			if (s_bBlog) System.out.println ("BondFeedUtils.CalcRateIndex: Cpn ccy is null!");
+			if (s_bBlog) System.out.println ("AnalyticsHelper::CalcRateIndex => Cpn ccy is null!");
 
 			return null;
 		}
@@ -535,7 +540,8 @@ public class AnalyticsHelper {
 		java.lang.String strFreqMonthCode = GetMonthCodeFromFreq (iCouponFreq);
 
 		if (null == strFreqMonthCode) {
-			if (s_bBlog) System.out.println ("BondFeedUtils.CalcRateIndex: Cpn freq is " + iCouponFreq);
+			if (s_bBlog)
+				System.out.println ("AnalyticsHelper::CalcRateIndex => Cpn freq is " + iCouponFreq);
 
 			return null;
 		}
@@ -557,8 +563,8 @@ public class AnalyticsHelper {
 		if (null == dt) return null;
 
 		try {
-			return org.drip.analytics.date.JulianDate.CreateFromYMD (org.drip.math.common.DateUtil.GetYear
-				(dt), org.drip.math.common.DateUtil.GetMonth (dt), org.drip.math.common.DateUtil.GetDate
+			return org.drip.analytics.date.JulianDate.CreateFromYMD (org.drip.quant.common.DateUtil.GetYear
+				(dt), org.drip.quant.common.DateUtil.GetMonth (dt), org.drip.quant.common.DateUtil.GetDate
 					(dt));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -630,7 +636,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Gets the DRIP day count from the Bloomberg code
+	 * Get the DRIP day count from the Bloomberg code
 	 * 
 	 * @param strBBGDC String representing the Bloomberg day count convention
 	 * 
@@ -646,7 +652,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Calculates the rate index from currency and coupon frequency
+	 * Calculate the rate index from currency and coupon frequency
 	 * 
 	 * @param strCcy String representing coupon currency
 	 * @param iCouponFreq Integer representing coupon frequency
@@ -678,7 +684,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Creates a JulianDate from Bloomberg date string
+	 * Create a JulianDate from Bloomberg date string
 	 * 
 	 * @param strBBGDate Bloomberg date string
 	 * 
@@ -707,7 +713,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Switches the given IR curve if necessary
+	 * Switch the given IR curve if necessary
 	 * 
 	 * @param strCurveIn String representing the input curve
 	 * 
@@ -725,7 +731,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Creates the fixings object from the bond, the valuation date, and the fixing.
+	 * Create the fixings object from the bond, the valuation date, and the fixing.
 	 * 
 	 * @param bond The input bond
 	 * @param dtValue The valuation JulianDate
@@ -740,7 +746,7 @@ public class AnalyticsHelper {
 			final org.drip.analytics.date.JulianDate dtValue,
 			final double dblFix)
 	{
-		if (null == dtValue || null == bond || !org.drip.math.common.NumberUtil.IsValid (dblFix))
+		if (null == dtValue || null == bond || !org.drip.quant.common.NumberUtil.IsValid (dblFix))
 			return null;
 
 		org.drip.analytics.date.JulianDate dtReset = null;
@@ -775,7 +781,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Creates a set of loss period measures
+	 * Create a set of loss period measures
 	 * 
 	 * @param comp Component for which the measures are to be generated
 	 * @param valParams ValuationParams from which the periods are generated
@@ -798,7 +804,7 @@ public class AnalyticsHelper {
 	{
 		if (null == comp || null == valParams || null == period || null == pricerParams || null == mktParams
 			|| null == mktParams.getDiscountCurve() || null == mktParams.getCreditCurve() ||
-				!org.drip.math.common.NumberUtil.IsValid (dblWorkoutDate) || period.getStartDate() >
+				!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) || period.getStartDate() >
 					dblWorkoutDate)
 			return null;
 
@@ -824,7 +830,7 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Bumps the input array quotes
+	 * Bump the input array quotes
 	 * 
 	 * @param adblQuotesIn Array of the input double quotes
 	 * @param dblBump Bump amount
@@ -838,14 +844,14 @@ public class AnalyticsHelper {
 		final double dblBump,
 		final boolean bIsProportional)
 	{
-		if (null == adblQuotesIn || 0 == adblQuotesIn.length || !org.drip.math.common.NumberUtil.IsValid
+		if (null == adblQuotesIn || 0 == adblQuotesIn.length || !org.drip.quant.common.NumberUtil.IsValid
 			(dblBump))
 			return null;
 
 		double[] adblQuotesOut = new double[adblQuotesIn.length];
 
 		for (int i = 0; i < adblQuotesIn.length; ++i) {
-			if (!org.drip.math.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
+			if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
 			if (!bIsProportional)
 				adblQuotesOut[i] = adblQuotesIn[i] + dblBump;
@@ -857,7 +863,8 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Bump the node (or the given set of nodes) in accordance with the specified tweak parameters
+	 * Tweak the Manifest Measures (gor the given set of nodes) in accordance with the specified tweak
+	 *  parameters
 	 * 
 	 * @param adblQuotesIn Array of quotes to be bumped
 	 * @param ntp NodeTweakParams input
@@ -865,17 +872,18 @@ public class AnalyticsHelper {
 	 * @return Bumped array output
 	 */
 
-	public static final double[] BumpNTPNode (
+	public static final double[] TweakManifestMeasure (
 		final double[] adblQuotesIn,
-		final org.drip.param.definition.NodeTweakParams ntp)
+		final org.drip.param.definition.ResponseValueTweakParams ntp)
 	{
 		if (null == adblQuotesIn || 0 == adblQuotesIn.length || null == ntp) return adblQuotesIn;
 
 		double[] adblQuotesOut = new double[adblQuotesIn.length];
 
-		if (org.drip.param.definition.NodeTweakParams.NODE_FLAT_TWEAK == ntp._iTweakNode) {
+		if (org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK ==
+			ntp._iTweakNode) {
 			for (int i = 0; i < adblQuotesIn.length; ++i) {
-				if (!org.drip.math.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
+				if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
 				if (!ntp._bIsTweakProportional)
 					adblQuotesOut[i] = adblQuotesIn[i] + ntp._dblTweakAmount;
@@ -886,7 +894,7 @@ public class AnalyticsHelper {
 			if (ntp._iTweakNode < 0 || ntp._iTweakNode >= adblQuotesIn.length) return null;
 
 			for (int i = 0; i < adblQuotesIn.length; ++i) {
-				if (!org.drip.math.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
+				if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
 				if (i == ntp._iTweakNode) {
 					if (!ntp._bIsTweakProportional)
@@ -910,18 +918,18 @@ public class AnalyticsHelper {
 	 * @return The Merged Period List
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> MergePeriodLists (
-		final java.util.List<org.drip.analytics.period.CouponPeriod> lsPeriod1,
-		final java.util.List<org.drip.analytics.period.CouponPeriod> lsPeriod2)
+	public static final java.util.List<org.drip.analytics.period.CashflowPeriod> MergePeriodLists (
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsPeriod1,
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsPeriod2)
 	{
 		if ((null == lsPeriod1 || 0 == lsPeriod1.size()) && (null == lsPeriod2 || 0 == lsPeriod2.size()))
 			return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsPeriodMerged = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsPeriodMerged = new
+			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
 		if (null == lsPeriod1 || 0 == lsPeriod1.size()) {
-			for (org.drip.analytics.period.CouponPeriod p : lsPeriod2) {
+			for (org.drip.analytics.period.CashflowPeriod p : lsPeriod2) {
 				if (null != p) lsPeriodMerged.add (p);
 			}
 
@@ -929,7 +937,7 @@ public class AnalyticsHelper {
 		}
 
 		if (null == lsPeriod2 || 0 == lsPeriod2.size()) {
-			for (org.drip.analytics.period.CouponPeriod p : lsPeriod1) {
+			for (org.drip.analytics.period.CashflowPeriod p : lsPeriod1) {
 				if (null != p) lsPeriodMerged.add (p);
 			}
 
@@ -940,9 +948,9 @@ public class AnalyticsHelper {
 		int iPeriod2Index = 0;
 
 		while (iPeriod1Index < lsPeriod1.size() && iPeriod2Index < lsPeriod2.size()) {
-			org.drip.analytics.period.CouponPeriod p1 = lsPeriod1.get (iPeriod1Index);
+			org.drip.analytics.period.CashflowPeriod p1 = lsPeriod1.get (iPeriod1Index);
 
-			org.drip.analytics.period.CouponPeriod p2 = lsPeriod2.get (iPeriod2Index);
+			org.drip.analytics.period.CashflowPeriod p2 = lsPeriod2.get (iPeriod2Index);
 
 			if (p1.getPayDate() < p2.getPayDate()) {
 				lsPeriodMerged.add (p1);
@@ -974,7 +982,7 @@ public class AnalyticsHelper {
 	 * @return The Aggregated Period Set
 	 */
 
-	public static final java.util.Set<org.drip.analytics.period.CouponPeriod> AggregateComponentPeriods (
+	public static final java.util.Set<org.drip.analytics.period.CashflowPeriod> AggregateComponentPeriods (
 		final org.drip.product.definition.Component[] aComp)
 	{
 		if (null == aComp) return null;
@@ -991,17 +999,18 @@ public class AnalyticsHelper {
 			}
 		}
 
-		java.util.Set<org.drip.analytics.period.CouponPeriod> setAggregatedPeriod = new
-			java.util.TreeSet<org.drip.analytics.period.CouponPeriod>();
+		java.util.Set<org.drip.analytics.period.CashflowPeriod> setAggregatedPeriod = new
+			java.util.TreeSet<org.drip.analytics.period.CashflowPeriod>();
 
 		for (int i = iStartIndex; i < iNumComp; ++i) {
 			if (null == aComp[i]) continue;
 
-			java.util.List<org.drip.analytics.period.CouponPeriod> lsCompPeriod = aComp[i].getCouponPeriod();
+			java.util.List<org.drip.analytics.period.CashflowPeriod> lsCompPeriod =
+				aComp[i].getCashFlowPeriod();
 
 			if (null == lsCompPeriod || 0 == lsCompPeriod.size()) continue;
 
-			for (org.drip.analytics.period.CouponPeriod p : lsCompPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : lsCompPeriod) {
 				if (null != p) setAggregatedPeriod.add (p);
 			}
 		}

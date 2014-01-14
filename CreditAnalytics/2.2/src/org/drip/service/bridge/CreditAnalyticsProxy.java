@@ -6,6 +6,7 @@ package org.drip.service.bridge;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -42,7 +43,7 @@ public class CreditAnalyticsProxy {
 	private static final java.lang.String DISPLAY_GAP = "   ";
 	private static final double PRICE_DOWNSHIFT_AMPLITUDE = 0.075;
 
-	private static org.drip.analytics.definition.DiscountCurve MakeDC (
+	private static org.drip.analytics.rates.DiscountCurve MakeDC (
 		final org.drip.analytics.date.JulianDate dtStart)
 	{
 		int NUM_DC_INSTR = 30;
@@ -80,6 +81,9 @@ public class CreditAnalyticsProxy {
 			astrCalibMeasure[i] = "Rate";
 
 			try {
+				System.out.println ("Instr[" + i + "]: " + dtStart.addDays (2) + " => " + new
+					org.drip.analytics.date.JulianDate (adblDate[i]));
+
 				aCompCalib[i] = org.drip.product.creator.CashBuilder.CreateCash (dtStart.addDays (2), new
 					org.drip.analytics.date.JulianDate (adblDate[i]), "USD");
 			} catch (java.lang.Exception e) {
@@ -179,14 +183,14 @@ public class CreditAnalyticsProxy {
 
 		mmFixings.put (dtStart.addDays (2), mIndexFixings);
 
-		return org.drip.param.creator.RatesScenarioCurveBuilder.CreateDiscountCurve (dtStart, "USD",
-			org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
+		return org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
+			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
 				adblCompCalibValue, astrCalibMeasure, mmFixings);
 	}
 
 	public static org.drip.analytics.definition.CreditCurve MakeCC (
 		final org.drip.analytics.date.JulianDate dtStart,
-		final org.drip.analytics.definition.DiscountCurve dc)
+		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		double[] adblQuotes = new double[5];
 		java.lang.String[] astrCalibMeasure = new java.lang.String[5];
@@ -366,17 +370,17 @@ public class CreditAnalyticsProxy {
 			adblRateEDSF[i] = 0.0125 * (i + 1);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc = MakeDC (dtStart);
+		org.drip.analytics.rates.DiscountCurve dc = MakeDC (dtStart);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", adblDate,
+		org.drip.analytics.rates.DiscountCurve dcTSY =
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", adblDate,
 				adblRateTSY,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSF =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", adblDate,
+		org.drip.analytics.rates.DiscountCurve dcEDSF =
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", adblDate,
 				adblRateEDSF,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.CreditCurve cc = MakeCC (dtStart, dc);
 
@@ -439,7 +443,8 @@ public class CreditAnalyticsProxy {
 		org.drip.service.bridge.CreditAnalyticsRequest cre = null;
 		org.drip.param.valuation.QuotingParams quotingParams = null;
 
-		org.drip.analytics.date.JulianDate dtStart = org.drip.analytics.date.JulianDate.Today();
+		org.drip.analytics.date.JulianDate dtStart = org.drip.analytics.date.JulianDate.Today().addBusDays
+			(0, "USD");
 
 		org.drip.product.credit.BondComponent bond = TestJSON (iTenorInYears);
 
@@ -483,69 +488,69 @@ public class CreditAnalyticsProxy {
 	{
 		if (null == rv) return false;
 
-		System.out.println (strPrefix + "ASW: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "ASW: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblAssetSwapSpread, 0, 0, 1.));
 
-		System.out.println (strPrefix + "Bond Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Bond Basis: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Convexity: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Convexity: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblConvexity, 0, 2, 1000000.));
 
-		System.out.println (strPrefix + "Credit Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Credit Basis: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblCreditBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Discount Margin: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Discount Margin: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblDiscountMargin, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "G Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "G Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblGSpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "I Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "I Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblISpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Macaulay Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Macaulay Duration: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblMacaulayDuration, 0, 2, 1.));
 
-		System.out.println (strPrefix + "Modified Duration: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Modified Duration: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblModifiedDuration, 0, 2, 10000.));
 
-		System.out.println (strPrefix + "OAS: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "OAS: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblOASpread, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "PECS: " + org.drip.math.common.FormatUtil.FormatDouble (rv._dblPECS,
+		System.out.println (strPrefix + "PECS: " + org.drip.quant.common.FormatUtil.FormatDouble (rv._dblPECS,
 			0, 0, 10000.));
 
-		System.out.println (strPrefix + "Price: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Price: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblPrice, 0, 3, 100.));
 
-		System.out.println (strPrefix + "TSY Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "TSY Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblTSYSpread, 0, 0, 10000.));
 
 		try {
 			System.out.println (strPrefix + "Workout Date: " + new org.drip.analytics.date.JulianDate
-				(rv._wi._dblDate));
+				(rv._wi.date()));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
-		System.out.println (strPrefix + "Workout Factor: " + rv._wi._dblExerciseFactor);
+		System.out.println (strPrefix + "Workout Factor: " + rv._wi.factor());
 
-		System.out.println (strPrefix + "Workout Type: " + rv._wi._iWOType);
+		System.out.println (strPrefix + "Workout Type: " + rv._wi.type());
 
-		System.out.println (strPrefix + "Workout Yield: " + org.drip.math.common.FormatUtil.FormatDouble
-			(rv._wi._dblYield, 0, 3, 100.));
+		System.out.println (strPrefix + "Workout Yield: " + org.drip.quant.common.FormatUtil.FormatDouble
+			(rv._wi.yield(), 0, 3, 100.));
 
-		System.out.println (strPrefix + "Yield01: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Yield01: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblYield01, 0, 2, 10000.));
 
-		System.out.println (strPrefix + "Yield Basis: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Yield Basis: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Yield Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Yield Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Z Spread: " + org.drip.math.common.FormatUtil.FormatDouble
+		System.out.println (strPrefix + "Z Spread: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblZSpread, 0, 0, 10000.));
 
 		return true;
@@ -565,12 +570,12 @@ public class CreditAnalyticsProxy {
 			org.drip.analytics.output.BondRVMeasures> me : mapRVM.entrySet()) {
 			org.drip.analytics.output.BondRVMeasures rv = me.getValue();
 
-			System.out.println (me.getKey() + DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble
-				(rv._wi._dblYield, 0, 2, 100.) + DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble
+			System.out.println (me.getKey() + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
+				(rv._wi.yield(), 0, 2, 100.) + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
 					(rv._dblZSpread, 0, 0, 10000.) + DISPLAY_GAP +
-						org.drip.math.common.FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.) +
-							DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble (rv._dblCreditBasis,
-								0, 0, 10000.) + DISPLAY_GAP + org.drip.math.common.FormatUtil.FormatDouble
+						org.drip.quant.common.FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.) +
+							DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble (rv._dblCreditBasis,
+								0, 0, 10000.) + DISPLAY_GAP + org.drip.quant.common.FormatUtil.FormatDouble
 									(rv._dblPrice, 0, 3, 100.));
 		}
 
@@ -623,7 +628,7 @@ public class CreditAnalyticsProxy {
 				(creResponse.getSerializedMsg());
 
 			try {
-				mapRVM.put (new org.drip.analytics.date.JulianDate (rv._wi._dblDate), rv);
+				mapRVM.put (new org.drip.analytics.date.JulianDate (rv._wi.date()), rv);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}

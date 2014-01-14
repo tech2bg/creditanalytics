@@ -6,6 +6,7 @@ package org.drip.product.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -40,7 +41,7 @@ package org.drip.product.definition;
 public interface ComponentMarketParamRef {
 
 	/**
-	 * Gets the component name
+	 * Get the component name
 	 * 
 	 * @return The component name
 	 */
@@ -48,7 +49,7 @@ public interface ComponentMarketParamRef {
 	public abstract java.lang.String getComponentName();
 
 	/**
-	 * Gets the IR curve name
+	 * Get the IR curve name
 	 * 
 	 * @return The IR curve name
 	 */
@@ -56,15 +57,15 @@ public interface ComponentMarketParamRef {
 	public abstract java.lang.String getIRCurveName();
 
 	/**
-	 * Gets the component name
+	 * Get the Forward Curve Name
 	 * 
-	 * @return The component name
+	 * @return The Forward Curve Name
 	 */
 
-	public abstract java.lang.String getRatesForwardCurveName();
+	public abstract java.lang.String getForwardCurveName();
 
 	/**
-	 * Gets the credit curve name
+	 * Get the credit curve name
 	 * 
 	 * @return The credit curve name
 	 */
@@ -72,7 +73,7 @@ public interface ComponentMarketParamRef {
 	public abstract java.lang.String getCreditCurveName();
 
 	/**
-	 * Gets the treasury curve name
+	 * Get the treasury curve name
 	 * 
 	 * @return The treasury curve name
 	 */
@@ -80,7 +81,7 @@ public interface ComponentMarketParamRef {
 	public abstract java.lang.String getTreasuryCurveName();
 
 	/**
-	 * Gets the EDSF curve name
+	 * Get the EDSF curve name
 	 * 
 	 * @return The EDSF curve name
 	 */

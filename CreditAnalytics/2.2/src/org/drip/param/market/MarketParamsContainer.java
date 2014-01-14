@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -34,6 +35,7 @@ package org.drip.param.market;
  * MarketParamsContainer extends MarketParams abstract class, and is the place holder for the comprehensive
  *  suite of the market set of curves for the given date. It exports the following functionality:
  * 	- add/remove/retrieve scenario discount curve
+ * 	- add/remove/retrieve scenario Forward curve
  * 	- add/remove/retrieve scenario zero curve
  * 	- add/remove/retrieve scenario credit curve
  * 	- add/remove/retrieve scenario recovery curve
@@ -56,18 +58,22 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	private static final int RR_BUMP_UP = 4;
 	private static final int RR_BUMP_DN = 8;
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> _mapCQTSY
-		= null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+		_mapCQTSY = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.RatesScenarioCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioDiscountCurve>
 		_mapIRCSC = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.RatesScenarioCurve>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioDiscountCurve>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.CreditScenarioCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioForwardCurve>
+		_mapSFC = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioForwardCurve>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioCreditCurve>
 		_mapCCSC = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.CreditScenarioCurve>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioCreditCurve>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 		_mapCQComp = new
@@ -81,16 +87,16 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		_mapScenCMP = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		getDCSet (
 			final int iBumpType)
 	{
 		if (null == _mapIRCSC.entrySet()) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve> mapDC =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.RatesScenarioCurve> meDCSG :
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioDiscountCurve> meDCSG :
 			_mapIRCSC.entrySet()) {
 			if (null != meDCSG.getKey() && null != meDCSG.getValue()) {
 				if (BASE == iBumpType)
@@ -105,6 +111,30 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		return mapDC;
 	}
 
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
+		getFCSet (
+			final int iBumpType)
+	{
+		if (null == _mapSFC.entrySet()) return null;
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve> mapFC =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>();
+
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioForwardCurve> meSFC :
+			_mapSFC.entrySet()) {
+			if (null != meSFC.getKey() && null != meSFC.getValue()) {
+				if (BASE == iBumpType)
+					mapFC.put (meSFC.getKey(), meSFC.getValue().getFCBase());
+				else if (BUMP_UP == iBumpType)
+					mapFC.put (meSFC.getKey(), meSFC.getValue().getFCBumpUp());
+				else if (BUMP_DN == iBumpType)
+					mapFC.put (meSFC.getKey(), meSFC.getValue().getFCBumpDn());
+			}
+		}
+
+		return mapFC;
+	}
+
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> getCCSet
 		(final int iBumpType)
 	{
@@ -113,7 +143,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.CreditScenarioCurve> meCCSG :
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG :
 			_mapCCSC.entrySet()) {
 			if (null != meCCSG.getKey() && null != meCCSG.getValue()) {
 				if (BASE == iBumpType)
@@ -132,14 +162,14 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		return mapCC;
 	}
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		getSpecificIRFlatBumpDCSet (
 			final java.lang.String strIRCurve,
 			final boolean bBumpUp)
 	{
 		if (null == strIRCurve || strIRCurve.isEmpty() || null == _mapIRCSC.get (strIRCurve)) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.DiscountCurve> mapDC =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =
 			getDCSet (BASE);
 
 		if (null == mapDC) return null;
@@ -148,6 +178,25 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			(strIRCurve).getDCBumpDn());
 
 		return mapDC;
+	}
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
+		getSpecificForwardFlatBumpFCSet (
+			final java.lang.String strForwardCurve,
+			final boolean bBumpUp)
+	{
+		if (null == strForwardCurve || strForwardCurve.isEmpty() || null == _mapSFC.get (strForwardCurve))
+			return null;
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve> mapFC =
+			getFCSet (BASE);
+
+		if (null == mapFC) return null;
+
+		mapFC.put (strForwardCurve, bBumpUp ? _mapSFC.get (strForwardCurve).getFCBumpUp() : _mapSFC.get
+			(strForwardCurve).getFCBumpDn());
+
+		return mapFC;
 	}
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
@@ -189,7 +238,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	}
 
 	/**
-	 * Constructs an empty MarketParamsContainer instance
+	 * Construct an empty MarketParamsContainer instance
 	 */
 
 	public MarketParamsContainer()
@@ -198,7 +247,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 	@Override public boolean addScenDC (
 		final java.lang.String strName,
-		final org.drip.param.definition.RatesScenarioCurve irsg)
+		final org.drip.param.definition.ScenarioDiscountCurve irsg)
 	{
 		if (null != strName && !strName.isEmpty() && null != irsg) {
 			_mapIRCSC.put (strName, irsg);
@@ -221,9 +270,34 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		return false;
 	}
 
+	@Override public boolean addScenFC (
+		final java.lang.String strName,
+		final org.drip.param.definition.ScenarioForwardCurve sfc)
+	{
+		if (null != strName && !strName.isEmpty() && null != sfc) {
+			_mapSFC.put (strName, sfc);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override public boolean removeScenFC (
+		final java.lang.String strName)
+	{
+		if (null != strName && !strName.isEmpty()) {
+			_mapSFC.remove (strName);
+
+			return true;
+		}
+
+		return false;
+	}
+
 	@Override public boolean addScenCC (
 		final java.lang.String strName,
-		final org.drip.param.definition.CreditScenarioCurve ccsg)
+		final org.drip.param.definition.ScenarioCreditCurve ccsg)
 	{
 		if (null != strName && !strName.isEmpty() && null != ccsg) {
 			_mapCCSC.put (strName, ccsg);
@@ -300,7 +374,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		final double dblFixing)
 	{
 		if (null == dtFix || null == strIndex || strIndex.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (dblFixing))
+			!org.drip.quant.common.NumberUtil.IsValid (dblFixing))
 			return false;
 
 		if (null == _mmFixings)
@@ -440,13 +514,17 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	{
 		if (null == comp || null == strScen || strScen.isEmpty()) return null;
 
+		org.drip.analytics.rates.ForwardCurve fc = null;
+		org.drip.analytics.rates.DiscountCurve dc = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 		org.drip.analytics.definition.CreditCurve cc = null;
-		org.drip.analytics.definition.DiscountCurve dc = null;
-		org.drip.analytics.definition.DiscountCurve dcTSY = null;
-		org.drip.analytics.definition.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 
 		if (null != comp.getIRCurveName() && null != _mapIRCSC.get (comp.getIRCurveName()))
 			dc = _mapIRCSC.get (comp.getIRCurveName()).getDCBase();
+
+		if (null != comp.getForwardCurveName() && null != _mapSFC.get (comp.getForwardCurveName()))
+			fc = _mapSFC.get (comp.getForwardCurveName()).getFCBase();
 
 		if (null != comp.getTreasuryCurveName() && null != _mapIRCSC.get (comp.getTreasuryCurveName()))
 			dcTSY = _mapIRCSC.get (comp.getTreasuryCurveName()).getDCBase();
@@ -465,6 +543,14 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			_mapIRCSC.get (comp.getIRCurveName()))
 			dc = _mapIRCSC.get (comp.getIRCurveName()).getDCBumpDn();
 
+		if ("FlatForwardBumpUp".equalsIgnoreCase (strScen) && null != comp.getForwardCurveName() && null !=
+			_mapSFC.get (comp.getForwardCurveName()))
+			fc = _mapSFC.get (comp.getForwardCurveName()).getFCBumpUp();
+
+		if ("FlatForwardBumpDn".equalsIgnoreCase (strScen) && null != comp.getForwardCurveName() && null !=
+			_mapSFC.get (comp.getForwardCurveName()))
+			fc = _mapSFC.get (comp.getForwardCurveName()).getFCBumpDn();
+
 		if ("FlatCreditBumpUp".equalsIgnoreCase (strScen) && null != comp.getCreditCurveName() && null !=
 			_mapCCSC.get (comp.getCreditCurveName()))
 			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBumpUp();
@@ -473,8 +559,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			_mapCCSC.get (comp.getCreditCurveName()))
 			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBumpDn();
 
-		return org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-			dcEDSF, cc, _mapCQComp.get (comp.getComponentName()), _mapCQTSY, _mmFixings);
+		return org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
+			dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()), _mapCQTSY, _mmFixings);
 	}
 
 	@Override public
@@ -494,9 +580,13 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			_mapIRCSC.get (comp.getIRCurveName()).getTenorDCBumpDn().entrySet()))
 			return null;
 
+		org.drip.analytics.rates.ForwardCurve fc = null;
 		org.drip.analytics.definition.CreditCurve cc = null;
-		org.drip.analytics.definition.DiscountCurve dcTSY = null;
-		org.drip.analytics.definition.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
+		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+
+		if (null != comp.getForwardCurveName() && null != _mapSFC.get (comp.getForwardCurveName()))
+			fc = _mapSFC.get (comp.getForwardCurveName()).getFCBase();
 
 		if (null != comp.getTreasuryCurveName() && null != _mapIRCSC.get (comp.getTreasuryCurveName()))
 			dcTSY = _mapIRCSC.get (comp.getTreasuryCurveName()).getDCBase();
@@ -516,13 +606,13 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				(comp.getIRCurveName()).getTenorDCBumpUp().entrySet())
 				return null;
 
-			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.DiscountCurve> meDC :
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
 				_mapIRCSC.get (comp.getIRCurveName()).getTenorDCBumpUp().entrySet()) {
 				if (null == meDC || null == meDC.getKey() || meDC.getKey().isEmpty()) continue;
 
 				mapCMP.put (meDC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(meDC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+						(meDC.getValue(), fc, dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
 							_mapCQTSY, _mmFixings));
 			}
 		} else {
@@ -530,13 +620,84 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				(comp.getIRCurveName()).getTenorDCBumpDn().entrySet())
 				return null;
 
-			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.DiscountCurve> meDC :
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
 				_mapIRCSC.get (comp.getIRCurveName()).getTenorDCBumpDn().entrySet()) {
 				if (null == meDC || null == meDC.getKey() || meDC.getKey().isEmpty()) continue;
 
 				mapCMP.put (meDC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(meDC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+						(meDC.getValue(), fc, dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+							_mapCQTSY, _mmFixings));
+			}
+		}
+
+		return mapCMP;
+	}
+
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			getForwardTenorCMP (
+				final org.drip.product.definition.Component comp,
+				final boolean bBumpUp)
+	{
+		if (null == comp || null == comp.getIRCurveName() || null == _mapIRCSC.get (comp.getIRCurveName()))
+			return null;
+
+		if (bBumpUp && (null == _mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpUp() || null ==
+			_mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpUp().entrySet()))
+			return null;
+
+		if (!bBumpUp && (null == _mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpDn() || null ==
+			_mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpDn().entrySet()))
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dc = null;
+		org.drip.analytics.definition.CreditCurve cc = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
+		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+
+		if (null != comp.getIRCurveName() && null != _mapIRCSC.get (comp.getIRCurveName()))
+			dc = _mapIRCSC.get (comp.getIRCurveName()).getDCBase();
+
+		if (null != comp.getTreasuryCurveName() && null != _mapIRCSC.get (comp.getTreasuryCurveName()))
+			dcTSY = _mapIRCSC.get (comp.getTreasuryCurveName()).getDCBase();
+
+		if (null != comp.getEDSFCurveName() && null != _mapIRCSC.get (comp.getEDSFCurveName()))
+			dcEDSF = _mapIRCSC.get (comp.getEDSFCurveName()).getDCBase();
+
+		if (null != comp.getCreditCurveName() && null != _mapCCSC.get (comp.getCreditCurveName()))
+			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBase();
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			mapCMP = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>();
+
+		if (bBumpUp) {
+			if (null == _mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpUp() || null == _mapSFC.get
+				(comp.getForwardCurveName()).getTenorFCBumpUp().entrySet())
+				return null;
+
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.ForwardCurve> meFC :
+				_mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpUp().entrySet()) {
+				if (null == meFC || null == meFC.getKey() || meFC.getKey().isEmpty()) continue;
+
+				mapCMP.put (meFC.getKey(),
+					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
+						meFC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+							_mapCQTSY, _mmFixings));
+			}
+		} else {
+			if (null == _mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpDn() || null == _mapSFC.get
+				(comp.getForwardCurveName()).getTenorFCBumpDn().entrySet())
+				return null;
+
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.ForwardCurve> meFC :
+				_mapSFC.get (comp.getForwardCurveName()).getTenorFCBumpDn().entrySet()) {
+				if (null == meFC || null == meFC.getKey() || meFC.getKey().isEmpty()) continue;
+
+				mapCMP.put (meFC.getKey(),
+					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
+						meFC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
 							_mapCQTSY, _mmFixings));
 			}
 		}
@@ -562,12 +723,16 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			_mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpDn().entrySet()))
 			return null;
 
-		org.drip.analytics.definition.DiscountCurve dc = null;
-		org.drip.analytics.definition.DiscountCurve dcTSY = null;
-		org.drip.analytics.definition.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.ForwardCurve fc = null;
+		org.drip.analytics.rates.DiscountCurve dc = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
+		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 
 		if (null != comp.getIRCurveName() && null != _mapIRCSC.get (comp.getIRCurveName()))
 			dc = _mapIRCSC.get (comp.getIRCurveName()).getDCBase();
+
+		if (null != comp.getForwardCurveName() && null != _mapSFC.get (comp.getForwardCurveName()))
+			fc = _mapSFC.get (comp.getForwardCurveName()).getFCBase();
 
 		if (null != comp.getTreasuryCurveName() && null != _mapIRCSC.get (comp.getTreasuryCurveName()))
 			dcTSY = _mapIRCSC.get (comp.getTreasuryCurveName()).getDCBase();
@@ -589,7 +754,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				if (null == meCC || null == meCC.getKey() || meCC.getKey().isEmpty()) continue;
 
 				mapCMP.put (meCC.getKey(),
-					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
+					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
 						dcTSY, dcEDSF, meCC.getValue(), _mapCQComp.get (comp.getComponentName()), _mapCQTSY,
 							_mmFixings));
 			}
@@ -603,7 +768,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				if (null == meCC || null == meCC.getKey() || meCC.getKey().isEmpty()) continue;
 
 				mapCMP.put (meCC.getKey(),
-					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
+					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
 						dcTSY, dcEDSF, meCC.getValue(), _mapCQComp.get (comp.getComponentName()), _mapCQTSY,
 							_mmFixings));
 			}
@@ -620,31 +785,39 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 		if ("Base".equalsIgnoreCase (strScen))
 			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-				(BASE), getCCSet (BASE), null, _mmFixings);
+				(BASE), getFCSet (BASE), getCCSet (BASE), null, _mmFixings);
 
 		if ("FlatIRBumpUp".equalsIgnoreCase (strScen))
 			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-				(BUMP_UP), getCCSet (BASE), null, _mmFixings);
+				(BUMP_UP), getFCSet (BASE), getCCSet (BASE), null, _mmFixings);
 
 		if ("FlatIRBumpDn".equalsIgnoreCase (strScen))
 			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-				(BUMP_DN), getCCSet (BASE), null, _mmFixings);
+				(BUMP_DN), getFCSet (BASE), getCCSet (BASE), null, _mmFixings);
+
+		if ("FlatForwardBumpUp".equalsIgnoreCase (strScen))
+			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
+				(BASE), getFCSet (BUMP_UP), getCCSet (BASE), null, _mmFixings);
+
+		if ("FlatForwardBumpDn".equalsIgnoreCase (strScen))
+			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
+				(BASE), getFCSet (BUMP_DN), getCCSet (BASE), null, _mmFixings);
 
 		if ("FlatCreditBumpUp".equalsIgnoreCase (strScen))
 			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-				(BASE), getCCSet (BUMP_UP), null, _mmFixings);
+				(BASE), getFCSet (BASE), getCCSet (BUMP_UP), null, _mmFixings);
 
 		if ("FlatCreditBumpDn".equalsIgnoreCase (strScen))
 			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-				(BASE), getCCSet (BUMP_DN), null, _mmFixings);
+				(BASE), getFCSet (BASE), getCCSet (BUMP_DN), null, _mmFixings);
 
 		if ("FlatRRBumpUp".equalsIgnoreCase (strScen))
 			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-				(BASE), getCCSet (RR_BUMP_UP), null, _mmFixings);
+				(BASE), getFCSet (BASE), getCCSet (RR_BUMP_UP), null, _mmFixings);
 
 		if ("FlatRRBumpDn".equalsIgnoreCase (strScen))
 			return org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-				(BASE), getCCSet (RR_BUMP_DN), null, _mmFixings);
+				(BASE), getFCSet (BASE), getCCSet (RR_BUMP_DN), null, _mmFixings);
 
 		return null;
 	}
@@ -655,16 +828,39 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				final org.drip.product.definition.BasketProduct bp,
 				final boolean bBump)
 	{
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams> mapBMP =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapBMP = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.RatesScenarioCurve> meDCSG :
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioDiscountCurve> meDCSG :
 			_mapIRCSC.entrySet()) {
 			if (null != meDCSG && null != meDCSG.getKey())
 				mapBMP.put (meDCSG.getKey(),
 					org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams
-						(getSpecificIRFlatBumpDCSet (meDCSG.getKey(), bBump), getCCSet (BASE), null,
-							_mmFixings));
+						(getSpecificIRFlatBumpDCSet (meDCSG.getKey(), bBump), getFCSet (BASE), getCCSet
+							(BASE), null, _mmFixings));
+		}
+
+		return mapBMP;
+	}
+
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			getForwardBumpBMP (
+				final org.drip.product.definition.BasketProduct bp,
+				final boolean bBump)
+	{
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapBMP = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
+
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioDiscountCurve> meDCSG :
+			_mapIRCSC.entrySet()) {
+			if (null != meDCSG && null != meDCSG.getKey())
+				mapBMP.put (meDCSG.getKey(),
+					org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
+						(BASE), getSpecificForwardFlatBumpFCSet (meDCSG.getKey(), bBump), getCCSet (BASE),
+							null, _mmFixings));
 		}
 
 		return mapBMP;
@@ -676,15 +872,17 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				final org.drip.product.definition.BasketProduct bp,
 				final boolean bBump)
 	{
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams> mapBMP =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapBMP = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.CreditScenarioCurve> meCCSG :
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG :
 			_mapCCSC.entrySet()) {
 			if (null != meCCSG && null != meCCSG.getKey())
 				mapBMP.put (meCCSG.getKey(),
 					org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-						(BASE), getSpecificCreditFlatBumpCCSet (meCCSG.getKey(), bBump), null, _mmFixings));
+						(BASE), getFCSet (BASE), getSpecificCreditFlatBumpCCSet (meCCSG.getKey(), bBump),
+							null, _mmFixings));
 		}
 
 		return mapBMP;
@@ -696,15 +894,17 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				final org.drip.product.definition.BasketProduct bp,
 				final boolean bBump)
 	{
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams> mapBMP =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
+			mapBMP = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.CreditScenarioCurve> meCCSG :
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG :
 			_mapCCSC.entrySet()) {
 			if (null != meCCSG && null != meCCSG.getKey())
 				mapBMP.put (meCCSG.getKey(),
 					org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (getDCSet
-						(BASE), getSpecificCreditFlatBumpRRSet (meCCSG.getKey(), bBump), null, _mmFixings));
+						(BASE), getFCSet (BASE), getSpecificCreditFlatBumpRRSet (meCCSG.getKey(), bBump),
+							null, _mmFixings));
 		}
 
 		return mapBMP;
@@ -722,7 +922,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			mmIRTenorBMP = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>>();
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.RatesScenarioCurve> meDCSG :
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioDiscountCurve> meDCSG :
 			_mapIRCSC.entrySet()) {
 			if (null == meDCSG) continue;
 
@@ -734,7 +934,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				mapTenorBMP = new
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>();
 
-			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.DiscountCurve> meDC :
+			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
 				(bBump ? meDCSG.getValue().getTenorDCBumpUp().entrySet() :
 					meDCSG.getValue().getTenorDCBumpDn().entrySet())) {
 				if (null == meDC || null == meDCSG.getKey() || meDCSG.getKey().isEmpty()) continue;
@@ -742,7 +942,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				org.drip.param.definition.BasketMarketParams bmp = getScenBMP (bp, "Base");
 
 				if (null != bmp) {
-					bmp.addDC (meDCSG.getKey(), meDC.getValue());
+					bmp.addDiscountCurve (meDCSG.getKey(), meDC.getValue());
 
 					mapTenorBMP.put (meDC.getKey(), bmp);
 				}
@@ -766,7 +966,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			mmCreditTenorBMP = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>>();
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.CreditScenarioCurve> meCCSG :
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG :
 			_mapCCSC.entrySet()) {
 			if (null == meCCSG) continue;
 
@@ -786,7 +986,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				org.drip.param.definition.BasketMarketParams bmp = getScenBMP (bp, "Base");
 
 				if (null != bmp) {
-					bmp.addCC (meCCSG.getKey(), meCC.getValue());
+					bmp.addCreditCurve (meCCSG.getKey(), meCC.getValue());
 
 					mapTenorBMP.put (meCC.getKey(), bmp);
 				}
@@ -799,14 +999,14 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	}
 
 	@Override public
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.RatesScenarioCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioDiscountCurve>
 			getIRSG()
 	{
 		return _mapIRCSC;
 	}
 
 	@Override public
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.CreditScenarioCurve>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioCreditCurve>
 			getCCSG()
 	{
 		return _mapCCSC;

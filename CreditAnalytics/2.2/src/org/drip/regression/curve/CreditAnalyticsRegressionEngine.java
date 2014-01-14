@@ -10,6 +10,7 @@ package org.drip.regression.curve;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -44,7 +45,7 @@ package org.drip.regression.curve;
 public class CreditAnalyticsRegressionEngine extends org.drip.regression.core.RegressionEngine {
 
 	/**
-	 * Initializes the Credit Analytics Regression Engine
+	 * Initialize the Credit Analytics Regression Engine
 	 * 
 	 * @param iNumRuns Number of runs to be initialized with
 	 * @param iRegressionDetail Detail of the regression run
@@ -60,19 +61,17 @@ public class CreditAnalyticsRegressionEngine extends org.drip.regression.core.Re
 		super (iNumRuns, iRegressionDetail);
 	}
 
-	/*
-	 * Add the implementation specific regression initializer
-	 */
-
-	@Override public boolean initRegressionEnv() {
+	@Override public boolean initRegressionEnv()
+	{
 		return super.initRegressionEnv() && org.drip.analytics.support.Logger.Init
-			("c:\\Lakshmi\\BondAnal\\Config.xml") && org.drip.analytics.daycount.Convention.Init
-				("c:\\Lakshmi\\BondAnal\\Config.xml");
+			("c:\\DRIP\\CreditAnalytics\\Config.xml") && org.drip.analytics.daycount.Convention.Init
+				("c:\\DRIP\\CreditAnalytics\\Config.xml");
 	}
 
 	public static void main (
 		final java.lang.String[] astrArgs)
-		throws java.lang.Exception {
+		throws java.lang.Exception
+	{
 		CreditAnalyticsRegressionEngine care = new CreditAnalyticsRegressionEngine (10,
 			org.drip.regression.core.RegressionEngine.REGRESSION_DETAIL_MODULE_UNIT_DECOMPOSED);
 

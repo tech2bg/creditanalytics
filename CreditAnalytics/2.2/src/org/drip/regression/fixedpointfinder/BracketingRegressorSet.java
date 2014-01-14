@@ -6,6 +6,7 @@ package org.drip.regression.fixedpointfinder;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -38,7 +39,7 @@ package org.drip.regression.fixedpointfinder;
  */
 
 public class BracketingRegressorSet implements org.drip.regression.core.RegressorSet {
-	private org.drip.math.function.AbstractUnivariate _of = null;
+	private org.drip.quant.function1D.AbstractUnivariate _of = null;
 	private java.lang.String _strRegressionScenario = "org.drip.math.solver1D.FixedPointFinderPrimitive";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -46,7 +47,7 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 
 	public BracketingRegressorSet()
 	{
-		_of = new org.drip.math.function.AbstractUnivariate (null)
+		_of = new org.drip.quant.function1D.AbstractUnivariate (null)
 		{
 			public double evaluate (
 				final double dblVariate)
@@ -69,6 +70,14 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 
 				return 1. + 3. * dblVariate - 2. * java.lang.Math.sin (dblVariate);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 	}
 
@@ -78,14 +87,14 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor
 				("BisectionFixedPointFinder", _strRegressionScenario)
 			{
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopBisect = null;
-				org.drip.math.solver1D.FixedPointFinderBracketing fpfbBisect = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopBisect = null;
+				org.drip.quant.solver1D.FixedPointFinderBracketing fpfbBisect = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbBisect = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of, null,
-							org.drip.math.solver1D.VariateIteratorPrimitive.BISECTION);
+						fpfbBisect = new org.drip.quant.solver1D.FixedPointFinderBracketing (0., _of, null,
+							org.drip.quant.solver1D.VariateIteratorPrimitive.BISECTION, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -114,14 +123,14 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor
 				("FalsePositionFixedPointFinder", _strRegressionScenario)
 			{
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopFalsePosition = null;
-				org.drip.math.solver1D.FixedPointFinderBracketing fpfbFalsePosition = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopFalsePosition = null;
+				org.drip.quant.solver1D.FixedPointFinderBracketing fpfbFalsePosition = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbFalsePosition = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of,
-							null, org.drip.math.solver1D.VariateIteratorPrimitive.FALSE_POSITION);
+						fpfbFalsePosition = new org.drip.quant.solver1D.FixedPointFinderBracketing (0., _of,
+							null, org.drip.quant.solver1D.VariateIteratorPrimitive.FALSE_POSITION, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -149,14 +158,15 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor
 				("QuadraticFixedPointFinder", _strRegressionScenario) {
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopQuadratic = null;
-				org.drip.math.solver1D.FixedPointFinderBracketing fpfbQuadratic = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopQuadratic = null;
+				org.drip.quant.solver1D.FixedPointFinderBracketing fpfbQuadratic = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbQuadratic = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of, null,
-							org.drip.math.solver1D.VariateIteratorPrimitive.QUADRATIC_INTERPOLATION);
+						fpfbQuadratic = new org.drip.quant.solver1D.FixedPointFinderBracketing (0., _of,
+							null, org.drip.quant.solver1D.VariateIteratorPrimitive.QUADRATIC_INTERPOLATION,
+								true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -185,15 +195,16 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor
 				("InverseQuadraticFixedPointFinder", _strRegressionScenario)
 			{
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopInverseQuadratic = null;
-				org.drip.math.solver1D.FixedPointFinderBracketing fpfbInverseQuadratic = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopInverseQuadratic = null;
+				org.drip.quant.solver1D.FixedPointFinderBracketing fpfbInverseQuadratic = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbInverseQuadratic = new org.drip.math.solver1D.FixedPointFinderBracketing (0.,
+						fpfbInverseQuadratic = new org.drip.quant.solver1D.FixedPointFinderBracketing (0.,
 							_of, null,
-								org.drip.math.solver1D.VariateIteratorPrimitive.INVERSE_QUADRATIC_INTERPOLATION);
+								org.drip.quant.solver1D.VariateIteratorPrimitive.INVERSE_QUADRATIC_INTERPOLATION,
+							true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -222,14 +233,14 @@ public class BracketingRegressorSet implements org.drip.regression.core.Regresso
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor
 				("RidderFixedPointFinder", _strRegressionScenario)
 			{
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopRidder = null;
-				org.drip.math.solver1D.FixedPointFinderBracketing fpfbRidder = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopRidder = null;
+				org.drip.quant.solver1D.FixedPointFinderBracketing fpfbRidder = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbRidder = new org.drip.math.solver1D.FixedPointFinderBracketing (0., _of, null,
-							org.drip.math.solver1D.VariateIteratorPrimitive.RIDDER);
+						fpfbRidder = new org.drip.quant.solver1D.FixedPointFinderBracketing (0., _of, null,
+							org.drip.quant.solver1D.VariateIteratorPrimitive.RIDDER, true);
 
 						return true;
 					} catch (java.lang.Exception e) {

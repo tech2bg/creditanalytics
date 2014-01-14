@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -30,7 +31,17 @@ package org.drip.product.rates;
 
 /**
  * RatesBasket contains the implementation of the Basket of Rates Component legs. RatesBasket is made from
- * 	zero/more fixed and floating streams.
+ * 	zero/more fixed and floating streams. It exports the following functionality:
+ *  - Standard/Custom Constructor for the RatesBasket
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Retrieve the constituent fixed and floating streams
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -157,7 +168,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		if (null == strSerializedRatesBasket || strSerializedRatesBasket.isEmpty())
 			throw new java.lang.Exception ("RatesBasket de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedRatesBasket,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedRatesBasket,
 			getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
@@ -170,7 +181,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		else
 			_strName = astrField[1];
 
-		java.lang.String[] astrCompFixedStream = org.drip.math.common.StringUtil.Split (astrField[2],
+		java.lang.String[] astrCompFixedStream = org.drip.quant.common.StringUtil.Split (astrField[2],
 			getCollectionRecordDelimiter());
 
 		if (null == astrCompFixedStream || 0 == astrCompFixedStream.length)
@@ -189,7 +200,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 				(astrCompFixedStream[i].getBytes());
 		}
 
-		java.lang.String[] astrCompFloatStream = org.drip.math.common.StringUtil.Split (astrField[3],
+		java.lang.String[] astrCompFloatStream = org.drip.quant.common.StringUtil.Split (astrField[3],
 			getCollectionRecordDelimiter());
 
 		if (null == astrCompFloatStream || 0 == astrCompFloatStream.length)
@@ -369,16 +380,19 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 				dap, dap, dap, null, null, 100., "MNO", "PQR");
 
 		aFloatStream[0] = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
-			dtEffective.addTenor ("3Y").getJulian(), 0.03, 4, "Act/360", "Act/360", "RI", false, null, null,
-				dap, dap, dap, dap, null, null, null, -100., "ABC", "DEF");
+			dtEffective.addTenor ("3Y").getJulian(), 0.03, org.drip.product.params.FloatingRateIndex.Create
+				("ABC-RI-3M"), 4, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null,
+					null, -100., "ABC", "DEF");
 
 		aFloatStream[1] = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
-			dtEffective.addTenor ("5Y").getJulian(), 0.05, 4, "Act/360", "Act/360", "RI", false, null, null,
-				dap, dap, dap, dap, null, null, null, -100., "ABC", "DEF");
+			dtEffective.addTenor ("5Y").getJulian(), 0.05, org.drip.product.params.FloatingRateIndex.Create
+				("ABC-RI-3M"), 4, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null,
+					null, -100., "ABC", "DEF");
 
 		aFloatStream[2] = new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
-			dtEffective.addTenor ("7Y").getJulian(), 0.07, 1, "Act/360", "Act/360", "RI", false, null, null,
-				dap, dap, dap, dap, null, null, null, -100., "ABC", "DEF");
+			dtEffective.addTenor ("7Y").getJulian(), 0.07, org.drip.product.params.FloatingRateIndex.Create
+				("ABC-RI-3M"), 1, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null,
+					null, -100., "ABC", "DEF");
 
 		RatesBasket rb = new RatesBasket ("SAMRB", aFixedStream, aFloatStream);
 

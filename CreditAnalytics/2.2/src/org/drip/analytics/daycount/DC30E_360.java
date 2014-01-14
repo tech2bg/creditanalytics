@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -45,12 +46,12 @@ public class DC30E_360 implements org.drip.analytics.daycount.DCFCalculator {
 	{
 	}
 
-	@Override public java.lang.String getBaseCalculationType()
+	@Override public java.lang.String baseCalculationType()
 	{
 		return "DC30E_360";
 	}
 
-	@Override public java.lang.String[] getAlternateNames()
+	@Override public java.lang.String[] alternateNames()
 	{
 		return new java.lang.String[] {"30E/360", "30/360 ICMA", "30S/360", "Eurobond basis",
 			"Eurobond basis (ISDA 2006)", "Special German", "ISMA 30/360", "30E/360 ISDA",
@@ -76,7 +77,8 @@ public class DC30E_360 implements org.drip.analytics.daycount.DCFCalculator {
 			org.drip.analytics.date.JulianDate.Year (dblStart)) + 30. *
 				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
 					(dblStart)) + (org.drip.analytics.date.JulianDate.Day (dblEnd) -
-						org.drip.analytics.date.JulianDate.Day (dblStart)) + dm._iD2Adj - dm._iD1Adj) / 360.;
+						org.drip.analytics.date.JulianDate.Day (dblStart)) + dm.posterior() - dm.anterior())
+							/ 360.;
 	}
 
 	@Override public int daysAccrued (
@@ -97,6 +99,6 @@ public class DC30E_360 implements org.drip.analytics.daycount.DCFCalculator {
 			org.drip.analytics.date.JulianDate.Year (dblStart)) + 30 *
 				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
 					(dblStart)) + (org.drip.analytics.date.JulianDate.Day (dblEnd) -
-						org.drip.analytics.date.JulianDate.Day (dblStart)) + dm._iD2Adj - dm._iD1Adj;
+						org.drip.analytics.date.JulianDate.Day (dblStart)) + dm.posterior() - dm.anterior();
 	}
 }

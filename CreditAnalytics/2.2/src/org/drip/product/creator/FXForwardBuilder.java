@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -40,7 +41,7 @@ package org.drip.product.creator;
 public class FXForwardBuilder {
 
 	/**
-	 * Creates the FXForward object from Currency Pair, effective date, and maturity.
+	 * Create the FXForward object from Currency Pair, effective date, and maturity.
 	 * 
 	 * @param ccyPair Currency Pair
 	 * @param dtEffective JulianDate effective
@@ -71,7 +72,7 @@ public class FXForwardBuilder {
 	}
 
 	/**
-	 * Creates the FXForward object from Currency Pair, effective date, and tenor.
+	 * Create the FXForward object from Currency Pair, effective date, and tenor.
 	 * 
 	 * @param ccyPair Currency Pair
 	 * @param dtEffective JulianDate effective

@@ -6,6 +6,7 @@ package org.drip.service.bridge;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -46,8 +47,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	private java.lang.String _strID = "";
 	private java.lang.String _strTime = "";
 	private org.drip.product.definition.Component _comp = null;
-	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
+	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 
@@ -77,7 +78,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		if (null == strSerializedCreditAnalyticsRequest || strSerializedCreditAnalyticsRequest.isEmpty())
 			throw new java.lang.Exception ("CreditAnalyticsRequest de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedCreditAnalyticsRequest, getFieldDelimiter());
 
 		if (null == astrField || 8 > astrField.length)
@@ -171,7 +172,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 
 		_strTime = new java.util.Date().toString();
 
-		_strID = org.drip.math.common.StringUtil.GUID();
+		_strID = org.drip.quant.common.StringUtil.GUID();
 	}
 
 	/**
@@ -465,24 +466,25 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			adblHazardRate[i] = 0.01 * (i + 1);
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dc =
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcTSY =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dcTSY =
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.DiscountCurve dcEDSF =
-			org.drip.analytics.creator.DiscountCurveBuilder.CreateDC
+		org.drip.analytics.rates.ExplicitBootDiscountCurve dcEDSF =
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDate, adblRateEDSF,
-					org.drip.analytics.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.analytics.creator.CreditCurveBuilder.CreateCreditCurve
-				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", adblDate, adblHazardRate, 0.40);
+		org.drip.analytics.definition.ExplicitBootCreditCurve cc =
+			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve
+				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", "USD", adblDate, adblHazardRate,
+						0.40);
 
 		org.drip.param.market.ComponentMultiMeasureQuote cqTSY2ON = new
 			org.drip.param.market.ComponentMultiMeasureQuote();
@@ -490,8 +492,9 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.,
 			java.lang.Double.NaN), false);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
-			= new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mapTSYQuotes = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cqTSY2ON);
 

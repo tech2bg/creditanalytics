@@ -6,6 +6,7 @@ package org.drip.product.credit;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,9 +32,10 @@ package org.drip.product.credit;
  */
 
 /**
- * 	CDSBasket implements the basket default swap product contract details. Contains effective date, maturity
- * 		date, coupon, coupon day count, coupon frequency, basket components, basket notional, loss pay lag,
- * 		and optionally the outstanding notional schedule and the flat basket recovery.
+ * CDSBasket implements the basket default swap product contract details. It contains effective date,
+ *  maturity date, coupon, coupon day count, coupon frequency, basket components, basket notional, loss pay
+ *  lag, and optionally the outstanding notional schedule and the flat basket recovery. It also contains
+ *  methods to serialize out of and de-serialize into byte arrays.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -47,7 +49,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.definition.Component[] _aComp = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
-	private java.util.List<org.drip.analytics.period.CouponPeriod> _lPeriods = null;
+	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lPeriods = null;
 
 	@Override protected int measureAggregationType (
 		final java.lang.String strMeasureName)
@@ -209,7 +211,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	}
 
 	/**
-	 * Constructs a CDS Basket from the components and their weights
+	 * Construct a CDS Basket from the components and their weights
 	 * 
 	 * @param dtEffective Effective
 	 * @param dtMaturity Maturity
@@ -230,7 +232,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		final java.lang.String strName)
 		throws java.lang.Exception
 	{
-		if (null == dtEffective || null == dtMaturity || !org.drip.math.common.NumberUtil.IsValid (dblCoupon)
+		if (null == dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)
 			|| null == aComp || 0 == aComp.length || null == adblWeight || 0 == adblWeight.length ||
 				aComp.length != adblWeight.length || null == strName || strName.isEmpty())
 			throw new java.lang.Exception ("Invalid inputs to BasketDefaultSwap ctr!");
@@ -284,7 +286,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		if (null == strSerializedBasketDefaultSwap || strSerializedBasketDefaultSwap.isEmpty())
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedBasketDefaultSwap,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketDefaultSwap,
 			getFieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
@@ -328,7 +330,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component array");
 
-		java.lang.String[] astrCDS = org.drip.math.common.StringUtil.Split (astrField[6],
+		java.lang.String[] astrCDS = org.drip.quant.common.StringUtil.Split (astrField[6],
 			getCollectionRecordDelimiter());
 
 		if (null == astrCDS || 0 == astrCDS.length)
@@ -358,7 +360,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_lPeriods = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[8],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[8],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -368,9 +370,9 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 						continue;
 
 					if (null == _lPeriods)
-						_lPeriods = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lPeriods = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-					_lPeriods.add (new org.drip.analytics.period.CouponPeriod (astrRecord[i].getBytes()));
+					_lPeriods.add (new org.drip.analytics.period.CashflowPeriod (astrRecord[i].getBytes()));
 				}
 			}
 		}
@@ -379,7 +381,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component weights");
 
-		java.lang.String[] astrWeights = org.drip.math.common.StringUtil.Split (astrField[9],
+		java.lang.String[] astrWeights = org.drip.quant.common.StringUtil.Split (astrField[9],
 			getCollectionRecordDelimiter());
 
 		if (null == astrWeights || 0 == astrWeights.length)
@@ -519,7 +521,8 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new CDSBasket (ab);
 		} catch (java.lang.Exception e) {

@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -258,7 +259,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates BondProductBuilder from the SQL ResultSet and the input MPC
+	 * Create BondProductBuilder from the SQL ResultSet and the input MPC
 	 * 
 	 * @param rs SQL ResultSet
 	 * @param mpc org.drip.param.definition.MarketParams to help fill some of the fields in
@@ -289,7 +290,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 			bpb._strTicker = rs.getString ("Ticker");
 
-			if (!org.drip.math.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * rs.getDouble ("Coupon"))) {
+			if (!org.drip.quant.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * rs.getDouble ("Coupon"))) {
 				System.out.println ("Invalid coupon for ISIN " + bpb._strISIN);
 
 				return null;
@@ -353,13 +354,13 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 				return null;
 			}
 
-			bpb._bIsCallable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsCallable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsCallable"));
 
-			bpb._bIsPutable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsPutable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsPutable"));
 
-			bpb._bIsSinkable = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsSinkable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("IsSinkable"));
 
 			bpb._strRedemptionCurrency = org.drip.analytics.support.AnalyticsHelper.SwitchIRCurve
@@ -389,12 +390,12 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 				return null;
 			}
 
-			bpb._bHasBeenCalled = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bHasBeenCalled = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Called"));
 
 			bpb._strFloatCouponConvention = rs.getString ("FloatCouponConvention");
 
-			bpb._bIsFloater = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsFloater = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Floater"));
 
 			// bpb._dblCurrentCoupon = 0.01 * rs.getDouble ("CurrentCoupon");
@@ -402,17 +403,17 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 			bpb._dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
 				(rs.getDate ("FinalMaturity"));
 
-			bpb._bIsPerpetual = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsPerpetual = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Perpetual"));
 
-			bpb._bIsDefaulted = org.drip.math.common.StringUtil.ParseFromUnitaryString (rs.getString
+			bpb._bIsDefaulted = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Defaulted"));
 
 			bpb._dblFloatSpread = 0.0001 * rs.getDouble ("FloatSpread");
 
 			bpb._strRateIndex = rs.getString ("RateIndex");
 
-			if (bpb._bIsFloater && !org.drip.math.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
+			if (bpb._bIsFloater && !org.drip.quant.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
 				bpb._strRateIndex || bpb._strRateIndex.isEmpty())) {
 				System.out.println ("Invalid float spread for " + DES (bpb));
 
@@ -434,7 +435,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Creates BondProductBuilder from the JSON Map and the input MPC
+	 * Create BondProductBuilder from the JSON Map and the input MPC
 	 * 
 	 * @param mapJSON The JSON Ref Data Map
 	 * @param mpc org.drip.param.definition.MarketParams to help fill some of the fields in
@@ -467,7 +468,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 		if (null == (bpb._strTicker = mapJSON.get ("ticker"))) return null;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * java.lang.Double.parseDouble
+		if (!org.drip.quant.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * java.lang.Double.parseDouble
 			(mapJSON.get ("coupon"))))
 			return null;
 
@@ -544,7 +545,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 			bpb._strRateIndex = mapJSON.get ("resetIndex");
 
-			if (bpb._bIsFloater && !org.drip.math.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
+			if (bpb._bIsFloater && !org.drip.quant.common.NumberUtil.IsValid (bpb._dblFloatSpread) && (null ==
 				bpb._strRateIndex || bpb._strRateIndex.isEmpty())) {
 				System.out.println ("Invalid float spread for " + DES (bpb));
 
@@ -599,7 +600,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		if (null == strSerializedBondProductBuilder || strSerializedBondProductBuilder.isEmpty())
 			throw new java.lang.Exception ("BondProductBuilder de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedBondProductBuilder, getFieldDelimiter());
 
 		if (null == astrField || 32 > astrField.length)
@@ -834,7 +835,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond ISIN
+	 * Set the Bond ISIN
 	 * 
 	 * @param strISIN ISIN input
 	 * 
@@ -852,7 +853,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond CUSIP
+	 * Set the Bond CUSIP
 	 * 
 	 * @param strCUSIP CUSIP input
 	 * 
@@ -870,7 +871,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Ticker
+	 * Set the Bond Ticker
 	 * 
 	 * @param strTicker Ticker input
 	 * 
@@ -886,7 +887,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Coupon
+	 * Set the Bond Coupon
 	 * 
 	 * @param strCoupon Coupon input
 	 * 
@@ -911,7 +912,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Maturity
+	 * Set the Bond Maturity
 	 * 
 	 * @param strMaturity Maturity input
 	 * 
@@ -936,7 +937,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Coupon Frequency
+	 * Set the Bond Coupon Frequency
 	 * 
 	 * @param strCouponFreq Coupon Frequency input
 	 * 
@@ -962,7 +963,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Coupon Type
+	 * Set the Bond Coupon Type
 	 * 
 	 * @param strCouponType Coupon Type input
 	 * 
@@ -978,7 +979,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Maturity Type
+	 * Set the Bond Maturity Type
 	 * 
 	 * @param strMaturityType Maturity Type input
 	 * 
@@ -994,7 +995,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Calculation Type
+	 * Set the Bond Calculation Type
 	 * 
 	 * @param strCalculationType Calculation Type input
 	 * 
@@ -1010,7 +1011,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Day Count Code
+	 * Set the Bond Day Count Code
 	 * 
 	 * @param strDayCountCode Day Count Code input
 	 * 
@@ -1034,7 +1035,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Redemption Value
+	 * Set the Bond Redemption Value
 	 * 
 	 * @param strRedemptionValue Redemption Value input
 	 * 
@@ -1056,7 +1057,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Announce
+	 * Set the Bond Announce
 	 * 
 	 * @param strAnnounce Announce Date String
 	 * 
@@ -1079,7 +1080,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond First Settle
+	 * Set the Bond First Settle
 	 * 
 	 * @param strFirstSettle First Settle Date String
 	 * 
@@ -1102,7 +1103,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond First Coupon Date
+	 * Set the Bond First Coupon Date
 	 * 
 	 * @param strFirstCoupon First Coupon Date String
 	 * 
@@ -1125,7 +1126,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Interest Accrual Start Date
+	 * Set the Bond Interest Accrual Start Date
 	 * 
 	 * @param strInterestAccrualStart Interest Accrual Start Date String
 	 * 
@@ -1149,7 +1150,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the Bond Issue Date
+	 * Set the Bond Issue Date
 	 * 
 	 * @param strIssue Issue Date String
 	 * 
@@ -1172,7 +1173,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the Bond Is Callable
+	 * Set whether the Bond Is Callable
 	 * 
 	 * @param strCallable Callable String
 	 * 
@@ -1193,7 +1194,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the Bond Is Putable
+	 * Set whether the Bond Is Putable
 	 * 
 	 * @param strPutable Putable String
 	 * 
@@ -1214,7 +1215,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the Bond Is Sinkable
+	 * Set whether the Bond Is Sinkable
 	 * 
 	 * @param strSinkable Sinkable String
 	 * 
@@ -1235,7 +1236,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets The redemption Currency
+	 * Set The redemption Currency
 	 * 
 	 * @param strRedemptionCurrency Redemption Currency String
 	 * 
@@ -1253,7 +1254,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets The Coupon Currency
+	 * Set The Coupon Currency
 	 * 
 	 * @param strCouponCurrency Coupon Currency String
 	 * 
@@ -1271,7 +1272,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets The Trade Currency
+	 * Set The Trade Currency
 	 * 
 	 * @param strTradeCurrency Trade Currency String
 	 * 
@@ -1289,7 +1290,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond Has Been Called
+	 * Set whether the bond Has Been Called
 	 * 
 	 * @param strHasBeenCalled Has Been Called String
 	 * 
@@ -1310,7 +1311,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Float Coupon Convention
+	 * Set the bond's Float Coupon Convention
 	 * 
 	 * @param strFloatCouponConvention Float Coupon Convention String
 	 * 
@@ -1327,7 +1328,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Current Coupon
+	 * Set the bond's Current Coupon
 	 * 
 	 * @param strCurrentCoupon Current Coupon String
 	 * 
@@ -1355,7 +1356,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond is a floater or not
+	 * Set whether the bond is a floater or not
 	 * 
 	 * @param strIsFloater String indicating whether the bond is a floater
 	 * 
@@ -1376,7 +1377,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the final maturity of the bond
+	 * Set the final maturity of the bond
 	 * 
 	 * @param strFinalMaturity String representing the bond's final maturity
 	 * 
@@ -1400,7 +1401,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond is perpetual or not
+	 * Set whether the bond is perpetual or not
 	 * 
 	 * @param strIsPerpetual String representing whether the bond is perpetual or not
 	 * 
@@ -1421,7 +1422,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets whether the bond is defaulted or not
+	 * Set whether the bond is defaulted or not
 	 * 
 	 * @param strIsDefaulted String representing whether the bond is defaulted or not
 	 * 
@@ -1442,7 +1443,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's floating rate spread
+	 * Set the bond's floating rate spread
 	 * 
 	 * @param strFloatSpread String representing the bond's floating spread
 	 * 
@@ -1464,7 +1465,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's floating rate spread from the MPC
+	 * Set the bond's floating rate spread from the MPC
 	 * 
 	 * @param mpc org.drip.param.definition.MarketParams
 	 * 
@@ -1474,7 +1475,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	public boolean setFloatSpread (
 		final org.drip.param.definition.MarketParams mpc)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCurrentCoupon)) {
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon)) {
 			System.out.println ("Curr cpn for ISIN " + _strISIN + " is NaN!");
 
 			return false;
@@ -1490,7 +1491,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		try {
 			if (0. != _dblCurrentCoupon)
 				_dblFloatSpread = _dblCurrentCoupon - 100. * mpc.getIRSG().get
-					(_strCouponCurrency).getDCBase().calcLIBOR
+					(_strCouponCurrency).getDCBase().libor
 						(org.drip.analytics.support.AnalyticsHelper.GetTenorFromFreq (_iCouponFreq));
 			else
 				_dblFloatSpread = 0.;
@@ -1504,7 +1505,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Rate Index
+	 * Set the bond's Rate Index
 	 * 
 	 * @param strRateIndex Rate Index
 	 * 
@@ -1520,7 +1521,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Sets the bond's Issuer SPN
+	 * Set the bond's Issuer SPN
 	 * 
 	 * @param strIssuerSPN Issuer SPN String
 	 * 
@@ -1577,7 +1578,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		}
 
 		if (_bIsFloater && (null == _strRateIndex || _strRateIndex.isEmpty()) &&
-			!org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread) && java.lang.Double.isNaN
+			!org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread) && java.lang.Double.isNaN
 				(_dblCurrentCoupon)) {
 			if (m_bDisplayWarnings)
 				System.out.println ("Invalid Rate index & float spread & current coupon for " + _strISIN);
@@ -1593,7 +1594,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 			}
 		}
 
-		if (_bIsFloater && !org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread)) {
+		if (_bIsFloater && !org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread)) {
 			try {
 				if (!setFloatSpread (mpc)) {
 					if (m_bDisplayWarnings)
@@ -1681,7 +1682,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 		sb.append ("'").append (_strFloatCouponConvention).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblCurrentCoupon))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon))
 			sb.append ("null, ");
 		else
 			sb.append (_dblCurrentCoupon).append (", ");
@@ -1697,7 +1698,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 		sb.append ("'").append (_bIsDefaulted ? 1 : 0).append ("', ");
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblFloatSpread))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread))
 			sb.append ("null, ");
 		else
 			sb.append (_dblFloatSpread).append (", ");
@@ -2020,7 +2021,8 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
+		final byte[] ab)
+	{
 		try {
 			return new BondProductBuilder (ab);
 		} catch (java.lang.Exception e) {

@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -45,12 +46,12 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 	{
 	}
 
-	@Override public java.lang.String getBaseCalculationType()
+	@Override public java.lang.String baseCalculationType()
 	{
 		return "DCAct_Act_ISDA";
 	}
 
-	@Override public java.lang.String[] getAlternateNames()
+	@Override public java.lang.String[] alternateNames()
 	{
 		return new java.lang.String[] {"Actual/Actual ISDA", "Act/Act ISDA", "US:WIT Act/Act",
 			"DCAct_Act_ISDA"};
@@ -70,9 +71,9 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_Act_ISDA.yearFraction: Cannot create DateEOMAdjustment!");
 
-		return ((org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm._iD1Adj) /
+		return ((org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm.anterior()) /
 			(org.drip.analytics.date.JulianDate.IsLeapYear (dblStart) ? 366. : 365.)) +
-				((org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm._iD2Adj) /
+				((org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm.posterior()) /
 					(org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd) ? 366. : 365.)) +
 						org.drip.analytics.date.JulianDate.Year (dblEnd) -
 							org.drip.analytics.date.JulianDate.Year (dblStart) - 1;
@@ -92,8 +93,8 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_Act_ISDA.daysAccrued: Cannot create DateEOMAdjustment!");
 
-		return (org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm._iD1Adj) +
-			(org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm._iD2Adj) +
+		return (org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm.anterior()) +
+			(org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm.posterior()) +
 				org.drip.analytics.date.JulianDate.Year (dblEnd) -
 					org.drip.analytics.date.JulianDate.Year (dblStart) -
 						(org.drip.analytics.date.JulianDate.IsLeapYear (dblStart) ? 366 : 365);

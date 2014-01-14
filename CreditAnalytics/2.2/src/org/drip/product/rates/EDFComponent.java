@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,7 +32,17 @@ package org.drip.product.rates;
  */
 
 /**
- * EDFComponent contains the implementation of the Euro-dollar future contract/valuation (EDF).
+ * EDFComponent contains the implementation of the Euro-dollar future contract/valuation (EDF). It exports
+ *  the following functionality:
+ *  - Standard/Custom Constructor for the EDFComponent
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -57,7 +68,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
-	 * Constructs an EDFComponent Component
+	 * Construct an EDFComponent Instance
 	 * 
 	 * @param dtEffective Effective Date
 	 * @param dtMaturity Maturity Date
@@ -87,7 +98,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
-	 * Constructs an EDFComponent Component
+	 * Construct an EDFComponent Component
 	 * 
 	 * @param strFullEDCode EDF Component Code
 	 * @param dt Start Date
@@ -172,7 +183,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		if (null == strSerializedEDFuture || strSerializedEDFuture.isEmpty())
 			throw new java.lang.Exception ("EDFComponent de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedEDFuture,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedEDFuture,
 			getFieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)
@@ -280,7 +291,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("EDFComponent::getNotional => Got NaN date");
 
 		return _notlSchedule.getFactor (dblDate);
@@ -299,8 +310,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("EDFComponent::getNotional => Got NaN date");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
@@ -322,7 +333,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
-	@Override public java.lang.String getRatesForwardCurveName()
+	@Override public java.lang.String getForwardCurveName()
 	{
 		return "";
 	}
@@ -359,9 +370,10 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
-		return null;
+		return org.drip.analytics.period.CashflowPeriod.GetSinglePeriod (_dblEffective, _dblMaturity,
+			_strCalendar);
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams getCashSettleParams()
@@ -375,9 +387,9 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || valParams._dblValue >= _dblMaturity) return null;
+		if (null == valParams || null == mktParams || valParams.valueDate() >= _dblMaturity) return null;
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) return null;
 
@@ -387,13 +399,13 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		try {
-			double dblCashSettle = null == _settleParams ? valParams._dblCashPay :
-				_settleParams.cashSettleDate (valParams._dblValue);
+			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
+				_settleParams.cashSettleDate (valParams.valueDate());
 
-			double dblUnadjustedAnnuity = dc.getDF (_dblMaturity) / dc.getDF (_dblEffective) / dc.getDF
+			double dblUnadjustedAnnuity = dc.df (_dblMaturity) / dc.df (_dblEffective) / dc.df
 				(dblCashSettle);
 
-			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.getDF (dblCashSettle);
+			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.df (dblCashSettle);
 
 			mapResult.put ("PV", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
 				_dblMaturity));
@@ -427,13 +439,13 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == mktParams ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams ||
 			null == mktParams.getDiscountCurve())
 			return null;
 
@@ -445,21 +457,21 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			double dblPV = mapMeasures.get ("PV");
 
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			double dblDFEffective = dc.getDF (_dblEffective);
+			double dblDFEffective = dc.df (_dblEffective);
 
-			double dblDFMaturity = dc.getDF (getMaturityDate().getJulian());
+			double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-			org.drip.math.calculus.WengertJacobian wjDFEffective = dc.getDFJacobian (_dblEffective);
+			org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDQuote (_dblEffective);
 
-			org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.getDFJacobian
+			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDQuote
 				(getMaturityDate().getJulian());
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
 
-			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = new
-				org.drip.math.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = new
+				org.drip.quant.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
 
 			for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
 				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i, wjDFMaturity.getFirstDerivative
@@ -472,7 +484,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 					return null;
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams._dblCashPay, dblPV, dc, wjPVDFMicroJack) ?
+			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
 				wjPVDFMicroJack : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -481,34 +493,34 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= getMaturityDate().getJulian() || null == strQuote ||
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
 			null == mktParams || null == mktParams.getDiscountCurve())
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote)) {
 			try {
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				double dblDFEffective = dc.getDF (_dblEffective);
+				double dblDFEffective = dc.df (_dblEffective);
 
-				double dblDFMaturity = dc.getDF (getMaturityDate().getJulian());
+				double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-				org.drip.math.calculus.WengertJacobian wjDFEffective = dc.getDFJacobian (_dblEffective);
+				org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDQuote (_dblEffective);
 
-				org.drip.math.calculus.WengertJacobian wjDFMaturity = dc.getDFJacobian
+				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDQuote
 					(getMaturityDate().getJulian());
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;
 
-				org.drip.math.calculus.WengertJacobian wjDFMicroJack = new
-					org.drip.math.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
+				org.drip.quant.calculus.WengertJacobian wjDFMicroJack = new
+					org.drip.quant.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
 
 				for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
 					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, i,
@@ -522,6 +534,82 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 				}
 
 				return wjDFMicroJack;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
+	{
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == lsmm || !(lsmm instanceof
+			org.drip.analytics.rates.RatesLSMM) ||
+				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+					(lsmm.getID()))
+			return null;
+
+		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
+
+		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			(ratesLSMM.getQuantificationMetric())) {
+			try {
+				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
+
+				double dblTurnMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
+					_dblMaturity);
+
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+					java.lang.String[] {"Price"}, false)) {
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
+						prlc.addPredictorResponseWeight (_dblEffective, 0.01 *
+							ratesLSMM.getMeasureQuoteValue()) && prlc.updateValue (0.) &&
+								prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
+									prlc.addDResponseWeightDQuote (_dblEffective, 0.01) &&
+										prlc.updateDValueDQuote (0.) ? prlc : null;
+				}
+
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+					java.lang.String[] {"PV"}, false)) {
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
+						prlc.addPredictorResponseWeight (_dblEffective, ratesLSMM.getMeasureQuoteValue()) &&
+							prlc.updateValue (0.) && prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
+								prlc.addDResponseWeightDQuote (_dblEffective, 1.) &&
+									prlc.updateDValueDQuote (0.) ? prlc : null;
+				}
+
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+					java.lang.String[] {"Rate"}, false)) {
+					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+						org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+					double dblTurnEffectiveDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
+						_dblMaturity);
+
+					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
+						_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar);
+
+					double dblDF = 1. / (1. + (ratesLSMM.getMeasureQuoteValue() * dblDCF));
+
+					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
+						prlc.addPredictorResponseWeight (_dblEffective, dblTurnEffectiveDF * dblDF) &&
+							prlc.updateValue (0.) && prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
+								prlc.addDResponseWeightDQuote (_dblEffective, -1. * dblDCF *
+									dblTurnEffectiveDF * dblDF * dblDF) && prlc.updateDValueDQuote (0.) ?
+										prlc : null;
+				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}

@@ -6,6 +6,7 @@ package org.drip.product.rates;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -29,7 +30,17 @@ package org.drip.product.rates;
  */
 
 /**
- * FloatingStream contains an implementation of the Floating leg cash flow stream.
+ * FloatingStream contains an implementation of the Floating leg cash flow stream. It exports the following
+ *  functionality:
+ *  - Standard/Custom Constructor for the FloatingStream Component
+ *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
+ *  - Coupon/Notional Outstanding as well as schedules
+ *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
+ *  - Valuation: Named Measure Generation
+ *  - Calibration: The codes and constraints generation
+ *  - Jacobians: Quote/DF and PV/DF micro-Jacobian generation
+ *  - Serialization into and de-serialization out of byte arrays
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -45,10 +56,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private boolean _bApplyCpnEOMAdj = false;
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private java.lang.String _strFloatingRateIndex = "USD-LIBOR-3M";
+	private org.drip.product.params.FloatingRateIndex _fri = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
-	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
+	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -65,10 +76,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	 * @param dblEffective Effective Date
 	 * @param dblMaturity Maturity Date
 	 * @param dblSpread Spread
+	 * @param fri Floating Rate Index
 	 * @param iFreq Frequency
 	 * @param strCouponDC Coupon Day Count
 	 * @param strAccrualDC Accrual Day Count
-	 * @param strFloatingRateIndex Floating Rate Index
 	 * @param bFullStub TRUE => Generate full first-stub
 	 * @param dapEffective Effective DAP
 	 * @param dapMaturity Maturity DAP
@@ -90,10 +101,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final double dblEffective,
 		final double dblMaturity,
 		final double dblSpread,
+		final org.drip.product.params.FloatingRateIndex fri,
 		final int iFreq,
 		final java.lang.String strCouponDC,
 		final java.lang.String strAccrualDC,
-		final java.lang.String strFloatingRateIndex,
 		final boolean bFullStub,
 		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
 		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
@@ -109,21 +120,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.math.common.NumberUtil.IsValid
-			(_dblEffective = dblEffective) || !org.drip.math.common.NumberUtil.IsValid (_dblMaturity =
-				dblMaturity) || !org.drip.math.common.NumberUtil.IsValid (_dblSpread = dblSpread) ||
-					!org.drip.math.common.NumberUtil.IsValid (_dblNotional = dblNotional))
-			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params!");
+		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
+			(_dblEffective = dblEffective) || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity =
+				dblMaturity) || !org.drip.quant.common.NumberUtil.IsValid (_dblSpread = dblSpread) || null ==
+					(_fri = fri) || !org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional))
+			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params! " + _fri);
 
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_strFloatingRateIndex = strIR + "-LIBOR-3M";
-
-		if (null != strFloatingRateIndex && strFloatingRateIndex.isEmpty())
-			_strFloatingRateIndex = strFloatingRateIndex;
-
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CouponPeriod.GeneratePeriodsBackward (
+		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
 			dblEffective, // Effective
 			dblMaturity, // Maturity
 			dapEffective, // Effective DAP
@@ -141,7 +147,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			_bApplyAccEOMAdj,
 			bFullStub, // Full First Coupon Period?
 			false, // Merge the first 2 Periods - create a long stub?
-			false,
+			true,
 			strCalendar)) || 0 == _lsCouponPeriod.size())
 			throw new java.lang.Exception ("FloatingStream ctr: Cannot generate Period Schedule");
 	}
@@ -172,7 +178,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == strSerializedFloatingStream || strSerializedFloatingStream.isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedFloatingStream,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloatingStream,
 			getFieldDelimiter());
 
 		if (null == astrField || 13 > astrField.length)
@@ -235,10 +241,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate rate index");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
-			_strFloatingRateIndex = astrField[9];
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
+			_fri = null;
 		else
-			_strFloatingRateIndex = "";
+			_fri = new org.drip.product.params.FloatingRateIndex (astrField[9].getBytes());
 
 		if (null == astrField[10] || astrField[10].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate notional schedule");
@@ -262,7 +268,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[12]))
 			_lsCouponPeriod = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[12],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[12],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -272,9 +278,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 						continue;
 
 					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
 
-					_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod
+					_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -316,7 +322,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FloatingStream::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate);
@@ -327,8 +333,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.math.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.math.common.NumberUtil.IsValid (dblDate2))
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("FloatingStream::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
@@ -350,12 +356,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblValueDate) || null == mktParams)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || null == mktParams)
 			throw new java.lang.Exception ("FloatingStream::getCoupon => Invalid Inputs");
 
 		org.drip.analytics.period.Period currentPeriod = null;
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			if (null == period) continue;
 
 			if (dblValueDate >= period.getStartDate() && dblValueDate < period.getEndDate()) {
@@ -374,23 +380,23 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null != mapFixings) {
 			double dblCurrentResetDate = currentPeriod.getResetDate();
 
-			if (org.drip.math.common.NumberUtil.IsValid (dblCurrentResetDate)) {
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIndexFixing = mapFixings.get (new
-					org.drip.analytics.date.JulianDate (dblCurrentResetDate));
+			if (org.drip.quant.common.NumberUtil.IsValid (dblCurrentResetDate)) {
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIndexFixing =
+					mapFixings.get (new org.drip.analytics.date.JulianDate (dblCurrentResetDate));
 
 				if (null != mapIndexFixing) {
-					java.lang.Double dblFixing = mapIndexFixing.get (_strFloatingRateIndex);
+					java.lang.Double dblFixing = mapIndexFixing.get (_fri.fullyQualifiedName());
 
 					if (null != dblFixing) return dblFixing + _dblSpread;
 				}
 			}
 		}
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
 
-		return dc.calcLIBOR (currentPeriod.getStartDate(), currentPeriod.getEndDate()) + _dblSpread;
+		return dc.libor (currentPeriod.getStartDate(), currentPeriod.getEndDate()) + _dblSpread;
 	}
 
 	@Override public java.lang.String getIRCurveName()
@@ -398,9 +404,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
-	@Override public java.lang.String getRatesForwardCurveName()
+	@Override public java.lang.String getForwardCurveName()
 	{
-		return _strFloatingRateIndex;
+		return _fri.fullyQualifiedName();
 	}
 
 	@Override public java.lang.String getCreditCurveName()
@@ -441,7 +447,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
@@ -459,7 +465,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams) return null;
 
-		org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 		if (null == dc) return null;
 
@@ -474,16 +480,21 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 
-		org.drip.analytics.definition.DiscountCurve dcForward = null == mktParams.getForwardDiscountCurve() ?
-			dc : mktParams.getForwardDiscountCurve();
+		java.lang.String strFRI = _fri.fullyQualifiedName();
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve();
+
+		if (null != fc && !_fri.match (fc.index())) fc = null;
+
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblFloatingRate = 0.;
 			double dblDirtyPeriodDV01 = java.lang.Double.NaN;
 
 			double dblPeriodPayDate = period.getPayDate();
 
-			if (dblPeriodPayDate < valParams._dblValue) continue;
+			if (dblPeriodPayDate < valParams.valueDate()) continue;
+
+			if (null == fc) fc = dc.forwardRateEstimator (dblPeriodPayDate, _fri);
 
 			try {
 				if (bFirstPeriod) {
@@ -492,24 +503,24 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					if (null == mktParams.getFixings() || null == mktParams.getFixings().get (new
 						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
 							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
-								(period.getResetDate())).get (_strFloatingRateIndex))
-						dblResetRate = dblFloatingRate = dcForward.calcLIBOR (period.getStartDate(),
-							period.getEndDate());
+								(period.getResetDate())).get (strFRI))
+						dblResetRate = dblFloatingRate = null == fc ? dc.libor (_fri.tenor()) : fc.forward
+							(period.getPayDate());
 					else
 						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
-							org.drip.analytics.date.JulianDate (period.getResetDate())).get
-								(_strFloatingRateIndex);
+							org.drip.analytics.date.JulianDate (period.getResetDate())).get (strFRI);
 
-					dblFixing01 = period.getAccrualDCF (valParams._dblValue) * 0.01 * getNotional
-						(period.getAccrualStartDate(), valParams._dblValue);
+					dblFixing01 = period.getAccrualDCF (valParams.valueDate()) * 0.0001 * getNotional
+						(period.getAccrualStartDate(), valParams.valueDate());
 
-					if (period.getStartDate() < valParams._dblValue) dblAccrued01 = dblFixing01;
+					if (period.getStartDate() < valParams.valueDate()) dblAccrued01 = dblFixing01;
 
 					dblResetDate = period.getResetDate();
 				} else
-					dblFloatingRate = dcForward.calcLIBOR (period.getStartDate(), period.getEndDate());
+					dblFloatingRate = null == fc ? dc.libor (period.getStartDate(), period.getEndDate()) :
+						fc.forward (period.getPayDate());
 
-				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * mktParams.getDiscountCurve().getDF
+				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * mktParams.getDiscountCurve().df
 					(dblPeriodPayDate) * getNotional (period.getAccrualStartDate(), period.getEndDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -522,22 +533,22 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					System.out.println (new org.drip.analytics.date.JulianDate (period.getResetDate()) + " ["
 						+ new org.drip.analytics.date.JulianDate (period.getStartDate()) + "->" + new
 							org.drip.analytics.date.JulianDate (period.getEndDate()) + "] => " +
-								org.drip.math.common.FormatUtil.FormatDouble (dblFloatingRate, 1, 4, 100.));
+								org.drip.quant.common.FormatUtil.FormatDouble (dblFloatingRate, 1, 4, 100.));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}
 			}
 
 			dblDirtyDV01 += dblDirtyPeriodDV01;
-			dblDirtyFloatingPV += dblDirtyPeriodDV01 * dblFloatingRate;
+			dblDirtyFloatingPV += dblDirtyPeriodDV01 * 10000. * dblFloatingRate;
 		}
 
 		try {
-			double dblCashSettle = valParams._dblCashPay;
+			double dblCashSettle = valParams.cashPayDate();
 
-			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams._dblValue);
+			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams.valueDate());
 
-			dblCashPayDF = mktParams.getDiscountCurve().getDF (dblCashSettle);
+			dblCashPayDF = mktParams.getDiscountCurve().df (dblCashSettle);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -546,7 +557,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		dblDirtyDV01 /= dblCashPayDF;
 		dblDirtyFloatingPV /= dblCashPayDF;
-		double dblNotlFactor = _dblNotional * 0.01;
 		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
 		double dblCleanFloatingPV = dblDirtyFloatingPV - dblAccrued01 * (dblResetRate + _dblSpread);
 
@@ -557,29 +567,29 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("ResetRate", dblResetRate);
 
-		mapResult.put ("Accrued01", dblAccrued01 * dblNotlFactor);
+		mapResult.put ("Accrued01", dblAccrued01 * _dblNotional);
 
-		mapResult.put ("Fixing01", dblFixing01 * dblNotlFactor);
+		mapResult.put ("Fixing01", dblFixing01 * _dblNotional);
 
-		mapResult.put ("FloatAccrued", dblAccrued01 * (dblResetRate + _dblSpread) * dblNotlFactor);
+		mapResult.put ("FloatAccrued", dblAccrued01 * 10000. * (dblResetRate + _dblSpread) * _dblNotional);
 
-		mapResult.put ("DV01", dblCleanDV01 * dblNotlFactor);
+		mapResult.put ("DV01", dblCleanDV01 * _dblNotional);
 
-		mapResult.put ("CleanDV01", dblCleanDV01 * dblNotlFactor);
+		mapResult.put ("CleanDV01", dblCleanDV01 * _dblNotional);
 
-		mapResult.put ("DirtyDV01", dblDirtyDV01 * dblNotlFactor);
+		mapResult.put ("DirtyDV01", dblDirtyDV01 * _dblNotional);
 
-		mapResult.put ("CleanFloatingPV", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("CleanFloatingPV", dblCleanFloatingPV * _dblNotional);
 
-		mapResult.put ("DirtyFloatingPV", dblDirtyFloatingPV * dblNotlFactor);
+		mapResult.put ("DirtyFloatingPV", dblDirtyFloatingPV * _dblNotional);
 
-		mapResult.put ("PV", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("PV", dblCleanFloatingPV * _dblNotional);
 
-		mapResult.put ("CleanPV", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("CleanPV", dblCleanFloatingPV * _dblNotional);
 
-		mapResult.put ("DirtyPV", dblDirtyFloatingPV * dblNotlFactor);
+		mapResult.put ("DirtyPV", dblDirtyFloatingPV * _dblNotional);
 
-		mapResult.put ("Upfront", dblCleanFloatingPV * dblNotlFactor);
+		mapResult.put ("Upfront", dblCleanFloatingPV * _dblNotional);
 
 		mapResult.put ("FairPremium", dblCleanFloatingPV / dblCleanDV01);
 
@@ -590,12 +600,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblValueNotional = java.lang.Double.NaN;
 
 		try {
-			dblValueNotional = getNotional (valParams._dblValue);
+			dblValueNotional = getNotional (valParams.valueDate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
-		if (org.drip.math.common.NumberUtil.IsValid (dblValueNotional)) {
+		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 			double dblPrice = 100. * (1. + (dblCleanFloatingPV / _dblNotional / dblValueNotional));
 
 			mapResult.put ("Price", dblPrice);
@@ -657,13 +667,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == mktParams || null ==
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
 			mktParams.getDiscountCurve())
 			return null;
 
@@ -677,28 +687,29 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 		try {
-			org.drip.math.calculus.WengertJacobian wjPVDFMicroJack = null;
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
-			org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
 
-				if (dblPeriodPayDate < valParams._dblValue) continue;
+				if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-				org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 					(p.getStartDate(), p.getEndDate());
 
-				org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
+					(dblPeriodPayDate);
 
 				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-				double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+				double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-				double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+				double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 				if (null == wjPVDFMicroJack)
-					wjPVDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+					wjPVDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 						wjPeriodFwdRateDF.numParameters());
 
 				double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
@@ -716,7 +727,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				}
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams._dblCashPay, dblPV, dc, wjPVDFMicroJack) ?
+			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
 				wjPVDFMicroJack : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -725,14 +736,14 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.math.calculus.WengertJacobian calcQuoteDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
 		final java.lang.String strQuote,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams._dblValue >= _dblMaturity || null == strQuote || null == mktParams
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null == mktParams
 			|| null == mktParams.getDiscountCurve())
 			return null;
 
@@ -747,29 +758,29 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 			try {
-				org.drip.math.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
+				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.definition.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
-				for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();
 
-					if (dblPeriodPayDate < valParams._dblValue) continue;
+					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-					org.drip.math.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJacobian
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
 						(p.getStartDate(), p.getEndDate());
 
-					org.drip.math.calculus.WengertJacobian wjPeriodPayDFDF = dc.getDFJacobian
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
 						(dblPeriodPayDate);
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dc.calcLIBOR (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
 
-					double dblPeriodPayDF = dc.getDF (dblPeriodPayDate);
+					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
-						wjSwapRateDFMicroJack = new org.drip.math.calculus.WengertJacobian (1,
+						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
 					double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
@@ -790,6 +801,71 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				return wjSwapRateDFMicroJack;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
+	{
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == lsmm ||
+			!(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
+				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
+					(lsmm.getID()))
+			return null;
+
+		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
+			(lsmm.getQuantificationMetric()) ||
+				org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+					(lsmm.getQuantificationMetric())) {
+			if (null == mktParams) return null;
+
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+
+			if (null == dc) return null;
+
+			org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+				org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+			double dblDirtyCV100 = 0.;
+			boolean bFirstPeriod = true;
+
+			try {
+				for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+					if (null == period) continue;
+
+					double dblPayDate = period.getPayDate();
+
+					if (valParams.valueDate() > dblPayDate) continue;
+
+					double dblPeriodDCF = period.getCouponDCF();
+
+					if (bFirstPeriod) {
+						bFirstPeriod = false;
+
+						dblPeriodDCF -= period.getAccrualDCF (valParams.valueDate());
+					}
+
+					double dblPeriodCV100 = dblPeriodDCF * dc.df (dblPayDate) * getNotional (dblPayDate);
+
+					dblDirtyCV100 += dblPeriodCV100;
+
+					if (!prwc.addPredictorResponseWeight (dblPayDate, dblPeriodCV100 * _dblNotional))
+						return null;
+				}
+
+				return prwc.updateValue (-1. * dblDirtyCV100 * _dblNotional * lsmm.getMeasureQuoteValue()) ?
+					prwc : null;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
 			}
 		}
 
@@ -834,10 +910,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		sb.append (_dblEffective + getFieldDelimiter());
 
-		if (null == _strFloatingRateIndex || _strFloatingRateIndex.isEmpty())
+		if (null == _fri)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (_strFloatingRateIndex + getFieldDelimiter());
+			sb.append (new java.lang.String (_fri.serialize()) + getFieldDelimiter());
 
 		if (null == _notlSchedule)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
@@ -856,7 +932,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				if (null == p) continue;
 
 				if (bFirstEntry)
@@ -894,9 +970,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		FloatingStream fs = new org.drip.product.rates.FloatingStream
 			(org.drip.analytics.date.JulianDate.Today().getJulian(),
-				org.drip.analytics.date.JulianDate.Today().addTenor ("4Y").getJulian(), 0.03, 2, "30/360",
-					"30/360", "JPY-LIBOR", false, null, null, null, null, null, null, null, null, null, 100.,
-						"JPY", "JPY");
+				org.drip.analytics.date.JulianDate.Today().addTenor ("4Y").getJulian(), 0.03,
+					org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 2, "30/360", "30/360",
+						false, null, null, null, null, null, null, null, null, null, 100., "JPY", "JPY");
 
 		byte[] abFS = fs.serialize();
 

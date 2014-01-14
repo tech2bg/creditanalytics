@@ -6,6 +6,7 @@ package org.drip.param.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -41,7 +42,7 @@ package org.drip.param.definition;
 public abstract class ComponentQuote extends org.drip.service.stream.Serializer {
 
 	/**
-	 * Adds a regular or a market quote for the component
+	 * Add a regular or a market quote for the component
 	 * 
 	 * @param strQuoteField The quote field
 	 * @param q Quote to be added
@@ -67,7 +68,7 @@ public abstract class ComponentQuote extends org.drip.service.stream.Serializer 
 		final org.drip.param.definition.Quote q);
 
 	/**
-	 * Removes the market quote
+	 * Remove the market quote
 	 */
 
 	public abstract boolean removeMarketQuote();
@@ -84,7 +85,7 @@ public abstract class ComponentQuote extends org.drip.service.stream.Serializer 
 		final java.lang.String strQuoteField);
 
 	/**
-	 * Returns the market quote object
+	 * Return the market quote object
 	 * 
 	 * @return Quote object
 	 */
@@ -107,5 +108,6 @@ public abstract class ComponentQuote extends org.drip.service.stream.Serializer 
 	 * @return Success (true) or failure (false)
 	 */
 
-	public abstract boolean removeQuote (final java.lang.String strQuoteField);
+	public abstract boolean removeQuote (
+		final java.lang.String strQuoteField);
 }

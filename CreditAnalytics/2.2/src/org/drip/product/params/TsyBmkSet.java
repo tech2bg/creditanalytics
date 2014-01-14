@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -32,7 +33,7 @@ package org.drip.product.params;
 
 /**
  * TsyBmkSet contains the treasury benchmark set - the primary treasury benchmark, and an array of secondary
- *  treasury benchmarks.
+ *  treasury benchmarks. It exports serialization into and de-serialization out of byte arrays.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -42,7 +43,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 	private java.lang.String[] _astrSecBmk = null;
 
 	/**
-	 * Constructs the treasury benchmark set from the primary treasury benchmark, and an array of secondary
+	 * Construct the treasury benchmark set from the primary treasury benchmark, and an array of secondary
 	 * 	treasury benchmarks
 	 * 
 	 * @param strBmkPrimary Primary Treasury Benchmark
@@ -83,7 +84,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 		if (null == strSerializedTsyBmkSet || strSerializedTsyBmkSet.isEmpty())
 			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedTsyBmkSet,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedTsyBmkSet,
 			getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
@@ -105,7 +106,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_astrSecBmk = null;
 		else {
-			_astrSecBmk = org.drip.math.common.StringUtil.Split (astrField[2],
+			_astrSecBmk = org.drip.quant.common.StringUtil.Split (astrField[2],
 				getCollectionRecordDelimiter());
 
 			if (null == _astrSecBmk || 0 == _astrSecBmk.length) {
@@ -118,7 +119,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Returns the Primary Treasury Benchmark
+	 * Return the Primary Treasury Benchmark
 	 * 
 	 * @return Primary Treasury Benchmark
 	 */
@@ -129,7 +130,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Returns an Array of Secondary Treasury Benchmarks
+	 * Return an Array of Secondary Treasury Benchmarks
 	 * 
 	 * @return  Array of Secondary Treasury Benchmarks
 	 */

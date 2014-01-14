@@ -6,6 +6,7 @@ package org.drip.regression.fixedpointfinder;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -37,7 +38,7 @@ package org.drip.regression.fixedpointfinder;
  */
 
 public class CompoundBracketingRegressorSet implements org.drip.regression.core.RegressorSet {
-	private org.drip.math.function.AbstractUnivariate _of = null;
+	private org.drip.quant.function1D.AbstractUnivariate _of = null;
 	private java.lang.String _strRegressionScenario = "org.drip.math.solver1D.FixedPointFinderCompound";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -45,7 +46,7 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 
 	public CompoundBracketingRegressorSet()
 	{
-		_of = new org.drip.math.function.AbstractUnivariate (null)
+		_of = new org.drip.quant.function1D.AbstractUnivariate (null)
 		{
 			public double evaluate (
 				final double dblVariate)
@@ -68,6 +69,14 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 
 				return 1. + 3. * dblVariate - 2. * java.lang.Math.sin (dblVariate);
 			}
+
+			@Override public double integrate (
+				final double dblBegin,
+				final double dblEnd)
+				throws java.lang.Exception
+			{
+				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			}
 		};
 	}
 
@@ -77,13 +86,13 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("BrentFixedPointFinder",
 				_strRegressionScenario)
 			{
-				org.drip.math.solver1D.FixedPointFinderBrent fpfbBrent = null;
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopBrent = null;
+				org.drip.quant.solver1D.FixedPointFinderBrent fpfbBrent = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopBrent = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbBrent = new org.drip.math.solver1D.FixedPointFinderBrent (0., _of);
+						fpfbBrent = new org.drip.quant.solver1D.FixedPointFinderBrent (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -112,13 +121,13 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("ZhengFixedPointFinder",
 				_strRegressionScenario)
 			{
-				org.drip.math.solver1D.FixedPointFinderZheng fpfbZheng = null;
-				org.drip.math.solver1D.FixedPointFinderOutput fpfopZheng = null;
+				org.drip.quant.solver1D.FixedPointFinderZheng fpfbZheng = null;
+				org.drip.quant.solver1D.FixedPointFinderOutput fpfopZheng = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbZheng = new org.drip.math.solver1D.FixedPointFinderZheng (0., _of);
+						fpfbZheng = new org.drip.quant.solver1D.FixedPointFinderZheng (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {

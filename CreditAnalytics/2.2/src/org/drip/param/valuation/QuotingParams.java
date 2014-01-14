@@ -6,6 +6,7 @@ package org.drip.param.valuation;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -39,42 +40,12 @@ package org.drip.param.valuation;
  */
 
 public class QuotingParams extends org.drip.service.stream.Serializer {
-
-	/**
-	 * Yield Quoting day count
-	 */
-
-	public java.lang.String _strYieldDC = "";
-
-	/**
-	 * Yield Quoting Frequency
-	 */
-
-	public int _iYieldFrequency = 0;
-
-	/**
-	 * Yield Apply EOM Adjustment?
-	 */
-
-	public boolean _bYieldApplyEOMAdj = false;
-
-	/**
-	 * Yield Act Act DC Params
-	 */
-
-	public org.drip.analytics.daycount.ActActDCParams _aapYield = null;
-
-	/**
-	 * Yield Calendar
-	 */
-
-	public java.lang.String _strYieldCalendar = "";
-
-	/**
-	 * Is Spread Quoted
-	 */
-
-	public boolean _bSpreadQuoted = false;
+	private int _iYieldFrequency = 0;
+	private boolean _bSpreadQuoted = false;
+	private java.lang.String _strYieldDC = "";
+	private boolean _bYieldApplyEOMAdj = false;
+	private java.lang.String _strYieldCalendar = "";
+	private org.drip.analytics.daycount.ActActDCParams _aapYield = null;
 
 	/**
 	 * QuotingParams de-serialization from input byte array
@@ -102,7 +73,7 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 		if (null == strSerializedQuotingParams || strSerializedQuotingParams.isEmpty())
 			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedQuotingParams,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedQuotingParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)
@@ -155,7 +126,7 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Constructs QuotingParams from the Day Count and the Frequency parameters
+	 * Construct QuotingParams from the Day Count and the Frequency parameters
 	 * 
 	 * @param strDC Quoting Day Count
 	 * @param iFrequency Quoting Frequency
@@ -181,6 +152,72 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 		_bSpreadQuoted = bSpreadQuoted;
 		_strYieldCalendar = strCalendar;
 		_bYieldApplyEOMAdj = bApplyEOMAdj;
+	}
+
+	/**
+	 * Retrieve the Yield Act Act Day Count Parameters
+	 * 
+	 * @return The Yield Act Act Day Count Parameters
+	 */
+
+	public org.drip.analytics.daycount.ActActDCParams yieldAAP()
+	{
+		return _aapYield;
+	}
+
+	/**
+	 * Retrieve the Yield Day Count
+	 * 
+	 * @return The Yield Day Count
+	 */
+
+	public java.lang.String yieldDayCount()
+	{
+		return _strYieldDC;
+	}
+
+	/**
+	 * Retrieve the Yield Frequency
+	 * 
+	 * @return The Yield Frequency
+	 */
+
+	public int yieldFreq()
+	{
+		return _iYieldFrequency;
+	}
+
+	/**
+	 * Indicate if spread Quoted
+	 * 
+	 * @return TRUE => Spread Quoted
+	 */
+
+	public boolean isSpreadQuoted()
+	{
+		return _bSpreadQuoted;
+	}
+
+	/**
+	 * Retrieve the Yield Calendar
+	 * 
+	 * @return The Yield Calendar
+	 */
+
+	public java.lang.String yieldCalendar()
+	{
+		return _strYieldCalendar;
+	}
+
+	/**
+	 * Indicate if EOM Adjustment is to be made for the Yield Calculation
+	 * 
+	 * @return TRUE => EOM Adjustment is to be made for the Yield Calculation
+	 */
+
+	public boolean applyYieldEOMAdj()
+	{
+		return _bYieldApplyEOMAdj;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()

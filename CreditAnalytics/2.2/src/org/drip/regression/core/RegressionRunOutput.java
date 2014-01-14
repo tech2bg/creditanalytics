@@ -6,6 +6,7 @@ package org.drip.regression.core;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -36,6 +37,8 @@ package org.drip.regression.core;
  * 	- The regression scenario that was executed
  * 	- The Completion time for the regression module
  * 	- The Regression Run Detail for the regression run
+ * 
+ * Another function displays the contents of this RegressionRunOutput instance.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -81,11 +84,11 @@ public class RegressionRunOutput {
 	{
 		if (null == (_strRegressionScenarioName = strRegressionScenarioName) ||
 			_strRegressionScenarioName.isEmpty())
-			throw new java.lang.Exception ("Invalid Regression Scenario Name!");
+			throw new java.lang.Exception ("RegressionRunOutput ctr: Invalid Regression Scenario Name!");
 	}
 
 	/**
-	 * Sets the termination status for the regression output
+	 * Set the termination status for the regression output
 	 * 
 	 * @param bSuccess TRUE => Regression Run succeeded
 	 * 

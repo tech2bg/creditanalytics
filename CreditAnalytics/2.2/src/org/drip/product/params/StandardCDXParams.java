@@ -6,6 +6,7 @@ package org.drip.product.params;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -37,8 +38,23 @@ package org.drip.product.params;
  */
 
 public class StandardCDXParams {
+
+	/**
+	 * Number of CDX Components
+	 */
+
 	public int _iNumComponents = 0;
+
+	/**
+	 * Currency
+	 */
+
 	public java.lang.String _strCurrency = "";
+
+	/**
+	 * CDX Coupon
+	 */
+
 	public double _dblCoupon = java.lang.Double.NaN;
 
 	/**
@@ -58,7 +74,7 @@ public class StandardCDXParams {
 		throws java.lang.Exception
 	{
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblCoupon = dblCoupon))
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon))
 			throw new java.lang.Exception ("StandardCDXParams ctr => Invalid inputs");
 
 		_iNumComponents = iNumComponents;

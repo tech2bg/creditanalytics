@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -103,7 +104,7 @@ public class Convention {
 	private static final boolean UpdateDCCalcMap (
 		final org.drip.analytics.daycount.DCFCalculator dcfCalc)
 	{
-		for (java.lang.String strDC : dcfCalc.getAlternateNames())
+		for (java.lang.String strDC : dcfCalc.alternateNames())
 			s_mapDCCalc.put (strDC, dcfCalc);
 
 		return true;
@@ -413,7 +414,7 @@ public class Convention {
 		final double dblDate,
 		final int iHolType)
 	{
-		if (null == strCalendarSet || strCalendarSet.isEmpty() || !org.drip.math.common.NumberUtil.IsValid
+		if (null == strCalendarSet || strCalendarSet.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate))
 			return false;
 
@@ -495,7 +496,7 @@ public class Convention {
 	}
 
 	/**
-	 * Gets the week end days for the given holiday calendar set
+	 * Get the week end days for the given holiday calendar set
 	 * 
 	 * @param strCalendarSet Holiday calendar set
 	 * 
@@ -534,7 +535,7 @@ public class Convention {
 	}
 
 	/**
-	 * Gets all the available DRIP day count conventions
+	 * Get all available DRIP day count conventions
 	 * 
 	 * @return Available DRIP day count conventions
 	 */
@@ -578,8 +579,8 @@ public class Convention {
 		return sbDCSet.toString();
 	}
 	/**
-	 * Calculates the accrual fraction in years between 2 given days for the given day count convention and
-	 * 		the other parameters
+	 * Calculate the accrual fraction in years between 2 given days for the given day count convention and
+	 * 	the other parameters
 	 * 
 	 * @param dblStart Start Date
 	 * @param dblEnd End Date
@@ -614,13 +615,14 @@ public class Convention {
 			return dfcCalc.yearFraction (dblStart, dblEnd, bApplyEOMAdj, dblMaturity, actactParams,
 				strCalendar);
 
-		System.out.println ("Unknown DC: " + strDayCount + "; defaulting to Actual/365.25");
+		System.out.println ("Convention::YearFraction => Unknown DC: " + strDayCount +
+			"; defaulting to Actual/365.25");
 
 		return (dblEnd - dblStart) / 365.25;
 	}
 
 	/**
-	 * Rolls the given date in accordance with the roll mode and the calendar set
+	 * Roll the given date in accordance with the roll mode and the calendar set
 	 * 
 	 * @param dblDate Date to be rolled
 	 * @param iRollMode Roll Mode (one of DR_ACT, DR_FOLL, DR_MOD_FOLL, DR_PREV, or DR_MOD_PREV)
@@ -637,8 +639,8 @@ public class Convention {
 		final java.lang.String strCalendarSet)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Cannot roll a NaN date");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("Convention::RollDate => Cannot roll a NaN date");
 
 		if (null == strCalendarSet || strCalendarSet.isEmpty() || DR_ACTUAL == iRollMode) return dblDate;
 
@@ -676,7 +678,7 @@ public class Convention {
 	}
 
 	/**
-	 * Indicates whether the given date is a holiday in the specified location(s)
+	 * Indicate whether the given date is a holiday in the specified location(s)
 	 * 
 	 * @param dblDate Date
 	 * @param strCalendar Location Calendar set
@@ -693,8 +695,8 @@ public class Convention {
 		final int iHolType)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Cannot a NaN date for holiday!");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("Convention::IsHoliday => Cannot a NaN date for holiday!");
 
 		return isLocSpecificHoliday ((null == strCalendar || strCalendar.isEmpty() || "".equalsIgnoreCase
 			(strCalendar)) ? "USD" : strCalendar, dblDate, iHolType);
@@ -720,7 +722,7 @@ public class Convention {
 	}
 
 	/**
-	 * Calculates the number of business days between the start and the end dates
+	 * Calculate the number of business days between the start and the end dates
 	 * 
 	 * @param dblStart Start Date
 	 * @param dblFinish End Date
@@ -737,9 +739,9 @@ public class Convention {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblFinish))
-			throw new java.lang.Exception ("Cannot a NaN date for a bus day!");
+			throw new java.lang.Exception ("Convention::BusDays => Cannot a NaN date for a bus day!");
 
 		int iNumBusDays = 0;
 		double dblEnd = dblFinish;
@@ -758,7 +760,7 @@ public class Convention {
 	}
 
 	/**
-	 * Calculates the set of holidays between the start and the end dates
+	 * Calculate the set of holidays between the start and the end dates
 	 * 
 	 * @param dblStart Start Date
 	 * @param dblFinish End Date
@@ -774,7 +776,7 @@ public class Convention {
 		final double dblFinish,
 		final java.lang.String strCalendar)
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblFinish))
 			return null;
 
@@ -800,7 +802,7 @@ public class Convention {
 	}
 
 	/**
-	 * Calculates the number of holidays between the start and the end dates
+	 * Calculate the number of holidays between the start and the end dates
 	 * 
 	 * @param dblStart Start Date
 	 * @param dblFinish End Date
@@ -817,9 +819,9 @@ public class Convention {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblStart) || !org.drip.math.common.NumberUtil.IsValid
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblFinish))
-			throw new java.lang.Exception ("Cannot have a NaN date for a holiday!");
+			throw new java.lang.Exception ("Convention::Holidays => Cannot have a NaN date for a holiday!");
 
 		int iNumHolidays = 0;
 		double dblEnd = dblFinish;
@@ -838,13 +840,13 @@ public class Convention {
 	}
 
 	/**
-	 * Adjusts the given date in accordance with the adjustment mode and the calendar set
+	 * Adjust the given date in accordance with the adjustment mode and the calendar set
 	 * 
 	 * @param dblDate Date to be rolled
 	 * @param strCalendar Calendar Set to calculate the holidays by
 	 * @param iAdjustMode Adjustment Mode (one of DR_ACT, DR_FOLL, DR_MOD_FOLL, DR_PREV, or DR_MOD_PREV
 	 * 
-	 * @return The adjusted date
+	 * @return The Adjusted Date
 	 * 
 	 * @throws java.lang.Exception Thrown if the date cannot be adjusted
 	 */
@@ -855,8 +857,8 @@ public class Convention {
 		final int iAdjustMode)
 		throws java.lang.Exception
 	{
-		if (!org.drip.math.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Cannot adjust a NaN date!");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("Convention::Adjust => Cannot adjust a NaN date!");
 
 		double dblDateAdjusted = dblDate;
 
@@ -866,7 +868,7 @@ public class Convention {
 	}
 
 	/**
-	 * Adds the specified number of business days and adjusts it according to the calendar set
+	 * Add the specified number of business days and adjusts it according to the calendar set
 	 * 
 	 * @param dblDate Date to be rolled
 	 * @param iNumDays Number of days to add

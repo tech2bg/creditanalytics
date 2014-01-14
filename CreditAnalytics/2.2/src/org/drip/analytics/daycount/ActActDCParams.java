@@ -6,6 +6,7 @@ package org.drip.analytics.daycount;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -31,31 +32,17 @@ package org.drip.analytics.daycount;
  */
 
 /**
- * Class contains parameters to represent the Act/Act day count - the frequency, and the reference period
- * 	start/end dates.
+ * This class contains parameters to represent Act/Act day count. It exports the following functionality:
+ * 	- Frequency/Start/End Date Fields
+ *  - Serialization/De-serialization to and from Byte Arrays
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class ActActDCParams extends org.drip.service.stream.Serializer {
-
-	/**
-	 * The Frequency
-	 */
-
-	public int _iFreq = 0;
-
-	/**
-	 * The ActAct period end date
-	 */
-
-	public double _dblEnd = java.lang.Double.NaN;
-
-	/**
-	 * The ActAct period start date
-	 */
-
-	public double _dblStart = java.lang.Double.NaN;
+	private int _iFreq = 0;
+	private double _dblEnd = java.lang.Double.NaN;
+	private double _dblStart = java.lang.Double.NaN;
 
 	/**
 	 * De-serialization of ActActDCParams from byte stream
@@ -82,7 +69,7 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 		if (null == strAAP || strAAP.isEmpty())
 			throw new java.lang.Exception ("ActActDCParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strAAP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strAAP, getFieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("ActActDCParams de-serialize: Invalid number of fields");
@@ -126,9 +113,42 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 	{
 		_iFreq = iFreq;
 
-		if (!org.drip.math.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
-			!org.drip.math.common.NumberUtil.IsValid (_dblStart = dblStart))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblStart = dblStart))
 			throw new java.lang.Exception ("ActActDCParams ctr: Invalid inputs");
+	}
+
+	/**
+	 * Retrieve the Frequency
+	 * 
+	 * @return The Frequency
+	 */
+
+	public int freq()
+	{
+		return _iFreq;
+	}
+
+	/**
+	 * Retrieve the Start Date
+	 * 
+	 * @return The Start Date
+	 */
+
+	public double start()
+	{
+		return _dblStart;
+	}
+
+	/**
+	 * Retrieve the End Date
+	 * 
+	 * @return The End Date
+	 */
+
+	public double end()
+	{
+		return _dblEnd;
 	}
 
 	@Override public byte[] serialize()

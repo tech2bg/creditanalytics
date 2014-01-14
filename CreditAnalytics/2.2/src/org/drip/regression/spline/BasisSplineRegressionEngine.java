@@ -6,6 +6,7 @@ package org.drip.regression.spline;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -43,15 +44,10 @@ public class BasisSplineRegressionEngine extends org.drip.regression.core.Regres
 		super (iNumRuns, iRegressionDetail);
 	}
 
-	@Override public boolean initRegressionEnv()
-	{
-		return super.initRegressionEnv();
-	}
-
 	public static void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
-		{
+	{
 		BasisSplineRegressionEngine bsre = new BasisSplineRegressionEngine (12,
 			org.drip.regression.core.RegressionEngine.REGRESSION_DETAIL_MODULE_UNIT_DECOMPOSED |
 				org.drip.regression.core.RegressionEngine.REGRESSION_DETAIL_STATS);

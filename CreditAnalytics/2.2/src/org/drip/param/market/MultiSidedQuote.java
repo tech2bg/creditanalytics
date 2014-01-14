@@ -6,6 +6,7 @@ package org.drip.param.market;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -48,7 +49,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 			final double dblSize)
 			throws java.lang.Exception
 		{
-			if (!org.drip.math.common.NumberUtil.IsValid (_dblQuote = dblQuote))
+			if (!org.drip.quant.common.NumberUtil.IsValid (_dblQuote = dblQuote))
 				throw new java.lang.Exception ("MultiSidedQuote::SidedQuote ctr: Invalid Inputs!");
 
 			_dblSize = dblSize;
@@ -74,7 +75,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 			if (null == strSidedQuote || strSidedQuote.isEmpty())
 				throw new java.lang.Exception ("MultiSidedQuote::SidedQuote de-serializer: Invalid state");
 
-			java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSidedQuote,
+			java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSidedQuote,
 				getFieldDelimiter());
 
 			if (null == astrField || 4 > astrField.length)
@@ -121,7 +122,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		boolean setQuote (
 			final double dblQuote)
 		{
-			if (!org.drip.math.common.NumberUtil.IsValid (dblQuote)) return false;
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblQuote)) return false;
 
 			_dblQuote = dblQuote;
 			return true;
@@ -130,7 +131,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		boolean setSize (
 			final double dblSize)
 		{
-			if (!org.drip.math.common.NumberUtil.IsValid (dblSize)) return false;
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblSize)) return false;
 
 			_dblSize = dblSize;
 			return true;
@@ -186,7 +187,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		final double dblQuote)
 		throws java.lang.Exception
 	{
-		if (null == strSide || strSide.isEmpty() || !org.drip.math.common.NumberUtil.IsValid (dblQuote))
+		if (null == strSide || strSide.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid (dblQuote))
 			throw new java.lang.Exception ("MultiSidedQuote ctr: Invalid Side/Quote/Size!");
 
 		_mapSidedQuote.put (strSide, new SidedQuote (dblQuote, java.lang.Double.NaN));
@@ -208,7 +209,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		final double dblSize)
 		throws java.lang.Exception
 	{
-		if (null == strSide || strSide.isEmpty() || !org.drip.math.common.NumberUtil.IsValid (dblQuote))
+		if (null == strSide || strSide.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid (dblQuote))
 			throw new java.lang.Exception ("MultiSidedQuote ctr: Invalid Side/Quote/Size!");
 
 		_mapSidedQuote.put (strSide, new SidedQuote (dblQuote, dblSize));
@@ -240,7 +241,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		if (null == strSerializedQuote || strSerializedQuote.isEmpty())
 			throw new java.lang.Exception ("MultiSidedQuote de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split (strSerializedQuote,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedQuote,
 			getFieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
@@ -250,7 +251,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 
 		if (null != astrField[1] && !astrField[1].isEmpty() &&
 			!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1])) {
-			java.lang.String[] astrRecord = org.drip.math.common.StringUtil.Split (astrField[1],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[1],
 				getCollectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -260,7 +261,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
 
-					java.lang.String[] astrKVPair = org.drip.math.common.StringUtil.Split (astrRecord[i],
+					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
 						getCollectionKeyValueDelimiter());
 					
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
@@ -302,7 +303,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		final double dblQuote,
 		final double dblSize)
 	{
-		if (null != strSide && !strSide.isEmpty() && !org.drip.math.common.NumberUtil.IsValid (dblQuote))
+		if (null != strSide && !strSide.isEmpty() && !org.drip.quant.common.NumberUtil.IsValid (dblQuote))
 			return false;
 
 		try {

@@ -6,6 +6,7 @@ package org.drip.service.env;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -44,7 +45,7 @@ public class CDSManager {
 	private static final boolean s_bLoadStaticCurves = false;
 
 	/**
-	 * Retrieves all the credit curves for a given date
+	 * Retrieve all the credit curves for a given date
 	 * 
 	 * @param stmt SQL Statement object representing the executable query
 	 * @param dtEOD EOD date
@@ -76,7 +77,7 @@ public class CDSManager {
 	}
 
 	/**
-	 * Saves the EOD CDS measures for a credit curve in a given EOD
+	 * Save the EOD CDS measures for a credit curve in a given EOD
 	 * 
 	 * @param stmt SQL Statement representing the executable query
 	 * @param mpc MarketParamContainer with all the closing discount/credit curves
@@ -98,14 +99,14 @@ public class CDSManager {
 			mpc.getCCSG() || null == mpc.getCCSG().get (strSPN))
 			return false;
 
-		org.drip.param.definition.CreditScenarioCurve ccsg = mpc.getCCSG().get (strSPN);
+		org.drip.param.definition.ScenarioCreditCurve ccsg = mpc.getCCSG().get (strSPN);
 
-		if (null == ccsg.getCCBase() || null == ccsg.getCCBase().getCalibComponents()) return false;
+		if (null == ccsg.getCCBase() || null == ccsg.getCCBase().calibComp()) return false;
 
 		org.drip.analytics.definition.CreditCurve cc = ccsg.getCCBase();
 
 		org.drip.product.definition.CreditDefaultSwap[] aCDS =
-			(org.drip.product.definition.CreditDefaultSwap[]) cc.getCalibComponents();
+			(org.drip.product.definition.CreditDefaultSwap[]) cc.calibComp();
 
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
@@ -320,7 +321,7 @@ public class CDSManager {
 	}
 
 	/**
-	 * Saves the EOD measures corresponding to all the credit curves for a given EOD and currency
+	 * Save the EOD measures corresponding to all the credit curves for a given EOD and currency
 	 * 
 	 * @param mpc MarketParamContainer containing the closing discount/credit curves
 	 * @param stmt SQL Statement representing the executable query
@@ -340,7 +341,7 @@ public class CDSManager {
 
 		boolean bAllSPNSuccess = true;
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.CreditScenarioCurve> meCCSG
+		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG
 			: mpc.getCCSG().entrySet()) {
 			if (null == meCCSG.getKey()) continue;
 
@@ -351,7 +352,7 @@ public class CDSManager {
 	}
 
 	/**
-	 * Saves the EOD CDS measures for a given curve and a EOD using the USD curve
+	 * Save the EOD CDS measures for a given curve and a EOD using the USD curve
 	 * 
 	 * @param mpc MarketParamContainer with all the closing credit curves
 	 * @param stmt SQL Statement representing the executable query
@@ -379,7 +380,7 @@ public class CDSManager {
 	}
 
 	/**
-	 * Saves the EOD measures corresponding to all the credit curves for a given EOD using the USD curve
+	 * Save the EOD measures corresponding to all the credit curves for a given EOD using the USD curve
 	 * 
 	 * @param stmt SQL Statement representing the executable query
 	 * @param dtEOD EOD date
@@ -423,7 +424,7 @@ public class CDSManager {
 	}
 
 	/**
-	 * Saves the EOD measures corresponding to all the credit curves between a pair of EODs using the USD
+	 * Save the EOD measures corresponding to all the credit curves between a pair of EODs using the USD
 	 *  curve
 	 * 
 	 * @param stmt SQL Statement representing the executable query

@@ -6,6 +6,7 @@ package org.drip.param.config;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -174,7 +175,7 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Creates a LocHolidays object from the XML Document and the Location Tag
+	 * Create a LocHolidays object from the XML Document and the Location Tag
 	 * 
 	 * @param doc XML Document
 	 * @param strLoc Location Tag
@@ -247,7 +248,7 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Gets the logger location from the XML Configuration file
+	 * Get the logger location from the XML Configuration file
 	 * 
 	 * @param strConfigFile XML Configuration file
 	 * 
@@ -271,7 +272,7 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Connects to the analytics server from the connection parameters set in the XML Configuration file
+	 * Connect to the analytics server from the connection parameters set in the XML Configuration file
 	 * 
 	 * @param strConfigFile XML Configuration file
 	 * 
@@ -333,7 +334,7 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Loads the map of the holiday calendars from the entries set in the XML Configuration file
+	 * Load the map of the holiday calendars from the entries set in the XML Configuration file
 	 * 
 	 * @param strConfigFile XML Configuration file
 	 * 
@@ -408,7 +409,7 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Loads the map of the holiday calendars from the database settings set in the XML Configuration file
+	 * Load the map of the holiday calendars from the database settings set in the XML Configuration file
 	 * 
 	 * @param strConfigFile XML Configuration file
 	 * 
@@ -442,9 +443,9 @@ public class ConfigLoader {
 					if (null == lh) lh = new org.drip.analytics.holiday.Locale();
 
 					lh.addStaticHoliday (org.drip.analytics.date.JulianDate.CreateFromYMD
-						(org.drip.math.common.DateUtil.GetYear (dtSQLHoliday),
-							org.drip.math.common.DateUtil.GetMonth (dtSQLHoliday),
-								org.drip.math.common.DateUtil.GetYear (dtSQLHoliday)), "");
+						(org.drip.quant.common.DateUtil.GetYear (dtSQLHoliday),
+							org.drip.quant.common.DateUtil.GetMonth (dtSQLHoliday),
+								org.drip.quant.common.DateUtil.GetYear (dtSQLHoliday)), "");
 
 					mapHols.put (strLocation, lh);
 				}

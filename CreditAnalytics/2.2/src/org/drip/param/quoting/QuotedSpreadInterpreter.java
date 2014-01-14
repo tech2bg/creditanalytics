@@ -6,6 +6,7 @@ package org.drip.param.quoting;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
@@ -107,7 +108,7 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 		if (null == strSerializedQuotedSpreadInterpreter || strSerializedQuotedSpreadInterpreter.isEmpty())
 			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.math.common.StringUtil.Split
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedQuotedSpreadInterpreter, getFieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)

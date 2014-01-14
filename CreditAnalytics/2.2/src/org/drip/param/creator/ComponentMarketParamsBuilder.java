@@ -6,6 +6,7 @@ package org.drip.param.creator;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
@@ -39,7 +40,7 @@ package org.drip.param.creator;
 public class ComponentMarketParamsBuilder {
 
 	/**
-	 * Creates a CMP with the rates discount curve alone
+	 * Create a CMP with the rates discount curve alone
 	 * 
 	 * @param dc Rates Discount Curve
 	 * 
@@ -47,31 +48,31 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc)
+		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, null, null, null,
 			null);
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve and the forward
+	 * Create a CMP with the discount curve and the forward Curve
 	 * 
-	 * @param dc Rates Discount Curve
-	 * @param dcForward Forward Discount Curve
+	 * @param dc Discount Curve
+	 * @param fc Forward Curve
 	 * 
 	 * @return CMP
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeFloaterDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcForward)
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.ForwardCurve fc)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, null, null, null, null,
-			null, null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, fc, null, null, null, null, null,
+			null);
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve and the treasury discount curve alone
+	 * Create a CMP with the rates discount curve and the treasury discount curve alone
 	 * 
 	 * @param dc Rates Discount Curve
 	 * @param dcTSY Treasury Discount Curve
@@ -80,15 +81,15 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY)
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, null, null, null, null,
 			null);
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve, the treasury discount curve, and the EDSF discount curve
+	 * Create a CMP with the rates discount curve, the treasury discount curve, and the EDSF discount curve
 	 * 
 	 * @param dc Rates Discount Curve
 	 * @param dcTSY Treasury Discount Curve
@@ -98,16 +99,16 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF)
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, null, null, null,
 			null);
 	}
 
 	/**
-	 * Creates a CMP with the discount curve and the credit curve
+	 * Create a CMP with the discount curve and the credit curve
 	 * 
 	 * @param dc Discount Curve
 	 * @param cc Credit Curve
@@ -116,7 +117,7 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams MakeCreditCMP (
-		final org.drip.analytics.definition.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, cc, null, null,
@@ -124,7 +125,7 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve, the treasury discount curve, the EDSF discount curve, the
+	 * Create a CMP with the rates discount curve, the treasury discount curve, the EDSF discount curve, the
 	 * 	credit curve, the component quote, the map of treasury benchmark quotes, and the double map of
 	 * 	date/rate index and fixings
 	 * 
@@ -138,9 +139,9 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
@@ -159,12 +160,12 @@ public class ComponentMarketParamsBuilder {
 	}
 
 	/**
-	 * Creates a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
+	 * Create a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
 	 *  the EDSF discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
 	 *  and the double map of date/rate index and fixings
 	 * 
-	 * @param dc Rates Discount Curve
-	 * @param dcForward Forward Discount Curve
+	 * @param dc Discount Curve
+	 * @param fc Forward Curve
 	 * @param dcTSY Treasury Discount Curve
 	 * @param dcEDSF EDSF Discount Curve
 	 * @param cc Credit Curve
@@ -174,10 +175,10 @@ public class ComponentMarketParamsBuilder {
 	 */
 
 	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.analytics.definition.DiscountCurve dcForward,
-		final org.drip.analytics.definition.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.DiscountCurve dcEDSF,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.ForwardCurve fc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
@@ -186,8 +187,8 @@ public class ComponentMarketParamsBuilder {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, dcForward, dcTSY, dcEDSF, cc,
-				compQuote, mTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, fc, dcTSY, dcEDSF, cc, compQuote,
+				mTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

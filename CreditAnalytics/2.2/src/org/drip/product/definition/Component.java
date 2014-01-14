@@ -6,6 +6,7 @@ package org.drip.product.definition;
  */
 
 /*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
@@ -51,17 +52,52 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		throws java.lang.Exception
 	{
 		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
-			throw new java.lang.Exception ("Invalid params into Component.getMeasure!");
+			throw new java.lang.Exception ("Component.getMeasure => Invalid Inputs");
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
 			if (null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure)) return me.getValue();
 		}
 
-		throw new java.lang.Exception (strMeasure + " not a valid measure!");
+		throw new java.lang.Exception ("Component.getMeasure => Invalid Measure: " + strMeasure);
+	}
+
+	protected boolean adjustPVDFMicroJackForCashSettle (
+		final double dblSettleDate,
+		final double dblPV,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack)
+	{
+		org.drip.quant.calculus.WengertJacobian wjCashSettleDFDF = dc.jackDDFDQuote (dblSettleDate);
+
+		if (null == wjCashSettleDFDF) return false;
+
+		double dblDFCashSettle = java.lang.Double.NaN;
+
+		int iNumParameters = wjCashSettleDFDF.numParameters();
+
+		try {
+			dblDFCashSettle = dc.df (dblSettleDate);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return false;
+		}
+
+		if (!wjPVDFMicroJack.scale (1. / dblDFCashSettle)) return false;
+
+		double dblSettleJackAdjust = -1. * dblPV / dblDFCashSettle / dblDFCashSettle;
+
+		for (int k = 0; k < iNumParameters; ++k) {
+			if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, k, dblSettleJackAdjust *
+				wjCashSettleDFDF.getFirstDerivative (0, k)))
+				return false;
+		}
+
+		return true;
 	}
 
 	/**
-	 * Gets the Initial Notional for the Component
+	 * Get the Initial Notional for the Component
 	 * 
 	 * @return Initial Notional
 	 * 
@@ -72,7 +108,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		throws java.lang.Exception;
 
 	/**
-	 * Gets the Notional for the Component at the given date
+	 * Get the Notional for the Component at the given date
 	 * 
 	 * @param dblDate Double date input
 	 * 
@@ -86,7 +122,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		throws java.lang.Exception;
 
 	/**
-	 * Gets the time-weighted Notional for the Component between 2 dates
+	 * Get the time-weighted Notional for the Component between 2 dates
 	 * 
 	 * @param dblDate1 Double date first
 	 * @param dblDate2 Double date second
@@ -102,7 +138,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		throws java.lang.Exception;
 
 	/**
-	 * Gets the component's coupon at the given date
+	 * Get the component's coupon at the given date
 	 * 
 	 * @param dblValue Valuation Date
 	 * @param mktParams Component Market Parameters
@@ -142,7 +178,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	public abstract org.drip.analytics.date.JulianDate getFirstCouponDate();
 
 	/**
-	 * Sets the component's IR, treasury, and credit curve names
+	 * Set the component's IR, treasury, and credit curve names
 	 * 
 	 * @param strIR IR curve name
 	 * @param strIRTSY Treasury Curve Name
@@ -157,15 +193,15 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		final java.lang.String strCC);
 
 	/**
-	 * Gets the component's coupon periods
+	 * Get the Component's Cash Flow Periods
 	 * 
-	 * @return List of the component's coupon periods
+	 * @return List of the Component's Cash Flow Periods
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.CouponPeriod> getCouponPeriod();
+	public abstract java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod();
 
 	/**
-	 * Gets the component cash settlement parameters
+	 * Get the component cash settlement parameters
 	 * 
 	 * @return Cash settlement Parameters
 	 */
@@ -173,7 +209,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	public abstract org.drip.param.valuation.CashSettleParams getCashSettleParams();
 
 	/**
-	 * Generates a full list of the component measures for the full input set of market parameters
+	 * Generate a full list of the component measures for the full input set of market parameters
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
@@ -190,7 +226,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		final org.drip.param.valuation.QuotingParams quotingParams);
 
 	/**
-	 * Retrieves the ordered set of the measure names whose values will be calculated
+	 * Retrieve the ordered set of the measure names whose values will be calculated
 	 * 
 	 * @return Set of Measure Names
 	 */
@@ -198,7 +234,22 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	public abstract java.util.Set<java.lang.String> getMeasureNames();
 
 	/**
-	 * Calculates the value of the given component measure
+	 * Retrieve the Instrument's Imputed Tenor
+	 * 
+	 * @return The Instrument's Imputed Tenor
+	 */
+
+	public java.lang.String tenor()
+	{
+		double dblNumDays = getMaturityDate().getJulian() - getEffectiveDate().getJulian();
+
+		if (365. > dblNumDays) return ((int) (0.5 + (dblNumDays / 30.))) + "M";
+
+		 return ((int) (0.5 + (dblNumDays / 365.))) + "Y";
+	}
+
+	/**
+	 * Calculate the value of the given component measure
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
@@ -223,7 +274,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	}
 
 	/**
-	 * Generates a full list of the component measures for the set of scenario market parameters present in
+	 * Generate a full list of the component measures for the set of scenario market parameters present in
 	 * 	the org.drip.param.definition.MarketParams
 	 * 
 	 * @param valParams ValuationParams
@@ -487,7 +538,7 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 	}
 
 	/**
-	 * Generates a full list of custom measures for the set of scenario market parameters present in
+	 * Generate a full list of custom measures for the set of scenario market parameters present in
 	 * 	the org.drip.param.definition.MarketParams
 	 * 
 	 * @param valParams ValuationParams
@@ -538,40 +589,5 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		}
 
 		return mapCustomOPDelta;
-	}
-
-	protected boolean adjustPVDFMicroJackForCashSettle (
-		final double dblSettleDate,
-		final double dblPV,
-		final org.drip.analytics.definition.DiscountCurve dc,
-		final org.drip.math.calculus.WengertJacobian wjPVDFMicroJack)
-	{
-		org.drip.math.calculus.WengertJacobian wjCashSettleDFDF = dc.getDFJacobian (dblSettleDate);
-
-		if (null == wjCashSettleDFDF) return false;
-
-		double dblDFCashSettle = java.lang.Double.NaN;
-
-		int iNumParameters = wjCashSettleDFDF.numParameters();
-
-		try {
-			dblDFCashSettle = dc.getDF (dblSettleDate);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return false;
-		}
-
-		if (!wjPVDFMicroJack.scale (1. / dblDFCashSettle)) return false;
-
-		double dblSettleJackAdjust = -1. * dblPV / dblDFCashSettle / dblDFCashSettle;
-
-		for (int k = 0; k < iNumParameters; ++k) {
-			if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, k, dblSettleJackAdjust *
-				wjCashSettleDFDF.getFirstDerivative (0, k)))
-				return false;
-		}
-
-		return true;
 	}
 }
