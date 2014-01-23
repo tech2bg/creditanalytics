@@ -1,7 +1,7 @@
 CreditAnalytics
 
 Lakshmi Krishnamurthy
-v2.2, 15 August 2013
+v2.3, 23 January 2014
 
 
 CreditAnalytics and CreditProduct are part of CreditSuite – open suite analytics and trading/valuation system for credit products. Detailed documentation and downloads may be found here.
