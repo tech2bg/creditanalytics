@@ -11,11 +11,11 @@ package org.drip.product.creator;
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ public class RatesStreamBuilder {
 
 			return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., org.drip.product.params.FloatingRateIndex.Create
-					(strFloatingRateIndex), 4, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap,
+					(strFloatingRateIndex), 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap,
 						dap, null, null, -100., strIR, strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

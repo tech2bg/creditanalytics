@@ -11,11 +11,11 @@ package org.drip.product.rates;
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -432,73 +432,57 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams ||
-			null == mktParams.getDiscountCurve())
-			return null;
-
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
 			pricerParams, mktParams, quotingParams);
 
-		if (null == mapMeasures) return null;
-
-		double dblPV = mapMeasures.get ("PV");
+		if (null == mapMeasures || !mapMeasures.containsKey ("SwapRate")) return null;
 
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
-		try {
-			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuoteFloating = _floatStream.jackDDirtyPVDQuote
+			(valParams, pricerParams, mktParams, quotingParams);
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		if (null == jackDDirtyPVDQuoteFloating) return null;
 
-			for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
-				double dblPeriodPayDate = p.getPayDate();
+		int iNumQuote = jackDDirtyPVDQuoteFloating.numParameters();
 
-				if (dblPeriodPayDate < valParams.valueDate()) continue;
+		if (0 == iNumQuote) return null;
 
-				org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
-					(p.getStartDate(), p.getEndDate());
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuoteFixed = _fixStream.jackDDirtyPVDQuote
+			(valParams, pricerParams, mktParams, quotingParams);
 
-				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
-					(dblPeriodPayDate);
+		if (null == jackDDirtyPVDQuoteFixed || iNumQuote != jackDDirtyPVDQuoteFixed.numParameters())
+			return null;
 
-				if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
+		double dblNotionalScaleDown = java.lang.Double.NaN;
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuoteIRS = null;
 
-				double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
+		if (null == jackDDirtyPVDQuoteIRS) {
+			try {
+				dblNotionalScaleDown = 1. / getInitialNotional();
 
-				double dblPeriodPayDF = dc.df (dblPeriodPayDate);
+				jackDDirtyPVDQuoteIRS = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
 
-				if (null == wjPVDFMicroJack)
-					wjPVDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
-						wjPeriodFwdRateDF.numParameters());
-
-				double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
-
-				double dblPeriodDCF = p.getCouponDCF();
-
-				for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
-					double dblPeriodPVDFMicroJack = dblPeriodDCF * ((dblParSwapRate - dblForwardRate) *
-						wjPeriodPayDFDF.getFirstDerivative (0, k) - dblPeriodPayDF *
-							wjPeriodFwdRateDF.getFirstDerivative (0, k));
-
-					if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodNotional *
-						dblPeriodDCF * dblPeriodPVDFMicroJack))
-						return null;
-				}
+				return null;
 			}
-
-			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
-				wjPVDFMicroJack : null;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
 		}
 
-		return null;
+		for (int i = 0; i < iNumQuote; ++i) {
+			if (!jackDDirtyPVDQuoteIRS.accumulatePartialFirstDerivative (0, i, dblNotionalScaleDown *
+				(dblParSwapRate * jackDDirtyPVDQuoteFixed.getFirstDerivative (0, i) +
+					jackDDirtyPVDQuoteFloating.getFirstDerivative (0, i))))
+				return null;
+		}
+
+		return jackDDirtyPVDQuoteIRS;
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
@@ -532,8 +516,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.getForwardRateJack
-						(p.getStartDate(), p.getEndDate());
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.jackDForwardDQuote
+						(p.getStartDate(), p.getEndDate(), p.getCouponDCF());
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
 						(dblPeriodPayDate);

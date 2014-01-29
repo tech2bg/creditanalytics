@@ -4,13 +4,15 @@ package org.drip.sample.rates;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.*;
+import org.drip.param.market.ComponentMarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
-import org.drip.product.definition.CalibratableComponent;
+import org.drip.product.definition.*;
+import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.spline.basis.PolynomialFunctionSetParams;
+import org.drip.spline.basis.*;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
@@ -23,11 +25,11 @@ import org.drip.state.estimator.*;
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -108,6 +110,23 @@ public class DiscountCurveQuoteSensitivity {
 				dtEffective.addTenorAndAdjust (astrTenor[i], "USD"), 0., "USD", "USD-LIBOR-6M", "USD");
 
 		return aCalibComp;
+	}
+
+	private static final void TenorJack (
+		final JulianDate dtStart,
+		final String strTenor,
+		final DiscountCurve dc)
+	{
+		RatesComponent irsBespoke = RatesStreamBuilder.CreateIRS (
+			dtStart, dtStart.addTenorAndAdjust (strTenor, "USD"),
+			0.,
+			"USD",
+			"USD-LIBOR-6M",
+			"USD");
+
+		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDQuote (irsBespoke.getMaturityDate());
+
+		System.out.println (strTenor + " => " + wjDFQuoteBespokeMat.displayString());
 	}
 
 	/*
@@ -202,8 +221,8 @@ public class DiscountCurveQuoteSensitivity {
 
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
 			new SegmentCustomBuilderControl (
-				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialFunctionSetParams (4),
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
+				new ExponentialTensionSetParams (2.),
 				SegmentDesignInelasticControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
 			BoundarySettings.NaturalStandard(),
@@ -265,7 +284,7 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
-		System.out.println ("\t     CASH INSTRUMENTS DISCOUNT FACTOR JACOBIAN");
+		System.out.println ("\t     CASH/FUTURE MATURITY DISCOUNT FACTOR JACOBIAN");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
@@ -281,15 +300,64 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
-		System.out.println ("\t     SWAP INSTRUMENTS DISCOUNT FACTOR JACOBIAN");
+		System.out.println ("\t     SWAP MATURITY DISCOUNT FACTOR JACOBIAN");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDQuote (aSwapComp[i].getMaturityDate());
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDQuote (aSwapComp[i].getMaturityDate());
 
-			System.out.println (aSwapComp[i].getMaturityDate() + " => " + wj.displayString());
+			System.out.println (aSwapComp[i].getMaturityDate() + " => " + wjDFQuote.displayString());
 		}
+
+		System.out.println ("\n\t----------------------------------------------------------------");
+
+		System.out.println ("\t     COMPONENT-BY-COMPONENT QUOTE JACOBIAN");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		WengertJacobian wj = dc.compJackDPVDQuote (dtToday);
+
+		System.out.println (wj.displayString());
+
+		System.out.println ("\n\t----------------------------------------------------------------");
+
+		System.out.println ("\t     BESPOKE 35Y SWAP QUOTE JACOBIAN");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		RatesComponent irs35Y = RatesStreamBuilder.CreateIRS (
+			dtToday, dtToday.addTenorAndAdjust ("35Y", "USD"),
+			0.,
+			"USD",
+			"USD-LIBOR-6M",
+			"USD");
+
+		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDQuote (
+			new ValuationParams (dtToday, dtToday, "USD"),
+			null,
+			new ComponentMarketParamSet (dc, null, null, null, null, null, null, null),
+			null);
+
+		System.out.println (wjIRSBespokeQuoteJack.displayString());
+
+		System.out.println ("\n\t----------------------------------------------------------------");
+
+		System.out.println ("\t     BESPOKE SWAP MATURITY QUOTE JACOBIAN");
+
+		System.out.println ("\t----------------------------------------------------------------");
+
+		TenorJack (dtToday, "30Y", dc);
+
+		TenorJack (dtToday, "32Y", dc);
+
+		TenorJack (dtToday, "34Y", dc);
+
+		TenorJack (dtToday, "36Y", dc);
+
+		TenorJack (dtToday, "38Y", dc);
+
+		TenorJack (dtToday, "40Y", dc);
 	}
 
 	public static final void main (

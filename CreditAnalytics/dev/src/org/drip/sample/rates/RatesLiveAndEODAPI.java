@@ -30,11 +30,11 @@ import org.drip.service.api.CreditAnalytics;
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.drip.service.api.CreditAnalytics;
 /**
  * RatesLiveAndEODAPI contains the sample API demonstrating the usage of the Rates Live and EOD functions. It
  * 	does the following:
- * 	- Pulls all the closing rates curve names (of any type, incl.TSY) that exist for a given date.
+ * 	- Pulls all the closing rates curve names (of any type, including TSY) that exist for a given date.
  * 	- Load the full IR curve created from all the single currency rate quotes (except TSY) for the given
  * 		currency and date.
  * 	- Calculate the discount factor to an arbitrary date using the constructed curve.

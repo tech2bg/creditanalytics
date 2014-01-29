@@ -11,11 +11,11 @@ package org.drip.product.rates;
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -439,7 +439,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian calcPVDFMicroJack (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -454,8 +454,6 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 				pricerParams, mktParams, quotingParams);
 
 			if (null == mapMeasures) return null;
-
-			double dblPV = mapMeasures.get ("PV");
 
 			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -484,8 +482,10 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 					return null;
 			}
 
-			return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
-				wjPVDFMicroJack : null;
+			return wjPVDFMicroJack;
+
+			/* return adjustPVDFMicroJackForCashSettle (valParams.cashPayDate(), dblPV, dc, wjPVDFMicroJack) ?
+				wjPVDFMicroJack : null; */
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

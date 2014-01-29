@@ -9,11 +9,11 @@ package org.drip.regression.curveJacobian;
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 				{
 					for (int i = 0; i < aCompCalib.length; ++i) {
 						try {
-							if (null == (aWJComp[i] = aCompCalib[i].calcPVDFMicroJack (new
+							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDQuote (new
 								org.drip.param.valuation.ValuationParams (dtStart, dtStart, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 										(dcEDF, null, null, null, null, null, null), null)))
@@ -114,7 +114,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 						}
 					}
 
-					return null != (wjPVDF = dcEDF.compPVDFJack (dtStart));
+					return null != (wjPVDF = dcEDF.compJackDPVDQuote (dtStart));
 				}
 
 				@Override public boolean postRegression (

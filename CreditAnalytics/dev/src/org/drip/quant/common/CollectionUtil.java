@@ -10,11 +10,11 @@ package org.drip.quant.common;
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ package org.drip.quant.common;
  */
 
 /**
- * The MapUtil class implements generic utility functions used in DRIP modules. Some of the functions it
- *  exposes are:
+ * The CollectionUtil class implements generic utility functions used in DRIP modules. Some of the functions
+ *  it exposes are:
  *  - Map Merging Functionality
  *  - Map Key Functionality - key-value flatteners, key prefixers
  *  - Decompose/transform List/Set/Array Contents

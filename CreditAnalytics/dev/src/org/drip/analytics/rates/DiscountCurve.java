@@ -9,11 +9,11 @@ package org.drip.analytics.rates;
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -394,6 +394,15 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		return regime.responseValue (dblDate);
 	}
 
+	@Override public boolean setCCIS (
+		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+	{
+		if (null == ccis) return false;
+
+		_ccis = ccis;
+		return true;
+	}
+
 	/**
 	 * Retrieve the Forward Curve that might be implied by the Latent State of this Discount Curve Instance
 	 * 	corresponding to the specified Floating Rate Index
@@ -472,7 +481,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian compPVDFJack (
+	public org.drip.quant.calculus.WengertJacobian compJackDPVDQuote (
 		final double dblDate)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
@@ -489,19 +498,19 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
 		org.drip.param.definition.ComponentMarketParams mktParams = new
-			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null,
-				_ccis.getFixing());
+			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null, null ==
+				_ccis ? null : _ccis.getFixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjCompPVDFMicroJack = aCalibComp[i].calcPVDFMicroJack
+			org.drip.quant.calculus.WengertJacobian wjCompDDirtyPVDQuote = aCalibComp[i].jackDDirtyPVDQuote
 				(valParams, null, mktParams, null);
 
-			if (null == wjCompPVDFMicroJack) return null;
+			if (null == wjCompDDirtyPVDQuote) return null;
 
 			if (null == wjCompPVDF) {
 				try {
-					wjCompPVDF = new org.drip.quant.calculus.WengertJacobian (iNumComponents, iNumParameters =
-						wjCompPVDFMicroJack.numParameters());
+					wjCompPVDF = new org.drip.quant.calculus.WengertJacobian (iNumComponents, iNumParameters
+						= wjCompDDirtyPVDQuote.numParameters());
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -511,7 +520,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 			for (int k = 0; k < iNumParameters; ++k) {
 				if (!wjCompPVDF.accumulatePartialFirstDerivative (i, k,
-					wjCompPVDFMicroJack.getFirstDerivative (0, k)))
+					wjCompDDirtyPVDQuote.getFirstDerivative (0, k)))
 					return null;
 			}
 		}
@@ -527,81 +536,92 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	 * @return The Jacobian
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian compPVDFJack (
+	public org.drip.quant.calculus.WengertJacobian compJackDPVDQuote (
 		final org.drip.analytics.date.JulianDate dt)
 	{
-		return null == dt ? null : compPVDFJack (dt.getJulian());
+		return null == dt ? null : compJackDPVDQuote (dt.getJulian());
 	}
 
 	/**
-	 * Retrieve the Jacobian for the Forward Rate between the given dates
+	 * Retrieve the Jacobian for the Forward Rate between the given dates to the calibration quote
 	 * 
 	 * @param dblDate1 Date 1
 	 * @param dblDate2 Date 2
+	 * @param dblElapsedYear The Elapsed Year (in the appropriate Day Count) between dates 1 and 2
 	 * 
 	 * @return The Jacobian
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian getForwardRateJack (
+	public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
 		final double dblDate1,
-		final double dblDate2)
+		final double dblDate2,
+		final double dblElapsedYear)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate2) || dblDate1 == dblDate2)
 			return null;
 
-		org.drip.quant.calculus.WengertJacobian wj1 = jackDDFDQuote (dblDate1);
+		org.drip.quant.calculus.WengertJacobian wjDDFDQuoteDate1 = jackDDFDQuote (dblDate1);
 
-		if (null == wj1) return null;
+		if (null == wjDDFDQuoteDate1) return null;
 
-		org.drip.quant.calculus.WengertJacobian wj2 = jackDDFDQuote (dblDate2);
+		int iNumQuote = wjDDFDQuoteDate1.numParameters();
 
-		if (null == wj2) return null;
+		if (0 == iNumQuote) return null;
 
-		int iNumDFNodes = wj2.numParameters();
+		org.drip.quant.calculus.WengertJacobian wjDDFDQuoteDate2 = jackDDFDQuote (dblDate2);
+
+		if (null == wjDDFDQuoteDate2 || iNumQuote != wjDDFDQuoteDate2.numParameters()) return null;
 
 		double dblDF1 = java.lang.Double.NaN;
 		double dblDF2 = java.lang.Double.NaN;
-		org.drip.quant.calculus.WengertJacobian wjForwardRate = null;
+		org.drip.quant.calculus.WengertJacobian wjDForwardDQuote = null;
 
 		try {
 			dblDF1 = df (dblDate1);
 
 			dblDF2 = df (dblDate2);
 
-			wjForwardRate = new org.drip.quant.calculus.WengertJacobian (1, iNumDFNodes);
+			wjDForwardDQuote = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
 			return null;
 		}
 
-		for (int i = 0; i < iNumDFNodes; ++i) {
-			double dblDForwardDDFi = 365.25 * ((wj1.getFirstDerivative (0, i) / dblDF1) -
-				(wj2.getFirstDerivative (0, i) / dblDF2)) / (dblDate2 - dblDate1);
+		double dblDForwardDQuote1iScale = 1. / dblDF2;
+		double dblDForwardDQuote2iScale = dblDF1 / (dblDF2 * dblDF2);
+		double dblInverseAnnualizedTenorLength = 1. / dblElapsedYear;
 
-			if (!wjForwardRate.accumulatePartialFirstDerivative (0, i, dblDForwardDDFi)) return null;
+		for (int i = 0; i < iNumQuote; ++i) {
+			double dblDForwardDQuotei = ((wjDDFDQuoteDate1.getFirstDerivative (0, i) *
+				dblDForwardDQuote1iScale) - (wjDDFDQuoteDate2.getFirstDerivative (0, i) *
+					dblDForwardDQuote2iScale)) * dblInverseAnnualizedTenorLength;
+
+			if (!wjDForwardDQuote.accumulatePartialFirstDerivative (0, i, dblDForwardDQuotei)) return null;
 		}
 
-		return wjForwardRate;
+		return wjDForwardDQuote;
 	}
 
 	/**
-	 * Retrieve the Jacobian for the Forward Rate between the given dates
+	 * Retrieve the Jacobian of the Forward Rate between the given dates to the input calibration quotes
 	 * 
 	 * @param dt1 Julian Date 1
 	 * @param dt2 Julian Date 2
+	 * @param dblElapsedYear The Elapsed Year (in the appropriate Day Count) between dates 1 and 2
 	 * 
 	 * @return The Jacobian
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian getForwardRateJack (
+	public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
 		final org.drip.analytics.date.JulianDate dt1,
-		final org.drip.analytics.date.JulianDate dt2)
+		final org.drip.analytics.date.JulianDate dt2,
+		final double dblElapsedYear)
 	{
 		if (null == dt1 || null == dt2) return null;
 
-		return getForwardRateJack (dt1.getJulian(), dt2.getJulian());
+		return jackDForwardDQuote (dt1.getJulian(), dt2.getJulian(), dblElapsedYear);
 	}
 
 	/**
@@ -615,7 +635,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	public org.drip.quant.calculus.WengertJacobian getZeroRateJack (
 		final double dblDate)
 	{
-		return getForwardRateJack (epoch().getJulian(), dblDate);
+		double dblEpochDate = epoch().getJulian();
+
+		return jackDForwardDQuote (dblEpochDate, dblDate, (dblDate - dblEpochDate) / 365.25);
 	}
 
 	/**
@@ -629,7 +651,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	public org.drip.quant.calculus.WengertJacobian getZeroRateJack (
 		final org.drip.analytics.date.JulianDate dt)
 	{
-		return getForwardRateJack (epoch(), dt);
+		return null == dt? null : getZeroRateJack (dt.getJulian());
 	}
 
 	/**

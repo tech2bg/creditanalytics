@@ -30,11 +30,11 @@ import org.drip.state.creator.*;
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
- * This file is part of CreditAnalytics, a free-software/open-source library for fixed income analysts and
- * 		developers - http://www.credit-trader.org
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
  * 
- * CreditAnalytics is a free, full featured, fixed income credit analytics library, developed with a special
- * 		focus towards the needs of the bonds and credit products community.
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *   	you may not use this file except in compliance with the License.
@@ -278,7 +278,7 @@ public class RatesAnalyticsAPI {
 		} */
 
 		for (int i = 0; i < aCompCalib.length; ++i) {
-			WengertJacobian wjComp = aCompCalib[i].calcPVDFMicroJack
+			WengertJacobian wjComp = aCompCalib[i].jackDDirtyPVDQuote
 				(new ValuationParams (dtStart, dtStart, "USD"),
 				null,
 				ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
@@ -362,7 +362,7 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		org.drip.quant.calculus.WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
+		org.drip.quant.calculus.WengertJacobian wjPVDF = dc.compJackDPVDQuote (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
@@ -420,7 +420,7 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
+		WengertJacobian wjPVDF = dc.compJackDPVDQuote (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
@@ -523,7 +523,7 @@ public class RatesAnalyticsAPI {
 		System.out.println ("Quote/DF Micro Jack[04/06/11]=" + (null == wjQuoteDF ? null :
 			wjQuoteDF.displayString())); */
 
-		WengertJacobian wjPVDF = dc.compPVDFJack (dtStart);
+		WengertJacobian wjPVDF = dc.compJackDPVDQuote (dtStart);
 
 		System.out.println ("PV/Zero Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
