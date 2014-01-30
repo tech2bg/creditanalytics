@@ -209,8 +209,8 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
 		if (null == (_seg1 = org.drip.spline.segment.ConstitutiveState.Create (1.0, 3.0, fs, rssc,
-			segParams)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (3.0, 6.0, fs,
-				rssc, segParams)))
+			segParams, null)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (3.0, 6.0,
+				fs, rssc, segParams, null)))
 			throw new java.lang.Exception ("BasisSplineRegressor ctr: Cant create the segments");
 	}
 

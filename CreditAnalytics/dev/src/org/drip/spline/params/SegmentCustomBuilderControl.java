@@ -40,6 +40,7 @@ public class SegmentCustomBuilderControl {
 	private java.lang.String _strBasisSpline = "";
 	private org.drip.spline.basis.FunctionSetBuilderParams _fsbp = null;
 	private org.drip.spline.params.ResponseScalingShapeControl _rssc = null;
+	private org.drip.spline.params.PreceedingQuoteSensitivityControl _pqsc = null;
 	private org.drip.spline.params.SegmentDesignInelasticControl _sdic = null;
 
 	/**
@@ -49,6 +50,7 @@ public class SegmentCustomBuilderControl {
 	 * @param fsbp Segment Basis Set Construction Parameters
 	 * @param sdic Segment Design Inelastic Parameters
 	 * @param rssc Segment Shape Controller
+	 * @param pqsc Prior Quote Sensitivity Control Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
@@ -57,12 +59,14 @@ public class SegmentCustomBuilderControl {
 		final java.lang.String strBasisSpline,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
 		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
-		final org.drip.spline.params.ResponseScalingShapeControl rssc)
+		final org.drip.spline.params.ResponseScalingShapeControl rssc,
+		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
 		throws java.lang.Exception
 	{
 		if (null == (_strBasisSpline = strBasisSpline) || null == (_fsbp = fsbp) || null == (_sdic = sdic))
 			throw new java.lang.Exception ("SegmentCustomBuilderControl ctr => Invalid Inputs");
 
+		_pqsc = pqsc;
 		_rssc = rssc;
 	}
 
@@ -108,5 +112,16 @@ public class SegmentCustomBuilderControl {
 	public org.drip.spline.params.ResponseScalingShapeControl shapeController()
 	{
 		return _rssc;
+	}
+
+	/**
+	 * Retrieve the Prior Quote Sensitivity Control Parameters
+	 * 
+	 * @return The Prior Quote Sensitivity Control Parameters
+	 */
+
+	public org.drip.spline.params.PreceedingQuoteSensitivityControl priorQuoteSensitivityControl()
+	{
+		return _pqsc;
 	}
 }

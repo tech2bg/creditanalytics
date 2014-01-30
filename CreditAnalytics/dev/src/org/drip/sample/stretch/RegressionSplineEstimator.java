@@ -58,6 +58,7 @@ public class RegressionSplineEstimator {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (iNumBasis),
 			sdic,
+			null,
 			null);
 	}
 

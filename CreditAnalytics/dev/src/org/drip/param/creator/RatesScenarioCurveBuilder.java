@@ -271,7 +271,7 @@ public class RatesScenarioCurveBuilder {
 		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meQMTruth : esQMTruth) {
 			if (null == meQMTruth) return null;
 
-			if (0 != i) aPRBP[i - 1] = gccp.segmentBuilderControl();
+			if (0 != i) aPRBP[i - 1] = gccp.defaultSegmentBuilderControl();
 
 			adblDate[i] = meQMTruth.getKey();
 
@@ -369,7 +369,7 @@ public class RatesScenarioCurveBuilder {
 		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meQMTruth : esQMTruth) {
 			if (null == meQMTruth) return null;
 
-			if (0 != i) aPRBP[i - 1] = lccp.segmentBuilderControl();
+			if (0 != i) aPRBP[i - 1] = lccp.defaultSegmentBuilderControl();
 
 			adblDate[i] = meQMTruth.getKey();
 
@@ -497,7 +497,7 @@ public class RatesScenarioCurveBuilder {
 				org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
 					org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
 						org.drip.spline.params.ResponseScalingShapeControl (true, new
-							org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
+							org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
 									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
@@ -520,9 +520,10 @@ public class RatesScenarioCurveBuilder {
 								org.drip.spline.basis.PolynomialFunctionSetParams (4),
 									org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
 										org.drip.spline.params.ResponseScalingShapeControl (true, new
-											org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
-												org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null,
-													null, true, true);
+											org.drip.quant.function1D.QuadraticRationalShapeControl (0.)),
+												null),
+													org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE,
+														null, null, true, true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -634,9 +635,10 @@ public class RatesScenarioCurveBuilder {
 								org.drip.spline.basis.PolynomialFunctionSetParams (4),
 									org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
 										org.drip.spline.params.ResponseScalingShapeControl (true, new
-											org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
-												org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null,
-													null, true, true);
+											org.drip.quant.function1D.QuadraticRationalShapeControl (0.)),
+												null),
+													org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE,
+														null, null, true, true);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -881,7 +883,7 @@ public class RatesScenarioCurveBuilder {
 				org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
 					org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
 						org.drip.spline.params.ResponseScalingShapeControl (true, new
-							org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
+							org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
 									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
@@ -989,7 +991,7 @@ public class RatesScenarioCurveBuilder {
 					org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
 						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
 							org.drip.spline.params.ResponseScalingShapeControl (true, new
-								org.drip.quant.function1D.QuadraticRationalShapeControl (0.))),
+								org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
 									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
 										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 

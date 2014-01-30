@@ -389,7 +389,7 @@ public class RatesClosesLoader {
 				org.drip.state.estimator.LinearCurveCalibrator (new
 					org.drip.spline.params.SegmentCustomBuilderControl
 						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
-				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc),
+				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc, null),
 					org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
 						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
@@ -405,8 +405,9 @@ public class RatesClosesLoader {
 						org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE, new
 							org.drip.spline.params.SegmentCustomBuilderControl
 								(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-									new org.drip.spline.basis.PolynomialFunctionSetParams (4), sdic, rssc),
-					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null, true, true);
+									new org.drip.spline.basis.PolynomialFunctionSetParams (4), sdic, rssc,
+										null), org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null,
+											null, true, true);
 
 			org.drip.analytics.rates.DiscountCurve dcHyman83Smooth =
 				org.drip.param.creator.RatesScenarioCurveBuilder.SmoothingLocalControlBuild

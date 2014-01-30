@@ -212,10 +212,11 @@ public class DiscountCurveQuoteSensitivity {
 		StretchRepresentationSpec[] aRBS = new StretchRepresentationSpec[] {rbsCash, rbsSwap};
 
 		/*
-		 * Set up the Linear Curve Calibrator using the following parameters:
+		 * Set up the Linear Curve Calibrator using the following Default Segment Control parameters:
 		 * 	- Cubic Exponential Mixture Basis Spline Set
 		 * 	- Ck = 2, Segment Curvature Penalty = 2
 		 * 	- Quadratic Rational Shape Controller
+		 * 	- Prior Quote Sensitivity Control with first derivative tail fade, with FADE ON
 		 * 	- Natural Boundary Setting
 		 */
 
@@ -224,11 +225,48 @@ public class DiscountCurveQuoteSensitivity {
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new ExponentialTensionSetParams (2.),
 				SegmentDesignInelasticControl.Create (2, 2),
-				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.))),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
+				new org.drip.spline.params.PreceedingQuoteSensitivityControl (true, 1, null)),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null);
+
+		/*
+		 * Set up the CASH Segment Control parameters with the following details:
+		 * 	- Cubic Exponential Mixture Basis Spline Set
+		 * 	- Ck = 2, Segment Curvature Penalty = 2
+		 * 	- Quadratic Rational Shape Controller
+		 * 	- Prior Quote Sensitivity Control with first derivative tail fade, with FADE ON
+		 * 	- Natural Boundary Setting
+		 */
+
+		lcc.setStretchSegmentBuilderControl (
+			rbsCash.getName(),
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
+				new ExponentialTensionSetParams (2.),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
+				new org.drip.spline.params.PreceedingQuoteSensitivityControl (true, 1, null)));
+
+		/*
+		 * Set up the SWAP Segment Control parameters with the following details:
+		 * 	- Cubic Exponential Mixture Basis Spline Set
+		 * 	- Ck = 2, Segment Curvature Penalty = 2
+		 * 	- Quadratic Rational Shape Controller
+		 * 	- Prior Quote Sensitivity Control with first derivative tail fade, with FADE ON
+		 * 	- Natural Boundary Setting
+		 */
+
+		lcc.setStretchSegmentBuilderControl (
+			rbsSwap.getName(),
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
+				new ExponentialTensionSetParams (2.),
+				SegmentDesignInelasticControl.Create (2, 2),
+				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
+				new org.drip.spline.params.PreceedingQuoteSensitivityControl (true, 1, null)));
 
 		/*
 		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array

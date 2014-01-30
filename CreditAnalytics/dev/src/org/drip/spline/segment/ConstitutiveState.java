@@ -85,10 +85,12 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 	private double[] _adblResponseBasisCoeff = null;
 	private double[] _adblDBasisCoeffDLocalQuote = null;
+	private double[] _adblDBasisCoeffDPreceedingQuote = null;
 	private org.drip.spline.segment.BasisEvaluator _be = null;
 	private double[][] _aadblDResponseBasisCoeffDConstraint = null;
-	private double _dblDLeftEdgeResponseDPriorQuote = java.lang.Double.NaN;
+	private double _dblDResponseDPreceedingQuote = java.lang.Double.NaN;
 	private org.drip.spline.params.SegmentDesignInelasticControl _sdic = null;
+	private org.drip.spline.params.PreceedingQuoteSensitivityControl _pqsc = null;
 	private org.drip.quant.calculus.WengertJacobian _wjDBasisCoeffDEdgeValue = null;
 
 	/**
@@ -99,6 +101,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @param fs Response Basis Function Set
 	 * @param rssc Shape Controller
 	 * @param sdic Design Inelastic Parameters
+	 * @param pqsc Preceeding Quote Sensitivity Control Parameters
 	 * 
 	 * @return Instance of ConstitutiveState
 	 */
@@ -108,14 +111,21 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.basis.FunctionSet fs,
 		final org.drip.spline.params.ResponseScalingShapeControl rssc,
-		final org.drip.spline.params.SegmentDesignInelasticControl sdic)
+		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
+		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
 	{
 		try {
 			org.drip.spline.segment.SegmentBasisEvaluator sbe = new
 				org.drip.spline.segment.SegmentBasisEvaluator (fs, rssc);
 
 			org.drip.spline.segment.ConstitutiveState cs = new org.drip.spline.segment.ConstitutiveState
-				(dblLeftPredictorOrdinate, dblRightPredictorOrdinate, sbe, sdic);
+				(dblLeftPredictorOrdinate, dblRightPredictorOrdinate, sbe, sdic, pqsc);
+
+			if (null != pqsc) {
+				org.drip.spline.segment.BasisEvaluator sbePQSC = pqsc.basisEvaluator();
+
+				if (null != sbePQSC && !sbePQSC.setContainingInelastics (cs)) return null;
+			}
 
 			return sbe.setContainingInelastics (cs) ? cs : null;
 		} catch (java.lang.Exception e) {
@@ -132,6 +142,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @param dblRightPredictorOrdinate Right Predictor Ordinate
 	 * @param be Basis Evaluator
 	 * @param sdic Design Inelastic Parameters
+	 * @param pqsc Preceeding Quote Sensitivity Control Parameters
 	 * 
 	 * @return Instance of ConstitutiveState
 	 */
@@ -140,11 +151,12 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.segment.BasisEvaluator be,
-		final org.drip.spline.params.SegmentDesignInelasticControl sdic)
+		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
+		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
 	{
 		try {
 			org.drip.spline.segment.ConstitutiveState cs = new org.drip.spline.segment.ConstitutiveState
-				(dblLeftPredictorOrdinate, dblRightPredictorOrdinate, be, sdic);
+				(dblLeftPredictorOrdinate, dblRightPredictorOrdinate, be, sdic, pqsc);
 
 			return be.setContainingInelastics (cs) ? cs : null;
 		} catch (java.lang.Exception e) {
@@ -158,7 +170,8 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.segment.BasisEvaluator be,
-		final org.drip.spline.params.SegmentDesignInelasticControl sdic)
+		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
+		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
 		throws java.lang.Exception
 	{
 		super (dblLeftPredictorOrdinate, dblRightPredictorOrdinate);
@@ -172,6 +185,9 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 		if (0 >= iNumBasis || _sdic.getCk() > iNumBasis - 2)
 			throw new java.lang.Exception ("ConstitutiveState ctr: Invalid inputs!");
+
+		if (null == (_pqsc = pqsc))
+			_pqsc = new org.drip.spline.params.PreceedingQuoteSensitivityControl (true, 0, null);
 	}
 
 	private double[] basisDResponseDBasisCoeff (
@@ -216,6 +232,20 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		}
 
 		return adblDeriv;
+	}
+
+	private double[] CkDBasisCoeffDPreceedingQuoteTail()
+	{
+		int iCk = _pqsc.Ck();
+
+		if (0 == iCk) return null;
+
+		double[] adblDBasisCoeffDPreceedingQuoteTail = new double[iCk];
+
+		for (int i = 0; i < iCk; ++i)
+			adblDBasisCoeffDPreceedingQuoteTail[i] = 0.;
+
+		return adblDBasisCoeffDPreceedingQuoteTail;
 	}
 
 	/**
@@ -524,10 +554,28 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	}
 
 	/**
+	 * Sensitivity Calibrator: Calibrate the Segment Preceeding Quote Jacobian from the Calibration Parameter Set
+	 * 
+	 * @param sscPreceedingQuoteSensitivity The Segment Preceeding Quote Calibration Parameter Sensitivity
+	 * 
+	 * @return TRUE => Preceeding Quote Sensitivity Calibration Successful
+	 */
+
+	public boolean calibratePreceedingQuoteJacobian (
+		final org.drip.spline.params.SegmentStateCalibration sscPreceedingQuoteSensitivity)
+	{
+		if (null == (_adblDBasisCoeffDPreceedingQuote = calibrateQuoteJacobian (sscPreceedingQuoteSensitivity,
+			null)) || _adblDBasisCoeffDPreceedingQuote.length != _adblResponseBasisCoeff.length)
+			return false;
+
+		return true;
+	}
+
+	/**
 	 * Calibrate the coefficients from the prior Predictor/Response Segment, the Constraint, and fitness
 	 * 	Weights
 	 * 
-	 * @param csPrev Prior Predictor/Response Segment
+	 * @param csPrev Preceeding Predictor/Response Segment
 	 * @param srvcState The Segment State Response Value Constraint
 	 * @param srvcQuoteSensitivity The Segment State Response Value Constraint Quote Sensitivity
 	 * @param sbfrState Segment's Best Fit Weighted State Response Values
@@ -547,11 +595,11 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 		if (null == srvcState && null != srvcQuoteSensitivity) return false;
 
-		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFRState = null == srvcState ? null : new
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState = null == srvcState ? null : new
 			org.drip.spline.params.SegmentBasisFlexureConstraint[] {srvcState.responseIndexedBasisConstraint
 				(_be, this)};
 
-		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFRQuoteSensitivity = null ==
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCQuoteSensitivity = null ==
 			srvcQuoteSensitivity ? null : new org.drip.spline.params.SegmentBasisFlexureConstraint[]
 				{srvcQuoteSensitivity.responseIndexedBasisConstraint (_be, this)};
 
@@ -578,13 +626,13 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 				if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[]
 					{left()}, new double[] {_be.responseValue (_adblResponseBasisCoeff, left())},
-						adblStateDerivAtLeftOrdinate, null, aSBFRState, sbfrState)))
+						adblStateDerivAtLeftOrdinate, null, aSBFCState, sbfrState)))
 					return false;
 
-				return null == aSBFRQuoteSensitivity ? true : calibrateLocalQuoteJacobian (new
+				return null == aSBFCQuoteSensitivity ? true : calibrateLocalQuoteJacobian (new
 					org.drip.spline.params.SegmentStateCalibration (new double[] {left()}, new double[] {0.},
-						adblQuoteJacobianDerivAtLeftOrdinate, null, aSBFRQuoteSensitivity,
-							sbfrQuoteSensitivity), aSBFRState);
+						adblQuoteJacobianDerivAtLeftOrdinate, null, aSBFCQuoteSensitivity,
+							sbfrQuoteSensitivity), aSBFCState);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -595,17 +643,24 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		try {
 			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[] {left()},
 				new double[] {csPrev.responseValue (left())}, 0 == iCk ? null : transmissionCk (left(),
-					csPrev, iCk), null, aSBFRState, sbfrState)))
+					csPrev, iCk), null, aSBFCState, sbfrState)))
 				return false;
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (_dblDLeftEdgeResponseDPriorQuote =
-				csPrev.derivDCoeffDQuote (left(), 1)))
+			if (null == aSBFCQuoteSensitivity) return true;
+
+			if (!calibrateLocalQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
+				double[] {left()}, new double[] {0.}, adblQuoteJacobianDerivAtLeftOrdinate, null,
+					aSBFCQuoteSensitivity, sbfrQuoteSensitivity), aSBFCState))
 				return false;
 
-			return null == aSBFRQuoteSensitivity ? true : calibrateLocalQuoteJacobian (new
-				org.drip.spline.params.SegmentStateCalibration (new double[] {left()}, new double[] {0.},
-					adblQuoteJacobianDerivAtLeftOrdinate, null, aSBFRQuoteSensitivity, sbfrQuoteSensitivity),
-						aSBFRState);
+			if (_pqsc.impactFade())
+				return calibratePreceedingQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
+					double[] {left(), right()}, new double[] {csPrev.calcDResponseDQuote (left(), 1), 0.},
+						null, CkDBasisCoeffDPreceedingQuoteTail(), null, null));
+
+			_dblDResponseDPreceedingQuote = csPrev.calcDResponseDQuote (left(), 1);
+
+			return true;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -617,7 +672,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * Calibrate the coefficients from the prior Segment and the Response Value at the Right Predictor
 	 *  Ordinate
 	 * 
-	 * @param csPrev Prior Predictor/Response Segment
+	 * @param csPrev Preceeding Predictor/Response Segment
 	 * @param dblRightStateValue Response Value at the Right Predictor Ordinate
 	 * @param dblRightStateQuoteSensitivity Response Value Quote Sensitivity at the Right Predictor Ordinate
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
@@ -638,11 +693,10 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		int iCk = _sdic.getCk();
 
 		try {
-			boolean bRet = calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[]
-				{left(), right()}, new double[] {csPrev.responseValue (left()), dblRightStateValue}, 0 != iCk
-					? csPrev.transmissionCk (left(), this, iCk) : null, null, null, sbfrState));
-
-			if (!bRet) return false;
+			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[] {left(),
+				right()}, new double[] {csPrev.responseValue (left()), dblRightStateValue}, 0 != iCk ?
+					csPrev.transmissionCk (left(), this, iCk) : null, null, null, sbfrState)))
+				return false;
 
 			double[] adblQuoteJacobianDerivAtLeftOrdinate = null;
 
@@ -653,15 +707,21 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 					adblQuoteJacobianDerivAtLeftOrdinate[i] = 0.;
 			}
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (_dblDLeftEdgeResponseDPriorQuote =
-				csPrev.derivDCoeffDQuote (left(), 1)))
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblRightStateQuoteSensitivity)) return true;
+
+			if (!calibrateLocalQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
+				double[] {left(), right()}, new double[] {0., dblRightStateQuoteSensitivity}, 0 != iCk ?
+					adblQuoteJacobianDerivAtLeftOrdinate : null, null, null, sbfrQuoteSensitivity), null))
 				return false;
 
-			return org.drip.quant.common.NumberUtil.IsValid (dblRightStateQuoteSensitivity) ?
-				calibrateLocalQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new double[]
-					{left(), right()}, new double[] {0., dblRightStateQuoteSensitivity}, 0 != iCk ?
-						adblQuoteJacobianDerivAtLeftOrdinate : null, null, null, sbfrQuoteSensitivity), null)
-							: true;
+			if (_pqsc.impactFade())
+				return calibratePreceedingQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
+					double[] {left(), right()}, new double[] {csPrev.calcDResponseDQuote (left(), 1), 0.},
+						null, CkDBasisCoeffDPreceedingQuoteTail(), null, null));
+
+			_dblDResponseDPreceedingQuote = csPrev.calcDResponseDQuote (left(), 1);
+
+			return true;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -700,12 +760,11 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 			return false;
 
 		try {
-			boolean bRet = calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[]
-				{left(), right()}, new double[] {dblLeftValue, dblRightValue},
+			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[] {left(),
+				right()}, new double[] {dblLeftValue, dblRightValue},
 					org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
-						dblLeftSlope), null, null, sbfrState));
-
-			if (!bRet) return false;
+						dblLeftSlope), null, null, sbfrState)))
+				return false;
 
 			return org.drip.quant.common.NumberUtil.IsValid (dblLeftQuoteSensitivity) &&
 				org.drip.quant.common.NumberUtil.IsValid (dblLeftSlopeQuoteSensitivity) &&
@@ -765,11 +824,10 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 							wrvcStateRightQuoteSensitivity ? null :
 								wrvcStateRightQuoteSensitivity.responseIndexedBasisConstraint (_be, this)};
 
-			boolean bRet = calibrateState (new org.drip.spline.params.SegmentStateCalibration (null, null,
-				org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
-					dblLeftSlope), null, aSBFCState, sbfrState));
-
-			if (!bRet) return false;
+			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (null, null,
+				org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2, dblLeftSlope),
+					null, aSBFCState, sbfrState)))
+				return false;
 
 			return null == aSBFCQuoteSensitivity ? true : calibrateLocalQuoteJacobian (new
 				org.drip.spline.params.SegmentStateCalibration (null, null,
@@ -917,37 +975,67 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	}
 
 	/**
-	 * Calculate the Ordered Derivative of the Coefficient to the Quote
+	 * Calculate the Ordered Derivative of the Response to the Quote
 	 * 
-	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Derivative of the Coefficient to
-	 *  the Quote is to be calculated
+	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Derivative of the Response to the
+	 * 	Quote is to be calculated
 	 * @param iOrder Derivative Order
 	 * 
-	 * @throws Thrown if the Ordered Derivative of the Coefficient to the Quote cannot be calculated
+	 * @throws Thrown if the Ordered Derivative of the Response to the Quote cannot be calculated
 	 * 
-	 * @return Retrieve the Ordered Derivative of the Coefficient to the Quote
+	 * @return Retrieve the Ordered Derivative of the Response to the Quote
 	 */
 
-	public double derivDCoeffDQuote (
+	public double calcDResponseDQuote (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (0 == iOrder)
-			throw new java.lang.Exception ("ConstitutiveState::derivDCoeffDQuote => Invalid Inputs");
+			throw new java.lang.Exception ("ConstitutiveState::calcDResponseDQuote => Invalid Inputs");
 
 		return _be.responseValue (_adblDBasisCoeffDLocalQuote, dblPredictorOrdinate);
 	}
 
-	public double priorDCoeffDQuote (
+	/**
+	 * Calculate the Ordered Derivative of the Response to the Preceeding Quote
+	 * 
+	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Derivative of the Response to the
+	 * 	Quote is to be calculated
+	 * @param iOrder Derivative Order
+	 * 
+	 * @throws Thrown if the Ordered Derivative of the Response to the Quote cannot be calculated
+	 * 
+	 * @return Retrieve the Ordered Derivative of the Response to the Preceeding Quote
+	 */
+
+	public double calcDResponseDPreceedingQuote (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		if (0 == iOrder || !org.drip.quant.common.NumberUtil.IsValid (_dblDLeftEdgeResponseDPriorQuote))
-			throw new java.lang.Exception ("ConstitutiveState::priorDCoeffDQuote => Invalid Inputs");
+		if (0 == iOrder)
+			throw new java.lang.Exception ("ConstitutiveState::calcDResponseDPreceedingQuote => Invalid Inputs");
 
-		return _dblDLeftEdgeResponseDPriorQuote * (dblPredictorOrdinate - right()) / width();
+		if (!_pqsc.impactFade())
+			return org.drip.quant.common.NumberUtil.IsValid (_dblDResponseDPreceedingQuote) ?
+				_dblDResponseDPreceedingQuote : 0.;
+
+		org.drip.spline.segment.BasisEvaluator be = _pqsc.basisEvaluator();
+
+		return null == _adblDBasisCoeffDPreceedingQuote ? 0. : (null == be ? _be : be).responseValue
+			(_adblDBasisCoeffDPreceedingQuote, dblPredictorOrdinate);
+	}
+
+	/**
+	 * Retrieve the Manifest Measure Preceeding Quote Impact Flag
+	 * 
+	 * @return The Manifest Measure Preceeding Quote Impact Flag
+	 */
+
+	public boolean impactFade()
+	{
+		return _pqsc.impactFade();
 	}
 
 	/**
@@ -1289,7 +1377,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	{
 		try {
 			ConstitutiveState csLeftSnipped = ConstitutiveState.Create (dblPredictorOrdinate, right(),
-				_be.replicate(), _sdic);
+				_be.replicate(), _sdic, _pqsc);
 
 			int iCk = _sdic.getCk();
 
@@ -1321,7 +1409,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	{
 		try {
 			ConstitutiveState csRightSnipped = ConstitutiveState.Create (left(), dblPredictorOrdinate,
-				_be.replicate(), _sdic);
+				_be.replicate(), _sdic, _pqsc);
 
 			int iCk = _sdic.getCk();
 

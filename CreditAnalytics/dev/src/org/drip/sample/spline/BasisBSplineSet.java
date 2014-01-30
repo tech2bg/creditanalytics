@@ -66,7 +66,7 @@ public class BasisBSplineSet {
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState seg1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams);
+		ConstitutiveState seg1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian

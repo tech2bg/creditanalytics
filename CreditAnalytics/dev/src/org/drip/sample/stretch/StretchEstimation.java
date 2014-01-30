@@ -71,7 +71,8 @@ public class StretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (iNumBasis),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -90,7 +91,8 @@ public class StretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_BERNSTEIN_POLYNOMIAL,
 			new PolynomialFunctionSetParams (iNumBasis),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -109,7 +111,8 @@ public class StretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION,
 			new ExponentialTensionSetParams (dblTension),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -128,7 +131,8 @@ public class StretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_HYPERBOLIC_TENSION,
 			new ExponentialTensionSetParams (dblTension),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -147,7 +151,8 @@ public class StretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KAKLIS_PANDELIS,
 			new KaklisPandelisSetParams (iKPTensionDegree),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -310,7 +315,8 @@ public class StretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (iNumBasis),
 			sdic,
-			rssc);
+			rssc,
+			null);
 
 		/*
 		 *	- 2a) Set the array of Segment Builder Parameters - one per segment

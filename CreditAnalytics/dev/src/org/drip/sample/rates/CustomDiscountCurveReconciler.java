@@ -404,7 +404,8 @@ public class CustomDiscountCurveReconciler {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (4),
 			SegmentDesignInelasticControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)));
+			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
+			null);
 
 		/*
 		 * Runs the full spline linear discount curve buil;der sample.

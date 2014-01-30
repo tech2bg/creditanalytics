@@ -94,9 +94,9 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 			org.drip.spline.params.ResponseScalingShapeControl (true, new
 				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
-		if (null == (_seg1 = org.drip.spline.segment.ConstitutiveState.Create (0.0, 1.0, fs, rssc,
-			segParams)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (1.0, 2.0, fs,
-				rssc, segParams)))
+		if (null == (_seg1 = org.drip.spline.segment.ConstitutiveState.Create (0.0, 1.0, fs, rssc, segParams,
+			null)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (1.0, 2.0, fs, rssc,
+				segParams, null)))
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
 

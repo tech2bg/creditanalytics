@@ -163,77 +163,88 @@ public class MultiSegmentSequenceBuilder {
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.PolynomialBasisSet
 							((org.drip.spline.basis.PolynomialFunctionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.BernsteinPolynomialBasisSet
 							((org.drip.spline.basis.PolynomialFunctionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.HyperbolicTensionBasisSet
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialTensionBasisSet
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KAKLIS_PANDELIS.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.KaklisPandelisBasisSet
 							((org.drip.spline.basis.KaklisPandelisSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_RATIONAL.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialRationalBasisSet
 							((org.drip.spline.basis.ExponentialRationalSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialMixtureBasisSet
 							((org.drip.spline.basis.ExponentialMixtureSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromExponentialPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromHyperbolicPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_RATIONAL_LINEAR_TENSION.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalLinearPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_RATIONAL_QUADRATIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
 				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalQuadraticPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
-								aSCBC[i].shapeController(), aSCBC[i].inelasticParams())))
+								aSCBC[i].shapeController(), aSCBC[i].inelasticParams(),
+									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			}
 		}

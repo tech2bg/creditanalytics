@@ -172,9 +172,9 @@ public class BasisSplineSet {
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState seg1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams);
+		ConstitutiveState seg1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams, null);
 
-		ConstitutiveState seg2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, segParams);
+		ConstitutiveState seg2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, segParams, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
@@ -254,9 +254,9 @@ public class BasisSplineSet {
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState seg1 = ConstitutiveState.Create (0.0, 1.0, fs, sc, segParams);
+		ConstitutiveState seg1 = ConstitutiveState.Create (0.0, 1.0, fs, sc, segParams, null);
 
-		ConstitutiveState seg2 = ConstitutiveState.Create (1.0, 2.0, fs, sc, segParams);
+		ConstitutiveState seg2 = ConstitutiveState.Create (1.0, 2.0, fs, sc, segParams, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty

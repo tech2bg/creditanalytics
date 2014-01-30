@@ -80,7 +80,8 @@ public class CustomCurveBuilder {
 			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 			new ResponseScalingShapeControl (
 				true,
-				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+				new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
+			null);
 	}
 
 	/*
@@ -99,7 +100,8 @@ public class CustomCurveBuilder {
 			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 			new ResponseScalingShapeControl (
 				true,
-				new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+				new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
+			null);
 	}
 
 	/*
@@ -119,7 +121,8 @@ public class CustomCurveBuilder {
 				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 				new ResponseScalingShapeControl (
 					true,
-					new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+					new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
+				null);
 
 		if (strBasisSpline.equalsIgnoreCase (MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION)) // Exponential Tension Basis Spline
 			return new SegmentCustomBuilderControl (
@@ -128,7 +131,8 @@ public class CustomCurveBuilder {
 				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 				new ResponseScalingShapeControl (
 					true,
-					new QuadraticRationalShapeControl (0.0))); // Univariate Rational Shape Controller
+					new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
+				null);
 
 		return null;
 	}

@@ -74,7 +74,8 @@ public class PenalizedCurvatureFit {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (iNumBasis),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*

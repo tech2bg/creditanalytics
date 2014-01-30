@@ -88,9 +88,9 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState ecs1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, sdic);
+		ConstitutiveState ecs1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, sdic, null);
 
-		ConstitutiveState ecs2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, sdic);
+		ConstitutiveState ecs2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, sdic, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
@@ -187,9 +187,9 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState ecs1 = ConstitutiveState.Create (0.0, 1.0, fs, rssc, sdic);
+		ConstitutiveState ecs1 = ConstitutiveState.Create (0.0, 1.0, fs, rssc, sdic, null);
 
-		ConstitutiveState ecs2 = ConstitutiveState.Create (1.0, 2.0, fs, rssc, sdic);
+		ConstitutiveState ecs2 = ConstitutiveState.Create (1.0, 2.0, fs, rssc, sdic, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty

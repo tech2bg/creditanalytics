@@ -443,6 +443,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	{
 		int iIndex = -1;
 		int iNumSegment = _aCS.length;
+		int iPriorImpactFadeIndex = 0;
 
 		try {
 			iIndex = containingIndex (dblPredictorOrdinate, true, true);
@@ -452,19 +453,37 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			return null;
 		}
 
+		if (0 != iIndex) {
+			for (int i = iIndex - 1; i >= 0; --i) {
+				if (_aCS[i].impactFade()) {
+					iPriorImpactFadeIndex = i;
+					break;
+				}
+			}
+		}
+
+		boolean bContainingSegmentImpactFade = _aCS[iIndex].impactFade();
+
 		try {
 			org.drip.quant.calculus.WengertJacobian wjDResponseDQuote = new
 				org.drip.quant.calculus.WengertJacobian (1, iNumSegment);
 
 			for (int i = 0; i < iNumSegment; ++i) {
-				double dblDResponseDQuote = 0.;
+				double dblDResponseDQuotei = 0.;
 
 				if (i == iIndex)
-					dblDResponseDQuote += _aCS[i].derivDCoeffDQuote (dblPredictorOrdinate, iOrder);
-				else if (i == iIndex + 1)
-					dblDResponseDQuote += _aCS[i].priorDCoeffDQuote (dblPredictorOrdinate, iOrder);
+					dblDResponseDQuotei = _aCS[i].calcDResponseDQuote (dblPredictorOrdinate, iOrder);
+				else if (i == iIndex - 1)
+					dblDResponseDQuotei = _aCS[i + 1].calcDResponseDPreceedingQuote (dblPredictorOrdinate,
+						iOrder);
+				else {
+					if (!bContainingSegmentImpactFade) {
+						if (i >= iPriorImpactFadeIndex)
+							dblDResponseDQuotei = _aCS[i].calcDResponseDQuote (_aCS[i].right(), iOrder);
+					}
+				}
 
-				if (!wjDResponseDQuote.accumulatePartialFirstDerivative (0, i, dblDResponseDQuote))
+				if (!wjDResponseDQuote.accumulatePartialFirstDerivative (0, i, dblDResponseDQuotei))
 					return null;
 			}
 

@@ -64,7 +64,8 @@ public class TensionStretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_EXPONENTIAL_TENSION,
 			new ExponentialTensionSetParams (dblTension),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -83,7 +84,8 @@ public class TensionStretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 			new ExponentialTensionSetParams (dblTension),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -102,7 +104,8 @@ public class TensionStretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_RATIONAL_LINEAR_TENSION,
 			new ExponentialTensionSetParams (dblTension),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*
@@ -121,7 +124,8 @@ public class TensionStretchEstimation {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_RATIONAL_QUADRATIC_TENSION,
 			new ExponentialTensionSetParams (dblTension),
 			sdic,
-			rssc);
+			rssc,
+			null);
 	}
 
 	/*

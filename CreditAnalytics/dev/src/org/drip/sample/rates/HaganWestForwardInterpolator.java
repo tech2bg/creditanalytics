@@ -174,7 +174,8 @@ public class HaganWestForwardInterpolator {
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new ExponentialTensionSetParams (dblKLKTension),
 				sdic,
-				rssc);
+				rssc,
+				null);
 
 		SegmentCustomBuilderControl[] aSCBC = new SegmentCustomBuilderControl[adblForwardRate.length];
 

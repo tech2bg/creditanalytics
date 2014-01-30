@@ -43,14 +43,18 @@ public abstract class SmoothingCurveStretchParams {
 	private int _iCalibrationDetail = -1;
 	private java.lang.String _strSmootheningQuantificationMetric = "";
 	private org.drip.spline.params.StretchBestFitResponse _sbfr = null;
-	private org.drip.spline.params.SegmentCustomBuilderControl _scbc = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrSensitivity = null;
+
+	private
+		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.SegmentCustomBuilderControl>
+			_mapSCBC = new
+				org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.SegmentCustomBuilderControl>();
 
 	/**
 	 * SmoothingCurveStretchParams constructor
 	 * 
 	 * @param strSmootheningQuantificationMetric Curve Smoothening Quantification Metric
-	 * @param scbc Segment Builder Parameters
+	 * @param scbcDefault Default Segment Builder Parameters
 	 * @param iCalibrationDetail The Calibration Detail
 	 * @param sbfr Stretch Fitness Weighted Response
 	 * @param sbfrSensitivity Stretch Fitness Weighted Response Sensitivity
@@ -60,19 +64,41 @@ public abstract class SmoothingCurveStretchParams {
 
 	public SmoothingCurveStretchParams (
 		final java.lang.String strSmootheningQuantificationMetric,
-		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcDefault,
 		final int iCalibrationDetail,
 		final org.drip.spline.params.StretchBestFitResponse sbfr,
 		final org.drip.spline.params.StretchBestFitResponse sbfrSensitivity)
 		throws java.lang.Exception
 	{
-		if (null == (_scbc = scbc))
+		if (null == scbcDefault)
 			throw new java.lang.Exception ("SmoothingCurveStretchParams ctr: Invalid Inputs");
 
 		_sbfr = sbfr;
 		_sbfrSensitivity = sbfrSensitivity;
 		_iCalibrationDetail = iCalibrationDetail;
 		_strSmootheningQuantificationMetric = strSmootheningQuantificationMetric;
+
+		_mapSCBC.put ("default", scbcDefault);
+	}
+
+	/**
+	 * Set the Stretch's Segment Builder Control
+	 * 
+	 * @param strStretchName Name of the Stretch for which the Segment Builder Parameters need to be set
+	 * @param scbc The Segment Builder Parameters
+	 * 
+	 * @return TRUE => The Segment Builder Control Parameters have been successfully set
+	 */
+
+	public boolean setStretchSegmentBuilderControl (
+		final java.lang.String strStretchName,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbc)
+	{
+		if (null == strStretchName || strStretchName.isEmpty() || null == scbc) return false;
+
+		_mapSCBC.put (strStretchName, scbc);
+
+		return true;
 	}
 
 	/**
@@ -98,14 +124,29 @@ public abstract class SmoothingCurveStretchParams {
 	}
 
 	/**
+	 * Retrieve the Default Segment Builder Parameters
+	 * 
+	 * @return The Default Segment Builder Parameters
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl defaultSegmentBuilderControl()
+	{
+		return _mapSCBC.get ("default");
+	}
+
+	/**
 	 * Retrieve the Segment Builder Parameters
+	 * 
+	 * @param strStretchName Name of the Stretch for which the Segment Builder Parameters are requested
 	 * 
 	 * @return The Segment Builder Parameters
 	 */
 
-	public org.drip.spline.params.SegmentCustomBuilderControl segmentBuilderControl()
+	public org.drip.spline.params.SegmentCustomBuilderControl segmentBuilderControl (
+		final java.lang.String strStretchName)
 	{
-		return _scbc;
+		return _mapSCBC.containsKey (strStretchName) ? _mapSCBC.get (strStretchName) : _mapSCBC.get
+			("default");
 	}
 
 	/**

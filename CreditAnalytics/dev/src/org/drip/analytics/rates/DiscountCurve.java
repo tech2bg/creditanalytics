@@ -354,7 +354,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.spline.params.SegmentCustomBuilderControl
 				(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.spline.basis.PolynomialFunctionSetParams (4),
-						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), null);
+						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), null, null);
 
 		int iNumComponent = aCalibComp.length;
 		double[] adblDate = new double[iNumComponent];
