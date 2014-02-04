@@ -124,7 +124,7 @@ public class MultiSegmentSequenceBuilder {
 	 * @return Stretch instance
 	 */
 
-	public static final org.drip.spline.segment.ConstitutiveState[] CreateSegmentSet (
+	public static final org.drip.spline.segment.LatentStateResponseModel[] CreateSegmentSet (
 		final double[] adblPredictorOrdinate,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC)
 	{
@@ -134,8 +134,8 @@ public class MultiSegmentSequenceBuilder {
 
 		if (1 > iNumSegment || iNumSegment != aSCBC.length) return null;
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = new
-			org.drip.spline.segment.ConstitutiveState[iNumSegment];
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = new
+			org.drip.spline.segment.LatentStateResponseModel[iNumSegment];
 
 		for (int i = 0; i < iNumSegment; ++i) {
 			if (null == aSCBC[i]) return null;
@@ -159,7 +159,7 @@ public class MultiSegmentSequenceBuilder {
 				return null;
 
 			if (BASIS_SPLINE_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.PolynomialBasisSet
 							((org.drip.spline.basis.PolynomialFunctionSetParams) aSCBC[i].basisSetParams()),
@@ -167,7 +167,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_BERNSTEIN_POLYNOMIAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.BernsteinPolynomialBasisSet
 							((org.drip.spline.basis.PolynomialFunctionSetParams) aSCBC[i].basisSetParams()),
@@ -175,7 +175,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.HyperbolicTensionBasisSet
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
@@ -183,7 +183,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialTensionBasisSet
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
@@ -191,7 +191,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KAKLIS_PANDELIS.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.KaklisPandelisBasisSet
 							((org.drip.spline.basis.KaklisPandelisSetParams) aSCBC[i].basisSetParams()),
@@ -199,7 +199,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_RATIONAL.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialRationalBasisSet
 							((org.drip.spline.basis.ExponentialRationalSetParams) aSCBC[i].basisSetParams()),
@@ -207,7 +207,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_EXPONENTIAL_MIXTURE.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.basis.FunctionSetBuilder.ExponentialMixtureBasisSet
 							((org.drip.spline.basis.ExponentialMixtureSetParams) aSCBC[i].basisSetParams()),
@@ -215,7 +215,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_EXPONENTIAL_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromExponentialPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
@@ -223,7 +223,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_HYPERBOLIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromHyperbolicPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
@@ -231,7 +231,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_RATIONAL_LINEAR_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalLinearPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),
@@ -239,7 +239,7 @@ public class MultiSegmentSequenceBuilder {
 									aSCBC[i].priorQuoteSensitivityControl())))
 					return null;
 			} else if (BASIS_SPLINE_KLK_RATIONAL_QUADRATIC_TENSION.equalsIgnoreCase (strBasisSpline)) {
-				if (null == (aCS[i] = org.drip.spline.segment.ConstitutiveState.Create
+				if (null == (aCS[i] = org.drip.spline.segment.LatentStateResponseModel.Create
 					(adblPredictorOrdinate[i], adblPredictorOrdinate[i + 1],
 						org.drip.spline.tension.KochLycheKvasovFamily.FromRationalQuadraticPrimitive
 							((org.drip.spline.basis.ExponentialTensionSetParams) aSCBC[i].basisSetParams()),

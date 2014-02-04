@@ -354,7 +354,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.spline.params.SegmentCustomBuilderControl
 				(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.spline.basis.PolynomialFunctionSetParams (4),
-						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), null, null);
+						org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), null, null);
 
 		int iNumComponent = aCalibComp.length;
 		double[] adblDate = new double[iNumComponent];
@@ -622,6 +622,26 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (null == dt1 || null == dt2) return null;
 
 		return jackDForwardDQuote (dt1.getJulian(), dt2.getJulian(), dblElapsedYear);
+	}
+
+	/**
+	 * Retrieve the Jacobian of the Forward Rate Tenor at the given date to the input calibration quotes
+	 * 
+	 * @param dt Given Julian Date
+	 * @param strTenor Tenor
+	 * @param dblElapsedYear The Elapsed Year (in the appropriate Day Count) implied by the Tenor
+	 * 
+	 * @return The Jacobian
+	 */
+
+	public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+		final org.drip.analytics.date.JulianDate dt,
+		final java.lang.String strTenor,
+		final double dblElapsedYear)
+	{
+		if (null == dt || null == strTenor || strTenor.isEmpty()) return null;
+
+		return jackDForwardDQuote (dt.getJulian(), dt.addTenor (strTenor).getJulian(), dblElapsedYear);
 	}
 
 	/**

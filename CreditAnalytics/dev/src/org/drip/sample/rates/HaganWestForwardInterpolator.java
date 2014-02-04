@@ -159,7 +159,7 @@ public class HaganWestForwardInterpolator {
 		 * Create the Segment Inelastic design using the Ck and Curvature Penalty Derivatives.
 		 */
 
-		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (
+		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (
 			iK,
 			iCurvaturePenaltyDerivativeOrder);
 

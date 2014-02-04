@@ -132,7 +132,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			org.drip.spline.params.SegmentCustomBuilderControl
 				(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.spline.basis.PolynomialFunctionSetParams (2),
-						org.drip.spline.params.SegmentDesignInelasticControl.Create (0, 2), null, null);
+						org.drip.spline.params.SegmentInelasticDesignControl.Create (0, 2), null, null);
 
 		int iNumSegment = adblDate.length;
 		_adblDate = new double[iNumSegment];

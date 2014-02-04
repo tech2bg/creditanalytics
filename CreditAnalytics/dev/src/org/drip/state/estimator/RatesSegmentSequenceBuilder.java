@@ -52,6 +52,35 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
 
+	private java.util.Map<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>
+		_mapSRVCBase = new
+			java.util.HashMap<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>();
+
+	private java.util.Map<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>
+		_mapSRVCSensitivity = new
+			java.util.HashMap<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>();
+
+	private boolean generateSegmentConstraintSet (
+		final double dblSegmentRight,
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc)
+	{
+		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentResponseConstraint (prlc,
+			false);
+
+		if (null == srvcBase) return false;
+
+		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentResponseConstraint
+			(prlc, true);
+
+		if (null == srvcSensitivity) return false;
+
+		_mapSRVCBase.put (dblSegmentRight, srvcBase);
+
+		_mapSRVCSensitivity.put (dblSegmentRight, srvcSensitivity);
+
+		return true;
+	}
+
 	protected org.drip.spline.params.SegmentResponseValueConstraint segmentResponseConstraint (
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
 		final boolean bSensitivity)
@@ -115,19 +144,6 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return null;
 	}
 
-	protected org.drip.spline.params.SegmentResponseConstraintSet generateSegmentConstraintSet (
-		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc)
-	{
-		org.drip.spline.params.SegmentResponseConstraintSet srcs = new
-			org.drip.spline.params.SegmentResponseConstraintSet();
-
-		if (!srcs.addBase (segmentResponseConstraint (prlc, false))) return null;
-
-		srcs.addSensitivity (segmentResponseConstraint (prlc, true));
-
-		return srcs;
-	}
-
 	/**
 	 * RatesSegmentSequenceBuilder constructor
 	 * 
@@ -175,13 +191,12 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	{
 		if (null == mss || !(mss instanceof org.drip.state.estimator.CurveStretch)) return false;
 
-		org.drip.state.estimator.CurveStretch stretch = (org.drip.state.estimator.CurveStretch) mss;
+		_stretch = (org.drip.state.estimator.CurveStretch) mss;
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = stretch.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = _stretch.segments();
 
 		if (null == aCS || aCS.length != _srs.getCalibComp().length) return false;
 
-		_stretch = stretch;
 		return true;
 	}
 
@@ -191,76 +206,90 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	}
 
 	@Override public boolean calibStartingSegment (
-		final double dblLeftSlope,
-		final double dblLeftSlopeSensitivity)
+		final double dblLeftSlope)
 	{
 		if (null == _stretch || !_stretch.setClearBuiltRange()) return false;
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = _stretch.segments();
-
 		org.drip.product.definition.CalibratableComponent cc = _srs.getCalibComp (0);
 
-		org.drip.state.representation.LatentStateMetricMeasure lsmm = _srs.getLSMM (0);
+		if (null == cc) return false;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC (_valParams,
+			_pricerParams, _cmp, _quotingParams, _srs.getLSMM (0));
+
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = _stretch.segments();
+
+		if (null == aCS || 0 == aCS.length) return false;
+
+		double dblSegmentRight = aCS[0].right();
+
+		if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc)) return false;
 
 		org.drip.spline.params.SegmentResponseValueConstraint rvcLeading =
 			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
 				(_valParams.valueDate(), _dblEpochResponse);
 
-		org.drip.spline.params.SegmentResponseValueConstraint rvcLeadingQuoteSensitivity =
-			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-				(_valParams.valueDate(), 0.);
+		if (null == rvcLeading) return false;
 
-		if (null == aCS || 1 > aCS.length || null == cc | null == lsmm || null == rvcLeading) return false;
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC (_valParams,
-			_pricerParams, _cmp, _quotingParams, lsmm);
-
-		if (null == prlc) return false;
-
-		org.drip.spline.params.SegmentResponseConstraintSet srcs = generateSegmentConstraintSet (prlc);
-
-		return aCS[0].calibrate (rvcLeading, rvcLeadingQuoteSensitivity, dblLeftSlope, 0., null == srcs ?
-			null : srcs.getBase(), null == srcs ? null : srcs.getSensitivity(), null == _sbfr ? null :
-				_sbfr.sizeToSegment (aCS[0]), null == _sbfrQuoteSensitivity ? null :
-					_sbfrQuoteSensitivity.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
-						org.drip.product.params.FloatingRateIndex.Create (cc.getForwardCurveName()));
+		return aCS[0].calibrate (rvcLeading, dblLeftSlope, _mapSRVCBase.get (dblSegmentRight), null == _sbfr
+			? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
+				org.drip.product.params.FloatingRateIndex.Create (cc.getForwardCurveName()));
 	}
 
 	@Override public boolean calibSegmentSequence (
 		final int iStartingSegment)
 	{
-		if (null == _stretch) return false;
-
-		org.drip.spline.segment.ConstitutiveState[] aCS = _stretch.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = _stretch.segments();
 
 		int iNumSegment = aCS.length;
 
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
 			org.drip.product.definition.CalibratableComponent cc = _srs.getCalibComp (iSegment);
 
-			org.drip.state.representation.LatentStateMetricMeasure lsmm = _srs.getLSMM (iSegment);
-
-			if (null == aCS || 1 > aCS.length || null == cc | null == lsmm) return false;
+			if (null == cc) return false;
 
 			org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC
-				(_valParams, _pricerParams, _cmp, _quotingParams, lsmm);
+				(_valParams, _pricerParams, _cmp, _quotingParams, _srs.getLSMM (iSegment));
 
-			if (null == prlc) return false;
+			double dblSegmentRight = aCS[iSegment].right();
 
-			org.drip.spline.params.SegmentResponseConstraintSet srcs = generateSegmentConstraintSet (prlc);
+			if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc)) return false;
 
-			if (null == srcs) return false;
-
-			org.drip.spline.params.SegmentResponseValueConstraint srvc = srcs.getBase();
-
-			if (null == srvc) return false;
-
-			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], srvc,
-				srcs.getSensitivity(), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment]), null ==
-					_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[iSegment])) ||
-						!_stretch.setSegmentBuilt (iSegment, org.drip.product.params.FloatingRateIndex.Create
-							(cc.getForwardCurveName())))
+			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapSRVCBase.get
+				(dblSegmentRight), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
+					!_stretch.setSegmentBuilt (iSegment, org.drip.product.params.FloatingRateIndex.Create
+						(cc.getForwardCurveName())))
 				return false;
+		}
+
+		return true;
+	}
+
+	@Override public boolean manifestMeasureSensitivity (
+		final double dblLeftSlopeSensitivity)
+	{
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = _stretch.segments();
+
+		int iNumSegment = aCS.length;
+
+		for (int iSegment = 0; iSegment < iNumSegment; ++iSegment) {
+			double dblSegmentRight = aCS[iSegment].right();
+
+			if (0 == iSegment) {
+				if (!aCS[0].manifestMeasureSensitivity
+					(org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
+						(_valParams.valueDate(), _dblEpochResponse), _mapSRVCBase.get (dblSegmentRight),
+							dblLeftSlopeSensitivity,
+								org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
+					(_valParams.valueDate(), 0.), _mapSRVCSensitivity.get (dblSegmentRight), null ==
+						_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[0])))
+					return false;
+			} else {
+				if (!aCS[iSegment].manifestMeasureSensitivity (aCS[iSegment - 1], _mapSRVCBase.get
+					(dblSegmentRight), _mapSRVCSensitivity.get (dblSegmentRight), null ==
+						_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[iSegment])))
+					return false;
+			}
 		}
 
 		return true;

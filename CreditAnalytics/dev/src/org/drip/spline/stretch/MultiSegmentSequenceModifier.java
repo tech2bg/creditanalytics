@@ -70,7 +70,7 @@ public class MultiSegmentSequenceModifier {
 				(dblPredictorOrdinate))
 			return null;
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = mssIn.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = mssIn.segments();
 
 		int iNewIndex = 0;
 		int iNumSegmentIn = aCS.length;
@@ -161,7 +161,7 @@ public class MultiSegmentSequenceModifier {
 			if (adblConstraintOrdinate[i] <= dblStretchPredictorOrdinateRight) return null;
 		}
 
-		org.drip.spline.segment.ConstitutiveState[] aCS = mssIn.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = mssIn.segments();
 
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBCIn = mssIn.segmentBuilderControl();
 
@@ -232,7 +232,7 @@ public class MultiSegmentSequenceModifier {
 				sprdRightSegmentLeftEdge)
 			return null;
 
-		org.drip.spline.segment.ConstitutiveState[] aCSIn = mssIn.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aCSIn = mssIn.segments();
 
 		int iOutSegmentIndex = 1;
 		int iNumSegmentIn = aCSIn.length;
@@ -299,7 +299,7 @@ public class MultiSegmentSequenceModifier {
 				(dblPredictorOrdinate))
 			return null;
 
-		org.drip.spline.segment.ConstitutiveState[] aCSIn = mssIn.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aCSIn = mssIn.segments();
 
 		int iOutSegmentIndex = 0;
 		int iNumSegmentIn = aCSIn.length;

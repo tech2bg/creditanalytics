@@ -30,14 +30,14 @@ package org.drip.spline.segment;
  */
 
 /**
- * ConstitutiveState implements the single segment basis calibration and inference functionality. It exports
- * 	the following functionality:
- * 	- Build the ConstitutiveState instance from the Basis Function/Shape Controller Set.
- * 	- Build the ConstitutiveState instance from the Basis Evaluator Set.
+ * LatentStateResponseModel implements the single segment basis calibration and inference functionality. It
+ * 	exports the following functionality:
+ * 	- Build the LatentStateResponseModel instance from the Basis Function/Shape Controller Set.
+ * 	- Build the LatentStateResponseModel instance from the Basis Evaluator Set.
  * 	- Retrieve the Number of Parameters, Basis Evaluator, Array of the Response Basis Coefficients, and
  * 		Segment Design Inelastic Control.
  * 	- Calibrate the Segment State from the Calibration Parameter Set.
- * 	- Sensitivity Calibrator: Calibrate the Segment Quote Jacobian from the Calibration Parameter Set.
+ * 	- Sensitivity Calibrator: Calibrate the Segment Manifest Jacobian from the Calibration Parameter Set.
  * 	- Calibrate the coefficients from the prior Predictor/Response Segment, the Constraint, and fitness
  *		Weights
  *	- Calibrate the coefficients from the prior Segment and the Response Value at the Right Predictor
@@ -47,7 +47,7 @@ package org.drip.spline.segment;
  *		Slope, and the Right Edge Response Value Constraint.
  *	- Retrieve the Segment Curvature, Length, and the Best Fit DPE.
  *	- Calculate the Response Value and its Derivative at the given Predictor Ordinate.
- *	- Calculate the Ordered Derivative of the Coefficient to the Quote.
+ *	- Calculate the Ordered Derivative of the Coefficient to the Manifest.
  *	- Calculate the Jacobian of the Segment's Response Basis Function Coefficients to the Edge Inputs.
  *	- Calculate the Jacobian of the Response to the Edge Inputs at the given Predictor Ordinate.
  *	- Calculate the Jacobian of the Response to the Basis Coefficients at the given Predictor Ordinate.
@@ -69,7 +69,7 @@ package org.drip.spline.segment;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitutiveState {
+public class LatentStateResponseModel extends org.drip.spline.segment.LatentStateInelastic {
 
 	/**
 	 * LEFT NODE VALUE PARAMETER INDEX
@@ -84,50 +84,52 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	public static final int RIGHT_NODE_VALUE_PARAMETER_INDEX = 1;
 
 	private double[] _adblResponseBasisCoeff = null;
-	private double[] _adblDBasisCoeffDLocalQuote = null;
-	private double[] _adblDBasisCoeffDPreceedingQuote = null;
 	private org.drip.spline.segment.BasisEvaluator _be = null;
 	private double[][] _aadblDResponseBasisCoeffDConstraint = null;
-	private double _dblDResponseDPreceedingQuote = java.lang.Double.NaN;
-	private org.drip.spline.params.SegmentDesignInelasticControl _sdic = null;
-	private org.drip.spline.params.PreceedingQuoteSensitivityControl _pqsc = null;
+	private org.drip.spline.params.SegmentInelasticDesignControl _sidc = null;
 	private org.drip.quant.calculus.WengertJacobian _wjDBasisCoeffDEdgeValue = null;
 
+	private
+		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.segment.LatentStateManifestSensitivity>
+			_mapLSMS = new
+				org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.segment.LatentStateManifestSensitivity>();
+
 	/**
-	 * Build the ConstitutiveState instance from the Basis Function/Shape Controller Set
+	 * Build the LatentStateResponseModel instance from the Basis Function/Shape Controller Set
 	 * 
 	 * @param dblLeftPredictorOrdinate Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate Right Predictor Ordinate
 	 * @param fs Response Basis Function Set
 	 * @param rssc Shape Controller
-	 * @param sdic Design Inelastic Parameters
-	 * @param pqsc Preceeding Quote Sensitivity Control Parameters
+	 * @param sidc Segment Inelastic Design Parameters
+	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * 
-	 * @return Instance of ConstitutiveState
+	 * @return Instance of LatentStateResponseModel
 	 */
 
-	public static final org.drip.spline.segment.ConstitutiveState Create (
+	public static final org.drip.spline.segment.LatentStateResponseModel Create (
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.basis.FunctionSet fs,
 		final org.drip.spline.params.ResponseScalingShapeControl rssc,
-		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
-		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
+		final org.drip.spline.params.SegmentInelasticDesignControl sidc,
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
 	{
 		try {
 			org.drip.spline.segment.SegmentBasisEvaluator sbe = new
 				org.drip.spline.segment.SegmentBasisEvaluator (fs, rssc);
 
-			org.drip.spline.segment.ConstitutiveState cs = new org.drip.spline.segment.ConstitutiveState
-				(dblLeftPredictorOrdinate, dblRightPredictorOrdinate, sbe, sdic, pqsc);
+			org.drip.spline.segment.LatentStateResponseModel lsrm = new
+				org.drip.spline.segment.LatentStateResponseModel (dblLeftPredictorOrdinate,
+					dblRightPredictorOrdinate, sbe, sidc, pmsc);
 
-			if (null != pqsc) {
-				org.drip.spline.segment.BasisEvaluator sbePQSC = pqsc.basisEvaluator();
+			if (null != pmsc) {
+				org.drip.spline.segment.BasisEvaluator sbePMSC = pmsc.basisEvaluator();
 
-				if (null != sbePQSC && !sbePQSC.setContainingInelastics (cs)) return null;
+				if (null != sbePMSC && !sbePMSC.setContainingInelastics (lsrm)) return null;
 			}
 
-			return sbe.setContainingInelastics (cs) ? cs : null;
+			return sbe.setContainingInelastics (lsrm) ? lsrm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -136,29 +138,30 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	}
 
 	/**
-	 * Build the ConstitutiveState instance from the Basis Evaluator Set
+	 * Build the LatentStateResponseModel instance from the Basis Evaluator Set
 	 * 
 	 * @param dblLeftPredictorOrdinate Left Predictor Ordinate
 	 * @param dblRightPredictorOrdinate Right Predictor Ordinate
 	 * @param be Basis Evaluator
-	 * @param sdic Design Inelastic Parameters
-	 * @param pqsc Preceeding Quote Sensitivity Control Parameters
+	 * @param sidc Segment Inelastic Design Parameters
+	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * 
-	 * @return Instance of ConstitutiveState
+	 * @return Instance of LatentStateResponseModel
 	 */
 
-	public static final org.drip.spline.segment.ConstitutiveState Create (
+	public static final org.drip.spline.segment.LatentStateResponseModel Create (
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.segment.BasisEvaluator be,
-		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
-		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
+		final org.drip.spline.params.SegmentInelasticDesignControl sidc,
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
 	{
 		try {
-			org.drip.spline.segment.ConstitutiveState cs = new org.drip.spline.segment.ConstitutiveState
-				(dblLeftPredictorOrdinate, dblRightPredictorOrdinate, be, sdic, pqsc);
+			org.drip.spline.segment.LatentStateResponseModel lsrm = new
+				org.drip.spline.segment.LatentStateResponseModel (dblLeftPredictorOrdinate,
+					dblRightPredictorOrdinate, be, sidc, pmsc);
 
-			return be.setContainingInelastics (cs) ? cs : null;
+			return be.setContainingInelastics (lsrm) ? lsrm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -166,31 +169,30 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		return null;
 	}
 
-	private ConstitutiveState (
+	private LatentStateResponseModel (
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.segment.BasisEvaluator be,
-		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
-		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
+		final org.drip.spline.params.SegmentInelasticDesignControl sidc,
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
 		throws java.lang.Exception
 	{
 		super (dblLeftPredictorOrdinate, dblRightPredictorOrdinate);
 
-		if (null == (_be = be) || null == (_sdic = sdic))
-			throw new java.lang.Exception ("ConstitutiveState ctr: Invalid Basis Functions!");
+		if (null == (_be = be) || null == (_sidc = sidc))
+			throw new java.lang.Exception ("LatentStateResponseModel ctr: Invalid Basis Functions!");
 
 		int iNumBasis = _be.numBasis();
 
 		_adblResponseBasisCoeff = new double[iNumBasis];
 
-		if (0 >= iNumBasis || _sdic.getCk() > iNumBasis - 2)
-			throw new java.lang.Exception ("ConstitutiveState ctr: Invalid inputs!");
+		if (0 >= iNumBasis || _sidc.Ck() > iNumBasis - 2)
+			throw new java.lang.Exception ("LatentStateResponseModel ctr: Invalid inputs!");
 
-		if (null == (_pqsc = pqsc))
-			_pqsc = new org.drip.spline.params.PreceedingQuoteSensitivityControl (true, 0, null);
+		_mapLSMS.put ("Base", new org.drip.spline.segment.LatentStateManifestSensitivity (pmsc));
 	}
 
-	private double[] basisDResponseDBasisCoeff (
+	private double[] DResponseDBasisCoeff (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 	{
@@ -216,14 +218,14 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 	private double[] transmissionCk (
 		final double dblPredictorOrdinate,
-		final org.drip.spline.segment.ConstitutiveState csPrev,
+		final org.drip.spline.segment.LatentStateResponseModel csPreceeding,
 		final int iCk)
 	{
 		double[] adblDeriv = new double[iCk];
 
 		for (int i = 0; i < iCk; ++i) {
 			try {
-				adblDeriv[i] = csPrev.calcResponseValueDerivative (dblPredictorOrdinate, i + 1);
+				adblDeriv[i] = csPreceeding.calcResponseValueDerivative (dblPredictorOrdinate, i + 1);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -234,18 +236,25 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		return adblDeriv;
 	}
 
-	private double[] CkDBasisCoeffDPreceedingQuoteTail()
+	private double[] CkDBasisCoeffDPreceedingManifestMeasure (
+		final java.lang.String strMMQM)
 	{
-		int iCk = _pqsc.Ck();
+		if (!_mapLSMS.containsKey (strMMQM)) return null;
+
+		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get (strMMQM);
+
+		if (null == csqs) return null;
+
+		int iCk = csqs.getPMSC().Ck();
 
 		if (0 == iCk) return null;
 
-		double[] adblDBasisCoeffDPreceedingQuoteTail = new double[iCk];
+		double[] adblDBasisCoeffDPreceedingManifestTail = new double[iCk];
 
 		for (int i = 0; i < iCk; ++i)
-			adblDBasisCoeffDPreceedingQuoteTail[i] = 0.;
+			adblDBasisCoeffDPreceedingManifestTail[i] = 0.;
 
-		return adblDBasisCoeffDPreceedingQuoteTail;
+		return adblDBasisCoeffDPreceedingManifestTail;
 	}
 
 	/**
@@ -256,7 +265,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 	public int numParameters()
 	{
-		return _sdic.getCk() + 2;
+		return _sidc.Ck() + 2;
 	}
 
 	/**
@@ -282,40 +291,40 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	}
 
 	/**
-	 * Retrieve the Segment Design Inelastic Control
+	 * Retrieve the Segment Inelastic Design Control
 	 * 
-	 * @return The Segment Design Inelastic Control
+	 * @return The Segment Inelastic Design Control
 	 */
 
-	public org.drip.spline.params.SegmentDesignInelasticControl designControl()
+	public org.drip.spline.params.SegmentInelasticDesignControl designControl()
 	{
-		return _sdic;
+		return _sidc;
 	}
 
 	/**
 	 * Main Calibrator: Calibrate the Segment State from the Calibration Parameter Set
 	 * 
-	 * @param sscState The Segment State Calibration Parameter Set
+	 * @param ssciState The Segment State Calibration Inputs Set
 	 * 
 	 * @return TRUE => Calibration Successful
 	 */
 
 	public boolean calibrateState (
-		final org.drip.spline.params.SegmentStateCalibration sscState)
+		final org.drip.spline.params.SegmentStateCalibrationInputs ssciState)
 	{
-		if (null == sscState) return false;
+		if (null == ssciState) return false;
 
-		double[] adblPredictorOrdinate = sscState.predictorOrdinates();
+		double[] adblPredictorOrdinate = ssciState.predictorOrdinates();
 
-		double[] adblResponseValue = sscState.responseValues();
+		double[] adblResponseValue = ssciState.responseValues();
 
-		double[] adblLeftEdgeDeriv = sscState.leftEdgeDeriv();
+		double[] adblLeftEdgeDeriv = ssciState.leftEdgeDeriv();
 
-		double[] adblRightEdgeDeriv = sscState.rightEdgeDeriv();
+		double[] adblRightEdgeDeriv = ssciState.rightEdgeDeriv();
 
-		org.drip.spline.params.SegmentBestFitResponse sbfr = sscState.bestFitResponse();
+		org.drip.spline.params.SegmentBestFitResponse sbfr = ssciState.bestFitResponse();
 
-		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFC = sscState.flexureConstraint();
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFC = ssciState.flexureConstraint();
 
 		int iNumConstraint = null == aSBFC ? 0 : aSBFC.length;
 		int iNumResponseBasisCoeff = _adblResponseBasisCoeff.length;
@@ -331,8 +340,8 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 		try {
 			org.drip.spline.segment.BestFitFlexurePenalizer bffp = new
-				org.drip.spline.segment.BestFitFlexurePenalizer (this, _sdic.curvaturePenaltyControl(),
-					_sdic.lengthPenaltyControl(), sbfr, _be);
+				org.drip.spline.segment.BestFitFlexurePenalizer (this, _sidc.curvaturePenaltyControl(),
+					_sidc.lengthPenaltyControl(), sbfr, _be);
 
 			for (int j = 0; j < iNumResponseBasisCoeff; ++j) {
 				if (j < iNumPredictorOrdinate)
@@ -405,89 +414,90 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	}
 
 	/**
-	 * Sensitivity Calibrator: Calibrate the Segment Quote Jacobian from the Calibration Parameter Set
+	 * Sensitivity Calibrator: Calibrate the Segment Manifest Measure Jacobian from the Calibration Inputs
 	 * 
-	 * @param sscQuoteSensitivity The Segment Quote Calibration Parameter Sensitivity
+	 * @param ssciManifestSensitivity The Segment Manifest Calibration Sensitivity Inputs
 	 * @param aSBFCState Array of Segment State Basis Flexure Constraints
 	 * 
-	 * @return The Quote Sensitivity Jacobian
+	 * @return The Manifest Sensitivity Coefficients
 	 */
 
-	public double[] calibrateQuoteJacobian (
-		final org.drip.spline.params.SegmentStateCalibration sscQuoteSensitivity,
+	public double[] calibrateManifestJacobian (
+		final org.drip.spline.params.SegmentStateCalibrationInputs ssciManifestSensitivity,
 		final org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState)
 	{
-		if (null == sscQuoteSensitivity) return null;
+		if (null == ssciManifestSensitivity) return null;
 
-		double[] adblPredictorOrdinate = sscQuoteSensitivity.predictorOrdinates();
+		double[] adblPredictorOrdinate = ssciManifestSensitivity.predictorOrdinates();
 
-		double[] adblResponseValueQuoteSensitivity = sscQuoteSensitivity.responseValues();
+		double[] adblResponseValueManifestSensitivity = ssciManifestSensitivity.responseValues();
 
-		double[] adblLeftEdgeDerivQuoteSensitivity = sscQuoteSensitivity.leftEdgeDeriv();
+		double[] adblLeftEdgeDerivManifestSensitivity = ssciManifestSensitivity.leftEdgeDeriv();
 
-		double[] adblRightEdgeDerivQuoteSensitivity = sscQuoteSensitivity.rightEdgeDeriv();
+		double[] adblRightEdgeDerivManifestSensitivity = ssciManifestSensitivity.rightEdgeDeriv();
 
-		org.drip.spline.params.SegmentBestFitResponse sbfrQuoteSensitivity =
-			sscQuoteSensitivity.bestFitResponse();
+		org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity =
+			ssciManifestSensitivity.bestFitResponse();
 
-		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCQuoteSensitivity =
-			sscQuoteSensitivity.flexureConstraint();
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCManifestSensitivity =
+			ssciManifestSensitivity.flexureConstraint();
 
 		int iNumResponseBasisCoeff = _adblResponseBasisCoeff.length;
-		int iNumConstraint = null == aSBFCQuoteSensitivity ? 0 : aSBFCQuoteSensitivity.length;
+		int iNumConstraint = null == aSBFCManifestSensitivity ? 0 : aSBFCManifestSensitivity.length;
 		int iNumPredictorOrdinate = null == adblPredictorOrdinate ? 0 : adblPredictorOrdinate.length;
-		double[] adblPredictorResponseQuoteSensitivityConstraint = new double[iNumResponseBasisCoeff];
-		int iNumLeftDerivQuoteSensitivity = null == adblLeftEdgeDerivQuoteSensitivity ? 0 :
-			adblLeftEdgeDerivQuoteSensitivity.length;
-		int iNumRightDerivQuoteSensitivity = null == adblRightEdgeDerivQuoteSensitivity ? 0 :
-			adblRightEdgeDerivQuoteSensitivity.length;
-		double[][] aadblResponseCoeffConstraintQuoteSensitivity = new
+		double[] adblPredictorResponseManifestSensitivityConstraint = new double[iNumResponseBasisCoeff];
+		int iNumLeftDerivManifestSensitivity = null == adblLeftEdgeDerivManifestSensitivity ? 0 :
+			adblLeftEdgeDerivManifestSensitivity.length;
+		int iNumRightDerivManifestSensitivity = null == adblRightEdgeDerivManifestSensitivity ? 0 :
+			adblRightEdgeDerivManifestSensitivity.length;
+		double[][] aadblResponseCoeffConstraintManifestSensitivity = new
 			double[iNumResponseBasisCoeff][iNumResponseBasisCoeff];
 
 		if ((null == aSBFCState && 0 != iNumConstraint) || (null != aSBFCState && iNumConstraint !=
 			aSBFCState.length) || null == _be)
 			return null;
 
-		if (iNumResponseBasisCoeff < iNumPredictorOrdinate + iNumLeftDerivQuoteSensitivity +
-			iNumRightDerivQuoteSensitivity + iNumConstraint)
+		if (iNumResponseBasisCoeff < iNumPredictorOrdinate + iNumLeftDerivManifestSensitivity +
+			iNumRightDerivManifestSensitivity + iNumConstraint)
 			return null;
 
 		try {
-			org.drip.spline.segment.BestFitFlexurePenalizer bffpQuoteSensitivity = new
-				org.drip.spline.segment.BestFitFlexurePenalizer (this, null == _sdic ? null :
-					_sdic.curvaturePenaltyControl(), null == _sdic ? null : _sdic.lengthPenaltyControl(),
-						sbfrQuoteSensitivity, _be);
+			org.drip.spline.segment.BestFitFlexurePenalizer bffpManifestSensitivity = new
+				org.drip.spline.segment.BestFitFlexurePenalizer (this, null == _sidc ? null :
+					_sidc.curvaturePenaltyControl(), null == _sidc ? null : _sidc.lengthPenaltyControl(),
+						sbfrManifestSensitivity, _be);
 
 			for (int j = 0; j < iNumResponseBasisCoeff; ++j) {
 				if (j < iNumPredictorOrdinate)
-					adblPredictorResponseQuoteSensitivityConstraint[j] =
-						adblResponseValueQuoteSensitivity[j];
+					adblPredictorResponseManifestSensitivityConstraint[j] =
+						adblResponseValueManifestSensitivity[j];
 				else if (j < iNumPredictorOrdinate + iNumConstraint) {
-					adblPredictorResponseQuoteSensitivityConstraint[j] = 0.;
-					org.drip.spline.params.SegmentBasisFlexureConstraint sbfcQuoteSensitivity =
-						aSBFCQuoteSensitivity[j - iNumPredictorOrdinate];
+					adblPredictorResponseManifestSensitivityConstraint[j] = 0.;
+					org.drip.spline.params.SegmentBasisFlexureConstraint sbfcManifestSensitivity =
+						aSBFCManifestSensitivity[j - iNumPredictorOrdinate];
 
-					if (null != sbfcQuoteSensitivity) {
-						adblPredictorResponseQuoteSensitivityConstraint[j] =
-							sbfcQuoteSensitivity.contraintValue();
+					if (null != sbfcManifestSensitivity) {
+						adblPredictorResponseManifestSensitivityConstraint[j] =
+							sbfcManifestSensitivity.contraintValue();
 
-						double[] adblCalibConstraintWeightQuoteSensitivity =
-							sbfcQuoteSensitivity.responseBasisCoeffWeights();
+						double[] adblCalibConstraintWeightManifestSensitivity =
+							sbfcManifestSensitivity.responseBasisCoeffWeights();
 
 						for (int i = 0; i < iNumResponseBasisCoeff; ++i)
-							adblPredictorResponseQuoteSensitivityConstraint[j] -= _adblResponseBasisCoeff[i]
-								* adblCalibConstraintWeightQuoteSensitivity[i];
+							adblPredictorResponseManifestSensitivityConstraint[j] -=
+								_adblResponseBasisCoeff[i] * adblCalibConstraintWeightManifestSensitivity[i];
 					}
-				} else if (j < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivQuoteSensitivity)
-					adblPredictorResponseQuoteSensitivityConstraint[j] = adblLeftEdgeDerivQuoteSensitivity[j
-					    - iNumPredictorOrdinate - iNumConstraint];
-				else if (j < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivQuoteSensitivity +
-					iNumRightDerivQuoteSensitivity)
-					adblPredictorResponseQuoteSensitivityConstraint[j] = adblRightEdgeDerivQuoteSensitivity[j
-					    - iNumPredictorOrdinate - iNumConstraint - iNumLeftDerivQuoteSensitivity];
+				} else if (j < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivManifestSensitivity)
+					adblPredictorResponseManifestSensitivityConstraint[j] =
+						adblLeftEdgeDerivManifestSensitivity[j - iNumPredictorOrdinate - iNumConstraint];
+				else if (j < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivManifestSensitivity +
+					iNumRightDerivManifestSensitivity)
+					adblPredictorResponseManifestSensitivityConstraint[j] =
+						adblRightEdgeDerivManifestSensitivity[j - iNumPredictorOrdinate - iNumConstraint -
+						    iNumLeftDerivManifestSensitivity];
 				else
-					adblPredictorResponseQuoteSensitivityConstraint[j] =
-						bffpQuoteSensitivity.basisPairPenaltyConstraint (j);
+					adblPredictorResponseManifestSensitivityConstraint[j] =
+						bffpManifestSensitivity.basisPairPenaltyConstraint (j);
 			}
 
 			for (int i = 0; i < iNumResponseBasisCoeff; ++i) {
@@ -500,23 +510,23 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 						    iNumPredictorOrdinate].responseBasisCoeffWeights();
 
 					if (l < iNumPredictorOrdinate)
-						aadblResponseCoeffConstraintQuoteSensitivity[l][i] = _be.shapedBasisFunctionResponse
-							(adblPredictorOrdinate[l], i);
+						aadblResponseCoeffConstraintManifestSensitivity[l][i] =
+							_be.shapedBasisFunctionResponse (adblPredictorOrdinate[l], i);
 					else if (l < iNumPredictorOrdinate + iNumConstraint)
-						aadblResponseCoeffConstraintQuoteSensitivity[l][i] =
+						aadblResponseCoeffConstraintManifestSensitivity[l][i] =
 							adblCalibBasisConstraintWeight[i];
-					else if (l < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivQuoteSensitivity)
-						aadblResponseCoeffConstraintQuoteSensitivity[l][i] =
+					else if (l < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivManifestSensitivity)
+						aadblResponseCoeffConstraintManifestSensitivity[l][i] =
 							_be.shapedBasisFunctionDerivative (left(), l - iNumPredictorOrdinate -
 								iNumConstraint + 1, i);
-					else if (l < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivQuoteSensitivity +
-						iNumRightDerivQuoteSensitivity)
-						aadblResponseCoeffConstraintQuoteSensitivity[l][i] =
+					else if (l < iNumPredictorOrdinate + iNumConstraint + iNumLeftDerivManifestSensitivity +
+						iNumRightDerivManifestSensitivity)
+						aadblResponseCoeffConstraintManifestSensitivity[l][i] =
 							_be.shapedBasisFunctionDerivative (right(), l - iNumPredictorOrdinate -
-								iNumConstraint - iNumLeftDerivQuoteSensitivity + 1, i);
+								iNumConstraint - iNumLeftDerivManifestSensitivity + 1, i);
 					else
-						aadblResponseCoeffConstraintQuoteSensitivity[l][i] =
-							bffpQuoteSensitivity.basisPairConstraintCoefficient (i, l);
+						aadblResponseCoeffConstraintManifestSensitivity[l][i] =
+							bffpManifestSensitivity.basisPairConstraintCoefficient (i, l);
 				}
 			}
 		} catch (java.lang.Exception e) {
@@ -527,92 +537,103 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 		org.drip.quant.linearalgebra.LinearizationOutput lo =
 			org.drip.quant.linearalgebra.LinearSystemSolver.SolveUsingMatrixInversion
-				(aadblResponseCoeffConstraintQuoteSensitivity,
-					adblPredictorResponseQuoteSensitivityConstraint);
+				(aadblResponseCoeffConstraintManifestSensitivity,
+					adblPredictorResponseManifestSensitivityConstraint);
 
 		return null == lo ? null : lo.getTransformedRHS();
 	}
 
 	/**
-	 * Sensitivity Calibrator: Calibrate the Segment Local Quote Jacobian from the Calibration Parameter Set
+	 * Sensitivity Calibrator: Calibrate the Segment Local Manifest Jacobian from the Calibration Parameter
+	 * 	Set
 	 * 
-	 * @param sscQuoteSensitivity The Segment Quote Calibration Parameter Sensitivity
+	 * @param strMMQM Latent State Manifest Measure Quantification Metric Combine
+	 * @param sscManifestSensitivity The Segment Manifest Calibration Parameter Sensitivity
 	 * @param aSBFCState Array of Segment State Basis Flexure Constraints
 	 * 
-	 * @return TRUE => Local Quote Sensitivity Calibration Successful
+	 * @return TRUE => Local Manifest Sensitivity Calibration Successful
 	 */
 
-	public boolean calibrateLocalQuoteJacobian (
-		final org.drip.spline.params.SegmentStateCalibration sscQuoteSensitivity,
+	public boolean calibrateLocalManifestJacobian (
+		final java.lang.String strMMQM,
+		final org.drip.spline.params.SegmentStateCalibrationInputs ssciManifestSensitivity,
 		final org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState)
 	{
-		if (null == (_adblDBasisCoeffDLocalQuote = calibrateQuoteJacobian (sscQuoteSensitivity, aSBFCState))
-			|| _adblDBasisCoeffDLocalQuote.length != _adblResponseBasisCoeff.length)
-			return false;
+		if (!_mapLSMS.containsKey (strMMQM)) return false;
 
-		return true;
+		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get (strMMQM);
+
+		if (null == csqs) return false;
+
+		double[] adblDBasisCoeffDLocalManifest = calibrateManifestJacobian (ssciManifestSensitivity,
+			aSBFCState);
+
+		return null == adblDBasisCoeffDLocalManifest || adblDBasisCoeffDLocalManifest.length !=
+			_adblResponseBasisCoeff.length ? false : csqs.setDBasisCoeffDLocalManifest
+				(adblDBasisCoeffDLocalManifest);
 	}
 
 	/**
-	 * Sensitivity Calibrator: Calibrate the Segment Preceeding Quote Jacobian from the Calibration Parameter Set
+	 * Sensitivity Calibrator: Calibrate the Segment Preceeding Manifest Jacobian from the Calibration
+	 *	Parameter Set
 	 * 
-	 * @param sscPreceedingQuoteSensitivity The Segment Preceeding Quote Calibration Parameter Sensitivity
+	 * @param strMMQM Latent State Manifest Measure Quantification Metric Combine
+	 * @param ssciPreceedingManifestSensitivity The Segment Preceeding Manifest Calibration Parameter
+	 * 	Sensitivity
 	 * 
-	 * @return TRUE => Preceeding Quote Sensitivity Calibration Successful
+	 * @return TRUE => Preceeding Manifest Sensitivity Calibration Successful
 	 */
 
-	public boolean calibratePreceedingQuoteJacobian (
-		final org.drip.spline.params.SegmentStateCalibration sscPreceedingQuoteSensitivity)
+	public boolean calibratePreceedingManifestJacobian (
+		final java.lang.String strMMQM,
+		final org.drip.spline.params.SegmentStateCalibrationInputs ssciPreceedingManifestSensitivity)
 	{
-		if (null == (_adblDBasisCoeffDPreceedingQuote = calibrateQuoteJacobian (sscPreceedingQuoteSensitivity,
-			null)) || _adblDBasisCoeffDPreceedingQuote.length != _adblResponseBasisCoeff.length)
-			return false;
+		if (!_mapLSMS.containsKey (strMMQM)) return false;
 
-		return true;
+		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get (strMMQM);
+
+		if (null == csqs) return false;
+
+		double[] adblDBasisCoeffDPreceedingManifest = calibrateManifestJacobian
+			(ssciPreceedingManifestSensitivity, null);
+
+		return null == adblDBasisCoeffDPreceedingManifest || adblDBasisCoeffDPreceedingManifest.length !=
+			_adblResponseBasisCoeff.length ? false : csqs.setDBasisCoeffDPreceedingManifest
+				(adblDBasisCoeffDPreceedingManifest);
 	}
 
 	/**
 	 * Calibrate the coefficients from the prior Predictor/Response Segment, the Constraint, and fitness
 	 * 	Weights
 	 * 
-	 * @param csPrev Preceeding Predictor/Response Segment
+	 * @param csPreceeding Preceeding Predictor/Response Segment
 	 * @param srvcState The Segment State Response Value Constraint
-	 * @param srvcQuoteSensitivity The Segment State Response Value Constraint Quote Sensitivity
 	 * @param sbfrState Segment's Best Fit Weighted State Response Values
-	 * @param sbfrQuoteSensitivity Segment's Best Fit Weighted State Response Value Quote Sensitivity
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
 
 	public boolean calibrate (
-		final org.drip.spline.segment.ConstitutiveState csPrev,
+		final org.drip.spline.segment.LatentStateResponseModel csPreceeding,
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcState,
-		final org.drip.spline.params.SegmentResponseValueConstraint srvcQuoteSensitivity,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrQuoteSensitivity)
+		final org.drip.spline.params.SegmentBestFitResponse sbfrState)
 	{
-		int iCk = _sdic.getCk();
-
-		if (null == srvcState && null != srvcQuoteSensitivity) return false;
+		int iCk = _sidc.Ck();
 
 		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState = null == srvcState ? null : new
 			org.drip.spline.params.SegmentBasisFlexureConstraint[] {srvcState.responseIndexedBasisConstraint
 				(_be, this)};
 
-		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCQuoteSensitivity = null ==
-			srvcQuoteSensitivity ? null : new org.drip.spline.params.SegmentBasisFlexureConstraint[]
-				{srvcQuoteSensitivity.responseIndexedBasisConstraint (_be, this)};
-
-		double[] adblQuoteJacobianDerivAtLeftOrdinate = null;
+		double[] adblManifestJacobianDerivAtLeftOrdinate = null;
 
 		if (0 != iCk) {
-			adblQuoteJacobianDerivAtLeftOrdinate = new double[iCk];
+			adblManifestJacobianDerivAtLeftOrdinate = new double[iCk];
 
 			for (int i = 0; i < iCk; ++i)
-				adblQuoteJacobianDerivAtLeftOrdinate[i] = 0.;
+				adblManifestJacobianDerivAtLeftOrdinate[i] = 0.;
 		}
 
-		if (null == csPrev) {
+		if (null == csPreceeding) {
 			try {
 				double[] adblStateDerivAtLeftOrdinate = null;
 
@@ -624,15 +645,9 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 							(_adblResponseBasisCoeff, left(), i);
 				}
 
-				if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[]
+				return calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs (new double[]
 					{left()}, new double[] {_be.responseValue (_adblResponseBasisCoeff, left())},
-						adblStateDerivAtLeftOrdinate, null, aSBFCState, sbfrState)))
-					return false;
-
-				return null == aSBFCQuoteSensitivity ? true : calibrateLocalQuoteJacobian (new
-					org.drip.spline.params.SegmentStateCalibration (new double[] {left()}, new double[] {0.},
-						adblQuoteJacobianDerivAtLeftOrdinate, null, aSBFCQuoteSensitivity,
-							sbfrQuoteSensitivity), aSBFCState);
+						adblStateDerivAtLeftOrdinate, null, aSBFCState, sbfrState));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -641,26 +656,9 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		}
 
 		try {
-			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[] {left()},
-				new double[] {csPrev.responseValue (left())}, 0 == iCk ? null : transmissionCk (left(),
-					csPrev, iCk), null, aSBFCState, sbfrState)))
-				return false;
-
-			if (null == aSBFCQuoteSensitivity) return true;
-
-			if (!calibrateLocalQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
-				double[] {left()}, new double[] {0.}, adblQuoteJacobianDerivAtLeftOrdinate, null,
-					aSBFCQuoteSensitivity, sbfrQuoteSensitivity), aSBFCState))
-				return false;
-
-			if (_pqsc.impactFade())
-				return calibratePreceedingQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
-					double[] {left(), right()}, new double[] {csPrev.calcDResponseDQuote (left(), 1), 0.},
-						null, CkDBasisCoeffDPreceedingQuoteTail(), null, null));
-
-			_dblDResponseDPreceedingQuote = csPrev.calcDResponseDQuote (left(), 1);
-
-			return true;
+			return calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs (new double[]
+				{left()}, new double[] {csPreceeding.responseValue (left())}, 0 == iCk ? null :
+					transmissionCk (left(), csPreceeding, iCk), null, aSBFCState, sbfrState));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -672,56 +670,26 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * Calibrate the coefficients from the prior Segment and the Response Value at the Right Predictor
 	 *  Ordinate
 	 * 
-	 * @param csPrev Preceeding Predictor/Response Segment
+	 * @param csPreceeding Preceeding Predictor/Response Segment
 	 * @param dblRightStateValue Response Value at the Right Predictor Ordinate
-	 * @param dblRightStateQuoteSensitivity Response Value Quote Sensitivity at the Right Predictor Ordinate
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
-	 * @param sbfrQuoteSensitivity Segment's Best Fit Weighted Response Value Quote Sensitivity
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
 
 	public boolean calibrate (
-		final ConstitutiveState csPrev,
+		final LatentStateResponseModel csPreceeding,
 		final double dblRightStateValue,
-		final double dblRightStateQuoteSensitivity,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrQuoteSensitivity)
+		final org.drip.spline.params.SegmentBestFitResponse sbfrState)
 	{
-		if (null == csPrev) return false;
+		if (null == csPreceeding) return false;
 
-		int iCk = _sdic.getCk();
+		int iCk = _sidc.Ck();
 
 		try {
-			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[] {left(),
-				right()}, new double[] {csPrev.responseValue (left()), dblRightStateValue}, 0 != iCk ?
-					csPrev.transmissionCk (left(), this, iCk) : null, null, null, sbfrState)))
-				return false;
-
-			double[] adblQuoteJacobianDerivAtLeftOrdinate = null;
-
-			if (0 != iCk) {
-				adblQuoteJacobianDerivAtLeftOrdinate = new double[iCk];
-
-				for (int i = 0; i < iCk; ++i)
-					adblQuoteJacobianDerivAtLeftOrdinate[i] = 0.;
-			}
-
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblRightStateQuoteSensitivity)) return true;
-
-			if (!calibrateLocalQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
-				double[] {left(), right()}, new double[] {0., dblRightStateQuoteSensitivity}, 0 != iCk ?
-					adblQuoteJacobianDerivAtLeftOrdinate : null, null, null, sbfrQuoteSensitivity), null))
-				return false;
-
-			if (_pqsc.impactFade())
-				return calibratePreceedingQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
-					double[] {left(), right()}, new double[] {csPrev.calcDResponseDQuote (left(), 1), 0.},
-						null, CkDBasisCoeffDPreceedingQuoteTail(), null, null));
-
-			_dblDResponseDPreceedingQuote = csPrev.calcDResponseDQuote (left(), 1);
-
-			return true;
+			return calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs (new double[]
+				{left(), right()}, new double[] {csPreceeding.responseValue (left()), dblRightStateValue}, 0
+					!= iCk ? csPreceeding.transmissionCk (left(), this, iCk) : null, null, null, sbfrState));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -733,26 +701,26 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * Calibrate the Coefficients from the Edge Response Values and the Left Edge Response Slope
 	 * 
 	 * @param dblLeftValue Left Edge Response Value
-	 * @param dblLeftQuoteSensitivity Left Edge Response Value Quote Sensitivity
 	 * @param dblLeftSlope Left Edge Response Slope
-	 * @param dblLeftSlopeQuoteSensitivity Left Edge Response Slope Quote Sensitivity
 	 * @param dblRightValue Right Edge Response Value
-	 * @param dblRightQuoteSensitivity Right Edge Response Value Quote Sensitivity
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
-	 * @param sbfrQuoteSensitivity Segment's Best Fit Weighted Response Values Quote Sensitivity
+	 * @param dblLeftManifestSensitivity Left Edge Response Value Manifest Sensitivity
+	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Slope Manifest Sensitivity
+	 * @param dblRightManifestSensitivity Right Edge Response Value Manifest Sensitivity
+	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Values Manifest Sensitivity
 	 * 
-	 * @return TRUE => If the calibration succeeds
+	 * @return TRUE => The Calibration Succeeded
 	 */
 
 	public boolean calibrate (
 		final double dblLeftValue,
-		final double dblLeftQuoteSensitivity,
 		final double dblLeftSlope,
-		final double dblLeftSlopeQuoteSensitivity,
 		final double dblRightValue,
-		final double dblRightQuoteSensitivity,
 		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrQuoteSensitivity)
+		final double dblLeftManifestSensitivity,
+		final double dblLeftSlopeManifestSensitivity,
+		final double dblRightManifestSensitivity,
+		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLeftValue) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblLeftSlope) ||
@@ -760,21 +728,22 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 			return false;
 
 		try {
-			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (new double[] {left(),
-				right()}, new double[] {dblLeftValue, dblRightValue},
+			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs (new double[]
+				{left(), right()}, new double[] {dblLeftValue, dblRightValue},
 					org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
 						dblLeftSlope), null, null, sbfrState)))
 				return false;
 
-			return org.drip.quant.common.NumberUtil.IsValid (dblLeftQuoteSensitivity) &&
-				org.drip.quant.common.NumberUtil.IsValid (dblLeftSlopeQuoteSensitivity) &&
-					org.drip.quant.common.NumberUtil.IsValid (dblRightQuoteSensitivity) ?
-						calibrateLocalQuoteJacobian (new org.drip.spline.params.SegmentStateCalibration (new
-							double[] {left(), right()}, new double[] {dblLeftQuoteSensitivity,
-								dblRightQuoteSensitivity},
-									org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters()
-										- 2, dblLeftSlopeQuoteSensitivity), null, null,
-											sbfrQuoteSensitivity), null) : true;
+			return org.drip.quant.common.NumberUtil.IsValid (dblLeftManifestSensitivity) &&
+				org.drip.quant.common.NumberUtil.IsValid (dblLeftSlopeManifestSensitivity) &&
+					org.drip.quant.common.NumberUtil.IsValid (dblRightManifestSensitivity) ?
+						calibrateLocalManifestJacobian ("Base", new
+							org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(),
+								right()}, new double[] {dblLeftManifestSensitivity,
+									dblRightManifestSensitivity},
+										org.drip.quant.common.CollectionUtil.DerivArrayFromSlope
+											(numParameters() - 2, dblLeftSlopeManifestSensitivity), null,
+												null, sbfrManifestSensitivity), null) : true;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -787,29 +756,20 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 *  Slope, and the Right Edge Response Value Constraint
 	 * 
 	 * @param wrvcStateLeft Left Edge Response Value Constraint
-	 * @param wrvcStateLeftQuoteSensitivity Left Edge Response Value Constraint Quote Sensitivity
 	 * @param dblLeftSlope Left Edge Response Value Slope
-	 * @param dblLeftSlopeQuoteSensitivity Left Edge Response Value Slope Quote Sensitivity
 	 * @param wrvcStateRight Right Edge Response Value Constraint
-	 * @param wrvcStateRightQuoteSensitivity Right Edge Response Value Constraint Quote Sensitivity
 	 * @param sbfrState Segment's Best Fit Weighted Response
-	 * @param sbfrQuoteSensitivity Segment's Best Fit Weighted Response Quote Sensitivity
 	 * 
 	 * @return TRUE => If the calibration succeeds
 	 */
 
 	public boolean calibrate (
 		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateLeft,
-		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateLeftQuoteSensitivity,
 		final double dblLeftSlope,
-		final double dblLeftSlopeQuoteSensitivity,
 		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateRight,
-		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateRightQuoteSensitivity,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrQuoteSensitivity)
+		final org.drip.spline.params.SegmentBestFitResponse sbfrState)
 	{
 		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState = null;
-		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCQuoteSensitivity = null;
 
 		try {
 			if (null != wrvcStateLeft || null != wrvcStateRight)
@@ -817,23 +777,227 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 					wrvcStateLeft ? null : wrvcStateLeft.responseIndexedBasisConstraint (_be, this), null ==
 						wrvcStateRight ? null : wrvcStateRight.responseIndexedBasisConstraint (_be, this)};
 
-			if (null != wrvcStateLeftQuoteSensitivity || null != wrvcStateRightQuoteSensitivity)
-				aSBFCQuoteSensitivity = new org.drip.spline.params.SegmentBasisFlexureConstraint[] {null ==
-					wrvcStateLeftQuoteSensitivity ? null :
-						wrvcStateLeftQuoteSensitivity.responseIndexedBasisConstraint (_be, this), null ==
-							wrvcStateRightQuoteSensitivity ? null :
-								wrvcStateRightQuoteSensitivity.responseIndexedBasisConstraint (_be, this)};
-
-			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibration (null, null,
+			return calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs (null, null,
 				org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2, dblLeftSlope),
-					null, aSBFCState, sbfrState)))
+					null, aSBFCState, sbfrState));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Compute the Local and the Preceeding Manifest Measure Sensitivity Coefficients from the Preceeding
+	 * 	Segment, the Local Response Value, the Local Response Value Manifest Measure Sensitivity, and the
+	 * 	Local Best Fit Response Sensitivity
+	 * 
+	 * @param csPreceeding Preceeding Predictor/Response Segment
+	 * @param srvcState The Segment State Response Value Constraint
+	 * @param srvcManifestSensitivity The Segment State Response Value Constraint Manifest Sensitivity
+	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted State Response Value Manifest Sensitivity
+	 * 
+	 * @return TRUE => If the calibration succeeds
+	 */
+
+	public boolean manifestMeasureSensitivity (
+		final org.drip.spline.segment.LatentStateResponseModel csPreceeding,
+		final org.drip.spline.params.SegmentResponseValueConstraint srvcState,
+		final org.drip.spline.params.SegmentResponseValueConstraint srvcManifestSensitivity,
+		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
+	{
+		if (null == srvcState && null != srvcManifestSensitivity) return false;
+
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState = null == srvcState ? null : new
+			org.drip.spline.params.SegmentBasisFlexureConstraint[] {srvcState.responseIndexedBasisConstraint
+				(_be, this)};
+
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCManifestSensitivity = null ==
+			srvcManifestSensitivity ? null : new org.drip.spline.params.SegmentBasisFlexureConstraint[]
+				{srvcManifestSensitivity.responseIndexedBasisConstraint (_be, this)};
+
+		double[] adblManifestJacobianDerivAtLeftOrdinate = null;
+
+		int iCk = _sidc.Ck();
+
+		if (0 != iCk) {
+			adblManifestJacobianDerivAtLeftOrdinate = new double[iCk];
+
+			for (int i = 0; i < iCk; ++i)
+				adblManifestJacobianDerivAtLeftOrdinate[i] = 0.;
+		}
+
+		if (null == csPreceeding) return false;
+
+		try {
+			if (null == aSBFCManifestSensitivity) return true;
+
+			if (!calibrateLocalManifestJacobian ("Base", new
+				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left()}, new double[]
+					{0.}, adblManifestJacobianDerivAtLeftOrdinate, null, aSBFCManifestSensitivity,
+						sbfrManifestSensitivity), aSBFCState))
 				return false;
 
-			return null == aSBFCQuoteSensitivity ? true : calibrateLocalQuoteJacobian (new
-				org.drip.spline.params.SegmentStateCalibration (null, null,
+			if (!_mapLSMS.containsKey ("Base")) return true;
+
+			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+
+			if (null == csqs) return true;
+
+			return csqs.getPMSC().impactFade() ? calibratePreceedingManifestJacobian ("Base", new
+				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(), right()}, new
+					double[] {csPreceeding.calcDResponseDManifest (left(), 1), 0.}, null,
+						CkDBasisCoeffDPreceedingManifestMeasure ("Base"), null, null)) :
+							csqs.setDResponseDPreceedingManifest (csPreceeding.calcDResponseDManifest
+								(left(), 1));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Compute the Local and the Preceeding Manifest Measure Sensitivity Coefficients from the Preceeding
+	 * 	Segments, the Local Response Value Sensitivity at the Right Predictor Ordinate, and the Local Best
+	 * 	Fit Response Sensitivity
+	 * 
+	 * @param csPreceeding Preceeding Predictor/Response Segment
+	 * @param dblRightStateManifestSensitivity Response Value Manifest Sensitivity at the Right Predictor Ordinate
+	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Value Manifest Sensitivity
+	 * 
+	 * @return TRUE => If the calibration succeeds
+	 */
+
+	public boolean manifestMeasureSensitivity (
+		final LatentStateResponseModel csPreceeding,
+		final double dblRightStateManifestSensitivity,
+		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
+	{
+		if (null == csPreceeding) return false;
+
+		int iCk = _sidc.Ck();
+
+		try {
+			double[] adblManifestJacobianDerivAtLeftOrdinate = null;
+
+			if (0 != iCk) {
+				adblManifestJacobianDerivAtLeftOrdinate = new double[iCk];
+
+				for (int i = 0; i < iCk; ++i)
+					adblManifestJacobianDerivAtLeftOrdinate[i] = 0.;
+			}
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblRightStateManifestSensitivity)) return true;
+
+			if (!calibrateLocalManifestJacobian ("Base", new
+				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(), right()}, new
+					double[] {0., dblRightStateManifestSensitivity}, 0 != iCk ?
+						adblManifestJacobianDerivAtLeftOrdinate : null, null, null, sbfrManifestSensitivity),
+							null))
+				return false;
+
+			if (!_mapLSMS.containsKey ("Base")) return true;
+
+			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+
+			if (null == csqs) return true;
+
+			return csqs.getPMSC().impactFade() ? calibratePreceedingManifestJacobian ("Base", new
+				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(), right()}, new
+					double[] {csPreceeding.calcDResponseDManifest (left(), 1), 0.}, null,
+						CkDBasisCoeffDPreceedingManifestMeasure ("Base"), null, null)) :
+							csqs.setDResponseDPreceedingManifest (csPreceeding.calcDResponseDManifest
+								(left(), 1));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Compute the Local and the Preceeding Manifest Measure Sensitivity Coefficients from the Local
+	 * 	Response Value Sensitivity at the Left/Right Predictor Ordinate, the Local Left Response Value
+	 * 	Sensitivity Slope, and the Local Best Fit Response Sensitivity.
+	 * 
+	 * @param dblLeftManifestSensitivity Left Edge Response Value Manifest Sensitivity
+	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Slope Manifest Sensitivity
+	 * @param dblRightManifestSensitivity Right Edge Response Value Manifest Sensitivity
+	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Values Manifest Sensitivity
+	 * 
+	 * @return TRUE => The Calibration Succeeded
+	 */
+
+	public boolean manifestMeasureSensitivity (
+		final double dblLeftManifestSensitivity,
+		final double dblLeftSlopeManifestSensitivity,
+		final double dblRightManifestSensitivity,
+		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
+	{
+		try {
+			return org.drip.quant.common.NumberUtil.IsValid (dblLeftManifestSensitivity) &&
+				org.drip.quant.common.NumberUtil.IsValid (dblLeftSlopeManifestSensitivity) &&
+					org.drip.quant.common.NumberUtil.IsValid (dblRightManifestSensitivity) ?
+						calibrateLocalManifestJacobian ("Base", new
+							org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(),
+								right()}, new double[] {dblLeftManifestSensitivity,
+									dblRightManifestSensitivity},
+										org.drip.quant.common.CollectionUtil.DerivArrayFromSlope
+											(numParameters() - 2, dblLeftSlopeManifestSensitivity), null,
+												null, sbfrManifestSensitivity), null) : true;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Compute the Local and the Preceeding Manifest Measure Sensitivity Coefficients from the Local
+	 * 	Response Value/Sensitivity Constraints at the Left/Right Predictor Ordinate, the Local Left
+	 * 	Response Value Sensitivity Slope, and the Local Best Fit Response Sensitivity
+	 * 
+	 * @param wrvcStateLeft Left Edge Response Value Constraint
+	 * @param wrvcStateRight Right Edge Response Value Constraint
+	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Value Slope Manifest Sensitivity
+	 * @param wrvcStateLeftManifestSensitivity Left Edge Response Value Constraint Manifest Sensitivity
+	 * @param wrvcStateRightManifestSensitivity Right Edge Response Value Constraint Manifest Sensitivity
+	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Manifest Sensitivity
+	 * 
+	 * @return TRUE => If the calibration succeeds
+	 */
+
+	public boolean manifestMeasureSensitivity (
+		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateLeft,
+		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateRight,
+		final double dblLeftSlopeManifestSensitivity,
+		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateLeftManifestSensitivity,
+		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateRightManifestSensitivity,
+		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
+	{
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState = null;
+		org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCManifestSensitivity = null;
+
+		try {
+			if (null != wrvcStateLeft || null != wrvcStateRight)
+				aSBFCState = new org.drip.spline.params.SegmentBasisFlexureConstraint[] {null ==
+					wrvcStateLeft ? null : wrvcStateLeft.responseIndexedBasisConstraint (_be, this), null ==
+						wrvcStateRight ? null : wrvcStateRight.responseIndexedBasisConstraint (_be, this)};
+
+			if (null != wrvcStateLeftManifestSensitivity || null != wrvcStateRightManifestSensitivity)
+				aSBFCManifestSensitivity = new org.drip.spline.params.SegmentBasisFlexureConstraint[] {null
+					== wrvcStateLeftManifestSensitivity ? null :
+						wrvcStateLeftManifestSensitivity.responseIndexedBasisConstraint (_be, this), null ==
+							wrvcStateRightManifestSensitivity ? null :
+								wrvcStateRightManifestSensitivity.responseIndexedBasisConstraint (_be,
+									this)};
+
+			return null == aSBFCManifestSensitivity ? true : calibrateLocalManifestJacobian ("Base", new
+				org.drip.spline.params.SegmentStateCalibrationInputs (null, null,
 					org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
-						dblLeftSlopeQuoteSensitivity), null, aSBFCQuoteSensitivity, sbfrQuoteSensitivity),
-							aSBFCState);
+						dblLeftSlopeManifestSensitivity), null, aSBFCManifestSensitivity,
+							sbfrManifestSensitivity), aSBFCState);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -856,7 +1020,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 		int iNumBasis = _be.numBasis();
 
-		org.drip.spline.params.SegmentFlexurePenaltyControl sfpc = _sdic.curvaturePenaltyControl();
+		org.drip.spline.params.SegmentFlexurePenaltyControl sfpc = _sidc.curvaturePenaltyControl();
 
 		if (null == sfpc) sfpc = new org.drip.spline.params.SegmentFlexurePenaltyControl (2, 1.);
 
@@ -887,7 +1051,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 		int iNumBasis = _be.numBasis();
 
-		org.drip.spline.params.SegmentFlexurePenaltyControl sfpcLength = _sdic.lengthPenaltyControl();
+		org.drip.spline.params.SegmentFlexurePenaltyControl sfpcLength = _sidc.lengthPenaltyControl();
 
 		if (null == sfpcLength) sfpcLength = new org.drip.spline.params.SegmentFlexurePenaltyControl (1, 1.);
 
@@ -969,73 +1133,111 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		if (0 == iOrder) return responseValue (dblPredictorOrdinate);
-
-		return _be.responseValueDerivative (_adblResponseBasisCoeff, dblPredictorOrdinate, iOrder);
+		return 0 == iOrder ? responseValue (dblPredictorOrdinate) : _be.responseValueDerivative
+			(_adblResponseBasisCoeff, dblPredictorOrdinate, iOrder);
 	}
 
 	/**
-	 * Calculate the Ordered Derivative of the Response to the Quote
+	 * Calculate the Ordered Derivative of the Response to the Manifest
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Derivative of the Response to the
-	 * 	Quote is to be calculated
+	 * 	Manifest is to be calculated
 	 * @param iOrder Derivative Order
 	 * 
-	 * @throws Thrown if the Ordered Derivative of the Response to the Quote cannot be calculated
+	 * @throws Thrown if the Ordered Derivative of the Response to the Manifest cannot be calculated
 	 * 
-	 * @return Retrieve the Ordered Derivative of the Response to the Quote
+	 * @return Retrieve the Ordered Derivative of the Response to the Manifest
 	 */
 
-	public double calcDResponseDQuote (
+	public double calcDResponseDManifest (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (0 == iOrder)
-			throw new java.lang.Exception ("ConstitutiveState::calcDResponseDQuote => Invalid Inputs");
+			throw new java.lang.Exception
+				("LatentStateResponseModel::calcDResponseDManifest => Invalid Inputs");
 
-		return _be.responseValue (_adblDBasisCoeffDLocalQuote, dblPredictorOrdinate);
+		if (!_mapLSMS.containsKey ("Base"))
+			throw new java.lang.Exception
+				("LatentStateResponseModel::calcDResponseDManifest => Invalid Inputs");
+
+		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+
+		if (null == csqs)
+			throw new java.lang.Exception
+				("LatentStateResponseModel::calcDResponseDManifest => Invalid Inputs");
+
+		return _be.responseValue (csqs.getDBasisCoeffDLocalManifest(), dblPredictorOrdinate);
 	}
 
 	/**
-	 * Calculate the Ordered Derivative of the Response to the Preceeding Quote
+	 * Calculate the Ordered Derivative of the Response to the Preceeding Manifest
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Derivative of the Response to the
-	 * 	Quote is to be calculated
+	 * 	Manifest is to be calculated
 	 * @param iOrder Derivative Order
 	 * 
-	 * @throws Thrown if the Ordered Derivative of the Response to the Quote cannot be calculated
+	 * @throws Thrown if the Ordered Derivative of the Response to the Manifest cannot be calculated
 	 * 
-	 * @return Retrieve the Ordered Derivative of the Response to the Preceeding Quote
+	 * @return Retrieve the Ordered Derivative of the Response to the Preceeding Manifest
 	 */
 
-	public double calcDResponseDPreceedingQuote (
+	public double calcDResponseDPreceedingManifest (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (0 == iOrder)
-			throw new java.lang.Exception ("ConstitutiveState::calcDResponseDPreceedingQuote => Invalid Inputs");
+			throw new java.lang.Exception
+				("LatentStateResponseModel::calcDResponseDPreceedingManifest => Invalid Inputs");
 
-		if (!_pqsc.impactFade())
-			return org.drip.quant.common.NumberUtil.IsValid (_dblDResponseDPreceedingQuote) ?
-				_dblDResponseDPreceedingQuote : 0.;
+		if (!_mapLSMS.containsKey ("Base"))
+			throw new java.lang.Exception
+				("LatentStateResponseModel::calcDResponseDPreceedingManifest => Cannot locate state Manifest sensitivity");
 
-		org.drip.spline.segment.BasisEvaluator be = _pqsc.basisEvaluator();
+		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
 
-		return null == _adblDBasisCoeffDPreceedingQuote ? 0. : (null == be ? _be : be).responseValue
-			(_adblDBasisCoeffDPreceedingQuote, dblPredictorOrdinate);
+		if (null == csqs)
+			throw new java.lang.Exception
+				("LatentStateResponseModel::calcDResponseDPreceedingManifest => Cannot locate state Manifest sensitivity");
+
+		org.drip.spline.params.PreceedingManifestSensitivityControl pqsc = csqs.getPMSC();
+
+		double dblDResponseDPreceedingManifest = csqs.getDResponseDPreceedingManifest();
+
+		if (!pqsc.impactFade())
+			return org.drip.quant.common.NumberUtil.IsValid (dblDResponseDPreceedingManifest) ?
+				dblDResponseDPreceedingManifest : 0.;
+
+		org.drip.spline.segment.BasisEvaluator be = pqsc.basisEvaluator();
+
+		double[] adblDBasisCoeffDPreceedingManifest = csqs.getDBasisCoeffDPreceedingManifest();
+
+		return null == adblDBasisCoeffDPreceedingManifest ? 0. : (null == be ? _be : be).responseValue
+			(adblDBasisCoeffDPreceedingManifest, dblPredictorOrdinate);
 	}
 
 	/**
-	 * Retrieve the Manifest Measure Preceeding Quote Impact Flag
+	 * Retrieve the Manifest Measure Preceeding Manifest Impact Flag
 	 * 
-	 * @return The Manifest Measure Preceeding Quote Impact Flag
+	 * @return The Manifest Measure Preceeding Manifest Impact Flag
 	 */
 
 	public boolean impactFade()
+		throws java.lang.Exception
 	{
-		return _pqsc.impactFade();
+		if (!_mapLSMS.containsKey ("Base"))
+			throw new java.lang.Exception
+				("LatentStateResponseModel::impactFade => Cannot locate state Manifest sensitivity");
+
+		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+
+		if (null == csqs)
+			throw new java.lang.Exception
+				("LatentStateResponseModel::impactFade => Cannot locate state Manifest sensitivity");
+
+		return csqs.getPMSC().impactFade();
 	}
 
 	/**
@@ -1088,7 +1290,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @return The Jacobian of the Response to the Edge Inputs at the given Predictor Ordinate
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian jackDResponseDEdgeInputs (
+	public org.drip.quant.calculus.WengertJacobian jackDResponseDEdgeInput (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 	{
@@ -1099,7 +1301,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 			double[][] aadblDBasisCoeffDEdgeParams = new
 				double[iNumResponseBasisCoeff][iNumResponseBasisCoeff];
 
-			double[] adblDResponseDBasisCoeff = basisDResponseDBasisCoeff (dblPredictorOrdinate, iOrder);
+			double[] adblDResponseDBasisCoeff = DResponseDBasisCoeff (dblPredictorOrdinate, iOrder);
 
 			if (null == adblDResponseDBasisCoeff || iNumResponseBasisCoeff !=
 				adblDResponseDBasisCoeff.length)
@@ -1149,8 +1351,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		try {
 			int iNumResponseBasisCoeff = _be.numBasis();
 
-			double[] adblBasisDResponseDBasisCoeff = basisDResponseDBasisCoeff (dblPredictorOrdinate,
-				iOrder);
+			double[] adblBasisDResponseDBasisCoeff = DResponseDBasisCoeff (dblPredictorOrdinate, iOrder);
 
 			if (null == adblBasisDResponseDBasisCoeff || iNumResponseBasisCoeff !=
 				adblBasisDResponseDBasisCoeff.length)
@@ -1181,7 +1382,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @param adblResponseValue Array of Response Values
 	 * @param adblLeftEdgeDeriv Array of Left Edge Derivatives
 	 * @param adblRightEdgeDeriv Array of Right Edge Derivatives
-	 * @param aSIBC Array of Segment Flexure Constraints, expressed as Basis Coefficients
+	 * @param aSBFC Array of Segment Flexure Constraints, expressed as Basis Coefficients
 	 * @param sbfr Segment Best Fit Response Instance
 	 * 
 	 * @return The Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
@@ -1192,13 +1393,13 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 		final double[] adblResponseValue,
 		final double[] adblLeftEdgeDeriv,
 		final double[] adblRightEdgeDeriv,
-		final org.drip.spline.params.SegmentBasisFlexureConstraint[] aSIBC,
+		final org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFC,
 		final org.drip.spline.params.SegmentBestFitResponse sbfr)
 	{
 		try {
-			return calibrateState (new org.drip.spline.params.SegmentStateCalibration (adblPredictorOrdinate,
-				adblResponseValue, adblLeftEdgeDeriv, adblRightEdgeDeriv, aSIBC, sbfr)) ?
-					jackDCoeffDEdgeInputs() : null;
+			return calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs
+				(adblPredictorOrdinate, adblResponseValue, adblLeftEdgeDeriv, adblRightEdgeDeriv, aSBFC,
+					sbfr)) ? jackDCoeffDEdgeInputs() : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1211,29 +1412,29 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 *  calculate the Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
 	 * 
 	 * @param dblLeftValue Left Edge Response Value
-	 * @param dblLeftQuoteSensitivity Left Edge Response Value Quote Sensitivity
 	 * @param dblLeftSlope Left Edge Response Slope
-	 * @param dblLeftSlopeQuoteSensitivity Left Edge Response Slope Quote Sensitivity
 	 * @param dblRightValue Right Edge Response Value
-	 * @param dblRightQuoteSensitivity Right Edge Response Value Quote Sensitivity
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
-	 * @param sbfrQuoteSensitivity Segment's Best Fit Weighted Response Values Quote Sensitivity
+	 * @param dblLeftManifestSensitivity Left Edge Response Value Manifest Sensitivity
+	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Slope Manifest Sensitivity
+	 * @param dblRightManifestSensitivity Right Edge Response Value Manifest Sensitivity
+	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Values Manifest Sensitivity
 	 * 
 	 * @return The Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
 	 */
 
 	public org.drip.quant.calculus.WengertJacobian jackDCoeffDEdgeParams (
 		final double dblLeftValue,
-		final double dblLeftQuoteSensitivity,
 		final double dblLeftSlope,
-		final double dblLeftSlopeQuoteSensitivity,
 		final double dblRightValue,
-		final double dblRightQuoteSensitivity,
 		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrQuoteSensitivity)
+		final double dblLeftManifestSensitivity,
+		final double dblLeftSlopeManifestSensitivity,
+		final double dblRightManifestSensitivity,
+		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
 	{
-		return calibrate (dblLeftValue, dblLeftQuoteSensitivity, dblLeftSlope, dblLeftSlopeQuoteSensitivity,
-			dblRightValue, dblRightQuoteSensitivity, sbfrState, sbfrQuoteSensitivity) ?
+		return calibrate (dblLeftValue, dblLeftSlope, dblRightValue, sbfrState, dblLeftManifestSensitivity,
+			dblLeftSlopeManifestSensitivity, dblRightManifestSensitivity, sbfrManifestSensitivity) ?
 				jackDCoeffDEdgeInputs() : null;
 	}
 
@@ -1242,24 +1443,26 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 *  Ordinate and calculate the Jacobian of the Segment's Response Basis Function Coefficients to the Edge
 	 *  Parameters
 	 * 
-	 * @param csPrev Previous Predictor/Response Segment
+	 * @param csPreceeding Previous Predictor/Response Segment
 	 * @param dblRightStateValue Response Value at the Right Predictor Ordinate
-	 * @param dblRightStateQuoteSensitivity Response Value Quote Sensitivity at the Right Predictor Ordinate
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
-	 * @param sbfrQuoteSensitivity Segment's Best Fit Weighted Response Value Quote Sensitivity
+	 * @param dblRightStateManifestSensitivity Response Value Manifest Sensitivity at the Right Predictor
+	 * 	Ordinate
+	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Value Manifest Sensitivity
 	 * 
 	 * @return The Jacobian
 	 */
 
 	public org.drip.quant.calculus.WengertJacobian jackDCoeffDEdgeParams (
-		final ConstitutiveState csPrev,
+		final LatentStateResponseModel csPreceeding,
 		final double dblRightStateValue,
-		final double dblRightStateQuoteSensitivity,
 		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrQuoteSensitivity)
+		final double dblRightStateManifestSensitivity,
+		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
 	{
-		return !calibrate (csPrev, dblRightStateValue, dblRightStateQuoteSensitivity, sbfrState,
-			sbfrQuoteSensitivity) ? null : jackDCoeffDEdgeInputs();
+		return !calibrate (csPreceeding, dblRightStateValue, sbfrState) || !manifestMeasureSensitivity
+			(csPreceeding, dblRightStateManifestSensitivity, sbfrManifestSensitivity) ? null :
+				jackDCoeffDEdgeInputs();
 	}
 
 	/**
@@ -1271,7 +1474,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 
 	public org.drip.spline.segment.Monotonocity monotoneType()
 	{
-		if (1 >= _sdic.getCk()) {
+		if (1 >= _sidc.Ck()) {
 			try {
 				return new org.drip.spline.segment.Monotonocity
 					(org.drip.spline.segment.Monotonocity.MONOTONIC);
@@ -1372,22 +1575,28 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @return The Clipped Segment
 	 */
 
-	public ConstitutiveState clipLeftOfPredictorOrdinate (
+	public LatentStateResponseModel clipLeftOfPredictorOrdinate (
 		final double dblPredictorOrdinate)
 	{
 		try {
-			ConstitutiveState csLeftSnipped = ConstitutiveState.Create (dblPredictorOrdinate, right(),
-				_be.replicate(), _sdic, _pqsc);
+			if (!_mapLSMS.containsKey ("Base")) return null;
 
-			int iCk = _sdic.getCk();
+			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+
+			if (null == csqs) return null;
+
+			LatentStateResponseModel csLeftSnipped = LatentStateResponseModel.Create (dblPredictorOrdinate,
+				right(), _be.replicate(), _sidc, csqs.getPMSC());
+
+			int iCk = _sidc.Ck();
 
 			double[] adblCalibLeftEdgeDeriv = 0 != iCk ? csLeftSnipped.transmissionCk (dblPredictorOrdinate,
 				this, iCk) : null;
 
-			return csLeftSnipped.calibrateState (new org.drip.spline.params.SegmentStateCalibration (new
-				double[] {dblPredictorOrdinate, right()}, new double[] {responseValue (dblPredictorOrdinate),
-					responseValue (right())}, adblCalibLeftEdgeDeriv, null, null, null)) ? csLeftSnipped :
-						null;
+			return csLeftSnipped.calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs
+				(new double[] {dblPredictorOrdinate, right()}, new double[] {responseValue
+					(dblPredictorOrdinate), responseValue (right())}, adblCalibLeftEdgeDeriv, null, null,
+						null)) ? csLeftSnipped : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1396,7 +1605,7 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	}
 
 	/**
-	 * Clip the part of the Segment to the Left of the specified Predictor Ordinate. Retain all other
+	 * Clip the part of the Segment to the Right of the specified Predictor Ordinate. Retain all other
 	 * 	constraints the same.
 	 * 
 	 * @param dblPredictorOrdinate The Predictor Ordinate
@@ -1404,19 +1613,25 @@ public class ConstitutiveState extends org.drip.spline.segment.InelasticConstitu
 	 * @return The Clipped Segment
 	 */
 
-	public ConstitutiveState clipRightOfPredictorOrdinate (
+	public LatentStateResponseModel clipRightOfPredictorOrdinate (
 		final double dblPredictorOrdinate)
 	{
 		try {
-			ConstitutiveState csRightSnipped = ConstitutiveState.Create (left(), dblPredictorOrdinate,
-				_be.replicate(), _sdic, _pqsc);
+			if (!_mapLSMS.containsKey ("Base")) return null;
 
-			int iCk = _sdic.getCk();
+			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
 
-			return csRightSnipped.calibrateState (new org.drip.spline.params.SegmentStateCalibration (new
-				double[] {left(), dblPredictorOrdinate}, new double[] {responseValue (left()), responseValue
-					(dblPredictorOrdinate)}, 0 != iCk ? csRightSnipped.transmissionCk (left(), this, iCk) :
-						null, null, null, null)) ? csRightSnipped : null;
+			if (null == csqs) return null;
+
+			LatentStateResponseModel csRightSnipped = LatentStateResponseModel.Create (left(),
+				dblPredictorOrdinate, _be.replicate(), _sidc, csqs.getPMSC());
+
+			int iCk = _sidc.Ck();
+
+			return csRightSnipped.calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs
+				(new double[] {left(), dblPredictorOrdinate}, new double[] {responseValue (left()),
+					responseValue (dblPredictorOrdinate)}, 0 != iCk ? csRightSnipped.transmissionCk (left(),
+						this, iCk) : null, null, null, null)) ? csRightSnipped : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

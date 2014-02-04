@@ -854,10 +854,15 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 					if (!prwc.addPredictorResponseWeight (dblPayDate, dblPeriodCV100 * _dblNotional))
 						return null;
+
+					if (!prwc.addDResponseWeightDQuote (dblPayDate, dblPeriodCV100 * _dblNotional))
+						return null;
 				}
 
-				return prwc.updateValue (-1. * dblDirtyCV100 * _dblNotional * lsmm.getMeasureQuoteValue()) ?
-					prwc : null;
+				if (!prwc.updateValue (-1. * dblDirtyCV100 * _dblNotional * lsmm.getMeasureQuoteValue()))
+					return null;
+
+				return prwc.updateDValueDQuote (-1. * dblDirtyCV100 * _dblNotional) ? prwc : null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

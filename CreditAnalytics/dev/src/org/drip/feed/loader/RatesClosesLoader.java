@@ -382,8 +382,8 @@ public class RatesClosesLoader {
 				org.drip.spline.params.ResponseScalingShapeControl (true, new
 					org.drip.quant.function1D.QuadraticRationalShapeControl (0.));
 
-			org.drip.spline.params.SegmentDesignInelasticControl sdic =
-				org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2);
+			org.drip.spline.params.SegmentInelasticDesignControl sdic =
+				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2);
 
 			org.drip.state.estimator.LinearCurveCalibrator lcc = new
 				org.drip.state.estimator.LinearCurveCalibrator (new

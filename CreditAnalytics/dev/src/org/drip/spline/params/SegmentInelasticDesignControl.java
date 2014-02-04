@@ -30,31 +30,31 @@ package org.drip.spline.params;
  */
 
 /**
- * SegmentDesignInelasticControl implements basis per-segment inelastic parameter set. It exports the
+ * SegmentInelasticDesignControl implements basis per-segment inelastic parameter set. It exports the
  *  following functionality:
  *  - Retrieve the Continuity Order.
  *  - Retrieve the Length Penalty and the Curvature Penalty Parameters.
- *  - Create the C2 Design Inelastic Parameters.
- *  - Create the Design Inelastic Parameters for the desired Ck Criterion and the Roughness Penalty Order.
+ *  - Create the C2 Inelastic Design Parameters.
+ *  - Create the Inelastic Design Parameters for the desired Ck Criterion and the Roughness Penalty Order.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentDesignInelasticControl {
+public class SegmentInelasticDesignControl {
 	private int _iCk = -1;
 	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcLength = null;
 	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcCurvature = null;
 
 	/**
-	 * Create the C2 Design Inelastic Params
+	 * Create the C2 Inelastic Design Params
 	 * 
-	 * @return SegmentDesignInelasticControl instance
+	 * @return SegmentInelasticDesignControl instance
 	 */
 
-	public static final SegmentDesignInelasticControl MakeC2DesignInelasticControl()
+	public static final SegmentInelasticDesignControl MakeC2DesignInelasticControl()
 	{
 		try {
-			return new SegmentDesignInelasticControl (2, null, new
+			return new SegmentInelasticDesignControl (2, null, new
 				org.drip.spline.params.SegmentFlexurePenaltyControl (2, 1.));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -64,20 +64,20 @@ public class SegmentDesignInelasticControl {
 	}
 
 	/**
-	 * Create the Design Inelastic Parameters for the desired Ck Criterion and the Roughness Penalty Order
+	 * Create the Inelastic Design Parameters for the desired Ck Criterion and the Roughness Penalty Order
 	 * 
 	 * @param iCk Continuity Order
 	 * @param iCurvaturePenaltyDerivativeOrder Curvature Penalty Derivative Order
 	 * 
-	 * @return SegmentDesignInelasticControl instance
+	 * @return SegmentInelasticDesignControl instance
 	 */
 
-	public static final SegmentDesignInelasticControl Create (
+	public static final SegmentInelasticDesignControl Create (
 		final int iCk,
 		final int iCurvaturePenaltyDerivativeOrder)
 	{
 		try {
-			return new SegmentDesignInelasticControl (iCk, null, new
+			return new SegmentInelasticDesignControl (iCk, null, new
 				org.drip.spline.params.SegmentFlexurePenaltyControl (iCurvaturePenaltyDerivativeOrder, 1.));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -87,7 +87,7 @@ public class SegmentDesignInelasticControl {
 	}
 
 	/**
-	 * Constructor for the Segment Design Inelastic Parameters given the desired Ck, the Segment Length and
+	 * Constructor for the Segment Inelastic Design Parameters given the desired Ck, the Segment Length and
 	 *  the Roughness Penalty Order
 	 * 
 	 * @param iCk Continuity Order
@@ -97,14 +97,14 @@ public class SegmentDesignInelasticControl {
 	 * @throws Thrown if the Inputs are invalid
 	 */
 
-	public SegmentDesignInelasticControl (
+	public SegmentInelasticDesignControl (
 		final int iCk,
 		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcLength,
 		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcCurvature)
 		throws java.lang.Exception
 	{
 		if (0 > (_iCk = iCk))
-			throw new java.lang.Exception ("SegmentDesignInelasticControl ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SegmentInelasticDesignControl ctr: Invalid Inputs");
 
 		_sfpcLength = sfpcLength;
 		_sfpcCurvature = sfpcCurvature;
@@ -116,7 +116,7 @@ public class SegmentDesignInelasticControl {
 	 * @return The Continuity Order
 	 */
 
-	public int getCk()
+	public int Ck()
 	{
 		return _iCk;
 	}

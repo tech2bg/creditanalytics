@@ -42,8 +42,8 @@ package org.drip.regression.spline;
 
 public class HermiteBasisSplineRegressor extends org.drip.regression.spline.BasisSplineRegressor {
 	private java.lang.String _strName = "";
-	private org.drip.spline.segment.ConstitutiveState _seg1 = null;
-	private org.drip.spline.segment.ConstitutiveState _seg2 = null;
+	private org.drip.spline.segment.LatentStateResponseModel _seg1 = null;
+	private org.drip.spline.segment.LatentStateResponseModel _seg2 = null;
 	private org.drip.quant.calculus.WengertJacobian _wjLeft = null;
 	private org.drip.quant.calculus.WengertJacobian _wjRight = null;
 	private org.drip.quant.calculus.WengertJacobian _wjValue = null;
@@ -87,15 +87,15 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 	{
 		super (strName, strScenarioName, fs, iCk);
 
-		org.drip.spline.params.SegmentDesignInelasticControl segParams =
-			org.drip.spline.params.SegmentDesignInelasticControl.Create (iCk, 1);
+		org.drip.spline.params.SegmentInelasticDesignControl segParams =
+			org.drip.spline.params.SegmentInelasticDesignControl.Create (iCk, 1);
 
 		org.drip.spline.params.ResponseScalingShapeControl rssc = new
 			org.drip.spline.params.ResponseScalingShapeControl (true, new
 				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
-		if (null == (_seg1 = org.drip.spline.segment.ConstitutiveState.Create (0.0, 1.0, fs, rssc, segParams,
-			null)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (1.0, 2.0, fs, rssc,
+		if (null == (_seg1 = org.drip.spline.segment.LatentStateResponseModel.Create (0.0, 1.0, fs, rssc, segParams,
+			null)) || null == (_seg2 = org.drip.spline.segment.LatentStateResponseModel.Create (1.0, 2.0, fs, rssc,
 				segParams, null)))
 			throw new java.lang.Exception ("HermiteBasisSplineRegressor ctr: Cant create the segments");
 	}
@@ -106,9 +106,8 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (new double[] {0., 1.}, new double[] {1.,
 				4.}, new double[] {1.}, new double[] {6.}, null, null)) && null != (_wjRight =
 					_seg2.jackDCoeffDEdgeParams (new double[] {1., 2.}, new double[] {4., 15.}, new double[]
-						{6.}, new double[] {17.}, null, null)) && _seg2.calibrate (_seg1, 14.,
-							java.lang.Double.NaN, null, null) && null != (_wjValue =
-								_seg2.jackDResponseDEdgeInputs (1.5, 1));
+						{6.}, new double[] {17.}, null, null)) && _seg2.calibrate (_seg1, 14., null) && null
+							!= (_wjValue = _seg2.jackDResponseDEdgeInput (1.5, 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

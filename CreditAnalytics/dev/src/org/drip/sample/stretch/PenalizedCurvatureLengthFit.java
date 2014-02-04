@@ -67,7 +67,7 @@ public class PenalizedCurvatureLengthFit {
 
 	public static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -183,7 +183,7 @@ public class PenalizedCurvatureLengthFit {
 		int iLengthPenaltyDerivativeOrder = 1;
 		int iCurvaturePenaltyDerivativeOrder = 2;
 
-		SegmentDesignInelasticControl sdic = new SegmentDesignInelasticControl (
+		SegmentInelasticDesignControl sdic = new SegmentInelasticDesignControl (
 			iK,
 			new org.drip.spline.params.SegmentFlexurePenaltyControl (
 				iLengthPenaltyDerivativeOrder,

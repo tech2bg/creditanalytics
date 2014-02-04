@@ -74,7 +74,7 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (iCk, iRoughnessPenaltyDerivativeOrder);
+		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
@@ -88,15 +88,15 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState ecs1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, sdic, null);
 
-		ConstitutiveState ecs2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs2 = LatentStateResponseModel.Create (1.5, 2.0, fs, rssc, sdic, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
-		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null);
+		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., 0., 20.25, null, Double.NaN, Double.NaN, Double.NaN, null);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + ecs1.responseValue (1.));
 
@@ -114,7 +114,7 @@ public class PolynomialBasisSpline {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
-		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, 16., Double.NaN, null, null);
+		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, 16., null, Double.NaN, null);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + ecs2.responseValue (1.5));
 
@@ -132,7 +132,7 @@ public class PolynomialBasisSpline {
 		 * Re-calibrate Segment #2 with a new Response Value
 		 */
 
-		ecs2.calibrate (ecs1, 14., Double.NaN, null, null);
+		ecs2.calibrate (ecs1, 14., null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian, and curvature penalty
@@ -142,7 +142,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + ecs2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeInputs (dblX, 1).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeInput (dblX, 1).displayString());
 
 		System.out.println ("\t\tSegment 2 DPE: " + ecs2.curvatureDPE());
 	}
@@ -173,7 +173,7 @@ public class PolynomialBasisSpline {
 		 * Construct the segment inelastic parameter that is C2 (iCk = 2 sets it to C2), without constraint
 		 */
 
-		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (iCk, iRoughnessPenaltyDerivativeOrder);
+		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (iCk, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Create the basis parameter set from the number of basis functions, and construct the basis
@@ -187,16 +187,16 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState ecs1 = ConstitutiveState.Create (0.0, 1.0, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs1 = LatentStateResponseModel.Create (0.0, 1.0, fs, rssc, sdic, null);
 
-		ConstitutiveState ecs2 = ConstitutiveState.Create (1.0, 2.0, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs2 = LatentStateResponseModel.Create (1.0, 2.0, fs, rssc, sdic, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
 		ecs1.calibrateState (
-			new SegmentStateCalibration (
+			new SegmentStateCalibrationInputs (
 				new double[] {0., 1.}, // Segment Calibration Nodes
 				new double[] {1., 4.}, // Segment Calibration Values
 				new double[] {1.}, // Segment Left Derivative
@@ -220,7 +220,7 @@ public class PolynomialBasisSpline {
 		 */
 
 		ecs2.calibrateState (
-			new SegmentStateCalibration (
+			new SegmentStateCalibrationInputs (
 				new double[] {1., 2.}, // Segment Calibration Nodes
 				new double[] {4., 15.}, // Segment Calibration Values
 				new double[] {6.}, // Segment Left Derivative
@@ -244,7 +244,7 @@ public class PolynomialBasisSpline {
 		 * Re-calibrate Segment #2 with a new Response Value
 		 */
 
-		ecs2.calibrate (ecs1, 14., Double.NaN, null, null);
+		ecs2.calibrate (ecs1, 14., null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian, monotonicity, and curvature penalty
@@ -254,7 +254,7 @@ public class PolynomialBasisSpline {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + ecs2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeInputs (dblX, 1).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + ecs2.jackDResponseDEdgeInput (dblX, 1).displayString());
 
 		System.out.println ("\t\tSegment 2 DPE: " + ecs2.curvatureDPE());
 	}

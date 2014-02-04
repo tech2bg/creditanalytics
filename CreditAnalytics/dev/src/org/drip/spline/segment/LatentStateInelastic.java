@@ -41,12 +41,12 @@ package org.drip.spline.segment;
  * @author Lakshmi Krishnamurthy
  */
 
-public class InelasticConstitutiveState implements java.lang.Comparable<InelasticConstitutiveState> {
+public class LatentStateInelastic implements java.lang.Comparable<LatentStateInelastic> {
 	private double _dblPredictorOrdinateLeft = java.lang.Double.NaN;
 	private double _dblPredictorOrdinateRight = java.lang.Double.NaN;
 
 	/**
-	 * InelasticConstitutiveState constructor
+	 * LatentStateInelastic constructor
 	 * 
 	 * @param dblPredictorOrdinateLeft Segment Predictor Ordinate Left
 	 * @param dblPredictorOrdinateRight Segment Predictor Ordinate Right
@@ -54,7 +54,7 @@ public class InelasticConstitutiveState implements java.lang.Comparable<Inelasti
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public InelasticConstitutiveState (
+	public LatentStateInelastic (
 		final double dblPredictorOrdinateLeft,
 		final double dblPredictorOrdinateRight)
 		throws java.lang.Exception
@@ -62,7 +62,7 @@ public class InelasticConstitutiveState implements java.lang.Comparable<Inelasti
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblPredictorOrdinateLeft = dblPredictorOrdinateLeft)
 			|| !org.drip.quant.common.NumberUtil.IsValid (_dblPredictorOrdinateRight =
 				dblPredictorOrdinateRight) || _dblPredictorOrdinateLeft >= _dblPredictorOrdinateRight)
-			throw new java.lang.Exception ("InelasticConstitutiveState ctr: Invalid inputs!");
+			throw new java.lang.Exception ("LatentStateInelastic ctr: Invalid inputs!");
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class InelasticConstitutiveState implements java.lang.Comparable<Inelasti
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate))
-			throw new java.lang.Exception ("InelasticConstitutiveState::in => Invalid Inputs");
+			throw new java.lang.Exception ("LatentStateInelastic::in => Invalid Inputs");
 
 		return _dblPredictorOrdinateLeft <= dblPredictorOrdinate && _dblPredictorOrdinateRight >=
 			dblPredictorOrdinate;
@@ -134,7 +134,7 @@ public class InelasticConstitutiveState implements java.lang.Comparable<Inelasti
 		throws java.lang.Exception
 	{
 		if (!in (dblPredictorOrdinate))
-			throw new java.lang.Exception ("InelasticConstitutiveState::localize: Invalid inputs!");
+			throw new java.lang.Exception ("LatentStateInelastic::localize: Invalid inputs!");
 
 		return (dblPredictorOrdinate - _dblPredictorOrdinateLeft) / (_dblPredictorOrdinateRight -
 			_dblPredictorOrdinateLeft);
@@ -155,7 +155,7 @@ public class InelasticConstitutiveState implements java.lang.Comparable<Inelasti
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLocalPredictorOrdinate))
-			throw new java.lang.Exception ("InelasticConstitutiveState::delocalize => Invalid Inputs");
+			throw new java.lang.Exception ("LatentStateInelastic::delocalize => Invalid Inputs");
 
 		return _dblPredictorOrdinateLeft + dblLocalPredictorOrdinate * (_dblPredictorOrdinateRight -
 			_dblPredictorOrdinateLeft);
@@ -169,7 +169,7 @@ public class InelasticConstitutiveState implements java.lang.Comparable<Inelasti
 	}
 
 	@Override public int compareTo (
-		final org.drip.spline.segment.InelasticConstitutiveState ieOther)
+		final org.drip.spline.segment.LatentStateInelastic ieOther)
 	{
 		if (_dblPredictorOrdinateLeft > ieOther._dblPredictorOrdinateLeft) return 1;
 

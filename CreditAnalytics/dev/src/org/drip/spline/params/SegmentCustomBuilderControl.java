@@ -40,8 +40,8 @@ public class SegmentCustomBuilderControl {
 	private java.lang.String _strBasisSpline = "";
 	private org.drip.spline.basis.FunctionSetBuilderParams _fsbp = null;
 	private org.drip.spline.params.ResponseScalingShapeControl _rssc = null;
-	private org.drip.spline.params.PreceedingQuoteSensitivityControl _pqsc = null;
-	private org.drip.spline.params.SegmentDesignInelasticControl _sdic = null;
+	private org.drip.spline.params.PreceedingManifestSensitivityControl _pqsc = null;
+	private org.drip.spline.params.SegmentInelasticDesignControl _sdic = null;
 
 	/**
 	 * SegmentCustomBuilderControl constructor
@@ -58,9 +58,9 @@ public class SegmentCustomBuilderControl {
 	public SegmentCustomBuilderControl (
 		final java.lang.String strBasisSpline,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
-		final org.drip.spline.params.SegmentDesignInelasticControl sdic,
+		final org.drip.spline.params.SegmentInelasticDesignControl sdic,
 		final org.drip.spline.params.ResponseScalingShapeControl rssc,
-		final org.drip.spline.params.PreceedingQuoteSensitivityControl pqsc)
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pqsc)
 		throws java.lang.Exception
 	{
 		if (null == (_strBasisSpline = strBasisSpline) || null == (_fsbp = fsbp) || null == (_sdic = sdic))
@@ -98,7 +98,7 @@ public class SegmentCustomBuilderControl {
 	 * @return The Segment Inelastic Parameters
 	 */
 
-	public org.drip.spline.params.SegmentDesignInelasticControl inelasticParams()
+	public org.drip.spline.params.SegmentInelasticDesignControl inelasticParams()
 	{
 		return _sdic;
 	}
@@ -120,7 +120,7 @@ public class SegmentCustomBuilderControl {
 	 * @return The Prior Quote Sensitivity Control Parameters
 	 */
 
-	public org.drip.spline.params.PreceedingQuoteSensitivityControl priorQuoteSensitivityControl()
+	public org.drip.spline.params.PreceedingManifestSensitivityControl priorQuoteSensitivityControl()
 	{
 		return _pqsc;
 	}

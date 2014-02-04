@@ -107,7 +107,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 
 		for (int i = 0; i < iNumSegment; ++i)
 			aSCBC[i] = new org.drip.spline.params.SegmentCustomBuilderControl (strBasisSpline, fsbp,
-				org.drip.spline.params.SegmentDesignInelasticControl.Create (iCk, 1), new
+				org.drip.spline.params.SegmentInelasticDesignControl.Create (iCk, 1), new
 					org.drip.spline.params.ResponseScalingShapeControl (true, new
 						org.drip.quant.function1D.QuadraticRationalShapeControl (1.)), null);
 
@@ -147,7 +147,7 @@ public class LocalControlBasisSplineRegressor extends org.drip.regression.core.U
 			scbc = new org.drip.spline.params.SegmentCustomBuilderControl
 				(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 					org.drip.spline.basis.PolynomialFunctionSetParams (4),
-						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+						org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 							org.drip.spline.params.ResponseScalingShapeControl (true, new
 								org.drip.quant.function1D.QuadraticRationalShapeControl (1.)), null);
 		} catch (java.lang.Exception e) {

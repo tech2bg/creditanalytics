@@ -56,7 +56,7 @@ public class TensionStretchEstimation {
 
 	private static final SegmentCustomBuilderControl KLKExponentialTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -76,7 +76,7 @@ public class TensionStretchEstimation {
 
 	private static final SegmentCustomBuilderControl KLKHyperbolicTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -96,7 +96,7 @@ public class TensionStretchEstimation {
 
 	private static final SegmentCustomBuilderControl KLKRationalLinearTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -116,7 +116,7 @@ public class TensionStretchEstimation {
 
 	private static final SegmentCustomBuilderControl KLKRationalQuadraticTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -257,7 +257,7 @@ public class TensionStretchEstimation {
 		int iK = 2;
 		int iCurvaturePenaltyDerivativeOrder= 2;
 
-		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (
+		SegmentInelasticDesignControl segParams = SegmentInelasticDesignControl.Create (
 			iK,
 			iCurvaturePenaltyDerivativeOrder);
 

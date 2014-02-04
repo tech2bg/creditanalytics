@@ -59,7 +59,7 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 
 	public CurveStretch (
 		final java.lang.String strName,
-		final org.drip.spline.segment.ConstitutiveState[] aCS,
+		final org.drip.spline.segment.LatentStateResponseModel[] aCS,
 		final org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC)
 		throws java.lang.Exception
 	{
@@ -81,7 +81,7 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 		final int iSegment,
 		final org.drip.product.params.FloatingRateIndex fri)
 	{
-		org.drip.spline.segment.ConstitutiveState[] aCS = segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aCS = segments();
 
 		if (iSegment >= aCS.length) return false;
 

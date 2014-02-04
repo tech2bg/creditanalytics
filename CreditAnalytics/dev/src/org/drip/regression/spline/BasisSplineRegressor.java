@@ -42,8 +42,8 @@ package org.drip.regression.spline;
 
 public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressionExecutor {
 	private java.lang.String _strName = "";
-	private org.drip.spline.segment.ConstitutiveState _seg1 = null;
-	private org.drip.spline.segment.ConstitutiveState _seg2 = null;
+	private org.drip.spline.segment.LatentStateResponseModel _seg1 = null;
+	private org.drip.spline.segment.LatentStateResponseModel _seg2 = null;
 	private org.drip.quant.calculus.WengertJacobian _wjLeft = null;
 	private org.drip.quant.calculus.WengertJacobian _wjRight = null;
 	private org.drip.quant.calculus.WengertJacobian _wjValue = null;
@@ -201,15 +201,15 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	{
 		super (strName, strScenarioName);
 
-		org.drip.spline.params.SegmentDesignInelasticControl segParams =
-			org.drip.spline.params.SegmentDesignInelasticControl.Create (iCk, 2);
+		org.drip.spline.params.SegmentInelasticDesignControl segParams =
+			org.drip.spline.params.SegmentInelasticDesignControl.Create (iCk, 2);
 
 		org.drip.spline.params.ResponseScalingShapeControl rssc = new
 			org.drip.spline.params.ResponseScalingShapeControl (true, new
 				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
-		if (null == (_seg1 = org.drip.spline.segment.ConstitutiveState.Create (1.0, 3.0, fs, rssc,
-			segParams, null)) || null == (_seg2 = org.drip.spline.segment.ConstitutiveState.Create (3.0, 6.0,
+		if (null == (_seg1 = org.drip.spline.segment.LatentStateResponseModel.Create (1.0, 3.0, fs, rssc,
+			segParams, null)) || null == (_seg2 = org.drip.spline.segment.LatentStateResponseModel.Create (3.0, 6.0,
 				fs, rssc, segParams, null)))
 			throw new java.lang.Exception ("BasisSplineRegressor ctr: Cant create the segments");
 	}
@@ -222,11 +222,11 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	@Override public boolean execRegression()
 	{
 		try {
-			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (25., java.lang.Double.NaN, 0.,
-				java.lang.Double.NaN, 20.25, java.lang.Double.NaN, null, null)) && null != (_wjRight =
-					_seg2.jackDCoeffDEdgeParams (_seg1, 16., java.lang.Double.NaN, null, null)) &&
-						_seg2.calibrate (_seg1, 14., java.lang.Double.NaN, null, null) && null != (_wjValue =
-							_seg2.jackDResponseDEdgeInputs (5., 1));
+			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null,
+				java.lang.Double.NaN, java.lang.Double.NaN, java.lang.Double.NaN, null)) && null != (_wjRight
+					= _seg2.jackDCoeffDEdgeParams (_seg1, 16., null, java.lang.Double.NaN, null)) &&
+						_seg2.calibrate (_seg1, 14., null) && null != (_wjValue =
+							_seg2.jackDResponseDEdgeInput (5., 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

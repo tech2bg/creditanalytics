@@ -320,7 +320,7 @@ public class ShapeDFZeroLocalSmooth {
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_MIXTURE,
 				new ExponentialMixtureSetParams (new double[] {0.01, 0.05, 0.25}),
-				SegmentDesignInelasticControl.Create (2, 2),
+				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 				null),
 			BoundarySettings.NaturalStandard(),
@@ -344,7 +344,7 @@ public class ShapeDFZeroLocalSmooth {
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
-				SegmentDesignInelasticControl.Create (2, 2),
+				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 				null),
 			MultiSegmentSequence.CALIBRATE,
@@ -370,7 +370,7 @@ public class ShapeDFZeroLocalSmooth {
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
-				SegmentDesignInelasticControl.Create (2, 2),
+				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 				null),
 			MultiSegmentSequence.CALIBRATE,
@@ -396,7 +396,7 @@ public class ShapeDFZeroLocalSmooth {
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
-				SegmentDesignInelasticControl.Create (2, 2),
+				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 				null),
 			MultiSegmentSequence.CALIBRATE,
@@ -422,7 +422,7 @@ public class ShapeDFZeroLocalSmooth {
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
-				SegmentDesignInelasticControl.Create (2, 2),
+				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 				null),
 			MultiSegmentSequence.CALIBRATE,
@@ -448,7 +448,7 @@ public class ShapeDFZeroLocalSmooth {
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
-				SegmentDesignInelasticControl.Create (2, 2),
+				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 				null),
 			MultiSegmentSequence.CALIBRATE,
@@ -473,7 +473,7 @@ public class ShapeDFZeroLocalSmooth {
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
-				SegmentDesignInelasticControl.Create (2, 2),
+				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 				null),
 			MultiSegmentSequence.CALIBRATE,

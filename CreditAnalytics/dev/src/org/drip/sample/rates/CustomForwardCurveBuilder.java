@@ -1,6 +1,8 @@
 
 package org.drip.sample.rates;
 
+import java.util.*;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.*;
@@ -263,6 +265,31 @@ public class CustomForwardCurveBuilder {
 		return aFFC;
 	}
 
+	private static final void ForwardJack (
+		final JulianDate dt,
+		final Map<String, ForwardCurve> mapForward,
+		final String strStartDateTenor)
+	{
+		for (Map.Entry<String, ForwardCurve> me : mapForward.entrySet())
+			System.out.println (me.getKey() + " | " + strStartDateTenor + ": " +
+				me.getValue().jackDForwardDQuote (dt.addTenor (strStartDateTenor)).displayString());
+	}
+
+	private static final void ForwardJack (
+		final JulianDate dt,
+		final Map<String, ForwardCurve> mapForward)
+	{
+		ForwardJack (dt, mapForward, "1Y");
+
+		ForwardJack (dt, mapForward, "2Y");
+
+		ForwardJack (dt, mapForward, "3Y");
+
+		ForwardJack (dt, mapForward, "5Y");
+
+		ForwardJack (dt, mapForward, "7Y");
+	}
+
 	/*
 	 * This sample illustrates the creation and usage of the xM-6M Tenor Basis Swap. It shows the following:
 	 * 	- Construct the 6M-xM float-float basis swap.
@@ -284,7 +311,7 @@ public class CustomForwardCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final void xM6MBasisSample (
+	private static final Map<String, ForwardCurve> xM6MBasisSample (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final DiscountCurve dc,
@@ -325,6 +352,8 @@ public class CustomForwardCurveBuilder {
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
 
+		Map<String, ForwardCurve> mapForward = new HashMap<String, ForwardCurve>();
+
 		/*
 		 * Construct the shape preserving forward curve off of Cubic Polynomial Basis Spline.
 		 */
@@ -341,6 +370,8 @@ public class CustomForwardCurveBuilder {
 			aFFC,
 			adblxM6MBasisSwapQuote,
 			dblStartingFwd);
+
+		mapForward.put ("   CUBIC_FWD" + strBasisTenor, fcxMCubic);
 
 		/*
 		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
@@ -366,6 +397,8 @@ public class CustomForwardCurveBuilder {
 			adblxM6MBasisSwapQuote,
 			dblStartingFwd);
 
+		mapForward.put (" QUARTIC_FWD" + strBasisTenor, fcxMQuartic);
+
 		/*
 		 * Set the discount curve + quartic polynomial forward curve based component market parameters.
 		 */
@@ -389,6 +422,8 @@ public class CustomForwardCurveBuilder {
 			aFFC,
 			adblxM6MBasisSwapQuote,
 			dblStartingFwd);
+
+		mapForward.put ("KLKHYPER_FWD" + strBasisTenor, fcxMKLKHyper);
 
 		/*
 		 * Set the discount curve + hyperbolic tension forward curve based component market parameters.
@@ -437,6 +472,8 @@ public class CustomForwardCurveBuilder {
 				FormatUtil.FormatDouble (dc.libor (dblFwdStartDate, dblFwdEndDate), 1, 2, 100.) + "  |  "
 			);
 		}
+
+		return mapForward;
 	}
 
 	/*
@@ -478,7 +515,7 @@ public class CustomForwardCurveBuilder {
 		 * Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
 		 */
 
-		xM6MBasisSample (
+		Map<String, ForwardCurve> mapForward1M6M = xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -512,7 +549,7 @@ public class CustomForwardCurveBuilder {
 
 		System.out.println ("---------------------------------------------------    3M-6M Basis Swap    --------------------------------------------------");
 
-		xM6MBasisSample (
+		Map<String, ForwardCurve> mapForward3M6M = xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -546,7 +583,7 @@ public class CustomForwardCurveBuilder {
 
 		System.out.println ("---------------------------------------------------    6M-6M Basis Swap    --------------------------------------------------");
 
-		xM6MBasisSample (
+		Map<String, ForwardCurve> mapForward6M6M = xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -580,7 +617,7 @@ public class CustomForwardCurveBuilder {
 
 		System.out.println ("---------------------------------------------------   12M-6M Basis Swap    --------------------------------------------------");
 
-		xM6MBasisSample (
+		Map<String, ForwardCurve> mapForward12M6M = xM6MBasisSample (
 			dtToday,
 			strCurrency,
 			dc,
@@ -608,6 +645,38 @@ public class CustomForwardCurveBuilder {
 				-0.00022,    // 40Y Extrapolated
 				}
 			);
+
+		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
+
+		System.out.println ("------------------------------------------------------- 1M-6M Micro Jack -------------------------------------------------------------------");
+
+		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+		ForwardJack (dtToday, mapForward1M6M);
+
+		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
+
+		System.out.println ("------------------------------------------------------- 3M-6M Micro Jack -------------------------------------------------------------------");
+
+		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+		ForwardJack (dtToday, mapForward3M6M);
+
+		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
+
+		System.out.println ("------------------------------------------------------- 6M-6M Micro Jack -------------------------------------------------------------------");
+
+		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+		ForwardJack (dtToday, mapForward6M6M);
+
+		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
+
+		System.out.println ("------------------------------------------------------ 12M-6M Micro Jack -------------------------------------------------------------------");
+
+		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+		ForwardJack (dtToday, mapForward12M6M);
 	}
 
 	public static final void main (

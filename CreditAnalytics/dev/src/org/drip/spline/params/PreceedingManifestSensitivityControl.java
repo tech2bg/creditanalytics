@@ -30,49 +30,49 @@ package org.drip.spline.params;
  */
 
 /**
- * PreceedingQuoteSensitivityControl provides the control parameters that determine the behavior of non-local
- * 	quote sensitivity.
+ * PreceedingManifestSensitivityControl provides the control parameters that determine the behavior of
+ * 	non-local manifest sensitivity.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class PreceedingQuoteSensitivityControl {
+public class PreceedingManifestSensitivityControl {
 	private boolean _bImpactFade = false;
-	private int _iCkDBasisCoeffDPreceedingQuote = 0;
+	private int _iCkDBasisCoeffDPreceedingManifest = 0;
 	private org.drip.spline.segment.BasisEvaluator _be = null;
 
 	/**
-	 * PreceedingQuoteSensitivityControl constructor
+	 * PreceedingManifestSensitivityControl constructor
 	 * 
-	 * @param bImpactFade TRUE => Fade the Quote Sensitivity Impact; FALSE => Retain it
-	 * @param iCkDBasisCoeffDPreceedingQuote Ck of DBasisCoeffDPreceedingQuote
+	 * @param bImpactFade TRUE => Fade the Manifest Sensitivity Impact; FALSE => Retain it
+	 * @param iCkDBasisCoeffDPreceedingManifest Ck of DBasisCoeffDPreceedingManifest
 	 * @param be Basis Evaluator Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
-	public PreceedingQuoteSensitivityControl (
+	public PreceedingManifestSensitivityControl (
 		final boolean bImpactFade,
-		final int iCkDBasisCoeffDPreceedingQuote,
+		final int iCkDBasisCoeffDPreceedingManifest,
 		final org.drip.spline.segment.BasisEvaluator be)
 		throws java.lang.Exception
 	{
-		if (0 > (_iCkDBasisCoeffDPreceedingQuote = iCkDBasisCoeffDPreceedingQuote))
-			throw new java.lang.Exception ("PreceedingQuoteSensitivityControl ctr: Invalid Inputs");
+		if (0 > (_iCkDBasisCoeffDPreceedingManifest = iCkDBasisCoeffDPreceedingManifest))
+			throw new java.lang.Exception ("PreceedingManifestSensitivityControl ctr: Invalid Inputs");
 
 		_be = be;
 		_bImpactFade = bImpactFade;
 	}
 
 	/**
-	 * Retrieve the Ck of DBasisCoeffDPreceedingQuote
+	 * Retrieve the Ck of DBasisCoeffDPreceedingManifest
 	 * 
-	 * @return Ck of DBasisCoeffDPreceedingQuote
+	 * @return Ck of DBasisCoeffDPreceedingManifest
 	 */
 
 	public int Ck()
 	{
-		return _iCkDBasisCoeffDPreceedingQuote;
+		return _iCkDBasisCoeffDPreceedingManifest;
 	}
 
 	/**
@@ -87,9 +87,9 @@ public class PreceedingQuoteSensitivityControl {
 	}
 
 	/**
-	 * Retrieve the Manifest Measure Preceeding Quote Impact Flag
+	 * Retrieve the Preceeding Manifest Measure Impact Flag
 	 * 
-	 * @return The Manifest Measure Preceeding Quote Impact Flag
+	 * @return The Preceeding Manifest Measure Impact Flag
 	 */
 
 	public boolean impactFade()

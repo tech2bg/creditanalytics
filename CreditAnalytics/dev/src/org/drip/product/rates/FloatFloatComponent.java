@@ -512,7 +512,9 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 
 		if (null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV")) return null;
 
-		return prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV")) ? prwc : null;
+		if (!prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV"))) return null;
+
+		return prwc.updateDValueDQuote (0.) ? prwc : null;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()

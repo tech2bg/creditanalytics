@@ -29,8 +29,8 @@ package org.drip.spline.params;
  */
 
 /**
- * SegmentStateCalibration implements basis per-segment Calibration Parameter Set. It exposes the following
- *  functionality:
+ * SegmentStateCalibrationInputs implements basis per-segment Calibration Parameter Input Set. It exposes the
+ * 	following functionality:
  *  - Retrieve the Array of the Calibration Predictor Ordinates.
  *  - Retrieve the Array of the Calibration Response Values.
  *  - Retrieve the Array of the Left/Right Edge Derivatives.
@@ -40,7 +40,7 @@ package org.drip.spline.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SegmentStateCalibration {
+public class SegmentStateCalibrationInputs {
 	private double[] _adblResponseValue = null;
 	private double[] _adblLeftEdgeDeriv = null;
 	private double[] _adblRightEdgeDeriv = null;
@@ -49,7 +49,7 @@ public class SegmentStateCalibration {
 	private org.drip.spline.params.SegmentBasisFlexureConstraint[] _aSBFC = null;
 
 	/**
-	 * SegmentStateCalibration Constructor
+	 * SegmentStateCalibrationInputs Constructor
 	 * 
 	 * @param adblPredictorOrdinate Array of Predictor Ordinates
 	 * @param adblResponseValue Array of Response Values
@@ -61,7 +61,7 @@ public class SegmentStateCalibration {
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public SegmentStateCalibration (
+	public SegmentStateCalibrationInputs (
 		final double[] adblPredictorOrdinate,
 		final double[] adblResponseValue,
 		final double[] adblLeftEdgeDeriv,
@@ -83,11 +83,11 @@ public class SegmentStateCalibration {
 
 		if (null == _sbfr && null == _aSBFC && null == _adblPredictorOrdinate && null == _adblResponseValue
 			&& null == _adblLeftEdgeDeriv && null == _adblRightEdgeDeriv)
-			throw new java.lang.Exception ("SegmentStateCalibration ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SegmentStateCalibrationInputs ctr: Invalid Inputs");
 
 		if (iNumPredictorOrdinate != iNumResponseValue || (null == _sbfr && 0 == iNumSBFC && 0 ==
 			iNumPredictorOrdinate && 0 == iNumLeftEdgeDeriv && 0 == iNumRightEdgeDeriv))
-			throw new java.lang.Exception ("SegmentStateCalibration ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SegmentStateCalibrationInputs ctr: Invalid Inputs");
 	}
 
 	/**

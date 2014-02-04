@@ -51,7 +51,7 @@ public class RegressionSplineEstimator {
 
 	private static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
-		final SegmentDesignInelasticControl sdic)
+		final SegmentInelasticDesignControl sdic)
 		throws Exception
 	{
 		return new SegmentCustomBuilderControl (
@@ -162,7 +162,7 @@ public class RegressionSplineEstimator {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		int iPolyNumBasis = 4;
 

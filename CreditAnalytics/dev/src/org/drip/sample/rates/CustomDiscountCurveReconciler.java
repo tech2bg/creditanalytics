@@ -403,7 +403,7 @@ public class CustomDiscountCurveReconciler {
 		SegmentCustomBuilderControl prbpPolynomial = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (4),
-			SegmentDesignInelasticControl.Create (2, 2),
+			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 			null);
 

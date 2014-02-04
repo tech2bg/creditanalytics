@@ -63,7 +63,7 @@ public interface BasisEvaluator {
 	 */
 
 	public abstract boolean setContainingInelastics (
-		final org.drip.spline.segment.InelasticConstitutiveState ics);
+		final org.drip.spline.segment.LatentStateInelastic ics);
 
 	/**
 	 * Clone/Replicate the current Basis Evaluator Instance

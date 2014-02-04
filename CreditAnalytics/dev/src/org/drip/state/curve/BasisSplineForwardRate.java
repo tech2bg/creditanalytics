@@ -78,6 +78,12 @@ public class BasisSplineForwardRate extends org.drip.analytics.rates.ForwardCurv
 		return _span.calcResponseValue (dblDate);
 	}
 
+	@Override public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+		final double dblDate)
+	{
+		return _span.jackDResponseDQuote (dblDate, 1);
+	}
+
 	@Override public byte[] serialize()
 	{
 		return null;

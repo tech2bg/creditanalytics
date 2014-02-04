@@ -182,19 +182,6 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		return org.drip.quant.common.CollectionUtil.AppendWengert (lsWJ);
 	}
 
-	@Override public void displayString()
-	{
-		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
-			try {
-				System.out.println (new org.drip.analytics.date.JulianDate
-					(mss.getLeftPredictorOrdinateEdge()) + " => " + new org.drip.analytics.date.JulianDate
-						(mss.getRightPredictorOrdinateEdge()));
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	/**
 	 * Convert the Overlapping Stretch Span to a non-overlapping Stretch Span. Overlapping Stretches are
 	 *  clipped from the Left.
@@ -233,5 +220,18 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		}
 
 		return oss;
+	}
+
+	@Override public void displayString()
+	{
+		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
+			try {
+				System.out.println (new org.drip.analytics.date.JulianDate
+					(mss.getLeftPredictorOrdinateEdge()) + " => " + new org.drip.analytics.date.JulianDate
+						(mss.getRightPredictorOrdinateEdge()));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

@@ -63,7 +63,7 @@ public class StretchEstimation {
 
 	private static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -83,7 +83,7 @@ public class StretchEstimation {
 
 	private static final SegmentCustomBuilderControl BernsteinPolynomialSegmentControlParams (
 		final int iNumBasis,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -103,7 +103,7 @@ public class StretchEstimation {
 
 	public static final SegmentCustomBuilderControl ExponentialTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -123,7 +123,7 @@ public class StretchEstimation {
 
 	private static final SegmentCustomBuilderControl HyperbolicTensionSegmentControlParams (
 		final double dblTension,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -143,7 +143,7 @@ public class StretchEstimation {
 
 	private static final SegmentCustomBuilderControl KaklisPandelisSegmentControlParams (
 		final int iKPTensionDegree,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -301,7 +301,7 @@ public class StretchEstimation {
 		int iK = 1;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/* 
 		 * Construct the C1 Hermite Polynomial Spline based Stretch Estimator by using the following steps:
@@ -641,7 +641,7 @@ public class StretchEstimation {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder= 2;
 
-		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
+		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
 
 		/*
 		 * Bernstein Polynomial Basis Spline Stretch Test

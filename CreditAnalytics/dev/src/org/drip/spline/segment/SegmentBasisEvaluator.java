@@ -38,7 +38,7 @@ package org.drip.spline.segment;
 
 public class SegmentBasisEvaluator implements org.drip.spline.segment.BasisEvaluator {
 	private org.drip.spline.basis.FunctionSet _fs = null;
-	private org.drip.spline.segment.InelasticConstitutiveState _ics = null;
+	private org.drip.spline.segment.LatentStateInelastic _ics = null;
 	private org.drip.spline.params.ResponseScalingShapeControl _rssc = null;
 
 	/**
@@ -66,7 +66,7 @@ public class SegmentBasisEvaluator implements org.drip.spline.segment.BasisEvalu
 	}
 
 	@Override public boolean setContainingInelastics (
-		final org.drip.spline.segment.InelasticConstitutiveState ics)
+		final org.drip.spline.segment.LatentStateInelastic ics)
 	{
 		_ics = ics;
 		return true;

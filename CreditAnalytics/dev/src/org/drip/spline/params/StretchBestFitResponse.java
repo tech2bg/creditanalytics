@@ -252,7 +252,7 @@ public class StretchBestFitResponse {
 	 */
 
 	public SegmentBestFitResponse sizeToSegment (
-		final org.drip.spline.segment.InelasticConstitutiveState ics)
+		final org.drip.spline.segment.LatentStateInelastic ics)
 	{
 		if (null == ics) return null;
 

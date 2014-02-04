@@ -145,22 +145,22 @@ public class BasisTensionSplineSet {
 	private static final void TestSpline (
 		final FunctionSet fs,
 		final ResponseScalingShapeControl rssc,
-		final SegmentDesignInelasticControl segParams)
+		final SegmentInelasticDesignControl segParams)
 		throws Exception
 	{
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState seg1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams, null);
+		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, segParams, null);
 
-		ConstitutiveState seg2 = ConstitutiveState.Create (1.5, 2.0, fs, rssc, segParams, null);
+		LatentStateResponseModel seg2 = LatentStateResponseModel.Create (1.5, 2.0, fs, rssc, segParams, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, the monotonicity, and the curvature penalty
 		 */
 
-		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null);
+		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null, Double.NaN, Double.NaN, Double.NaN, null);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 
@@ -178,7 +178,7 @@ public class BasisTensionSplineSet {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian, the monotonicity, and the curvature penalty
 		 */
 
-		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., Double.NaN, null, null);
+		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., null, Double.NaN, null);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + seg2.responseValue (1.5));
 
@@ -196,7 +196,7 @@ public class BasisTensionSplineSet {
 		 * Re-calibrate Segment #2 with a different response value
 		 */
 
-		seg2.calibrate (seg1, 14., Double.NaN, null, null);
+		seg2.calibrate (seg1, 14., null);
 
 		/*
 		 * Estimate the segment value at the given variate, and compute the corresponding Jacobian and the curvature penalty
@@ -206,7 +206,7 @@ public class BasisTensionSplineSet {
 
 		System.out.println ("\t\tValue[" + dblX + "]: " + seg2.responseValue (dblX));
 
-		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeInputs (dblX, 1).displayString());
+		System.out.println ("\t\tValue Jacobian[" + dblX + "]: " + seg2.jackDResponseDEdgeInput (dblX, 1).displayString());
 
 		System.out.println ("\t\tSegment 2 DPE: " + seg2.curvatureDPE());
 	}
@@ -246,7 +246,7 @@ public class BasisTensionSplineSet {
 		int iK = 2;
 		int iCurvaturePenaltyDerivativeOrder = 2;
 
-		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (
+		SegmentInelasticDesignControl segParams = SegmentInelasticDesignControl.Create (
 			iK,
 			iCurvaturePenaltyDerivativeOrder);
 

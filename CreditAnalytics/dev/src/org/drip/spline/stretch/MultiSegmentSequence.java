@@ -87,7 +87,7 @@ public interface MultiSegmentSequence extends org.drip.spline.stretch.SingleSegm
 	 * @return The Stretch Segments
 	 */
 
-	public abstract org.drip.spline.segment.ConstitutiveState[] segments();
+	public abstract org.drip.spline.segment.LatentStateResponseModel[] segments();
 
 	/**
 	 * Set up (i.e., calibrate) the individual Segment in the Stretch to the Target Segment Edge Values and

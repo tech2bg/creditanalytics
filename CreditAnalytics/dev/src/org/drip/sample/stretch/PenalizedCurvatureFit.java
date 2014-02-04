@@ -66,7 +66,7 @@ public class PenalizedCurvatureFit {
 
 	public static final SegmentCustomBuilderControl PolynomialSegmentControlParams (
 		final int iNumBasis,
-		final SegmentDesignInelasticControl sdic,
+		final SegmentInelasticDesignControl sdic,
 		final ResponseScalingShapeControl rssc)
 		throws Exception
 	{
@@ -177,7 +177,7 @@ public class PenalizedCurvatureFit {
 		int iK = 2;
 		int iRoughnessPenaltyDerivativeOrder = 2;
 
-		SegmentDesignInelasticControl sdic = SegmentDesignInelasticControl.Create (
+		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (
 			iK,
 			iRoughnessPenaltyDerivativeOrder);
 

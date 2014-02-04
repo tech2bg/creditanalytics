@@ -177,4 +177,53 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 	{
 		return null;
 	}
+
+	/**
+	 * Retrieve the Quote Jacobian of the Forward Rate to the given date
+	 * 
+	 * @param dblDate Date
+	 * 
+	 * @return The Quote Jacobian of the Forward Rate to the given date
+	 */
+
+	public abstract org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+		final double dblDate);
+
+	/**
+	 * Retrieve the Quote Jacobian of the Forward Rate to the given date
+	 * 
+	 * @param dt Date
+	 * 
+	 * @return The Quote Jacobian of the Forward Rate to the given date
+	 */
+
+	public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+		final org.drip.analytics.date.JulianDate dt)
+	{
+		if (null == dt) return null;
+
+		return jackDForwardDQuote (dt.getJulian());
+	}
+
+	/**
+	 * Retrieve the Quote Jacobian of the Forward Rate to the date implied by the given Tenor
+	 * 
+	 * @param strTenor Tenor
+	 * 
+	 * @return The Quote Jacobian of the Forward Rate to the date implied by the given Tenor
+	 */
+
+	public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+		final java.lang.String strTenor)
+	{
+		if (null == strTenor || strTenor.isEmpty()) return null;
+
+		try {
+			return jackDForwardDQuote (epoch().addTenor (strTenor));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

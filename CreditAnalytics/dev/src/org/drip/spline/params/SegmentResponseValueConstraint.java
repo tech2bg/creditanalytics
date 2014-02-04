@@ -131,8 +131,13 @@ public class SegmentResponseValueConstraint {
 
 		int iNumPredictorOrdinate = adblPredictorOrdinate.length;
 
-		if (0 == iNumPredictorOrdinate || _adblResponseValueWeight.length != iNumPredictorOrdinate)
+		if (0 == iNumPredictorOrdinate || _adblResponseValueWeight.length != iNumPredictorOrdinate) {
+			System.out.println ("iNumPredictorOrdinate = " + iNumPredictorOrdinate);
+
+			System.out.println ("_adblResponseValueWeight.length = " + _adblResponseValueWeight.length);
+
 			throw new java.lang.Exception ("SegmentResponseValueConstraint ctr: Invalid Inputs");
+		}
 	}
 
 	/**
@@ -180,7 +185,7 @@ public class SegmentResponseValueConstraint {
 
 	public org.drip.spline.params.SegmentBasisFlexureConstraint responseIndexedBasisConstraint (
 		final org.drip.spline.segment.BasisEvaluator lbe,
-		final org.drip.spline.segment.InelasticConstitutiveState ics)
+		final org.drip.spline.segment.LatentStateInelastic ics)
 	{
 		if (null == lbe || null == ics) return null;
 

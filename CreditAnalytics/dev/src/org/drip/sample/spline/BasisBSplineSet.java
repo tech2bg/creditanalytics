@@ -4,7 +4,7 @@ package org.drip.sample.spline;
 import org.drip.spline.basis.*;
 import org.drip.spline.bspline.*;
 import org.drip.spline.params.*;
-import org.drip.spline.segment.ConstitutiveState;
+import org.drip.spline.segment.LatentStateResponseModel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -59,20 +59,20 @@ public class BasisBSplineSet {
 	private static final void TestSpline (
 		final FunctionSet fs,
 		final ResponseScalingShapeControl rssc,
-		final SegmentDesignInelasticControl segParams)
+		final SegmentInelasticDesignControl segParams)
 		throws Exception
 	{
 		/*
 		 * Construct the left and the right segments
 		 */
 
-		ConstitutiveState seg1 = ConstitutiveState.Create (1.0, 1.5, fs, rssc, segParams, null);
+		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, segParams, null);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		System.out.println (seg1.calibrate (25., Double.NaN, 0., Double.NaN, 20.25, Double.NaN, null, null));
+		System.out.println (seg1.calibrate (25., 0., 20.25, null, Double.NaN, Double.NaN, Double.NaN, null));
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 
@@ -122,7 +122,7 @@ public class BasisBSplineSet {
 		int iK = 2;
 		int iCurvaturePenaltyDerivativeOrder = 2;
 
-		SegmentDesignInelasticControl segParams = SegmentDesignInelasticControl.Create (
+		SegmentInelasticDesignControl segParams = SegmentInelasticDesignControl.Create (
 			iK,
 			iCurvaturePenaltyDerivativeOrder);
 

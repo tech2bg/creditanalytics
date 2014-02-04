@@ -495,7 +495,7 @@ public class RatesScenarioCurveBuilder {
 		try {
 			lcc = new org.drip.state.estimator.LinearCurveCalibrator (new
 				org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
-					org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+					org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 						org.drip.spline.params.ResponseScalingShapeControl (true, new
 							org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
@@ -518,7 +518,7 @@ public class RatesScenarioCurveBuilder {
 						org.drip.spline.params.SegmentCustomBuilderControl
 							(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 								org.drip.spline.basis.PolynomialFunctionSetParams (4),
-									org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+									org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 										org.drip.spline.params.ResponseScalingShapeControl (true, new
 											org.drip.quant.function1D.QuadraticRationalShapeControl (0.)),
 												null),
@@ -633,7 +633,7 @@ public class RatesScenarioCurveBuilder {
 						org.drip.spline.params.SegmentCustomBuilderControl
 							(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 								org.drip.spline.basis.PolynomialFunctionSetParams (4),
-									org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+									org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 										org.drip.spline.params.ResponseScalingShapeControl (true, new
 											org.drip.quant.function1D.QuadraticRationalShapeControl (0.)),
 												null),
@@ -881,7 +881,7 @@ public class RatesScenarioCurveBuilder {
 		try {
 			lcc = new org.drip.state.estimator.LinearCurveCalibrator (new
 				org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
-					org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+					org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 						org.drip.spline.params.ResponseScalingShapeControl (true, new
 							org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
@@ -989,7 +989,7 @@ public class RatesScenarioCurveBuilder {
 			org.drip.state.estimator.LinearCurveCalibrator lcc = new
 				org.drip.state.estimator.LinearCurveCalibrator (new
 					org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
-						org.drip.spline.params.SegmentDesignInelasticControl.Create (2, 2), new
+						org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 							org.drip.spline.params.ResponseScalingShapeControl (true, new
 								org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
 									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),

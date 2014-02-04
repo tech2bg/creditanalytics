@@ -44,7 +44,7 @@ package org.drip.spline.segment;
 public class BestFitFlexurePenalizer {
 	private org.drip.spline.segment.BasisEvaluator _lbe = null;
 	private org.drip.spline.params.SegmentBestFitResponse _sbfr = null;
-	private org.drip.spline.segment.InelasticConstitutiveState _ics = null;
+	private org.drip.spline.segment.LatentStateInelastic _ics = null;
 	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcLength = null;
 	private org.drip.spline.params.SegmentFlexurePenaltyControl _sfpcCurvature = null;
 
@@ -61,7 +61,7 @@ public class BestFitFlexurePenalizer {
 	 */
 
 	public BestFitFlexurePenalizer (
-		final org.drip.spline.segment.InelasticConstitutiveState ics,
+		final org.drip.spline.segment.LatentStateInelastic ics,
 		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcCurvature,
 		final org.drip.spline.params.SegmentFlexurePenaltyControl sfpcLength,
 		final org.drip.spline.params.SegmentBestFitResponse sbfr,

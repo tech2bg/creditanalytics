@@ -77,7 +77,7 @@ public class CustomCurveBuilder {
 		return new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION, // Spline Type KLK Hyperbolic Basis Tension
 			new ExponentialTensionSetParams (dblTension), // Segment Tension Parameter Value
-			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
+			SegmentInelasticDesignControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 			new ResponseScalingShapeControl (
 				true,
 				new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
@@ -97,7 +97,7 @@ public class CustomCurveBuilder {
 		return new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 			new PolynomialFunctionSetParams (iNumDegree + 1), // Polynomial of degree (i.e, cubic would be 3+1; 4 basis functions - 1 "intercept")
-			SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
+			SegmentInelasticDesignControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 			new ResponseScalingShapeControl (
 				true,
 				new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
@@ -118,7 +118,7 @@ public class CustomCurveBuilder {
 			return new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, // Spline Type Polynomial
 				new PolynomialFunctionSetParams (4), // Polynomial of order 3 (i.e, cubic - 4 basis functions - 1 "intercept")
-				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
+				SegmentInelasticDesignControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 				new ResponseScalingShapeControl (
 					true,
 					new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
@@ -128,7 +128,7 @@ public class CustomCurveBuilder {
 			return new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_EXPONENTIAL_TENSION, // Spline Type Exponential Basis Tension
 				new ExponentialTensionSetParams (1.), // Segment Tension Parameter Value = 1.
-				SegmentDesignInelasticControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
+				SegmentInelasticDesignControl.Create (2, 2), // Ck = 2; Curvature penalty (if necessary) order: 2
 				new ResponseScalingShapeControl (
 					true,
 					new QuadraticRationalShapeControl (0.0)), // Univariate Rational Shape Controller
