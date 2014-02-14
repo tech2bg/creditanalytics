@@ -144,7 +144,7 @@ class CreditStaticAndMarks {
 		return sb.toString();
 	}
 
-	private static java.lang.String makeSQLInsert (
+	/* private static java.lang.String makeSQLInsert (
 		final java.lang.String[] astrValRecord)
 	{
 		if (null == astrValRecord || 0 == astrValRecord.length) return null;
@@ -368,7 +368,7 @@ class CreditStaticAndMarks {
 		sb.append ("'" + strFloatQuote + "')");
 
 		return sb.toString();
-	}
+	} */
 
 	private static java.lang.String makeSQLClear_FODATA (
 		final java.lang.String[] astrValRecord)
@@ -1407,7 +1407,7 @@ class CreditStaticAndMarks {
 	private static void LoadBondRef()
 		throws java.lang.Exception
 	{
-		int iNumBonds = 0;
+		/* int iNumBonds = 0;
 		java.lang.String strValDataLine = "";
 		java.io.BufferedReader inValData = null;
 
@@ -1469,7 +1469,7 @@ class CreditStaticAndMarks {
 
 		inValData.close();
 
-		System.out.println ("Loaded " + iNumBonds + " into BondRef.");
+		System.out.println ("Loaded " + iNumBonds + " into BondRef."); */
 	}
 
 	private static void LoadBondRef2()

@@ -111,10 +111,11 @@ public class RatesClosesLoader {
 	{
 		double dblDV01_1 = calcMeasure (comp, dt1, dc1, "FixedDV01", strCurrency);
 
-		double dblDV01_2 = calcMeasure (comp, dt1, dc1, "FixedDV01", strCurrency);
+		double dblDV01_2 = calcMeasure (comp, dt2, dc2, "FixedDV01", strCurrency);
 
 		return dblDV01_2 * 10000. * calcMeasure (comp, dt2, dc2, "CalibSwapRate", strCurrency) - dblDV01_1 *
-			10000. * calcMeasure (comp, dt1, dc1, "CalibSwapRate", strCurrency);
+			10000. * calcMeasure (comp, dt1, dc1, "CalibSwapRate", strCurrency) + calcCarry (comp, dt1, dt2,
+				dc1, strCurrency);
 	}
 
 	private static final double Forward (
@@ -847,7 +848,7 @@ public class RatesClosesLoader {
 
 		ProcessCDXQuote (mapDatedCDXClose); */
 
-		GenerateDiscountCurveMetrics ("ZAR");
+		GenerateDiscountCurveMetrics ("BRL");
 
 		// ExecUnitSequence();
 
