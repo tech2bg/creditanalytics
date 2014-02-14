@@ -172,15 +172,15 @@ public class BasisSplineSet {
 		 * Construct the left and the right segments
 		 */
 
-		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, segParams, null);
+		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, segParams);
 
-		LatentStateResponseModel seg2 = LatentStateResponseModel.Create (1.5, 2.0, fs, rssc, segParams, null);
+		LatentStateResponseModel seg2 = LatentStateResponseModel.Create (1.5, 2.0, fs, rssc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
-		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null, Double.NaN, Double.NaN, Double.NaN, null);
+		WengertJacobian wj1 = seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 
@@ -198,7 +198,7 @@ public class BasisSplineSet {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
-		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, 16., null, Double.NaN, null);
+		WengertJacobian wj2 = seg2.jackDCoeffDEdgeParams (seg1, "Default", 16., null, Double.NaN, null);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + seg2.responseValue (1.5));
 
@@ -254,9 +254,9 @@ public class BasisSplineSet {
 		 * Construct the left and the right segments
 		 */
 
-		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (0.0, 1.0, fs, sc, segParams, null);
+		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (0.0, 1.0, fs, sc, segParams);
 
-		LatentStateResponseModel seg2 = LatentStateResponseModel.Create (1.0, 2.0, fs, sc, segParams, null);
+		LatentStateResponseModel seg2 = LatentStateResponseModel.Create (1.0, 2.0, fs, sc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty

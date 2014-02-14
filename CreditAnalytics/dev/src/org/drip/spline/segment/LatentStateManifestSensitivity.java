@@ -2,8 +2,8 @@
 package org.drip.spline.segment;
 
 /**
- * LatentStateManifestSensitivity contains the Manifest Sensitivity generation control parameters and outputs
- * 	related to the given Segment.
+ * LatentStateManifestSensitivity contains the Manifest Sensitivity generation control parameters and the
+ * 	Manifest Sensitivity outputs related to the given Segment.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -73,8 +73,8 @@ public class LatentStateManifestSensitivity {
 	 * Set the Array containing the Sensitivities of the Basis Coefficients to the Preceeding Manifest
 	 * 	Measure
 	 * 
-	 * @param adblDBasisCoeffDLocalManifest The Array containing the Sensitivities of the Basis Coefficients to
-	 * 	the Preceeding Manifest Measure
+	 * @param adblDBasisCoeffDLocalManifest The Array containing the Sensitivities of the Basis Coefficients
+	 * 	to the Preceeding Manifest Measure
 	 * 
 	 * @return TRUE => Array Entries successfully set
 	 */

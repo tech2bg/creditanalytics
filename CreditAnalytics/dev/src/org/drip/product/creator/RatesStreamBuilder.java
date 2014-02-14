@@ -68,7 +68,7 @@ public class RatesStreamBuilder {
 					strCalendar);
 
 			return new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				dblCoupon, 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 100.,
+				dblCoupon, 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
 					strIR, strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -106,8 +106,8 @@ public class RatesStreamBuilder {
 
 			return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., org.drip.product.params.FloatingRateIndex.Create
-					(strFloatingRateIndex), 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap,
-						dap, null, null, -100., strIR, strCalendar);
+					(strFloatingRateIndex), 4, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap,
+						dap, null, null, -1., strIR, strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

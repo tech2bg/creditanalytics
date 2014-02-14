@@ -102,7 +102,6 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * @param fs Response Basis Function Set
 	 * @param rssc Shape Controller
 	 * @param sidc Segment Inelastic Design Parameters
-	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * 
 	 * @return Instance of LatentStateResponseModel
 	 */
@@ -112,8 +111,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.basis.FunctionSet fs,
 		final org.drip.spline.params.ResponseScalingShapeControl rssc,
-		final org.drip.spline.params.SegmentInelasticDesignControl sidc,
-		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
+		final org.drip.spline.params.SegmentInelasticDesignControl sidc)
 	{
 		try {
 			org.drip.spline.segment.SegmentBasisEvaluator sbe = new
@@ -121,13 +119,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 			org.drip.spline.segment.LatentStateResponseModel lsrm = new
 				org.drip.spline.segment.LatentStateResponseModel (dblLeftPredictorOrdinate,
-					dblRightPredictorOrdinate, sbe, sidc, pmsc);
-
-			if (null != pmsc) {
-				org.drip.spline.segment.BasisEvaluator sbePMSC = pmsc.basisEvaluator();
-
-				if (null != sbePMSC && !sbePMSC.setContainingInelastics (lsrm)) return null;
-			}
+					dblRightPredictorOrdinate, sbe, sidc);
 
 			return sbe.setContainingInelastics (lsrm) ? lsrm : null;
 		} catch (java.lang.Exception e) {
@@ -144,7 +136,6 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * @param dblRightPredictorOrdinate Right Predictor Ordinate
 	 * @param be Basis Evaluator
 	 * @param sidc Segment Inelastic Design Parameters
-	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * 
 	 * @return Instance of LatentStateResponseModel
 	 */
@@ -153,13 +144,12 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.segment.BasisEvaluator be,
-		final org.drip.spline.params.SegmentInelasticDesignControl sidc,
-		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
+		final org.drip.spline.params.SegmentInelasticDesignControl sidc)
 	{
 		try {
 			org.drip.spline.segment.LatentStateResponseModel lsrm = new
 				org.drip.spline.segment.LatentStateResponseModel (dblLeftPredictorOrdinate,
-					dblRightPredictorOrdinate, be, sidc, pmsc);
+					dblRightPredictorOrdinate, be, sidc);
 
 			return be.setContainingInelastics (lsrm) ? lsrm : null;
 		} catch (java.lang.Exception e) {
@@ -173,8 +163,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		final double dblLeftPredictorOrdinate,
 		final double dblRightPredictorOrdinate,
 		final org.drip.spline.segment.BasisEvaluator be,
-		final org.drip.spline.params.SegmentInelasticDesignControl sidc,
-		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
+		final org.drip.spline.params.SegmentInelasticDesignControl sidc)
 		throws java.lang.Exception
 	{
 		super (dblLeftPredictorOrdinate, dblRightPredictorOrdinate);
@@ -188,8 +177,6 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 		if (0 >= iNumBasis || _sidc.Ck() > iNumBasis - 2)
 			throw new java.lang.Exception ("LatentStateResponseModel ctr: Invalid inputs!");
-
-		_mapLSMS.put ("Base", new org.drip.spline.segment.LatentStateManifestSensitivity (pmsc));
 	}
 
 	private double[] DResponseDBasisCoeff (
@@ -236,16 +223,22 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		return adblDeriv;
 	}
 
-	private double[] CkDBasisCoeffDPreceedingManifestMeasure (
-		final java.lang.String strMMQM)
+	private org.drip.spline.segment.LatentStateManifestSensitivity manifestSensitivity (
+		final java.lang.String strManifestMeasure)
 	{
-		if (!_mapLSMS.containsKey (strMMQM)) return null;
+		return null == strManifestMeasure || strManifestMeasure.isEmpty() || !_mapLSMS.containsKey
+			(strManifestMeasure) ? null : _mapLSMS.get (strManifestMeasure);
+	}
 
-		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get (strMMQM);
+	private double[] CkDBasisCoeffDPreceedingManifestMeasure (
+		final java.lang.String strManifestMeasure)
+	{
+		org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+			(strManifestMeasure);
 
-		if (null == csqs) return null;
+		if (null == lsms) return null;
 
-		int iCk = csqs.getPMSC().Ck();
+		int iCk = lsms.getPMSC().Ck();
 
 		if (0 == iCk) return null;
 
@@ -255,6 +248,33 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 			adblDBasisCoeffDPreceedingManifestTail[i] = 0.;
 
 		return adblDBasisCoeffDPreceedingManifestTail;
+	}
+
+	/**
+	 * Set the Preceeding Manifest Sensitivity Control Parameters for the specified Manifest Measure
+	 * 
+	 * @param strManifestMeasure The Manifest Measure
+	 * @param pmsc The Preceeding Manifest Sensitivity Control Instance
+	 * 
+	 * @return TRUE => Named Preceeding Manifest Sensitivity Control Instance Successfully Set
+	 */
+
+	public boolean setPreceedingManifestSensitivityControl (
+		final java.lang.String strManifestMeasure,
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
+	{
+		if (null == strManifestMeasure || strManifestMeasure.isEmpty()) return false;
+
+		try {
+			_mapLSMS.put (strManifestMeasure, new org.drip.spline.segment.LatentStateManifestSensitivity
+				(pmsc));
+
+			return true;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	/**
@@ -547,7 +567,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * Sensitivity Calibrator: Calibrate the Segment Local Manifest Jacobian from the Calibration Parameter
 	 * 	Set
 	 * 
-	 * @param strMMQM Latent State Manifest Measure Quantification Metric Combine
+	 * @param strManifestMeasure Latent State Manifest Measure
 	 * @param sscManifestSensitivity The Segment Manifest Calibration Parameter Sensitivity
 	 * @param aSBFCState Array of Segment State Basis Flexure Constraints
 	 * 
@@ -555,21 +575,20 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 */
 
 	public boolean calibrateLocalManifestJacobian (
-		final java.lang.String strMMQM,
+		final java.lang.String strManifestMeasure,
 		final org.drip.spline.params.SegmentStateCalibrationInputs ssciManifestSensitivity,
 		final org.drip.spline.params.SegmentBasisFlexureConstraint[] aSBFCState)
 	{
-		if (!_mapLSMS.containsKey (strMMQM)) return false;
+		org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+			(strManifestMeasure);
 
-		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get (strMMQM);
-
-		if (null == csqs) return false;
+		if (null == lsms) return false;
 
 		double[] adblDBasisCoeffDLocalManifest = calibrateManifestJacobian (ssciManifestSensitivity,
 			aSBFCState);
 
 		return null == adblDBasisCoeffDLocalManifest || adblDBasisCoeffDLocalManifest.length !=
-			_adblResponseBasisCoeff.length ? false : csqs.setDBasisCoeffDLocalManifest
+			_adblResponseBasisCoeff.length ? false : lsms.setDBasisCoeffDLocalManifest
 				(adblDBasisCoeffDLocalManifest);
 	}
 
@@ -577,7 +596,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * Sensitivity Calibrator: Calibrate the Segment Preceeding Manifest Jacobian from the Calibration
 	 *	Parameter Set
 	 * 
-	 * @param strMMQM Latent State Manifest Measure Quantification Metric Combine
+	 * @param strManifestMeasure Latent State Manifest
 	 * @param ssciPreceedingManifestSensitivity The Segment Preceeding Manifest Calibration Parameter
 	 * 	Sensitivity
 	 * 
@@ -585,20 +604,19 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 */
 
 	public boolean calibratePreceedingManifestJacobian (
-		final java.lang.String strMMQM,
+		final java.lang.String strManifestMeasure,
 		final org.drip.spline.params.SegmentStateCalibrationInputs ssciPreceedingManifestSensitivity)
 	{
-		if (!_mapLSMS.containsKey (strMMQM)) return false;
+		org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+			(strManifestMeasure);
 
-		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get (strMMQM);
-
-		if (null == csqs) return false;
+		if (null == lsms) return false;
 
 		double[] adblDBasisCoeffDPreceedingManifest = calibrateManifestJacobian
 			(ssciPreceedingManifestSensitivity, null);
 
 		return null == adblDBasisCoeffDPreceedingManifest || adblDBasisCoeffDPreceedingManifest.length !=
-			_adblResponseBasisCoeff.length ? false : csqs.setDBasisCoeffDPreceedingManifest
+			_adblResponseBasisCoeff.length ? false : lsms.setDBasisCoeffDPreceedingManifest
 				(adblDBasisCoeffDPreceedingManifest);
 	}
 
@@ -704,10 +722,6 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * @param dblLeftSlope Left Edge Response Slope
 	 * @param dblRightValue Right Edge Response Value
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
-	 * @param dblLeftManifestSensitivity Left Edge Response Value Manifest Sensitivity
-	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Slope Manifest Sensitivity
-	 * @param dblRightManifestSensitivity Right Edge Response Value Manifest Sensitivity
-	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Values Manifest Sensitivity
 	 * 
 	 * @return TRUE => The Calibration Succeeded
 	 */
@@ -716,11 +730,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		final double dblLeftValue,
 		final double dblLeftSlope,
 		final double dblRightValue,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final double dblLeftManifestSensitivity,
-		final double dblLeftSlopeManifestSensitivity,
-		final double dblRightManifestSensitivity,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
+		final org.drip.spline.params.SegmentBestFitResponse sbfrState)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLeftValue) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblLeftSlope) ||
@@ -728,22 +738,10 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 			return false;
 
 		try {
-			if (!calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs (new double[]
+			return calibrateState (new org.drip.spline.params.SegmentStateCalibrationInputs (new double[]
 				{left(), right()}, new double[] {dblLeftValue, dblRightValue},
 					org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
-						dblLeftSlope), null, null, sbfrState)))
-				return false;
-
-			return org.drip.quant.common.NumberUtil.IsValid (dblLeftManifestSensitivity) &&
-				org.drip.quant.common.NumberUtil.IsValid (dblLeftSlopeManifestSensitivity) &&
-					org.drip.quant.common.NumberUtil.IsValid (dblRightManifestSensitivity) ?
-						calibrateLocalManifestJacobian ("Base", new
-							org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(),
-								right()}, new double[] {dblLeftManifestSensitivity,
-									dblRightManifestSensitivity},
-										org.drip.quant.common.CollectionUtil.DerivArrayFromSlope
-											(numParameters() - 2, dblLeftSlopeManifestSensitivity), null,
-												null, sbfrManifestSensitivity), null) : true;
+						dblLeftSlope), null, null, sbfrState));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -793,6 +791,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * 	Local Best Fit Response Sensitivity
 	 * 
 	 * @param csPreceeding Preceeding Predictor/Response Segment
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param srvcState The Segment State Response Value Constraint
 	 * @param srvcManifestSensitivity The Segment State Response Value Constraint Manifest Sensitivity
 	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted State Response Value Manifest Sensitivity
@@ -802,6 +801,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 	public boolean manifestMeasureSensitivity (
 		final org.drip.spline.segment.LatentStateResponseModel csPreceeding,
+		final java.lang.String strManifestMeasure,
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcState,
 		final org.drip.spline.params.SegmentResponseValueConstraint srvcManifestSensitivity,
 		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
@@ -832,24 +832,23 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		try {
 			if (null == aSBFCManifestSensitivity) return true;
 
-			if (!calibrateLocalManifestJacobian ("Base", new
+			if (!calibrateLocalManifestJacobian (strManifestMeasure, new
 				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left()}, new double[]
 					{0.}, adblManifestJacobianDerivAtLeftOrdinate, null, aSBFCManifestSensitivity,
 						sbfrManifestSensitivity), aSBFCState))
 				return false;
 
-			if (!_mapLSMS.containsKey ("Base")) return true;
+			org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+				(strManifestMeasure);
 
-			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+			if (null == lsms) return true;
 
-			if (null == csqs) return true;
-
-			return csqs.getPMSC().impactFade() ? calibratePreceedingManifestJacobian ("Base", new
+			return lsms.getPMSC().impactFade() ? calibratePreceedingManifestJacobian (strManifestMeasure, new
 				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(), right()}, new
-					double[] {csPreceeding.calcDResponseDManifest (left(), 1), 0.}, null,
-						CkDBasisCoeffDPreceedingManifestMeasure ("Base"), null, null)) :
-							csqs.setDResponseDPreceedingManifest (csPreceeding.calcDResponseDManifest
-								(left(), 1));
+					double[] {csPreceeding.calcDResponseDManifest (strManifestMeasure, left(), 1), 0.}, null,
+						CkDBasisCoeffDPreceedingManifestMeasure (strManifestMeasure), null, null)) :
+							lsms.setDResponseDPreceedingManifest (csPreceeding.calcDResponseDManifest
+								(strManifestMeasure, left(), 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -863,7 +862,9 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * 	Fit Response Sensitivity
 	 * 
 	 * @param csPreceeding Preceeding Predictor/Response Segment
-	 * @param dblRightStateManifestSensitivity Response Value Manifest Sensitivity at the Right Predictor Ordinate
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
+	 * @param dblRightStateManifestSensitivity Response Value Manifest Sensitivity at the Right Predictor
+	 * 	Ordinate
 	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Value Manifest Sensitivity
 	 * 
 	 * @return TRUE => If the calibration succeeds
@@ -871,6 +872,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 	public boolean manifestMeasureSensitivity (
 		final LatentStateResponseModel csPreceeding,
+		final java.lang.String strManifestMeasure,
 		final double dblRightStateManifestSensitivity,
 		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
 	{
@@ -890,25 +892,24 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblRightStateManifestSensitivity)) return true;
 
-			if (!calibrateLocalManifestJacobian ("Base", new
+			if (!calibrateLocalManifestJacobian (strManifestMeasure, new
 				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(), right()}, new
 					double[] {0., dblRightStateManifestSensitivity}, 0 != iCk ?
 						adblManifestJacobianDerivAtLeftOrdinate : null, null, null, sbfrManifestSensitivity),
 							null))
 				return false;
 
-			if (!_mapLSMS.containsKey ("Base")) return true;
+			org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+				(strManifestMeasure);
 
-			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+			if (null == lsms) return true;
 
-			if (null == csqs) return true;
-
-			return csqs.getPMSC().impactFade() ? calibratePreceedingManifestJacobian ("Base", new
+			return lsms.getPMSC().impactFade() ? calibratePreceedingManifestJacobian (strManifestMeasure, new
 				org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(), right()}, new
-					double[] {csPreceeding.calcDResponseDManifest (left(), 1), 0.}, null,
-						CkDBasisCoeffDPreceedingManifestMeasure ("Base"), null, null)) :
-							csqs.setDResponseDPreceedingManifest (csPreceeding.calcDResponseDManifest
-								(left(), 1));
+					double[] {csPreceeding.calcDResponseDManifest (strManifestMeasure, left(), 1), 0.}, null,
+						CkDBasisCoeffDPreceedingManifestMeasure (strManifestMeasure), null, null)) :
+							lsms.setDResponseDPreceedingManifest (csPreceeding.calcDResponseDManifest
+								(strManifestMeasure, left(), 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -921,6 +922,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * 	Response Value Sensitivity at the Left/Right Predictor Ordinate, the Local Left Response Value
 	 * 	Sensitivity Slope, and the Local Best Fit Response Sensitivity.
 	 * 
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param dblLeftManifestSensitivity Left Edge Response Value Manifest Sensitivity
 	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Slope Manifest Sensitivity
 	 * @param dblRightManifestSensitivity Right Edge Response Value Manifest Sensitivity
@@ -930,6 +932,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 */
 
 	public boolean manifestMeasureSensitivity (
+		final java.lang.String strManifestMeasure,
 		final double dblLeftManifestSensitivity,
 		final double dblLeftSlopeManifestSensitivity,
 		final double dblRightManifestSensitivity,
@@ -939,7 +942,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 			return org.drip.quant.common.NumberUtil.IsValid (dblLeftManifestSensitivity) &&
 				org.drip.quant.common.NumberUtil.IsValid (dblLeftSlopeManifestSensitivity) &&
 					org.drip.quant.common.NumberUtil.IsValid (dblRightManifestSensitivity) ?
-						calibrateLocalManifestJacobian ("Base", new
+						calibrateLocalManifestJacobian (strManifestMeasure, new
 							org.drip.spline.params.SegmentStateCalibrationInputs (new double[] {left(),
 								right()}, new double[] {dblLeftManifestSensitivity,
 									dblRightManifestSensitivity},
@@ -958,6 +961,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * 	Response Value/Sensitivity Constraints at the Left/Right Predictor Ordinate, the Local Left
 	 * 	Response Value Sensitivity Slope, and the Local Best Fit Response Sensitivity
 	 * 
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param wrvcStateLeft Left Edge Response Value Constraint
 	 * @param wrvcStateRight Right Edge Response Value Constraint
 	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Value Slope Manifest Sensitivity
@@ -969,6 +973,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 */
 
 	public boolean manifestMeasureSensitivity (
+		final java.lang.String strManifestMeasure,
 		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateLeft,
 		final org.drip.spline.params.SegmentResponseValueConstraint wrvcStateRight,
 		final double dblLeftSlopeManifestSensitivity,
@@ -993,8 +998,8 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 								wrvcStateRightManifestSensitivity.responseIndexedBasisConstraint (_be,
 									this)};
 
-			return null == aSBFCManifestSensitivity ? true : calibrateLocalManifestJacobian ("Base", new
-				org.drip.spline.params.SegmentStateCalibrationInputs (null, null,
+			return null == aSBFCManifestSensitivity ? true : calibrateLocalManifestJacobian
+				(strManifestMeasure, new org.drip.spline.params.SegmentStateCalibrationInputs (null, null,
 					org.drip.quant.common.CollectionUtil.DerivArrayFromSlope (numParameters() - 2,
 						dblLeftSlopeManifestSensitivity), null, aSBFCManifestSensitivity,
 							sbfrManifestSensitivity), aSBFCState);
@@ -1140,6 +1145,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	/**
 	 * Calculate the Ordered Derivative of the Response to the Manifest
 	 * 
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Derivative of the Response to the
 	 * 	Manifest is to be calculated
 	 * @param iOrder Derivative Order
@@ -1150,6 +1156,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 */
 
 	public double calcDResponseDManifest (
+		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
@@ -1158,22 +1165,20 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 			throw new java.lang.Exception
 				("LatentStateResponseModel::calcDResponseDManifest => Invalid Inputs");
 
-		if (!_mapLSMS.containsKey ("Base"))
+		org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+			(strManifestMeasure);
+
+		if (null == lsms)
 			throw new java.lang.Exception
 				("LatentStateResponseModel::calcDResponseDManifest => Invalid Inputs");
 
-		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
-
-		if (null == csqs)
-			throw new java.lang.Exception
-				("LatentStateResponseModel::calcDResponseDManifest => Invalid Inputs");
-
-		return _be.responseValue (csqs.getDBasisCoeffDLocalManifest(), dblPredictorOrdinate);
+		return _be.responseValue (lsms.getDBasisCoeffDLocalManifest(), dblPredictorOrdinate);
 	}
 
 	/**
 	 * Calculate the Ordered Derivative of the Response to the Preceeding Manifest
 	 * 
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param dblPredictorOrdinate Predictor Ordinate at which the ordered Derivative of the Response to the
 	 * 	Manifest is to be calculated
 	 * @param iOrder Derivative Order
@@ -1184,6 +1189,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 */
 
 	public double calcDResponseDPreceedingManifest (
+		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
@@ -1192,19 +1198,16 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 			throw new java.lang.Exception
 				("LatentStateResponseModel::calcDResponseDPreceedingManifest => Invalid Inputs");
 
-		if (!_mapLSMS.containsKey ("Base"))
+		org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+			(strManifestMeasure);
+
+		if (null == lsms)
 			throw new java.lang.Exception
 				("LatentStateResponseModel::calcDResponseDPreceedingManifest => Cannot locate state Manifest sensitivity");
 
-		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
+		org.drip.spline.params.PreceedingManifestSensitivityControl pqsc = lsms.getPMSC();
 
-		if (null == csqs)
-			throw new java.lang.Exception
-				("LatentStateResponseModel::calcDResponseDPreceedingManifest => Cannot locate state Manifest sensitivity");
-
-		org.drip.spline.params.PreceedingManifestSensitivityControl pqsc = csqs.getPMSC();
-
-		double dblDResponseDPreceedingManifest = csqs.getDResponseDPreceedingManifest();
+		double dblDResponseDPreceedingManifest = lsms.getDResponseDPreceedingManifest();
 
 		if (!pqsc.impactFade())
 			return org.drip.quant.common.NumberUtil.IsValid (dblDResponseDPreceedingManifest) ?
@@ -1212,7 +1215,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 		org.drip.spline.segment.BasisEvaluator be = pqsc.basisEvaluator();
 
-		double[] adblDBasisCoeffDPreceedingManifest = csqs.getDBasisCoeffDPreceedingManifest();
+		double[] adblDBasisCoeffDPreceedingManifest = lsms.getDBasisCoeffDPreceedingManifest();
 
 		return null == adblDBasisCoeffDPreceedingManifest ? 0. : (null == be ? _be : be).responseValue
 			(adblDBasisCoeffDPreceedingManifest, dblPredictorOrdinate);
@@ -1221,23 +1224,23 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	/**
 	 * Retrieve the Manifest Measure Preceeding Manifest Impact Flag
 	 * 
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
+	 * 
 	 * @return The Manifest Measure Preceeding Manifest Impact Flag
 	 */
 
-	public boolean impactFade()
+	public boolean impactFade (
+		final java.lang.String strManifestMeasure)
 		throws java.lang.Exception
 	{
-		if (!_mapLSMS.containsKey ("Base"))
+		org.drip.spline.segment.LatentStateManifestSensitivity lsms = manifestSensitivity
+			(strManifestMeasure);
+
+		if (null == lsms)
 			throw new java.lang.Exception
 				("LatentStateResponseModel::impactFade => Cannot locate state Manifest sensitivity");
 
-		org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
-
-		if (null == csqs)
-			throw new java.lang.Exception
-				("LatentStateResponseModel::impactFade => Cannot locate state Manifest sensitivity");
-
-		return csqs.getPMSC().impactFade();
+		return lsms.getPMSC().impactFade();
 	}
 
 	/**
@@ -1415,10 +1418,6 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 * @param dblLeftSlope Left Edge Response Slope
 	 * @param dblRightValue Right Edge Response Value
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
-	 * @param dblLeftManifestSensitivity Left Edge Response Value Manifest Sensitivity
-	 * @param dblLeftSlopeManifestSensitivity Left Edge Response Slope Manifest Sensitivity
-	 * @param dblRightManifestSensitivity Right Edge Response Value Manifest Sensitivity
-	 * @param sbfrManifestSensitivity Segment's Best Fit Weighted Response Values Manifest Sensitivity
 	 * 
 	 * @return The Jacobian of the Segment's Response Basis Function Coefficients to the Edge Parameters
 	 */
@@ -1427,15 +1426,10 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		final double dblLeftValue,
 		final double dblLeftSlope,
 		final double dblRightValue,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
-		final double dblLeftManifestSensitivity,
-		final double dblLeftSlopeManifestSensitivity,
-		final double dblRightManifestSensitivity,
-		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
+		final org.drip.spline.params.SegmentBestFitResponse sbfrState)
 	{
-		return calibrate (dblLeftValue, dblLeftSlope, dblRightValue, sbfrState, dblLeftManifestSensitivity,
-			dblLeftSlopeManifestSensitivity, dblRightManifestSensitivity, sbfrManifestSensitivity) ?
-				jackDCoeffDEdgeInputs() : null;
+		return calibrate (dblLeftValue, dblLeftSlope, dblRightValue, sbfrState) ? jackDCoeffDEdgeInputs() :
+			null;
 	}
 
 	/**
@@ -1444,6 +1438,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 	 *  Parameters
 	 * 
 	 * @param csPreceeding Previous Predictor/Response Segment
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param dblRightStateValue Response Value at the Right Predictor Ordinate
 	 * @param sbfrState Segment's Best Fit Weighted Response Values
 	 * @param dblRightStateManifestSensitivity Response Value Manifest Sensitivity at the Right Predictor
@@ -1455,14 +1450,15 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 	public org.drip.quant.calculus.WengertJacobian jackDCoeffDEdgeParams (
 		final LatentStateResponseModel csPreceeding,
+		final java.lang.String strManifestMeasure,
 		final double dblRightStateValue,
 		final org.drip.spline.params.SegmentBestFitResponse sbfrState,
 		final double dblRightStateManifestSensitivity,
 		final org.drip.spline.params.SegmentBestFitResponse sbfrManifestSensitivity)
 	{
 		return !calibrate (csPreceeding, dblRightStateValue, sbfrState) || !manifestMeasureSensitivity
-			(csPreceeding, dblRightStateManifestSensitivity, sbfrManifestSensitivity) ? null :
-				jackDCoeffDEdgeInputs();
+			(csPreceeding, strManifestMeasure, dblRightStateManifestSensitivity, sbfrManifestSensitivity) ?
+				null : jackDCoeffDEdgeInputs();
 	}
 
 	/**
@@ -1579,14 +1575,8 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		final double dblPredictorOrdinate)
 	{
 		try {
-			if (!_mapLSMS.containsKey ("Base")) return null;
-
-			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
-
-			if (null == csqs) return null;
-
 			LatentStateResponseModel csLeftSnipped = LatentStateResponseModel.Create (dblPredictorOrdinate,
-				right(), _be.replicate(), _sidc, csqs.getPMSC());
+				right(), _be.replicate(), _sidc);
 
 			int iCk = _sidc.Ck();
 
@@ -1617,14 +1607,8 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		final double dblPredictorOrdinate)
 	{
 		try {
-			if (!_mapLSMS.containsKey ("Base")) return null;
-
-			org.drip.spline.segment.LatentStateManifestSensitivity csqs = _mapLSMS.get ("Base");
-
-			if (null == csqs) return null;
-
 			LatentStateResponseModel csRightSnipped = LatentStateResponseModel.Create (left(),
-				dblPredictorOrdinate, _be.replicate(), _sidc, csqs.getPMSC());
+				dblPredictorOrdinate, _be.replicate(), _sidc);
 
 			int iCk = _sidc.Ck();
 

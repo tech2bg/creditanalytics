@@ -50,6 +50,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 	private org.drip.spline.stretch.MultiSegmentSequence _mssPrev = null;
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
+	private org.drip.spline.params.PreceedingManifestSensitivityControl _pmsc = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
 
 	private java.util.Map<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>
@@ -155,6 +156,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	 * @param quotingParams Quoting Parameter
 	 * @param mssPrev The Previous Stretch Used to value cash flows that fall in those segments
 	 * @param sbfr Stretch Fitness Weighted Response
+	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * @param sbfrQuoteSensitivity Stretch Fitness Weighted Response Quote Sensitivity
 	 * @param bs The Calibration Boundary Condition
 	 * 
@@ -170,6 +172,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
 		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc,
 		final org.drip.spline.params.StretchBestFitResponse sbfrQuoteSensitivity,
 		final org.drip.spline.stretch.BoundarySettings bs)
 		throws java.lang.Exception
@@ -179,6 +182,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
 		_cmp = cmp;
+		_pmsc = pmsc;
 		_sbfr = sbfr;
 		_mssPrev = mssPrev;
 		_pricerParams = pricerParams;
@@ -214,12 +218,12 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null == cc) return false;
 
-		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC (_valParams,
-			_pricerParams, _cmp, _quotingParams, _srs.getLSMM (0));
-
 		org.drip.spline.segment.LatentStateResponseModel[] aCS = _stretch.segments();
 
 		if (null == aCS || 0 == aCS.length) return false;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC (_valParams,
+			_pricerParams, _cmp, _quotingParams, _srs.getLSMM (0));
 
 		double dblSegmentRight = aCS[0].right();
 
@@ -275,9 +279,14 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		for (int iSegment = 0; iSegment < iNumSegment; ++iSegment) {
 			double dblSegmentRight = aCS[iSegment].right();
 
+			java.lang.String strManifestMeasure = _srs.getLSMM (iSegment).getManifestMeasure();
+
+			if (!aCS[iSegment].setPreceedingManifestSensitivityControl (strManifestMeasure, _pmsc))
+				return false;
+
 			if (0 == iSegment) {
-				if (!aCS[0].manifestMeasureSensitivity
-					(org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
+				if (!aCS[0].manifestMeasureSensitivity (strManifestMeasure,
+					org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
 						(_valParams.valueDate(), _dblEpochResponse), _mapSRVCBase.get (dblSegmentRight),
 							dblLeftSlopeSensitivity,
 								org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
@@ -285,8 +294,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 						_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[0])))
 					return false;
 			} else {
-				if (!aCS[iSegment].manifestMeasureSensitivity (aCS[iSegment - 1], _mapSRVCBase.get
-					(dblSegmentRight), _mapSRVCSensitivity.get (dblSegmentRight), null ==
+				if (!aCS[iSegment].manifestMeasureSensitivity (aCS[iSegment - 1], strManifestMeasure,
+					_mapSRVCBase.get (dblSegmentRight), _mapSRVCSensitivity.get (dblSegmentRight), null ==
 						_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[iSegment])))
 					return false;
 			}

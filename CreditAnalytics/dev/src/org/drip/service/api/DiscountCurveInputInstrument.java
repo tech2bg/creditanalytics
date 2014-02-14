@@ -76,7 +76,6 @@ public class DiscountCurveInputInstrument {
 		if (iNumCashQuote != iNumCashTenor || iNumSwapQuote != iNumSwapTenor || (0 == iNumCashTenor && 0 ==
 			iNumSwapTenor))
 			throw new java.lang.Exception ("DiscountCurveInputInstrument ctr: Invalid Inputs");
-
 	}
 
 	/**

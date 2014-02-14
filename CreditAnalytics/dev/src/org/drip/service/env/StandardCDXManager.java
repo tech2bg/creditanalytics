@@ -725,8 +725,6 @@ public class StandardCDXManager {
 				} catch (java.lang.Exception e1) {
 					e1.printStackTrace();
 				}
-
-				return false;
 			}
 		}
 

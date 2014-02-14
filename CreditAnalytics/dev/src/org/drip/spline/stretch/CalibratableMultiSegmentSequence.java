@@ -164,8 +164,11 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		if (org.drip.spline.stretch.BoundarySettings.BOUNDARY_CONDITION_FLOATING ==
 			_ssb.getCalibrationBoundaryCondition().boundaryCondition()) {
 			if (!_ssb.calibStartingSegment (0.) || !_ssb.calibSegmentSequence (1) ||
-				!_ssb.manifestMeasureSensitivity (0.))
+				!_ssb.manifestMeasureSensitivity (0.)) {
+				System.out.println ("\tFloater Fail");
+
 				return false;
+			}
 		} else if (0 != (org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE & iCalibrationDetail)) {
 			org.drip.quant.solver1D.FixedPointFinderOutput fpop = null;
 
@@ -180,11 +183,14 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			}
 
 			if (null == fpop || !org.drip.quant.common.NumberUtil.IsValid (fpop.getRoot()) ||
-				!_ssb.manifestMeasureSensitivity (0.))
+				!_ssb.manifestMeasureSensitivity (0.)) {
+				System.out.println ("FPOP: " + fpop);
+
 				return false;
+			}
 		}
 
-		if (0 != (org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE_JACOBIAN &iCalibrationDetail)) {
+		if (0 != (org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE_JACOBIAN & iCalibrationDetail)) {
 			int iNumSegment = _aCS.length;
 
 			try {
@@ -441,6 +447,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder)
 	{
@@ -450,11 +457,11 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		try {
 			int iIndex = containingIndex (dblPredictorOrdinate, true, true);
 
-			boolean bContainingSegmentImpactFade = _aCS[iIndex].impactFade();
+			boolean bContainingSegmentImpactFade = _aCS[iIndex].impactFade (strManifestMeasure);
 
 			if (!bContainingSegmentImpactFade && 0 != iIndex) {
 				for (int i = iIndex - 1; i >= 0; --i) {
-					if (_aCS[i].impactFade()) {
+					if (_aCS[i].impactFade (strManifestMeasure)) {
 						iPriorImpactFadeIndex = i;
 						break;
 					}
@@ -468,12 +475,14 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 				double dblDResponseDQuotei = 0.;
 
 				if (i == iIndex)
-					dblDResponseDQuotei = _aCS[i].calcDResponseDManifest (dblPredictorOrdinate, iOrder);
+					dblDResponseDQuotei = _aCS[i].calcDResponseDManifest (strManifestMeasure,
+						dblPredictorOrdinate, iOrder);
 				else if (i == iIndex - 1)
-					dblDResponseDQuotei = _aCS[i + 1].calcDResponseDPreceedingManifest (dblPredictorOrdinate,
-						iOrder);
+					dblDResponseDQuotei = _aCS[i + 1].calcDResponseDPreceedingManifest (strManifestMeasure,
+						dblPredictorOrdinate, iOrder);
 				else if (!bContainingSegmentImpactFade && i >= iPriorImpactFadeIndex && i < iIndex - 1)
-					dblDResponseDQuotei = _aCS[i].calcDResponseDManifest (_aCS[i].right(), iOrder);
+					dblDResponseDQuotei = _aCS[i].calcDResponseDManifest (strManifestMeasure,
+						_aCS[i].right(), iOrder);
 
 				if (!wjDResponseDQuote.accumulatePartialFirstDerivative (0, i, dblDResponseDQuotei))
 					return null;

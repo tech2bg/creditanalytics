@@ -66,13 +66,13 @@ public class BasisBSplineSet {
 		 * Construct the left and the right segments
 		 */
 
-		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, segParams, null);
+		LatentStateResponseModel seg1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, segParams);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian
 		 */
 
-		System.out.println (seg1.calibrate (25., 0., 20.25, null, Double.NaN, Double.NaN, Double.NaN, null));
+		System.out.println (seg1.calibrate (25., 0., 20.25, null));
 
 		System.out.println ("\tY[" + 1.0 + "]: " + seg1.responseValue (1.));
 

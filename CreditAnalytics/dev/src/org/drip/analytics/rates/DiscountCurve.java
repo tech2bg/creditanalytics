@@ -257,48 +257,53 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 	@Override public double libor (
 		final double dblDt1,
+		final double dblDt2,
+		final double dblDCF)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDt1) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblDt2) || dblDt1 == dblDt2 || !org.drip.quant.common.NumberUtil.IsValid (dblDCF) || 0. ==
+				dblDCF)
+			throw new java.lang.Exception ("DiscountCurve::libor => Invalid input dates");
+
+		return ((df (dblDt1) / df (dblDt2)) - 1.) / dblDCF;
+	}
+
+	@Override public double libor (
+		final double dblDt1,
 		final double dblDt2)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDt1) || !org.drip.quant.common.NumberUtil.IsValid
-			(dblDt2))
+			(dblDt2) || dblDt1 == dblDt2)
 			throw new java.lang.Exception ("DiscountCurve::libor => Invalid input dates");
 
-		return ((df (dblDt1) / df (dblDt2)) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
-			(dblDt1, dblDt2, "Act/360", false, java.lang.Double.NaN, null, "");
+		return libor (dblDt1, dblDt2, org.drip.analytics.daycount.Convention.YearFraction
+			(dblDt1, dblDt2, "Act/360", false, java.lang.Double.NaN, null, ""));
 	}
 
 	@Override public double libor (
-		final double dblDate)
-		throws java.lang.Exception
-	{
-		return libor (epoch().getJulian(), dblDate);
-	}
-
-	@Override public double libor (
+		final double dblDate,
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
-		if (null == strTenor || strTenor.isEmpty())
-			throw new java.lang.Exception ("DiscountCurve.libor got empty date");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == strTenor || strTenor.isEmpty())
+			throw new java.lang.Exception ("DiscountCurve.libor => Invalid Inputs");
 
-		org.drip.analytics.date.JulianDate dtStart = epoch();
+		double dblEndDate = new org.drip.analytics.date.JulianDate (dblDate).addTenor (strTenor).getJulian();
 
-		return libor (dtStart.getJulian(), dtStart.addTenor (strTenor).getJulian());
+		return ((df (dblDate) / df (dblEndDate)) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
+			(dblDate, dblEndDate, "Act/360", false, java.lang.Double.NaN, null, "");
 	}
 
 	@Override public double libor (
-		final java.lang.String strTenor1,
-		final java.lang.String strTenor2)
+		final org.drip.analytics.date.JulianDate dt,
+		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
-		if (null == strTenor1 || strTenor1.isEmpty() || null == strTenor2 || strTenor2.isEmpty())
-			throw new java.lang.Exception ("DiscountCurve::libor got empty date");
+		if (null == dt) throw new java.lang.Exception ("DiscountCurve.libor => Invalid Inputs");
 
-		org.drip.analytics.date.JulianDate dtStart = epoch();
-
-		return libor (dtStart.addTenor (strTenor1).getJulian(), dtStart.addTenor
-			(strTenor2).getJulian());
+		return libor (dt.getJulian(), strTenor);
 	}
 
 	@Override public double liborDV01 (

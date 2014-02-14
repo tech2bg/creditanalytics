@@ -258,7 +258,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
 		final double dblDate)
 	{
-		return null == _span ? null : _span.jackDResponseDQuote (dblDate, 1);
+		return null == _span ? null : _span.jackDResponseDQuote ("Rate", dblDate, 1);
 	}
 
 	@Override public boolean setCCIS (

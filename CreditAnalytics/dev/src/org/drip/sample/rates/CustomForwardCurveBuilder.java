@@ -521,6 +521,7 @@ public class CustomForwardCurveBuilder {
 			dc,
 			1,
 			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+			// new String[] {"1Y"},
 			new double[] {
 				0.00551,    //  1Y
 				0.00387,    //  2Y

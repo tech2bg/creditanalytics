@@ -263,8 +263,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	{
 		long lStart = System.nanoTime();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixStreamResult = _fixStream.value
-			(valParams, pricerParams, mktParams, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixStreamResult =
+			_fixStream.value (valParams, pricerParams, mktParams, quotingParams);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatStreamResult =
 			_floatStream.value (valParams, pricerParams, mktParams, quotingParams);
@@ -276,63 +276,63 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
+		double dblFixedCleanDV01 = mapFixStreamResult.get ("CleanDV01");
+
+		double dblFloatingCleanPV = mapFloatStreamResult.get ("CleanPV");
+
+		double dblCleanPV = mapFixStreamResult.get ("CleanPV") + dblFloatingCleanPV;
+
+		double dblFairPremium = java.lang.Math.abs (0.0001 * dblFloatingCleanPV / dblFixedCleanDV01);
+
+		mapResult.put ("CleanFixedDV01", dblFixedCleanDV01);
+
+		mapResult.put ("CleanFixedPV", mapFixStreamResult.get ("CleanPV"));
+
+		mapResult.put ("CleanFloatingDV01", mapFloatStreamResult.get ("CleanDV01"));
+
+		mapResult.put ("CleanFloatingPV", dblFloatingCleanPV);
+
+		mapResult.put ("CleanPV", dblCleanPV);
+
+		mapResult.put ("DirtyFixedDV01", mapFixStreamResult.get ("DirtyDV01"));
+
+		mapResult.put ("DirtyFixedPV", mapFixStreamResult.get ("DirtyPV"));
+
+		mapResult.put ("DirtyFloatingDV01", mapFloatStreamResult.get ("DirtyDV01"));
+
+		mapResult.put ("DirtyFloatingPV", mapFloatStreamResult.get ("DirtyPV"));
+
+		mapResult.put ("DirtyPV", mapFixStreamResult.get ("DirtyPV") + mapFloatStreamResult.get ("DirtyPV"));
+
+		mapResult.put ("FairPremium", dblFairPremium);
+
+		mapResult.put ("FixedAccrued", mapFixStreamResult.get ("Accrued"));
+
+		mapResult.put ("FixedAccrued01", mapFixStreamResult.get ("Accrued01"));
+
+		mapResult.put ("FixedDV01", mapFixStreamResult.get ("DV01"));
+
+		mapResult.put ("FloatAccrued", mapFloatStreamResult.get ("Accrued"));
+
+		mapResult.put ("FloatAccrued01", mapFloatStreamResult.get ("Accrued01"));
+
+		mapResult.put ("FloatDV01", mapFloatStreamResult.get ("DV01"));
+
+		mapResult.put ("Fixing01", mapFloatStreamResult.get ("Fixing01"));
+
+		mapResult.put ("ParRate", dblFairPremium);
+
+		mapResult.put ("PV", mapFixStreamResult.get ("PV") + mapFloatStreamResult.get ("PV"));
+
+		mapResult.put ("Rate", dblFairPremium);
+
 		mapResult.put ("ResetDate", mapFloatStreamResult.get ("ResetDate"));
 
 		mapResult.put ("ResetRate", mapFloatStreamResult.get ("ResetRate"));
 
-		double dblFixedCleanDV01 = mapFixStreamResult.get ("CleanDV01");
-
-		double dblFloatingCleanPV = mapFloatStreamResult.get ("CleanFloatingPV");
-
-		double dblCleanPV = mapFixStreamResult.get ("CleanPV") + mapFloatStreamResult.get ("CleanPV");
-
-		mapResult.put ("FixAccrued01", mapFixStreamResult.get ("Accrued01"));
-
-		mapResult.put ("FixAccrued", mapFixStreamResult.get ("FixAccrued"));
-
-		mapResult.put ("FloatAccrued01", mapFloatStreamResult.get ("Accrued01"));
-
-		mapResult.put ("FloatAccrued", mapFloatStreamResult.get ("FloatAccrued"));
-
-		mapResult.put ("FixedDV01", mapFixStreamResult.get ("DV01"));
-
-		mapResult.put ("CleanFixedDV01", dblFixedCleanDV01);
-
-		mapResult.put ("DirtyFixedDV01", mapFixStreamResult.get ("DirtyDV01"));
-
-		mapResult.put ("FloatDV01", mapFloatStreamResult.get ("DV01"));
-
-		mapResult.put ("CleanFloatingDV01", mapFloatStreamResult.get ("CleanDV01"));
-
-		mapResult.put ("DirtyFloatingDV01", mapFloatStreamResult.get ("DirtyDV01"));
-
-		mapResult.put ("Fixing01", mapFloatStreamResult.get ("Fixing01"));
-
-		mapResult.put ("CleanFixedPV", mapFixStreamResult.get ("CleanFixedPV"));
-
-		mapResult.put ("DirtyFixedPV", mapFixStreamResult.get ("DirtyFixedPV"));
-
-		mapResult.put ("CleanFloatingPV", dblFloatingCleanPV);
-
-		mapResult.put ("DirtyFloatingPV", mapFloatStreamResult.get ("DirtyFloatingPV"));
-
-		mapResult.put ("PV", mapFixStreamResult.get ("PV") + mapFloatStreamResult.get ("PV"));
-
-		mapResult.put ("CleanPV", dblCleanPV);
-
-		mapResult.put ("DirtyPV", mapFixStreamResult.get ("DirtyPV") + mapFloatStreamResult.get ("DirtyPV"));
+		mapResult.put ("SwapRate", dblFairPremium);
 
 		mapResult.put ("Upfront", mapFixStreamResult.get ("Upfront") + mapFloatStreamResult.get ("Upfront"));
-
-		double dblFairPremium = java.lang.Math.abs (0.0001 * dblFloatingCleanPV / dblFixedCleanDV01);
-
-		mapResult.put ("FairPremium", dblFairPremium);
-
-		mapResult.put ("ParRate", dblFairPremium);
-
-		mapResult.put ("Rate", dblFairPremium);
-
-		mapResult.put ("SwapRate", dblFairPremium);
 
 		double dblValueNotional = java.lang.Double.NaN;
 
@@ -354,9 +354,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblStartDate = getEffectiveDate().getJulian();
 
+				mapResult.put ("CalibSwapRatePV", (dc.df (dblStartDate > valParams.valueDate() ? dblStartDate
+					: valParams.valueDate()) - dc.df (getMaturityDate())));
+
 				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > valParams.valueDate() ? dblStartDate :
 					valParams.valueDate()) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
-						(valParams.valueDate()) * 0.01);
+						(valParams.valueDate()) * 0.0001);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

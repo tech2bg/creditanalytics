@@ -97,6 +97,7 @@ public interface SingleSegmentSequence {
 	/**
 	 * Calculate the Response Derivative to the Quote at the specified Ordinate
 	 * 
+	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param dblPredictorOrdinate Predictor Ordinate
 	 * @param iOrder Order of Derivative desired
 	 * 
@@ -104,6 +105,7 @@ public interface SingleSegmentSequence {
 	 */
 
 	public abstract org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder);
 

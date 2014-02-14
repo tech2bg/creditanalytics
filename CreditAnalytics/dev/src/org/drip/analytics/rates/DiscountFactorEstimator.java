@@ -220,22 +220,27 @@ public interface DiscountFactorEstimator {
 		throws java.lang.Exception;
 
 	/**
-	 * Calculate the LIBOR to the given date
+	 * Compute the LIBOR between 2 dates given the Day Count
 	 * 
-	 * @param dblDate Date
+	 * @param dblDt1 First Date
+	 * @param dblDt2 Second Date
+	 * @param dblDCF Day Count Fraction
 	 * 
 	 * @return LIBOR
 	 * 
-	 * @throws java.lang.Exception Thrown if LIBOR cannot be calculated
+	 * @throws java.lang.Exception Thrown if the discount factor cannot be calculated
 	 */
 
 	public abstract double libor (
-		final double dblDate)
+		final double dblDt1,
+		final double dblDt2,
+		final double dblDCF)
 		throws java.lang.Exception;
 
 	/**
-	 * Calculate the LIBOR to the given tenor
+	 * Calculate the LIBOR to the given tenor at the specified date
 	 * 
+	 * @param dblDate Date
 	 * @param strTenor Tenor
 	 * 
 	 * @return LIBOR
@@ -244,23 +249,24 @@ public interface DiscountFactorEstimator {
 	 */
 
 	public abstract double libor (
+		final double dblDate,
 		final java.lang.String strTenor)
 		throws java.lang.Exception;
 
 	/**
-	 * Calculate LIBOR between 2 tenors
+	 * Calculate the LIBOR to the given tenor at the specified Julian Date
 	 * 
-	 * @param strTenor1 Tenor start
-	 * @param strTenor2 Tenor end
+	 * @param dt Julian Date
+	 * @param strTenor Tenor
 	 * 
 	 * @return LIBOR
 	 * 
-	 * @throws java.lang.Exception
+	 * @throws java.lang.Exception Thrown if LIBOR cannot be calculated
 	 */
 
 	public abstract double libor (
-		final java.lang.String strTenor1,
-		final java.lang.String strTenor2)
+		final org.drip.analytics.date.JulianDate dt,
+		final java.lang.String strTenor)
 		throws java.lang.Exception;
 
 	/**

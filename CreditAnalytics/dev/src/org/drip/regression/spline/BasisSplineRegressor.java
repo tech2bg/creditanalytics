@@ -209,8 +209,8 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
 
 		if (null == (_seg1 = org.drip.spline.segment.LatentStateResponseModel.Create (1.0, 3.0, fs, rssc,
-			segParams, null)) || null == (_seg2 = org.drip.spline.segment.LatentStateResponseModel.Create (3.0, 6.0,
-				fs, rssc, segParams, null)))
+			segParams)) || null == (_seg2 = org.drip.spline.segment.LatentStateResponseModel.Create (3.0,
+				6.0, fs, rssc, segParams)))
 			throw new java.lang.Exception ("BasisSplineRegressor ctr: Cant create the segments");
 	}
 
@@ -222,11 +222,10 @@ public class BasisSplineRegressor extends org.drip.regression.core.UnitRegressio
 	@Override public boolean execRegression()
 	{
 		try {
-			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null,
-				java.lang.Double.NaN, java.lang.Double.NaN, java.lang.Double.NaN, null)) && null != (_wjRight
-					= _seg2.jackDCoeffDEdgeParams (_seg1, 16., null, java.lang.Double.NaN, null)) &&
-						_seg2.calibrate (_seg1, 14., null) && null != (_wjValue =
-							_seg2.jackDResponseDEdgeInput (5., 1));
+			return null != (_wjLeft = _seg1.jackDCoeffDEdgeParams (25., 0., 20.25, null)) && null !=
+				(_wjRight = _seg2.jackDCoeffDEdgeParams (_seg1, "Default", 16., null, java.lang.Double.NaN,
+					null)) && _seg2.calibrate (_seg1, 14., null) && null != (_wjValue =
+						_seg2.jackDResponseDEdgeInput (5., 1));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

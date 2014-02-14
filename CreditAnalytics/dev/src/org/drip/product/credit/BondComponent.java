@@ -121,7 +121,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == mktParams.getEDSFDiscountCurve()) return java.lang.Double.NaN;
 
-		return mktParams.getEDSFDiscountCurve().libor (dblWorkoutDate);
+		return mktParams.getEDSFDiscountCurve().libor (valParams.valueDate(), dblWorkoutDate);
 	}
 
 	private org.drip.param.valuation.WorkoutInfo calcExerciseCallYieldFromPrice (
@@ -301,7 +301,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				if (null != fc) return fc.forward (period.getPayDate());
 
 				if (period.getStartDate() < dblValue && 0 != _periodParams._iFreq)
-					return dc.libor ((12 / _periodParams._iFreq) + "M");
+					return dc.libor (dblValue, (12 / _periodParams._iFreq) + "M");
 
 				return dc.libor (period.getStartDate(), period.getEndDate());
 			}
@@ -1015,8 +1015,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				adblSecTSYSpread[i] = cqTsyBmkYield.getQuote ("Yield").getQuote ("mid");
 			else if (null != mktParams.getEDSFDiscountCurve()) {
 				try {
-					adblSecTSYSpread[i] = mktParams.getEDSFDiscountCurve().libor
-						(_periodParams._dblMaturity);
+					adblSecTSYSpread[i] = mktParams.getEDSFDiscountCurve().libor (valParams.valueDate(),
+						_periodParams._dblMaturity);
 				} catch (java.lang.Exception e) {
 					if (!s_bSuppressErrors) e.printStackTrace();
 				}
@@ -1059,7 +1059,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == mktParams.getEDSFDiscountCurve()) return java.lang.Double.NaN;
 
-		return mktParams.getEDSFDiscountCurve().libor (wi.date());
+		return mktParams.getEDSFDiscountCurve().libor (valParams.valueDate(), wi.date());
 	}
 
 	@Override public boolean setTreasuryBenchmark (
@@ -4712,9 +4712,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
 
-		return null == _fltParams ? dblYield - dc.libor (((int) (12. / (0 == _periodParams._iFreq ? 2 :
-			_periodParams._iFreq))) + "M") : dblYield - getIndexRate (valParams.valueDate(), mktParams,
-				calcCurrentPeriod (valParams.valueDate()));
+		return null == _fltParams ? dblYield - dc.libor (valParams.valueDate(), ((int) (12. / (0 ==
+			_periodParams._iFreq ? 2 : _periodParams._iFreq))) + "M") : dblYield - getIndexRate
+				(valParams.valueDate(), mktParams, calcCurrentPeriod (valParams.valueDate()));
 	}
 
 	@Override public double calcDiscountMarginFromYield (
@@ -9830,9 +9830,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
 
-		return null == _fltParams ? dblDiscountMargin + dc.libor (((int) (12. / (0 == _periodParams._iFreq ?
-			2 : _periodParams._iFreq))) + "M") : dblDiscountMargin - getIndexRate (valParams.valueDate(),
-				mktParams, calcCurrentPeriod (valParams.valueDate()));
+		double dblValueDate = valParams.valueDate();
+
+		return null == _fltParams ? dblDiscountMargin + dc.libor (dblValueDate, ((int) (12. / (0 ==
+			_periodParams._iFreq ? 2 : _periodParams._iFreq))) + "M") : dblDiscountMargin - getIndexRate
+				(dblValueDate, mktParams, calcCurrentPeriod (dblValueDate));
 	}
 
 	@Override public double calcYieldFromDiscountMargin (

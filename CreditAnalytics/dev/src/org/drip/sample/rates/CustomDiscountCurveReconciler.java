@@ -265,7 +265,7 @@ public class CustomDiscountCurveReconciler {
 		 * 	non-overlapping stretch.
 		 */
 
-		DiscountCurve dfdc = new DiscountFactorDiscountCurve ("USD", ors.toNonOverlapping());
+		DiscountCurve dfdc = new DiscountFactorDiscountCurve ("USD", ors);
 
 		/*
 		 * Compare the discount factors and their monotonicity emitted from the discount curve, the

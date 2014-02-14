@@ -241,6 +241,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder)
 	{

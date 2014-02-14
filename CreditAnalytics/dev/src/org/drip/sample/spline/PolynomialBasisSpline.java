@@ -88,15 +88,15 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		LatentStateResponseModel ecs1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs1 = LatentStateResponseModel.Create (1.0, 1.5, fs, rssc, sdic);
 
-		LatentStateResponseModel ecs2 = LatentStateResponseModel.Create (1.5, 2.0, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs2 = LatentStateResponseModel.Create (1.5, 2.0, fs, rssc, sdic);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
-		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., 0., 20.25, null, Double.NaN, Double.NaN, Double.NaN, null);
+		WengertJacobian wj1 = ecs1.jackDCoeffDEdgeParams (25., 0., 20.25, null);
 
 		System.out.println ("\tY[" + 1.0 + "]: " + ecs1.responseValue (1.));
 
@@ -114,7 +114,7 @@ public class PolynomialBasisSpline {
 		 * Calibrate the right segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty
 		 */
 
-		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, 16., null, Double.NaN, null);
+		WengertJacobian wj2 = ecs2.jackDCoeffDEdgeParams (ecs1, "Default", 16., null, Double.NaN, null);
 
 		System.out.println ("\tY[" + 1.5 + "]: " + ecs2.responseValue (1.5));
 
@@ -187,9 +187,9 @@ public class PolynomialBasisSpline {
 		 * Construct the left and the right segments
 		 */
 
-		LatentStateResponseModel ecs1 = LatentStateResponseModel.Create (0.0, 1.0, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs1 = LatentStateResponseModel.Create (0.0, 1.0, fs, rssc, sdic);
 
-		LatentStateResponseModel ecs2 = LatentStateResponseModel.Create (1.0, 2.0, fs, rssc, sdic, null);
+		LatentStateResponseModel ecs2 = LatentStateResponseModel.Create (1.0, 2.0, fs, rssc, sdic);
 
 		/*
 		 * Calibrate the left segment using the node values, and compute the segment Jacobian, monotonicity, and curvature penalty

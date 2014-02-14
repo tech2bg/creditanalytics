@@ -978,8 +978,8 @@ public class RatesScenarioCurveBuilder {
 
 		org.drip.state.estimator.StretchRepresentationSpec srs =
 			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet (strName + "_COMP1",
-				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR, aCalibComp,
+				org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
+					org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE, aCalibComp,
 						"Rate", adblQuote, null);
 
 		org.drip.state.estimator.StretchRepresentationSpec[] aSRS = new

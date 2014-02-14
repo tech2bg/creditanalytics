@@ -46,7 +46,7 @@ package org.drip.product.rates;
  */
 
 public class FixedStream extends org.drip.product.definition.RatesComponent {
-	private double _dblNotional = 100.;
+	private double _dblNotional = 1.;
 	private double _dblCoupon = 0.0001;
 	private java.lang.String _strIR = "";
 	private java.lang.String _strCode = "";
@@ -116,7 +116,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
 			(_dblEffective = dblEffective) || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity =
 				dblMaturity) || !org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional))
+					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0 ==
+						_dblNotional)
 			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
 
 		if (null == (_notlSchedule = notlSchedule))
@@ -432,11 +433,11 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 					bFirstPeriod = false;
 
 					if (period.getStartDate() < valParams.valueDate())
-						dblAccrued01 = period.getAccrualDCF (valParams.valueDate()) * 0.01 * getNotional
+						dblAccrued01 = period.getAccrualDCF (valParams.valueDate()) * 0.0001 * getNotional
 							(period.getAccrualStartDate(), valParams.valueDate());
 				}
 
-				dblDirtyPeriodDV01 = 0.01 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * getNotional
+				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * getNotional
 					(period.getAccrualStartDate(), period.getEndDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -461,34 +462,35 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			return null;
 		}
 
-		dblDirtyDV01 /= dblCashPayDF;
-		double dblNotlFactor = _dblNotional * 0.01;
+		dblAccrued01 *= _dblNotional;
+		dblDirtyDV01 *= (_dblNotional / dblCashPayDF);
 		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
+		double dblAccrued = dblAccrued01 * 1000. * _dblCoupon;
+		double dblCleanPV = dblCleanDV01 * 1000. * _dblCoupon;
+		double dblDirtyPV = dblDirtyDV01 * 1000. * _dblCoupon;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		mapResult.put ("Accrued01", dblAccrued01 * dblNotlFactor);
+		mapResult.put ("Accrued", dblAccrued);
 
-		mapResult.put ("CleanDV01", dblCleanDV01 * dblNotlFactor);
+		mapResult.put ("Accrued01", dblAccrued01);
 
-		mapResult.put ("CleanFixedPV", dblCleanDV01 * _dblCoupon * dblNotlFactor);
+		mapResult.put ("CleanDV01", dblCleanDV01);
 
-		mapResult.put ("CleanPV", dblCleanDV01 * _dblCoupon * dblNotlFactor);
+		mapResult.put ("CleanPV", dblCleanPV);
 
-		mapResult.put ("DirtyDV01", dblDirtyDV01 * dblNotlFactor);
+		mapResult.put ("CV01", dblCleanDV01);
 
-		mapResult.put ("DirtyFixedPV", dblDirtyDV01 * _dblCoupon * dblNotlFactor);
+		mapResult.put ("DirtyDV01", dblDirtyDV01);
 
-		mapResult.put ("DirtyPV", dblDirtyDV01 * _dblCoupon * dblNotlFactor);
+		mapResult.put ("DirtyPV", dblDirtyPV);
 
-		mapResult.put ("DV01", dblCleanDV01 * dblNotlFactor);
+		mapResult.put ("DV01", dblCleanDV01);
 
-		mapResult.put ("FixAccrued", dblAccrued01 * _dblCoupon * dblNotlFactor);
+		mapResult.put ("PV", dblCleanPV);
 
-		mapResult.put ("PV", dblCleanDV01 * _dblCoupon * dblNotlFactor);
-
-		mapResult.put ("Upfront", dblCleanDV01 * _dblCoupon * dblNotlFactor);
+		mapResult.put ("Upfront", dblCleanPV);
 
 		double dblValueNotional = java.lang.Double.NaN;
 
@@ -499,10 +501,11 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		}
 
 		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
-			double dblCleanPrice = 100. * (1. + (dblCleanDV01 * _dblCoupon / _dblNotional /
-				dblValueNotional));
+			double dblCleanPrice = 100. * (1. + (dblCleanPV / dblValueNotional));
 
 			mapResult.put ("CleanPrice", dblCleanPrice);
+
+			mapResult.put ("DirtyPrice", 100. * (1. + (dblDirtyPV / dblValueNotional)));
 
 			mapResult.put ("Price", dblCleanPrice);
 		}
@@ -516,27 +519,27 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
+		setstrMeasureNames.add ("Accrued");
+
 		setstrMeasureNames.add ("Accrued01");
 
 		setstrMeasureNames.add ("CalcTime");
 
 		setstrMeasureNames.add ("CleanDV01");
 
-		setstrMeasureNames.add ("CleanFixedPV");
-
 		setstrMeasureNames.add ("CleanPrice");
 
 		setstrMeasureNames.add ("CleanPV");
 
+		setstrMeasureNames.add ("CV01");
+
 		setstrMeasureNames.add ("DirtyDV01");
 
-		setstrMeasureNames.add ("DirtyFixedPV");
+		setstrMeasureNames.add ("DirtyPrice");
 
 		setstrMeasureNames.add ("DirtyPV");
 
 		setstrMeasureNames.add ("DV01");
-
-		setstrMeasureNames.add ("FixAccrued");
 
 		setstrMeasureNames.add ("Price");
 

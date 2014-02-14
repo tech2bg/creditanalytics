@@ -103,7 +103,7 @@ public class CustomDiscountCurveBuilder {
 
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], "USD"), 0., "USD", "USD-LIBOR-6M", "USD");
+				dtEffective.addTenorAndAdjust (astrTenor[i], "USD"), 0., "USD", "USD-LIBOR-3M", "USD");
 
 		return aCalibComp;
 	}
@@ -254,7 +254,10 @@ public class CustomDiscountCurveBuilder {
 			System.out.println ("\t[" + aSwapComp[i].getMaturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwapComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
+						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.) + " | " +
+							FormatUtil.FormatDouble (aSwapComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
+								ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+									null, "FairPremium"), 1, 6, 1.));
 	}
 
 	public static final void main (

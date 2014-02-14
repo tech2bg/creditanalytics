@@ -40,8 +40,8 @@ public class SegmentCustomBuilderControl {
 	private java.lang.String _strBasisSpline = "";
 	private org.drip.spline.basis.FunctionSetBuilderParams _fsbp = null;
 	private org.drip.spline.params.ResponseScalingShapeControl _rssc = null;
-	private org.drip.spline.params.PreceedingManifestSensitivityControl _pqsc = null;
 	private org.drip.spline.params.SegmentInelasticDesignControl _sdic = null;
+	private org.drip.spline.params.PreceedingManifestSensitivityControl _pmsc = null;
 
 	/**
 	 * SegmentCustomBuilderControl constructor
@@ -50,7 +50,7 @@ public class SegmentCustomBuilderControl {
 	 * @param fsbp Segment Basis Set Construction Parameters
 	 * @param sdic Segment Design Inelastic Parameters
 	 * @param rssc Segment Shape Controller
-	 * @param pqsc Prior Quote Sensitivity Control Parameters
+	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
@@ -60,13 +60,13 @@ public class SegmentCustomBuilderControl {
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
 		final org.drip.spline.params.SegmentInelasticDesignControl sdic,
 		final org.drip.spline.params.ResponseScalingShapeControl rssc,
-		final org.drip.spline.params.PreceedingManifestSensitivityControl pqsc)
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc)
 		throws java.lang.Exception
 	{
 		if (null == (_strBasisSpline = strBasisSpline) || null == (_fsbp = fsbp) || null == (_sdic = sdic))
 			throw new java.lang.Exception ("SegmentCustomBuilderControl ctr => Invalid Inputs");
 
-		_pqsc = pqsc;
+		_pmsc = pmsc;
 		_rssc = rssc;
 	}
 
@@ -115,13 +115,13 @@ public class SegmentCustomBuilderControl {
 	}
 
 	/**
-	 * Retrieve the Prior Quote Sensitivity Control Parameters
+	 * Retrieve the Preceeding Manifest Sensitivity Control Parameters
 	 * 
-	 * @return The Prior Quote Sensitivity Control Parameters
+	 * @return The Preceeding Manifest Sensitivity Control Parameters
 	 */
 
-	public org.drip.spline.params.PreceedingManifestSensitivityControl priorQuoteSensitivityControl()
+	public org.drip.spline.params.PreceedingManifestSensitivityControl preceedingManifestSensitivityControl()
 	{
-		return _pqsc;
+		return _pmsc;
 	}
 }

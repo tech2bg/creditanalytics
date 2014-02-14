@@ -49,6 +49,7 @@ public class ProductDailyPnL {
 	private double _dbl1MRollDown = java.lang.Double.NaN;
 	private double _dbl3MRollDown = java.lang.Double.NaN;
 	private double _dbl1DCurveShift = java.lang.Double.NaN;
+	private double _dblCalibSwapRate = java.lang.Double.NaN;
 
 	/**
 	 * ProductDailyPnL constructor
@@ -62,6 +63,7 @@ public class ProductDailyPnL {
 	 * @param dbl3MCarry 3M Carry PnL
 	 * @param dbl3MRollDown 3M Roll Down PnL
 	 * @param dblDV01 DV01
+	 * @param dblCalibSwapRate The Par Swap Rate
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
@@ -75,7 +77,8 @@ public class ProductDailyPnL {
 		final double dbl1MRollDown,
 		final double dbl3MCarry,
 		final double dbl3MRollDown,
-		final double dblDV01)
+		final double dblDV01,
+		final double dblCalibSwapRate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dbl1DReturn = dbl1DReturn) ||
@@ -87,7 +90,8 @@ public class ProductDailyPnL {
 								!org.drip.quant.common.NumberUtil.IsValid (_dbl3MCarry = dbl3MCarry) ||
 									!org.drip.quant.common.NumberUtil.IsValid (_dbl3MRollDown =
 										dbl3MRollDown) || !org.drip.quant.common.NumberUtil.IsValid (_dblDV01
-											= dblDV01))
+											= dblDV01) || !org.drip.quant.common.NumberUtil.IsValid
+												(_dblCalibSwapRate = dblCalibSwapRate))
 			throw new java.lang.Exception ("ProductDailyPnL ctr: Invalid Inputs!");
 	}
 
@@ -191,6 +195,17 @@ public class ProductDailyPnL {
 	}
 
 	/**
+	 * Retrieve the Calibration Swap Rate
+	 * 
+	 * @return The DV01
+	 */
+
+	public double calibSwapRate()
+	{
+		return _dblCalibSwapRate;
+	}
+
+	/**
 	 * Retrieve the Array of Metrics
 	 * 
 	 * @return The Array of Metrics
@@ -217,6 +232,8 @@ public class ProductDailyPnL {
 		lsPnLMetric.add (_dbl3MRollDown);
 
 		lsPnLMetric.add (_dblDV01);
+
+		lsPnLMetric.add (_dblCalibSwapRate);
 
 		int i = 0;
 
