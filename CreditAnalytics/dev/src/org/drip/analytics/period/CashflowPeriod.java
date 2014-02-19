@@ -188,41 +188,33 @@ public class CashflowPeriod extends Period {
 			try {
 				periodSecond = periodFirst;
 
-				if (bFinalPeriod) {
-					double dblAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
+				double dblAdjustedAccrualStartDate = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
 
-					double dblAccrualEnd = dblPeriodEndDate;
+				double dblAdjustedStartDate = DAPAdjust (dblPeriodStartDate, dapPeriodStart);
 
-					double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
-						org.drip.analytics.daycount.Convention.YearFraction (dblAccrualStart, dblAccrualEnd,
-							strAccrualDC, bApplyAccEOMAdj, dblMaturity, new
-								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStart,
-									dblAccrualEnd), strCalendar);
+				double dblAdjustedEndDate = DAPAdjust (dblPeriodEndDate, dapPeriodStart);
 
-					lsCashflowPeriod.add (0, periodFirst = new CashflowPeriod (DAPAdjust (dblPeriodStartDate,
-						dapPeriodStart), dblPeriodEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust
-							(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq,
-								dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
-									dblMaturity, strCalendar));
+				double dblAdjustedPayDate = DAPAdjust (dblPeriodEndDate, dapPay);
 
-					bFinalPeriod = false;
-				} else {
-					double dblAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
+				double dblAdjustedResetDate = DAPAdjust (dblPeriodStartDate, dapReset);
 
-					double dblAccrualEnd = DAPAdjust (dblPeriodEndDate, dapAccrualEnd);
+				double dblAdjustedAccrualEndDate = bFinalPeriod ? dblPeriodEndDate : DAPAdjust
+					(dblPeriodEndDate, dapAccrualEnd);
 
-					double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
-						org.drip.analytics.daycount.Convention.YearFraction (dblAccrualStart, dblAccrualEnd,
-							strAccrualDC, bApplyAccEOMAdj, dblMaturity, new
-								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStart,
-									dblAccrualEnd), strCalendar);
+				if (bFinalPeriod) bFinalPeriod = false;
 
-					lsCashflowPeriod.add (0, periodFirst = new CashflowPeriod (DAPAdjust (dblPeriodStartDate,
-						dapPeriodStart), DAPAdjust (dblPeriodEndDate, dapPeriodEnd), dblAccrualStart,
-							dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
-								(dblPeriodStartDate, dapReset), iFreq, dblDCF, strCouponDC, bApplyCpnEOMAdj,
-									strAccrualDC, bApplyAccEOMAdj, dblMaturity, strCalendar));
-				}
+				double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
+					org.drip.analytics.daycount.Convention.YearFraction (dblAdjustedAccrualStartDate,
+						dblAdjustedAccrualEndDate, strAccrualDC, bApplyAccEOMAdj, dblMaturity, new
+							org.drip.analytics.daycount.ActActDCParams (iFreq, dblAdjustedAccrualStartDate,
+								dblAdjustedAccrualEndDate), strCalendar);
+
+				if (dblAdjustedStartDate < dblAdjustedEndDate && dblAdjustedAccrualStartDate <
+					dblAdjustedAccrualEndDate)
+					lsCashflowPeriod.add (0, periodFirst = new CashflowPeriod (dblAdjustedStartDate,
+						dblAdjustedEndDate, dblAdjustedAccrualStartDate, dblAdjustedAccrualEndDate,
+							dblAdjustedPayDate, dblAdjustedResetDate, iFreq, dblDCF, strCouponDC,
+								bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj, dblMaturity, strCalendar));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

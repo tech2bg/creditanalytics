@@ -465,9 +465,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		dblAccrued01 *= _dblNotional;
 		dblDirtyDV01 *= (_dblNotional / dblCashPayDF);
 		double dblCleanDV01 = dblDirtyDV01 - dblAccrued01;
-		double dblAccrued = dblAccrued01 * 1000. * _dblCoupon;
-		double dblCleanPV = dblCleanDV01 * 1000. * _dblCoupon;
-		double dblDirtyPV = dblDirtyDV01 * 1000. * _dblCoupon;
+		double dblAccrued = dblAccrued01 * 10000. * _dblCoupon;
+		double dblCleanPV = dblCleanDV01 * 10000. * _dblCoupon;
+		double dblDirtyPV = dblDirtyDV01 * 10000. * _dblCoupon;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
