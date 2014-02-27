@@ -147,7 +147,7 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		return false;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDManifestMeasure (
 		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder)
@@ -166,7 +166,8 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 				org.drip.quant.calculus.WengertJacobian wj = null;
 
 				if (!bPredictorOrdinateCovered && mss.in (dblPredictorOrdinate)) {
-					wj = mss.jackDResponseDQuote (strManifestMeasure, dblPredictorOrdinate, iOrder);
+					wj = mss.jackDResponseDManifestMeasure (strManifestMeasure, dblPredictorOrdinate,
+						iOrder);
 
 					bPredictorOrdinateCovered = true;
 				} else

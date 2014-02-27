@@ -65,10 +65,12 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 
 			int iNumLSMM = aLSMM.length;
 			double[] adblQuoteBumped = new double[iNumLSMM];
-			java.lang.String[] astrManifestMeasure = new java.lang.String[iNumLSMM];
+
+			java.util.List<java.lang.String[]> lsstrCompManifestMeasure = new
+				java.util.ArrayList<java.lang.String[]>();
 
 			for (int i = 0; i < iNumLSMM; ++i) {
-				astrManifestMeasure[i] = aLSMM[i].getManifestMeasure();
+				lsstrCompManifestMeasure.add (aLSMM[i].getManifestMeasures());
 
 				adblQuoteBumped[i] = adblShiftedManifestMeasure[iCalibInstrIndex++];
 			}
@@ -76,7 +78,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 			try {
 				aRBSBumped[iRBSIndex++] = new org.drip.state.estimator.StretchRepresentationSpec
 					(rbs.getName(), aLSMM[0].getID(), aLSMM[0].getQuantificationMetric(), rbs.getCalibComp(),
-						astrManifestMeasure, adblQuoteBumped, null);
+						lsstrCompManifestMeasure, adblQuoteBumped, null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -255,10 +257,11 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		return null;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
-		final double dblDate)
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure (
+		final double dblDate,
+		final java.lang.String strManifestMeasure)
 	{
-		return null == _span ? null : _span.jackDResponseDQuote ("Rate", dblDate, 1);
+		return null == _span ? null : _span.jackDResponseDManifestMeasure (strManifestMeasure, dblDate, 1);
 	}
 
 	@Override public boolean setCCIS (

@@ -47,7 +47,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 	private org.drip.param.valuation.QuotingParams _quotingParam = null;
 	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 
@@ -83,8 +83,8 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapMeasure = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]>();
 
 		for (int i = 0; i < iNumInst; ++i) {
 			if (null == aCalibInst[i]) return null;
@@ -96,7 +96,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 					(adblCalibQuote[i]))
 				return null;
 
-			mapMeasure.put (strInstrumentCode, astrCalibMeasure[i]);
+			mapMeasures.put (strInstrumentCode, new java.lang.String[] {astrCalibMeasure[i]});
 
 			mapQuote.put (strInstrumentCode, adblCalibQuote[i]);
 
@@ -115,7 +115,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		}
 
 		try {
-			return new BootCurveConstructionInput (valParam, quotingParam, aCalibInst, mapQuote, mapMeasure,
+			return new BootCurveConstructionInput (valParam, quotingParam, aCalibInst, mapQuote, mapMeasures,
 				mmFixing);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -131,7 +131,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 	 * @param quotingParam Quoting Parameter
 	 * @param aCalibInst Array of Calibration Instruments
 	 * @param mapQuote Map of the Calibration Instrument Quotes
-	 * @param mapMeasure Map of the Calibration Instrument Measures
+	 * @param mapMeasures Map containing the Array of the Calibration Instrument Measures
 	 * @param mmFixing Double Map of the Date/Index Fixings
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
@@ -142,18 +142,18 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		final org.drip.param.valuation.QuotingParams quotingParam,
 		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote,
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapMeasure,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing)
 		throws java.lang.Exception
 	{
 		if (null == (_valParam = valParam) || null == (_aCalibInst = aCalibInst) || null == (_mapQuote =
-			mapQuote) || null == (_mapMeasure = mapMeasure))
+			mapQuote) || null == (_mapMeasures = mapMeasures))
 			throw new java.lang.Exception ("BootCurveConstructionInput ctr: Invalid Inputs");
 
 		int iNumInst = _aCalibInst.length;
 
-		if (0 == iNumInst || iNumInst > _mapQuote.size() || iNumInst > _mapMeasure.size())
+		if (0 == iNumInst || iNumInst > _mapQuote.size() || iNumInst > _mapMeasures.size())
 			throw new java.lang.Exception ("BootCurveConstructionInput ctr: Invalid Inputs");
 
 		_mmFixing = mmFixing;
@@ -180,9 +180,9 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		return _mapQuote;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> getMeasure()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> getMeasures()
 	{
-		return _mapMeasure;
+		return _mapMeasures;
 	}
 
 	@Override public java.util.Map<org.drip.analytics.date.JulianDate,

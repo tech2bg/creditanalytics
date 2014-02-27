@@ -298,7 +298,7 @@ public class ShapePreservingDFZeroSmooth {
 		 *  of Cash and Swap Stretches.
 		 */
 
-		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
+		DiscountCurve dcShapePreserving = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRRS,
 			new ValuationParams (dtToday, dtToday, "MXN"),
@@ -313,7 +313,7 @@ public class ShapePreservingDFZeroSmooth {
 		 * 	discount curve.
 		 */
 
-		DiscountCurve dcGloballySmooth = RatesScenarioCurveBuilder.SmoothingGlobalControlBuild (
+		DiscountCurve dcGloballySmooth = ScenarioDiscountCurveBuilder.SmoothingGlobalControlBuild (
 			dcShapePreserving,
 			lcc,
 			gccp,
@@ -329,7 +329,7 @@ public class ShapePreservingDFZeroSmooth {
 		 *  discount curve.
 		 */
 
-		DiscountCurve dcLocallySmooth = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
+		DiscountCurve dcLocallySmooth = ScenarioDiscountCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
 			lccp,

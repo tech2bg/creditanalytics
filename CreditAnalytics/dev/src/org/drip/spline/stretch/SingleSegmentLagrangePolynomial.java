@@ -240,7 +240,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		return wjDResponseDResponseInput;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDManifestMeasure (
 		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder)

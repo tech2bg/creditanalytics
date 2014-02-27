@@ -478,7 +478,7 @@ public class ProductTestSuite {
 		}
 
 		org.drip.param.definition.ScenarioDiscountCurve irscUSDTSY =
-			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USDTSY",
+			org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG ("USDTSY",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSDTSY.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,
@@ -748,7 +748,7 @@ public class ProductTestSuite {
 		long lStart = System.nanoTime();
 
 		org.drip.param.definition.ScenarioDiscountCurve irscUSD =
-			org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG ("USD",
+			org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG ("USD",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSD.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,

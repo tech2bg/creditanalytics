@@ -87,6 +87,7 @@ public class RatesStreamBuilder {
 	 * @param strIR IR curve name
 	 * @param strFloatingRateIndex Floater Index
 	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * @param bIsReference Flag indicating whether the Stream corresponds to a Reference Leg
 	 * 
 	 * @return The Floating Stream Instance
 	 */
@@ -97,7 +98,8 @@ public class RatesStreamBuilder {
 		final double dblCoupon,
 		final java.lang.String strIR,
 		final java.lang.String strFloatingRateIndex,
-		final java.lang.String strCalendar)
+		final java.lang.String strCalendar,
+		final boolean bIsReference)
 	{
 		try {
 			org.drip.analytics.daycount.DateAdjustParams dap = new
@@ -105,7 +107,7 @@ public class RatesStreamBuilder {
 					strCalendar);
 
 			return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., org.drip.product.params.FloatingRateIndex.Create
+				dtMaturity.getJulian(), 0., bIsReference, org.drip.product.params.FloatingRateIndex.Create
 					(strFloatingRateIndex), 4, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap,
 						dap, null, null, -1., strIR, strCalendar);
 		} catch (java.lang.Exception e) {
@@ -144,7 +146,7 @@ public class RatesStreamBuilder {
 				dtMaturity, dblCoupon, strIR, strCalendar);
 
 			org.drip.product.definition.RatesComponent floatStream = CreateFloatingStream (dtEffective,
-				dtMaturity, dblCoupon, strIR, strFloatingRateIndex, strCalendar);
+				dtMaturity, dblCoupon, strIR, strFloatingRateIndex, strCalendar, true);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
@@ -188,7 +190,7 @@ public class RatesStreamBuilder {
 				dtEffective.addTenor (strTenor), dblCoupon, strIR, strCalendar);
 
 			org.drip.product.definition.RatesComponent floatStream = CreateFloatingStream (dtEffective,
-				dtEffective.addTenor (strTenor), dblCoupon, strIR, strFloatingRateIndex, strCalendar);
+				dtEffective.addTenor (strTenor), dblCoupon, strIR, strFloatingRateIndex, strCalendar, true);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);

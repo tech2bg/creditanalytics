@@ -56,7 +56,7 @@ public abstract class CurveSpanConstructionInput implements
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.state.estimator.StretchRepresentationSpec[] _aSRS = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 
@@ -161,13 +161,13 @@ public abstract class CurveSpanConstructionInput implements
 		return _mapQuote;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> getMeasure()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> getMeasures()
 	{
-		if (null != _mapMeasure) return _mapMeasure;
+		if (null != _mapMeasures) return _mapMeasures;
 
 		if (null == _aSRS || 0 == _aSRS.length) return null;
 
-		_mapMeasure = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
+		_mapMeasures = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]>();
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			if (null == rbs) continue;
@@ -183,10 +183,10 @@ public abstract class CurveSpanConstructionInput implements
 			if (0 == iNumComp || iNumComp != aLSMM.length) continue;
 
 			for (int i = 0; i < iNumComp; ++i)
-				_mapMeasure.put (aCC[i].getPrimaryCode(), aLSMM[i].getManifestMeasure());
+				_mapMeasures.put (aCC[i].getPrimaryCode(), aLSMM[i].getManifestMeasures());
 		}
 
-		return _mapMeasure;
+		return _mapMeasures;
 	}
 
 	@Override public java.util.Map<org.drip.analytics.date.JulianDate,

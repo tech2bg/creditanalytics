@@ -129,16 +129,16 @@ public interface Span {
 		final java.lang.String strName);
 
 	/**
-	 * Calculate the Response Derivative to the Quote at the specified Ordinate
+	 * Calculate the Response Derivative to the Manifest Measure at the specified Ordinate
 	 * 
 	 * @param strManifestMeasure Manifest Measure whose Sensitivity is sought
 	 * @param dblPredictorOrdinate Predictor Ordinate
 	 * @param iOrder Order of Derivative desired
 	 * 
-	 * @return Jacobian of the Response Derivative to the Quote at the Ordinate
+	 * @return Jacobian of the Response Derivative to the Manifest Measure at the Ordinate
 	 */
 
-	public abstract org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+	public abstract org.drip.quant.calculus.WengertJacobian jackDResponseDManifestMeasure (
 		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder);

@@ -77,7 +77,8 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapMeasure = _ccis.getMeasure();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
+			_ccis.getMeasures();
 
 		for (int i = 0; i < iNumLSMM; ++i) {
 			java.lang.String strInstrumentCode = _ccis.getComponent()[i].getPrimaryCode();
@@ -85,8 +86,8 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 			try {
 				aLSMM[i] = new org.drip.analytics.rates.RatesLSMM
 					(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-						latentStateQuantificationMetric(), mapMeasure.get (strInstrumentCode),
-							mapQuote.get (strInstrumentCode), null);
+						latentStateQuantificationMetric(), mapMeasures.get (strInstrumentCode), mapQuote.get
+							(strInstrumentCode), null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

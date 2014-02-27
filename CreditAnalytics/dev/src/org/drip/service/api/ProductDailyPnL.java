@@ -44,18 +44,24 @@ public class ProductDailyPnL {
 	private double _dbl1DCarry = java.lang.Double.NaN;
 	private double _dbl1MCarry = java.lang.Double.NaN;
 	private double _dbl3MCarry = java.lang.Double.NaN;
-	private double _dblFixedDCF = java.lang.Double.NaN;
+	private double _dbl1DFixedDCF = java.lang.Double.NaN;
+	private double _dbl1MFixedDCF = java.lang.Double.NaN;
+	private double _dbl3MFixedDCF = java.lang.Double.NaN;
 	private double _dbl1DRollDown = java.lang.Double.NaN;
 	private double _dbl1MRollDown = java.lang.Double.NaN;
 	private double _dbl3MRollDown = java.lang.Double.NaN;
-	private double _dblFloatingDCF = java.lang.Double.NaN;
 	private double _dbl1DCurveShift = java.lang.Double.NaN;
 	private double _dbl1DCleanReturn = java.lang.Double.NaN;
 	private double _dbl1DDirtyReturn = java.lang.Double.NaN;
 	private double _dbl1DTotalReturn = java.lang.Double.NaN;
+	private double _dbl1DFloatingDCF = java.lang.Double.NaN;
+	private double _dbl1MFloatingDCF = java.lang.Double.NaN;
+	private double _dbl3MFloatingDCF = java.lang.Double.NaN;
 	private double _dblPeriodFixedRate = java.lang.Double.NaN;
 	private double _dblBaselineSwapRate = java.lang.Double.NaN;
 	private double _dbl1DRolldownSwapRate = java.lang.Double.NaN;
+	private double _dbl1MRolldownSwapRate = java.lang.Double.NaN;
+	private double _dbl3MRolldownSwapRate = java.lang.Double.NaN;
 	private double _dbl1DCurveShiftSwapRate = java.lang.Double.NaN;
 	private double _dblPeriodCurveFloatingRate = java.lang.Double.NaN;
 	private double _dblPeriodProductFloatingRate = java.lang.Double.NaN;
@@ -75,13 +81,19 @@ public class ProductDailyPnL {
 	 * @param dbl3MRollDown 3M Roll Down PnL
 	 * @param dblDV01 DV01
 	 * @param dblBaselineSwapRate Baseline Par Swap Rate
-	 * @param dbl1DRolldownSwapRate 1D Curve Roll down implied Par Swap rate 
+	 * @param dbl1DRolldownSwapRate 1D Curve Roll down implied Par Swap rate
+	 * @param dbl1MRolldownSwapRate 1M Curve Roll down implied Par Swap rate
+	 * @param dbl3MRolldownSwapRate 3M Curve Roll down implied Par Swap rate
 	 * @param dbl1DCurveShiftSwapRate 1D Day-to-Day Curve Shift implied Par Swap rate
 	 * @param dblPeriodFixedRate The Period Fixed Rate
 	 * @param dblPeriodCurveFloatingRate The Period Curve Floating Rate
 	 * @param dblPeriodProductFloatingRate The Period Product Floating Rate
-	 * @param dblFixedDCF Fixed Coupon DCF
-	 * @param dblFloatingDCF Floating Coupon DCF
+	 * @param dbl1DFixedDCF 1D Fixed Coupon DCF
+	 * @param dbl1DFloatingDCF 1D Floating Coupon DCF
+	 * @param dbl1MFixedDCF 1M Fixed Coupon DCF
+	 * @param dbl1MFloatingDCF 1M Floating Coupon DCF
+	 * @param dbl3MFixedDCF 3M Fixed Coupon DCF
+	 * @param dbl3MFloatingDCF 3M Floating Coupon DCF
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
@@ -100,12 +112,18 @@ public class ProductDailyPnL {
 		final double dblDV01,
 		final double dblBaselineSwapRate,
 		final double dbl1DRolldownSwapRate,
+		final double dbl1MRolldownSwapRate,
+		final double dbl3MRolldownSwapRate,
 		final double dbl1DCurveShiftSwapRate,
 		final double dblPeriodFixedRate,
 		final double dblPeriodCurveFloatingRate,
 		final double dblPeriodProductFloatingRate,
-		final double dblFixedDCF,
-		final double dblFloatingDCF)
+		final double dbl1DFixedDCF,
+		final double dbl1DFloatingDCF,
+		final double dbl1MFixedDCF,
+		final double dbl1MFloatingDCF,
+		final double dbl3MFixedDCF,
+		final double dbl3MFloatingDCF)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dbl1DTotalReturn = dbl1DTotalReturn) ||
@@ -127,14 +145,25 @@ public class ProductDailyPnL {
 																		dblBaselineSwapRate) ||
 																			!org.drip.quant.common.NumberUtil.IsValid
 			(_dbl1DRolldownSwapRate = dbl1DRolldownSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
-				(_dbl1DCurveShiftSwapRate = dbl1DCurveShiftSwapRate) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblPeriodFixedRate = dblPeriodFixedRate) ||
-						!org.drip.quant.common.NumberUtil.IsValid (_dblPeriodCurveFloatingRate =
-							dblPeriodCurveFloatingRate) || !org.drip.quant.common.NumberUtil.IsValid
-								(_dblPeriodProductFloatingRate = dblPeriodProductFloatingRate) ||
-									!org.drip.quant.common.NumberUtil.IsValid (_dblFixedDCF = dblFixedDCF) ||
-										!org.drip.quant.common.NumberUtil.IsValid (_dblFloatingDCF =
-											dblFloatingDCF))
+				(_dbl1MRolldownSwapRate = dbl1MRolldownSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
+					(_dbl3MRolldownSwapRate = dbl3MRolldownSwapRate) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dbl1DCurveShiftSwapRate =
+							dbl1DCurveShiftSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
+								(_dblPeriodFixedRate = dblPeriodFixedRate) ||
+									!org.drip.quant.common.NumberUtil.IsValid (_dblPeriodCurveFloatingRate =
+										dblPeriodCurveFloatingRate) ||
+											!org.drip.quant.common.NumberUtil.IsValid
+												(_dblPeriodProductFloatingRate =
+													dblPeriodProductFloatingRate) ||
+														!org.drip.quant.common.NumberUtil.IsValid
+															(_dbl1DFixedDCF = dbl1DFixedDCF) ||
+																!org.drip.quant.common.NumberUtil.IsValid
+																	(_dbl1DFloatingDCF = dbl1DFloatingDCF) ||
+																		!org.drip.quant.common.NumberUtil.IsValid
+			(_dbl1MFixedDCF = dbl1MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl1MFloatingDCF
+				= dbl1MFloatingDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFixedDCF =
+					dbl3MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFloatingDCF =
+						dbl3MFloatingDCF))
 			throw new java.lang.Exception ("ProductDailyPnL ctr: Invalid Inputs!");
 	}
 
@@ -282,6 +311,28 @@ public class ProductDailyPnL {
 	}
 
 	/**
+	 * Retrieve the 1M Roll Down Swap Rate
+	 * 
+	 * @return The 1M Roll Down Swap Rate
+	 */
+
+	public double rolldownSwapRate1M()
+	{
+		return _dbl1MRolldownSwapRate;
+	}
+
+	/**
+	 * Retrieve the 3M Roll Down Swap Rate
+	 * 
+	 * @return The 3M Roll Down Swap Rate
+	 */
+
+	public double rolldownSwapRate3M()
+	{
+		return _dbl3MRolldownSwapRate;
+	}
+
+	/**
 	 * Retrieve the 1D Curve Shift Swap Rate
 	 * 
 	 * @return The 1D Curve Shift Swap Rate
@@ -326,25 +377,69 @@ public class ProductDailyPnL {
 	}
 
 	/**
-	 * Retrieve the Period Fixed DCF
+	 * Retrieve the Period 1D Fixed DCF
 	 * 
-	 * @return The Period Fixed DCF
+	 * @return The Period 1D Fixed DCF
 	 */
 
-	public double fixedDCF()
+	public double fixed1DDCF()
 	{
-		return _dblFixedDCF;
+		return _dbl1DFixedDCF;
 	}
 
 	/**
-	 * Retrieve the Period Floating DCF
+	 * Retrieve the Period 1D Floating DCF
 	 * 
-	 * @return The Period Floating DCF
+	 * @return The Period 1D Floating DCF
 	 */
 
-	public double floatingDCF()
+	public double floating1DDCF()
 	{
-		return _dblFloatingDCF;
+		return _dbl1DFloatingDCF;
+	}
+
+	/**
+	 * Retrieve the Period 1M Fixed DCF
+	 * 
+	 * @return The Period 1M Fixed DCF
+	 */
+
+	public double fixed1MDCF()
+	{
+		return _dbl1MFixedDCF;
+	}
+
+	/**
+	 * Retrieve the Period 1M Floating DCF
+	 * 
+	 * @return The Period 1M Floating DCF
+	 */
+
+	public double floating1MDCF()
+	{
+		return _dbl1MFloatingDCF;
+	}
+
+	/**
+	 * Retrieve the Period 3M Fixed DCF
+	 * 
+	 * @return The Period 3M Fixed DCF
+	 */
+
+	public double fixed3MDCF()
+	{
+		return _dbl3MFixedDCF;
+	}
+
+	/**
+	 * Retrieve the Period 3M Floating DCF
+	 * 
+	 * @return The Period 3M Floating DCF
+	 */
+
+	public double floating3MDCF()
+	{
+		return _dbl3MFloatingDCF;
 	}
 
 	/**
@@ -383,6 +478,10 @@ public class ProductDailyPnL {
 
 		lsPnLMetric.add (_dbl1DRolldownSwapRate);
 
+		lsPnLMetric.add (_dbl1MRolldownSwapRate);
+
+		lsPnLMetric.add (_dbl3MRolldownSwapRate);
+
 		lsPnLMetric.add (_dbl1DCurveShiftSwapRate);
 
 		lsPnLMetric.add (_dblPeriodFixedRate);
@@ -391,9 +490,17 @@ public class ProductDailyPnL {
 
 		lsPnLMetric.add (_dblPeriodProductFloatingRate);
 
-		lsPnLMetric.add (_dblFixedDCF);
+		lsPnLMetric.add (_dbl1DFixedDCF);
 
-		lsPnLMetric.add (_dblFloatingDCF);
+		lsPnLMetric.add (_dbl1DFloatingDCF);
+
+		lsPnLMetric.add (_dbl1MFixedDCF);
+
+		lsPnLMetric.add (_dbl1MFloatingDCF);
+
+		lsPnLMetric.add (_dbl3MFixedDCF);
+
+		lsPnLMetric.add (_dbl3MFloatingDCF);
 
 		int i = 0;
 

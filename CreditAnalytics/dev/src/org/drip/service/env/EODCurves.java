@@ -866,7 +866,7 @@ public class EODCurves {
 			aCompCalib[i++] = comp;
 
 		try {
-			(ircsc = org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG (strCurveName,
+			(ircsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurveName,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
 						dtEOD.addBusDays (3, strCurrency), "USD"), null, null, adblCompCalibValue, 0.0001,
@@ -1085,7 +1085,7 @@ public class EODCurves {
 			aCompCalib[i++] = comp;
 
 		try {
-			(ircsc = org.drip.param.creator.RatesScenarioCurveBuilder.FromIRCSG (strCurveName,
+			(ircsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurveName,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
 						dtEOD.addBusDays (3, strCurrency), "USD"), null, null, adblCompCalibValue, 0.0001,

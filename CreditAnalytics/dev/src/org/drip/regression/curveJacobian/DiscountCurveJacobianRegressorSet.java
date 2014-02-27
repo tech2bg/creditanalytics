@@ -145,7 +145,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>()).put
 							(dtStart.addDays (2), mIndexFixings);
 
-					return null != (dcIRS = org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild
+					return null != (dcIRS = org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild
 						(dtStart, "USD",
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings));
@@ -155,10 +155,10 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 				{
 					for (int i = 0; i < aCompCalib.length; ++i) {
 						try {
-							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDQuote (new
+							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDManifestMeasure (new
 								org.drip.param.valuation.ValuationParams (dtStart, dtStart, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-										(dcIRS, null, null, null, null, null, mmFixings), null)))
+								(dcIRS, null, null, null, null, null, mmFixings), null)))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
@@ -167,7 +167,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						}
 					}
 
-					return null != (wjPVDF = dcIRS.compJackDPVDQuote (dtStart));
+					return null != (wjPVDF = dcIRS.compJackDPVDManifestMeasure (dtStart));
 				}
 
 				@Override public boolean postRegression (

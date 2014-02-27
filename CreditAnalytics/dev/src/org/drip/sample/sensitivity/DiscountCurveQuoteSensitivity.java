@@ -1,5 +1,5 @@
 
-package org.drip.sample.rates;
+package org.drip.sample.sensitivity;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
@@ -118,7 +118,7 @@ public class DiscountCurveQuoteSensitivity {
 			"USD-LIBOR-6M",
 			"USD");
 
-		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDQuote (irsBespoke.getMaturityDate());
+		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (irsBespoke.getMaturityDate(), "Rate");
 
 		System.out.println (strTenor + " => " + wjDFQuoteBespokeMat.displayString());
 	}
@@ -130,7 +130,7 @@ public class DiscountCurveQuoteSensitivity {
 	{
 		JulianDate dtBegin = dtStart.addTenorAndAdjust (strStartTenor, "USD");
 
-		WengertJacobian wjForwardRate = dc.jackDForwardDQuote (dtBegin, "6M", 0.5);
+		WengertJacobian wjForwardRate = dc.jackDForwardDManifestMeasure (dtBegin, "6M", "Rate", 0.5);
 
 		System.out.println ("[" + dtBegin + " | 6M] => " + wjForwardRate.displayString());
 	}
@@ -317,7 +317,7 @@ public class DiscountCurveQuoteSensitivity {
 		 *  of DEPOSIT, FUTURE, and SWAP Stretches.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aSRS,
 			new ValuationParams (dtToday, dtToday, "USD"),
@@ -388,7 +388,7 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDQuote (aDepositComp[i].getMaturityDate());
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDepositComp[i].getMaturityDate(), "Rate");
 
 			System.out.println (aDepositComp[i].getMaturityDate() + " => " + wj.displayString());
 		}
@@ -404,7 +404,7 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aFutureComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDQuote (aFutureComp[i].getMaturityDate());
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aFutureComp[i].getMaturityDate(), "Rate");
 
 			System.out.println (aFutureComp[i].getMaturityDate() + " => " + wj.displayString());
 		}
@@ -420,7 +420,7 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDQuote (aSwapComp[i].getMaturityDate());
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aSwapComp[i].getMaturityDate(), "Rate");
 
 			System.out.println (aSwapComp[i].getMaturityDate() + " => " + wjDFQuote.displayString());
 		}
@@ -431,7 +431,7 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		WengertJacobian wj = dc.compJackDPVDQuote (dtToday);
+		WengertJacobian wj = dc.compJackDPVDManifestMeasure (dtToday);
 
 		System.out.println (wj.displayString());
 
@@ -448,7 +448,7 @@ public class DiscountCurveQuoteSensitivity {
 			"USD-LIBOR-6M",
 			"USD");
 
-		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDQuote (
+		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDManifestMeasure (
 			new ValuationParams (dtToday, dtToday, "USD"),
 			null,
 			new ComponentMarketParamSet (dc, null, null, null, null, null, null, null),

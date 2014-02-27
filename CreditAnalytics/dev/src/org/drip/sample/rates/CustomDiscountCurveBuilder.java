@@ -213,7 +213,7 @@ public class CustomDiscountCurveBuilder {
 		 *  of Cash and Swap Stretches.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRBS,
 			new ValuationParams (dtToday, dtToday, "USD"),

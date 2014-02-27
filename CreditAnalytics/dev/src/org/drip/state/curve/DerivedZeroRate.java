@@ -194,8 +194,9 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return _dc.forwardRateEstimator (dblDate, fri);
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
-		final double dblDate)
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure (
+		final double dblDate,
+		final java.lang.String strManifestMeasure)
 	{
 		try {
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == _mapDF.get (new
@@ -207,7 +208,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 			return null;
 		}
 
-		return _dc.jackDDFDQuote (dblDate);
+		return _dc.jackDDFDManifestMeasure (dblDate, strManifestMeasure);
 	}
 
 	@Override public double getZeroRate (

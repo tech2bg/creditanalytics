@@ -107,7 +107,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 						}
 					}
 
-					return null != (dcCash = org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild
+					return null != (dcCash = org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild
 						(dtStart, "USD",
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, null));
@@ -117,10 +117,10 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 				{
 					for (int i = 0; i < aCompCalib.length; ++i) {
 						try {
-							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDQuote (new
+							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDManifestMeasure (new
 								org.drip.param.valuation.ValuationParams (dtStart, dtStart, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-										(dcCash, null, null, null, null, null, null), null)))
+								(dcCash, null, null, null, null, null, null), null)))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
@@ -129,7 +129,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 						}
 					}
 
-					return null != (wjPVDF = dcCash.compJackDPVDQuote (dtStart));
+					return null != (wjPVDF = dcCash.compJackDPVDManifestMeasure (dtStart));
 				}
 
 				@Override public boolean postRegression (

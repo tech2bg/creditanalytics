@@ -439,19 +439,19 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.QuotingParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams ||
-			null == mktParams.getDiscountCurve())
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams
+			|| null == mktParams.getDiscountCurve())
 			return null;
 
 		try {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
-				pricerParams, mktParams, quotingParams);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
+				(valParams, pricerParams, mktParams, quotingParams);
 
 			if (null == mapMeasures) return null;
 
@@ -461,10 +461,11 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-			org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDQuote (_dblEffective);
+			org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDManifestMeasure
+				(_dblEffective, "Rate");
 
-			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDQuote
-				(getMaturityDate().getJulian());
+			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDManifestMeasure
+				(getMaturityDate().getJulian(), "Rate");
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
 
@@ -512,10 +513,11 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblDFMaturity = dc.df (getMaturityDate().getJulian());
 
-				org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDQuote (_dblEffective);
+				org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDManifestMeasure
+					(_dblEffective, "Rate");
 
-				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDQuote
-					(getMaturityDate().getJulian());
+				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDManifestMeasure
+					(getMaturityDate().getJulian(), "Rate");
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;
 
@@ -557,6 +559,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
 
+		java.lang.String[] astrManifestMeasure = ratesLSMM.getManifestMeasures();
+
 		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(ratesLSMM.getQuantificationMetric())) {
 			try {
@@ -565,7 +569,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 				double dblTurnMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
 					_dblMaturity);
 
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
 					java.lang.String[] {"Price"}, false)) {
 					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
@@ -573,24 +577,25 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, 0.01 *
 							ratesLSMM.getMeasureQuoteValue()) && prlc.updateValue (0.) &&
-								prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
-									prlc.addDResponseWeightDQuote (_dblEffective, 0.01) &&
-										prlc.updateDValueDQuote (0.) ? prlc : null;
+								prlc.addDResponseWeightDManifestMeasure ("Price", _dblMaturity, 0.) &&
+									prlc.addDResponseWeightDManifestMeasure ("Price", _dblEffective, 0.01) &&
+										prlc.updateDValueDManifestMeasure ("Price", 0.) ? prlc : null;
 				}
 
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
 					java.lang.String[] {"PV"}, false)) {
 					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, ratesLSMM.getMeasureQuoteValue()) &&
-							prlc.updateValue (0.) && prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
-								prlc.addDResponseWeightDQuote (_dblEffective, 1.) &&
-									prlc.updateDValueDQuote (0.) ? prlc : null;
+							prlc.updateValue (0.) && prlc.addDResponseWeightDManifestMeasure ("PV",
+								_dblMaturity, 0.) && prlc.addDResponseWeightDManifestMeasure ("PV",
+									_dblEffective, 1.) && prlc.updateDValueDManifestMeasure ("PV", 0.) ? prlc
+										: null;
 				}
 
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
 					java.lang.String[] {"Rate"}, false)) {
 					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
@@ -605,10 +610,10 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, dblTurnEffectiveDF * dblDF) &&
-							prlc.updateValue (0.) && prlc.addDResponseWeightDQuote (_dblMaturity, 0.) &&
-								prlc.addDResponseWeightDQuote (_dblEffective, -1. * dblDCF *
-									dblTurnEffectiveDF * dblDF * dblDF) && prlc.updateDValueDQuote (0.) ?
-										prlc : null;
+							prlc.updateValue (0.) && prlc.addDResponseWeightDManifestMeasure ("Rate",
+								_dblMaturity, 0.) && prlc.addDResponseWeightDManifestMeasure ("Rate",
+									_dblEffective, -1. * dblDCF * dblTurnEffectiveDF * dblDF * dblDF) &&
+										prlc.updateDValueDManifestMeasure ("Rate", 0.) ? prlc : null;
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

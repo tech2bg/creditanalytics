@@ -31,7 +31,7 @@ package org.drip.param.creator;
  */
 
 /**
- * RatesScenarioCurveBuilder implements the the construction of the scenario discount curve using the input
+ * ScenarioDiscountCurveBuilder implements the the construction of the scenario discount curve using the input
  * 	discount curve instruments, and a wide variety of custom builds. It implements the following
  * 	functionality:
  * 	- Non-linear Custom Discount Curve
@@ -44,7 +44,7 @@ package org.drip.param.creator;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RatesScenarioCurveBuilder {
+public class ScenarioDiscountCurveBuilder {
 	static class CompQuote {
 		double _dblQuote = java.lang.Double.NaN;
 		org.drip.product.definition.CalibratableComponent _comp = null;
@@ -112,7 +112,7 @@ public class RatesScenarioCurveBuilder {
 	}
 
 	/**
-	 * Create an RatesScenarioCurve Instance from the currency and the array of the calibration
+	 * Create an ScenarioDiscountCurveBuilder Instance from the currency and the array of the calibration
 	 * 	instruments
 	 * 
 	 * @param strCurrency Currency
@@ -745,7 +745,7 @@ public class RatesScenarioCurveBuilder {
 		}
 
 		try {
-			return RatesScenarioCurveBuilder.NonlinearBuild (new org.drip.analytics.date.JulianDate
+			return ScenarioDiscountCurveBuilder.NonlinearBuild (new org.drip.analytics.date.JulianDate
 				(valParams.valueDate()), strCurrency,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCalibComp,
 						adblCalibQuote, astrCalibMeasure, null);
@@ -833,174 +833,5 @@ public class RatesScenarioCurveBuilder {
 	{
 		return CustomDENSE (strName, valParams, aCalibComp1, adblQuote1, strTenor1, aCalibComp2, adblQuote2,
 			strTenor2, tldf);
-	}
-
-	/**
-	 * Construct an instance of the Shape Preserver of the desired basis type, using the specified basis set
-	 * 	builder parameters.
-	 * 
-	 * @param strName Curve Name
-	 * @param valParams Valuation Parameters
-	 * @param strBasisType The Basis Type
-	 * @param fsbp The Function Set Basis Parameters
-	 * @param aCalibComp Array of Calibration Components
-	 * @param adblQuote Array of Calibration Quotes
-	 * 
-	 * @return Instance of the Shape Preserver of the desired basis type
-	 */
-
-	public static final org.drip.analytics.rates.DiscountCurve ForwardRateShapePreserver (
-		final java.lang.String strName,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final java.lang.String strBasisType,
-		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
-		final double[] adblQuote)
-	{
-		if (null == strName || strName.isEmpty() || null == strBasisType || strBasisType.isEmpty() || null ==
-			valParams || null == fsbp)
-			return null;
-
-		int iNumQuote = null == adblQuote ? 0 : adblQuote.length;
-		int iNumComp = null == aCalibComp ? 0 : aCalibComp.length;
-		org.drip.state.estimator.LinearCurveCalibrator lcc = null;
-
-		if (0 == iNumComp || iNumComp != iNumQuote) return null;
-
-		org.drip.state.estimator.StretchRepresentationSpec srs =
-			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet (strName + "_COMP1",
-				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR, aCalibComp,
-						"Rate", adblQuote, null);
-
-		if (null == srs) return null;
-
-		org.drip.state.estimator.StretchRepresentationSpec[] aSRS = new
-			org.drip.state.estimator.StretchRepresentationSpec[] {srs};
-
-		try {
-			lcc = new org.drip.state.estimator.LinearCurveCalibrator (new
-				org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
-					org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
-						org.drip.spline.params.ResponseScalingShapeControl (true, new
-							org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
-								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
-									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
-
-			return ShapePreservingDFBuild (lcc, aSRS, valParams, null, null, null, 1.);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Build the Shape Preserving Forward Curve using the Custom Parameters
-	 * 
-	 * @param lcc The Linear Curve Calibrator Instance
-	 * @param aSRS Array of the Instrument Representation Stretches
-	 * @param fri The Floating Rate Index
-	 * @param valParam Valuation Parameters
-	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
-	 * @param quotingParam Quoting Parameters
-	 * @param dblEpochResponse The Starting Response Value
-	 * 
-	 * @return Instance of the Shape Preserving Discount Curve
-	 */
-
-	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
-		final org.drip.state.estimator.LinearCurveCalibrator lcc,
-		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.param.valuation.ValuationParams valParam,
-		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.valuation.QuotingParams quotingParam,
-		final double dblEpochResponse)
-	{
-		if (null == lcc) return null;
-
-		try {
-			org.drip.analytics.rates.ForwardCurve fc = new org.drip.state.curve.BasisSplineForwardRate (fri,
-				(lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
-
-			return fc.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
-				pricerParam, quotingParam, cmp)) ? fc : null;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Construct an instance of the Shape Preserver of the desired basis type, using the specified basis set
-	 * 	builder parameters.
-	 * 
-	 * @param strName Curve Name
-	 * @param fri The Floating Rate Index
-	 * @param valParams Valuation Parameters
-	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
-	 * @param quotingParam Quoting Parameters
-	 * @param strBasisType The Basis Type
-	 * @param fsbp The Function Set Basis Parameters
-	 * @param aCalibComp Array of Calibration Components
-	 * @param adblQuote Array of Calibration Quotes
-	 * @param dblEpochResponse The Stretch Start DF
-	 * 
-	 * @return Instance of the Shape Preserver of the desired basis type
-	 */
-
-	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
-		final java.lang.String strName,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.valuation.QuotingParams quotingParam,
-		final java.lang.String strBasisType,
-		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
-		final double[] adblQuote,
-		final double dblEpochResponse)
-	{
-		if (null == strName || strName.isEmpty() || null == strBasisType || strBasisType.isEmpty() || null ==
-			valParams || null == fsbp)
-			return null;
-
-		int iNumQuote = null == adblQuote ? 0 : adblQuote.length;
-		int iNumComp = null == aCalibComp ? 0 : aCalibComp.length;
-
-		if (0 == iNumComp || iNumComp != iNumQuote) return null;
-
-		org.drip.state.estimator.StretchRepresentationSpec srs =
-			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet (strName + "_COMP1",
-				org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
-					org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE, aCalibComp,
-						"Rate", adblQuote, null);
-
-		org.drip.state.estimator.StretchRepresentationSpec[] aSRS = new
-			org.drip.state.estimator.StretchRepresentationSpec[] {srs};
-
-		try {
-			org.drip.state.estimator.LinearCurveCalibrator lcc = new
-				org.drip.state.estimator.LinearCurveCalibrator (new
-					org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
-						org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
-							org.drip.spline.params.ResponseScalingShapeControl (true, new
-								org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
-									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
-										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
-
-			return ShapePreservingForwardCurve (lcc, aSRS, fri, valParams, pricerParam, cmp, quotingParam,
-				dblEpochResponse);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

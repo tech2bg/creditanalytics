@@ -435,7 +435,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -448,29 +448,30 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
-		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuoteFloating = _floatStream.jackDDirtyPVDQuote
-			(valParams, pricerParams, mktParams, quotingParams);
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFloating =
+			_floatStream.jackDDirtyPVDManifestMeasure (valParams, pricerParams, mktParams, quotingParams);
 
-		if (null == jackDDirtyPVDQuoteFloating) return null;
+		if (null == jackDDirtyPVDManifestMeasureFloating) return null;
 
-		int iNumQuote = jackDDirtyPVDQuoteFloating.numParameters();
+		int iNumQuote = jackDDirtyPVDManifestMeasureFloating.numParameters();
 
 		if (0 == iNumQuote) return null;
 
-		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuoteFixed = _fixStream.jackDDirtyPVDQuote
-			(valParams, pricerParams, mktParams, quotingParams);
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFixed =
+			_fixStream.jackDDirtyPVDManifestMeasure (valParams, pricerParams, mktParams, quotingParams);
 
-		if (null == jackDDirtyPVDQuoteFixed || iNumQuote != jackDDirtyPVDQuoteFixed.numParameters())
+		if (null == jackDDirtyPVDManifestMeasureFixed || iNumQuote !=
+			jackDDirtyPVDManifestMeasureFixed.numParameters())
 			return null;
 
 		double dblNotionalScaleDown = java.lang.Double.NaN;
-		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuoteIRS = null;
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureIRS = null;
 
-		if (null == jackDDirtyPVDQuoteIRS) {
+		if (null == jackDDirtyPVDManifestMeasureIRS) {
 			try {
 				dblNotionalScaleDown = 1. / getInitialNotional();
 
-				jackDDirtyPVDQuoteIRS = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
+				jackDDirtyPVDManifestMeasureIRS = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -479,13 +480,13 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		}
 
 		for (int i = 0; i < iNumQuote; ++i) {
-			if (!jackDDirtyPVDQuoteIRS.accumulatePartialFirstDerivative (0, i, dblNotionalScaleDown *
-				(dblParSwapRate * jackDDirtyPVDQuoteFixed.getFirstDerivative (0, i) +
-					jackDDirtyPVDQuoteFloating.getFirstDerivative (0, i))))
+			if (!jackDDirtyPVDManifestMeasureIRS.accumulatePartialFirstDerivative (0, i, dblNotionalScaleDown
+				* (dblParSwapRate * jackDDirtyPVDManifestMeasureFixed.getFirstDerivative (0, i) +
+					jackDDirtyPVDManifestMeasureFloating.getFirstDerivative (0, i))))
 				return null;
 		}
 
-		return jackDDirtyPVDQuoteIRS;
+		return jackDDirtyPVDManifestMeasureIRS;
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
@@ -519,11 +520,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.jackDForwardDQuote
-						(p.getStartDate(), p.getEndDate(), p.getCouponDCF());
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
+						dc.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
+							p.getCouponDCF());
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
-						(dblPeriodPayDate);
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
+						(dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
@@ -576,7 +578,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(ratesLSMM.getQuantificationMetric())) {
-			if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasure(), new
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasures(), new
 				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
 				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 					org.drip.state.estimator.PredictorResponseWeightConstraint();
@@ -591,8 +593,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 						double dblPay01 = period.getCouponDCF() * dblPeriodTurnDF;
 
 						if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
-							ratesLSMM.getMeasureQuoteValue() * dblPay01) || !prlc.addDResponseWeightDQuote
-								(period.getPayDate(), dblPay01))
+							ratesLSMM.getMeasureQuoteValue() * dblPay01) ||
+								!prlc.addDResponseWeightDManifestMeasure ("Rate", period.getPayDate(),
+									dblPay01))
 							return null;
 					}
 
@@ -603,8 +606,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 					return prlc.addPredictorResponseWeight (valParams.valueDate(), -1.) &&
 						prlc.addPredictorResponseWeight (dblMaturity, dblPeriodMaturityDF) &&
-							prlc.addDResponseWeightDQuote (valParams.valueDate(), 0.) &&
-								prlc.addDResponseWeightDQuote (dblMaturity, 0.) ? prlc : null;
+							prlc.addDResponseWeightDManifestMeasure ("Rate", valParams.valueDate(), 0.) &&
+								prlc.addDResponseWeightDManifestMeasure ("Rate", dblMaturity, 0.) ? prlc :
+									null;
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -692,7 +696,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				null, null, null, null, null, null, 100., "JPY", "JPY");
 
 		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
-			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01,
+			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01, true,
 				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-3M"), 4, "Act/360", "Act/360",
 					false, null, null, null, null, null, null, null, null, null, -100., "JPY", "JPY");
 

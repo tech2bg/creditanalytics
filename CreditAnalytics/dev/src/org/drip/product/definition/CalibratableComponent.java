@@ -88,7 +88,7 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 	}
 
 	/**
-	 * Compute the Jacobian of the Dirty PV to the Calibrated Input Quotes
+	 * Compute the Jacobian of the Dirty PV to the Calibrated Input Manifest Measures
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
@@ -98,7 +98,7 @@ public abstract class CalibratableComponent extends org.drip.product.definition.
 	 * @return The micro-Jacobian
 	 */
 
-	public abstract org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
+	public abstract org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,

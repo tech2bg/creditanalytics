@@ -118,7 +118,7 @@ public class CDSW {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		return RatesScenarioCurveBuilder.NonlinearBuild (dtStart, strCurrency,
+		return ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, strCurrency,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 

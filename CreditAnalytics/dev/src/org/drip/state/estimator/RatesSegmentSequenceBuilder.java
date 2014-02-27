@@ -50,7 +50,6 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.param.valuation.QuotingParams _quotingParams = null;
 	private org.drip.spline.stretch.MultiSegmentSequence _mssPrev = null;
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
-	private org.drip.spline.params.PreceedingManifestSensitivityControl _pmsc = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
 
 	private java.util.Map<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>
@@ -61,17 +60,30 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		_mapSRVCSensitivity = new
 			java.util.HashMap<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>();
 
+	private org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
+		_mapPMSC = new
+			org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>();
+
+	private org.drip.spline.params.PreceedingManifestSensitivityControl getPMSC (
+		final java.lang.String strManifestMeasure)
+	{
+		if (_mapPMSC.containsKey (strManifestMeasure)) return _mapPMSC.get (strManifestMeasure);
+
+		return _mapPMSC.containsKey ("Default") ? _mapPMSC.get ("Default") : null;
+	}
+
 	private boolean generateSegmentConstraintSet (
 		final double dblSegmentRight,
-		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc)
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
+		final java.lang.String strManifestMeasure)
 	{
-		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentResponseConstraint (prlc,
-			false);
+		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentCalibResponseConstraint
+			(prlc);
 
 		if (null == srvcBase) return false;
 
-		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentResponseConstraint
-			(prlc, true);
+		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentSensResponseConstraint
+			(prlc, strManifestMeasure);
 
 		if (null == srvcSensitivity) return false;
 
@@ -82,12 +94,11 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return true;
 	}
 
-	protected org.drip.spline.params.SegmentResponseValueConstraint segmentResponseConstraint (
-		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
-		final boolean bSensitivity)
+	protected org.drip.spline.params.SegmentResponseValueConstraint segmentCalibResponseConstraint (
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc)
 	{
-		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPredictorResponseWeight = bSensitivity ?
-			prlc.getDResponseWeightDQuote() : prlc.getPredictorResponseWeight();
+		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPredictorResponseWeight =
+			prlc.getPredictorResponseWeight();
 
 		if (null == mapPredictorResponseWeight || 0 == mapPredictorResponseWeight.size()) return null;
 
@@ -137,7 +148,70 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		try {
 			return new org.drip.spline.params.SegmentResponseValueConstraint (adblPredictor,
-				adblResponseWeight, (bSensitivity ? prlc.getDValueDQuote() : prlc.getValue()) + dblValue);
+				adblResponseWeight, (prlc.getValue()) + dblValue);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	protected org.drip.spline.params.SegmentResponseValueConstraint segmentSensResponseConstraint (
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
+		final java.lang.String strManifestMeasure)
+	{
+		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPredictorResponseWeight =
+			prlc.getDResponseWeightDManifestMeasure (strManifestMeasure);
+
+		if (null == mapPredictorResponseWeight || 0 == mapPredictorResponseWeight.size()) return null;
+
+		java.util.Set<java.util.Map.Entry<java.lang.Double, java.lang.Double>> setPredictorResponseWeight =
+			mapPredictorResponseWeight.entrySet();
+
+		if (null == setPredictorResponseWeight || 0 == setPredictorResponseWeight.size()) return null;
+
+		double dblValue = 0.;
+
+		java.util.List<java.lang.Double> lsPredictor = new java.util.ArrayList<java.lang.Double>();
+
+		java.util.List<java.lang.Double> lsResponseWeight = new java.util.ArrayList<java.lang.Double>();
+
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : setPredictorResponseWeight) {
+			if (null == me) return null;
+
+			double dblPredictorDate = me.getKey();
+
+			try {
+				if (null != _mssPrev && _mssPrev.in (dblPredictorDate))
+					dblValue -= _mssPrev.responseValue (dblPredictorDate) * me.getValue();
+				else if (null != _stretch && _stretch.inBuiltRange (dblPredictorDate))
+					dblValue -= _stretch.responseValue (dblPredictorDate) * me.getValue();
+				else {
+					lsPredictor.add (dblPredictorDate);
+
+					lsResponseWeight.add (me.getValue());
+				}
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		int iSize = lsPredictor.size();
+
+		double[] adblPredictor = new double[iSize];
+		double[] adblResponseWeight = new double[iSize];
+
+		for (int i = 0; i < iSize; ++i) {
+			adblPredictor[i] = lsPredictor.get (i);
+
+			adblResponseWeight[i] = lsResponseWeight.get (i);
+		}
+
+		try {
+			return new org.drip.spline.params.SegmentResponseValueConstraint (adblPredictor,
+				adblResponseWeight, prlc.getDValueDManifestMeasure (strManifestMeasure) + dblValue);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -182,12 +256,13 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
 		_cmp = cmp;
-		_pmsc = pmsc;
 		_sbfr = sbfr;
 		_mssPrev = mssPrev;
 		_pricerParams = pricerParams;
 		_quotingParams = quotingParams;
 		_sbfrQuoteSensitivity = sbfrQuoteSensitivity;
+
+		if (null != pmsc) _mapPMSC.put ("Default", pmsc);
 	}
 
 	@Override public boolean setStretch (
@@ -227,7 +302,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		double dblSegmentRight = aCS[0].right();
 
-		if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc)) return false;
+		if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc, _srs.getLSMM
+			(0).getManifestMeasures()[0]))
+			return false;
 
 		org.drip.spline.params.SegmentResponseValueConstraint rvcLeading =
 			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
@@ -257,7 +334,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			double dblSegmentRight = aCS[iSegment].right();
 
-			if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc)) return false;
+			if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc,
+				_srs.getLSMM (iSegment).getManifestMeasures()[0]))
+				return false;
 
 			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapSRVCBase.get
 				(dblSegmentRight), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
@@ -279,25 +358,27 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		for (int iSegment = 0; iSegment < iNumSegment; ++iSegment) {
 			double dblSegmentRight = aCS[iSegment].right();
 
-			java.lang.String strManifestMeasure = _srs.getLSMM (iSegment).getManifestMeasure();
-
-			if (!aCS[iSegment].setPreceedingManifestSensitivityControl (strManifestMeasure, _pmsc))
-				return false;
-
-			if (0 == iSegment) {
-				if (!aCS[0].manifestMeasureSensitivity (strManifestMeasure,
-					org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-						(_valParams.valueDate(), _dblEpochResponse), _mapSRVCBase.get (dblSegmentRight),
-							dblLeftSlopeSensitivity,
-								org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-					(_valParams.valueDate(), 0.), _mapSRVCSensitivity.get (dblSegmentRight), null ==
-						_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[0])))
+			for (java.lang.String strManifestMeasure : _srs.getLSMM (iSegment).getManifestMeasures()) {
+				if (!aCS[iSegment].setPreceedingManifestSensitivityControl (strManifestMeasure, getPMSC
+					(strManifestMeasure)))
 					return false;
-			} else {
-				if (!aCS[iSegment].manifestMeasureSensitivity (aCS[iSegment - 1], strManifestMeasure,
-					_mapSRVCBase.get (dblSegmentRight), _mapSRVCSensitivity.get (dblSegmentRight), null ==
-						_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[iSegment])))
-					return false;
+
+				if (0 == iSegment) {
+					if (!aCS[0].manifestMeasureSensitivity (strManifestMeasure,
+						org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
+							(_valParams.valueDate(), _dblEpochResponse), _mapSRVCBase.get (dblSegmentRight),
+								dblLeftSlopeSensitivity,
+									org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
+						(_valParams.valueDate(), 0.), _mapSRVCSensitivity.get (dblSegmentRight), null ==
+							_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[0])))
+						return false;
+				} else {
+					if (!aCS[iSegment].manifestMeasureSensitivity (aCS[iSegment - 1], strManifestMeasure,
+						_mapSRVCBase.get (dblSegmentRight), _mapSRVCSensitivity.get (dblSegmentRight), null
+							== _sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment
+								(aCS[iSegment])))
+						return false;
+				}
 			}
 		}
 

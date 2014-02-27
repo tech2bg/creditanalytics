@@ -42,7 +42,7 @@ package org.drip.quant.common;
 public class StringUtil {
 
 	/**
-	 * Look for a match of the file in the input array
+	 * Look for a match of the field in the input array
 	 * 
 	 * @param strFieldToMatch Field To Match
 	 * @param astrMatchSet Array of fields to compare with
@@ -66,6 +66,32 @@ public class StringUtil {
 			if (strMatchSetEntry.equals (strFieldToMatch)) return true;
 
 			if (!bCaseMatch && strMatchSetEntry.equalsIgnoreCase (strFieldToMatch)) return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Look for a match of the field in the field set to an entry in the input array
+	 * 
+	 * @param astrFieldToMatch Field Array To Match
+	 * @param astrMatchSet Array of fields to compare with
+	 * @param bCaseMatch TRUE => Match case
+	 * 
+	 * @return TRUE => Match found according to the criteria specified
+	 */
+
+	public static final boolean MatchInStringArray (
+		final java.lang.String[] astrFieldToMatch,
+		final java.lang.String[] astrMatchSet,
+		final boolean bCaseMatch)
+	{
+		if (null == astrFieldToMatch || 0 == astrFieldToMatch.length || null == astrMatchSet || 0 ==
+			astrMatchSet.length)
+			return false;
+
+		for (java.lang.String strFieldToMatch : astrFieldToMatch) {
+			if (MatchInStringArray (strFieldToMatch, astrMatchSet, bCaseMatch)) return true;
 		}
 
 		return false;

@@ -114,10 +114,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		throws java.lang.Exception
 	{
 		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
-			(_dblEffective = dblEffective) || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity =
-				dblMaturity) || !org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0 ==
-						_dblNotional)
+			(_dblMaturity = dblMaturity) || !org.drip.quant.common.NumberUtil.IsValid (_dblCoupon =
+				dblCoupon) || !org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. ==
+					_dblNotional)
 			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
 
 		if (null == (_notlSchedule = notlSchedule))
@@ -144,6 +143,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			false,
 			strCalendar)) || 0 == _lsCouponPeriod.size())
 			throw new java.lang.Exception ("FixedStream ctr: Cannot generate Period Schedule");
+
+		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
 	}
 
 	/**
@@ -550,7 +551,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -561,40 +562,41 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			return null;
 
 		try {
-			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote = null;
+			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
 			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
 
-				// if (dblPeriodPayDate < valParams.valueDate()) continue;
-
 				if (p.getStartDate() < valParams.valueDate()) continue;
 
-				org.drip.quant.calculus.WengertJacobian jackDDFDQuote = dc.jackDDFDQuote (dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure = dc.jackDDFDManifestMeasure
+					(dblPeriodPayDate, "Rate");
 
-				if (null == jackDDFDQuote) continue;
+				if (null == jackDDFDManifestMeasure) continue;
 
-				int iNumQuote = jackDDFDQuote.numParameters();
+				int iNumQuote = jackDDFDManifestMeasure.numParameters();
 
 				if (0 == iNumQuote) continue;
 
-				if (null == jackDDirtyPVDQuote)
-					jackDDirtyPVDQuote = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
+				if (null == jackDDirtyPVDManifestMeasure)
+					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
+						iNumQuote);
 
 				double dblPeriodNotional = _dblNotional * getNotional (p.getStartDate(), p.getEndDate());
 
 				double dblPeriodDCF = p.getCouponDCF();
 
 				for (int k = 0; k < iNumQuote; ++k) {
-					if (!jackDDirtyPVDQuote.accumulatePartialFirstDerivative (0, k, dblPeriodNotional *
-						dblPeriodDCF * jackDDFDQuote.getFirstDerivative (0, k)))
+					if (!jackDDirtyPVDManifestMeasure.accumulatePartialFirstDerivative (0, k,
+						dblPeriodNotional * dblPeriodDCF * jackDDFDManifestMeasure.getFirstDerivative (0,
+							k)))
 						return null;
 				}
 			}
 
-			return jackDDirtyPVDQuote;
+			return jackDDirtyPVDManifestMeasure;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -633,11 +635,12 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF = dc.jackDForwardDQuote
-						(p.getStartDate(), p.getEndDate(), p.getCouponDCF());
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
+						dc.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
+							p.getCouponDCF());
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
-						(dblPeriodPayDate);
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
+						(dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 

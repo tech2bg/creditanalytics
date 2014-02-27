@@ -257,7 +257,7 @@ public class RatesAnalyticsAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
@@ -278,7 +278,7 @@ public class RatesAnalyticsAPI {
 		} */
 
 		for (int i = 0; i < aCompCalib.length; ++i) {
-			WengertJacobian wjComp = aCompCalib[i].jackDDirtyPVDQuote
+			WengertJacobian wjComp = aCompCalib[i].jackDDirtyPVDManifestMeasure
 				(new ValuationParams (dtStart, dtStart, "USD"),
 				null,
 				ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
@@ -348,7 +348,7 @@ public class RatesAnalyticsAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
@@ -362,7 +362,7 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		org.drip.quant.calculus.WengertJacobian wjPVDF = dc.compJackDPVDQuote (dtStart);
+		org.drip.quant.calculus.WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
@@ -406,7 +406,7 @@ public class RatesAnalyticsAPI {
 			adblMaturity[i + 7] = aEDF[i].getMaturityDate().getJulian();
 		}
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
@@ -420,7 +420,7 @@ public class RatesAnalyticsAPI {
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		WengertJacobian wjPVDF = dc.compJackDPVDQuote (dtStart);
+		WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
 
 		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}
@@ -504,7 +504,7 @@ public class RatesAnalyticsAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
@@ -523,7 +523,7 @@ public class RatesAnalyticsAPI {
 		System.out.println ("Quote/DF Micro Jack[04/06/11]=" + (null == wjQuoteDF ? null :
 			wjQuoteDF.displayString())); */
 
-		WengertJacobian wjPVDF = dc.compJackDPVDQuote (dtStart);
+		WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
 
 		System.out.println ("PV/Zero Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
 	}

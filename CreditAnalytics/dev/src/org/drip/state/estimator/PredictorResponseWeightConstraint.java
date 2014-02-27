@@ -46,10 +46,24 @@ package org.drip.state.estimator;
  */
 
 public class PredictorResponseWeightConstraint {
-	private double _dblValue = 0.;
-	private double _dblDValueDQuote = 0.;
-	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapDResponseWeightDQuote = null;
-	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapPredictorResponseWeight = null;
+	private org.drip.state.estimator.PredictorResponseRelationSetup _prrsCalib = new
+		org.drip.state.estimator.PredictorResponseRelationSetup();
+
+	private org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.state.estimator.PredictorResponseRelationSetup>
+		_mapPRRSSens = new
+			org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.state.estimator.PredictorResponseRelationSetup>();
+
+	private org.drip.state.estimator.PredictorResponseRelationSetup getPRRS (
+		final java.lang.String strManifestMeasure)
+	{
+		if (null == strManifestMeasure || strManifestMeasure.isEmpty()) return null;
+
+		if (!_mapPRRSSens.containsKey (strManifestMeasure))
+			_mapPRRSSens.put(strManifestMeasure, new
+				org.drip.state.estimator.PredictorResponseRelationSetup());
+
+		return _mapPRRSSens.get (strManifestMeasure);
+	}
 
 	/**
 	 * Empty PredictorResponseWeightConstraint constructor
@@ -72,49 +86,27 @@ public class PredictorResponseWeightConstraint {
 		final double dblPredictor,
 		final double dblResponseWeight)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictor) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblResponseWeight))
-			return false;
-
-		if (null == _mapPredictorResponseWeight)
-			_mapPredictorResponseWeight = new java.util.TreeMap<java.lang.Double, java.lang.Double>();
-
-		if (!_mapPredictorResponseWeight.containsKey (dblPredictor))
-			_mapPredictorResponseWeight.put (dblPredictor, dblResponseWeight);
-		else
-			_mapPredictorResponseWeight.put (dblPredictor, dblResponseWeight +
-				_mapPredictorResponseWeight.get (dblPredictor));
-
-		return true;
+		return _prrsCalib.addPredictorResponseWeight (dblPredictor, dblResponseWeight);
 	}
 
 	/**
 	 * Add a Predictor/Response Weight entry to the Linearized Constraint
 	 * 
+	 * @param strManifestMeasure The Manifest Measure
 	 * @param dblPredictor The Predictor Node
-	 * @param dblDResponseWeightDQuote The Response Weight-to-Quote Sensitivity at the Node
+	 * @param dblDResponseWeightDManifestMeasure The Response Weight-to-Manifest Measure Sensitivity at the
+	 * 	Node
 	 * 
 	 * @return TRUE => Successfully added
 	 */
 
-	public boolean addDResponseWeightDQuote (
+	public boolean addDResponseWeightDManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblPredictor,
-		final double dblDResponseWeightDQuote)
+		final double dblDResponseWeightDManifestMeasure)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictor) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblDResponseWeightDQuote))
-			return false;
-
-		if (null == _mapDResponseWeightDQuote)
-			_mapDResponseWeightDQuote = new java.util.TreeMap<java.lang.Double, java.lang.Double>();
-
-		if (!_mapDResponseWeightDQuote.containsKey (dblPredictor))
-			_mapDResponseWeightDQuote.put (dblPredictor, dblDResponseWeightDQuote);
-		else
-			_mapDResponseWeightDQuote.put (dblPredictor, dblDResponseWeightDQuote +
-				_mapDResponseWeightDQuote.get (dblPredictor));
-
-		return true;
+		return getPRRS (strManifestMeasure).addPredictorResponseWeight (dblPredictor,
+			dblDResponseWeightDManifestMeasure);
 	}
 
 	/**
@@ -128,27 +120,23 @@ public class PredictorResponseWeightConstraint {
 	public boolean updateValue (
 		final double dblValue)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue)) return false;
-
-		_dblValue += dblValue;
-		return true;
+		return _prrsCalib.updateValue (dblValue);
 	}
 
 	/**
 	 * Update the Constraint Value Sensitivity
 	 * 
-	 * @param dblDValueDQuote The Constraint Value Sensitivity Update Increment
+	 * @param strManifestMeasure The Manifest Measure
+	 * @param dblDValueDManifestMeasure The Constraint Value Sensitivity Update Increment
 	 * 
 	 * @return TRUE => This Sensitivity Update Succeeded
 	 */
 
-	public boolean updateDValueDQuote (
-		final double dblDValueDQuote)
+	public boolean updateDValueDManifestMeasure (
+		final java.lang.String strManifestMeasure,
+		final double dblDValueDManifestMeasure)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDValueDQuote)) return false;
-
-		_dblDValueDQuote += dblDValueDQuote;
-		return true;
+		return getPRRS (strManifestMeasure).updateValue (dblDValueDManifestMeasure);
 	}
 
 	/**
@@ -159,18 +147,29 @@ public class PredictorResponseWeightConstraint {
 
 	public double getValue()
 	{
-		return _dblValue;
+		return _prrsCalib.getValue();
 	}
 
 	/**
 	 * Retrieve the Constraint Value Sensitivity
 	 * 
+	 * @param strManifestMeasure The Manifest Measure
+	 * 
 	 * @return The Constraint Value Sensitivity
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public double getDValueDQuote()
+	public double getDValueDManifestMeasure (
+		final java.lang.String strManifestMeasure)
+		throws java.lang.Exception
 	{
-		return _dblDValueDQuote;
+		if (!_mapPRRSSens.containsKey (strManifestMeasure))
+			throw new java.lang.Exception
+				("PredictorResponseWeightConstraint::getDValueDManifestMeasure => Cannot locate manifest measure "
+					+ strManifestMeasure);
+
+		return _mapPRRSSens.get (strManifestMeasure).getValue();
 	}
 
 	/**
@@ -181,18 +180,22 @@ public class PredictorResponseWeightConstraint {
 
 	public java.util.TreeMap<java.lang.Double, java.lang.Double> getPredictorResponseWeight()
 	{
-		return _mapPredictorResponseWeight;
+		return _prrsCalib.getPredictorResponseWeight();
 	}
 
 	/**
 	 * Retrieve the Predictor <-> Response Weight Sensitivity Map
 	 * 
+	 * @param strManifestMeasure The Manifest Measure
+	 * 
 	 * @return The Predictor <-> Response Weight Sensitivity Map
 	 */
 
-	public java.util.TreeMap<java.lang.Double, java.lang.Double> getDResponseWeightDQuote()
+	public java.util.TreeMap<java.lang.Double, java.lang.Double> getDResponseWeightDManifestMeasure (
+		final java.lang.String strManifestMeasure)
 	{
-		return _mapDResponseWeightDQuote;
+		return !_mapPRRSSens.containsKey (strManifestMeasure) ? null : _mapPRRSSens.get
+			(strManifestMeasure).getPredictorResponseWeight();
 	}
 
 	/**
@@ -202,7 +205,7 @@ public class PredictorResponseWeightConstraint {
 	public void displayString()
 	{
 		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me :
-			_mapPredictorResponseWeight.entrySet()) {
+			_prrsCalib.getPredictorResponseWeight().entrySet()) {
 			try {
 				System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (me.getKey()) + " => " +
 					me.getValue());
@@ -211,6 +214,6 @@ public class PredictorResponseWeightConstraint {
 			}
 		}
 
-		System.out.println ("\tConstraint: " + _dblValue);
+		System.out.println ("\tConstraint: " + _prrsCalib.getValue());
 	}
 }

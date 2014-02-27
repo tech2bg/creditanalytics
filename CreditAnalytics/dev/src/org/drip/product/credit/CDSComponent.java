@@ -253,8 +253,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVDF = null;
 
 		for (org.drip.analytics.period.LossPeriodCurveFactors lpcf : sLPSub) {
-			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote (0.5 *
-				(lpcf.getStartDate() + lpcf.getEndDate()) + _crValParams._iDefPayLag);
+			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure (0.5 *
+				(lpcf.getStartDate() + lpcf.getEndDate()) + _crValParams._iDefPayLag, "Rate");
 
 			try {
 				if (null == wjPeriodOnDefaultPVDF)
@@ -304,8 +304,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			double dblPeriodEffectiveDate = 0.5 * (lpcf.getStartDate() + lpcf.getEndDate());
 
-			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
-				(dblPeriodEffectiveDate + _crValParams._iDefPayLag);
+			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
+				(dblPeriodEffectiveDate + _crValParams._iDefPayLag, "Rate");
 
 			try {
 				dblPeriodNotional = getNotional (lpcf.getStartDate(), lpcf.getEndDate());
@@ -1133,7 +1133,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return mapPV;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -1164,8 +1164,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 				if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
-					(dblPeriodPayDate);
+				org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
+					(dblPeriodPayDate, "Rate");
 
 				org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVMicroJack =
 					calcPeriodOnDefaultPVDFMicroJack (dblFairPremium, p, valParams, pricerParams, mktParams);
@@ -1231,10 +1231,11 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDQuote
-						(p.getEndDate());
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
+						(p.getEndDate(), "Rate");
 
-					PeriodLossMicroJack plmj = calcPeriodLossMicroJack (p, valParams, pricerParams, mktParams);
+					PeriodLossMicroJack plmj = calcPeriodLossMicroJack (p, valParams, pricerParams,
+						mktParams);
 
 					if (null == wjPeriodPayDFDF | null == plmj) continue;
 
@@ -1242,8 +1243,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 						wjFairPremiumDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodPayDFDF.numParameters());
 
-					double dblPeriodCoupon01 = getNotional (p.getStartDate(), p.getEndDate()) * p.getCouponDCF()
-						* cc.getSurvival (p.getEndDate());
+					double dblPeriodCoupon01 = getNotional (p.getStartDate(), p.getEndDate()) *
+						p.getCouponDCF() * cc.getSurvival (p.getEndDate());
 
 					dblDV01 += dblPeriodCoupon01 * dc.df (p.getPayDate()) + plmj._dblAccrOnDef01;
 

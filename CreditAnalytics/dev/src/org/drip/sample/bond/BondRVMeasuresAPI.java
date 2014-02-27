@@ -119,7 +119,7 @@ public class BondRVMeasuresAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		return RatesScenarioCurveBuilder.NonlinearBuild (dtStart, strCurrency,
+		return ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, strCurrency,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 	}
 
@@ -185,7 +185,7 @@ public class BondRVMeasuresAPI {
 		for (int i = 0; i < aTSYBond.length; ++i)
 			astrCalibMeasure[i] = "Yield";
 
-		return RatesScenarioCurveBuilder.NonlinearBuild (dt,
+		return ScenarioDiscountCurveBuilder.NonlinearBuild (dt,
 			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aTSYBond,

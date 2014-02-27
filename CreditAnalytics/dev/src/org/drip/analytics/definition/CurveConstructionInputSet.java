@@ -77,12 +77,12 @@ public interface CurveConstructionInputSet {
 	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> getQuote();
 
 	/**
-	 * Retrieve the Calibration Measure Map
+	 * Retrieve the Map containing the array of the Calibration Measures
 	 * 
-	 * @return The Calibration Measure Map
+	 * @return The Map containing the array of the Calibration Measures
 	 */
 
-	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> getMeasure();
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> getMeasures();
 
 	/**
 	 * Retrieve the Calibration Fixing

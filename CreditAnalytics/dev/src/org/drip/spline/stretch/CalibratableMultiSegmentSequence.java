@@ -446,7 +446,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			iOrder));
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDManifestMeasure (
 		final java.lang.String strManifestMeasure,
 		final double dblPredictorOrdinate,
 		final int iOrder)
@@ -468,27 +468,28 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 				}
 			}
 
-			org.drip.quant.calculus.WengertJacobian wjDResponseDQuote = new
+			org.drip.quant.calculus.WengertJacobian wjDResponseDManifestMeasure = new
 				org.drip.quant.calculus.WengertJacobian (1, iNumSegment);
 
 			for (int i = 0; i < iNumSegment; ++i) {
-				double dblDResponseDQuotei = 0.;
+				double dblDResponseDManifestMeasurei = 0.;
 
 				if (i == iIndex)
-					dblDResponseDQuotei = _aCS[i].calcDResponseDManifest (strManifestMeasure,
+					dblDResponseDManifestMeasurei = _aCS[i].calcDResponseDManifest (strManifestMeasure,
 						dblPredictorOrdinate, iOrder);
 				else if (i == iIndex - 1)
-					dblDResponseDQuotei = _aCS[i + 1].calcDResponseDPreceedingManifest (strManifestMeasure,
-						dblPredictorOrdinate, iOrder);
+					dblDResponseDManifestMeasurei = _aCS[i + 1].calcDResponseDPreceedingManifest
+						(strManifestMeasure, dblPredictorOrdinate, iOrder);
 				else if (!bContainingSegmentImpactFade && i >= iPriorImpactFadeIndex && i < iIndex - 1)
-					dblDResponseDQuotei = _aCS[i].calcDResponseDManifest (strManifestMeasure,
+					dblDResponseDManifestMeasurei = _aCS[i].calcDResponseDManifest (strManifestMeasure,
 						_aCS[i].right(), iOrder);
 
-				if (!wjDResponseDQuote.accumulatePartialFirstDerivative (0, i, dblDResponseDQuotei))
+				if (!wjDResponseDManifestMeasure.accumulatePartialFirstDerivative (0, i,
+					dblDResponseDManifestMeasurei))
 					return null;
 			}
 
-			return wjDResponseDQuote;
+			return wjDResponseDManifestMeasure;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

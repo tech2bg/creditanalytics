@@ -487,7 +487,7 @@ public class ShapeDFZeroLocalSmooth {
 		 *  of Cash and Swap Stretches.
 		 */
 
-		DiscountCurve dcShapePreserving = RatesScenarioCurveBuilder.ShapePreservingDFBuild (
+		DiscountCurve dcShapePreserving = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRRS,
 			new ValuationParams (dtToday, dtToday, "MXN"),
@@ -502,7 +502,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * 	preserving discount curve.
 		 */
 
-		DiscountCurve dcLocalAkima = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
+		DiscountCurve dcLocalAkima = ScenarioDiscountCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
 			lccpAkima,
@@ -518,7 +518,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * 	preserving discount curve.
 		 */
 
-		DiscountCurve dcLocalHarmonic = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
+		DiscountCurve dcLocalHarmonic = ScenarioDiscountCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
 			lccpHarmonic,
@@ -534,7 +534,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * 	preserving discount curve.
 		 */
 
-		DiscountCurve dcLocalHyman83 = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
+		DiscountCurve dcLocalHyman83 = ScenarioDiscountCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
 			lccpHyman83,
@@ -550,7 +550,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * 	preserving discount curve.
 		 */
 
-		DiscountCurve dcLocalHyman89 = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
+		DiscountCurve dcLocalHyman89 = ScenarioDiscountCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
 			lccpHyman89,
@@ -566,7 +566,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * 	and the shape preserving discount curve.
 		 */
 
-		DiscountCurve dcLocalHuynhLeFloch = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
+		DiscountCurve dcLocalHuynhLeFloch = ScenarioDiscountCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
 			lccpHuynhLeFloch,
@@ -582,7 +582,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * 	preserving discount curve.
 		 */
 
-		DiscountCurve dcLocalKruger = RatesScenarioCurveBuilder.SmoothingLocalControlBuild (
+		DiscountCurve dcLocalKruger = ScenarioDiscountCurveBuilder.SmoothingLocalControlBuild (
 			dcShapePreserving,
 			lcc,
 			lccpKruger,

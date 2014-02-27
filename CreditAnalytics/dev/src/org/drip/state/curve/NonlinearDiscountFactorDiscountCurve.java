@@ -67,7 +67,8 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapMeasure = _ccis.getMeasure();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
+			_ccis.getMeasures();
 
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing =
@@ -88,8 +89,8 @@ public class NonlinearDiscountFactorDiscountCurve extends
 				java.lang.String strInstrumentCode = aCalibInst[i].getPrimaryCode();
 
 				calibrator.calibrateIRNode (nldfdc, null, null, aCalibInst[i], i, valParam,
-					astrCalibMeasure[i] = mapMeasure.get (strInstrumentCode), adblShiftedManifestMeasure[i],
-						mmFixing, quotingParam, false, java.lang.Double.NaN);
+					astrCalibMeasure[i] = mapMeasures.get (strInstrumentCode)[0],
+						adblShiftedManifestMeasure[i], mmFixing, quotingParam, false, java.lang.Double.NaN);
 			}
 
 			return nldfdc.setCCIS (org.drip.analytics.definition.BootCurveConstructionInput.Create (valParam,
@@ -401,8 +402,9 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
-		final double dblDate)
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure (
+		final double dblDate,
+		final java.lang.String strManifestMeasure)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
 

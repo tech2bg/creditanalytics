@@ -235,7 +235,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean execRegression()
 				{
 					return null != (_dc =
-						org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild (_dtStart,
+						org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild (_dtStart,
 							_strCurrency,
 								org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 									_aCompCalib, _adblCompCalibValue, _astrCalibMeasure, _mmFixings));

@@ -67,8 +67,8 @@ public class LatentStateMetricMeasure {
 		"QUANTIFICATION_METRIC_FORWARD_HAZARD_RATE";
 
 	private java.lang.String _strID = "";
-	private java.lang.String _strManifestMeasure = "";
 	private java.lang.String _strQuantificationMetric = "";
+	private java.lang.String[] _astrManifestMeasure = null;
 	private double _dblMeasureQuoteValue = java.lang.Double.NaN;
 
 	/**
@@ -76,8 +76,8 @@ public class LatentStateMetricMeasure {
 	 * 
 	 * @param strID Name/ID of the Hidden State
 	 * @param strQuantificationMetric The Quantification Metric of the Latent State
-	 * @param strManifestMeasure Name of the Product Measure from which the Calibration/Inference estimates
-	 * 	the Latent State's Quantification Metric
+	 * @param astrManifestMeasure Array of the Product Measure Names from which the Calibration/Inference
+	 * 	estimates the Latent State's Quantification Metric
 	 * @param dblMeasureQuoteValue Manifest Measure Quote Value
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
@@ -86,15 +86,25 @@ public class LatentStateMetricMeasure {
 	public LatentStateMetricMeasure (
 		final java.lang.String strID,
 		final java.lang.String strQuantificationMetric,
-		final java.lang.String strManifestMeasure,
+		final java.lang.String[] astrManifestMeasure,
 		final double dblMeasureQuoteValue)
 		throws java.lang.Exception
 	{
 		if (null == (_strID = strID) || _strID.isEmpty() || null == (_strQuantificationMetric =
-			strQuantificationMetric) || _strQuantificationMetric.isEmpty() || null == (_strManifestMeasure =
-				strManifestMeasure) || _strManifestMeasure.isEmpty() ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblMeasureQuoteValue = dblMeasureQuoteValue))
+			strQuantificationMetric) || _strQuantificationMetric.isEmpty() || null == (_astrManifestMeasure =
+				astrManifestMeasure) || !org.drip.quant.common.NumberUtil.IsValid (_dblMeasureQuoteValue =
+					dblMeasureQuoteValue))
 			throw new java.lang.Exception ("LatentStateMetricMeasure ctr: Invalid Inputs!");
+
+		int iNumManifestMeasure = _astrManifestMeasure.length;
+
+		if (0 == iNumManifestMeasure)
+			throw new java.lang.Exception ("LatentStateMetricMeasure ctr: Invalid Inputs!");
+
+		for (int i = 0; i < iNumManifestMeasure; ++i) {
+			if (null == _astrManifestMeasure[i] || _astrManifestMeasure[i].isEmpty())
+				throw new java.lang.Exception ("LatentStateMetricMeasure ctr: Invalid Inputs!");
+		}
 	}
 
 	/**
@@ -120,14 +130,14 @@ public class LatentStateMetricMeasure {
 	}
 
 	/**
-	 * Retrieve the Product Manifest Measure
+	 * Retrieve the Product Manifest Measure Array
 	 * 
-	 * @return The Product Manifest Measure
+	 * @return The Product Manifest Measure Array
 	 */
 
-	public java.lang.String getManifestMeasure()
+	public java.lang.String[] getManifestMeasures()
 	{
-		return _strManifestMeasure;
+		return _astrManifestMeasure;
 	}
 
 	/**

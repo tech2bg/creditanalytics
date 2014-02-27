@@ -67,7 +67,8 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack)
 	{
-		org.drip.quant.calculus.WengertJacobian wjCashSettleDFDF = dc.jackDDFDQuote (dblSettleDate);
+		org.drip.quant.calculus.WengertJacobian wjCashSettleDFDF = dc.jackDDFDManifestMeasure
+			(dblSettleDate, "Rate");
 
 		if (null == wjCashSettleDFDF) return false;
 

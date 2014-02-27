@@ -44,8 +44,8 @@ public class RatesLSMM extends org.drip.state.representation.LatentStateMetricMe
 	 * 
 	 * @param strID Name/ID of the Hidden State
 	 * @param strQuantificationMetric The Quantification Metric of the Latent State
-	 * @param strManifestMeasure Name of the Product Measure from which the Calibration/Inference estimates
-	 * 	the Latent State's Quantification Metric
+	 * @param strManifestMeasure Array of Names of the Product Measure using which the Calibration/Inference
+	 * 	estimates the Latent State's Quantification Metric
 	 * @param dblMeasureQuoteValue Manifest Measure Quote Value
 	 * @param tldf The Turn List Discount Factor
 	 * 
@@ -55,12 +55,12 @@ public class RatesLSMM extends org.drip.state.representation.LatentStateMetricMe
 	public RatesLSMM (
 		final java.lang.String strID,
 		final java.lang.String strQuantificationMetric,
-		final java.lang.String strManifestMeasure,
+		final java.lang.String[] astrManifestMeasure,
 		final double dblMeasureQuoteValue,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
 		throws java.lang.Exception
 	{
-		super (strID, strQuantificationMetric, strManifestMeasure, dblMeasureQuoteValue);
+		super (strID, strQuantificationMetric, astrManifestMeasure, dblMeasureQuoteValue);
 
 		_tldf = tldf;
 	}

@@ -4,7 +4,7 @@ package org.drip.sample.rates;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
-import org.drip.param.creator.RatesScenarioCurveBuilder;
+import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.CashBuilder;
 import org.drip.product.creator.EDFutureBuilder;
@@ -194,7 +194,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * Construct the Cubic Tension KLK Hyperbolic Discount Factor Shape Preserver
 		 */
 
-		DiscountCurve dcKLKHyperbolicShapePreserver = RatesScenarioCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
+		DiscountCurve dcKLKHyperbolicShapePreserver = ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			valParams,
 			aCashComp,
@@ -208,7 +208,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * 	Smoothening applied
 		 */
 
-		DiscountCurve dcKLKHyperbolicSmoother = RatesScenarioCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
+		DiscountCurve dcKLKHyperbolicSmoother = ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SMOOTH_TEMPLATE",
 			valParams,
 			aCashComp,
@@ -221,7 +221,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * Construct the Cubic Polynomial Discount Factor Shape Preserver
 		 */
 
-		DiscountCurve dcCubicPolyShapePreserver = RatesScenarioCurveBuilder.CubicPolyDFRateShapePreserver (
+		DiscountCurve dcCubicPolyShapePreserver = ScenarioDiscountCurveBuilder.CubicPolyDFRateShapePreserver (
 			"CUBIC_POLY_SHAPE_TEMPLATE",
 			valParams,
 			aCashComp,
@@ -234,7 +234,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * Construct the Cubic Polynomial Discount Factor Shape Preserver with Zero Rate Smoothening applied.
 		 */
 
-		DiscountCurve dcCubicPolySmoother = RatesScenarioCurveBuilder.CubicPolyDFRateShapePreserver (
+		DiscountCurve dcCubicPolySmoother = ScenarioDiscountCurveBuilder.CubicPolyDFRateShapePreserver (
 			"CUBIC_POLY_SMOOTH_TEMPLATE",
 			valParams,
 			aCashComp,
@@ -247,7 +247,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * Construct the Discount Curve using the Bear Sterns' DENSE Methodology.
 		 */
 
-		DiscountCurve dcDENSE = RatesScenarioCurveBuilder.DENSE (
+		DiscountCurve dcDENSE = ScenarioDiscountCurveBuilder.DENSE (
 			"DENSE",
 			valParams,
 			aCashComp,
@@ -260,7 +260,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * Construct the Discount Curve using the Bear Sterns' DUAL DENSE Methodology.
 		 */
 
-		DiscountCurve dcDualDENSE = RatesScenarioCurveBuilder.DUALDENSE (
+		DiscountCurve dcDualDENSE = ScenarioDiscountCurveBuilder.DUALDENSE (
 			"DENSE",
 			valParams,
 			aCashComp,

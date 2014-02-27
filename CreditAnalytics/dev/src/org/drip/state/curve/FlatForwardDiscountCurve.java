@@ -65,7 +65,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapMeasure = _ccis.getMeasure();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
+			_ccis.getMeasures();
 
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing =
@@ -88,13 +89,13 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 				java.lang.String strInstrumentCode = aCalibInst[i].getPrimaryCode();
 
 				calibrator.calibrateIRNode (frdc, null, null, aCalibInst[i], i, valParam, astrCalibMeasure[i]
-					= mapMeasure.get (strInstrumentCode), adblCalibQuoteShifted[i] = mapQuote.get
+					= mapMeasures.get (strInstrumentCode)[0], adblCalibQuoteShifted[i] = mapQuote.get
 						(strInstrumentCode) + adblShift[i], mmFixing, quotingParam, false,
 							java.lang.Double.NaN);
 			}
 
 			return frdc.setCCIS (new org.drip.analytics.definition.BootCurveConstructionInput (valParam,
-				quotingParam, aCalibInst, mapQuote, mapMeasure, mmFixing)) ? frdc : null;
+				quotingParam, aCalibInst, mapQuote, mapMeasures, mmFixing)) ? frdc : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -404,8 +405,9 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDQuote (
-		final double dblDate)
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure (
+		final double dblDate,
+		final java.lang.String strManifestMeasure)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
 

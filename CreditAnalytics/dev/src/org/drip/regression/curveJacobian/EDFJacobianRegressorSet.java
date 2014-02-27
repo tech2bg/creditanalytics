@@ -93,7 +93,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 					}
 
 					return null != (dcEDF =
-						org.drip.param.creator.RatesScenarioCurveBuilder.NonlinearBuild (dtStart, "USD",
+						org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 								aCompCalib, adblCompCalibValue, astrCalibMeasure, null));
 				}
@@ -102,10 +102,10 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 				{
 					for (int i = 0; i < aCompCalib.length; ++i) {
 						try {
-							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDQuote (new
+							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDManifestMeasure (new
 								org.drip.param.valuation.ValuationParams (dtStart, dtStart, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-										(dcEDF, null, null, null, null, null, null), null)))
+								(dcEDF, null, null, null, null, null, null), null)))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
@@ -114,7 +114,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 						}
 					}
 
-					return null != (wjPVDF = dcEDF.compJackDPVDQuote (dtStart));
+					return null != (wjPVDF = dcEDF.compJackDPVDManifestMeasure (dtStart));
 				}
 
 				@Override public boolean postRegression (

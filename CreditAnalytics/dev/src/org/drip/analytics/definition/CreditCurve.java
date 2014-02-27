@@ -553,7 +553,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 				aLSMM[i] = new org.drip.state.representation.LatentStateMetricMeasure
 					(org.drip.state.representation.LatentStateMetricMeasure.LATENT_STATE_SURVIVAL,
 						org.drip.state.representation.LatentStateMetricMeasure.QUANTIFICATION_METRIC_FORWARD_HAZARD_RATE,
-							_astrCalibMeasure[i], _adblCalibQuote[i]);
+							new java.lang.String[] {_astrCalibMeasure[i]}, _adblCalibQuote[i]);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

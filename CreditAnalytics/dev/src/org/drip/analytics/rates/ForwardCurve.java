@@ -193,47 +193,53 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 	}
 
 	/**
-	 * Retrieve the Quote Jacobian of the Forward Rate to the given date
+	 * Retrieve the Manifest Measure Jacobian of the Forward Rate to the given date
 	 * 
+	 * @param strManifestMeasure Manifest Measure
 	 * @param dblDate Date
 	 * 
-	 * @return The Quote Jacobian of the Forward Rate to the given date
+	 * @return The Manifest Measure Jacobian of the Forward Rate to the given date
 	 */
 
-	public abstract org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+	public abstract org.drip.quant.calculus.WengertJacobian jackDForwardDManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblDate);
 
 	/**
-	 * Retrieve the Quote Jacobian of the Forward Rate to the given date
+	 * Retrieve the Manifest Measure Jacobian of the Forward Rate to the given date
 	 * 
+	 * @param strManifestMeasure Manifest Measure
 	 * @param dt Date
 	 * 
-	 * @return The Quote Jacobian of the Forward Rate to the given date
+	 * @return The Manifest Measure Jacobian of the Forward Rate to the given date
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+	public org.drip.quant.calculus.WengertJacobian jackDForwardDManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		if (null == dt) return null;
 
-		return jackDForwardDQuote (dt.getJulian());
+		return jackDForwardDManifestMeasure (strManifestMeasure, dt.getJulian());
 	}
 
 	/**
-	 * Retrieve the Quote Jacobian of the Forward Rate to the date implied by the given Tenor
+	 * Retrieve the Manifest Measure Jacobian of the Forward Rate to the date implied by the given Tenor
 	 * 
+	 * @param strManifestMeasure Manifest Measure
 	 * @param strTenor Tenor
 	 * 
-	 * @return The Quote Jacobian of the Forward Rate to the date implied by the given Tenor
+	 * @return The Manifest Measure Jacobian of the Forward Rate to the date implied by the given Tenor
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian jackDForwardDQuote (
+	public org.drip.quant.calculus.WengertJacobian jackDForwardDManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final java.lang.String strTenor)
 	{
 		if (null == strTenor || strTenor.isEmpty()) return null;
 
 		try {
-			return jackDForwardDQuote (epoch().addTenor (strTenor));
+			return jackDForwardDManifestMeasure (strManifestMeasure, epoch().addTenor (strTenor));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

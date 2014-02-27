@@ -123,7 +123,7 @@ public class SWPM {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = RatesScenarioCurveBuilder.NonlinearBuild (dtStart, strCurrency,
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, strCurrency,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
 
 		/*
@@ -193,7 +193,7 @@ public class SWPM {
 		 */
 
 		RatesComponent floatStream = new FloatingStream (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), 4,
+			dtMaturity.getJulian(), 0., true, org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), 4,
 				"Act/360", "Act/360", false, null, null,
 					dap, dap, dap, dap, dap, null, null, -dblNotional, "USD", "USD");
 

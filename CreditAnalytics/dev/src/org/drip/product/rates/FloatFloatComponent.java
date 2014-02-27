@@ -476,7 +476,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDQuote (
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -502,19 +502,45 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
+		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == lsmm ||
+			null == mktParams)
+			return null;
+
+		java.lang.String strQuantificationMetric = lsmm.getQuantificationMetric();
+
+		if (null == strQuantificationMetric) return null;
+
+		if (!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
+			(strQuantificationMetric) &&
+				!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+					(strQuantificationMetric))
+			return null;
+
+		java.lang.String[] astrManifestMeasure = lsmm.getManifestMeasures();
+
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRLC
 			(valParams, pricerParams, mktParams, quotingParams, lsmm);
 
 		if (null == prwc) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapReferenceValue =
-			_floatReference.value (valParams, null, mktParams, quotingParams);
+			_floatReference.value (valParams, pricerParams, mktParams, quotingParams);
 
-		if (null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV")) return null;
+		if (org.drip.quant.common.StringUtil.MatchInStringArray ("DerivedParBasisSpread",
+			astrManifestMeasure, false))
+			return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
+				!prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV")) ? null : prwc;
 
-		if (!prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV"))) return null;
+		if (org.drip.quant.common.StringUtil.MatchInStringArray ("ReferenceParBasisSpread",
+			astrManifestMeasure, false))
+			return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
+				!mapReferenceValue.containsKey ("CleanDV01") || !prwc.updateValue (-1. *
+					mapReferenceValue.get ("CleanPV") - (mapReferenceValue.get ("CleanDV01") * 10000. *
+						lsmm.getMeasureQuoteValue())) || !prwc.updateDValueDManifestMeasure
+							("ReferenceParBasisSpread", -10000. * mapReferenceValue.get ("CleanDV01")) ? null
+								: prwc;
 
-		return prwc.updateDValueDQuote (0.) ? prwc : null;
+		return null;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()
