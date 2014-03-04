@@ -113,7 +113,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 					org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateSegmentSet
 						(adblPredictorOrdinate, aSCBC), aSCBC);
 
-				if (!cs.setup (new org.drip.state.estimator.RatesSegmentSequenceBuilder (dblEpochResponse,
+				if (!cs.setup (org.drip.state.estimator.RatesSegmentSequenceBuilder.Create (dblEpochResponse,
 					srs, valParams, pricerParams, cmp, quotingParams, csPrev, bestFitWeightedResponse(),
 						aSCBC[0].preceedingManifestSensitivityControl(),
 							bestFitWeightedResponseSensitivity(), calibrationBoundaryCondition()),

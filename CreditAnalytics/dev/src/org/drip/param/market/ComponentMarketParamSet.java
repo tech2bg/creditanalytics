@@ -91,6 +91,14 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
+	/*
+	 * Map of Latent State Volatility Surface
+	 */
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mAULatentStateVolatility = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
 	/**
 	 * Create a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
 	 *  the EDSF discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
@@ -409,6 +417,24 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		_mmFixings = mmFixings;
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate getLatentStateVolSurface (
+		final java.lang.String strLatentState)
+	{
+		return null == strLatentState || !_mAULatentStateVolatility.containsKey (strLatentState) ? null :
+			_mAULatentStateVolatility.get (strLatentState);
+	}
+
+	@Override public boolean setLatentStateVolSurface (
+		final java.lang.String strLatentState,
+		final org.drip.quant.function1D.AbstractUnivariate auFRIVolatility)
+	{
+		if (null == strLatentState || strLatentState.isEmpty() || null == auFRIVolatility) return false;
+
+		_mAULatentStateVolatility.put (strLatentState, auFRIVolatility);
+
 		return true;
 	}
 

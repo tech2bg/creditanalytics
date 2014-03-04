@@ -51,25 +51,72 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.spline.stretch.MultiSegmentSequence _mssPrev = null;
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
+	private
+		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
+			_mapPMSC = null;
 
-	private java.util.Map<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>
-		_mapSRVCBase = new
-			java.util.HashMap<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>();
+	private java.util.Map<java.lang.Double, org.drip.spline.params.ResponseValueSensitivityConstraint>
+		_mapRVSC = new
+			java.util.HashMap<java.lang.Double, org.drip.spline.params.ResponseValueSensitivityConstraint>();
 
-	private java.util.Map<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>
-		_mapSRVCSensitivity = new
-			java.util.HashMap<java.lang.Double, org.drip.spline.params.SegmentResponseValueConstraint>();
+	/**
+	 * Construct a RatesSegmentSequenceBuilder instance from the Parameters
+	 * 
+	 * @param dblEpochResponse Segment Sequence Left-most Response Value
+	 * @param srs Stretch Representation
+	 * @param valParams Valuation Parameter
+	 * @param pricerParams Pricer Parameter
+	 * @param cmp Component Market Parameter
+	 * @param quotingParams Quoting Parameter
+	 * @param mssPrev The Previous Stretch Used to value cash flows that fall in those segments
+	 * @param sbfr Stretch Fitness Weighted Response
+	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
+	 * @param sbfrQuoteSensitivity Stretch Fitness Weighted Response Quote Sensitivity
+	 * @param bs The Calibration Boundary Condition
+	 * 
+	 * @return The RatesSegmentSequenceBuilder instance
+	 */
 
-	private org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
-		_mapPMSC = new
-			org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>();
+	public static final RatesSegmentSequenceBuilder Create (
+		final double dblEpochResponse,
+		final org.drip.state.estimator.StretchRepresentationSpec srs,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc,
+		final org.drip.spline.params.StretchBestFitResponse sbfrQuoteSensitivity,
+		final org.drip.spline.stretch.BoundarySettings bs)
+	{
+		if (null == srs) return null;
+
+		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
+			mapPMSC = new
+				org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>();
+
+		if (null != pmsc) {
+			for (int iSegment = 0; iSegment < srs.getCalibComp().length; ++iSegment) {
+				for (java.lang.String strManifestMeasure : srs.getLSMM (iSegment).getManifestMeasures())
+					mapPMSC.put (strManifestMeasure, pmsc);
+			}
+		}
+
+		try {
+			return new RatesSegmentSequenceBuilder (dblEpochResponse, srs, valParams, pricerParams, cmp,
+				quotingParams, mssPrev, sbfr, mapPMSC, sbfrQuoteSensitivity, bs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	private org.drip.spline.params.PreceedingManifestSensitivityControl getPMSC (
 		final java.lang.String strManifestMeasure)
 	{
-		if (_mapPMSC.containsKey (strManifestMeasure)) return _mapPMSC.get (strManifestMeasure);
-
-		return _mapPMSC.containsKey ("Default") ? _mapPMSC.get ("Default") : null;
+		return _mapPMSC.containsKey (strManifestMeasure) ? _mapPMSC.get (strManifestMeasure) : null;
 	}
 
 	private boolean generateSegmentConstraintSet (
@@ -87,9 +134,19 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null == srvcSensitivity) return false;
 
-		_mapSRVCBase.put (dblSegmentRight, srvcBase);
+		org.drip.spline.params.ResponseValueSensitivityConstraint rvsc = null;
 
-		_mapSRVCSensitivity.put (dblSegmentRight, srvcSensitivity);
+		try {
+			if (!(rvsc = new org.drip.spline.params.ResponseValueSensitivityConstraint
+				(srvcBase)).addManifestMeasureSensitivity (strManifestMeasure, srvcSensitivity))
+				return false;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return false;
+		}
+
+		_mapRVSC.put (dblSegmentRight, rvsc);
 
 		return true;
 	}
@@ -246,13 +303,15 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.param.valuation.QuotingParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
 		final org.drip.spline.params.StretchBestFitResponse sbfr,
-		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc,
+		final
+			org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
+				mapPMSC,
 		final org.drip.spline.params.StretchBestFitResponse sbfrQuoteSensitivity,
 		final org.drip.spline.stretch.BoundarySettings bs)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochResponse = dblEpochResponse) || null == (_srs
-			= srs) || null == (_valParams = valParams) || null == (_bs = bs))
+			= srs) || null == (_valParams = valParams) || null == (_bs = bs) || null == (_mapPMSC = mapPMSC))
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
 		_cmp = cmp;
@@ -261,8 +320,6 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		_pricerParams = pricerParams;
 		_quotingParams = quotingParams;
 		_sbfrQuoteSensitivity = sbfrQuoteSensitivity;
-
-		if (null != pmsc) _mapPMSC.put ("Default", pmsc);
 	}
 
 	@Override public boolean setStretch (
@@ -312,8 +369,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null == rvcLeading) return false;
 
-		return aCS[0].calibrate (rvcLeading, dblLeftSlope, _mapSRVCBase.get (dblSegmentRight), null == _sbfr
-			? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
+		return aCS[0].calibrate (rvcLeading, dblLeftSlope, _mapRVSC.get (dblSegmentRight).base(), null ==
+			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
 				org.drip.product.params.FloatingRateIndex.Create (cc.getForwardCurveName()));
 	}
 
@@ -338,8 +395,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 				_srs.getLSMM (iSegment).getManifestMeasures()[0]))
 				return false;
 
-			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapSRVCBase.get
-				(dblSegmentRight), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
+			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapRVSC.get
+				(dblSegmentRight).base(), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
 					!_stretch.setSegmentBuilt (iSegment, org.drip.product.params.FloatingRateIndex.Create
 						(cc.getForwardCurveName())))
 				return false;
@@ -366,17 +423,19 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 				if (0 == iSegment) {
 					if (!aCS[0].manifestMeasureSensitivity (strManifestMeasure,
 						org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-							(_valParams.valueDate(), _dblEpochResponse), _mapSRVCBase.get (dblSegmentRight),
-								dblLeftSlopeSensitivity,
+							(_valParams.valueDate(), _dblEpochResponse), _mapRVSC.get
+								(dblSegmentRight).base(), dblLeftSlopeSensitivity,
 									org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-						(_valParams.valueDate(), 0.), _mapSRVCSensitivity.get (dblSegmentRight), null ==
-							_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[0])))
+						(_valParams.valueDate(), 0.), _mapRVSC.get
+							(dblSegmentRight).manifestMeasureSensitivity (strManifestMeasure), null ==
+								_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[0])))
 						return false;
 				} else {
 					if (!aCS[iSegment].manifestMeasureSensitivity (aCS[iSegment - 1], strManifestMeasure,
-						_mapSRVCBase.get (dblSegmentRight), _mapSRVCSensitivity.get (dblSegmentRight), null
-							== _sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment
-								(aCS[iSegment])))
+						_mapRVSC.get (dblSegmentRight).base(), _mapRVSC.get
+							(dblSegmentRight).manifestMeasureSensitivity (strManifestMeasure), null ==
+								_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment
+									(aCS[iSegment])))
 						return false;
 				}
 			}

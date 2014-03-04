@@ -1,5 +1,5 @@
 
-package org.drip.sample.rates;
+package org.drip.sample.multicurve;
 
 import java.util.*;
 
