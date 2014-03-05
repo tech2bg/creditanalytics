@@ -346,7 +346,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	{
 		if (null == _stretch || !_stretch.setClearBuiltRange()) return false;
 
-		org.drip.product.definition.CalibratableComponent cc = _srs.getCalibComp (0);
+		org.drip.product.definition.CalibratableFixedIncomeComponent cc = _srs.getCalibComp (0);
 
 		if (null == cc) return false;
 
@@ -382,7 +382,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		int iNumSegment = aCS.length;
 
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
-			org.drip.product.definition.CalibratableComponent cc = _srs.getCalibComp (iSegment);
+			org.drip.product.definition.CalibratableFixedIncomeComponent cc = _srs.getCalibComp (iSegment);
 
 			if (null == cc) return false;
 

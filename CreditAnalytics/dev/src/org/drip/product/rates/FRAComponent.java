@@ -38,38 +38,13 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 1.;
 	private java.lang.String _strIR = "";
 	private java.lang.String _strCode = "";
+	private java.lang.String _strDayCount = "";
 	private java.lang.String _strCalendar = "USD";
 	private double _dblStrike = java.lang.Double.NaN;
 	private double _dblEffectiveDate = java.lang.Double.NaN;
+	private org.drip.analytics.date.JulianDate _dtMaturity = null;
 	private org.drip.product.params.FloatingRateIndex _fri = null;
-	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
-
-	class ForwardExchangeQuantoProduct extends org.drip.quant.function1D.AbstractUnivariate {
-		org.drip.quant.function1D.AbstractUnivariate _auFRIVolatility = null;
-		org.drip.quant.function1D.AbstractUnivariate _auForwardToDomesticExchangeVolatility = null;
-		org.drip.quant.function1D.AbstractUnivariate _auFRIForwardToDomesticExchangeCorrelation = null;
-
-		ForwardExchangeQuantoProduct (
-			final org.drip.quant.function1D.AbstractUnivariate auFRIVolatility,
-			final org.drip.quant.function1D.AbstractUnivariate auForwardToDomesticExchangeVolatility,
-			final org.drip.quant.function1D.AbstractUnivariate auFRIForwardToDomesticExchangeCorrelation)
-		{
-			super (null);
-
-			_auFRIVolatility = auFRIVolatility;
-			_auForwardToDomesticExchangeVolatility = auForwardToDomesticExchangeVolatility;
-			_auFRIForwardToDomesticExchangeCorrelation = auFRIForwardToDomesticExchangeCorrelation;
-		}
-
-		@Override public double evaluate (
-			final double dblVariate)
-			throws java.lang.Exception
-		{
-			return _auFRIVolatility.evaluate (dblVariate) * _auForwardToDomesticExchangeVolatility.evaluate
-				(dblVariate) * _auFRIForwardToDomesticExchangeCorrelation.evaluate (dblVariate);
-		}
-	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -90,7 +65,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	 * @param dblEffectiveDate FRA Effective Date
 	 * @param fri FRA Floating Rate Index
 	 * @param dblStrike FRA Strike
-	 * @param notlSchedule Notional Schedule
+	 * @param strDayCount Day Count Convention
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -103,7 +78,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		final double dblEffectiveDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final double dblStrike,
-		final org.drip.product.params.FactorSchedule notlSchedule)
+		java.lang.String strDayCount)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional ||
@@ -111,11 +86,10 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 				_strCode.isEmpty() || null == (_strCalendar = strCalendar) || _strCalendar.isEmpty() ||
 					!org.drip.quant.common.NumberUtil.IsValid (_dblEffectiveDate = dblEffectiveDate) || null
 						== (_fri = fri) || !org.drip.quant.common.NumberUtil.IsValid (_dblStrike =
-							dblStrike))
+							dblStrike) || null == (_strDayCount = strDayCount) || _strDayCount.isEmpty())
 			throw new java.lang.Exception ("FRAComponent ctr => Invalid Inputs!");
 
-		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+		_dtMaturity = new org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor());
 	}
 
 	/**
@@ -147,7 +121,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFRAComponent,
 			getFieldDelimiter());
 
-		if (null == astrField || 10 > astrField.length)
+		if (null == astrField || 9 > astrField.length)
 			throw new java.lang.Exception ("FRAComponent de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -197,26 +171,18 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 			_fri = new org.drip.product.params.FloatingRateIndex (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate notional schedule");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
-			_notlSchedule = null;
-		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[7].getBytes());
-
-		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate cash settle params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			_settleParams = null;
 		else
-			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[8].getBytes());
+			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[7].getBytes());
 
-		if (null == astrField[9] || astrField[9].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
+		if (null == astrField[8] || astrField[8].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate Strike");
 
-		_dblStrike = new java.lang.Double (astrField[9]);
+		_dblStrike = new java.lang.Double (astrField[8]);
 	}
 
 	@Override public java.lang.String getPrimaryCode()
@@ -254,10 +220,11 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("CashComponent::getNotional => Bad date into getNotional");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || dblDate < _dblEffectiveDate || dblDate >
+			_dtMaturity.getJulian())
+			throw new java.lang.Exception ("FRAComponent::getNotional => Bad date into getNotional");
 
-		return _notlSchedule.getFactor (dblDate);
+		return 1.;
 	}
 
 	@Override public double getNotional (
@@ -265,11 +232,16 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
-			throw new java.lang.Exception ("CashComponent::getNotional => Bad date into getNotional");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblDate2) || dblDate1 < _dblEffectiveDate || dblDate2 < _dblEffectiveDate)
+			throw new java.lang.Exception ("FRAComponent::getNotional => Bad date into getNotional");
 
-		return _notlSchedule.getFactor (dblDate1, dblDate2);
+		double dblMaturity = _dtMaturity.getJulian();
+
+		if (dblDate1 > dblMaturity || dblDate2 > dblMaturity)
+			throw new java.lang.Exception ("FRAComponent::getNotional => Bad date into getNotional");
+
+		return 1.;
 	}
 
 	@Override public double getCoupon (
@@ -319,13 +291,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 	@Override public org.drip.analytics.date.JulianDate getMaturityDate()
 	{
-		try {
-			return new org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return _dtMaturity;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate getFirstCouponDate()
@@ -361,20 +327,13 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		long lStart = System.nanoTime();
 
-		double dblQuantoAdjustment = 1.;
-		double dblMaturity = java.lang.Double.NaN;
 		double dblParForward = java.lang.Double.NaN;
-		org.drip.analytics.date.JulianDate dtMaturity = null;
 
-		try {
-			if (valParams.valueDate() >= (dblMaturity = (dtMaturity = new org.drip.analytics.date.JulianDate
-				(_dblEffectiveDate).addTenor (_fri.tenor())).getJulian()))
-					return null;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+		double dblValueDate = valParams.valueDate();
 
-			return null;
-		}
+		if (dblValueDate > _dblEffectiveDate) return null;
+
+		double dblMaturity = _dtMaturity.getJulian();
 
 		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
 
@@ -391,44 +350,49 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		try {
 			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
-				_settleParams.cashSettleDate (valParams.valueDate());
+				_settleParams.cashSettleDate (dblValueDate);
 
 			java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
 					mktParams.getFixings();
 
-			if (null != mapFixings && mapFixings.containsKey (dtMaturity)) {
+			if (null != mapFixings && mapFixings.containsKey (_dtMaturity)) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing =
-					mapFixings.get (dtMaturity);
+					mapFixings.get (_dtMaturity);
 
 				dblParForward = null != mapFixing && mapFixing.containsKey (strFRI) ? mapFixing.get (strFRI)
 					: fc.forward (dblMaturity);
 			} else
 				dblParForward = fc.forward (dblMaturity);
 
-			org.drip.quant.function1D.AbstractUnivariate auFRIVolatility = mktParams.getLatentStateVolSurface
-				(strFRI);
+			double dblMultiplicativeQuantoAdjustment =
+				org.drip.analytics.support.AnalyticsHelper.MultiplicativeCrossVolQuanto (mktParams, strFRI,
+					"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
+						dblValueDate, _dblEffectiveDate);
 
-			if (null != auFRIVolatility) {
-				org.drip.quant.function1D.AbstractUnivariate auForwardToDomesticExchangeVolatility =
-					mktParams.getLatentStateVolSurface ("ForwardToDomesticExchangeVolatility");
+			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffectiveDate,
+				dblMaturity, _strDayCount, false, dblMaturity, null, _strCalendar);
 
-				if (null != auForwardToDomesticExchangeVolatility) {
-					org.drip.quant.function1D.AbstractUnivariate auFRIForwardToDomesticExchangeCorrelation =
-						mktParams.getLatentStateVolSurface ("FRIForwardToDomesticExchangeCorrelation");
-
-					if (null != auFRIForwardToDomesticExchangeCorrelation)
-						dblQuantoAdjustment = java.lang.Math.exp (-1. * new ForwardExchangeQuantoProduct
-							(auFRIVolatility, auForwardToDomesticExchangeVolatility,
-								auFRIForwardToDomesticExchangeCorrelation).integrate (valParams.valueDate(),
-									_dblEffectiveDate) / 365.25);
-				}
-			}
-
-			double dblQuantoAdjustedParForward = dblParForward * dblQuantoAdjustment;
+			double dblQuantoAdjustedParForward = dblParForward * dblMultiplicativeQuantoAdjustment;
 
 			double dblPV = dc.df (dblMaturity) / dc.df (dblCashSettle) * _dblNotional *
 				(dblQuantoAdjustedParForward - _dblStrike);
+
+			double dblDCParForward = dc.libor (_dblEffectiveDate, dblMaturity);
+
+			mapResult.put ("additivequantoadjustment", dblQuantoAdjustedParForward - dblParForward);
+
+			mapResult.put ("discountcurveadditivebasis", dblQuantoAdjustedParForward - dblDCParForward);
+
+			mapResult.put ("discountcurvemultiplicativebasis", dblQuantoAdjustedParForward /
+				dblDCParForward);
+
+			mapResult.put ("discountcurveparforward", dblDCParForward);
+
+			mapResult.put ("mercuriorfactor", (dblDCF * dblDCParForward + 1.) / (dblDCF *
+				dblQuantoAdjustedParForward + 1.));
+
+			mapResult.put ("multiplicativequantoadjustment", dblMultiplicativeQuantoAdjustment);
 
 			mapResult.put ("parforward", dblParForward);
 
@@ -437,8 +401,6 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 			mapResult.put ("pv", dblPV);
 
 			mapResult.put ("quantoadjustedparforward", dblQuantoAdjustedParForward);
-
-			mapResult.put ("quantoadjustment", dblQuantoAdjustment);
 
 			mapResult.put ("upfront", dblPV);
 		} catch (java.lang.Exception e) {
@@ -456,7 +418,19 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
+		setstrMeasureNames.add ("AdditiveQuantoAdjustment");
+
 		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("DiscountCurveAdditiveBasis");
+
+		setstrMeasureNames.add ("DiscountCurveMultiplicativeBasis");
+
+		setstrMeasureNames.add ("DiscountCurveParForward");
+
+		setstrMeasureNames.add ("MercurioRFactor");
+
+		setstrMeasureNames.add ("MultiplicativeQuantoAdjustment");
 
 		setstrMeasureNames.add ("ParForward");
 
@@ -465,8 +439,6 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		setstrMeasureNames.add ("PV");
 
 		setstrMeasureNames.add ("QuantoAdjustedParForward");
-
-		setstrMeasureNames.add ("QuantoAdjustment");
 
 		setstrMeasureNames.add ("Upfront");
 
@@ -532,11 +504,6 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		else
 			sb.append (new java.lang.String (_fri.serialize()) + getFieldDelimiter());
 
-		if (null == _notlSchedule)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
-		else
-			sb.append (new java.lang.String (_notlSchedule.serialize()) + getFieldDelimiter());
-
 		if (null == _settleParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
@@ -574,7 +541,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	{
 		FRAComponent fra = new FRAComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().getJulian(),
-				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01, null);
+				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01, "Act/360");
 
 		byte[] abFRA = fra.serialize();
 

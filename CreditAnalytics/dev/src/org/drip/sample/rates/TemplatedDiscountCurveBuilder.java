@@ -9,8 +9,8 @@ import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.CashBuilder;
 import org.drip.product.creator.EDFutureBuilder;
 import org.drip.product.creator.RatesStreamBuilder;
-import org.drip.product.definition.CalibratableComponent;
-import org.drip.product.definition.Component;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
+import org.drip.product.definition.FixedIncomeComponent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 
@@ -72,18 +72,18 @@ public class TemplatedDiscountCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[aiDay.length + iNumFutures];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
 			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addBusDays (aiDay[i], "USD"), "USD");
 
-		CalibratableComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, "USD");
+		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, "USD");
 
 		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
 			aCalibComp[i] = aEDF[i - aiDay.length];
@@ -97,12 +97,12 @@ public class TemplatedDiscountCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[astrTenor.length];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
@@ -118,7 +118,7 @@ public class TemplatedDiscountCurveBuilder {
 	 */
 
 	private static final double ComponentMetric (
-		final Component comp,
+		final FixedIncomeComponent comp,
 		final ValuationParams valParams,
 		final DiscountCurve dc,
 		final String strMeasure)
@@ -171,7 +171,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtToday,
 			new int[] {1, 2, 7, 14, 30, 60},
 			8);
@@ -184,7 +184,7 @@ public class TemplatedDiscountCurveBuilder {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
+		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"});
 
 		double[] adblSwapQuote = new double[]

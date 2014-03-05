@@ -84,7 +84,7 @@ public interface Curve extends org.drip.state.representation.LatentState {
 	 * @return Array of Calibration Components
 	 */
 
-	public abstract org.drip.product.definition.CalibratableComponent[] calibComp();
+	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp();
 
 	/**
 	 * Retrieve the Manifest Measure of the given Instrument used to construct the Curve

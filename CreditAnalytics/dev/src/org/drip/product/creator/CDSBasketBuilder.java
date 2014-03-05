@@ -162,7 +162,7 @@ public class CDSBasketBuilder {
 	public static final org.drip.product.definition.BasketProduct MakeBasketDefaultSwap (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final org.drip.product.definition.Component aComp[])
+		final org.drip.product.definition.FixedIncomeComponent aComp[])
 	{
 		try {
 			double adblWeight[] = new double[aComp.length];

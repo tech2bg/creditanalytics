@@ -32,8 +32,8 @@ package org.drip.product.definition;
  */
 
 /**
- * Component abstract class extends ComponentMarketParamRef and provides the following methods:
- *  - Get the component'sGet  initial notional, notional, and coupon.
+ * FixedIncomeComponent abstract class extends ComponentMarketParamRef and provides the following methods:
+ *  - Get the component's initial notional, notional, and coupon.
  *  - Get the Effective date, Maturity date, First Coupon Date.
  *  - List the coupon periods.
  *  - Set the market curves - discount, TSY, forward, Credit, and EDSF curves.
@@ -44,7 +44,7 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class Component extends org.drip.service.stream.Serializer implements
+public abstract class FixedIncomeComponent extends org.drip.service.stream.Serializer implements
 	org.drip.product.definition.ComponentMarketParamRef {
 	protected double getMeasure (
 		final java.lang.String strMeasure,
@@ -52,13 +52,13 @@ public abstract class Component extends org.drip.service.stream.Serializer imple
 		throws java.lang.Exception
 	{
 		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
-			throw new java.lang.Exception ("Component.getMeasure => Invalid Inputs");
+			throw new java.lang.Exception ("FixedIncomeComponent::getMeasure => Invalid Inputs");
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
 			if (null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure)) return me.getValue();
 		}
 
-		throw new java.lang.Exception ("Component.getMeasure => Invalid Measure: " + strMeasure);
+		throw new java.lang.Exception ("FixedIncomeComponent::getMeasure => Invalid Measure: " + strMeasure);
 	}
 
 	protected boolean adjustPVDFMicroJackForCashSettle (

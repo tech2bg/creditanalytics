@@ -93,7 +93,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		for (org.drip.state.estimator.StretchRepresentationSpec srs : aSRS) {
 			if (null == srs) return null;
 
-			org.drip.product.definition.CalibratableComponent[] aCalibComp = srs.getCalibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = srs.getCalibComp();
 
 			int iNumCalibComp = aCalibComp.length;
 			org.drip.state.estimator.CurveStretch cs = null;

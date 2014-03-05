@@ -449,8 +449,8 @@ public class ProductTestSuite {
 		double adblRate[] = new double[NUM_TSY_CALIB_INSTR];
 		double adblCompCalibValue[] = new double[NUM_TSY_CALIB_INSTR];
 		java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_TSY_CALIB_INSTR];
-		org.drip.product.definition.CalibratableComponent aCompCalib[] = new
-			org.drip.product.definition.CalibratableComponent[NUM_TSY_CALIB_INSTR];
+		org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_TSY_CALIB_INSTR];
 		adblCompCalibValue[0] = .0200;
 		adblCompCalibValue[1] = .0250;
 		adblCompCalibValue[2] = .0300;
@@ -628,8 +628,8 @@ public class ProductTestSuite {
 		double adblRate[] = new double[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
-		org.drip.product.definition.CalibratableComponent aCompCalib[] = new
-			org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
+		org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 		// First 7 instruments - cash calibration
 
@@ -675,7 +675,7 @@ public class ProductTestSuite {
 		adblCompCalibValue[13] = .0134;
 		adblCompCalibValue[14] = .0160;
 
-		org.drip.product.definition.CalibratableComponent[] aEDF =
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
 			org.drip.product.creator.EDFutureBuilder.GenerateEDPack (dt, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {
@@ -896,9 +896,9 @@ public class ProductTestSuite {
 		double[] adblQuotesARG = new double[5];
 		double[] adblQuotesBRA = new double[5];
 		java.lang.String[] astrCalibMeasure = new java.lang.String[5];
-		org.drip.product.definition.CalibratableComponent[] aCDSARG = new
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCDSARG = new
 			org.drip.product.definition.CreditDefaultSwap[5];
-		org.drip.product.definition.CalibratableComponent[] aCDSBRA = new
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCDSBRA = new
 			org.drip.product.definition.CreditDefaultSwap[5];
 
 		for (int i = 0; i < 5; ++i) {
@@ -1186,10 +1186,10 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.CalibratableComponent[] aEDF =
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
 			org.drip.product.creator.EDFutureBuilder.GenerateEDPack (dt, 1, "USD");
 		
-		org.drip.product.definition.CalibratableComponent edf = aEDF[0];
+		org.drip.product.definition.CalibratableFixedIncomeComponent edf = aEDF[0];
 
 		org.drip.analytics.output.ComponentMeasures edfOut = edf.calcMeasures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);

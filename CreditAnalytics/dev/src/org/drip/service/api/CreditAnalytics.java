@@ -405,7 +405,7 @@ public class CreditAnalytics {
 	 * @return The constructed component
 	 */
 
-	public static final org.drip.product.definition.Component MakeInstrumentFromCode (
+	public static final org.drip.product.definition.FixedIncomeComponent MakeInstrumentFromCode (
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strCode)
 	{
@@ -423,7 +423,7 @@ public class CreditAnalytics {
 	 * @return The constructed component array
 	 */
 
-	public static final org.drip.product.definition.Component[] MakeStdInstrumentSet (
+	public static final org.drip.product.definition.FixedIncomeComponent[] MakeStdInstrumentSet (
 		final org.drip.analytics.date.JulianDate dt,
 		final int iNumInstr,
 		final java.lang.String strType)

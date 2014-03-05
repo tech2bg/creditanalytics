@@ -225,13 +225,13 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public org.drip.product.definition.Component[] getComponents()
+	@Override public org.drip.product.definition.FixedIncomeComponent[] getComponents()
 	{
 		int iNumFixedComp = (null == _aCompFixedStream ? 0 : _aCompFixedStream.length);
 		int iNumFloatComp = (null == _aCompFloatStream ? 0 : _aCompFloatStream.length);
 
-		org.drip.product.definition.Component[] aComp = new
-			org.drip.product.definition.Component[iNumFixedComp + iNumFloatComp];
+		org.drip.product.definition.FixedIncomeComponent[] aComp = new
+			org.drip.product.definition.FixedIncomeComponent[iNumFixedComp + iNumFloatComp];
 
 		for (int i = 0; i < iNumFixedComp; ++i)
 			aComp[i] = _aCompFixedStream[i];

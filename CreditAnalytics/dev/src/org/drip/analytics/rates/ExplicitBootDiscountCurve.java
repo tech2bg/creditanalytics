@@ -67,7 +67,7 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 
 	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
 	{
-		org.drip.product.definition.CalibratableComponent[] aCalibComp = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = calibComp();
 
 		if (null == aCalibComp) return null;
 
@@ -104,7 +104,7 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 		return null != (_ccis = ccis);
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return null == _ccis ? null : _ccis.getComponent();
 	}

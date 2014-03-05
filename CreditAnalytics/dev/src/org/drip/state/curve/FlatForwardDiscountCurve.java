@@ -57,7 +57,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (adblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
 		org.drip.param.valuation.ValuationParams valParam = _ccis.getValuationParameter();
 
@@ -303,7 +303,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShift = new double[iNumComp];
@@ -320,7 +320,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShift = new double[iNumComp];

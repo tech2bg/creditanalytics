@@ -246,7 +246,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return _dc.manifestMeasure (strInstr);
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return _dc.calibComp();
 	}

@@ -56,6 +56,32 @@ public class AnalyticsHelper {
 	private static final java.util.Map<java.lang.Integer, java.lang.String> s_mapDCBBGCode = new
 		java.util.HashMap<java.lang.Integer, java.lang.String>();
 
+	static class CrossVolatilityQuantoProduct extends org.drip.quant.function1D.AbstractUnivariate {
+		org.drip.quant.function1D.AbstractUnivariate _auFRIVolatility = null;
+		org.drip.quant.function1D.AbstractUnivariate _auForwardToDomesticExchangeVolatility = null;
+		org.drip.quant.function1D.AbstractUnivariate _auFRIForwardToDomesticExchangeCorrelation = null;
+
+		CrossVolatilityQuantoProduct (
+			final org.drip.quant.function1D.AbstractUnivariate auFRIVolatility,
+			final org.drip.quant.function1D.AbstractUnivariate auForwardToDomesticExchangeVolatility,
+			final org.drip.quant.function1D.AbstractUnivariate auFRIForwardToDomesticExchangeCorrelation)
+		{
+			super (null);
+
+			_auFRIVolatility = auFRIVolatility;
+			_auForwardToDomesticExchangeVolatility = auForwardToDomesticExchangeVolatility;
+			_auFRIForwardToDomesticExchangeCorrelation = auFRIForwardToDomesticExchangeCorrelation;
+		}
+
+		@Override public double evaluate (
+			final double dblVariate)
+			throws java.lang.Exception
+		{
+			return _auFRIVolatility.evaluate (dblVariate) * _auForwardToDomesticExchangeVolatility.evaluate
+				(dblVariate) * _auFRIForwardToDomesticExchangeCorrelation.evaluate (dblVariate);
+		}
+	}
+
 	private static final java.util.List<org.drip.analytics.period.LossPeriodCurveFactors>
 		GenerateDayStepLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
@@ -983,7 +1009,7 @@ public class AnalyticsHelper {
 	 */
 
 	public static final java.util.Set<org.drip.analytics.period.CashflowPeriod> AggregateComponentPeriods (
-		final org.drip.product.definition.Component[] aComp)
+		final org.drip.product.definition.FixedIncomeComponent[] aComp)
 	{
 		if (null == aComp) return null;
 
@@ -1016,5 +1042,60 @@ public class AnalyticsHelper {
 		}
 
 		return setAggregatedPeriod;
+	}
+
+	/**
+	 * Compute the Multiplicative Cross Volatility Quanto Product given the corresponding volatility and the
+	 * 	correlation surfaces, and the date spans
+	 * 
+	 * @param mktParams The Market Parameters Container
+	 * @param strVolSurface1 Name of the Volatility Surface #1
+	 * @param strVolSurface2 Name of the Volatility Surface #2
+	 * @param strCorrSurface Name of the Correlation Surface
+	 * @param dblStartDate Evolution Start Date
+	 * @param dblEndDate Evolution End Date
+	 * 
+	 * @return The Multiplicative Cross Volatility Quanto Product
+	 * 
+	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 */
+
+	public static final double MultiplicativeCrossVolQuanto (
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final java.lang.String strVolSurface1,
+		final java.lang.String strVolSurface2,
+		final java.lang.String strCorrSurface,
+		final double dblStartDate,
+		final double dblEndDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblEndDate < dblStartDate)
+			throw new java.lang.Exception
+				("AnalyticsHelper::MultiplicativeCrossVolQuanto => Invalid Inputs");
+
+		if (null == mktParams || null == strVolSurface1 || strVolSurface1.isEmpty() || null == strVolSurface2
+			|| strVolSurface2.isEmpty() || null == strCorrSurface || strCorrSurface.isEmpty() || dblEndDate
+				== dblStartDate)
+			return 1.;
+
+		org.drip.quant.function1D.AbstractUnivariate auVolSurface1 = mktParams.getLatentStateVolSurface
+			(strVolSurface1);
+
+		if (null != auVolSurface1) {
+			org.drip.quant.function1D.AbstractUnivariate auVolSurface2 = mktParams.getLatentStateVolSurface
+				(strVolSurface2);
+
+			if (null != auVolSurface2) {
+				org.drip.quant.function1D.AbstractUnivariate auCorrSurface =
+					mktParams.getLatentStateVolSurface (strCorrSurface);
+
+				if (null != auCorrSurface)
+					return java.lang.Math.exp (-1. * new CrossVolatilityQuantoProduct (auVolSurface1,
+						auVolSurface2, auCorrSurface).integrate (dblStartDate, dblEndDate) / 365.25);
+			}
+		}
+
+		return 1.;
 	}
 }

@@ -83,7 +83,7 @@ public class CDSW {
 		double adblRate[] = new double[iNumDCInstruments];
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
-		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
+		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
 		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
@@ -168,7 +168,7 @@ public class CDSW {
 		final CreditCurve cc)
 		throws java.lang.Exception
 	{
-		CalibratableComponent[] aCDS = cc.calibComp();
+		CalibratableFixedIncomeComponent[] aCDS = cc.calibComp();
 
 		for (int i = 0; i < aCDS.length; ++i)
 			System.out.println (

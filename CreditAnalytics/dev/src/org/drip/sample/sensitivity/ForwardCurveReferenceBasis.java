@@ -87,19 +87,19 @@ public class ForwardCurveReferenceBasis {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[aiDay.length + iNumFutures];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
 			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addBusDays (aiDay[i], strCurrency), strCurrency);
 
-		CalibratableComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
+		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
 
 		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
 			aCalibComp[i] = aEDF[i - aiDay.length];
@@ -113,14 +113,14 @@ public class ForwardCurveReferenceBasis {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[astrTenor.length];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
 
@@ -165,7 +165,7 @@ public class ForwardCurveReferenceBasis {
 		 * Construct the array of cash instruments and their quotes.
 		 */
 
-		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtSpot,
 			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
 			4,
@@ -197,7 +197,7 @@ public class ForwardCurveReferenceBasis {
 			0.03145     // 50Y
 		};
 
-		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
 			adblSwapQuote,

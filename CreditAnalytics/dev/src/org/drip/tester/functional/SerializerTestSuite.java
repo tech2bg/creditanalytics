@@ -298,7 +298,8 @@ public class SerializerTestSuite {
 
 		byte[] abFRA = new org.drip.product.rates.FRAComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().getJulian(),
-				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01, null).serialize();
+				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01,
+					"Act/360").serialize();
 
 		Verify (abFRA, new org.drip.product.rates.FRAComponent (abFRA), "FloatingRateAgreement");
 

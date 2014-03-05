@@ -77,7 +77,7 @@ public class SWPM {
 		double adblRate[] = new double[iNumDCInstruments];
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
-		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
+		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
 		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
@@ -96,7 +96,7 @@ public class SWPM {
 
 		// EDF Calibration
 
-		CalibratableComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, adblEDFRate.length, "USD");
+		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, adblEDFRate.length, "USD");
 
 		for (int i = 0; i < adblEDFRate.length; ++i) {
 			aCompCalib[astrCashTenor.length + i] = aEDF[i];

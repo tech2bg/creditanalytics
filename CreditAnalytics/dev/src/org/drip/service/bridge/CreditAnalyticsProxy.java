@@ -51,8 +51,8 @@ public class CreditAnalyticsProxy {
 		double adblRate[] = new double[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
-		org.drip.product.definition.CalibratableComponent aCompCalib[] = new
-			org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
+		org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 		adblDate[0] = dtStart.addDays (3).getJulian(); // ON
 
@@ -101,7 +101,7 @@ public class CreditAnalyticsProxy {
 		adblCompCalibValue[13] = .0134;
 		adblCompCalibValue[14] = .0160;
 
-		org.drip.product.definition.CalibratableComponent[] aEDF =
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
 			org.drip.product.creator.EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {

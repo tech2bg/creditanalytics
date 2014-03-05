@@ -46,7 +46,7 @@ package org.drip.service.bridge;
 public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	private java.lang.String _strID = "";
 	private java.lang.String _strTime = "";
-	private org.drip.product.definition.Component _comp = null;
+	private org.drip.product.definition.FixedIncomeComponent _comp = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
@@ -156,7 +156,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	 */
 
 	public CreditAnalyticsRequest (
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams cmp,
@@ -203,7 +203,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	 * @return The Component
 	 */
 
-	public org.drip.product.definition.Component getComponent()
+	public org.drip.product.definition.FixedIncomeComponent getComponent()
 	{
 		return _comp;
 	}

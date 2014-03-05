@@ -311,7 +311,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return false;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return null;
 	}

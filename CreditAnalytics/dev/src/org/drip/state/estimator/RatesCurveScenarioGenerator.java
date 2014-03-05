@@ -47,7 +47,7 @@ public class RatesCurveScenarioGenerator {
 	private static final boolean s_bBlog = false;
 
 	private java.lang.String _strCurrency = "";
-	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
+	private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
 	private java.lang.String _strBootstrapMode =
 		org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD;
 
@@ -67,7 +67,7 @@ public class RatesCurveScenarioGenerator {
 	public RatesCurveScenarioGenerator (
 		final java.lang.String strCurrency,
 		final java.lang.String strBootstrapMode,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst)
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst)
 		throws java.lang.Exception
 	{
 		if (null == strCurrency || strCurrency.isEmpty() || null == aCalibInst || 0 == aCalibInst.length)
@@ -87,7 +87,7 @@ public class RatesCurveScenarioGenerator {
 	 * @return Array of the calibration instruments
 	 */
 
-	public org.drip.product.definition.Component[] getInstruments()
+	public org.drip.product.definition.FixedIncomeComponent[] getInstruments()
 	{
 		return _aCalibInst;
 	}

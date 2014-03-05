@@ -66,7 +66,7 @@ public interface CurveConstructionInputSet {
 	 * @return The Array of the Calibration Components
 	 */
 
-	public abstract org.drip.product.definition.CalibratableComponent[] getComponent();
+	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent[] getComponent();
 
 	/**
 	 * Retrieve the Calibration Quote Map

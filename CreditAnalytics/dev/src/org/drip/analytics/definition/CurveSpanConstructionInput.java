@@ -98,17 +98,17 @@ public abstract class CurveSpanConstructionInput implements
 		return _quotingParam;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] getComponent()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] getComponent()
 	{
 		if (null == _aSRS || 0 == _aSRS.length) return null;
 
-		java.util.List<org.drip.product.definition.CalibratableComponent> lsCC = new
-			java.util.ArrayList<org.drip.product.definition.CalibratableComponent>();
+		java.util.List<org.drip.product.definition.CalibratableFixedIncomeComponent> lsCC = new
+			java.util.ArrayList<org.drip.product.definition.CalibratableFixedIncomeComponent>();
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			if (null == rbs) continue;
 
-			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = rbs.getCalibComp();
 
 			if (null == aCC) continue;
 
@@ -124,8 +124,8 @@ public abstract class CurveSpanConstructionInput implements
 
 		if (0 == iNumComp) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = new
-			org.drip.product.definition.CalibratableComponent[iNumComp];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumComp];
 
 		for (int i = 0; i < iNumComp; ++i)
 			aCC[i] = lsCC.get (i);
@@ -144,7 +144,7 @@ public abstract class CurveSpanConstructionInput implements
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			if (null == rbs) continue;
 
-			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = rbs.getCalibComp();
 
 			if (null == aCC) continue;
 
@@ -172,7 +172,7 @@ public abstract class CurveSpanConstructionInput implements
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			if (null == rbs) continue;
 
-			org.drip.product.definition.CalibratableComponent[] aCC = rbs.getCalibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = rbs.getCalibComp();
 
 			if (null == aCC) continue;
 

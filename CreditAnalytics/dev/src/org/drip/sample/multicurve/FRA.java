@@ -59,19 +59,19 @@ public class FRA {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[aiDay.length + iNumFutures];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
 			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addBusDays (aiDay[i], strCurrency), strCurrency);
 
-		CalibratableComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
+		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
 
 		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
 			aCalibComp[i] = aEDF[i - aiDay.length];
@@ -85,14 +85,14 @@ public class FRA {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[astrTenor.length];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
 
@@ -137,7 +137,7 @@ public class FRA {
 		 * Construct the array of cash instruments and their quotes.
 		 */
 
-		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtSpot,
 			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
 			4,
@@ -169,7 +169,7 @@ public class FRA {
 			0.03145     // 50Y
 		};
 
-		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
 			adblSwapQuote,
@@ -429,42 +429,6 @@ public class FRA {
 		return mapFC;
 	}
 
-	private static final void RunWithVolCorrSurface (
-		final FRAComponent fra,
-		final ValuationParams valParams,
-		final ComponentMarketParams cmp,
-		final FloatingRateIndex fri,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
-		throws Exception
-	{
-		cmp.setLatentStateVolSurface (
-			fri.fullyQualifiedName(),
-			new FlatUnivariate (dblFRIVol)
-		);
-
-		cmp.setLatentStateVolSurface (
-			"ForwardToDomesticExchangeVolatility",
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-		);
-
-		cmp.setLatentStateVolSurface (
-			"FRIForwardToDomesticExchangeCorrelation",
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
-		);
-
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
-
-		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
-			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("ParForward"), 1, 4, 100.) + "% |" +
-			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("QuantoAdjustedParForward"), 1, 4, 100.) + "% |" +
-			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("QuantoAdjustment"), 1, 4, 1.));
-	}
-
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -475,8 +439,11 @@ public class FRA {
 
 		CreditAnalytics.Init ("");
 
-		String strTenor = "1M";
+		String strTenor = "3M";
 		String strCurrency = "EUR";
+		double dblFRIVol = 0.3;
+		double dblMultiplicativeQuantoExchangeVol = 0.1;
+		double dblFRIQuantoExchangeCorr = 0.2;
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -495,32 +462,34 @@ public class FRA {
 			strCurrency,
 			strCurrency + "-FRA-" + strTenor,
 			strCurrency,
-			dtToday.addTenor ("3M").getJulian(),
+			dtToday.addTenor (strTenor).getJulian(),
 			fri,
 			0.006,
-			null);
+			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
-		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
-		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
+		cmp.setLatentStateVolSurface (
+			fri.fullyQualifiedName(),
+			new FlatUnivariate (dblFRIVol)
+		);
 
-		for (double dblSigmaFwd : adblSigmaFwd) {
-			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
-					RunWithVolCorrSurface (
-						fra,
-						valParams,
-						cmp,
-						fri,
-						dblSigmaFwd,
-						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX);
-			}
-		}
+		cmp.setLatentStateVolSurface (
+			"ForwardToDomesticExchangeVolatility",
+			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		);
+
+		cmp.setLatentStateVolSurface (
+			"FRIForwardToDomesticExchangeCorrelation",
+			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+		);
+
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
+
+		for (Map.Entry<String, Double> me : mapFRAOutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

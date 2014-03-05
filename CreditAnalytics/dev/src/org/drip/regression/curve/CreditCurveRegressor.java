@@ -307,7 +307,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("CompAndQuotes",
 				_strRegressionScenario)
 			{
-				private org.drip.product.definition.CalibratableComponent[] _aCalibComp = null;
+				private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibComp = null;
 
 				@Override public boolean execRegression()
 				{
@@ -361,7 +361,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					org.drip.product.definition.CalibratableComponent[] aCalibComp =
+					org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp =
 						_cc.calibComp();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
@@ -420,7 +420,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					org.drip.product.definition.CalibratableComponent[] aCalibComp =
+					org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp =
 						_cc.calibComp();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
@@ -493,7 +493,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					org.drip.product.definition.CalibratableComponent[] aCalibComp =
+					org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp =
 						_cc.calibComp();
 
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;

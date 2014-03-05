@@ -38,7 +38,7 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class CreditComponent extends org.drip.product.definition.CalibratableComponent {
+public abstract class CreditComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 
 	/**
 	 * Get the coupon flow for the credit component

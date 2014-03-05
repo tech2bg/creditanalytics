@@ -754,7 +754,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public org.drip.product.definition.Component[] getComponents()
+	@Override public org.drip.product.definition.FixedIncomeComponent[] getComponents()
 	{
 		return _aBond;
 	}

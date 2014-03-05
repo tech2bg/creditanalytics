@@ -41,7 +41,7 @@ public class RatesClosesLoader {
 		"5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y"};
 
 	private static final double calcMeasure (
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strMeasure,
@@ -56,7 +56,7 @@ public class RatesClosesLoader {
 	}
 
 	private static final double calcCleanReturn (
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2,
 		final org.drip.analytics.rates.DiscountCurve dc1,
@@ -69,7 +69,7 @@ public class RatesClosesLoader {
 	}
 
 	private static final double calcDirtyReturn (
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2,
 		final org.drip.analytics.rates.DiscountCurve dc1,
@@ -95,7 +95,7 @@ public class RatesClosesLoader {
 	private static final java.lang.String ComputePnLMetrics (
 		final org.drip.analytics.date.JulianDate dt0D,
 		final org.drip.analytics.date.JulianDate dt1D,
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteSpot,
 		final org.drip.analytics.rates.DiscountCurve dcDateSpotQuoteSpot,
 		final org.drip.analytics.rates.DiscountCurve dcDateNextQuoteSpot,
@@ -192,7 +192,7 @@ public class RatesClosesLoader {
 	}
 
 	private static final java.lang.String ComputeForwardMetric (
-		final org.drip.product.definition.Component[] aComp,
+		final org.drip.product.definition.FixedIncomeComponent[] aComp,
 		final org.drip.analytics.rates.DiscountCurve dc)
 		throws java.lang.Exception
 	{
@@ -225,11 +225,11 @@ public class RatesClosesLoader {
 		java.util.List<java.lang.String> lsstrDump = new java.util.ArrayList<java.lang.String>();
 
 		double[] adblBaselineSwapRate = new double[s_astrFwdTenor.length];
-		org.drip.product.definition.Component[] aComp = new
-			org.drip.product.definition.Component[s_astrFwdTenor.length];
+		org.drip.product.definition.FixedIncomeComponent[] aComp = new
+			org.drip.product.definition.FixedIncomeComponent[s_astrFwdTenor.length];
 
 		for (int i = 0; i < s_astrFwdTenor.length; ++i) {
-			org.drip.product.definition.Component comp =
+			org.drip.product.definition.FixedIncomeComponent comp =
 				org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt0D, dt0D.addTenorAndAdjust
 					(s_astrFwdTenor[i], strCurrency), 0.01, strCurrency, strCurrency + "-LIBOR-3M",
 						strCurrency);
@@ -252,7 +252,7 @@ public class RatesClosesLoader {
 		return lsstrDump;
 	}
 
-	private static final org.drip.product.definition.CalibratableComponent[] CashInstrumentsFromTenor (
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[] CashInstrumentsFromTenor (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String[] astrTenor,
 		final java.lang.String strCurrency)
@@ -260,8 +260,8 @@ public class RatesClosesLoader {
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		org.drip.product.definition.CalibratableComponent[] aCalibComp = new
-			org.drip.product.definition.CalibratableComponent[iNumTenor];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumTenor];
 
 		if (0 == iNumTenor) return null;
 
@@ -272,7 +272,7 @@ public class RatesClosesLoader {
 		return aCalibComp;
 	}
 
-	private static final org.drip.product.definition.CalibratableComponent[] SwapInstrumentsFromTenor (
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[] SwapInstrumentsFromTenor (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String[] astrTenor,
 		final double[] adblQuote,
@@ -281,8 +281,8 @@ public class RatesClosesLoader {
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		org.drip.product.definition.CalibratableComponent[] aCalibComp = new
-			org.drip.product.definition.CalibratableComponent[iNumTenor];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumTenor];
 
 		if (0 == iNumTenor) return null;
 

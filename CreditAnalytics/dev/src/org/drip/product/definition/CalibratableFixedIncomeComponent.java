@@ -32,14 +32,15 @@ package org.drip.product.definition;
  */
 
 /**
- * CalibratableComponent abstract class provides implementation of Component's calibration interface. It
- * 	exposes stubs for getting/setting the component’s calibration code, generate calibrated measure values
- * 	from the market inputs, and compute micro-Jacobians (QuoteDF and PVDF micro-Jacks).
+ * CalibratableFixedIncomeComponent abstract class provides implementation of Component's calibration
+ * 	interface. It exposes stubs for getting/setting the component’s calibration code, generate calibrated
+ * 	measure values from the market inputs, and compute micro-Jacobians (QuoteDF and PVDF micro-Jacks).
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class CalibratableComponent extends org.drip.product.definition.Component {
+public abstract class CalibratableFixedIncomeComponent extends
+	org.drip.product.definition.FixedIncomeComponent {
 	protected abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,

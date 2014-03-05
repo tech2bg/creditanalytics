@@ -188,7 +188,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
@@ -207,7 +207,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
@@ -227,7 +227,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	{
 		if (null == rvtp) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
@@ -273,7 +273,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		return super.setCCIS (_rcci = (org.drip.analytics.definition.CurveSpanConstructionInput) ccis);
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return null == _rcci ? null : _rcci.getComponent();
 	}

@@ -48,7 +48,7 @@ public class CreditScenarioCurveBuilder {
 	 */
 
 	public static final org.drip.param.definition.ScenarioCreditCurve CreateCCSC (
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst)
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst)
 	{
 		try {
 			return new org.drip.param.market.CreditCurveScenarioContainer (aCalibInst, 0.0001, 0.01);
@@ -77,7 +77,7 @@ public class CreditScenarioCurveBuilder {
 	public static final org.drip.analytics.definition.CreditCurve CreateCreditCurve (
 		final java.lang.String strName,
 		final org.drip.analytics.date.JulianDate dt,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,

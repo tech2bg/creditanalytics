@@ -115,7 +115,7 @@ public class ScenarioForwardCurveBuilder {
 		final org.drip.param.valuation.QuotingParams quotingParam,
 		final java.lang.String strBasisType,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp,
 		final java.lang.String strManifestMeasure,
 		final double[] adblQuote,
 		final double dblEpochResponse)

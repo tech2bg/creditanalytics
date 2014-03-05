@@ -18,7 +18,7 @@ import org.drip.param.creator.*;
 import org.drip.param.definition.BasketMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
-import org.drip.product.definition.CalibratableComponent;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 
@@ -86,7 +86,7 @@ public class MultiLegSwapAPI {
 		double adblRate[] = new double[iNumDCInstruments];
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
-		CalibratableComponent aCompCalib[] = new CalibratableComponent[iNumDCInstruments];
+		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
 		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration

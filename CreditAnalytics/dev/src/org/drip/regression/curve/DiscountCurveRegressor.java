@@ -85,8 +85,8 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 				private double _adblCompCalibValue[] = new double[NUM_DC_INSTR];
 				private java.lang.String _astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
-				private org.drip.product.definition.CalibratableComponent _aCompCalib[] = new
-					org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
+				private org.drip.product.definition.CalibratableFixedIncomeComponent _aCompCalib[] = new
+					org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 				java.util.Map<org.drip.analytics.date.JulianDate,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = new
@@ -150,7 +150,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					_adblCompCalibValue[14] = .0160;
 					org.drip.analytics.date.JulianDate dtEDFStart = _dtStart;
 
-					org.drip.product.definition.CalibratableComponent[] aEDF =
+					org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
 						org.drip.product.creator.EDFutureBuilder.GenerateEDPack (_dtStart, 8, _strCurrency);
 
 					for (int i = 0; i < 8; ++i) {
@@ -429,7 +429,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("CompAndQuotes",
 				_strRegressionScenario)
 			{
-				private org.drip.product.definition.CalibratableComponent[] _aCalibComp = null;
+				private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibComp = null;
 
 				@Override public boolean execRegression()
 				{
@@ -479,7 +479,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					org.drip.product.definition.CalibratableComponent[] aCalibComp = _dc.calibComp();
+					org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = _dc.calibComp();
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
 						java.lang.String strCalibCompCode = aCalibComp[i].getPrimaryCode();

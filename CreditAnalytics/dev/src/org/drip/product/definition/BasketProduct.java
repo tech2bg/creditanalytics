@@ -371,7 +371,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 * @return Components in the Basket
 	 */
 
-	public abstract org.drip.product.definition.Component[] getComponents();
+	public abstract org.drip.product.definition.FixedIncomeComponent[] getComponents();
 
 	/**
 	 * Retrieve the component Weights
@@ -381,7 +381,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	public double[] getWeights()
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		double dblTotalWeight = 0.;
 		int iNumComp = aComp.length;
@@ -407,7 +407,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	@Override public java.util.Set<java.lang.String> getComponentIRCurveNames()
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 
@@ -428,7 +428,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	@Override public java.util.Set<java.lang.String> getComponentCreditCurveNames()
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 
@@ -451,7 +451,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	public double getInitialNotional()
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 		double dblInitialNotional = 0.;
@@ -476,7 +476,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		double dblNotional = 0.;
 		int iNumComp = aComp.length;
@@ -503,7 +503,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		double dblNotional = 0.;
 		int iNumComp = aComp.length;
@@ -535,7 +535,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		if (null == bmp || 0. == dblNotional || !org.drip.quant.common.NumberUtil.IsValid (dblNotional))
 			throw new java.lang.Exception ("BasketProduct::getCoupon => Cannot extract basket notional");
 
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		double dblCoupon = 0.;
 		int iNumComp = aComp.length;
@@ -554,7 +554,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	public org.drip.analytics.date.JulianDate getEffectiveDate()
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 
@@ -577,7 +577,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	public org.drip.analytics.date.JulianDate getMaturityDate()
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 
@@ -623,7 +623,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 	public org.drip.analytics.date.JulianDate getFirstCouponDate()
 	{
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 
@@ -659,7 +659,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBasketOP = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		org.drip.product.definition.Component[] aComp = getComponents();
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		double[] adblWeight = getWeights();
 

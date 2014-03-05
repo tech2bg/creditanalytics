@@ -71,7 +71,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Scen
 	 */
 
 	public CreditCurveScenarioContainer (
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double dblCouponBump,
 		final double dblRecoveryBump)
 		throws java.lang.Exception

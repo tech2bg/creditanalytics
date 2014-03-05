@@ -57,7 +57,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 				org.drip.analytics.rates.DiscountCurve dcCash = null;
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
+				org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = null;
 
 				@Override public boolean preRegression() {
 					int NUM_CASH_INSTR = 7;
@@ -66,7 +66,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 					double adblCompCalibValue[] = new double[NUM_CASH_INSTR];
 					aWJComp = new org.drip.quant.calculus.WengertJacobian[NUM_CASH_INSTR];
 					java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_CASH_INSTR];
-					aCompCalib = new org.drip.product.definition.CalibratableComponent[NUM_CASH_INSTR];
+					aCompCalib = new org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_CASH_INSTR];
 
 					if (null == (dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6)))
 						return false;

@@ -13,7 +13,7 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.product.definition.CalibratableComponent;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 
 /*
  * Credit Analytics API Import
@@ -102,7 +102,7 @@ public class RatesLiveAndEODAPI {
 
 		// Retrieve the components whose quotes went into constructing the curve
 
-		CalibratableComponent[] aCC = dc.calibComp();
+		CalibratableFixedIncomeComponent[] aCC = dc.calibComp();
 
 		// Display the component named codes and the corresponding quotes
 
@@ -140,7 +140,7 @@ public class RatesLiveAndEODAPI {
 
 		// Display the component named codes and the corresponding quotes
 
-		CalibratableComponent[] aCCCash = dcCash.calibComp();
+		CalibratableFixedIncomeComponent[] aCCCash = dcCash.calibComp();
 
 		for (int i = 0; i < aCCCash.length; ++i)
 			System.out.println (aCCCash[i].getPrimaryCode() + " => " + (int) (10000. * dcCash.manifestMeasure (aCCCash[i].getPrimaryCode())));
@@ -174,7 +174,7 @@ public class RatesLiveAndEODAPI {
 		// Display the component named codes and the corresponding quotes
 
 		if (null != dcEDF) {
-			CalibratableComponent[] aCCEDF = dcEDF.calibComp();
+			CalibratableFixedIncomeComponent[] aCCEDF = dcEDF.calibComp();
 
 			for (int i = 0; i < aCCEDF.length; ++i)
 				System.out.println (aCCEDF[i].getPrimaryCode() + " => " +
@@ -209,7 +209,7 @@ public class RatesLiveAndEODAPI {
 
 		// Display the component named codes and the corresponding quotes
 
-		CalibratableComponent[] aCCIRS = dcIRS.calibComp();
+		CalibratableFixedIncomeComponent[] aCCIRS = dcIRS.calibComp();
 
 		for (int i = 0; i < aCCIRS.length; ++i)
 			System.out.println (aCCIRS[i].getPrimaryCode() + " => " +
@@ -252,7 +252,7 @@ public class RatesLiveAndEODAPI {
 
 		// Display the component named codes and the corresponding quotes
 
-		CalibratableComponent[] aCompTSY = dcTSY.calibComp();
+		CalibratableFixedIncomeComponent[] aCompTSY = dcTSY.calibComp();
 
 		for (int i = 0; i < aCompTSY.length; ++i)
 			System.out.println (aCompTSY[i].getPrimaryCode() + " => " + (int)

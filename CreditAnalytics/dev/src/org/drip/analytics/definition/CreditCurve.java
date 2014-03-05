@@ -67,7 +67,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	protected org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 	protected org.drip.param.valuation.ValuationParams _valParam = null;
 	protected org.drip.param.valuation.QuotingParams _quotingParams = null;
-	protected org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
+	protected org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
 	protected java.util.Map<org.drip.analytics.date.JulianDate,
@@ -490,7 +490,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
@@ -533,7 +533,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		return false;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return _aCalibInst;
 	}

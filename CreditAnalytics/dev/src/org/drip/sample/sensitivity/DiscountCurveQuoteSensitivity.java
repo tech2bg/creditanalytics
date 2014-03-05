@@ -73,12 +73,12 @@ public class DiscountCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] DepositInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[aiDay.length];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
 			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addBusDays (aiDay[i], "USD"), "USD");
@@ -92,12 +92,12 @@ public class DiscountCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor)
 		throws Exception
 	{
-		CalibratableComponent[] aCalibComp = new CalibratableComponent[astrTenor.length];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
@@ -170,7 +170,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of DEPOSIT Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtToday,
 			new int[] {1, 2, 7, 14, 30, 60});
 
@@ -194,7 +194,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of FUTURE Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableComponent[] aFutureComp = EDFutureBuilder.GenerateEDPack (dtToday, 8, "USD");
+		CalibratableFixedIncomeComponent[] aFutureComp = EDFutureBuilder.GenerateEDPack (dtToday, 8, "USD");
 
 		double[] adblFutureQuote = new double[] {
 			0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160}; // EDF Rate;
@@ -216,7 +216,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of SWAP Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
+		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"});
 
 		double[] adblSwapQuote = new double[]

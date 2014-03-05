@@ -6,7 +6,7 @@ import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
-import org.drip.product.definition.CalibratableComponent;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
@@ -131,12 +131,12 @@ public class ShapeDFZeroLocalSmooth {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final java.lang.String[] astrTenor)
 		throws Exception
 	{
-		CalibratableComponent[] aCash = new CalibratableComponent[astrTenor.length];
+		CalibratableFixedIncomeComponent[] aCash = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCash[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"), "MXN");
@@ -150,12 +150,12 @@ public class ShapeDFZeroLocalSmooth {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor)
 		throws Exception
 	{
-		CalibratableComponent[] aSwap = new CalibratableComponent[astrTenor.length];
+		CalibratableFixedIncomeComponent[] aSwap = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
 			aSwap[i] = RatesStreamBuilder.CreateIRS (
@@ -264,7 +264,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtToday,
 			new java.lang.String[] {"1M"});
 
@@ -287,7 +287,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
+		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"3M", "6M", "9M", "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "30Y"});
 
 		double[] adblSwapQuote = new double[]
@@ -743,7 +743,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * 	construction methodologies for a sequence of bespoke swap instruments.
 		 */
 
-		CalibratableComponent[] aCC = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
+		CalibratableFixedIncomeComponent[] aCC = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
 			{"3Y", "6Y", "9Y", "12Y", "15Y", "18Y", "21Y", "24Y", "27Y", "30Y"});
 
 		System.out.println ("\n\t--------------------------------------------------------------------------------------------------------------------------------");

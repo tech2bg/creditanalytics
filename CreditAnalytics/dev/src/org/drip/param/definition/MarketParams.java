@@ -332,7 +332,7 @@ public abstract class MarketParams {
 	 */
 
 	public abstract org.drip.param.definition.ComponentMarketParams getScenCMP (
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final java.lang.String strScen);
 
 	/**
@@ -347,7 +347,7 @@ public abstract class MarketParams {
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 			getIRTenorCMP (
-				final org.drip.product.definition.Component comp,
+				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp);
 
 	/**
@@ -362,7 +362,7 @@ public abstract class MarketParams {
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 			getForwardTenorCMP (
-				final org.drip.product.definition.Component comp,
+				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp);
 
 	/**
@@ -377,7 +377,7 @@ public abstract class MarketParams {
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 			getCreditTenorCMP (
-				final org.drip.product.definition.Component comp,
+				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp);
 
 	/**

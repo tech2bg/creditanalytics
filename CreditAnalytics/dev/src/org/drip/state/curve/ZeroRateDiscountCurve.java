@@ -183,7 +183,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
@@ -202,7 +202,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
@@ -222,7 +222,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 	{
 		if (null == rvtp) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
@@ -269,7 +269,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		return true;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return null == _rcci ? null : _rcci.getComponent();
 	}

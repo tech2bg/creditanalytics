@@ -49,7 +49,7 @@ public class EODCurves {
 	private static final int s_iCreditCalibMode = 0;
 	private static final boolean s_bUpdateBareTSYCQNames = true;
 
-	private static final org.drip.product.definition.CalibratableComponent CreateIRComp (
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateIRComp (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strTenor,
 		final java.lang.String strCurrency,
@@ -81,7 +81,7 @@ public class EODCurves {
 
 	private static final boolean AddCalibComp (
 		final java.util.List<java.lang.Double> alCalibValue,
-		final java.util.List<org.drip.product.definition.CalibratableComponent> alCalibComp,
+		final java.util.List<org.drip.product.definition.CalibratableFixedIncomeComponent> alCalibComp,
 		final java.sql.ResultSet rsCurvePoints,
 		final java.lang.String strCurveID,
 		final java.lang.String strInstrCode,
@@ -139,7 +139,7 @@ public class EODCurves {
 			return false;
 		}
 
-		org.drip.product.definition.CalibratableComponent calibComp = CreateIRComp (dtEOD, strCurveID,
+		org.drip.product.definition.CalibratableFixedIncomeComponent calibComp = CreateIRComp (dtEOD, strCurveID,
 			strCurrency, strCPType, bTSY);
 
 		if (null == calibComp) {
@@ -235,7 +235,7 @@ public class EODCurves {
 		double dblRecovery = java.lang.Double.NaN;
 		java.lang.String[] astrCalibMeasure = new java.lang.String[20];
 		org.drip.param.definition.ScenarioCreditCurve ccsc = null;
-		org.drip.product.definition.CalibratableComponent[] aCDS = new
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCDS = new
 			org.drip.product.definition.CreditDefaultSwap[20];
 
 		try {
@@ -749,8 +749,8 @@ public class EODCurves {
 
 		java.util.List<java.lang.Double> alCalibValue = new java.util.ArrayList<java.lang.Double>();
 
-		java.util.List<org.drip.product.definition.CalibratableComponent> alCalibComp = new
-			java.util.ArrayList<org.drip.product.definition.CalibratableComponent>();
+		java.util.List<org.drip.product.definition.CalibratableFixedIncomeComponent> alCalibComp = new
+			java.util.ArrayList<org.drip.product.definition.CalibratableFixedIncomeComponent>();
 
 		try {
 			rsCurvePoints = stmt.executeQuery ("select * from IR_EOD where EOD = '" + dtEOD.toOracleDate() +
@@ -852,8 +852,8 @@ public class EODCurves {
 
 		java.lang.String[] astrCalibMeasure = new java.lang.String[alCalibValue.size()];
 
-		org.drip.product.definition.CalibratableComponent[] aCompCalib = new
-			org.drip.product.definition.CalibratableComponent[alCalibValue.size()];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCompCalib = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[alCalibValue.size()];
 
 		for (double dblCompCalibValue : alCalibValue) {
 			astrCalibMeasure[i] = "Rate";
@@ -862,7 +862,7 @@ public class EODCurves {
 
 		i = 0;
 
-		for (org.drip.product.definition.CalibratableComponent comp : alCalibComp)
+		for (org.drip.product.definition.CalibratableFixedIncomeComponent comp : alCalibComp)
 			aCompCalib[i++] = comp;
 
 		try {
@@ -916,8 +916,8 @@ public class EODCurves {
 
 		java.util.List<java.lang.Double> alCalibValue = new java.util.ArrayList<java.lang.Double>();
 
-		java.util.List<org.drip.product.definition.CalibratableComponent> alCalibComp = new
-			java.util.ArrayList<org.drip.product.definition.CalibratableComponent>();
+		java.util.List<org.drip.product.definition.CalibratableFixedIncomeComponent> alCalibComp = new
+			java.util.ArrayList<org.drip.product.definition.CalibratableFixedIncomeComponent>();
 
 		try {
 			rsCurvePoints = stmt.executeQuery ("select * from IR_EOD where EOD = '" + dtEOD.toOracleDate() +
@@ -1071,8 +1071,8 @@ public class EODCurves {
 
 		java.lang.String[] astrCalibMeasure = new java.lang.String[alCalibValue.size()];
 
-		org.drip.product.definition.CalibratableComponent[] aCompCalib = new
-			org.drip.product.definition.CalibratableComponent[alCalibValue.size()];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCompCalib = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[alCalibValue.size()];
 
 		for (double dblCompCalibValue : alCalibValue) {
 			astrCalibMeasure[i] = "Rate";
@@ -1081,7 +1081,7 @@ public class EODCurves {
 
 		i = 0;
 
-		for (org.drip.product.definition.CalibratableComponent comp : alCalibComp)
+		for (org.drip.product.definition.CalibratableFixedIncomeComponent comp : alCalibComp)
 			aCompCalib[i++] = comp;
 
 		try {

@@ -130,7 +130,7 @@ public class RatesAnalyticsAPI {
 		double adblMaturity[] = new double[NUM_DC_INSTR];
 		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
-		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
+		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 		JulianDate dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6);
 
@@ -184,7 +184,7 @@ public class RatesAnalyticsAPI {
 		adblCompCalibValue[13] = .0134;
 		adblCompCalibValue[14] = .0160;
 
-		CalibratableComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
+		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {
 			adblRate[i + 7] = 0.01;
@@ -303,7 +303,7 @@ public class RatesAnalyticsAPI {
 		double adblMaturity[] = new double[NUM_CASH_INSTR];
 		String astrCalibMeasure[] = new String[NUM_CASH_INSTR];
 		double adblCompCalibValue[] = new double[NUM_CASH_INSTR];
-		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_CASH_INSTR];
+		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_CASH_INSTR];
 
 		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
 
@@ -381,7 +381,7 @@ public class RatesAnalyticsAPI {
 		double adblMaturity[] = new double[NUM_DC_INSTR];
 		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
-		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
+		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
 
@@ -396,7 +396,7 @@ public class RatesAnalyticsAPI {
 		adblCompCalibValue[6] = .0134;
 		adblCompCalibValue[7] = .0160;
 
-		CalibratableComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
+		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
 
 		for (int i = 0; i < NUM_DC_INSTR; ++i) {
 			adblRate[i] = 0.01;
@@ -439,7 +439,7 @@ public class RatesAnalyticsAPI {
 		double adblMaturity[] = new double[NUM_DC_INSTR];
 		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
-		CalibratableComponent aCompCalib[] = new CalibratableComponent[NUM_DC_INSTR];
+		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
 

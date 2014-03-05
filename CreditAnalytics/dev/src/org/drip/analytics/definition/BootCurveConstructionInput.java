@@ -45,7 +45,7 @@ package org.drip.analytics.definition;
 public class BootCurveConstructionInput implements org.drip.analytics.definition.CurveConstructionInputSet {
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.valuation.QuotingParams _quotingParam = null;
-	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
+	private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
@@ -67,7 +67,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 	public static final BootCurveConstructionInput Create (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.valuation.QuotingParams quotingParam,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
@@ -140,7 +140,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 	public BootCurveConstructionInput (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.valuation.QuotingParams quotingParam,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
@@ -170,7 +170,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		return _quotingParam;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] getComponent()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] getComponent()
 	{
 		return _aCalibInst;
 	}

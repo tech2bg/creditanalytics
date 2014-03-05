@@ -1,12 +1,11 @@
 
-package org.drip.sample.sensitivity;
+package org.drip.sample.multicurve;
 
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
@@ -14,9 +13,9 @@ import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.spline.basis.*;
+import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
 
 /*
@@ -25,7 +24,6 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -48,38 +46,12 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * ForwardCurveDerivedBasis contains the sample demonstrating the full functionality behind creating highly
- * 	customized spline based forward curves.
- * 
- * The first sample illustrates the creation and usage of the xM-6M Tenor Basis Swap:
- * 	- Construct the 6M-xM float-float basis swap.
- * 	- Calculate the corresponding starting forward rate off of the discount curve.
- * 	- Construct the shape preserving forward curve off of Cubic Polynomial Basis Spline.
- * 	- Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
- * 	- Construct the shape preserving forward curve off of Hyperbolic Tension Based Basis Spline.
- * 	- Set the discount curve based component market parameters.
- * 	- Set the discount curve + cubic polynomial forward curve based component market parameters.
- * 	- Set the discount curve + quartic polynomial forward curve based component market parameters.
- * 	- Set the discount curve + hyperbolic tension forward curve based component market parameters.
- * 	- Compute the following forward curve metrics for each of cubic polynomial forward, quartic
- * 		polynomial forward, and KLK Hyperbolic tension forward curves:
- * 		- Reference Basis Par Spread
- * 		- Derived Basis Par Spread
- * 	- Compare these with a) the forward rate off of the discount curve, b) The LIBOR rate, and c) The
- * 		Input Basis Swap Quote.
- * 
- * The second sample illustrates how to build and test the forward curves across various tenor basis. It
- * 	shows the following steps:
- * 	- Construct the Discount Curve using its instruments and quotes.
- * 	- Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
- * 	- Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
- * 	- Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
- * 	- Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
+ * FRAVolCorrAnalysis contains an analysis if the correlation and volatility impact on the FRA.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForwardCurveDerivedBasis {
+public class FRAVolCorrAnalysis {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -265,56 +237,7 @@ public class ForwardCurveDerivedBasis {
 		return aFFC;
 	}
 
-	private static final void ForwardJack (
-		final JulianDate dt,
-		final Map<String, ForwardCurve> mapForward,
-		final String strStartDateTenor)
-	{
-		for (Map.Entry<String, ForwardCurve> me : mapForward.entrySet())
-			System.out.println (me.getKey() + " | " + strStartDateTenor + ": " +
-				me.getValue().jackDForwardDManifestMeasure (
-					"DerivedParBasisSpread",
-					dt.addTenor (strStartDateTenor)).displayString()
-				);
-	}
-
-	private static final void ForwardJack (
-		final JulianDate dt,
-		final Map<String, ForwardCurve> mapForward)
-	{
-		ForwardJack (dt, mapForward, "1Y");
-
-		ForwardJack (dt, mapForward, "2Y");
-
-		ForwardJack (dt, mapForward, "3Y");
-
-		ForwardJack (dt, mapForward, "5Y");
-
-		ForwardJack (dt, mapForward, "7Y");
-	}
-
-	/*
-	 * This sample illustrates the creation and usage of the xM-6M Tenor Basis Swap. It shows the following:
-	 * 	- Construct the 6M-xM float-float basis swap.
-	 * 	- Calculate the corresponding starting forward rate off of the discount curve.
-	 * 	- Construct the shape preserving forward curve off of Cubic Polynomial Basis Spline.
-	 * 	- Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
-	 * 	- Construct the shape preserving forward curve off of Hyperbolic Tension Based Basis Spline.
-	 * 	- Set the discount curve based component market parameters.
-	 * 	- Set the discount curve + cubic polynomial forward curve based component market parameters.
-	 * 	- Set the discount curve + quartic polynomial forward curve based component market parameters.
-	 * 	- Set the discount curve + hyperbolic tension forward curve based component market parameters.
-	 * 	- Compute the following forward curve metrics for each of cubic polynomial forward, quartic
-	 * 		polynomial forward, and KLK Hyperbolic tension forward curves:
-	 * 		- Reference Basis Par Spread
-	 * 		- Derived Basis Par Spread
-	 * 	- Compare these with a) the forward rate off of the discount curve, b) The LIBOR rate, and c) The
-	 * 		Input Basis Swap Quote.
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	private static final Map<String, ForwardCurve> xM6MBasisSample (
+	private static final ForwardCurve MakeFC (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final DiscountCurve dc,
@@ -323,16 +246,6 @@ public class ForwardCurveDerivedBasis {
 		final double[] adblxM6MBasisSwapQuote)
 		throws Exception
 	{
-		System.out.println ("------------------------------------------------------------");
-
-		System.out.println (" SPL =>              n=4               |         |         |");
-
-		System.out.println ("---------------------------------------|  LOG DF |  LIBOR  |");
-
-		System.out.println (" MSR =>  RECALC  |  REFEREN |  DERIVED |         |         |");
-
-		System.out.println ("------------------------------------------------------------");
-
 		/*
 		 * Construct the 6M-xM float-float basis swap.
 		 */
@@ -355,13 +268,11 @@ public class ForwardCurveDerivedBasis {
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
 
-		Map<String, ForwardCurve> mapForward = new HashMap<String, ForwardCurve>();
-
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
 		 */
 
-		ForwardCurve fcxMQuartic = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
+		return ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
@@ -374,96 +285,26 @@ public class ForwardCurveDerivedBasis {
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
 			dblStartingFwd);
-
-		mapForward.put (" QUARTIC_FWD" + strBasisTenor, fcxMQuartic);
-
-		/*
-		 * Set the discount curve + quartic polynomial forward curve based component market parameters.
-		 */
-
-		ComponentMarketParams cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fcxMQuartic, null, null, null, null, null, null);
-
-		int i = 0;
-		int iFreq = 12 / iTenorInMonths;
-
-		/*
-		 * Compute the following forward curve metrics for each of cubic polynomial forward, quartic
-		 * 	polynomial forward, and KLK Hyperbolic tension forward curves:
-		 * 	- Reference Basis Par Spread
-		 * 	- Derived Basis Par Spread
-		 * 
-		 * Further compare these with a) the forward rate off of the discount curve, b) the LIBOR rate, and
-		 * 	c) Input Basis Swap Quote.
-		 */
-
-		for (String strMaturityTenor : astrxM6MFwdTenor) {
-			double dblFwdEndDate = dtSpot.addTenor (strMaturityTenor).getJulian();
-
-			double dblFwdStartDate = dtSpot.addTenor (strMaturityTenor).subtractTenor (strBasisTenor).getJulian();
-
-			FloatFloatComponent ffc = aFFC[i++];
-
-			CaseInsensitiveTreeMap<Double> mapQuarticValue = ffc.value (valParams, null, cmpQuarticFwd, null);
-
-			System.out.println (" " + strMaturityTenor + " =>  " +
-				FormatUtil.FormatDouble (fcxMQuartic.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +
-				FormatUtil.FormatDouble (mapQuarticValue.get ("ReferenceParBasisSpread"), 2, 2, 1.) + "  |  " +
-				FormatUtil.FormatDouble (mapQuarticValue.get ("DerivedParBasisSpread"), 2, 2, 1.) + "  |  " +
-				FormatUtil.FormatDouble (iFreq * java.lang.Math.log (dc.df (dblFwdStartDate) / dc.df (dblFwdEndDate)), 1, 2, 100.) + "  |  " +
-				FormatUtil.FormatDouble (dc.libor (dblFwdStartDate, dblFwdEndDate), 1, 2, 100.) + "  |  "
-			);
-		}
-
-		return mapForward;
 	}
 
-	/*
-	 * This sample illustrates how to build and test the forward curves across various tenor basis. It shows
-	 * 	the following steps:
-	 * 	- Construct the Discount Curve using its instruments and quotes.
-	 * 	- Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
-	 * 	- Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
-	 * 	- Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
-	 * 	- Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	private static final void CustomForwardCurveBuilderSample()
+	private static final Map<String, ForwardCurve> MakeFC (
+		final JulianDate dt,
+		final String strCurrency,
+		final DiscountCurve dc)
 		throws Exception
 	{
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
-
-		CreditAnalytics.Init ("");
-
-		String strCurrency = "EUR";
-
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
-
-		/*
-		 * Construct the Discount Curve using its instruments and quotes
-		 */
-
-		DiscountCurve dc = MakeDC (dtToday, strCurrency);
-
-		System.out.println ("\n------------------------------------------------------------");
-
-		System.out.println ("-------------------    1M-6M Basis Swap    -----------------");
+		Map<String, ForwardCurve> mapFC = new HashMap<String, ForwardCurve> ();
 
 		/*
 		 * Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
 		 */
 
-		Map<String, ForwardCurve> mapForward1M6M = xM6MBasisSample (
-			dtToday,
+		ForwardCurve fc1M = MakeFC (
+			dt,
 			strCurrency,
 			dc,
 			1,
 			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
-			// new String[] {"1Y"},
 			new double[] {
 				0.00551,    //  1Y
 				0.00387,    //  2Y
@@ -484,16 +325,14 @@ public class ForwardCurveDerivedBasis {
 				}
 			);
 
+		mapFC.put ("1M", fc1M);
+
 		/*
 		 * Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
 		 */
 
-		System.out.println ("\n------------------------------------------------------------");
-
-		System.out.println ("-------------------    3M-6M Basis Swap    -----------------");
-
-		Map<String, ForwardCurve> mapForward3M6M = xM6MBasisSample (
-			dtToday,
+		ForwardCurve fc3M = MakeFC (
+			dt,
 			strCurrency,
 			dc,
 			3,
@@ -518,16 +357,14 @@ public class ForwardCurveDerivedBasis {
 				}
 			);
 
+		mapFC.put ("3M", fc3M);
+
 		/*
 		 * Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
 		 */
 
-		System.out.println ("\n------------------------------------------------------------");
-
-		System.out.println ("-------------------    6M-6M Basis Swap    -----------------");
-
-		Map<String, ForwardCurve> mapForward6M6M = xM6MBasisSample (
-			dtToday,
+		ForwardCurve fc6M = MakeFC (
+			dt,
 			strCurrency,
 			dc,
 			6,
@@ -552,16 +389,14 @@ public class ForwardCurveDerivedBasis {
 				}
 			);
 
+		mapFC.put ("6M", fc6M);
+
 		/*
 		 * Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
 		 */
 
-		System.out.println ("\n------------------------------------------------------------");
-
-		System.out.println ("-------------------   12M-6M Basis Swap    -----------------");
-
-		Map<String, ForwardCurve> mapForward12M6M = xM6MBasisSample (
-			dtToday,
+		ForwardCurve fc12M = MakeFC (
+			dt,
 			strCurrency,
 			dc,
 			12,
@@ -589,43 +424,118 @@ public class ForwardCurveDerivedBasis {
 				}
 			);
 
-		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
+		mapFC.put ("12M", fc12M);
 
-		System.out.println ("------------------------------------------------------- 1M-6M Micro Jack -------------------------------------------------------------------");
+		return mapFC;
+	}
 
-		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
+	private static final void RunWithVolCorrSurface (
+		final FRAComponent fra,
+		final ValuationParams valParams,
+		final ComponentMarketParams cmp,
+		final FloatingRateIndex fri,
+		final double dblFRIVol,
+		final double dblMultiplicativeQuantoExchangeVol,
+		final double dblFRIQuantoExchangeCorr)
+		throws Exception
+	{
+		cmp.setLatentStateVolSurface (
+			fri.fullyQualifiedName(),
+			new FlatUnivariate (dblFRIVol)
+		);
 
-		ForwardJack (dtToday, mapForward1M6M);
+		cmp.setLatentStateVolSurface (
+			"ForwardToDomesticExchangeVolatility",
+			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		);
 
-		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
+		cmp.setLatentStateVolSurface (
+			"FRIForwardToDomesticExchangeCorrelation",
+			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+		);
 
-		System.out.println ("------------------------------------------------------- 3M-6M Micro Jack -------------------------------------------------------------------");
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
 
-		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
-
-		ForwardJack (dtToday, mapForward3M6M);
-
-		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
-
-		System.out.println ("------------------------------------------------------- 6M-6M Micro Jack -------------------------------------------------------------------");
-
-		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
-
-		ForwardJack (dtToday, mapForward6M6M);
-
-		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
-
-		System.out.println ("------------------------------------------------------ 12M-6M Micro Jack -------------------------------------------------------------------");
-
-		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
-
-		ForwardJack (dtToday, mapForward12M6M);
+		System.out.println ("\t[" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("ParForward"), 1, 4, 100.) + "% |" +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("QuantoAdjustedParForward"), 1, 4, 100.) + "% |" +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("MultiplicativeQuantoAdjustment"), 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("AdditiveQuantoAdjustment"), 1, 4, 10000.));
 	}
 
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
 	{
-		CustomForwardCurveBuilderSample();
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
+		CreditAnalytics.Init ("");
+
+		String strTenor = "3M";
+		String strCurrency = "EUR";
+
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+
+		/*
+		 * Construct the Discount Curve using its instruments and quotes
+		 */
+
+		DiscountCurve dc = MakeDC (dtToday, strCurrency);
+
+		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
+
+		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
+
+		FRAComponent fra = new FRAComponent (
+			1.,
+			strCurrency,
+			strCurrency + "-FRA-" + strTenor,
+			strCurrency,
+			dtToday.addTenor (strTenor).getJulian(),
+			fri,
+			0.006,
+			"Act/360");
+
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+
+		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
+
+		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
+		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
+		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
+
+		System.out.println ("\tPrinting the FRA Output in Order (Left -> Right):");
+
+		System.out.println ("\t\tParForward (%)");
+
+		System.out.println ("\t\tQuantoAdjustedParForward (%)");
+
+		System.out.println ("\t\tMultiplicativeQuantoAdjustment (absolute)");
+
+		System.out.println ("\t\tAdditiveQuantoAdjustment (bp)");
+
+		System.out.println ("\t-------------------------------------------------------------");
+
+		System.out.println ("\t-------------------------------------------------------------");
+
+		for (double dblSigmaFwd : adblSigmaFwd) {
+			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
+				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
+					RunWithVolCorrSurface (
+						fra,
+						valParams,
+						cmp,
+						fri,
+						dblSigmaFwd,
+						dblSigmaFwd2DomX,
+						dblCorrFwdFwd2DomX);
+			}
+		}
 	}
 }

@@ -65,7 +65,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		org.drip.param.valuation.QuotingParams quotingParam = _ccis.getQuotingParameter();
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
 			_ccis.getMeasures();
@@ -308,7 +308,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
 
@@ -327,7 +327,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
 
@@ -348,7 +348,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	{
 		if (null == rvtp) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
 

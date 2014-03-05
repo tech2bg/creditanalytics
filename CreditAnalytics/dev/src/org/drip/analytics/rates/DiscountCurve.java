@@ -349,7 +349,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Invalid input");
 
-		org.drip.product.definition.CalibratableComponent[] aCalibComp = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = calibComp();
 
 		if (null == aCalibComp)
 			throw new java.lang.Exception
@@ -498,7 +498,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate)) return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCalibComp = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = calibComp();
 
 		if (null == aCalibComp || 0 == aCalibComp.length) return null;
 
@@ -721,7 +721,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 				(strLatentStateQuantificationMetric)))
 			return null;
 
-		org.drip.product.definition.CalibratableComponent[] aCC = calibComp();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
 
 		if (null == aCC) return null;
 
@@ -736,7 +736,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase (strLatentStateQuantificationMetric))
 			mapCanonicalTruthness.put (_dblEpochDate, 1.);
 
-		for (org.drip.product.definition.CalibratableComponent cc : aCC) {
+		for (org.drip.product.definition.CalibratableFixedIncomeComponent cc : aCC) {
 			if (null == cc) continue;
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = cc.getCashFlowPeriod();

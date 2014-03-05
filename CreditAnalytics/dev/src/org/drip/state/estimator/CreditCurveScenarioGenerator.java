@@ -58,7 +58,7 @@ public class CreditCurveScenarioGenerator {
 	}
 
 	private final TranslatedQuoteMeasure translateQuoteMeasure (
-		final org.drip.product.definition.CalibratableComponent comp,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent comp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
@@ -79,7 +79,7 @@ public class CreditCurveScenarioGenerator {
 			("Upfront"));
 	}
 
-	private org.drip.product.definition.CalibratableComponent[] _aCalibInst = null;
+	private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
 
 	private org.drip.state.estimator.NonlinearCurveCalibrator _compCalib = new
 		org.drip.state.estimator.NonlinearCurveCalibrator();
@@ -93,7 +93,7 @@ public class CreditCurveScenarioGenerator {
 	 */
 
 	public CreditCurveScenarioGenerator (
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst)
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst)
 		throws java.lang.Exception
 	{
 		if (null == (_aCalibInst = aCalibInst) || 0 == _aCalibInst.length)
@@ -106,7 +106,7 @@ public class CreditCurveScenarioGenerator {
 	 * @return Array of the calibration instruments
 	 */
 
-	public org.drip.product.definition.Component[] getInstruments()
+	public org.drip.product.definition.FixedIncomeComponent[] getInstruments()
 	{
 		return _aCalibInst;
 	}

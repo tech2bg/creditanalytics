@@ -583,7 +583,7 @@ public class CreditAnalyticsTestSuite {
 				e.printStackTrace();
 			}
 
-			org.drip.product.definition.CalibratableComponent[] aCC = dc.calibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = dc.calibComp();
 
 			for (int i = 0; i < aCC.length; ++i) {
 				try {
@@ -632,7 +632,7 @@ public class CreditAnalyticsTestSuite {
 				e.printStackTrace();
 			}
 
-			org.drip.product.definition.CalibratableComponent[] aCCCash = dcCash.calibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCCCash = dcCash.calibComp();
 
 			for (int i = 0; i < aCCCash.length; ++i) {
 				try {
@@ -681,7 +681,7 @@ public class CreditAnalyticsTestSuite {
 				e.printStackTrace();
 			}
 
-			org.drip.product.definition.CalibratableComponent[] aCCEDF = dcEDF.calibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCCEDF = dcEDF.calibComp();
 
 			for (int i = 0; i < aCCEDF.length; ++i) {
 				try {
@@ -730,7 +730,7 @@ public class CreditAnalyticsTestSuite {
 				e.printStackTrace();
 			}
 
-			org.drip.product.definition.CalibratableComponent[] aCCIRS = dcIRS.calibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCCIRS = dcIRS.calibComp();
 
 			for (int i = 0; i < aCCIRS.length; ++i) {
 				try {
@@ -831,7 +831,7 @@ public class CreditAnalyticsTestSuite {
 				e.printStackTrace();
 			}
 
-			org.drip.product.definition.CalibratableComponent[] aCompTSY = dcTSY.calibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCompTSY = dcTSY.calibComp();
 
 			for (int i = 0; i < aCompTSY.length; ++i) {
 				try {
@@ -987,7 +987,7 @@ public class CreditAnalyticsTestSuite {
 				e.printStackTrace();
 			}
 
-			org.drip.product.definition.CalibratableComponent[] aCompCDS = ccEOD.calibComp();
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCompCDS = ccEOD.calibComp();
 
 			for (int i = 0; i < aCompCDS.length; ++i) {
 				try {
@@ -2757,8 +2757,8 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bCDSBondCreditCurve) System.out.println ("Credit Price: " + dblCreditPrice);
 
-		org.drip.product.definition.CalibratableComponent[] aCalibInst = new
-			org.drip.product.definition.CalibratableComponent[2];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[2];
 		java.lang.String[] astrCalibMeasure = new java.lang.String[2];
 		double[] adblQuotes = new double[2];
 		aCalibInst[0] = cds;

@@ -543,8 +543,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 					dblResetDate = period.getResetDate();
 				} else
-					dblFloatingRate = null == fc ? dc.libor (period.getStartDate(), period.getPayDate(),
-						period.getCouponDCF()) : fc.forward (period.getPayDate());
+					dblFloatingRate = (null == fc ? dc.libor (period.getStartDate(), period.getPayDate(),
+						period.getCouponDCF()) : fc.forward (period.getPayDate())) *
+							org.drip.analytics.support.AnalyticsHelper.MultiplicativeCrossVolQuanto
+								(mktParams, strFRI, "ForwardToDomesticExchangeVolatility",
+									"FRIForwardToDomesticExchangeCorrelation", valParams.valueDate(),
+										period.getStartDate());
 
 				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * getNotional
 					(period.getAccrualStartDate(), period.getEndDate());

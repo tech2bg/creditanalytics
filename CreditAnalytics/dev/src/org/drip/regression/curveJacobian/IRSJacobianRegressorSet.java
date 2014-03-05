@@ -57,7 +57,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
 				org.drip.analytics.rates.DiscountCurve dcIRS = null;
-				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
+				org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = null;
 				java.util.Map<org.drip.analytics.date.JulianDate,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null;
 
@@ -69,7 +69,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 					double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 					aWJComp = new org.drip.quant.calculus.WengertJacobian[NUM_DC_INSTR];
 					java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
-					aCompCalib = new org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
+					aCompCalib = new org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 					if (null == (dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6)))
 						return false;

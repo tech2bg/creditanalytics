@@ -1056,15 +1056,15 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			!org.drip.quant.common.NumberUtil.IsValid (dblQuotedSpread))
 			return null;
 
-		org.drip.product.definition.CalibratableComponent[] aComp = new
-			org.drip.product.definition.CalibratableComponent[] {this};
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aComp = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] {this};
 		org.drip.analytics.definition.CreditCurve cc = null;
 		double[] adblRestorableCDSCoupon = new double[1];
 		adblRestorableCDSCoupon[0] = _dblCoupon;
 		_dblCoupon = dblFixCoupon;
 
 		if (null != mktParams) {
-			org.drip.product.definition.CalibratableComponent[] aMktComp = null;
+			org.drip.product.definition.CalibratableFixedIncomeComponent[] aMktComp = null;
 
 			if (null != (cc = mktParams.getCreditCurve()) && null != (aMktComp = cc.calibComp())) {
 				int iNumComp = aMktComp.length;

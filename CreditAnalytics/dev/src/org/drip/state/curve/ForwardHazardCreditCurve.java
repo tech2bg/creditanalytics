@@ -441,7 +441,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 
 		if (bSingleNode)
 			cc.setInstrCalibInputs (_valParam, true, _dc, _dcTSY, _dcEDSF, _pricerParam, new
-				org.drip.product.definition.CalibratableComponent[] {_aCalibInst[0]}, new double[]
+				org.drip.product.definition.CalibratableFixedIncomeComponent[] {_aCalibInst[0]}, new double[]
 					{dblFlatNodeValue}, _astrCalibMeasure, _mmFixing, _quotingParams);
 		else {
 			double[] adblCalibValue = new double[_adblCalibQuote.length];

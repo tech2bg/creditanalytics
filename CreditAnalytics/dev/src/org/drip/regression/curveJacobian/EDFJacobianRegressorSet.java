@@ -57,7 +57,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 				org.drip.analytics.rates.DiscountCurve dcEDF = null;
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.product.definition.CalibratableComponent aCompCalib[] = null;
+				org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = null;
 
 				@Override public boolean preRegression()
 				{
@@ -67,7 +67,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 					double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 					aWJComp = new org.drip.quant.calculus.WengertJacobian[NUM_DC_INSTR];
 					java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
-					aCompCalib = new org.drip.product.definition.CalibratableComponent[NUM_DC_INSTR];
+					aCompCalib = new org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
 					dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6);
 
@@ -81,7 +81,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 					adblCompCalibValue[7] = .0160;
 					org.drip.analytics.date.JulianDate dtEDFStart = dtStart;
 
-					org.drip.product.definition.CalibratableComponent[] aEDF =
+					org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
 						org.drip.product.creator.EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
 
 					for (int i = 0; i < NUM_DC_INSTR; ++i) {

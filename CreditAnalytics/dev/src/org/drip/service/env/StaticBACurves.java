@@ -245,8 +245,8 @@ public class StaticBACurves {
 	{
 		if (null == mpc || null == dt || null == strCurrency || strCurrency.isEmpty()) return false;
 
-		org.drip.product.definition.CalibratableComponent aCompCalib[] = new
-			org.drip.product.definition.CalibratableComponent[6];
+		org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[6];
 		java.lang.String astrCalibMeasure[] = new java.lang.String[6];
 		double adblCompCalibValue[] = new double[6];
 		org.drip.param.definition.ScenarioDiscountCurve irscTSY = null;
@@ -327,7 +327,7 @@ public class StaticBACurves {
 
 		java.lang.String astrCalibMeasure[] = new java.lang.String[8];
 		double adblCompCalibValue[] = new double[8];
-		org.drip.product.definition.CalibratableComponent[] aCompCalib = null;
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCompCalib = null;
 		org.drip.param.definition.ScenarioDiscountCurve irsc = null;
 		adblCompCalibValue[0] = .0027;
 		adblCompCalibValue[1] = .0032;
@@ -398,8 +398,8 @@ public class StaticBACurves {
 	{
 		if (null == mpc || null == dt || null == strCurrency || strCurrency.isEmpty()) return false;
 
-		org.drip.product.definition.CalibratableComponent aCompCalib[] = new
-			org.drip.product.definition.CalibratableComponent[30];
+		org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[30];
 		java.lang.String astrCalibMeasure[] = new java.lang.String[30];
 		double adblCompCalibValue[] = new double[30];
 		org.drip.param.definition.ScenarioDiscountCurve irsc = null;
@@ -411,7 +411,7 @@ public class StaticBACurves {
 		adblCompCalibValue[4] = .0020;
 		adblCompCalibValue[5] = .0023;
 		adblCompCalibValue[6] = .0026;
-		org.drip.product.definition.CalibratableComponent[] aEDF = null;
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF = null;
 
 		// First 7 instruments - cash calibration
 
@@ -635,7 +635,7 @@ public class StaticBACurves {
 		double[] adblQuotes = new double[5];
 		org.drip.param.definition.ScenarioCreditCurve ccsc = null;
 		java.lang.String[] astrCalibMeasure = new java.lang.String[5];
-		org.drip.product.definition.CalibratableComponent[] aCDS = new
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCDS = new
 			org.drip.product.definition.CreditDefaultSwap[5];
 
 		for (int i = 0; i < 5; ++i) {

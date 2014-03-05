@@ -47,10 +47,10 @@ package org.drip.param.creator;
 public class ScenarioDiscountCurveBuilder {
 	static class CompQuote {
 		double _dblQuote = java.lang.Double.NaN;
-		org.drip.product.definition.CalibratableComponent _comp = null;
+		org.drip.product.definition.CalibratableFixedIncomeComponent _comp = null;
  
 		CompQuote (
-			final org.drip.product.definition.CalibratableComponent comp,
+			final org.drip.product.definition.CalibratableFixedIncomeComponent comp,
 			final double dblQuote)
 		{
 			_comp = comp;
@@ -72,13 +72,13 @@ public class ScenarioDiscountCurveBuilder {
 	{
 		java.util.List<java.lang.Double> lsCalibQuote = new java.util.ArrayList<java.lang.Double>();
 
-		java.util.List<org.drip.product.definition.CalibratableComponent> lsCompDENSE = new
-			java.util.ArrayList<org.drip.product.definition.CalibratableComponent>();
+		java.util.List<org.drip.product.definition.CalibratableFixedIncomeComponent> lsCompDENSE = new
+			java.util.ArrayList<org.drip.product.definition.CalibratableFixedIncomeComponent>();
 
 		org.drip.analytics.date.JulianDate dtMaturity = dtInitialMaturity;
 
 		while (dtMaturity.getJulian() <= dtTerminalMaturity.getJulian()) {
-			org.drip.product.definition.CalibratableComponent comp = bIsIRS ?
+			org.drip.product.definition.CalibratableFixedIncomeComponent comp = bIsIRS ?
 				org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective, dtMaturity, 0.,
 					strCurrency, strCurrency + "-LIBOR-3M", strCurrency) :
 						org.drip.product.creator.CashBuilder.CreateCash (dtEffective, dtMaturity,
@@ -125,7 +125,7 @@ public class ScenarioDiscountCurveBuilder {
 	public static final org.drip.param.definition.ScenarioDiscountCurve FromIRCSG (
 		final java.lang.String strCurrency,
 		final java.lang.String strBootstrapMode,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst)
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst)
 	{
 		if (null == strCurrency || strCurrency.isEmpty() || null == aCalibInst || 0 == aCalibInst.length)
 			return null;
@@ -159,7 +159,7 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strCurrency,
 		final java.lang.String strBootstrapMode,
-		final org.drip.product.definition.CalibratableComponent[] aCalibInst,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
@@ -446,9 +446,9 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.param.valuation.QuotingParams quotingParam,
 		final java.lang.String strBasisType,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp1,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp1,
 		final double[] adblQuote1,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp2,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp2,
 		final double[] adblQuote2,
 		final double dblEpochResponse,
 		final boolean bZeroSmooth)
@@ -551,9 +551,9 @@ public class ScenarioDiscountCurveBuilder {
 	public static final org.drip.analytics.rates.DiscountCurve CubicKLKHyperbolicDFRateShapePreserver (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp1,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp1,
 		final double[] adblQuote1,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp2,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp2,
 		final double[] adblQuote2,
 		final boolean bZeroSmooth)
 	{
@@ -587,9 +587,9 @@ public class ScenarioDiscountCurveBuilder {
 	public static final org.drip.analytics.rates.DiscountCurve CubicPolyDFRateShapePreserver (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp1,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp1,
 		final double[] adblQuote1,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp2,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp2,
 		final double[] adblQuote2,
 		final boolean bZeroSmooth)
 	{
@@ -676,10 +676,10 @@ public class ScenarioDiscountCurveBuilder {
 	public static final org.drip.analytics.rates.DiscountCurve CustomDENSE (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp1,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp1,
 		final double[] adblQuote1,
 		final java.lang.String strTenor1,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp2,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp2,
 		final double[] adblQuote2,
 		final java.lang.String strTenor2,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
@@ -729,8 +729,8 @@ public class ScenarioDiscountCurveBuilder {
 
 		double[] adblCalibQuote = new double[iTotalNumDENSEComp];
 		java.lang.String[] astrCalibMeasure = new java.lang.String[iTotalNumDENSEComp];
-		org.drip.product.definition.CalibratableComponent[] aCalibComp = new
-			org.drip.product.definition.CalibratableComponent[iTotalNumDENSEComp];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[iTotalNumDENSEComp];
 
 		for (int i = 0; i < iNumDENSEComp1; ++i) {
 			astrCalibMeasure[i] = "Rate";
@@ -783,9 +783,9 @@ public class ScenarioDiscountCurveBuilder {
 	public static final org.drip.analytics.rates.DiscountCurve DENSE (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp1,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp1,
 		final double[] adblQuote1,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp2,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp2,
 		final double[] adblQuote2,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
 	{
@@ -823,10 +823,10 @@ public class ScenarioDiscountCurveBuilder {
 	public static final org.drip.analytics.rates.DiscountCurve DUALDENSE (
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp1,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp1,
 		final double[] adblQuote1,
 		final java.lang.String strTenor1,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp2,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp2,
 		final double[] adblQuote2,
 		final java.lang.String strTenor2,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)

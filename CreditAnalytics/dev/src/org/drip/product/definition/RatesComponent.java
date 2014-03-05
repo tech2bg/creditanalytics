@@ -38,5 +38,5 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class RatesComponent extends org.drip.product.definition.CalibratableComponent {
+public abstract class RatesComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 }

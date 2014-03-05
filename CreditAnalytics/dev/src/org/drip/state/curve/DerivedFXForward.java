@@ -416,7 +416,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return false;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return null;
 	}

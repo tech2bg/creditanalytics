@@ -509,7 +509,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	}
 
 	@Override public org.drip.param.definition.ComponentMarketParams getScenCMP (
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final java.lang.String strScen)
 	{
 		if (null == comp || null == strScen || strScen.isEmpty()) return null;
@@ -566,7 +566,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	@Override public
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 			getIRTenorCMP (
-				final org.drip.product.definition.Component comp,
+				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp)
 	{
 		if (null == comp || null == comp.getIRCurveName() || null == _mapIRCSC.get (comp.getIRCurveName()))
@@ -637,7 +637,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	@Override public
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 			getForwardTenorCMP (
-				final org.drip.product.definition.Component comp,
+				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp)
 	{
 		if (null == comp || null == comp.getIRCurveName() || null == _mapIRCSC.get (comp.getIRCurveName()))
@@ -708,7 +708,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 	@Override public
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 			getCreditTenorCMP (
-				final org.drip.product.definition.Component comp,
+				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp)
 	{
 		if (null == comp || null == comp.getCreditCurveName() || null == _mapCCSC.get

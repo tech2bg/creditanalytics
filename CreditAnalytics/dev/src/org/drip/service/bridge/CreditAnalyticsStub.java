@@ -66,7 +66,7 @@ public class CreditAnalyticsStub {
 	}
 
 	private static final org.drip.param.definition.ComponentMarketParams GetCMP (
-		final org.drip.product.definition.Component comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.service.bridge.CreditAnalyticsRequest cre,
 		final org.drip.param.definition.MarketParams mpc)
 	{

@@ -47,7 +47,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.definition.Component[] _aComp = null;
+	private org.drip.product.definition.FixedIncomeComponent[] _aComp = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lPeriods = null;
 
@@ -227,7 +227,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final double dblCoupon,
-		final org.drip.product.definition.Component[] aComp,
+		final org.drip.product.definition.FixedIncomeComponent[] aComp,
 		final double[] adblWeight,
 		final java.lang.String strName)
 		throws java.lang.Exception
@@ -241,7 +241,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		_dblCoupon = dblCoupon;
 		double dblCumulativeWeight = 0.;
 		_adblWeight = new double[adblWeight.length];
-		_aComp = new org.drip.product.definition.Component[aComp.length];
+		_aComp = new org.drip.product.definition.FixedIncomeComponent[aComp.length];
 
 		_dblEffective = dtEffective.getJulian();
 
@@ -404,7 +404,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public org.drip.product.definition.Component[] getComponents()
+	@Override public org.drip.product.definition.FixedIncomeComponent[] getComponents()
 	{
 		return _aComp;
 	}
@@ -445,7 +445,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 
 			java.lang.StringBuffer sbCDS = new java.lang.StringBuffer();
 
-			for (org.drip.product.definition.Component comp : _aComp) {
+			for (org.drip.product.definition.FixedIncomeComponent comp : _aComp) {
 				if (null == comp || !(comp instanceof org.drip.product.definition.CreditDefaultSwap))
 					continue;
 

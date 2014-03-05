@@ -48,7 +48,7 @@ public class StretchRepresentationSpec {
 	private java.lang.String _strLatentStateQuantificationMetric = "";
 	private org.drip.analytics.rates.TurnListDiscountFactor _tldf = null;
 	private java.util.List<java.lang.String[]> _lsstrCompManifestMeasure = null;
-	private org.drip.product.definition.CalibratableComponent[] _aCalibComp = null;
+	private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibComp = null;
 
 	/**
 	 * Make a StretchRepresentationSpec instance from the given components, quotes, and the measure.
@@ -68,7 +68,7 @@ public class StretchRepresentationSpec {
 		final java.lang.String strName,
 		final java.lang.String strLatentStateID,
 		final java.lang.String strLatentStateQuantificationMetric,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp,
 		final java.util.List<java.lang.String[]> lsstrCompManifestMeasure,
 		final double[] adblQuote,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
@@ -101,7 +101,7 @@ public class StretchRepresentationSpec {
 		final java.lang.String strName,
 		final java.lang.String strLatentStateID,
 		final java.lang.String strLatentStateQuantificationMetric,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp,
 		final java.lang.String strManifestMeasure,
 		final double[] adblQuote,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
@@ -146,7 +146,7 @@ public class StretchRepresentationSpec {
 		final java.lang.String strName,
 		final java.lang.String strLatentStateID,
 		final java.lang.String strLatentStateQuantificationMetric,
-		final org.drip.product.definition.CalibratableComponent[] aCalibComp,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp,
 		final java.util.List<java.lang.String[]> lsstrCompManifestMeasure,
 		final double[] adblQuote,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
@@ -183,7 +183,7 @@ public class StretchRepresentationSpec {
 	 * @return The Array of the Calibratable Components
 	 */
 
-	public org.drip.product.definition.CalibratableComponent[] getCalibComp()
+	public org.drip.product.definition.CalibratableFixedIncomeComponent[] getCalibComp()
 	{
 		return _aCalibComp;
 	}
@@ -247,7 +247,7 @@ public class StretchRepresentationSpec {
 	 * @return The Calibration Component
 	 */
 
-	public org.drip.product.definition.CalibratableComponent getCalibComp (
+	public org.drip.product.definition.CalibratableFixedIncomeComponent getCalibComp (
 		final int iIndex)
 	{
 		if (iIndex >= _aCalibComp.length) return null;

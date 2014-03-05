@@ -105,7 +105,7 @@ public class CDSLiveAndEODAPI {
 		 * Displays the CDS quotes used to construct the closing credit curve
 		 */
 
-		CalibratableComponent[] aCompCDS = ccEOD.calibComp();
+		CalibratableFixedIncomeComponent[] aCompCDS = ccEOD.calibComp();
 
 		for (int i = 0; i < aCompCDS.length; ++i)
 			System.out.println (aCompCDS[i].getPrimaryCode() + " => " + (int) (ccEOD.manifestMeasure

@@ -144,7 +144,7 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 		return true;
 	}
 
-	@Override public org.drip.product.definition.CalibratableComponent[] calibComp()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return null;
 	}
