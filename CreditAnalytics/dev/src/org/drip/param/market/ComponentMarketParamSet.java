@@ -95,9 +95,10 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	 * Map of Latent State Volatility Surface
 	 */
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
-		_mAULatentStateVolatility = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.quant.function1D.AbstractUnivariate>> _mapLatentStateForwardVolatility = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+				org.drip.quant.function1D.AbstractUnivariate>>();
 
 	/**
 	 * Create a CMP with the rates discount curve, the forward discount curve, the treasury discount curve,
@@ -421,19 +422,40 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	}
 
 	@Override public org.drip.quant.function1D.AbstractUnivariate getLatentStateVolSurface (
-		final java.lang.String strLatentState)
+		final java.lang.String strLatentState,
+		final org.drip.analytics.date.JulianDate dtForward)
 	{
-		return null == strLatentState || !_mAULatentStateVolatility.containsKey (strLatentState) ? null :
-			_mAULatentStateVolatility.get (strLatentState);
+		if (null == strLatentState || !_mapLatentStateForwardVolatility.containsKey (strLatentState))
+			return null;
+
+		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
+			mapForwardVolatility = _mapLatentStateForwardVolatility.get (strLatentState);
+
+		if (null == mapForwardVolatility || !mapForwardVolatility.containsKey (dtForward)) return null;
+
+		return mapForwardVolatility.get (dtForward);
 	}
 
 	@Override public boolean setLatentStateVolSurface (
 		final java.lang.String strLatentState,
-		final org.drip.quant.function1D.AbstractUnivariate auFRIVolatility)
+		final org.drip.analytics.date.JulianDate dtForward,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == strLatentState || strLatentState.isEmpty() || null == auFRIVolatility) return false;
+		if (null == strLatentState || strLatentState.isEmpty() || null == dtForward || null == auVolatility)
+			return false;
 
-		_mAULatentStateVolatility.put (strLatentState, auFRIVolatility);
+		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
+			mapForwardVolatility = _mapLatentStateForwardVolatility.get (strLatentState);
+
+		if (null == mapForwardVolatility) {
+			mapForwardVolatility = new java.util.HashMap<org.drip.analytics.date.JulianDate,
+				org.drip.quant.function1D.AbstractUnivariate>();
+
+			mapForwardVolatility.put (dtForward, auVolatility);
+
+			_mapLatentStateForwardVolatility.put (strLatentState, mapForwardVolatility);
+		} else
+			mapForwardVolatility.put (dtForward, auVolatility);
 
 		return true;
 	}

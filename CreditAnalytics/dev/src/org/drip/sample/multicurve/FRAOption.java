@@ -46,12 +46,12 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * IRSVolCorrAnalysis contains an analysis if the correlation and volatility impact on the IRS.
+ * FRAOption contains the demonstration of the Multi-Curve FRA Option sample.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class IRSVolCorrAnalysis {
+public class FRAOption {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -108,7 +108,8 @@ public class IRSVolCorrAnalysis {
 				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
 					strCurrency, strCurrency);
 
-			IRSComponent irs = new IRSComponent (fixStream, floatStream);
+			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+				floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -428,77 +429,6 @@ public class IRSVolCorrAnalysis {
 		return mapFC;
 	}
 
-	private static final IRSComponent CreateIRS (
-		final JulianDate dtEffective,
-		final String strTenor,
-		final FloatingRateIndex fri,
-		final double dblCoupon,
-		final String strCurrency)
-		throws Exception
-	{
-		JulianDate dtMaturity = dtEffective.addTenorAndAdjust (strTenor, strCurrency);
-
-		RatesComponent floatStream = new FloatingStream (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
-			true, fri, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, null,
-				-1., strCurrency, strCurrency);
-
-		RatesComponent fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 2,
-			"30/360", "30/360", false, null, null, null, null, null, null, null, null, 1., strCurrency, strCurrency);
-
-		IRSComponent irs = new IRSComponent (fixStream, floatStream);
-
-		irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
-
-		return irs;
-	}
-
-	private static final double RunWithVolCorrSurface (
-		final IRSComponent irs,
-		final ValuationParams valParams,
-		final ComponentMarketParams cmp,
-		final FloatingRateIndex fri,
-		final double dblBaselineSwapRate,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
-		throws Exception
-	{
-		for (org.drip.analytics.period.CashflowPeriod period : irs.getFixedStream().getCashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.getStartDate());
-
-			cmp.setLatentStateVolSurface (
-				fri.fullyQualifiedName(),
-				dtFRADate,
-				new FlatUnivariate (dblFRIVol)
-			);
-
-			cmp.setLatentStateVolSurface (
-				"ForwardToDomesticExchangeVolatility",
-				dtFRADate,
-				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-			);
-
-			cmp.setLatentStateVolSurface (
-				"FRIForwardToDomesticExchangeCorrelation",
-				dtFRADate,
-				new FlatUnivariate (dblFRIQuantoExchangeCorr)
-			);
-		}
-
-		Map<String, Double> mapIRSOutput = irs.value (valParams, null, cmp, null);
-
-		double dblSwapRate = mapIRSOutput.get ("SwapRate");
-
-		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate, 1, 4, 100.) + "% | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate - dblBaselineSwapRate, 1, 0, 10000.));
-
-		return dblSwapRate;
-	}
-
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -509,8 +439,12 @@ public class IRSVolCorrAnalysis {
 
 		CreditAnalytics.Init ("");
 
-		String strTenor = "6M";
+		String strTenor = "3M";
 		String strCurrency = "EUR";
+		String strManifestMeasure = "QuantoAdjustedParForward";
+		double dblFRIVol = 0.3;
+		double dblMultiplicativeQuantoExchangeVol = 0.1;
+		double dblFRIQuantoExchangeCorr = 0.2;
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -524,50 +458,75 @@ public class IRSVolCorrAnalysis {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		IRSComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
+		JulianDate dtForward = dtToday.addTenor (strTenor);
+
+		FRAComponent fra = new FRAComponent (
+			1.,
+			strCurrency,
+			strCurrency + "-FRA-" + strTenor,
+			strCurrency,
+			dtForward.getJulian(),
+			fri,
+			0.006,
+			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
-		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
-		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
+		cmp.setLatentStateVolSurface (
+			fri.fullyQualifiedName(),
+			dtForward,
+			new FlatUnivariate (dblFRIVol)
+		);
 
-		System.out.println ("\tPrinting the IRS Output in Order (Left -> Right):");
+		cmp.setLatentStateVolSurface (
+			"ForwardToDomesticExchangeVolatility",
+			dtForward,
+			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		);
 
-		System.out.println ("\t\tParSwapRate (%)");
+		cmp.setLatentStateVolSurface (
+			"FRIForwardToDomesticExchangeCorrelation",
+			dtForward,
+			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+		);
 
-		System.out.println ("\t\tDifference (bp)");
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
 
-		System.out.println ("\t-------------------------------------------------------------");
+		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
 
-		System.out.println ("\t-------------------------------------------------------------");
+		FRACapFloorlet fraCaplet = new FRACapFloorlet (
+			fra,
+			strManifestMeasure,
+			true,
+			dblStrike,
+			1.,
+			strCurrency,
+			strCurrency);
 
-		double dblBaselineSwapRate = RunWithVolCorrSurface (
-			irs,
-			valParams,
-			cmp,
-			fri,
-			0.,
-			0.,
-			0.,
-			0.);
+		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, cmp, null);
 
-		for (double dblSigmaFwd : adblSigmaFwd) {
-			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
-					RunWithVolCorrSurface (
-						irs,
-						valParams,
-						cmp,
-						fri,
-						dblBaselineSwapRate,
-						dblSigmaFwd,
-						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX);
-			}
-		}
+		for (Map.Entry<String, Double> me : mapFRACapletOutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
+
+		System.out.println ("\n------------------------------------------------------------------");
+
+		System.out.println ("------------------------------------------------------------------\n");
+
+		FRACapFloorlet fraFloorlet = new FRACapFloorlet (
+			fra,
+			strManifestMeasure,
+			false,
+			dblStrike,
+			1.,
+			strCurrency,
+			strCurrency);
+
+		Map<String, Double> mapFRAFloorletOutput = fraFloorlet.value (valParams, null, cmp, null);
+
+		for (Map.Entry<String, Double> me : mapFRAFloorletOutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

@@ -82,6 +82,25 @@ public class AnalyticsHelper {
 		}
 	}
 
+	static class PeriodVariance extends org.drip.quant.function1D.AbstractUnivariate {
+		org.drip.quant.function1D.AbstractUnivariate _auVolatility = null;
+
+		PeriodVariance (
+			final org.drip.quant.function1D.AbstractUnivariate auVolatility)
+		{
+			super (null);
+
+			_auVolatility = auVolatility;
+		}
+
+		@Override public double evaluate (
+			final double dblVariate)
+			throws java.lang.Exception
+		{
+			return _auVolatility.evaluate (dblVariate) * _auVolatility.evaluate (dblVariate);
+		}
+	}
+
 	private static final java.util.List<org.drip.analytics.period.LossPeriodCurveFactors>
 		GenerateDayStepLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
@@ -1045,6 +1064,98 @@ public class AnalyticsHelper {
 	}
 
 	/**
+	 * Compute the Integrated Surface Variance given the corresponding volatility and the date spans
+	 * 
+	 * @param mktParams The Market Parameters Container
+	 * @param strVolSurface Name of the Volatility Surface
+	 * @param dblStartDate Evolution Start Date
+	 * @param dblEndDate Evolution End Date
+	 * 
+	 * @return The Integrated Volatility Surface
+	 * 
+	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 */
+
+	public static final double IntegratedSurfaceVariance (
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final java.lang.String strVolSurface,
+		final double dblStartDate,
+		final double dblEndDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblEndDate < dblStartDate)
+			throw new java.lang.Exception ("AnalyticsHelper::IntegratedSurfaceVariance => Invalid Inputs");
+
+		if (null == mktParams || null == strVolSurface || strVolSurface.isEmpty() || dblEndDate ==
+			dblStartDate)
+			return 0.;
+
+		org.drip.quant.function1D.AbstractUnivariate auVolSurface = mktParams.getLatentStateVolSurface
+			(strVolSurface, new org.drip.analytics.date.JulianDate (dblEndDate));
+
+		return null != auVolSurface ? new PeriodVariance (auVolSurface).integrate (dblStartDate, dblEndDate)
+			/ 365.25 : 0.;
+	}
+
+	/**
+	 * Compute the Integrated Cross Volatility Quanto Product given the corresponding volatility and the
+	 * 	correlation surfaces, and the date spans
+	 * 
+	 * @param mktParams The Market Parameters Container
+	 * @param strVolSurface1 Name of the Volatility Surface #1
+	 * @param strVolSurface2 Name of the Volatility Surface #2
+	 * @param strCorrSurface Name of the Correlation Surface
+	 * @param dblStartDate Evolution Start Date
+	 * @param dblEndDate Evolution End Date
+	 * 
+	 * @return The Integrated Cross Volatility Quanto Product
+	 * 
+	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 */
+
+	public static final double IntegratedCrossVolQuanto (
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final java.lang.String strVolSurface1,
+		final java.lang.String strVolSurface2,
+		final java.lang.String strCorrSurface,
+		final double dblStartDate,
+		final double dblEndDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblEndDate < dblStartDate)
+			throw new java.lang.Exception
+				("AnalyticsHelper::IntegratedCrossVolQuanto => Invalid Inputs");
+
+		if (null == mktParams || null == strVolSurface1 || strVolSurface1.isEmpty() || null == strVolSurface2
+			|| strVolSurface2.isEmpty() || null == strCorrSurface || strCorrSurface.isEmpty() || dblEndDate
+				== dblStartDate)
+			return 0.;
+
+		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
+
+		org.drip.quant.function1D.AbstractUnivariate auVolSurface1 = mktParams.getLatentStateVolSurface
+			(strVolSurface1, dtEnd);
+
+		if (null != auVolSurface1) {
+			org.drip.quant.function1D.AbstractUnivariate auVolSurface2 = mktParams.getLatentStateVolSurface
+				(strVolSurface2, dtEnd);
+
+			if (null != auVolSurface2) {
+				org.drip.quant.function1D.AbstractUnivariate auCorrSurface =
+					mktParams.getLatentStateVolSurface (strCorrSurface, dtEnd);
+
+				if (null != auCorrSurface)
+					return new CrossVolatilityQuantoProduct (auVolSurface1, auVolSurface2,
+						auCorrSurface).integrate (dblStartDate, dblEndDate) / 365.25;
+			}
+		}
+
+		return 0.;
+	}
+
+	/**
 	 * Compute the Multiplicative Cross Volatility Quanto Product given the corresponding volatility and the
 	 * 	correlation surfaces, and the date spans
 	 * 
@@ -1069,33 +1180,7 @@ public class AnalyticsHelper {
 		final double dblEndDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblEndDate < dblStartDate)
-			throw new java.lang.Exception
-				("AnalyticsHelper::MultiplicativeCrossVolQuanto => Invalid Inputs");
-
-		if (null == mktParams || null == strVolSurface1 || strVolSurface1.isEmpty() || null == strVolSurface2
-			|| strVolSurface2.isEmpty() || null == strCorrSurface || strCorrSurface.isEmpty() || dblEndDate
-				== dblStartDate)
-			return 1.;
-
-		org.drip.quant.function1D.AbstractUnivariate auVolSurface1 = mktParams.getLatentStateVolSurface
-			(strVolSurface1);
-
-		if (null != auVolSurface1) {
-			org.drip.quant.function1D.AbstractUnivariate auVolSurface2 = mktParams.getLatentStateVolSurface
-				(strVolSurface2);
-
-			if (null != auVolSurface2) {
-				org.drip.quant.function1D.AbstractUnivariate auCorrSurface =
-					mktParams.getLatentStateVolSurface (strCorrSurface);
-
-				if (null != auCorrSurface)
-					return java.lang.Math.exp (-1. * new CrossVolatilityQuantoProduct (auVolSurface1,
-						auVolSurface2, auCorrSurface).integrate (dblStartDate, dblEndDate) / 365.25);
-			}
-		}
-
-		return 1.;
+		return java.lang.Math.exp (-1. * IntegratedCrossVolQuanto (mktParams, strVolSurface1, strVolSurface2,
+			strCorrSurface, dblStartDate, dblEndDate));
 	}
 }

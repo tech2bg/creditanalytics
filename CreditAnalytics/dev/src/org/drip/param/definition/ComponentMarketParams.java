@@ -188,26 +188,30 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings);
 
 	/**
-	 * Retrieve the Latent State Volatility Surface
+	 * Retrieve the Latent State Volatility Surface for the given Forward Date
 	 * 
 	 * @param strLatentState The Latent State
+	 * @param dtForward The Forward Date 
 	 * 
 	 * @return The Latent State Volatility Surface
 	 */
 
 	public abstract org.drip.quant.function1D.AbstractUnivariate getLatentStateVolSurface (
-		final java.lang.String strFRI);
+		final java.lang.String strFRI,
+		final org.drip.analytics.date.JulianDate dtForward);
 
 	/**
-	 * (Re)-set the Latent State Volatility Surface
+	 * (Re)-set the Latent State Volatility Surface for the given Forward Date
 	 * 
 	 * @param strLatentState The Latent State
-	 * @param auLatentStateVolatility The Latent State Volatility Surface
+	 * @param dtForward The Forward Date 
+	 * @param auVolatility The Latent State Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public abstract boolean setLatentStateVolSurface (
 		final java.lang.String strLatentState,
-		final org.drip.quant.function1D.AbstractUnivariate auLatentStateVolatility);
+		final org.drip.analytics.date.JulianDate dtForward,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
 }

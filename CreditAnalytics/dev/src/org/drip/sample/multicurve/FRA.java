@@ -457,12 +457,14 @@ public class FRA {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
+		JulianDate dtForward = dtToday.addTenor (strTenor);
+
 		FRAComponent fra = new FRAComponent (
 			1.,
 			strCurrency,
 			strCurrency + "-FRA-" + strTenor,
 			strCurrency,
-			dtToday.addTenor (strTenor).getJulian(),
+			dtForward.getJulian(),
 			fri,
 			0.006,
 			"Act/360");
@@ -474,16 +476,19 @@ public class FRA {
 
 		cmp.setLatentStateVolSurface (
 			fri.fullyQualifiedName(),
+			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
 		cmp.setLatentStateVolSurface (
 			"ForwardToDomesticExchangeVolatility",
+			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
 		cmp.setLatentStateVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
+			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 

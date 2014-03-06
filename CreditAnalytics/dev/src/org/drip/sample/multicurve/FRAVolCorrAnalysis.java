@@ -441,16 +441,19 @@ public class FRAVolCorrAnalysis {
 	{
 		cmp.setLatentStateVolSurface (
 			fri.fullyQualifiedName(),
+			fra.getEffectiveDate(),
 			new FlatUnivariate (dblFRIVol)
 		);
 
 		cmp.setLatentStateVolSurface (
 			"ForwardToDomesticExchangeVolatility",
+			fra.getEffectiveDate(),
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
 		cmp.setLatentStateVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
+			fra.getEffectiveDate(),
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 

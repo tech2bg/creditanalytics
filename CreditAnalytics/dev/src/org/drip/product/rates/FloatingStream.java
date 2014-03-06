@@ -1020,6 +1020,17 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	/**
+	 * Retrieve the Floating Rate Index
+	 * 
+	 * @return The Floating Rate Index
+	 */
+
+	public org.drip.product.params.FloatingRateIndex fri()
+	{
+		return _fri;
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception

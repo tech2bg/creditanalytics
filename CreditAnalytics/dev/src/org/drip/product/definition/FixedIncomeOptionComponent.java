@@ -7,9 +7,6 @@ package org.drip.product.definition;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
- * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -44,12 +41,30 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixedIncomeOptionComponent {
+public abstract class FixedIncomeOptionComponent implements
+	org.drip.product.definition.ComponentMarketParamRef {
 	private java.lang.String _strCalendar = "";
 	private java.lang.String _strDayCount = "";
 	private double _dblStrike = java.lang.Double.NaN;
 	private java.lang.String _strManifestMeasure = "";
-	private org.drip.product.definition.FixedIncomeOptionComponent _comp = null;
+	private double _dblNotional = java.lang.Double.NaN;
+	private org.drip.product.definition.FixedIncomeComponent _comp = null;
+
+	protected double getMeasure (
+		final java.lang.String strMeasure,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)
+		throws java.lang.Exception
+	{
+		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
+			throw new java.lang.Exception ("FixedIncomeComponent::getMeasure => Invalid Inputs");
+
+		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
+			if (null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure)) return me.getValue();
+		}
+
+		throw new java.lang.Exception ("FixedIncomeOptionComponent::getMeasure => Invalid Measure: " +
+			strMeasure);
+	}
 
 	/**
 	 * FixedIncomeOptionComponent constructor
@@ -57,6 +72,7 @@ public class FixedIncomeOptionComponent {
 	 * @param comp The Underlying Component
 	 * @param strManifestMeasure Measure of the Underlying Component
 	 * @param dblStrike Strike of the Underlying Component's Measure
+	 * @param dblNotional Option Notional
 	 * @param strDayCount Day Count Convention
 	 * @param strCalendar Holiday Calendar
 	 * 
@@ -64,17 +80,19 @@ public class FixedIncomeOptionComponent {
 	 */
 
 	public FixedIncomeOptionComponent (
-		final org.drip.product.definition.FixedIncomeOptionComponent comp,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final java.lang.String strManifestMeasure,
 		final double dblStrike,
+		final double dblNotional,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
 		if (null == (_comp = comp) || null == (_strManifestMeasure = strManifestMeasure) ||
 			_strManifestMeasure.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid (_dblStrike =
-				dblStrike) || null == (_strDayCount = strDayCount) || _strDayCount.isEmpty() || null ==
-					(_strCalendar = strCalendar) || _strCalendar.isEmpty())
+				dblStrike) || !org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || null
+					== (_strDayCount = strDayCount) || _strDayCount.isEmpty() || null == (_strCalendar =
+						strCalendar) || _strCalendar.isEmpty())
 			throw new java.lang.Exception ("FixedIncomeOptionComponent ctr: Invalid Inputs");
 	}
 
@@ -84,7 +102,7 @@ public class FixedIncomeOptionComponent {
 	 * @return The Underlying Component
 	 */
 
-	public org.drip.product.definition.FixedIncomeOptionComponent underlying()
+	public org.drip.product.definition.FixedIncomeComponent underlying()
 	{
 		return _comp;
 	}
@@ -112,6 +130,28 @@ public class FixedIncomeOptionComponent {
 	}
 
 	/**
+	 * Retrieve the Notional
+	 * 
+	 * @return The Notional
+	 */
+
+	public double notional()
+	{
+		return _dblNotional;
+	}
+
+	/**
+	 * Retrieve the Option Exercise Date
+	 * 
+	 * @return The Option Exercise Date
+	 */
+
+	public org.drip.analytics.date.JulianDate exercise()
+	{
+		return _comp.getEffectiveDate();
+	}
+
+	/**
 	 * Retrieve the Day Count
 	 * 
 	 * @return The Day Count
@@ -131,5 +171,85 @@ public class FixedIncomeOptionComponent {
 	public java.lang.String calendar()
 	{
 		return _strCalendar;
+	}
+
+	@Override public java.lang.String getComponentName()
+	{
+		return _comp.getComponentName();
+	}
+
+	@Override public java.lang.String getIRCurveName()
+	{
+		return _comp.getIRCurveName();
+	}
+
+	@Override public java.lang.String getForwardCurveName()
+	{
+		return _comp.getForwardCurveName();
+	}
+
+	@Override public java.lang.String getCreditCurveName()
+	{
+		return _comp.getCreditCurveName();
+	}
+
+	@Override public java.lang.String getTreasuryCurveName()
+	{
+		return _comp.getTreasuryCurveName();
+	}
+
+	@Override public java.lang.String getEDSFCurveName()
+	{
+		return _comp.getEDSFCurveName();
+	}
+
+	/**
+	 * Generate a full list of the component measures for the full input set of market parameters
+	 * 
+	 * @param valParams ValuationParams
+	 * @param pricerParams PricerParams
+	 * @param mktParams ComponentMarketParams
+	 * @param quotingParams Quoting Parameters
+	 * 
+	 * @return Map of measure name and value
+	 */
+
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams);
+
+	/**
+	 * Retrieve the ordered set of the measure names whose values will be calculated
+	 * 
+	 * @return Set of Measure Names
+	 */
+
+	public abstract java.util.Set<java.lang.String> getMeasureNames();
+
+	/**
+	 * Calculate the value of the given component measure
+	 * 
+	 * @param valParams ValuationParams
+	 * @param pricerParams PricerParams
+	 * @param mktParams ComponentMarketParams
+	 * @param strMeasure Measure String
+	 * @param quotingParams Quoting Parameters
+	 * 
+	 * @return Double measure value
+	 * 
+	 * @throws java.lang.Exception Thrown if the measure cannot be calculated
+	 */
+
+	public double calcMeasureValue (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.valuation.QuotingParams quotingParams,
+		final java.lang.String strMeasure)
+		throws java.lang.Exception
+	{
+		return getMeasure (strMeasure, value (valParams, pricerParams, mktParams, quotingParams));
 	}
 }
