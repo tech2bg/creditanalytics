@@ -99,12 +99,12 @@ public class IRSVolCorrAnalysis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			RatesComponent floatStream = new FloatingStream (dtEffective.getJulian(),
+			FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
 					2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
 						null, null, -1., strCurrency, strCurrency);
 
-			RatesComponent fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
+			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
 				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
 					strCurrency, strCurrency);
 
@@ -438,11 +438,11 @@ public class IRSVolCorrAnalysis {
 	{
 		JulianDate dtMaturity = dtEffective.addTenorAndAdjust (strTenor, strCurrency);
 
-		RatesComponent floatStream = new FloatingStream (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
+		FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
 			true, fri, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, null,
 				-1., strCurrency, strCurrency);
 
-		RatesComponent fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 2,
+		FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 2,
 			"30/360", "30/360", false, null, null, null, null, null, null, null, null, 1., strCurrency, strCurrency);
 
 		IRSComponent irs = new IRSComponent (fixStream, floatStream);

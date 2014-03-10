@@ -441,7 +441,7 @@ public class CreditAnalyticsProxy {
 	{
 		org.drip.param.pricer.PricerParams pricerParams = null;
 		org.drip.service.bridge.CreditAnalyticsRequest cre = null;
-		org.drip.param.valuation.QuotingParams quotingParams = null;
+		org.drip.param.valuation.ValuationCustomizationParams quotingParams = null;
 
 		org.drip.analytics.date.JulianDate dtStart = org.drip.analytics.date.JulianDate.Today().addBusDays
 			(0, "USD");
@@ -468,8 +468,8 @@ public class CreditAnalyticsProxy {
 			* (new java.util.Random().nextDouble() - 0.5)) * iTenorInYears * PRICE_DOWNSHIFT_RATE);
 
 		try {
-			quotingParams = new org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "USD",
-				false);
+			quotingParams = new org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true,
+				null, "USD", false, null, null);
 
 			cre = new org.drip.service.bridge.CreditAnalyticsRequest (bond, valParams, pricerParams, cmp,
 				quotingParams);

@@ -112,7 +112,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.rates.DiscountCurve dc,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
@@ -301,6 +301,11 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 	@Override public java.lang.String currency()
 	{
 		return _dc.currency();
+	}
+
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return _dc.collateralParams();
 	}
 
 	@Override public double effectiveDF (

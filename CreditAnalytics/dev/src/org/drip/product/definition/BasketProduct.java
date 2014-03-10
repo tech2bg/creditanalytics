@@ -114,7 +114,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.BasketMarketParams bmpUp,
 		final org.drip.param.definition.BasketMarketParams bmpDown,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures)
 	{
 		if (null == bmpUp) return null;
@@ -189,7 +189,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 			mapTenorUpBMP,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
 			mapTenorDownBMP,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures,
 		final ComponentCurve compCurve)
 	{
@@ -280,7 +280,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 			mapTenorUpBMP,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.BasketMarketParams>
 			mapTenorDownBMP,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures)
 	{
 		if (null == mapComponentBMP || 0 == mapComponentBMP.size()) return null;
@@ -652,7 +652,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.BasketMarketParams bmp,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
 
@@ -723,7 +723,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.BasketMarketParams bmp,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
 	{
@@ -746,7 +746,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == mpc) return null;
 
@@ -857,7 +857,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,
 		final java.lang.String strCustomScenName,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBase)
 	{
 		if (null == valParams || null == mpc) return null;

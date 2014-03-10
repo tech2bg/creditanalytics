@@ -63,7 +63,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		org.drip.param.valuation.ValuationParams valParam = _ccis.getValuationParameter();
 
-		org.drip.param.valuation.QuotingParams quotingParam = _ccis.getQuotingParameter();
+		org.drip.param.valuation.ValuationCustomizationParams quotingParam = _ccis.getQuotingParameter();
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
@@ -247,6 +247,11 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 			// _adblEndRate[i] = lsdblRate.get (i);
 		}
+	}
+
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
 	}
 
 	@Override public double df (

@@ -52,7 +52,7 @@ public abstract class CurveSpanConstructionInput implements
 {
 	private org.drip.param.pricer.PricerParams _pricerParam = null;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
-	private org.drip.param.valuation.QuotingParams _quotingParam = null;
+	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.state.estimator.StretchRepresentationSpec[] _aSRS = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
@@ -76,7 +76,7 @@ public abstract class CurveSpanConstructionInput implements
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.valuation.QuotingParams quotingParam,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 		throws java.lang.Exception
 	{
@@ -93,7 +93,7 @@ public abstract class CurveSpanConstructionInput implements
 		return _valParam;
 	}
 
-	@Override public org.drip.param.valuation.QuotingParams getQuotingParameter()
+	@Override public org.drip.param.valuation.ValuationCustomizationParams getQuotingParameter()
 	{
 		return _quotingParam;
 	}

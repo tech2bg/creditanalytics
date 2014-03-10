@@ -2324,8 +2324,9 @@ public class ProductTestSuite {
 		}
 
 		if (!bond.setMarketConvention (new org.drip.product.params.QuoteConvention (new
-			org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "DKK", false), "REGULAR",
-				dblStart + 2, 1., 3, "USD", org.drip.analytics.daycount.Convention.DR_FOLL))) {
+			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "DKK", false,
+				null, null), "REGULAR", dblStart + 2, 1., 3, "USD",
+					org.drip.analytics.daycount.Convention.DR_FOLL))) {
 			System.out.println ("Cannot initialize bond Valuation params!");
 
 			System.exit (133);

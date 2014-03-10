@@ -1127,7 +1127,7 @@ public class CreditAnalyticsTestSuite {
 		// java.lang.String strISIN = "XS0145044193";
 		java.lang.String strISIN = "US78490FPP89"; // EOS
 		// java.lang.String strISIN = "US760677FD19"; // Amortizer
-		org.drip.param.valuation.QuotingParams quotingParams = null;
+		org.drip.param.valuation.ValuationCustomizationParams quotingParams = null;
 		boolean bInFirstPeriod = true;
 		boolean bInLastPeriod = true;
 		double dblGTMFromPrice = java.lang.Double.NaN;
@@ -1159,8 +1159,8 @@ public class CreditAnalyticsTestSuite {
 		double dblDiscountMarginFromTSYSpread = java.lang.Double.NaN;
 
 		try {
-			quotingParams = new org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "USD",
-				false);
+			quotingParams = new org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true,
+				null, "USD", false, null, null);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
 				System.out.println ("BondAPISample failed.");
@@ -2774,8 +2774,8 @@ public class CreditAnalyticsTestSuite {
 				org.drip.state.estimator.CreditCurveScenarioGenerator (aCalibInst);
 
 			ccCalib = ccsg.createCC ("CC", valParams, dc, null, null, adblQuotes, 0.40, astrCalibMeasure,
-				null, new org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "USD", false),
-					false);
+				null, new org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null,
+					"USD", false, null, null), false);
 
 			if (s_bCDSBondCreditCurve)
 				System.out.println ("Surv (2021, 1, 14): " + ccCalib.getSurvival

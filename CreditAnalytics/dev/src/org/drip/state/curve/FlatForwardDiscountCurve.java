@@ -61,7 +61,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		org.drip.param.valuation.ValuationParams valParam = _ccis.getValuationParameter();
 
-		org.drip.param.valuation.QuotingParams quotingParam = _ccis.getQuotingParameter();
+		org.drip.param.valuation.ValuationCustomizationParams quotingParam = _ccis.getQuotingParameter();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
 
@@ -227,6 +227,11 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 			_adblRate[i] = lsdblRate.get (i);
 		}
+	}
+
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
 	}
 
 	@Override public double df (

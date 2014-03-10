@@ -71,7 +71,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 	}
 
 	/**
-	 * Creates a credit curve from hazard rate and recovery rate term structures
+	 * Create a credit curve from hazard rate and recovery rate term structures
 	 * 
 	 * @param dblStartDate Curve Epoch date
 	 * @param strName Credit Curve Name
@@ -234,6 +234,11 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		}
 
 		_dblSpecificDefaultDate = new java.lang.Double (astrField[5]);
+	}
+
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
 	}
 
 	@Override public double getSurvival (

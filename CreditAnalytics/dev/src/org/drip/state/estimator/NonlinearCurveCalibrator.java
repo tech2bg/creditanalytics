@@ -61,7 +61,7 @@ public class NonlinearCurveCalibrator {
 		private org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 		private org.drip.param.valuation.ValuationParams _valParams = null;
 		private org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
-		private org.drip.param.valuation.QuotingParams _quotingParams = null;
+		private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 		private java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
@@ -78,7 +78,7 @@ public class NonlinearCurveCalibrator {
 			final double dblCalibValue,
 			final java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-			final org.drip.param.valuation.QuotingParams quotingParams,
+			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 			final boolean bFlat)
 			throws java.lang.Exception
 		{
@@ -145,7 +145,7 @@ public class NonlinearCurveCalibrator {
 		final double dblBump,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCalibLeftSlope)
 		throws java.lang.Exception
 	{
@@ -182,7 +182,7 @@ public class NonlinearCurveCalibrator {
 		final double dblBump,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		org.drip.quant.function1D.AbstractUnivariate ofIROuter = new
@@ -256,7 +256,7 @@ public class NonlinearCurveCalibrator {
 		final double dblCalibValue,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
 		if (null == cc || null == comp || null == valParams || null == dc || null == pricerParamsIn || null
@@ -314,7 +314,7 @@ public class NonlinearCurveCalibrator {
 		final double dblCalibValue,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat,
 		final double dblSearchStart)
 		throws java.lang.Exception
@@ -390,7 +390,7 @@ public class NonlinearCurveCalibrator {
 		final double dblBump,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
 		if (null == dc || null == adblCalibValue || null == aCalibComp || null == astrCalibMeasure || 0 ==
@@ -448,7 +448,7 @@ public class NonlinearCurveCalibrator {
 		final double dblBump,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
 		if (null == nldfdc || null == adblCalibValue || null == aCalibComp || null == astrCalibMeasure || 0

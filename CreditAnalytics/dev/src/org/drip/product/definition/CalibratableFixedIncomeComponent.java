@@ -45,7 +45,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
 	 * Return the primary code
@@ -103,7 +103,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
 	 * Compute the micro-Jacobian of the given measure to the DF
@@ -122,7 +122,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
 	 * Generate the Calibratable Linearized Predictor/Response Constraints for the Component from the Market
@@ -142,7 +142,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm);
 
 	/**

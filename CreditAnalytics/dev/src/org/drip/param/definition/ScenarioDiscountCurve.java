@@ -97,7 +97,7 @@ public abstract class ScenarioDiscountCurve {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final int iDCMode);
 
 	/**
@@ -129,7 +129,7 @@ public abstract class ScenarioDiscountCurve {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
 		final org.drip.param.definition.ResponseValueTweakParams ntpEDSF,
 		final org.drip.param.definition.ResponseValueTweakParams ntpDC);

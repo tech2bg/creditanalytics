@@ -57,7 +57,7 @@ public class ShapePreservingCCIS extends org.drip.analytics.definition.CurveSpan
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.valuation.QuotingParams quotingParam,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 		throws java.lang.Exception
 	{

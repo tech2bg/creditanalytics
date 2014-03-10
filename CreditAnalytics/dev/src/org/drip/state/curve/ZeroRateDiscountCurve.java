@@ -123,6 +123,11 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		_dblRightFlatForwardRate = (_span = span).calcResponseValue (_span.right());
 	}
 
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
+	}
+
 	@Override public double df (
 		final double dblDate)
 		throws java.lang.Exception

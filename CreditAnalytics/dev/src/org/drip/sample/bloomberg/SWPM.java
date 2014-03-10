@@ -185,14 +185,14 @@ public class SWPM {
 
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, "USD");
 
-		RatesComponent fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
+		FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
 			dblCoupon, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, dap, null, dblNotional, "USD", "USD");
 
 		/*
 		 * Build the Floating Pay Stream
 		 */
 
-		RatesComponent floatStream = new FloatingStream (dtEffective.getJulian(),
+		FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(),
 			dtMaturity.getJulian(), 0., true, org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), 4,
 				"Act/360", "Act/360", false, null, null,
 					dap, dap, dap, dap, dap, null, null, -dblNotional, "USD", "USD");

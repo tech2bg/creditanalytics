@@ -277,7 +277,8 @@ public class BondLiveAndEODAPI {
 		double dblZSpreadFromTSYSpread = Double.NaN;
 		double dblOASpreadFromTSYSpread = Double.NaN;
 
-		QuotingParams quotingParams = new QuotingParams ("30/360", 2, true, null, "USD", false);
+		ValuationCustomizationParams quotingParams = new ValuationCustomizationParams ("30/360", 2, true,
+			null, "USD", false, null, null);
 
 		Bond bond = CreditAnalytics.GetBond (strISIN);
 
@@ -287,7 +288,8 @@ public class BondLiveAndEODAPI {
 
 		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
 
-		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02, 0.);
+		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD",
+			0.02, 0.);
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtToday, 0, "", Convention.DR_ACTUAL);
 

@@ -58,7 +58,7 @@ public interface CurveConstructionInputSet {
 	 * @return The Quoting Parameter
 	 */
 
-	public abstract org.drip.param.valuation.QuotingParams getQuotingParameter();
+	public abstract org.drip.param.valuation.ValuationCustomizationParams getQuotingParameter();
 
 	/**
 	 * Retrieve the Array of the Calibration Components

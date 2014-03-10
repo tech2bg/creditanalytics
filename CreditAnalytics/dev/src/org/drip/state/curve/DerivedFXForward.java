@@ -248,6 +248,11 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return _cp.getDenomCcy();
 	}
 
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
+	}
+
 	@Override public double[] zeroBasis (
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.analytics.rates.DiscountCurve dcNum,

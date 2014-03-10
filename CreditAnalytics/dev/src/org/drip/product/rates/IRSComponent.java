@@ -50,14 +50,14 @@ package org.drip.product.rates;
 
 public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.definition.RatesComponent _fixStream = null;
-	private org.drip.product.definition.RatesComponent _floatStream = null;
+	private org.drip.product.rates.FixedStream _fixStream = null;
+	private org.drip.product.rates.FloatingStream _floatStream = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
 	}
@@ -72,8 +72,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	 */
 
 	public IRSComponent (
-		final org.drip.product.definition.RatesComponent fixStream,
-		final org.drip.product.definition.RatesComponent floatStream)
+		final org.drip.product.rates.FixedStream fixStream,
+		final org.drip.product.rates.FloatingStream floatStream)
 		throws java.lang.Exception
 	{
 		if (null == (_fixStream = fixStream) || null == (_floatStream = floatStream))
@@ -259,7 +259,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
 
@@ -439,7 +439,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
 			pricerParams, mktParams, quotingParams);
@@ -494,7 +494,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
 			null == mktParams || null == mktParams.getDiscountCurve())
@@ -565,7 +565,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == lsmm ||
@@ -667,7 +667,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	 * @return The Fixed Stream
 	 */
 
-	public org.drip.product.definition.RatesComponent getFixedStream()
+	public org.drip.product.rates.FixedStream getFixedStream()
 	{
 		return _fixStream;
 	}
@@ -678,7 +678,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	 * @return The Floating Stream
 	 */
 
-	public org.drip.product.definition.RatesComponent getFloatStream()
+	public org.drip.product.rates.FloatingStream getFloatStream()
 	{
 		return _floatStream;
 	}

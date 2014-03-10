@@ -78,6 +78,11 @@ public class BasisSplineForwardRate extends org.drip.analytics.rates.ForwardCurv
 		return _span.calcResponseValue (dblDate);
 	}
 
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
+	}
+
 	@Override public org.drip.quant.calculus.WengertJacobian jackDForwardDManifestMeasure (
 		final java.lang.String strManifestMeasure,
 		final double dblDate)

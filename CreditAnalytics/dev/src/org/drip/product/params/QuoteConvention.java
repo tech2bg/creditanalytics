@@ -64,7 +64,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 	 * Quoting Parameters
 	 */
 
-	public org.drip.param.valuation.QuotingParams _quotingParams = null;
+	public org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 
 	/**
 	 * Cash Settle parameters
@@ -86,7 +86,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 	 */
 
 	public QuoteConvention (
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final java.lang.String strCalculationType,
 		final double dblFirstSettle,
 		final double dblRedemptionValue,
@@ -165,7 +165,7 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_quotingParams = null;
 		else
-			_quotingParams = new org.drip.param.valuation.QuotingParams (astrField[4].getBytes());
+			_quotingParams = new org.drip.param.valuation.ValuationCustomizationParams (astrField[4].getBytes());
 
 		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception
@@ -239,8 +239,8 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		QuoteConvention bivp = new QuoteConvention (new org.drip.param.valuation.QuotingParams ("30/360", 2,
-			true, null, "DKK", false), "GHI", 1., 2., 3, "JKL", 4);
+		QuoteConvention bivp = new QuoteConvention (new org.drip.param.valuation.ValuationCustomizationParams
+			("30/360", 2, true, null, "DKK", false, null, null), "GHI", 1., 2., 3, "JKL", 4);
 
 		byte[] abBIVP = bivp.serialize();
 

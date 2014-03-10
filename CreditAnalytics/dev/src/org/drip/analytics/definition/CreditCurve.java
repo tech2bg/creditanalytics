@@ -66,7 +66,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	protected org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 	protected org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 	protected org.drip.param.valuation.ValuationParams _valParam = null;
-	protected org.drip.param.valuation.QuotingParams _quotingParams = null;
+	protected org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 	protected org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
@@ -495,7 +495,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		_dc = dc;
 		_bFlat = bFlat;

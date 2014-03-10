@@ -80,7 +80,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final int iDCMode)
 	{
 		if (null == valParams || null == adblQuotes || null == astrCalibMeasure || 0 == adblQuotes.length ||
@@ -157,7 +157,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpTSY,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpEDSF,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpDC)

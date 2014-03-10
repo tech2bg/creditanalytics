@@ -62,7 +62,7 @@ public class SmoothingCCIS extends org.drip.analytics.definition.ShapePreserving
 		final org.drip.state.estimator.StretchRepresentationSpec[] aRBS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.valuation.QuotingParams quotingParam,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 		throws java.lang.Exception
 	{

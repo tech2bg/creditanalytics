@@ -140,7 +140,7 @@ public class CreditCurveScenarioGenerator {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
 		if (null == strName || null == adblQuotes || null == astrCalibMeasure || adblQuotes.length !=
@@ -223,7 +223,7 @@ public class CreditCurveScenarioGenerator {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
 		if (null == strName || null == adblQuotes || null == astrCalibMeasure || null == valParams || null ==
@@ -283,7 +283,7 @@ public class CreditCurveScenarioGenerator {
 			final java.lang.String[] astrCalibMeasure,
 			final java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-			final org.drip.param.valuation.QuotingParams quotingParams,
+			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 			final boolean bFlat)
 	{
 		if (null == strName || null == valParams || null == dc || null == adblQuotes || null ==

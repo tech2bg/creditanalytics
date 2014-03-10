@@ -1397,7 +1397,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == strBondId || strBondId.isEmpty() || null == GetBond (strBondId))
 			return null;
@@ -1447,7 +1447,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == strBondId || strBondId.isEmpty())
@@ -1486,7 +1486,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == strBondId || strBondId.isEmpty())
@@ -1542,7 +1542,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1575,7 +1575,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1631,7 +1631,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1664,7 +1664,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1721,7 +1721,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1754,7 +1754,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1811,7 +1811,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1844,7 +1844,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -1904,7 +1904,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -1939,7 +1939,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -2000,7 +2000,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -2035,7 +2035,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -2095,7 +2095,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == cc || null == strBondId || strBondId.isEmpty())
@@ -2130,7 +2130,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == cc || null == strBondId || strBondId.isEmpty())
@@ -2191,7 +2191,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == cc || null == strBondId || strBondId.isEmpty())
@@ -2226,7 +2226,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblPrice,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == cc || null == strBondId || strBondId.isEmpty())
@@ -2287,7 +2287,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblTSYSpread,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -2405,7 +2405,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblTSYSpread,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -2466,7 +2466,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblTSYSpread,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -2707,7 +2707,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblTSYSpread,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == cc || null == strBondId ||
@@ -2771,7 +2771,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblTSYSpread,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == cc || null == strBondId ||
@@ -2831,7 +2831,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblYield,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -2888,7 +2888,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblYield,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -2945,7 +2945,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblYield,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -3002,7 +3002,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblYield,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == strBondId || strBondId.isEmpty())
@@ -3062,7 +3062,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double dblYield,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == dcTSY || null == strBondId || strBondId.isEmpty())
@@ -3123,7 +3123,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblYield,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == cc || null == strBondId || strBondId.isEmpty())
@@ -3184,7 +3184,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final double dblYield,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == cc || null == strBondId || strBondId.isEmpty())
@@ -3243,7 +3243,7 @@ public class CreditAnalytics {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == dc || null == cc || null == strBondId || strBondId.isEmpty())

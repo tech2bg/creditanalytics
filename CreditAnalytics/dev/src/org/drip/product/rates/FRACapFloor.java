@@ -86,7 +86,7 @@ public class FRACapFloor extends org.drip.product.definition.FixedIncomeOptionCo
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		double dblPV = 0.;
 		double dblPrice = 0.;

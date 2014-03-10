@@ -68,6 +68,14 @@ public interface Curve extends org.drip.state.representation.LatentState {
 	public abstract java.lang.String currency();
 
 	/**
+	 * Retrieve the Collaterlization Setting used to Construct the Curve
+	 * 
+	 * @return The Collaterlization Setting used to Construct the Curve
+	 */
+
+	public abstract org.drip.param.valuation.CollateralizationParams collateralParams();
+
+	/**
 	 * Set the Curve Construction Input Set Parameters
 	 * 
 	 * @param ccis The Curve Construction Input Set Parameters

@@ -218,7 +218,7 @@ public abstract class FixedIncomeOptionComponent implements
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
 	 * Retrieve the ordered set of the measure names whose values will be calculated
@@ -246,7 +246,7 @@ public abstract class FixedIncomeOptionComponent implements
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
 	{

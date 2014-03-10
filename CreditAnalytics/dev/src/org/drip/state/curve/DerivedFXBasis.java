@@ -204,6 +204,11 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return _cp.getDenomCcy();
 	}
 
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
+	}
+
 	@Override public boolean isBasisBootstrapped()
 	{
 		return _bIsFXBasisBootstrapped;

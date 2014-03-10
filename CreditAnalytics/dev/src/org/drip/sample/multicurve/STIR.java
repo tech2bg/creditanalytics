@@ -46,12 +46,12 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * FRACapFloorVolCorrAnalysis contains an analysis if the correlation and volatility impact on FRA Cap/Floor.
+ * STIR contains a full valuation run on the STIR Product.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRACapFloorVolCorrAnalysis {
+public class STIR {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -428,36 +428,66 @@ public class FRACapFloorVolCorrAnalysis {
 		return mapFC;
 	}
 
-	private static final void SetVolCorrSurface (
-		final FloatingStream floatstream,
-		final ComponentMarketParams cmp,
+	private static final STIRFutureComponent CreateSTIR (
+		final JulianDate dtEffective,
+		final String strTenor,
 		final FloatingRateIndex fri,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
+		final double dblCoupon,
+		final String strCurrency)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CashflowPeriod period : floatstream.getCashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.getStartDate());
+		JulianDate dtMaturity = dtEffective.addTenorAndAdjust (strTenor, strCurrency);
 
-			cmp.setLatentStateVolSurface (
-				fri.fullyQualifiedName(),
-				dtFRADate,
-				new FlatUnivariate (dblFRIVol)
-			);
+		FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
+			true, fri, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, null,
+				-1., strCurrency, strCurrency);
 
-			cmp.setLatentStateVolSurface (
-				"ForwardToDomesticExchangeVolatility",
-				dtFRADate,
-				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-			);
+		FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 2,
+			"30/360", "30/360", false, null, null, null, null, null, null, null, null, 1., strCurrency, strCurrency);
 
-			cmp.setLatentStateVolSurface (
-				"FRIForwardToDomesticExchangeCorrelation",
-				dtFRADate,
-				new FlatUnivariate (dblFRIQuantoExchangeCorr)
-			);
-		}
+		STIRFutureComponent stir = new STIRFutureComponent (fixStream, floatStream);
+
+		stir.setPrimaryCode ("STIR." + dtMaturity.toString() + "." + strCurrency);
+
+		return stir;
+	}
+
+	private static final void RunWithVolCorrSurface (
+		final STIRFutureComponent stir,
+		final ValuationParams valParams,
+		final ComponentMarketParams cmp,
+		final FloatingRateIndex fri,
+		final double dblSwapRateVolatility,
+		final double dblSwapRateExchangeVolatility,
+		final double dblSwapRateToSwapRateExchangeCorrelation)
+		throws Exception
+	{
+		JulianDate dtEffective = stir.getEffectiveDate();
+
+		String strComponentName = stir.getComponentName();
+
+		cmp.setLatentStateVolSurface (
+			strComponentName + "SwapRateVolatility",
+			dtEffective,
+			new FlatUnivariate (dblSwapRateVolatility)
+		);
+
+		cmp.setLatentStateVolSurface (
+			strComponentName + "SwapRateExchangeVolatility",
+			dtEffective,
+			new FlatUnivariate (dblSwapRateExchangeVolatility)
+		);
+
+		cmp.setLatentStateVolSurface (
+			strComponentName + "SwapRateToSwapRateExchangeCorrelation",
+			dtEffective,
+			new FlatUnivariate (dblSwapRateToSwapRateExchangeCorrelation)
+		);
+
+		Map<String, Double> mapSTIROutput = stir.value (valParams, null, cmp, null);
+
+		for (Map.Entry<String, Double> me : mapSTIROutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 
 	public static final void main (
@@ -470,10 +500,11 @@ public class FRACapFloorVolCorrAnalysis {
 
 		CreditAnalytics.Init ("");
 
-		double dblStrike = 0.01;
 		String strTenor = "6M";
 		String strCurrency = "EUR";
-		String strManifestMeasure = "QuantoAdjustedParForward";
+		double dblSwapRateVolatility = 0.3;
+		double dblSwapRateExchangeVolatility = 0.1;
+		double dblSwapRateToSwapRateExchangeCorrelation = 0.2;
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -487,72 +518,20 @@ public class FRACapFloorVolCorrAnalysis {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		JulianDate dtEffective = dtToday.addTenor (strTenor);
-
-		FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(), 0.,
-			true, fri, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, null,
-				-1., strCurrency, strCurrency);
-
-		FRACapFloor fraCap = new FRACapFloor (
-			floatStream,
-			strManifestMeasure,
-			true,
-			dblStrike,
-			1.,
-			"Act/360",
-			strCurrency);
-
-		FRACapFloor fraFloor = new FRACapFloor (
-			floatStream,
-			strManifestMeasure,
-			false,
-			dblStrike,
-			1.,
-			"Act/360",
-			strCurrency);
+		STIRFutureComponent stir = CreateSTIR (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
-		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
-		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
-
-		System.out.println ("\tPrinting the Cap/Floor Output in Order (Left -> Right):");
-
-		System.out.println ("\t\tCap Price");
-
-		System.out.println ("\t\tFloor Price");
-
-		System.out.println ("\t-------------------------------------------------------------");
-
-		System.out.println ("\t-------------------------------------------------------------");
-
-		for (double dblSigmaFwd : adblSigmaFwd) {
-			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX) {
-					SetVolCorrSurface (
-						floatStream,
-						cmp,
-						fri,
-						dblSigmaFwd,
-						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX);
-
-					Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, cmp, null);
-
-					Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, cmp, null);
-
-					System.out.println ("\t[" +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd, 2, 0, 100.) + "%," +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd2DomX, 2, 0, 100.) + "%," +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblCorrFwdFwd2DomX, 2, 0, 100.) + "%] =" +
-						org.drip.quant.common.FormatUtil.FormatDouble (mapFRACapOutput.get ("Price"), 1, 2, 1.) + " | " +
-						org.drip.quant.common.FormatUtil.FormatDouble (mapFRAFloorOutput.get ("Price"), 1, 2, 1.));
-				}
-			}
-		}
+		RunWithVolCorrSurface (
+			stir,
+			valParams,
+			cmp,
+			fri,
+			dblSwapRateVolatility,
+			dblSwapRateExchangeVolatility,
+			dblSwapRateToSwapRateExchangeCorrelation);
 	}
 }

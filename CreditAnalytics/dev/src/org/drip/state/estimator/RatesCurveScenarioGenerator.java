@@ -116,7 +116,7 @@ public class RatesCurveScenarioGenerator {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
 			_aCalibInst.length != astrCalibMeasure.length || null == valParams ||
@@ -198,7 +198,7 @@ public class RatesCurveScenarioGenerator {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == _aCalibInst || 0 == _aCalibInst.length || null == adblQuotes || null == astrCalibMeasure
 			|| adblQuotes.length != astrCalibMeasure.length || _aCalibInst.length != astrCalibMeasure.length
@@ -254,7 +254,7 @@ public class RatesCurveScenarioGenerator {
 			final java.lang.String[] astrCalibMeasure,
 			final java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-			final org.drip.param.valuation.QuotingParams quotingParams)
+			final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
 			_aCalibInst.length != astrCalibMeasure.length || null == valParams ||

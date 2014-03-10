@@ -224,7 +224,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
 	 * Retrieve the ordered set of the measure names whose values will be calculated
@@ -267,7 +267,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
 	{
@@ -290,7 +290,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == mpc || null == mpc.getScenCMP (this, "Base")) return null;
 
@@ -558,7 +558,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,
 		final java.lang.String strCustomScenName,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseOP)
 	{
 		if (null == strCustomScenName || strCustomScenName.isEmpty() || null == valParams || null == mpc ||

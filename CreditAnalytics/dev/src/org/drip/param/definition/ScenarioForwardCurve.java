@@ -95,7 +95,7 @@ public abstract class ScenarioForwardCurve {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final int iFCMode);
 
 	/**
@@ -124,7 +124,7 @@ public abstract class ScenarioForwardCurve {
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ResponseValueTweakParams ntpDC,
 		final org.drip.param.definition.ResponseValueTweakParams ntpFC);
 

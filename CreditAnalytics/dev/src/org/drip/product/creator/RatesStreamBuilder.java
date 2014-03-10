@@ -55,7 +55,7 @@ public class RatesStreamBuilder {
 	 * @return The Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateFixedStream (
+	public static final org.drip.product.rates.FixedStream CreateFixedStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final double dblCoupon,
@@ -92,7 +92,7 @@ public class RatesStreamBuilder {
 	 * @return The Floating Stream Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateFloatingStream (
+	public static final org.drip.product.rates.FloatingStream CreateFloatingStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final double dblCoupon,
@@ -142,10 +142,10 @@ public class RatesStreamBuilder {
 			!org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return null;
 
 		try {
-			org.drip.product.definition.RatesComponent fixStream = CreateFixedStream (dtEffective,
-				dtMaturity, dblCoupon, strIR, strCalendar);
+			org.drip.product.rates.FixedStream fixStream = CreateFixedStream (dtEffective, dtMaturity,
+				dblCoupon, strIR, strCalendar);
 
-			org.drip.product.definition.RatesComponent floatStream = CreateFloatingStream (dtEffective,
+			org.drip.product.rates.FloatingStream floatStream = CreateFloatingStream (dtEffective,
 				dtMaturity, dblCoupon, strIR, strFloatingRateIndex, strCalendar, true);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
@@ -186,10 +186,10 @@ public class RatesStreamBuilder {
 			|| !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return null;
 
 		try {
-			org.drip.product.definition.RatesComponent fixStream = CreateFixedStream (dtEffective,
+			org.drip.product.rates.FixedStream fixStream = CreateFixedStream (dtEffective,
 				dtEffective.addTenor (strTenor), dblCoupon, strIR, strCalendar);
 
-			org.drip.product.definition.RatesComponent floatStream = CreateFloatingStream (dtEffective,
+			org.drip.product.rates.FloatingStream floatStream = CreateFloatingStream (dtEffective,
 				dtEffective.addTenor (strTenor), dblCoupon, strIR, strFloatingRateIndex, strCalendar, true);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,

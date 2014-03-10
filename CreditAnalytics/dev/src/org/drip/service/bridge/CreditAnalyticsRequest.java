@@ -50,7 +50,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
-	private org.drip.param.valuation.QuotingParams _quotingParams = null;
+	private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 
 	/**
 	 * CreditAnalyticsRequest de-serialization from input byte array
@@ -135,7 +135,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_quotingParams = null;
 		else
-			_quotingParams = new org.drip.param.valuation.QuotingParams (astrField[6].getBytes());
+			_quotingParams = new org.drip.param.valuation.ValuationCustomizationParams (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("CreditAnalyticsRequest de-serializer: Cannot locate time stamp");
@@ -160,7 +160,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.valuation.QuotingParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == (_comp = comp) || null == (_valParams = valParams))
@@ -247,7 +247,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	 * @return The Quoting Parameters
 	 */
 
-	public org.drip.param.valuation.QuotingParams getQuotingParams()
+	public org.drip.param.valuation.ValuationCustomizationParams getQuotingParams()
 	{
 		return _quotingParams;
 	}
@@ -411,8 +411,9 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		}
 
 		if (!bond.setMarketConvention (new org.drip.product.params.QuoteConvention (new
-			org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "DKK", false), "REGULAR",
-				dblStart + 2, 1., 3, "USD", org.drip.analytics.daycount.Convention.DR_FOLL))) {
+			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "DKK", false,
+				null, null), "REGULAR", dblStart + 2, 1., 3, "USD",
+					org.drip.analytics.daycount.Convention.DR_FOLL))) {
 			System.out.println ("Cannot initialize bond IR Valuation params!");
 
 			System.exit (133);
@@ -547,8 +548,9 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 
 		org.drip.param.market.ComponentMarketParamSet cmp = MakeCMP();
 
-		org.drip.param.valuation.QuotingParams quotingParams = new org.drip.param.valuation.QuotingParams
-			("30/360", 2, true, null, "USD", false);
+		org.drip.param.valuation.ValuationCustomizationParams quotingParams = new
+			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "USD", false,
+				null, null);
 
 		CreditAnalyticsRequest cre = new CreditAnalyticsRequest (bond, valParams, pricerParams, cmp,
 			quotingParams);

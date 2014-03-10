@@ -32,57 +32,65 @@ package org.drip.param.valuation;
  */
 
 /**
- * QuotingParams holds the parameters needed to interpret the input quotes. It contains the quote day count,
- *  quote frequency, quote EOM Adjustment, quote Act/Act parameters, and quote Calendar. It also indicates if
- *  the native quote is spread based.
+ * ValuationCustomizationParams holds the parameters needed to interpret the input quotes. It contains the
+ * 	quote day count, the quote frequency, the quote EOM Adjustment, the quote Act/Act parameters, the quote
+ * 	Calendar, the Core Collateralization Parameters, and the Switchable Alternate Collateralization
+ * 	Parameters. It also indicates if the native quote is spread based.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class QuotingParams extends org.drip.service.stream.Serializer {
+public class ValuationCustomizationParams extends org.drip.service.stream.Serializer {
 	private int _iYieldFrequency = 0;
 	private boolean _bSpreadQuoted = false;
 	private java.lang.String _strYieldDC = "";
 	private boolean _bYieldApplyEOMAdj = false;
 	private java.lang.String _strYieldCalendar = "";
 	private org.drip.analytics.daycount.ActActDCParams _aapYield = null;
+	private org.drip.param.valuation.CollateralizationParams _collatParamsCore = null;
+	private java.util.Set<org.drip.param.valuation.CollateralizationParams> _setSwitchableCollateralBasket =
+		null;
 
 	/**
-	 * QuotingParams de-serialization from input byte array
+	 * ValuationCustomizationParams de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if QuotingParams cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if ValuationCustomizationParams cannot be properly de-serialized
 	 */
 
-	public QuotingParams (
+	public ValuationCustomizationParams (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("QuotingParams de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("QuotingParams de-serializer: Empty state");
+			throw new java.lang.Exception ("ValuationCustomizationParams de-serializer: Empty state");
 
 		java.lang.String strSerializedQuotingParams = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedQuotingParams || strSerializedQuotingParams.isEmpty())
-			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate state");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedQuotingParams,
 			getFieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)
-			throw new java.lang.Exception ("QuotingParams de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate yield DC");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Cannot locate yield DC");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_strYieldDC = "";
@@ -91,18 +99,21 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate Yield Frequency");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Cannot locate Yield Frequency");
 
 		_iYieldFrequency = new java.lang.Integer (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate spread quote flag");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Cannot locate spread quote flag");
 
 		_bSpreadQuoted = new java.lang.Boolean (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate yield DC");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Cannot locate yield DC");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strYieldCalendar = "";
@@ -111,13 +122,14 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("QuotingParams de-serializer: Cannot locate apply EOM flag");
+			throw new java.lang.Exception
+				("ValuationCustomizationParams de-serializer: Cannot locate apply EOM flag");
 
 		_bYieldApplyEOMAdj = new java.lang.Boolean (astrField[5]).booleanValue();
 
 		if (null == astrField[6] || astrField[6].isEmpty())
 			throw new java.lang.Exception
-				("QuotingParams de-serializer: Cannot locate optional yield ActAct Params");
+				("ValuationCustomizationParams de-serializer: Cannot locate optional yield ActAct Params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_aapYield = null;
@@ -126,25 +138,33 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Construct QuotingParams from the Day Count and the Frequency parameters
+	 * Construct ValuationCustomizationParams from the Day Count and the Frequency parameters
 	 * 
 	 * @param strDC Quoting Day Count
 	 * @param iFrequency Quoting Frequency
+	 * @param bApplyEOMAdj TRUE => Apply the EOM Adjustment
+	 * @param aap => Quoting Act/Act Parameters
+	 * @param strCalendar => Quoting Calendar
+	 * @param bSpreadQuoted => TRUE => Market Quotes are Spread Quoted
+	 * @param collatParamsCore => The Core Collateral Parameters using which the valuation is done
+	 * @param setSwitchableCollateralBasket => Switchable Collateral Basket
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public QuotingParams (
+	public ValuationCustomizationParams (
 		final java.lang.String strDC,
 		final int iFrequency,
 		final boolean bApplyEOMAdj,
 		final org.drip.analytics.daycount.ActActDCParams aap,
 		final java.lang.String strCalendar,
-		final boolean bSpreadQuoted)
+		final boolean bSpreadQuoted,
+		final org.drip.param.valuation.CollateralizationParams collatParamsCore,
+		final java.util.Set<org.drip.param.valuation.CollateralizationParams> setSwitchableCollateralBasket)
 		throws java.lang.Exception
 	{
 		if (null == strDC || strDC.isEmpty() || 0 == iFrequency)
-			throw new java.lang.Exception ("QuotingParams ctr: Invalid quoting params!");
+			throw new java.lang.Exception ("ValuationCustomizationParams ctr: Invalid quoting params!");
 
 		_aapYield = aap;
 		_strYieldDC = strDC;
@@ -152,6 +172,8 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 		_bSpreadQuoted = bSpreadQuoted;
 		_strYieldCalendar = strCalendar;
 		_bYieldApplyEOMAdj = bApplyEOMAdj;
+		_collatParamsCore = collatParamsCore;
+		_setSwitchableCollateralBasket = setSwitchableCollateralBasket;
 	}
 
 	/**
@@ -220,6 +242,28 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 		return _bYieldApplyEOMAdj;
 	}
 
+	/**
+	 * Retrieve the Core Collateralization Parameters
+	 * 
+	 * @return The Core Collateralization Parameters
+	 */
+
+	public org.drip.param.valuation.CollateralizationParams coreCollateralizationParams()
+	{
+		return _collatParamsCore;
+	}
+
+	/**
+	 * Retrieve the Switchable Collateralization Basket
+	 * 
+	 * @return The Switchable Collateralization Basket
+	 */
+
+	public java.util.Set<org.drip.param.valuation.CollateralizationParams> switchableCollateralBasket()
+	{
+		return _setSwitchableCollateralBasket;
+	}
+
 	@Override public java.lang.String getFieldDelimiter()
 	{
 		return "~";
@@ -262,7 +306,7 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 		final byte[] ab)
 	{
 		try {
-			return new QuotingParams (ab);
+			return new ValuationCustomizationParams (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -274,14 +318,15 @@ public class QuotingParams extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		QuotingParams qp = new QuotingParams ("30/360", 2, true, null, "DKK", false);
+		ValuationCustomizationParams vcp = new ValuationCustomizationParams ("30/360", 2, true, null, "DKK",
+			false, null, null);
 
-		byte[] abQP = qp.serialize();
+		byte[] abVCP = vcp.serialize();
 
-		System.out.println (new java.lang.String (abQP));
+		System.out.println (new java.lang.String (abVCP));
 
-		QuotingParams qpDeser = new QuotingParams (abQP);
+		ValuationCustomizationParams vcpDeser = new ValuationCustomizationParams (abVCP);
 
-		System.out.println (new java.lang.String (qpDeser.serialize()));
+		System.out.println (new java.lang.String (vcpDeser.serialize()));
 	}
 }

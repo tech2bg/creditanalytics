@@ -117,6 +117,11 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 			(_span.right())) / (_span.right() - _span.left());
 	}
 
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return null;
+	}
+
 	@Override public double df (
 		final double dblDate)
 		throws java.lang.Exception

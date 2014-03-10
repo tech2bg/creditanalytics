@@ -94,7 +94,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Scen
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat,
 		final int iCCScenario)
 	{
@@ -196,7 +196,7 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Scen
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpDC,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpTSY,

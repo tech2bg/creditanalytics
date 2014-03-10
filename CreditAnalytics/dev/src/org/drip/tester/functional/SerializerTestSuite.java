@@ -665,8 +665,9 @@ public class SerializerTestSuite {
 		}
 
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (new
-			org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "DKK", false), "REGULAR",
-				dblStart + 2, 1., 3, "USD", org.drip.analytics.daycount.Convention.DR_FOLL);
+			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "DKK", false,
+				null, null), "REGULAR", dblStart + 2, 1., 3, "USD",
+					org.drip.analytics.daycount.Convention.DR_FOLL);
 
 		byte[] abMktConv = mktConv.serialize();
 
@@ -836,10 +837,10 @@ public class SerializerTestSuite {
 
 		Verify (abCSP, new org.drip.param.valuation.CashSettleParams (abCSP), "CashSettleParams");
 
-		byte[] abQP = new org.drip.param.valuation.QuotingParams ("30/360", 2, true, null, "DKK",
-			false).serialize();
+		byte[] abQP = new org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null,
+			"DKK", false, null, null).serialize();
 
-		Verify (abQP, new org.drip.param.valuation.QuotingParams (abQP), "QuotingParams");
+		Verify (abQP, new org.drip.param.valuation.ValuationCustomizationParams (abQP), "QuotingParams");
 
 		byte[] abYQ = new org.drip.param.quoting.YieldInterpreter ("30/360", 2, true, null,
 			"DKK").serialize();

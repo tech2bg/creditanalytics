@@ -79,7 +79,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		final double dblEpochResponse,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.valuation.QuotingParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ComponentMarketParams cmp)
 	{
 		if (null == aSRS || null == valParams) return null;
