@@ -96,7 +96,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 						return false;
 
 					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-						(_dtStart, _strCurrency, 0.04)))
+						(_dtStart, _strCurrency, null, 0.04)))
 						return false;
 
 					for (int i = 0; i < 5; ++i) {

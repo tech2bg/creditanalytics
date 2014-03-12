@@ -203,7 +203,7 @@ public class SerializerTestSuite {
 		Verify (abCP, new org.drip.product.params.CurrencyPair (abCP), "CurrencyPair");
 
 		org.drip.analytics.rates.DiscountCurve dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC
-			(dtToday, "ABC", adblDCDate, adblDCRate,
+			(dtToday, "ABC", null, adblDCDate, adblDCRate,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		byte[] abDC = dc.serialize();
@@ -755,12 +755,12 @@ public class SerializerTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDCDate, adblRateTSY,
+				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", null, adblDCDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.DiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDCDate, adblRateEDSF,
+				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", null, adblDCDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>

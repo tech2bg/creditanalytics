@@ -158,9 +158,9 @@ public class BondLiveAndEODAPI {
 
 		JulianDate dtToday = JulianDate.Today();
 
-		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.05);
+		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.05);
 
-		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
 		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02, 0.4);
 
@@ -284,9 +284,9 @@ public class BondLiveAndEODAPI {
 
 		JulianDate dtToday = JulianDate.Today();
 
-		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.03);
+		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.03);
 
-		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
 		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD",
 			0.02, 0.);

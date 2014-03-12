@@ -154,7 +154,7 @@ public class FRACapFloorlet extends org.drip.product.definition.FixedIncomeOptio
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-			double dblSpotPrice = dblForwardPrice * mktParams.getDiscountCurve().df (dblExerciseDate);
+			double dblSpotPrice = dblForwardPrice * mktParams.getFundingCurve().df (dblExerciseDate);
 
 			mapResult.put ("ATMFRA", dblATMManifestMeasure);
 

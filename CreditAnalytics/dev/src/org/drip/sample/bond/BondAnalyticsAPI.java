@@ -341,7 +341,7 @@ public class BondAnalyticsAPI {
 		 * Treasury Discount Curve
 		 */
 
-		DiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "USD", 0.03);
+		DiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "USD", null, 0.03);
 
 		/*
 		 * Credit Curve
@@ -479,7 +479,7 @@ public class BondAnalyticsAPI {
 		 * Discount Curve
 		 */
 
-		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "DKK", 0.04);
+		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "DKK", null, 0.04);
 
 		/*
 		 * Credit Curve

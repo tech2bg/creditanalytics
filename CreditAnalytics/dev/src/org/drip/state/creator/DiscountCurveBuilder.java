@@ -60,6 +60,7 @@ public class DiscountCurveBuilder {
 	 * 
 	 * @param dtStart Start Date
 	 * @param strCurrency Currency
+	 * @param collatParams Collateralization Parameters
 	 * @param adblDate Array of dates
 	 * @param adblDF array of discount factors
 	 * @param strBootstrapMode Mode of the bootstrapping to be done: "ConstantForward", "LinearForward",
@@ -71,6 +72,7 @@ public class DiscountCurveBuilder {
 	public static final org.drip.analytics.rates.DiscountCurve BuildFromDF (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final double adblDate[],
 		final double adblDF[],
 		final java.lang.String strBootstrapMode)
@@ -96,15 +98,15 @@ public class DiscountCurveBuilder {
 
 		try {
 			if (null == strBootstrapMode)
-				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
-					adblRate);
+				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
+					adblDate, adblRate);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,
-					adblDate, adblRate);
+					collatParams, adblDate, adblRate);
 
-			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
-				adblRate);
+			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
+				adblDate, adblRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -117,6 +119,7 @@ public class DiscountCurveBuilder {
 	 * 
 	 * @param dtStart Start Date
 	 * @param strCurrency Currency
+	 * @param collatParams Collateralization Parameters
 	 * @param dblRate Date
 	 * 
 	 * @return Discount Curve
@@ -125,13 +128,14 @@ public class DiscountCurveBuilder {
 	public static final org.drip.analytics.rates.ExplicitBootDiscountCurve CreateFromFlatRate (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final double dblRate)
 	{
 		if (null == dtStart || !org.drip.quant.common.NumberUtil.IsValid (dblRate)) return null;
 
 		try {
-			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, new double[]
-				{dtStart.getJulian()}, new double[] {dblRate});
+			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams, new
+				double[] {dtStart.getJulian()}, new double[] {dblRate});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -144,6 +148,7 @@ public class DiscountCurveBuilder {
 	 * 
 	 * @param dtStart Start Date
 	 * @param strCurrency Currency
+	 * @param collatParams Collateralization Parameters
 	 * @param adblDate array of dates
 	 * @param adblRate array of rates
 	 * @param strBootstrapMode Mode of the bootstrapping to be done: "ConstantForward", "LinearForward",
@@ -155,21 +160,22 @@ public class DiscountCurveBuilder {
 	public static final org.drip.analytics.rates.ExplicitBootDiscountCurve CreateDC (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final double[] adblDate,
 		final double[] adblRate,
 		final java.lang.String strBootstrapMode)
 	{
 		try {
 			if (null == strBootstrapMode)
-				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
-					adblRate);
+				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
+					adblDate, adblRate);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,
-					adblDate, adblRate);
+					collatParams, adblDate, adblRate);
 
-			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, adblDate,
-				adblRate);
+			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
+				adblDate, adblRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

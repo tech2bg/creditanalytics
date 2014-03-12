@@ -516,15 +516,15 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		org.drip.analytics.rates.DiscountCurve dcFromDF =
-			org.drip.state.creator.DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", adblDate, adblDF,
+			org.drip.state.creator.DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", null, adblDate, adblDF,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.DiscountCurve dcFromRate =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "EUR", adblDate, adblRate,
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "EUR", null, adblDate, adblRate,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.DiscountCurve dcFromFlatRate =
-			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", 0.04);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", null, 0.04);
 
 		java.util.Set<java.lang.String> setstrTSYCurves =
 			org.drip.service.api.CreditAnalytics.GetEODTSYCurveNames (dt1);
@@ -1031,7 +1031,7 @@ public class CreditAnalyticsTestSuite {
 	{
 		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05);
+				(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.05);
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
@@ -1056,7 +1056,7 @@ public class CreditAnalyticsTestSuite {
 			for (org.drip.analytics.period.CashflowPeriodCurveFactors p : cds.getCouponFlow (valParams,
 				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
 					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-						(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05),
+						(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.05),
 							org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 								(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", "USD", 0.02,
 									0.4))))
@@ -1181,10 +1181,10 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.03);
+				(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.03);
 
 		org.drip.analytics.rates.DiscountCurve dcTSY =
-			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02,
@@ -1325,7 +1325,7 @@ public class CreditAnalyticsTestSuite {
 
 			for (org.drip.analytics.period.CashflowPeriodCurveFactors p : bond.getCouponFlow
 				(valParams, pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
-					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
+					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null,
 						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
 							(dtToday.getJulian(), "CC", "USD", 0.02, 0.4)))) {
 				try {
@@ -1512,11 +1512,11 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.04);
+				(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.04);
 
 		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.03);
+				(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.03);
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
@@ -1693,10 +1693,10 @@ public class CreditAnalyticsTestSuite {
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 		org.drip.analytics.rates.DiscountCurve dc =
-			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.05);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.05);
 
 		org.drip.analytics.rates.DiscountCurve dcTSY =
-			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", 0.04);
+			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02,
@@ -2719,7 +2719,7 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-				(org.drip.analytics.date.JulianDate.Today(), "DKK", 0.04);
+				(org.drip.analytics.date.JulianDate.Today(), "DKK", null, 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
@@ -2829,7 +2829,7 @@ public class CreditAnalyticsTestSuite {
 			org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams();
 
 		bmp.addDiscountCurve ("USD", org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday,
-			"USD", 0.04));
+			"USD", null, 0.04));
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = null;
 
@@ -2894,11 +2894,11 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dcUSD =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-				(org.drip.analytics.date.JulianDate.Today(), "USD", 0.05);
+				(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.05);
 
 		org.drip.analytics.rates.DiscountCurve dcEUR =
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-				(org.drip.analytics.date.JulianDate.Today(), "EUR", 0.04);
+				(org.drip.analytics.date.JulianDate.Today(), "EUR", null, 0.04);
 
 		double dblFXSpot = 1.40;
 		double dblFXFwdMarket = 1.40;

@@ -82,8 +82,8 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		try {
 			NonlinearDiscountFactorDiscountCurve nldfdc = new NonlinearDiscountFactorDiscountCurve (new
-				org.drip.analytics.date.JulianDate (_dblEpochDate), _strCurrency, _adblDate,
-					adblShiftedManifestMeasure);
+				org.drip.analytics.date.JulianDate (_dblEpochDate), _strCurrency, collateralParams(),
+					_adblDate, adblShiftedManifestMeasure);
 
 			for (int i = 0; i < iNumComp; ++i) {
 				java.lang.String strInstrumentCode = aCalibInst[i].getPrimaryCode();
@@ -108,6 +108,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	 * 
 	 * @param dtStart Epoch Date
 	 * @param strCurrency Currency
+	 * @param collatParams Collateralization Parameters
 	 * @param adblDate Array of Dates
 	 * @param adblRate Array of Forward Rates
 	 * 
@@ -117,11 +118,12 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	public NonlinearDiscountFactorDiscountCurve (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final double[] adblDate,
 		final double[] adblRate)
 		throws java.lang.Exception
 	{
-		super (dtStart.getJulian(), strCurrency);
+		super (dtStart.getJulian(), strCurrency, collatParams);
 
 		if (null == adblDate || 0 == adblDate.length || null == adblRate || adblDate.length !=
 			adblRate.length || null == dtStart)
@@ -178,7 +180,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEF_INIT");
+		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEF_INIT", null);
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
@@ -394,7 +396,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 				adblCDFRate[i] = zero (adblDate[i]) + adblBasis[i];
 
 			return new NonlinearDiscountFactorDiscountCurve (new org.drip.analytics.date.JulianDate
-				(_dblEpochDate), _strCurrency, adblDate, adblCDFRate);
+				(_dblEpochDate), _strCurrency, collateralParams(), adblDate, adblCDFRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

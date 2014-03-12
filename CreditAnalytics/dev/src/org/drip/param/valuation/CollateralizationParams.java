@@ -56,8 +56,8 @@ public class CollateralizationParams {
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		if (null == (_strType = strType) || !_strType.isEmpty() || null == (_strCurrency = strCurrency) ||
-			!_strCurrency.isEmpty())
+		if (null == (_strType = strType) || _strType.isEmpty() || null == (_strCurrency = strCurrency) ||
+			_strCurrency.isEmpty())
 			throw new java.lang.Exception ("CollateralizationParams ctr: Invalid Inputs");
 	}
 

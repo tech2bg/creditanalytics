@@ -116,7 +116,8 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
-		super (dc.epoch().getJulian(), dc.currency());
+		super (dc.epoch().getJulian(), dc.currency(), null == quotingParams ? null :
+			quotingParams.coreCollateralizationParams());
 
 		if (null == (_dc = dc) || null == lsCouponPeriod || 0 == lsCouponPeriod.size() ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
@@ -160,7 +161,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEFINIT");
+		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEFINIT", null);
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception ("DerivedZeroRate de-serializer: Invalid input Byte array");

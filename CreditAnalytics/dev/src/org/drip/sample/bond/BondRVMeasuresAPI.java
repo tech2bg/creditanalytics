@@ -353,7 +353,7 @@ public class BondRVMeasuresAPI {
 
 		DiscountCurve dcBumped = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0.0001, "USD");
 
-		cmp.setDiscountCurve (dcBumped);
+		cmp.setFundingCurve (dcBumped);
 
 		/*
 		 * Compute the bumped RV measures to the work-out date.

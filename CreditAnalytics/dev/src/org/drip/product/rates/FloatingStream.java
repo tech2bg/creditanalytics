@@ -410,7 +410,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			}
 		}
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == dc) throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
 
@@ -493,7 +493,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == dc) return null;
 
@@ -705,13 +705,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
-			mktParams.getDiscountCurve())
+			mktParams.getFundingCurve())
 			return null;
 
 		try {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
@@ -774,7 +774,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null == mktParams
-			|| null == mktParams.getDiscountCurve())
+			|| null == mktParams.getFundingCurve())
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote) || "SwapRate".equalsIgnoreCase (strQuote)) {
@@ -790,7 +790,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();
@@ -859,7 +859,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					(strQuantificationMetric))
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == dc) return null;
 

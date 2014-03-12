@@ -62,12 +62,86 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.analytics.definition.CreditCurve cc);
 
 	/**
-	 * Retrieve the Component Discount Curve
+	 * Retrieve the Component's Funding Curve
 	 * 
-	 * @return Component Discount Curve
+	 * @return Component's Funding Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve getFundingCurve();
+
+	/**
+	 * (Re)-set the Component's Funding Curve
+	 * 
+	 * @param dcFunding Component's Funding Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFundingCurve (
+		final org.drip.analytics.rates.DiscountCurve dcFunding);
+
+	/**
+	 * Retrieve the Component's Domestic Collateral Curve
+	 * 
+	 * @return Component's Domestic Collateral Curve
+	 */
+
+	public abstract org.drip.analytics.rates.DiscountCurve getDomesticCollateralCurve();
+
+	/**
+	 * (Re)-set the Component's Domestic Collateral Curve
+	 * 
+	 * @param dcDomesticCollateral Component's Domestic Collateral Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setDomesticCollateralCurve (
+		final org.drip.analytics.rates.DiscountCurve dcDomesticCollateral);
+
+	/**
+	 * Retrieve the Component's Foreign Collateral Curve
+	 * 
+	 * @return Component's Foreign Collateral Curve
+	 */
+
+	public abstract org.drip.analytics.rates.DiscountCurve getForeignCollateralCurve (
+		final java.lang.String strCurrency);
+
+	/**
+	 * (Re)-set the Component's Foreign Collateral Curve
+	 * 
+	 * @param strCurrency Component's Foreign Collateral Currency
+	 * @param dcForeignCollateral Component's Foreign Collateral Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setForeignCollateralCurve (
+		final java.lang.String strCurrency,
+		final org.drip.analytics.rates.DiscountCurve dcForeignCollateral);
+
+	/**
+	 * Retrieve the Component's Domestic Currency Collateralized in Foreign Collateral Curve
+	 * 
+	 * @return Component's Domestic Currency Collateralized in Foreign Collateral Curve
+	 */
+
+	public abstract org.drip.analytics.rates.DiscountCurve getDomesticCurrencyForeignCollateralCurve (
+		final java.lang.String strCurrency);
+
+	/**
+	 * (Re)-set the Component's Domestic Currency Collateralized in Foreign Collateral Curve
+	 * 
+	 * @param strCurrency Component's Foreign Collateral Currency
+	 * @param dcForeignCollateral Component's Domestic Currency Collateralized in Foreign Collateral Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setDomesticCurrencyForeignCollateralCurve (
+		final java.lang.String strCurrency,
+		final org.drip.analytics.rates.DiscountCurve dcDomesticCurrencyForeignCollateral);
 
 	/**
 	 * (Re)-set the Component Forward Curve
@@ -87,17 +161,6 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 */
 
 	public abstract org.drip.analytics.rates.ForwardCurve getForwardCurve();
-
-	/**
-	 * (Re)-set the Component Discount Curve
-	 * 
-	 * @param dc Component Discount Curve
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setDiscountCurve (
-		final org.drip.analytics.rates.DiscountCurve dc);
 
 	/**
 	 * Retrieve the Component TSY Discount Curve
@@ -214,4 +277,26 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final java.lang.String strLatentState,
 		final org.drip.analytics.date.JulianDate dtForward,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
+
+	/**
+	 * Retrieve the Component's FX Curve
+	 * 
+	 * @return Component's FX Curve
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate getFXCurve (
+		final java.lang.String strFXCode);
+
+	/**
+	 * (Re)-set the Component's Foreign Collateral Curve
+	 * 
+	 * @param strFXCode Code for the FX Currency Pair
+	 * @param auFX The FX Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFXCurve (
+		final java.lang.String strFXCode,
+		final org.drip.quant.function1D.AbstractUnivariate auFX);
 }

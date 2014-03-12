@@ -143,9 +143,9 @@ public class RatesCurveScenarioGenerator {
 		}
 
 		try {
-			dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (new
-				org.drip.analytics.date.JulianDate (valParams.valueDate()), _strCurrency, adblDates,
-					adblRates, _strBootstrapMode);
+			dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (new org.drip.analytics.date.JulianDate
+				(valParams.valueDate()), _strCurrency, null == quotingParams ? null :
+					quotingParams.coreCollateralizationParams(), adblDates, adblRates, _strBootstrapMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

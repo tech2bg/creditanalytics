@@ -42,10 +42,11 @@ public abstract class ZeroCurve extends org.drip.analytics.rates.DiscountCurve {
 
 	protected ZeroCurve (
 		final double dblEpochDate,
-		final java.lang.String strCurrency)
+		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strCurrency, null);
+		super (dblEpochDate, strCurrency, collatParams, null);
 	}
 
 	/**

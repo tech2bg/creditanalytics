@@ -469,17 +469,17 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 
 		org.drip.analytics.rates.ExplicitBootDiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
+				(org.drip.analytics.date.JulianDate.Today(), "ABC", null, adblDate, adblRate,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.ExplicitBootDiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
+				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", null, adblDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.ExplicitBootDiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDate, adblRateEDSF,
+				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", null, adblDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.ExplicitBootCreditCurve cc =
@@ -518,8 +518,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			java.lang.Double.NaN), true);
 
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, cqBond,
-				mapTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, dcEDSF, cc,
+				cqBond, mapTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

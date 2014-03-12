@@ -439,7 +439,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	{
 		if (null == compRef) return null;
 
-		return new ComponentMarketParamSet (_mapDC.get (compRef.getIRCurveName()), _mapFC.get
+		return new ComponentMarketParamSet (_mapDC.get (compRef.getIRCurveName()), null, _mapFC.get
 			(compRef.getForwardCurveName()), _mapDC.get (compRef.getTreasuryCurveName()), _mapDC.get
 				(compRef.getEDSFCurveName()), _mapCC.get (compRef.getCreditCurveName()), _mapCQComp.get
 					(compRef.getComponentName()), _mapCQComp, _mmFixings);
@@ -645,17 +645,17 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		org.drip.analytics.rates.DiscountCurve dc =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate,
+				(org.drip.analytics.date.JulianDate.Today(), "ABC", null, adblDate, adblRate,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", adblDate, adblRateTSY,
+				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", null, adblDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.DiscountCurve dcEDSF =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", adblDate, adblRateEDSF,
+				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", null, adblDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =

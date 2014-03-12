@@ -373,12 +373,12 @@ public class CreditAnalyticsProxy {
 		org.drip.analytics.rates.DiscountCurve dc = MakeDC (dtStart);
 
 		org.drip.analytics.rates.DiscountCurve dcTSY =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", adblDate,
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", null, adblDate,
 				adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.rates.DiscountCurve dcEDSF =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", adblDate,
+			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", null, adblDate,
 				adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
@@ -427,8 +427,8 @@ public class CreditAnalyticsProxy {
 		}
 
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, cqBond,
-				mapTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, dcEDSF, cc,
+				cqBond, mapTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

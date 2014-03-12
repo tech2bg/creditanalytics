@@ -46,10 +46,11 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 
 	protected ExplicitBootDiscountCurve (
 		final double dblEpochDate,
-		final java.lang.String strCurrency)
+		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strCurrency, null);
+		super (dblEpochDate, strCurrency, collatParams, null);
 	}
 
 	/**

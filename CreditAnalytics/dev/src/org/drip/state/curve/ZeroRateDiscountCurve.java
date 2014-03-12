@@ -94,9 +94,9 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		}
 
 		try {
-			return new org.drip.state.curve.ZeroRateDiscountCurve (name(), (_rcci.lcc().calibrateSpan
-				(aRBSBumped, dblLeftMostZero, _rcci.getValuationParameter(), _rcci.getPricerParameter(),
-					_rcci.getQuotingParameter(), _rcci.getCMP())));
+			return new org.drip.state.curve.ZeroRateDiscountCurve (name(), collateralParams(),
+				(_rcci.lcc().calibrateSpan (aRBSBumped, dblLeftMostZero, _rcci.getValuationParameter(),
+					_rcci.getPricerParameter(), _rcci.getQuotingParameter(), _rcci.getCMP())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -108,6 +108,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 	 * ZeroRateDiscountCurve constructor
 	 * 
 	 * @param strCurrency Currency
+	 * @param collatParams Collateralization Parameters
 	 * @param span The Span Instance
 	 * 
 	 * @throws java.lang.Exception
@@ -115,10 +116,11 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 
 	public ZeroRateDiscountCurve (
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final org.drip.spline.grid.Span span)
 		throws java.lang.Exception
 	{
-		super (span.left(), strCurrency, null);
+		super (span.left(), strCurrency, collatParams, null);
 
 		_dblRightFlatForwardRate = (_span = span).calcResponseValue (_span.right());
 	}

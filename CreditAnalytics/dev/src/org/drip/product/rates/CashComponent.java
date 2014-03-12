@@ -332,7 +332,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == dc) return null;
 
@@ -389,7 +389,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
-			mktParams.getDiscountCurve())
+			mktParams.getFundingCurve())
 			return null;
 
 		try {
@@ -398,7 +398,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 			if (null == mapMeasures) return null;
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 			org.drip.quant.calculus.WengertJacobian wjDFDF = dc.jackDDFDManifestMeasure (_dblMaturity,
 				"Rate");
@@ -430,12 +430,12 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null ==
-			mktParams || null == mktParams.getDiscountCurve())
+			mktParams || null == mktParams.getFundingCurve())
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote)) {
 			try {
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 				org.drip.quant.calculus.WengertJacobian wjDF = dc.jackDDFDManifestMeasure (_dblMaturity,
 					"Rate");

@@ -80,7 +80,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == cc || null == dc) return null;
 
@@ -245,7 +245,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 				pricerParams, period, period.getEndDate(), mktParams);
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == sLPSub || 0 == sLPSub.size() || null == dc) return null;
 
@@ -290,7 +290,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 				pricerParams, period, period.getEndDate(), mktParams);
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == sLPSub || 0 == sLPSub.size() || null == dc) return null;
 
@@ -767,7 +767,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == cc || null == dc) return null;
 
@@ -914,7 +914,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null != ccMarket) {
 			org.drip.param.definition.ComponentMarketParams cmpMarket =
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(mktParams.getDiscountCurve(), mktParams.getTSYDiscountCurve(),
+				(mktParams.getFundingCurve(), mktParams.getTSYDiscountCurve(),
 					mktParams.getEDSFDiscountCurve(), ccMarket, mktParams.getComponentQuote(),
 						mktParams.getTSYBenchmarkQuotes(), mktParams.getFixings());
 
@@ -1106,7 +1106,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		try {
 			if (null == (ccQS = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
 				(getComponentName(), new org.drip.analytics.date.JulianDate (valParams.valueDate()), aComp,
-					mktParams.getDiscountCurve(), adblQS, astrCalibMeasure, null != cc ? cc.getRecovery
+					mktParams.getFundingCurve(), adblQS, astrCalibMeasure, null != cc ? cc.getRecovery
 						(valParams.valueDate()) : 0.4, false)))
 				return null;
 		} catch (java.lang.Exception e) {
@@ -1117,7 +1117,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapPV = value (valParams,
 			pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
-				(mktParams.getDiscountCurve(), ccQS), quotingParams);
+				(mktParams.getFundingCurve(), ccQS), quotingParams);
 
 		for (int i = 0; i < iNumCalibComp; ++i) {
 			try {
@@ -1143,7 +1143,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == cc || null == dc) return null;
 
@@ -1209,7 +1209,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.analytics.definition.CreditCurve cc = mktParams.getCreditCurve();
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == cc || null == dc) return null;
 

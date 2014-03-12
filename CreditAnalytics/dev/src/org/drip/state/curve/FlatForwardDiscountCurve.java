@@ -83,7 +83,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		try {
 			FlatForwardDiscountCurve frdc = new FlatForwardDiscountCurve (new
-				org.drip.analytics.date.JulianDate (_dblEpochDate), _strCurrency, _adblDate, _adblRate);
+				org.drip.analytics.date.JulianDate (_dblEpochDate), _strCurrency, collateralParams(),
+					_adblDate, _adblRate);
 
 			for (int i = 0; i < iNumComp; ++i) {
 				java.lang.String strInstrumentCode = aCalibInst[i].getPrimaryCode();
@@ -108,6 +109,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	 * 
 	 * @param dtStart Epoch Date
 	 * @param strCurrency Currency
+	 * @param collatParams Collateralization Parameters
 	 * @param adblDate Array of Dates
 	 * @param adblRate Array of Rates
 	 * 
@@ -117,11 +119,12 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	public FlatForwardDiscountCurve (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final double[] adblDate,
 		final double[] adblRate)
 		throws java.lang.Exception
 	{
-		super (dtStart.getJulian(), strCurrency);
+		super (dtStart.getJulian(), strCurrency, collatParams);
 
 		if (null == adblDate || null == adblRate)
 			throw new java.lang.Exception ("FlatForwardDiscountCurve ctr: Invalid inputs");
@@ -144,7 +147,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final FlatForwardDiscountCurve dc)
 		throws java.lang.Exception
 	{
-		super (dc.epoch().getJulian(), dc.currency());
+		super (dc.epoch().getJulian(), dc.currency(), dc.collateralParams());
 
 		_adblDate = dc._adblDate;
 		_adblRate = dc._adblRate;
@@ -164,7 +167,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEF_INIT");
+		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEF_INIT", null);
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
@@ -358,7 +361,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		try {
 			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
-				_strCurrency, _adblDate, adblRate);
+				_strCurrency, collateralParams(), _adblDate, adblRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -371,8 +374,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		try {
 			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
-				_strCurrency, _adblDate, org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure
-					(_adblRate, rvtp));
+				_strCurrency, collateralParams(), _adblDate,
+					org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure (_adblRate, rvtp));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -397,7 +400,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 				adblShiftedRate[i] = zero (adblDate[i]) + adblBasis[i];
 
 			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
-				_strCurrency, adblDate, adblShiftedRate);
+				_strCurrency, collateralParams(), adblDate, adblShiftedRate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -540,7 +543,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		}
 
 		FlatForwardDiscountCurve dc = new FlatForwardDiscountCurve
-			(org.drip.analytics.date.JulianDate.Today(), "ABC", adblDate, adblRate);
+			(org.drip.analytics.date.JulianDate.Today(), "ABC", null, adblDate, adblRate);
 
 		byte[] abDC = dc.serialize();
 

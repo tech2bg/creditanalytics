@@ -148,7 +148,7 @@ public class CDSManager {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc = aCDS[1].value
 				(valParams, pricerParams,
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(mpc.getScenCMP (aCDS[i], "Base").getDiscountCurve(), null, null, cc, null, null,
+						(mpc.getScenCMP (aCDS[i], "Base").getFundingCurve(), null, null, cc, null, null,
 							null), null);
 
 			if (null == mapCalc) {
@@ -218,7 +218,7 @@ public class CDSManager {
 				try {
 					dblFlatSpread100 = aCDS[i].calibFlatSpread (valParams, pricerParams,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(mpc.getScenCMP (aCDS[i], "Base").getDiscountCurve(), null, null, cc, null, null,
+							(mpc.getScenCMP (aCDS[i], "Base").getFundingCurve(), null, null, cc, null, null,
 								null), null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +
@@ -270,7 +270,7 @@ public class CDSManager {
 				try {
 					dblFlatSpread500 = aCDS[i].calibFlatSpread (valParams, pricerParams, 
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(mpc.getScenCMP (aCDS[i], "Base").getDiscountCurve(), null, null, cc, null, null,
+							(mpc.getScenCMP (aCDS[i], "Base").getFundingCurve(), null, null, cc, null, null,
 								null), null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +

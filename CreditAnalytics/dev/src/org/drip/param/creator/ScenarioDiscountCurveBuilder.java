@@ -204,7 +204,9 @@ public class ScenarioDiscountCurveBuilder {
 		try {
 			org.drip.state.curve.DiscountFactorDiscountCurve dcdf = new
 				org.drip.state.curve.DiscountFactorDiscountCurve (aSRS[0].getCalibComp()[0].getIRCurveName(),
-					(lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
+					null == quotingParam ? null : quotingParam.coreCollateralizationParams(),
+						(lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam,
+							cmp)));
 
 			return dcdf.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
 				pricerParam, quotingParam, cmp)) ? dcdf : null;
@@ -297,12 +299,14 @@ public class ScenarioDiscountCurveBuilder {
 
 			if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 				(strSmootheningQM))
-				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, new
-					org.drip.spline.grid.OverlappingStretchSpan (stretch));
+				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, null ==
+					quotingParam ? null : quotingParam.coreCollateralizationParams(), new
+						org.drip.spline.grid.OverlappingStretchSpan (stretch));
 			else if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
 				(strSmootheningQM))
-				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, new
-					org.drip.spline.grid.OverlappingStretchSpan (stretch));
+				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, null == quotingParam ?
+					null : quotingParam.coreCollateralizationParams(), new
+						org.drip.spline.grid.OverlappingStretchSpan (stretch));
 
 			return dcMultiPass.setCCIS (new org.drip.analytics.rates.SmoothingCCIS (dcShapePreserver, gccp,
 				lcc, aSRS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
@@ -401,12 +405,14 @@ public class ScenarioDiscountCurveBuilder {
 
 			if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 				(strSmootheningQM))
-				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, new
-					org.drip.spline.grid.OverlappingStretchSpan (stretch));
+				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, null ==
+					quotingParam ? null : quotingParam.coreCollateralizationParams(), new
+						org.drip.spline.grid.OverlappingStretchSpan (stretch));
 			else if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
 				(strSmootheningQM))
-				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, new
-					org.drip.spline.grid.OverlappingStretchSpan (stretch));
+				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, null == quotingParam ?
+					null : quotingParam.coreCollateralizationParams(), new
+						org.drip.spline.grid.OverlappingStretchSpan (stretch));
 
 			return dcMultiPass.setCCIS (new org.drip.analytics.rates.SmoothingCCIS (dcShapePreserver,
 				lccp, lcc, aSRS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;

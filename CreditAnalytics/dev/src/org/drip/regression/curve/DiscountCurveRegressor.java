@@ -254,7 +254,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				{
 					return null != (_dcFromFlatRate =
 						org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (_dtStart,
-							_strCurrency, 0.04));
+							_strCurrency, null, 0.04));
 				}
 
 				@Override public boolean postRegression (
@@ -318,7 +318,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean execRegression()
 				{
 					return null != (_dcFromDF = org.drip.state.creator.DiscountCurveBuilder.BuildFromDF
-						(_dtStart, _strCurrency, _adblDate, _adblDiscountFactorFlatRate,
+						(_dtStart, _strCurrency, null, _adblDate, _adblDiscountFactorFlatRate,
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD));
 				}
 
@@ -385,7 +385,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean execRegression()
 				{
 					return null != (_dcFromRates = org.drip.state.creator.DiscountCurveBuilder.CreateDC
-						(_dtStart, _strCurrency, _adblDate, _adblRate,
+						(_dtStart, _strCurrency, null, _adblDate, _adblRate,
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD));
 				}
 

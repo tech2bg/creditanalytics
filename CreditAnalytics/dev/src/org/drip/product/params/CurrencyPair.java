@@ -45,6 +45,34 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	private double _dblPIPFactor = java.lang.Double.NaN;
 
 	/**
+	 * Construct the Currency Pair from the Code
+	 * 
+	 * @param strCode Currency Pair Code
+	 * 
+	 * @return The Currency Pair
+	 */
+
+	public static final CurrencyPair FromCode (
+		final java.lang.String strCode)
+	{
+		if (null == strCode || strCode.isEmpty()) return null;
+
+		java.lang.String[] astrCcy = strCode.split ("/");
+
+		if (null == astrCcy || 2 != astrCcy.length || null == astrCcy[0] || astrCcy[0].isEmpty() || null ==
+			astrCcy[1] || astrCcy[1].isEmpty())
+			return null;
+
+		try {
+			return new CurrencyPair (astrCcy[0], astrCcy[1], astrCcy[0], 1.);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Construct the currency pair from the numerator currency, the denominator currency, the quote
 	 * 	currency, and the PIP Factor
 	 * 
@@ -175,7 +203,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 
 	public java.lang.String getCode()
 	{
-		return _strNumCcy + _strDenomCcy;
+		return _strNumCcy + "/" + _strDenomCcy;
 	}
 
 	/**
@@ -228,7 +256,9 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		CurrencyPair cp = new CurrencyPair ("USD", "INR", "INR", 1.);
+		// CurrencyPair cp = new CurrencyPair ("USD", "INR", "INR", 1.);
+
+		CurrencyPair cp = FromCode ("USD/INR");
 
 		byte[] abCP = cp.serialize();
 

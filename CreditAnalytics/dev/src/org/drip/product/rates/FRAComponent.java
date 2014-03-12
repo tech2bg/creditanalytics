@@ -335,7 +335,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		double dblMaturity = _dtMaturity.getJulian();
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
 
 		if (null == dc) return null;
 
@@ -451,7 +451,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getDiscountCurve())
+		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve())
 			return null;
 
 		return null;
@@ -465,7 +465,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == strQuote || null == mktParams || null ==
-			mktParams.getDiscountCurve())
+			mktParams.getFundingCurve())
 			return null;
 
 		return null;

@@ -150,11 +150,11 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 					if (null == (_dcUSD = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-						(dtToday, "USD", 0.05)))
+						(dtToday, "USD", null, 0.05)))
 						return false;
 
 					if (null == (_dcEUR = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-						(dtToday, "EUR", 0.04)))
+						(dtToday, "EUR", null, 0.04)))
 						return false;
 
 					if (null == (_valParams = org.drip.param.valuation.ValuationParams.CreateValParams
@@ -223,11 +223,11 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 					if (null == (_dcUSD = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-						(dtToday, "USD", 0.05)))
+						(dtToday, "USD", null, 0.05)))
 						return false;
 
 					if (null == (_dcEUR = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
-						(dtToday, "EUR", 0.04)))
+						(dtToday, "EUR", null, 0.04)))
 						return false;
 
 					if (null == (_valParams = org.drip.param.valuation.ValuationParams.CreateValParams

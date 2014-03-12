@@ -87,9 +87,9 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		}
 
 		try {
-			return new org.drip.state.curve.DiscountFactorDiscountCurve (name(), (_rcci.lcc().calibrateSpan
-				(aRBSBumped, 1., _rcci.getValuationParameter(), _rcci.getPricerParameter(),
-					_rcci.getQuotingParameter(), _rcci.getCMP())));
+			return new org.drip.state.curve.DiscountFactorDiscountCurve (name(), collateralParams(),
+				(_rcci.lcc().calibrateSpan (aRBSBumped, 1., _rcci.getValuationParameter(),
+					_rcci.getPricerParameter(), _rcci.getQuotingParameter(), _rcci.getCMP())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -101,6 +101,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	 * DiscountFactorDiscountCurve constructor
 	 * 
 	 * @param strCurrency Currency
+	 * @param collatParams The Collateralization Parameters
 	 * @param span The Span Instance
 	 * 
 	 * @throws java.lang.Exception
@@ -108,18 +109,14 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 
 	public DiscountFactorDiscountCurve (
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final org.drip.spline.grid.Span span)
 		throws java.lang.Exception
 	{
-		super (span.left(), strCurrency, null);
+		super (span.left(), strCurrency, collatParams, null);
 
 		_dblRightFlatForwardRate = -365.25 * java.lang.Math.log ((_span = span).calcResponseValue
 			(_span.right())) / (_span.right() - _span.left());
-	}
-
-	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
-	{
-		return null;
 	}
 
 	@Override public double df (

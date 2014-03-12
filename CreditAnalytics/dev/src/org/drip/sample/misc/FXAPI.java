@@ -93,9 +93,9 @@ public class FXAPI {
 		 * Create a the USD and EUR discount curves
 		 */
 
-		ExplicitBootDiscountCurve dcUSD = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "USD", 0.05);
+		ExplicitBootDiscountCurve dcUSD = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "USD", null, 0.05);
 
-		ExplicitBootDiscountCurve dcEUR = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "EUR", 0.04);
+		ExplicitBootDiscountCurve dcEUR = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "EUR", null, 0.04);
 
 		double dblFXSpot = 1.40;
 		double dblFXFwdMarket = 1.40;

@@ -88,7 +88,7 @@ public class RatesAnalyticsAPI {
 		 * Build the discount curve from an array of dates and discount factors
 		 */
 
-		DiscountCurve dcFromDF = DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", adblDate, adblDF,
+		DiscountCurve dcFromDF = DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", null, adblDate, adblDF,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		JulianDate dt = dtStart.addYears (10);
@@ -100,7 +100,7 @@ public class RatesAnalyticsAPI {
 		 * Build the discount curve from an array of dates and forward rates
 		 */
 
-		DiscountCurve dcFromRate = DiscountCurveBuilder.CreateDC (dtStart, "EUR", adblDate, adblRate,
+		DiscountCurve dcFromRate = DiscountCurveBuilder.CreateDC (dtStart, "EUR", null, adblDate, adblRate,
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		System.out.println ("DCFromRate[" + dt.toString() + "]; DF=" + dcFromRate.df (dt) + "; Rate=" +
@@ -110,7 +110,7 @@ public class RatesAnalyticsAPI {
 		 * Build the discount curve from a flat rate
 		 */
 
-		DiscountCurve dcFromFlatRate = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", 0.04);
+		DiscountCurve dcFromFlatRate = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", null, 0.04);
 
 		System.out.println ("DCFromFlatRate[" + dt.toString() + "]; DF=" + dcFromFlatRate.df (dt) +
 			"; Rate=" + dcFromFlatRate.zero ("10Y"));

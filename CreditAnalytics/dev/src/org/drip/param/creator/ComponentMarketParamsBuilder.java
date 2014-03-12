@@ -51,7 +51,7 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, null, null, null,
-			null);
+			null, null);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.ForwardCurve fc)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, fc, null, null, null, null, null,
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, fc, null, null, null, null, null,
 			null);
 	}
 
@@ -84,8 +84,8 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, null, null, null, null,
-			null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, null, null, null,
+			null, null);
 	}
 
 	/**
@@ -103,8 +103,8 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.rates.DiscountCurve dcEDSF)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, null, null, null,
-			null);
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, dcEDSF, null, null,
+			null, null);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc)
 	{
-		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, cc, null, null,
+		return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, null, null, cc, null, null,
 			null);
 	}
 
@@ -150,8 +150,8 @@ public class ComponentMarketParamsBuilder {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, null, dcTSY, dcEDSF, cc, compQuote,
-				mTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, dcEDSF, cc,
+				compQuote, mTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -187,8 +187,8 @@ public class ComponentMarketParamsBuilder {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, fc, dcTSY, dcEDSF, cc, compQuote,
-				mTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, fc, dcTSY, dcEDSF, cc,
+				compQuote, mTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

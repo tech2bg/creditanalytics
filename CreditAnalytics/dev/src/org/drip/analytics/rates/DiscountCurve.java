@@ -80,11 +80,13 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;
 	protected org.drip.analytics.rates.TurnListDiscountFactor _tldf = null;
+	private org.drip.param.valuation.CollateralizationParams _collatParams = null;
 	protected org.drip.analytics.definition.CurveConstructionInputSet _ccis = null;
 
 	protected DiscountCurve (
 		final double dblEpochDate,
 		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
 		throws java.lang.Exception
 	{
@@ -93,6 +95,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			throw new java.lang.Exception ("DiscountCurve ctr: Invalid Inputs");
 
 		_tldf = tldf;
+		_collatParams = collatParams;
 	}
 
 	@Override public java.lang.String name()
@@ -114,6 +117,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		}
 
 		return null;
+	}
+
+	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
+	{
+		return _collatParams;
 	}
 
 	/**
@@ -336,7 +344,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		mmFixings.put (dtStart, mIndexFixings);
 
 		org.drip.param.market.ComponentMarketParamSet cmp = new org.drip.param.market.ComponentMarketParamSet
-			(this, null, null, null, null, null, null, mmFixings);
+			(this, null, null, null, null, null, null, null, mmFixings);
 
 		return irs.calcMeasureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
@@ -510,8 +518,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
 		org.drip.param.definition.ComponentMarketParams mktParams = new
-			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null, null ==
-				_ccis ? null : _ccis.getFixing());
+			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null, null,
+				null == _ccis ? null : _ccis.getFixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
 			org.drip.quant.calculus.WengertJacobian wjCompDDirtyPVDManifestMeasure =

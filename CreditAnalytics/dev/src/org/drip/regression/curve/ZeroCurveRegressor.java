@@ -101,7 +101,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 					}
 
 					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateDC (_dtStart, "CHF",
-						adblDate, adblRate,
+						null, adblDate, adblRate,
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD)))
 						return false;
 

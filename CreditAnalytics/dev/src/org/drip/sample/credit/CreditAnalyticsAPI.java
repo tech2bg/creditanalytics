@@ -152,7 +152,7 @@ public class CreditAnalyticsAPI {
 		 * Flat Discount Curve
 		 */
 
-		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "USD", 0.05);
+		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "USD", null, 0.05);
 
 		/*
 		 * Create the Credit Curve from the give CDS instruments
@@ -199,7 +199,7 @@ public class CreditAnalyticsAPI {
 		 * Flat Discount Curve
 		 */
 
-		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "USD", 0.05);
+		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "USD", null, 0.05);
 
 		/*
 		 * Flat Credit Curve
