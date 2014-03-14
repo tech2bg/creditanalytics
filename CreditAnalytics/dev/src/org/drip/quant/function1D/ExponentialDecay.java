@@ -96,4 +96,26 @@ public class ExponentialDecay extends org.drip.quant.function1D.AbstractUnivaria
 
 		return (evaluate (dblEnd) - evaluate (dblBegin)) / (-1. * _dblHazard);
 	}
+
+	/**
+	 * Retrieve the Epoch
+	 * 
+	 * @return The Epoch
+	 */
+
+	public double epoch()
+	{
+		return _dblEpoch;
+	}
+
+	/**
+	 * Retrieve the Hazard
+	 * 
+	 * @return The Hazard
+	 */
+
+	public double hazard()
+	{
+		return _dblHazard;
+	}
 }

@@ -13,6 +13,8 @@ import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.quant.function1D.AndersenPiterbargMeanReverter;
+import org.drip.quant.function1D.ExponentialDecay;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -445,6 +447,7 @@ public class FRAOption {
 		double dblFRIVol = 0.3;
 		double dblMultiplicativeQuantoExchangeVol = 0.1;
 		double dblFRIQuantoExchangeCorr = 0.2;
+		double dblCorrMeanReverterHazard = 0.4 / 365.25;
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -490,7 +493,11 @@ public class FRAOption {
 		cmp.setLatentStateVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+			new AndersenPiterbargMeanReverter (
+				new ExponentialDecay (
+					dtToday.getJulian(),
+					dblCorrMeanReverterHazard),
+				new FlatUnivariate (dblFRIQuantoExchangeCorr))
 		);
 
 		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);

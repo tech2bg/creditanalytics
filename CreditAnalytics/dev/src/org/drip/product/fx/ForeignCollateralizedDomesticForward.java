@@ -7,9 +7,6 @@ package org.drip.product.fx;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
- * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -32,20 +29,21 @@ package org.drip.product.fx;
  */
 
 /**
- * ForeignCollateralizedForexForward contains the Foreign Currency Collateralized FX forward product contract
- * 	details.
+ * ForeignCollateralizedDomesticForward contains the Foreign Currency Collateralized Domestic Payout FX
+ * 	forward product contract details.
  *  
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForeignCollateralizedForexForward {
+public class ForeignCollateralizedDomesticForward {
 	private java.lang.String _strCode = "";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private org.drip.product.params.CurrencyPair _ccyPair = null;
 	private double _dblForexForwardStrike = java.lang.Double.NaN;
 
 	/**
-	 * Create an ForeignCollateralizedForexForward from the currency pair, the effective and the maturity dates
+	 * Create an ForeignCollateralizedDomesticForward from the currency pair, the strike, and the maturity
+	 * 	dates
 	 * 
 	 * @param ccyPair Currency Pair
 	 * @param dblForexForwardStrike Forex Forward Strike
@@ -54,7 +52,7 @@ public class ForeignCollateralizedForexForward {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public ForeignCollateralizedForexForward (
+	public ForeignCollateralizedDomesticForward (
 		final org.drip.product.params.CurrencyPair ccyPair,
 		final double dblForexForwardStrike,
 		final org.drip.analytics.date.JulianDate dtMaturity)
@@ -62,7 +60,7 @@ public class ForeignCollateralizedForexForward {
 	{
 		if (null == (_ccyPair = ccyPair) || !org.drip.quant.common.NumberUtil.IsValid (_dblForexForwardStrike
 			= dblForexForwardStrike) || null == dtMaturity)
-			throw new java.lang.Exception ("ForeignCollateralizedForexForward ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ForeignCollateralizedDomesticForward ctr: Invalid Inputs");
 
 		_dblMaturity = dtMaturity.getJulian();
 	}
@@ -119,6 +117,8 @@ public class ForeignCollateralizedForexForward {
 	{
 		if (null == valParams || null == mktParams) return null;
 
+		long lStart = System.nanoTime();
+
 		double dblValueDate = valParams.valueDate();
 
 		if (dblValueDate > _dblMaturity) return null;
@@ -160,6 +160,8 @@ public class ForeignCollateralizedForexForward {
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
+		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
+
 		mapResult.put ("DomesticCurrencyForeignCollateralDF", dblDomesticCurrencyForeignCollateralDF);
 
 		mapResult.put ("ForeignCollateralDF", dblForeignCollateralDF);
@@ -171,5 +173,24 @@ public class ForeignCollateralizedForexForward {
 		mapResult.put ("SpotFX", dblSpotFX);
 
 		return mapResult;
+	}
+
+	public java.util.Set<java.lang.String> getMeasureNames()
+	{
+		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("DomesticCurrencyForeignCollateralDF");
+
+		setstrMeasureNames.add ("ForeignCollateralDF");
+
+		setstrMeasureNames.add ("ParForward");
+
+		setstrMeasureNames.add ("Price");
+
+		setstrMeasureNames.add ("SpotFX");
+
+		return setstrMeasureNames;
 	}
 }

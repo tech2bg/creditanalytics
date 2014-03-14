@@ -9,7 +9,7 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
 import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.ForeignCollateralizedForexForward;
+import org.drip.product.fx.ForeignCollateralizedDomesticForward;
 import org.drip.product.params.CurrencyPair;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
@@ -22,9 +22,6 @@ import org.drip.state.curve.ForeignCollateralizedDiscountCurve;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
- * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -47,13 +44,13 @@ import org.drip.state.curve.ForeignCollateralizedDiscountCurve;
  */
 
 /**
- * ForeignCollateralForex demonstrates the construction and the usage of Foreign Currency Collateralized FX
- * 	forward product, and generation of its measures.
+ * ForeignCollateralDomesticForex demonstrates the construction and the usage of Foreign Currency
+ * 	Collateralized Domestic Pay-out FX forward product, and generation of its measures.
  *  
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForeignCollateralForex {
+public class ForeignCollateralDomesticForex {
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -103,7 +100,7 @@ public class ForeignCollateralForex {
 
 		cmp.setFXCurve (cp.getCode(), auFX);
 
-		ForeignCollateralizedForexForward fcff = new ForeignCollateralizedForexForward (
+		ForeignCollateralizedDomesticForward fcff = new ForeignCollateralizedDomesticForward (
 			cp,
 			dblFXFwdStrike,
 			dtToday.addTenor (strMaturity));

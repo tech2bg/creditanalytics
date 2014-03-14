@@ -55,6 +55,8 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		_mapDCForeignCollateral = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		_mapDCDomesticCurrencyForeignCollateral = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
+		_mapDCForeignCurrencyDomesticCollateral = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
@@ -362,6 +364,64 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		_mapDCDomesticCurrencyForeignCollateral.put (strCurrency, dcDomesticCurrencyForeignCollateral);
 
 		return true;
+	}
+
+	@Override public org.drip.analytics.rates.DiscountCurve getForeignCurrencyDomesticCollateralCurve (
+		final java.lang.String strCurrency)
+	{
+		if (null == _mapDCForeignCurrencyDomesticCollateral || null == strCurrency || strCurrency.isEmpty()
+			|| !_mapDCForeignCurrencyDomesticCollateral.containsKey (strCurrency))
+			return null;
+
+		return _mapDCForeignCurrencyDomesticCollateral.get (strCurrency);
+	}
+
+	@Override public boolean setForeignCurrencyDomesticCollateralCurve (
+		final java.lang.String strCurrency,
+		final org.drip.analytics.rates.DiscountCurve dcForeignCurrencyDomesticCollateral)
+	{
+		if (null == strCurrency || strCurrency.isEmpty() || null == dcForeignCurrencyDomesticCollateral)
+			return false;
+
+		if (null == _mapDCForeignCurrencyDomesticCollateral)
+			_mapDCForeignCurrencyDomesticCollateral = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
+
+		_mapDCForeignCurrencyDomesticCollateral.put (strCurrency, dcForeignCurrencyDomesticCollateral);
+
+		return true;
+	}
+
+	@Override public org.drip.analytics.rates.DiscountCurve getCollateralChoiceDiscountCurve()
+	{
+		if (null == _mapDCDomesticCurrencyForeignCollateral) return _dcDomesticCollateral;
+
+		int iNumCollateralizer = _mapDCDomesticCurrencyForeignCollateral.size();
+
+		if (0 == iNumCollateralizer) return _dcDomesticCollateral;
+
+		org.drip.state.curve.ForeignCollateralizedDiscountCurve[] aFCDC = new
+			org.drip.state.curve.ForeignCollateralizedDiscountCurve[iNumCollateralizer];
+
+		int i = 0;
+
+		for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> me :
+			_mapDCDomesticCurrencyForeignCollateral.entrySet()) {
+			org.drip.analytics.rates.DiscountCurve fcdc = me.getValue();
+
+			if (!(fcdc instanceof org.drip.state.curve.ForeignCollateralizedDiscountCurve)) return null;
+
+			aFCDC[i++] = (org.drip.state.curve.ForeignCollateralizedDiscountCurve) fcdc;
+		}
+
+		try {
+			return new org.drip.state.curve.DeterministicCollateralChoiceDiscountCurve
+				(_dcDomesticCollateral, aFCDC, 30);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Override public org.drip.analytics.definition.CreditCurve getCreditCurve()
