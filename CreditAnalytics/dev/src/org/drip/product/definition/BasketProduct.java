@@ -413,15 +413,50 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
 
-		for (int i = 0; i < iNumComp; ++i) {
-			sIR.add (aComp[i].getEDSFCurveName());
-
+		for (int i = 0; i < iNumComp; ++i)
 			sIR.add (aComp[i].getIRCurveName());
 
+		return sIR;
+	}
+
+	@Override public java.util.Set<java.lang.String> getComponentEDSFCurveNames()
+	{
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
+
+		int iNumComp = aComp.length;
+
+		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
+
+		for (int i = 0; i < iNumComp; ++i)
+			sIR.add (aComp[i].getEDSFCurveName());
+
+		return sIR;
+	}
+
+	@Override public java.util.Set<java.lang.String> getComponentForwardCurveNames()
+	{
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
+
+		int iNumComp = aComp.length;
+
+		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
+
+		for (int i = 0; i < iNumComp; ++i)
 			sIR.add (aComp[i].getForwardCurveName());
 
+		return sIR;
+	}
+
+	@Override public java.util.Set<java.lang.String> getComponentTreasuryCurveNames()
+	{
+		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
+
+		int iNumComp = aComp.length;
+
+		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
+
+		for (int i = 0; i < iNumComp; ++i)
 			sIR.add (aComp[i].getTreasuryCurveName());
-		}
 
 		return sIR;
 	}

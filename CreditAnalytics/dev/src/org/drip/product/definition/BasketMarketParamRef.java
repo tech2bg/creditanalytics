@@ -39,6 +39,7 @@ package org.drip.product.definition;
  */
 
 public interface BasketMarketParamRef {
+
 	/**
 	 * Retrieve the set of the component IR curve names
 	 * 
@@ -48,10 +49,34 @@ public interface BasketMarketParamRef {
 	public abstract java.util.Set<java.lang.String> getComponentIRCurveNames();
 
 	/**
+	 * Retrieve the set of the component Forward curve names
+	 * 
+	 * @return The set of the component Forward curve names
+	 */
+
+	public abstract java.util.Set<java.lang.String> getComponentForwardCurveNames();
+
+	/**
 	 * Retrieve the set of the component credit curve names
 	 * 
 	 * @return The set of the component credit curve names
 	 */
 
 	public abstract java.util.Set<java.lang.String> getComponentCreditCurveNames();
+
+	/**
+	 * Retrieve the set of the component Treasury curve names
+	 * 
+	 * @return The set of the component Treasury curve names
+	 */
+
+	public abstract java.util.Set<java.lang.String> getComponentTreasuryCurveNames();
+
+	/**
+	 * Retrieve the set of the component EDSF curve names
+	 * 
+	 * @return The set of the component EDSF curve names
+	 */
+
+	public abstract java.util.Set<java.lang.String> getComponentEDSFCurveNames();
 }

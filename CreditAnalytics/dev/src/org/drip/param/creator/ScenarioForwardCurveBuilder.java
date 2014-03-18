@@ -156,4 +156,31 @@ public class ScenarioForwardCurveBuilder {
 
 		return null;
 	}
+
+	/**
+	 * Construct an Instance of the Flat Forward Rate Forward Curve
+	 * 
+	 * @param dtStart The Forward Curve Start Date
+	 * @param fri The Floating Rate Index
+	 * @param dblFlatForwardRate The Flat Forward Rate
+	 * @param collatParams The Collateralization Parameters
+	 * 
+	 * @return Instance of the Flat Forward Rate Forward Curve
+	 */
+
+	public static final org.drip.analytics.rates.ForwardCurve FlatForwardForwardCurve (
+		final org.drip.analytics.date.JulianDate dtStart,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final double dblFlatForwardRate,
+		final org.drip.param.valuation.CollateralizationParams collatParams)
+	{
+		try {
+			return new org.drip.state.curve.FlatForwardForwardCurve (dtStart, fri, dblFlatForwardRate,
+				collatParams);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

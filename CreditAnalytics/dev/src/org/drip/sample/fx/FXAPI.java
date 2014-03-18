@@ -1,5 +1,5 @@
 
-package org.drip.sample.misc;
+package org.drip.sample.fx;
 
 /*
  * General imports
