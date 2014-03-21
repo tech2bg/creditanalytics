@@ -102,6 +102,7 @@ public class EuropeanCallPut {
 	 * @param dblSpot The Underlying Spot
 	 * @param dblRiskFreeRate The Risk Free Rate
 	 * @param dblVolatility The Option Volatility
+	 * @param fpg The Fokker Planck-based Option Pricer
 	 * 
 	 * @return The Map of the Measures
 	 */
@@ -110,12 +111,10 @@ public class EuropeanCallPut {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final double dblSpot,
 		final double dblRiskFreeRate,
-		final double dblVolatility)
+		final double dblVolatility,
+		final org.drip.pricer.option.FokkerPlanckGenerator fpg)
 	{
-		if (null == valParams || !org.drip.quant.common.NumberUtil.IsValid (dblSpot) || 0. >= dblSpot ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblVolatility) || 0. > dblVolatility ||
-				!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate))
-			return null;
+		if (null == valParams || null == fpg) return null;
 
 		double dblValueDate = valParams.valueDate();
 
@@ -125,48 +124,29 @@ public class EuropeanCallPut {
 
 		long lStartTime = System.nanoTime();
 
+		double dblTTE = (dblMaturity - dblValueDate) / 365.25;
+
+		/* org.drip.pricer.option.FokkerPlanckGenerator fpg = org.drip.pricer.option.BlackScholesAlgorithm.Price
+			(_dblStrike, dblTTE, dblRiskFreeRate, dblSpot, dblVolatility);
+
+		if (null == fpg) return null; */
+
+		if (!fpg.compute (_dblStrike, dblTTE, dblRiskFreeRate, dblSpot, dblVolatility)) return null;
+
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasure = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		double dblDelta = java.lang.Double.NaN;
-		double dblProbabilityITM = java.lang.Double.NaN;
-
-		double dblTTE = (dblMaturity - dblValueDate) / 365.25;
-
-		double dblD1D2Diff = dblVolatility * java.lang.Math.sqrt (dblTTE);
-
-		double dblD1 = (java.lang.Math.log (dblSpot / _dblStrike) + dblTTE * (dblRiskFreeRate + 0.5 *
-			dblVolatility * dblVolatility)) / dblD1D2Diff;
-
-		double dblD2 = dblD1 - dblD1D2Diff;
-
-		try {
-			dblDelta = org.drip.quant.distribution.Gaussian.CDF (dblD1);
-
-			dblProbabilityITM = org.drip.quant.distribution.Gaussian.CDF (dblD2);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		double dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dblTTE);
-
-		double dblPrice = dblSpot * dblDelta - _dblStrike * dblDF * dblProbabilityITM;
-
 		mapMeasure.put ("CalcTime", (System.nanoTime() - lStartTime) * 1.e-09);
 
-		mapMeasure.put ("Delta", dblDelta);
+		mapMeasure.put ("Delta", fpg.delta());
 
-		mapMeasure.put ("DF", dblDF);
+		mapMeasure.put ("DF", fpg.df());
 
-		mapMeasure.put ("D1", dblD1);
+		mapMeasure.put ("Prob1", fpg.prob1());
 
-		mapMeasure.put ("D2", dblD2);
+		mapMeasure.put ("Prob2", fpg.prob2());
 
-		mapMeasure.put ("Price", dblPrice);
-
-		mapMeasure.put ("ProbabilityITM", dblProbabilityITM);
+		mapMeasure.put ("Price", fpg.price());
 
 		mapMeasure.put ("TTE", dblTTE);
 
@@ -194,17 +174,5 @@ public class EuropeanCallPut {
 		setstrMeasureNames.add ("TTE");
 
 		return setstrMeasureNames;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
-
-		EuropeanCallPut call = new EuropeanCallPut (dtToday.addTenor ("6M"), 75., false);
-
-		System.out.println (call.value (new org.drip.param.valuation.ValuationParams (dtToday, dtToday,
-			"USD"), 75., 0.05, 0.2));
 	}
 }
