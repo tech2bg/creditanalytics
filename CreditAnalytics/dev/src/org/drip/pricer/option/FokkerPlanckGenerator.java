@@ -64,34 +64,74 @@ public interface FokkerPlanckGenerator {
 	public abstract double df();
 
 	/**
-	 * The Option Price
+	 * The Call Option Price
 	 * 
-	 * @return The Option Price
+	 * @return The Call Option Price
 	 */
 
-	public abstract double price();
+	public abstract double callPrice();
 
 	/**
-	 * The Option Delta
+	 * The Call Option Delta
 	 * 
-	 * @return The Option Delta
+	 * @return The Call Option Delta
 	 */
 
-	public abstract double delta();
+	public abstract double callDelta();
 
 	/**
-	 * The Prob 1 Term
+	 * The Call Prob 1 Term
 	 * 
-	 * @return The Prob 1 Term
+	 * @return The Call Prob 1 Term
 	 */
 
-	public abstract double prob1();
+	public abstract double callProb1();
 
 	/**
-	 * The Prob 2 Term
+	 * The Call Prob 2 Term
 	 * 
-	 * @return The Prob 2 Term
+	 * @return The Call Prob 2 Term
 	 */
 
-	public abstract double prob2();
+	public abstract double callProb2();
+
+	/**
+	 * The Put Option Price
+	 * 
+	 * @return The Put Option Price
+	 */
+
+	public abstract double putPrice();
+
+	/**
+	 * The Put Option Price Computed from the Put-Call Parity Relation
+	 * 
+	 * @return The Put Option Price Computed from the Put-Call Parity Relation
+	 */
+
+	public abstract double putPriceFromParity();
+
+	/**
+	 * The Put Option Delta
+	 * 
+	 * @return The Put Option Delta
+	 */
+
+	public abstract double putDelta();
+
+	/**
+	 * The Put Prob 1 Term
+	 * 
+	 * @return The Put Prob 1 Term
+	 */
+
+	public abstract double putProb1();
+
+	/**
+	 * The Put Prob 2 Term
+	 * 
+	 * @return The Put Prob 2 Term
+	 */
+
+	public abstract double putProb2();
 }

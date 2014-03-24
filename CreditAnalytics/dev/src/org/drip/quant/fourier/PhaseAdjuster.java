@@ -1,5 +1,5 @@
 
-package org.drip.quant.common;
+package org.drip.quant.fourier;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,61 +29,31 @@ package org.drip.quant.common;
  */
 
 /**
- * FourierUtil implements the functionality specifically meant for enhancing stability of the Fourier
+ * PhaseAdjuster implements the functionality specifically meant for enhancing stability of the Fourier
  * 	numerical Routines.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FourierUtil {
+public class PhaseAdjuster {
 
 	/**
-	 * SKIP_ARG => Skip Argument Processing
+	 * No Multi-Valued Principal Branch Tracking
 	 */
 
-	public static final int SKIP_ARG = 0;
+	public static final int MULTI_VALUE_BRANCH_PHASE_TRACKER_NONE = 0;
 
 	/**
-	 * RECEDE_ARG => Decrement the Argument by units of 2 PI until spread over
+	 * Multi-Valued Logarithm Principal Branch Tracking Using Rotating Counting
 	 */
 
-	public static final int RECEDE_ARG = 1;
+	public static final int MULTI_VALUE_BRANCH_PHASE_TRACKER_ROTATION_COUNT = 1;
 
 	/**
-	 * ADVANCE_ARG => Increment the Argument by units of 2 PI until spread over
+	 * Multi-Valued Logarithm PLUS Power Principal Branch Tracking Using the Kahl-Jackel Algorithm
 	 */
 
-	public static final int ADVANCE_ARG = 2;
-
-	/**
-	 * Updates the Phase Tracker by advancing the argument on the same branch using increment/decrement
-	 * 	Operation for the Rotation Count
-	 * 
-	 * @param dblPrevArgument The Previous Argument
-	 * @param dblCurrArgument The Current Argument
-	 * @param bAdvance TRUE => Increment the Argument's Rotation Count; FALSE => Decrement the Argument's
-	 * 	Rotation Count
-	 * 
-	 * @return The Rotation Count Argument Phase Tracker
-	 */
-
-	public static final double RotationCountPhaseTracker (
-		final double dblPrevArgument,
-		final double dblCurrArgument,
-		final boolean bAdvance)
-	{
-		double dblUpdatedPhaseTracker = dblCurrArgument;
-
-		if (bAdvance) {
-			while (dblUpdatedPhaseTracker < dblPrevArgument)
-				dblUpdatedPhaseTracker += 2. * java.lang.Math.PI;
-		} else {
-			while (dblUpdatedPhaseTracker > dblPrevArgument)
-				dblUpdatedPhaseTracker -= 2. * java.lang.Math.PI;
-		}
-
-		return dblUpdatedPhaseTracker;
-	}
+	public static final int MULTI_VALUE_BRANCH_POWER_PHASE_TRACKER_KAHL_JACKEL = 2;
 
 	/**
 	 * Handling the Branch Switching of the Complex Power Function according Kahl-Jackel algorithm:
@@ -97,9 +67,9 @@ public class FourierUtil {
 	 * @return The Branch Switching Log Adjustment
 	 */
 
-	public static final org.drip.quant.common.ComplexNumber KahlJackelComplexLog (
-		final org.drip.quant.common.ComplexNumber cnGNumerator,
-		final org.drip.quant.common.ComplexNumber cnGDenominator,
+	public static final org.drip.quant.fourier.ComplexNumber PowerLogPhaseTracker (
+		final org.drip.quant.fourier.ComplexNumber cnGNumerator,
+		final org.drip.quant.fourier.ComplexNumber cnGDenominator,
 		final int iN,
 		final int iM)
 	{
@@ -110,7 +80,7 @@ public class FourierUtil {
 		if (0. == dblAbsDenominator) return null;
 
 		try {
-			return new org.drip.quant.common.ComplexNumber (java.lang.Math.log (cnGNumerator.abs() /
+			return new org.drip.quant.fourier.ComplexNumber (java.lang.Math.log (cnGNumerator.abs() /
 				dblAbsDenominator), cnGNumerator.argument() - cnGDenominator.argument() + 2. *
 					java.lang.Math.PI * (iN - iM));
 		} catch (java.lang.Exception e) {

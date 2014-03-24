@@ -1,5 +1,5 @@
 
-package org.drip.quant.common;
+package org.drip.quant.fourier;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

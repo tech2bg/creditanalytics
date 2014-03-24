@@ -86,8 +86,7 @@ public class Gaussian {
     	final double dblX)
     	throws java.lang.Exception
     {
-    	if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
-    		throw new java.lang.Exception ("Gaussian::CDF => Invalid Inputs");
+    	if (java.lang.Double.isNaN (dblX)) throw new java.lang.Exception ("Gaussian::CDF => Invalid Inputs");
 
         if (dblX < -8.) return 0.;
 

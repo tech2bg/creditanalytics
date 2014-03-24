@@ -1,5 +1,5 @@
 
-package org.drip.pricer.option;
+package org.drip.param.pricer;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,36 +29,44 @@ package org.drip.pricer.option;
  */
 
 /**
- * FokkerPlanckParams holds the parameters that drive the dynamics of the Heston stochastic volatility model.
+ * HestonOptionPricerParams holds the parameters that drive the dynamics of the Heston stochastic volatility
+ * 	model.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FPHestonParams implements org.drip.pricer.option.FokkerPlanckParams {
+public class HestonOptionPricerParams implements org.drip.param.pricer.OptionPricerParams {
+	private int _iPayoffTransformScheme = -1;
 	private double _dblRho = java.lang.Double.NaN;
 	private double _dblKappa = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
 	private double _dblTheta = java.lang.Double.NaN;
 	private double _dblLambda = java.lang.Double.NaN;
+	private int _iMultiValuePhaseTrackerType =
+		org.drip.quant.fourier.PhaseAdjuster.MULTI_VALUE_BRANCH_POWER_PHASE_TRACKER_KAHL_JACKEL;
 
 	/**
-	 * FPHestonParams constructor
+	 * HestonOptionPricerParams constructor
 	 * 
+	 * @param iPayoffTransformScheme The Payoff Transformation Scheme
 	 * @param dblRho Rho
 	 * @param dblKappa Kappa
 	 * @param dblSigma Sigma
 	 * @param dblTheta Theta
 	 * @param dblLambda Lambda
+	 * @param iMultiValuePhaseTrackerType The Multi Valued Phase Tracking Error Corrector
 	 * 
 	 * @throws Thrown if the Inputs are Invalid
 	 */
 
-	public FPHestonParams (
+	public HestonOptionPricerParams (
+		final int iPayoffTransformScheme,
 		final double dblRho,
 		final double dblKappa,
 		final double dblSigma,
 		final double dblTheta,
-		final double dblLambda)
+		final double dblLambda,
+		final int iMultiValuePhaseTrackerType)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblRho = dblRho) ||
@@ -66,7 +74,10 @@ public class FPHestonParams implements org.drip.pricer.option.FokkerPlanckParams
 				!org.drip.quant.common.NumberUtil.IsValid (_dblSigma = dblSigma) ||
 					!org.drip.quant.common.NumberUtil.IsValid (_dblTheta = dblTheta) ||
 						!org.drip.quant.common.NumberUtil.IsValid (_dblLambda = dblLambda))
-			throw new java.lang.Exception ("FPHestonParams ctr: Invalid Inputs!");
+			throw new java.lang.Exception ("HestonOptionPricerParams ctr: Invalid Inputs!");
+
+		_iPayoffTransformScheme = iPayoffTransformScheme;
+		_iMultiValuePhaseTrackerType = iMultiValuePhaseTrackerType;
 	}
 
 	/**
@@ -122,5 +133,27 @@ public class FPHestonParams implements org.drip.pricer.option.FokkerPlanckParams
 	public double theta()
 	{
 		return _dblTheta;
+	}
+
+	/**
+	 * Return the Multi Valued Principal Branch Maintaining Phase Tracker Type
+	 * 
+	 * @return The Multi Valued Principal Branch Maintaining Phase Tracker Type
+	 */
+
+	public int phaseTrackerType()
+	{
+		return _iMultiValuePhaseTrackerType;
+	}
+
+	/**
+	 * Return the Payoff Fourier Transformation Scheme
+	 * 
+	 * @return The Payoff Fourier Transformation Scheme
+	 */
+
+	public int payoffTransformScheme()
+	{
+		return _iPayoffTransformScheme;
 	}
 }

@@ -1,5 +1,5 @@
 
-package org.drip.pricer.option;
+package org.drip.param.pricer;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,11 +29,11 @@ package org.drip.pricer.option;
  */
 
 /**
- * FokkerPlanckParams exposes the interface that holds the parameters that drive the dynamics of the Fokker
+ * OptionPricerParams exposes the interface that holds the parameters that drive the dynamics of the Fokker
  * 	Planck distribution.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public interface FokkerPlanckParams {
+public interface OptionPricerParams {
 }

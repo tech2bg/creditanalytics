@@ -2,9 +2,11 @@
 package org.drip.sample.option;
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.param.pricer.HestonOptionPricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.*;
 import org.drip.product.option.EuropeanCallPut;
+import org.drip.quant.fourier.PhaseAdjuster;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -53,15 +55,9 @@ public class HestonStochasticVolatilityPricing {
 
 		double dblStrike = 1.;
 
-		EuropeanCallPut call = new EuropeanCallPut (
+		EuropeanCallPut option = new EuropeanCallPut (
 			dtMaturity,
-			dblStrike,
-			false);
-
-		EuropeanCallPut put = new EuropeanCallPut (
-			dtMaturity,
-			dblStrike,
-			true);
+			dblStrike);
 
 		double dblSpot = 1.;
 		double dblRiskFreeRate = 0.05;
@@ -73,18 +69,18 @@ public class HestonStochasticVolatilityPricing {
 		double dblLambda = 0.;
 		double dblSpotVolatility = 0.2;
 
-		FPHestonParams fphp = new FPHestonParams (
+		HestonOptionPricerParams fphp = new HestonOptionPricerParams (
+			HestonStochasticVolatilityAlgorithm.PAYOFF_TRANSFORM_SCHEME_HESTON_1993,
 			dblRho, 			// Rho
 			dblKappa,			// Kappa
 			dblSigma,			// Sigma
 			dblTheta,			// Theta
-			dblLambda);			// Lambda
+			dblLambda,			// Lambda
+			PhaseAdjuster.MULTI_VALUE_BRANCH_POWER_PHASE_TRACKER_KAHL_JACKEL); // Indicates Apply Phase Tracking Adjustment for Log + Power
 
 		FokkerPlanckGenerator fpg = new HestonStochasticVolatilityAlgorithm (
 			fphp);				// FP Heston Parameters
 
-		System.out.println (call.value (valParams, dblSpot, dblRiskFreeRate, dblSpotVolatility, fpg));
-
-		System.out.println (put.value (valParams, dblSpot, dblRiskFreeRate, dblSpotVolatility, fpg));
+		System.out.println (option.value (valParams, dblSpot, dblRiskFreeRate, dblSpotVolatility, fpg));
 	}
 }

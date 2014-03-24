@@ -36,39 +36,13 @@ package org.drip.pricer.option;
 
 public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanckGenerator {
 	private double _dblDF = java.lang.Double.NaN;
-	private double _dblPrice = java.lang.Double.NaN;
-	private double _dblProb1 = java.lang.Double.NaN;
-	private double _dblProb2 = java.lang.Double.NaN;
-
-	/**
-	 * Construct an Instance of the priced BlackScholesAlgorithm
-	 * 
-	 * @param dblStrike The Strike
-	 * @param dbTimeToExpiry Time to Option Expiration
-	 * @param dblRiskFreeRate The Risk Free Discounting Rate
-	 * @param dblSpot Underlier Spot Value
-	 * @param dblVolatility Risk Neutral Volatility
-	 * 
-	 * return Instance of the fully priced Black Scholes Pricer
-	 */
-
-	public static final org.drip.pricer.option.FokkerPlanckGenerator Price (
-		final double dblStrike,
-		final double dbTimeToExpiry,
-		final double dblRiskFreeRate,
-		final double dblSpot,
-		final double dblVolatility)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblStrike) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblSpot) || !org.drip.quant.common.NumberUtil.IsValid
-				(dblVolatility) || !org.drip.quant.common.NumberUtil.IsValid (dbTimeToExpiry) ||
-					!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate))
-			return null;
-
-		BlackScholesAlgorithm bs = new BlackScholesAlgorithm();
-
-		return bs.compute (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot, dblVolatility) ? bs : null;
-	}
+	private double _dblPutPrice = java.lang.Double.NaN;
+	private double _dblPutProb1 = java.lang.Double.NaN;
+	private double _dblPutProb2 = java.lang.Double.NaN;
+	private double _dblCallPrice = java.lang.Double.NaN;
+	private double _dblCallProb1 = java.lang.Double.NaN;
+	private double _dblCallProb2 = java.lang.Double.NaN;
+	private double _dblPutPriceFromParity = java.lang.Double.NaN;
 
 	/**
 	 * Empty BlackScholesAlgorithm Constructor - nothing to be filled in with
@@ -93,15 +67,28 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 
 		double dblD1D2Diff = dblSpotVolatility * java.lang.Math.sqrt (dbTimeToExpiry);
 
-		double dblD1 = (java.lang.Math.log (dblSpot / dblStrike) + dbTimeToExpiry * (dblRiskFreeRate + 0.5 *
-			dblSpotVolatility * dblSpotVolatility)) / dblD1D2Diff;
+		double dblD1 = java.lang.Double.NaN;
+		double dblD2 = java.lang.Double.NaN;
 
-		double dblD2 = dblD1 - dblD1D2Diff;
+		if (0. != dblSpotVolatility) {
+			dblD1 = (java.lang.Math.log (dblSpot / dblStrike) + dbTimeToExpiry * (dblRiskFreeRate + 0.5 *
+				dblSpotVolatility * dblSpotVolatility)) / dblD1D2Diff;
+
+			dblD2 = dblD1 - dblD1D2Diff;
+		} else {
+			dblD1 = dblSpot > dblStrike * java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry) ?
+				java.lang.Double.POSITIVE_INFINITY : java.lang.Double.NEGATIVE_INFINITY;
+			dblD2 = dblD1;
+		}
 
 		try {
-			_dblProb1 = org.drip.quant.distribution.Gaussian.CDF (dblD1);
+			_dblCallProb1 = org.drip.quant.distribution.Gaussian.CDF (dblD1);
 
-			_dblProb2 = org.drip.quant.distribution.Gaussian.CDF (dblD2);
+			_dblCallProb2 = org.drip.quant.distribution.Gaussian.CDF (dblD2);
+
+			_dblPutProb1 = org.drip.quant.distribution.Gaussian.CDF (-1. * dblD1);
+
+			_dblPutProb2 = org.drip.quant.distribution.Gaussian.CDF (-1. * dblD2);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -110,7 +97,9 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 
 		_dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry);
 
-		_dblPrice = dblSpot * _dblProb1 - dblStrike * _dblDF * _dblProb2;
+		_dblCallPrice = dblSpot * _dblCallProb1 - dblStrike * _dblDF * _dblCallProb2;
+		_dblPutPrice = -1. * dblSpot * _dblPutProb1 + dblStrike * _dblDF * _dblPutProb2;
+		_dblPutPriceFromParity = _dblCallPrice + dblStrike * _dblDF - dblSpot;
 		return true;
 	}
 
@@ -119,23 +108,84 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		return _dblDF;
 	}
 
-	@Override public double delta()
+	@Override public double callDelta()
 	{
-		return _dblProb1;
+		return _dblCallProb1;
 	}
 
-	@Override public double price()
+	@Override public double callPrice()
 	{
-		return _dblPrice;
+		return _dblCallPrice;
 	}
 
-	@Override public double prob1()
+	@Override public double callProb1()
 	{
-		return _dblProb1;
+		return _dblCallProb1;
 	}
 
-	@Override public double prob2()
+	@Override public double callProb2()
 	{
-		return _dblProb2;
+		return _dblCallProb2;
+	}
+
+	@Override public double putDelta()
+	{
+		return -1. * _dblPutProb1;
+	}
+
+	@Override public double putPrice()
+	{
+		return _dblPutPrice;
+	}
+
+	@Override public double putPriceFromParity()
+	{
+		return _dblPutPriceFromParity;
+	}
+
+	@Override public double putProb1()
+	{
+		return _dblPutProb1;
+	}
+
+	@Override public double putProb2()
+	{
+		return _dblPutProb2;
+	}
+
+	public double implyBlackScholesVolatility (
+		final double dblStrike,
+		final double dbTimeToExpiry,
+		final double dblRiskFreeRate,
+		final double dblSpot,
+		final double dblCallPrice)
+		throws java.lang.Exception
+	{
+		org.drip.quant.function1D.AbstractUnivariate au = new org.drip.quant.function1D.AbstractUnivariate
+			(null)
+		{
+			@Override public double evaluate (
+				final double dblSpotVolatility)
+				throws java.lang.Exception
+			{
+				// System.out.println ("dblSpotVolatility = " + java.lang.Math.abs (dblSpotVolatility));
+
+				if (!compute (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot, java.lang.Math.abs
+					(dblSpotVolatility)))
+					throw new java.lang.Exception
+						("BlackScholesAlgorithm::implyVolatility => Cannot compute Measure");
+
+				return callPrice() - dblCallPrice;
+			}
+		};
+
+		org.drip.quant.solver1D.FixedPointFinderOutput fpop = new
+			org.drip.quant.solver1D.FixedPointFinderBrent (0., au, true).findRoot();
+
+		if (null == fpop || !fpop.containsRoot())
+			throw new java.lang.Exception
+				("BlackScholesAlgorithm::implyVolatility => Cannot compute Measure");
+
+		return java.lang.Math.abs (fpop.getRoot());
 	}
 }

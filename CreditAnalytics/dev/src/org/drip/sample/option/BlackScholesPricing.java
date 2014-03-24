@@ -1,10 +1,13 @@
 
 package org.drip.sample.option;
 
+import java.util.Map;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.*;
 import org.drip.product.option.EuropeanCallPut;
+import org.drip.quant.common.FormatUtil;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -53,24 +56,28 @@ public class BlackScholesPricing {
 
 		double dblStrike = 1.;
 
-		EuropeanCallPut call = new EuropeanCallPut (
+		EuropeanCallPut option = new EuropeanCallPut (
 			dtMaturity,
-			dblStrike,
-			false);
-
-		EuropeanCallPut put = new EuropeanCallPut (
-			dtMaturity,
-			dblStrike,
-			true);
+			dblStrike);
 
 		double dblSpot = 1.;
 		double dblRiskFreeRate = 0.05;
-		double dblVolatility = 0.20;
+		double dblVolatility = 1.;
 
-		FokkerPlanckGenerator fpg = new BlackScholesAlgorithm();
+		Map<String, Double> mapOptionCalc = option.value (
+			valParams,
+			dblSpot,
+			dblRiskFreeRate,
+			dblVolatility,
+			new BlackScholesAlgorithm());
 
-		System.out.println (call.value (valParams, dblSpot, dblRiskFreeRate, dblVolatility, fpg));
+		for (Map.Entry<String, Double> me : mapOptionCalc.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 
-		System.out.println (put.value (valParams, dblSpot, dblRiskFreeRate, dblVolatility, fpg));
+		System.out.println ("\n\tImplied Vol:" + FormatUtil.FormatDouble (option.implyVolatility
+			(valParams,
+			dblSpot,
+			dblRiskFreeRate,
+			mapOptionCalc.get ("CallPrice")), 2, 2, 100.) + "%");
 	}
 }

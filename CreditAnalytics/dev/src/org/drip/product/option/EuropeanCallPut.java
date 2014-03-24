@@ -35,7 +35,6 @@ package org.drip.product.option;
  */
 
 public class EuropeanCallPut {
-	private boolean _bIsPut = false;
 	private double _dblStrike = java.lang.Double.NaN;
 	private org.drip.analytics.date.JulianDate _dtMaturity = null;
 
@@ -44,22 +43,18 @@ public class EuropeanCallPut {
 	 * 
 	 * @param dtMaturity Option Maturity
 	 * @param dblStrike Option Strike
-	 * @param bIsPut TRUE => Option is a PUT
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
 	public EuropeanCallPut (
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final double dblStrike,
-		final boolean bIsPut)
+		final double dblStrike)
 		throws java.lang.Exception
 	{
 		if (null == (_dtMaturity = dtMaturity) || !org.drip.quant.common.NumberUtil.IsValid (_dblStrike =
 			dblStrike) || 0. >= _dblStrike)
 			throw new java.lang.Exception ("EuropeanCallPut ctr: Invalid Inputs");
-
-		_bIsPut = bIsPut;
 	}
 
 	/**
@@ -82,17 +77,6 @@ public class EuropeanCallPut {
 	public double strike()
 	{
 		return _dblStrike;
-	}
-
-	/**
-	 * Indicate if the Option is a Put
-	 * 
-	 * @return TRUE - The Option is a Put
-	 */
-
-	public boolean isPut()
-	{
-		return _bIsPut;
 	}
 
 	/**
@@ -126,50 +110,117 @@ public class EuropeanCallPut {
 
 		double dblTTE = (dblMaturity - dblValueDate) / 365.25;
 
-		/* org.drip.pricer.option.FokkerPlanckGenerator fpg = org.drip.pricer.option.BlackScholesAlgorithm.Price
-			(_dblStrike, dblTTE, dblRiskFreeRate, dblSpot, dblVolatility);
-
-		if (null == fpg) return null; */
-
 		if (!fpg.compute (_dblStrike, dblTTE, dblRiskFreeRate, dblSpot, dblVolatility)) return null;
+
+		double dblCallPrice = fpg.callPrice();
+
+		double dblImpliedCallVolatility = java.lang.Double.NaN;
+
+		try {
+			dblImpliedCallVolatility = new
+				org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility (_dblStrike,
+					dblTTE, dblRiskFreeRate, dblSpot, dblCallPrice);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasure = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		mapMeasure.put ("CalcTime", (System.nanoTime() - lStartTime) * 1.e-09);
 
-		mapMeasure.put ("Delta", fpg.delta());
+		mapMeasure.put ("CallDelta", fpg.callDelta());
+
+		mapMeasure.put ("CallPrice", dblCallPrice);
+
+		mapMeasure.put ("CallProb1", fpg.callProb1());
+
+		mapMeasure.put ("CallProb2", fpg.callProb2());
 
 		mapMeasure.put ("DF", fpg.df());
 
-		mapMeasure.put ("Prob1", fpg.prob1());
+		mapMeasure.put ("ImpliedCallVolatility", dblImpliedCallVolatility);
 
-		mapMeasure.put ("Prob2", fpg.prob2());
+		mapMeasure.put ("PutDelta", fpg.putDelta());
 
-		mapMeasure.put ("Price", fpg.price());
+		mapMeasure.put ("PutPrice", fpg.putPrice());
+
+		mapMeasure.put ("PutPriceFromParity", fpg.putPriceFromParity());
+
+		mapMeasure.put ("PutProb1", fpg.putProb1());
+
+		mapMeasure.put ("PutProb2", fpg.putProb2());
 
 		mapMeasure.put ("TTE", dblTTE);
 
 		return mapMeasure;
 	}
 
+	/**
+	 * Imply the Option Volatility given the Call Price
+	 * 
+	 * @param valParams The Valuation Parameters
+	 * @param dblSpot The Underlying Spot
+	 * @param dblRiskFreeRate The Risk Free Rate
+	 * @param dblCallPrice The Option Call Price
+	 * 
+	 * @return The Option's Implied Volatility
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are Invalid
+	 */
+
+	public double implyVolatility (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final double dblSpot,
+		final double dblRiskFreeRate,
+		final double dblCallPrice)
+		throws java.lang.Exception
+	{
+		if (null == valParams)
+			throw new java.lang.Exception ("EuropeanCallPut::implyVolatility => Invalid Inputs");
+
+		double dblValueDate = valParams.valueDate();
+
+		double dblMaturity = _dtMaturity.getJulian();
+
+		if (dblValueDate >= dblMaturity)
+			throw new java.lang.Exception ("EuropeanCallPut::implyVolatility => Invalid Inputs");
+
+		double dblTTE = (dblMaturity - dblValueDate) / 365.25;
+
+		return new org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility (_dblStrike,
+			dblTTE, dblRiskFreeRate, dblSpot, dblCallPrice);
+	}
+
 	public java.util.Set<java.lang.String> getMeasureNames()
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
-		setstrMeasureNames.add ("ATMSwapRate");
+		setstrMeasureNames.add ("CalcTime");
 
-		setstrMeasureNames.add ("Delta");
+		setstrMeasureNames.add ("CallDelta");
+
+		setstrMeasureNames.add ("CallPrice");
+
+		setstrMeasureNames.add ("CallProb1");
+
+		setstrMeasureNames.add ("CallProb2");
 
 		setstrMeasureNames.add ("DF");
 
-		setstrMeasureNames.add ("D1");
+		setstrMeasureNames.add ("ImpliedCallVolatility");
 
-		setstrMeasureNames.add ("D2");
+		setstrMeasureNames.add ("PutDelta");
 
-		setstrMeasureNames.add ("Price");
+		setstrMeasureNames.add ("PutPrice");
 
-		setstrMeasureNames.add ("ProbabilityITM");
+		setstrMeasureNames.add ("PutPriceFromParity");
+
+		setstrMeasureNames.add ("PutProb1");
+
+		setstrMeasureNames.add ("PutProb2");
 
 		setstrMeasureNames.add ("TTE");
 
