@@ -538,6 +538,72 @@ public class AnalyticsHelper {
 	}
 
 	/**
+	 * Retrieve the Number of Days from the Tenor
+	 * 
+	 * @param strTenor The Specified Tenor
+	 * 
+	 * @return The Number of Days
+	 */
+
+	public static final int TenorToDays (
+		final java.lang.String strTenor)
+		throws java.lang.Exception
+	{
+		if (null == strTenor || strTenor.isEmpty())
+			throw new java.lang.Exception ("AnalyticsHelper::TenorToDays => Invalid Inputs");
+
+		char chTenor = strTenor.charAt (strTenor.length() - 1);
+
+		int iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -
+			1)).doubleValue();
+
+		if ('d' == chTenor || 'D' == chTenor) return iTimeUnit;
+
+		if ('w' == chTenor || 'W' == chTenor) return iTimeUnit * 7;
+
+		if ('l' == chTenor || 'L' == chTenor) return iTimeUnit * 28;
+
+		if ('m' == chTenor || 'M' == chTenor) return iTimeUnit * 30;
+
+		if ('y' == chTenor || 'Y' == chTenor) return (int) (365.25 * iTimeUnit );
+
+		throw new java.lang.Exception ("AnalyticsHelper::TenorToDays => Unknown tenor format " + strTenor);
+	}
+
+	/**
+	 * Retrieve the Number of Days from the Tenor
+	 * 
+	 * @param strTenor The Specified Tenor
+	 * 
+	 * @return The Number of Days
+	 */
+
+	public static final double TenorToYearFraction (
+		final java.lang.String strTenor)
+		throws java.lang.Exception
+	{
+		if (null == strTenor || strTenor.isEmpty())
+			throw new java.lang.Exception ("AnalyticsHelper::TenorToYearFraction => Invalid Inputs");
+
+		char chTenor = strTenor.charAt (strTenor.length() - 1);
+
+		int iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -
+			1)).doubleValue();
+
+		if ('d' == chTenor || 'D' == chTenor) return ((double) iTimeUnit) / 365.25;
+
+		if ('w' == chTenor || 'W' == chTenor) return ((double) (7. * iTimeUnit)) / 365.25;
+
+		if ('l' == chTenor || 'L' == chTenor) return ((double) (28. * iTimeUnit)) / 365.25;
+
+		if ('m' == chTenor || 'M' == chTenor) return ((double) (30. * iTimeUnit)) / 365.25;
+
+		if ('y' == chTenor || 'Y' == chTenor) return iTimeUnit;
+
+		throw new java.lang.Exception ("AnalyticsHelper::TenorToDays => Unknown tenor format " + strTenor);
+	}
+
+	/**
 	 * Retrieve the month code from input frequency
 	 * 
 	 * @param iFreq Integer frequency

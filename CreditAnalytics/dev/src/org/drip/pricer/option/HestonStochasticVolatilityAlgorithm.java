@@ -577,13 +577,13 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 			_dblBlackScholesImpliedVolatility = new
 				org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility (dblStrike,
 					dbTimeToExpiry, dblRiskFreeRate, dblSpot, _dblCallPrice);
-		} catch (java.lang.Exception e) {
-			// e.printStackTrace();
 
-			// return false;
+			return true;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override public double df()

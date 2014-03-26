@@ -147,7 +147,7 @@ public class ScenarioBasisCurveBuilder {
 	}
 
 	/**
-	 * Create an Instance of the Quintic Polynomial Splined Basis Curve
+	 * Create an Instance of the Quartic Polynomial Splined Basis Curve
 	 * 
 	 * @param strName Curve Name
 	 * @param dtStart The Tenor Start Date
@@ -161,7 +161,7 @@ public class ScenarioBasisCurveBuilder {
 	 * @return The Instance of the Basis Curve
 	 */
 
-	public static final org.drip.analytics.rates.BasisCurve QuinticPolynomialBasisCurve (
+	public static final org.drip.analytics.rates.BasisCurve QuarticPolynomialBasisCurve (
 		final java.lang.String strName,
 		final org.drip.analytics.date.JulianDate dtStart,
 		final org.drip.product.params.FloatingRateIndex friReference,

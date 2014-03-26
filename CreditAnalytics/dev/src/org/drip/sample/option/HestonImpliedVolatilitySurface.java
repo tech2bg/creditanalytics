@@ -114,42 +114,50 @@ public class HestonImpliedVolatilitySurface {
 		double[] adblATMFactor = new double[] {0.8, 0.9, 1.0, 1.1, 1.2};
 		double[] adblTTE = new double[] {0.5, 1., 2., 3., 4., 5., 7., 10., 12., 15., 20., 25., 30.};
 
-		System.out.print ("\n\t|------------------------------------------------------------|\n\t|  TTE/ATM  =>");
+		System.out.println ("\n\t|------------------------------------------------------------------------------------------------------------------------------------|");
 
-		for (double dblATMFactor : adblATMFactor)
-			System.out.print ("   " + FormatUtil.FormatDouble (dblATMFactor, 1, 2, 1.) + " ");
+		System.out.println ("\t\t\t----    HESTON 1993 TRANSFORM    ----");
 
-		System.out.println ("  |\n\t|------------------------------------------------------------|");
+		System.out.print ("\t|------------------------------------------------------------------------------------------------------------------------------------|\n\t|  ATM/TTE  =>");
 
-		for (double dblTTE : adblTTE) {
-			System.out.print ("\t|  " + FormatUtil.FormatDouble (dblTTE, 2, 2, 1.) + "   =>");
+		for (double dblTTE : adblTTE)
+			System.out.print ("  " + FormatUtil.FormatDouble (dblTTE, 2, 2, 1.) + " ");
 
-			for (double dblATMFactor : adblATMFactor)
+		System.out.println ("  |\n\t|------------------------------------------------------------------------------------------------------------------------------------|");
+
+		for (double dblATMFactor : adblATMFactor) {
+			System.out.print ("\t|  " + FormatUtil.FormatDouble (dblATMFactor, 2, 2, 1.) + "   =>");
+
+			for (double dblTTE : adblTTE)
 				System.out.print ("  " + FormatUtil.FormatDouble (CallPrice (dblATMFactor, dblTTE,
 					HestonStochasticVolatilityAlgorithm.PAYOFF_TRANSFORM_SCHEME_HESTON_1993), 1, 4, 1.));
 
 			System.out.print ("  |\n");
 		}
 
-		System.out.println ("\t|------------------------------------------------------------|");
+		System.out.println ("  \t|------------------------------------------------------------------------------------------------------------------------------------|");
 
-		System.out.print ("\n\t|------------------------------------------------------------|\n\t|  TTE/ATM  =>");
+		System.out.println ("\n\t|------------------------------------------------------------------------------------------------------------------------------------|");
 
-		for (double dblATMFactor : adblATMFactor)
-			System.out.print ("   " + FormatUtil.FormatDouble (dblATMFactor, 1, 2, 1.) + " ");
+		System.out.println ("\t\t\t----    ALBRECHER, MAYER, SCHOUTENS, TISTAERT 2007 TRANSFORM    ----");
 
-		System.out.println ("  |\n\t|------------------------------------------------------------|");
+		System.out.print ("\t|------------------------------------------------------------------------------------------------------------------------------------|\n\t|  ATM/TTE  =>");
 
-		for (double dblTTE : adblTTE) {
-			System.out.print ("\t|  " + FormatUtil.FormatDouble (dblTTE, 2, 2, 1.) + "   =>");
+		for (double dblTTE : adblTTE)
+			System.out.print ("  " + FormatUtil.FormatDouble (dblTTE, 2, 2, 1.) + " ");
 
-			for (double dblATMFactor : adblATMFactor)
-				System.out.print ("  " + FormatUtil.FormatDouble (ImpliedCallVol (dblATMFactor, dblTTE,
-					HestonStochasticVolatilityAlgorithm.PAYOFF_TRANSFORM_SCHEME_HESTON_1993), 2, 2, 100.) + "%");
+		System.out.println ("  |\n\t|------------------------------------------------------------------------------------------------------------------------------------|");
+
+		for (double dblATMFactor : adblATMFactor) {
+			System.out.print ("\t|  " + FormatUtil.FormatDouble (dblATMFactor, 2, 2, 1.) + "   =>");
+
+			for (double dblTTE : adblTTE)
+				System.out.print ("  " + FormatUtil.FormatDouble (CallPrice (dblATMFactor, dblTTE,
+					HestonStochasticVolatilityAlgorithm.PAYOFF_TRANSFORM_SCHEME_AMST_2007), 1, 4, 1.));
 
 			System.out.print ("  |\n");
 		}
 
-		System.out.println ("\t|------------------------------------------------------------|");
+		System.out.println ("  \t|------------------------------------------------------------------------------------------------------------------------------------|");
 	}
 }

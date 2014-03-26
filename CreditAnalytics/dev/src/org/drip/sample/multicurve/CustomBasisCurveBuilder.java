@@ -88,7 +88,7 @@ public class CustomBasisCurveBuilder {
 			astrTenor,
 			adblBasis);
 
-		BasisCurve bcQuinticPolynomial = ScenarioBasisCurveBuilder.QuinticPolynomialBasisCurve (
+		BasisCurve bcQuinticPolynomial = ScenarioBasisCurveBuilder.QuarticPolynomialBasisCurve (
 			"USD3M6MBasis_QuinticPolynomial",
 			dtToday,
 			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
