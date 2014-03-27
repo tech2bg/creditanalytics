@@ -84,7 +84,7 @@ public class EuropeanCallPut {
 	 * 
 	 * @param valParams The Valuation Parameters
 	 * @param dblSpot The Underlying Spot
-	 * @param dblRiskFreeRate The Risk Free Rate
+	 * @param dc Discount Curve
 	 * @param dblVolatility The Option Volatility
 	 * @param fpg The Fokker Planck-based Option Pricer
 	 * 
@@ -94,11 +94,11 @@ public class EuropeanCallPut {
 	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final double dblSpot,
-		final double dblRiskFreeRate,
-		final double dblVolatility,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility,
 		final org.drip.pricer.option.FokkerPlanckGenerator fpg)
 	{
-		if (null == valParams || null == fpg) return null;
+		if (null == valParams || null == dc || null == auVolatility || null == fpg) return null;
 
 		double dblValueDate = valParams.valueDate();
 
@@ -108,13 +108,26 @@ public class EuropeanCallPut {
 
 		long lStartTime = System.nanoTime();
 
+		double dblRiskFreeRate = java.lang.Double.NaN;
 		double dblTTE = (dblMaturity - dblValueDate) / 365.25;
+		double dblImpliedCallVolatility = java.lang.Double.NaN;
+		double dblTimeAveragedVolatility = java.lang.Double.NaN;
 
-		if (!fpg.compute (_dblStrike, dblTTE, dblRiskFreeRate, dblSpot, dblVolatility)) return null;
+		try {
+			dblRiskFreeRate = dc.zero (dblMaturity);
+
+			dblTimeAveragedVolatility = auVolatility.integrate (dblValueDate, dblMaturity) / (dblMaturity -
+				dblValueDate);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		if (!fpg.compute (_dblStrike, dblTTE, dblRiskFreeRate, dblSpot, dblTimeAveragedVolatility))
+			return null;
 
 		double dblCallPrice = fpg.callPrice();
-
-		double dblImpliedCallVolatility = java.lang.Double.NaN;
 
 		try {
 			dblImpliedCallVolatility = new
@@ -163,7 +176,7 @@ public class EuropeanCallPut {
 	 * 
 	 * @param valParams The Valuation Parameters
 	 * @param dblSpot The Underlying Spot
-	 * @param dblRiskFreeRate The Risk Free Rate
+	 * @param dc Discount Curve
 	 * @param dblCallPrice The Option Call Price
 	 * 
 	 * @return The Option's Implied Volatility
@@ -174,11 +187,11 @@ public class EuropeanCallPut {
 	public double implyVolatility (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final double dblSpot,
-		final double dblRiskFreeRate,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblCallPrice)
 		throws java.lang.Exception
 	{
-		if (null == valParams)
+		if (null == valParams || null == dc)
 			throw new java.lang.Exception ("EuropeanCallPut::implyVolatility => Invalid Inputs");
 
 		double dblValueDate = valParams.valueDate();
@@ -191,7 +204,7 @@ public class EuropeanCallPut {
 		double dblTTE = (dblMaturity - dblValueDate) / 365.25;
 
 		return new org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility (_dblStrike,
-			dblTTE, dblRiskFreeRate, dblSpot, dblCallPrice);
+			dblTTE, dc.zero (dblMaturity), dblSpot, dblCallPrice);
 	}
 
 	public java.util.Set<java.lang.String> getMeasureNames()

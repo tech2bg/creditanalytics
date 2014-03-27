@@ -1,11 +1,12 @@
 
 package org.drip.sample.option;
 
+import java.util.Map;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
-import org.drip.param.pricer.HestonOptionPricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.*;
 import org.drip.product.creator.*;
@@ -13,7 +14,7 @@ import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.fourier.PhaseAdjuster;
+import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 
@@ -45,13 +46,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * HestonStochasticVolatilityPricing contains an illustration of the Stochastic Volatility based Pricing
- *  Algorithm of an European Call Using the Heston Algorithm.
+ * VanillaBlackScholesPricing contains an illustration of the Vanilla Black Scholes based European Call and
+ * 	Put Options Pricer.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class HestonStochasticVolatilityPricing {
+public class VanillaBlackScholesPricing {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -218,34 +219,22 @@ public class HestonStochasticVolatilityPricing {
 			dblStrike);
 
 		double dblSpot = 1.;
+		double dblVolatility = 1.;
 
-		double dblRho = 0.3;
-		double dblKappa = 1.;
-		double dblSigma = 0.5;
-		double dblTheta = 0.2;
-		double dblLambda = 0.;
-		double dblSpotVolatility = 0.2;
+		Map<String, Double> mapOptionCalc = option.value (
+			valParams,
+			dblSpot,
+			dc,
+			new FlatUnivariate (dblVolatility),
+			new BlackScholesAlgorithm());
 
-		HestonOptionPricerParams fphp = new HestonOptionPricerParams (
-			HestonStochasticVolatilityAlgorithm.PAYOFF_TRANSFORM_SCHEME_HESTON_1993,
-			dblRho, 			// Rho
-			dblKappa,			// Kappa
-			dblSigma,			// Sigma
-			dblTheta,			// Theta
-			dblLambda,			// Lambda
-			PhaseAdjuster.MULTI_VALUE_BRANCH_POWER_PHASE_TRACKER_KAHL_JACKEL); // Indicates Apply Phase Tracking Adjustment for Log + Power
+		for (Map.Entry<String, Double> me : mapOptionCalc.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 
-		FokkerPlanckGenerator fpg = new HestonStochasticVolatilityAlgorithm (
-			fphp);				// FP Heston Parameters
-
-		System.out.println (
-			option.value (
-				valParams,
-				dblSpot,
-				dc,
-				new FlatUnivariate (dblSpotVolatility),
-				fpg
-				)
-			);
+		System.out.println ("\n\tImplied Vol:" + FormatUtil.FormatDouble (option.implyVolatility
+			(valParams,
+			dblSpot,
+			dc,
+			mapOptionCalc.get ("CallPrice")), 2, 2, 100.) + "%");
 	}
 }

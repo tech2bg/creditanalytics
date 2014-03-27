@@ -30,6 +30,7 @@ package org.drip.quant.function1D;
 
 /**
  * AndersenPiterbargMeanReverter implements the mean-reverting Univariate Function detailed in:
+ * 
  * 	- Andersen and Piterbarg (2010): Interest Rate Modeling (3 Volumes), Atlantic Financial Press.
  * 
  * @author Lakshmi Krishnamurthy

@@ -29,38 +29,39 @@ package org.drip.state.curve;
  */
 
 /**
- * BasisSplineMarketSurface implements the Market surface that holds the latent state's Dynamics parameters.
+ * BasisSplineTermStructure implements the TermStructure Interface - if holds the latent state's Term
+ * 	Structure Parameters.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BasisSplineMarketSurface extends org.drip.analytics.definition.MarketSurface {
-	private org.drip.spline.multidimensional.WireSurfaceStretch _wss = null;
+public class BasisSplineTermStructure extends org.drip.analytics.definition.TermStructure {
+	private org.drip.spline.grid.Span _span = null;
 	private org.drip.param.valuation.CollateralizationParams _collatParams = null;
 
 	/**
-	 * BasisSplineMarketSurface Constructor
+	 * BasisSplineTermStructure Constructor
 	 * 
-	 * @param dblEpochDate The Starting Date
+	 * @param dblEpochDate The Epoch Date
 	 * @param strName Name of the Surface
 	 * @param strCurrency The Currency
-	 * @param wss Wire Surface Stretch Instance
+	 * @param span The Latent State Span
 	 * @param collatParams Collateral Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BasisSplineMarketSurface (
+	public BasisSplineTermStructure (
 		final double dblEpochDate,
 		final java.lang.String strName,
 		final java.lang.String strCurrency,
-		final org.drip.spline.multidimensional.WireSurfaceStretch wss,
+		final org.drip.spline.grid.Span span,
 		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception
 	{
 		super (dblEpochDate, strName, strCurrency);
 
-		_wss = wss;
+		_span = span;
 		_collatParams = collatParams;
 	}
 
@@ -81,10 +82,20 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 	}
 
 	@Override public double node (
-		final double dblStrike,
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		return _wss.responseValue (dblStrike, dblDate);
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("BasisSplineTermStructure::node => Invalid Inputs");
+
+		double dblSpanLeft = _span.left();
+
+		if (dblSpanLeft >= dblDate) return _span.calcResponseValue (dblSpanLeft);
+
+		double dblSpanRight = _span.right();
+
+		if (dblSpanRight <= dblDate) return _span.calcResponseValue (dblSpanRight);
+
+		return _span.calcResponseValue (dblDate);
 	}
 }

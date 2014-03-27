@@ -1,20 +1,21 @@
 
 package org.drip.sample.option;
 
+import java.util.Map;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
-import org.drip.param.pricer.HestonOptionPricerParams;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.pricer.option.*;
+import org.drip.pricer.option.BlackScholesAlgorithm;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.fourier.PhaseAdjuster;
-import org.drip.quant.function1D.FlatUnivariate;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.SABRLIBORCapVolatility;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -45,13 +46,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * HestonStochasticVolatilityPricing contains an illustration of the Stochastic Volatility based Pricing
- *  Algorithm of an European Call Using the Heston Algorithm.
+ * DeterministicVolBlackScholes contains an illustration of the Black Scholes based European Call and Put
+ * 	Options Pricer that uses deterministic Volatility Function.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class HestonStochasticVolatilityPricing {
+public class DeterministicVolBlackScholes {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -219,33 +220,29 @@ public class HestonStochasticVolatilityPricing {
 
 		double dblSpot = 1.;
 
-		double dblRho = 0.3;
-		double dblKappa = 1.;
-		double dblSigma = 0.5;
-		double dblTheta = 0.2;
-		double dblLambda = 0.;
-		double dblSpotVolatility = 0.2;
+		SABRLIBORCapVolatility auSABRLIBORCapVol = new SABRLIBORCapVolatility (
+				dtToday.getJulian(),
+				0.2000,				// A
+				0.0005 / 365.25, 	// B
+				0.1000 / 365.25, 	// C
+				0.0050); 			// D
 
-		HestonOptionPricerParams fphp = new HestonOptionPricerParams (
-			HestonStochasticVolatilityAlgorithm.PAYOFF_TRANSFORM_SCHEME_HESTON_1993,
-			dblRho, 			// Rho
-			dblKappa,			// Kappa
-			dblSigma,			// Sigma
-			dblTheta,			// Theta
-			dblLambda,			// Lambda
-			PhaseAdjuster.MULTI_VALUE_BRANCH_POWER_PHASE_TRACKER_KAHL_JACKEL); // Indicates Apply Phase Tracking Adjustment for Log + Power
+		Map<String, Double> mapOptionCalc = option.value (
+			valParams,
+			dblSpot,
+			dc,
+			auSABRLIBORCapVol,
+			new BlackScholesAlgorithm());
 
-		FokkerPlanckGenerator fpg = new HestonStochasticVolatilityAlgorithm (
-			fphp);				// FP Heston Parameters
+		for (Map.Entry<String, Double> me : mapOptionCalc.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 
-		System.out.println (
-			option.value (
+		System.out.println ("\n\tImplied Vol:" + FormatUtil.FormatDouble (
+			option.implyVolatility (
 				valParams,
 				dblSpot,
 				dc,
-				new FlatUnivariate (dblSpotVolatility),
-				fpg
-				)
-			);
+				mapOptionCalc.get ("CallPrice")
+			), 2, 2, 100.) + "%");
 	}
 }
