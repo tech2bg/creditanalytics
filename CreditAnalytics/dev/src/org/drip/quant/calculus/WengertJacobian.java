@@ -202,6 +202,31 @@ public class WengertJacobian {
 	}
 
 	/**
+	 * Accumulate and merge the weighted partial entries from the other CurveWengertJacobian
+	 * 
+	 * @param wjOther CurveWengertJacobian to be accumulated and merged
+	 * @param dblWeight The Weight
+	 * 
+	 * @return TRUE => Successfully accumulated and merged
+	 */
+
+	public boolean cumulativeMerge (
+		final org.drip.quant.calculus.WengertJacobian wjOther,
+		final double dblWeight)
+	{
+		if (null == wjOther || !org.drip.quant.common.NumberUtil.IsValid (dblWeight)) return false;
+
+		for (int iWengertIndex = 0; iWengertIndex < _aadblDWengertDParameter.length; ++iWengertIndex) {
+			for (int iParameterIndex = 0; iParameterIndex < _aadblDWengertDParameter[0].length;
+				++iParameterIndex)
+				_aadblDWengertDParameter[iWengertIndex][iParameterIndex] += wjOther.getFirstDerivative
+					(iWengertIndex, iParameterIndex) * dblWeight;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Scale the partial entries
 	 * 
 	 * @param dblScale Factor by which the partials are to be scaled by

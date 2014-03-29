@@ -242,6 +242,7 @@ public class HestonStochasticVolatilityPricing {
 			option.value (
 				valParams,
 				dblSpot,
+				false,
 				dc,
 				new FlatUnivariate (dblSpotVolatility),
 				fpg

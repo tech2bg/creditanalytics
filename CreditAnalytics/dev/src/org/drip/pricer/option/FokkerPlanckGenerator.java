@@ -42,8 +42,9 @@ public interface FokkerPlanckGenerator {
 	 * @param dblStrike Option Strike
 	 * @param dbTimeToExpiry Option Time To Expiry
 	 * @param dblRiskFreeRate Option Risk Free Rate
-	 * @param dblSpot Option Spot Value
-	 * @param dblSpotVolatility Option Spot Volatility Value
+	 * @param dblUnderlier Option Underlier Value
+	 * @param bIsForward TRUE => The Underlier represents the Forward, FALSE => it represents Spot
+	 * @param dblInitialVolatility Option Initial Volatility Value
 	 * 
 	 * @return TRUE => Computation Successful
 	 */
@@ -52,8 +53,9 @@ public interface FokkerPlanckGenerator {
 		final double dblStrike,
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
-		final double dblSpot,
-		final double dblSpotVolatility);
+		final double dblUnderlier,
+		final boolean bIsForward,
+		final double dblInitialVolatility);
 
 	/**
 	 * The Option Terminal Discount Factor

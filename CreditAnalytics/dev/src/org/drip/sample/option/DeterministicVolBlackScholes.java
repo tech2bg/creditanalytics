@@ -230,6 +230,7 @@ public class DeterministicVolBlackScholes {
 		Map<String, Double> mapOptionCalc = option.value (
 			valParams,
 			dblSpot,
+			false,
 			dc,
 			auSABRLIBORCapVol,
 			new BlackScholesAlgorithm());
@@ -241,6 +242,7 @@ public class DeterministicVolBlackScholes {
 			option.implyVolatility (
 				valParams,
 				dblSpot,
+				false,
 				dc,
 				mapOptionCalc.get ("CallPrice")
 			), 2, 2, 100.) + "%");

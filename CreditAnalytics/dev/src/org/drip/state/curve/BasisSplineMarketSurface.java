@@ -87,4 +87,31 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 	{
 		return _wss.responseValue (dblStrike, dblDate);
 	}
+
+	@Override public org.drip.analytics.definition.TermStructure strikeTermStructure (
+		final double dblStrike)
+	{
+		try {
+			return new SplineVolatilityTermStructure (epoch().getJulian(), name() + "_" + dblStrike,
+				currency(), _wss.wireSpanX (dblStrike), _collatParams);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override public org.drip.analytics.definition.TermStructure maturityTermStructure (
+		final double dblMaturityDate)
+	{
+		try {
+			return new BasisSplineTermStructure (epoch().getJulian(), name() + "_" + new
+				org.drip.analytics.date.JulianDate (dblMaturityDate), currency(), _wss.wireSpanY
+					(dblMaturityDate), _collatParams);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

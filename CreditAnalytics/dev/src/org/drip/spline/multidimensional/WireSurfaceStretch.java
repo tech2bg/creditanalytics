@@ -128,4 +128,130 @@ public class WireSurfaceStretch {
 
 		return mss.responseValue (dblX);
 	}
+
+	/**
+	 * Retrieve the Surface Span Stretch that corresponds to the given Y
+	 * 
+	 * @param dblY Y
+	 * 
+	 * @return The Surface Span Stretch Instance
+	 */
+
+	public org.drip.spline.grid.Span wireSpanY (
+		final double dblY)
+	{
+		int iSize = _mapWireSpan.size();
+
+		int i = 0;
+		double[] adblX = new double[iSize];
+		double[] adblZ = new double[iSize];
+		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iSize - 1];
+
+		for (java.util.Map.Entry<java.lang.Double, org.drip.spline.grid.Span> me : _mapWireSpan.entrySet()) {
+			if (null == me) return null;
+
+			if (0 != i) aSCBC[i - 1] = _scbc;
+
+			adblX[i] = me.getKey();
+
+			org.drip.spline.grid.Span wireSpan = me.getValue();
+
+			if (null == wireSpan) return null;
+
+			try {
+				double dblLeftY = wireSpan.left();
+
+				double dblRightY = wireSpan.right();
+
+				if (dblY <= dblLeftY)
+					adblZ[i++] = wireSpan.calcResponseValue (dblLeftY);
+				else if (dblY >= dblRightY)
+					adblZ[i++] = wireSpan.calcResponseValue (dblRightY);
+				else
+					adblZ[i++] = wireSpan.calcResponseValue (dblY);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		try {
+			return new org.drip.spline.grid.OverlappingStretchSpan
+				(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+					("org.drip.spline.multidimensional.WireSurfaceStretch@" +
+						org.drip.quant.common.StringUtil.GUID(), adblX, adblZ, aSCBC, null,
+							org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+								org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Retrieve the Surface Span Stretch that corresponds to the given X
+	 * 
+	 * @param dblX X
+	 * 
+	 * @return The Surface Span Stretch Instance
+	 */
+
+	public org.drip.spline.grid.Span wireSpanX (
+		final double dblX)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblX)) return null;
+
+		org.drip.spline.grid.Span spanPrev = null;
+		org.drip.spline.grid.Span spanCurrent = null;
+		double dblXAnchorPrev = java.lang.Double.NaN;
+		double dblXAnchorCurrent = java.lang.Double.NaN;
+
+		for (java.util.Map.Entry<java.lang.Double, org.drip.spline.grid.Span> me : _mapWireSpan.entrySet()) {
+			if (null == me) return null;
+
+			dblXAnchorCurrent = me.getKey();
+
+			spanCurrent = me.getValue();
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblXAnchorPrev)) {
+				if (dblX <= (dblXAnchorPrev = dblXAnchorCurrent)) return spanCurrent;
+
+				spanPrev = spanCurrent;
+				continue;
+			}
+
+			if (dblX > dblXAnchorPrev && dblX <= dblXAnchorCurrent) {
+				double dblLeftWeight = (dblXAnchorCurrent - dblX) / (dblXAnchorCurrent - dblXAnchorPrev);
+
+				java.util.List<java.lang.Double> lsWeight = new java.util.ArrayList<java.lang.Double>();
+
+				java.util.List<org.drip.spline.grid.Span> lsSpan = new
+					java.util.ArrayList<org.drip.spline.grid.Span>();
+
+				lsSpan.add (spanPrev);
+
+				lsSpan.add (spanCurrent);
+
+				lsWeight.add (dblLeftWeight);
+
+				lsWeight.add (1. - dblLeftWeight);
+
+				try {
+					return new org.drip.spline.grid.AggregatedSpan (lsSpan, lsWeight);
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+
+			spanPrev = spanCurrent;
+			dblXAnchorPrev = dblXAnchorCurrent;
+		}
+
+		return spanCurrent;
+	}
 }

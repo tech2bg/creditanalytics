@@ -128,6 +128,20 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		throw new java.lang.Exception ("OverlappingStretchSpan::calcResponseValue => Cannot Calculate!");
 	}
 
+	@Override public double calcResponseValueDerivative (
+		final double dblPredictorOrdinate,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
+			if (mss.in (dblPredictorOrdinate))
+				return mss.responseValueDerivative (dblPredictorOrdinate, iOrder);
+		}
+
+		throw new java.lang.Exception
+			("OverlappingStretchSpan::calcResponseValueDerivative => Cannot Calculate!");
+	}
+
 	@Override public boolean isMergeState (
 		final double dblPredictorOrdinate,
 		final org.drip.state.representation.LatentStateLabel lsl)
@@ -224,16 +238,19 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		return oss;
 	}
 
-	@Override public void displayString()
+	@Override public java.lang.String displayString()
 	{
+		java.lang.StringBuffer sb = new java.lang.StringBuffer();
+
 		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
 			try {
-				System.out.println (new org.drip.analytics.date.JulianDate
-					(mss.getLeftPredictorOrdinateEdge()) + " => " + new org.drip.analytics.date.JulianDate
-						(mss.getRightPredictorOrdinateEdge()));
+				sb.append (new org.drip.analytics.date.JulianDate (mss.getLeftPredictorOrdinateEdge()) +
+					" => " + new org.drip.analytics.date.JulianDate (mss.getRightPredictorOrdinateEdge()));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
 		}
+
+		return sb.toString();
 	}
 }

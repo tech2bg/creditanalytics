@@ -4,21 +4,17 @@ package org.drip.sample.option;
 import java.util.Map;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.Convention;
-import org.drip.analytics.daycount.DateAdjustParams;
+import org.drip.analytics.daycount.*;
 import org.drip.analytics.definition.TermStructure;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.param.creator.ScenarioDiscountCurveBuilder;
-import org.drip.param.creator.ScenarioTermStructureBuilder;
+import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.BlackScholesAlgorithm;
-import org.drip.product.creator.CashBuilder;
-import org.drip.product.creator.EDFutureBuilder;
+import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
 import org.drip.product.params.FloatingRateIndex;
-import org.drip.product.rates.FixedStream;
-import org.drip.product.rates.FloatingStream;
+import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
@@ -206,6 +202,7 @@ public class ATMTermStructure {
 		Map<String, Double> mapOptionCalc = new EuropeanCallPut (dtMaturity, 1.).value (
 			valParams,
 			1.,
+			false,
 			dc,
 			new FlatUnivariate (dblVolatility),
 			new BlackScholesAlgorithm());

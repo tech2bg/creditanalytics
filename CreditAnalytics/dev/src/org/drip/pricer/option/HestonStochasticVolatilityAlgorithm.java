@@ -61,7 +61,6 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 	private double _dblCallProb1 = java.lang.Double.NaN;
 	private double _dblCallProb2 = java.lang.Double.NaN;
 	private double _dblPutPriceFromParity = java.lang.Double.NaN;
-	private double _dblBlackScholesImpliedVolatility = java.lang.Double.NaN;
 
 	class PhaseCorrectedF {
 		double _dblCorrectedPhase = java.lang.Double.NaN;
@@ -81,7 +80,7 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
 		final double dblSpot,
-		final double dblSpotVolatility,
+		final double dblInitialVolatility,
 		final double dblA,
 		final double dblFreq,
 		final double dblB,
@@ -196,7 +195,7 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 				return null;
 
 			org.drip.quant.fourier.ComplexNumber cnF = org.drip.quant.fourier.ComplexNumber.Scale (cnD,
-				dblSpotVolatility);
+				dblInitialVolatility);
 
 			if (null == cnF) return null;
 
@@ -229,7 +228,7 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
 		final double dblSpot,
-		final double dblSpotVolatility,
+		final double dblInitialVolatility,
 		final double dblA,
 		final double dblFreq,
 		final double dblB,
@@ -344,7 +343,7 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 				return null;
 
 			org.drip.quant.fourier.ComplexNumber cnF = org.drip.quant.fourier.ComplexNumber.Scale (cnD,
-				dblSpotVolatility);
+				dblInitialVolatility);
 
 			if (null == cnF) return null;
 
@@ -377,7 +376,7 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
 		final double dblSpot,
-		final double dblSpotVolatility,
+		final double dblInitialVolatility,
 		final double dblA,
 		final double dblFreq,
 		final double dblB,
@@ -390,11 +389,11 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 
 		if (PAYOFF_TRANSFORM_SCHEME_HESTON_1993 == _fphp.payoffTransformScheme())
 			return fourierTransformHeston93 (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot,
-				dblSpotVolatility, dblA, dblFreq, dblB, dblU, rcpt);
+				dblInitialVolatility, dblA, dblFreq, dblB, dblU, rcpt);
 
 		if (PAYOFF_TRANSFORM_SCHEME_AMST_2007 == _fphp.payoffTransformScheme())
 			return fourierTransformAMST07 (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot,
-				dblSpotVolatility, dblA, dblFreq, dblB, dblU, rcpt);
+				dblInitialVolatility, dblA, dblFreq, dblB, dblU, rcpt);
 
 		return null;
 	}
@@ -420,11 +419,11 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
 		final double dblSpot,
-		final double dblSpotVolatility,
+		final double dblInitialVolatility,
 		final boolean bLeft)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStrike) ||!org.drip.quant.common.NumberUtil.IsValid
-			(dblSpot) ||!org.drip.quant.common.NumberUtil.IsValid (dblSpotVolatility) ||
+			(dblSpot) ||!org.drip.quant.common.NumberUtil.IsValid (dblInitialVolatility) ||
 				!org.drip.quant.common.NumberUtil.IsValid (dbTimeToExpiry) ||
 					!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate))
 			return null;
@@ -450,9 +449,9 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		for (double dblFreq = FOURIER_FREQ_INIT; dblFreq <= FOURIER_FREQ_FINAL; dblFreq +=
 			FOURIER_FREQ_INCREMENT, ++i) {
 			PhaseCorrectedF pcf = bLeft ? payoffTransform (dblStrike, dbTimeToExpiry, dblRiskFreeRate,
-				dblSpot, dblSpotVolatility, dblA, dblFreq, dblB1, dblU1, rcpt) : payoffTransform (dblStrike,
-					dbTimeToExpiry, dblRiskFreeRate, dblSpot, dblSpotVolatility, dblA, dblFreq, dblB2,
-						dblU2, rcpt);
+				dblSpot, dblInitialVolatility, dblA, dblFreq, dblB1, dblU1, rcpt) : payoffTransform
+					(dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot, dblInitialVolatility, dblA,
+						dblFreq, dblB2, dblU2, rcpt);
 
 			if (null != rcpt) {
 				if (0 == i)
@@ -483,21 +482,15 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		final double dblStrike,
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
-		final double dblSpot,
-		final double dblSpotVolatility)
+		final double dblUnderlier,
+		final boolean bIsForward,
+		final double dblInitialVolatility)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStrike) ||!org.drip.quant.common.NumberUtil.IsValid
-			(dblSpot) ||!org.drip.quant.common.NumberUtil.IsValid (dblSpotVolatility) ||
+			(dblUnderlier) ||!org.drip.quant.common.NumberUtil.IsValid (dblInitialVolatility) ||
 				!org.drip.quant.common.NumberUtil.IsValid (dbTimeToExpiry) ||
 					!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate))
 			return false;
-
-		int i = 0;
-		_dblCallProb1 = 0.;
-		_dblCallProb2 = 0.;
-		double dblU1 = 0.5;
-		double dblU2 = -0.5;
-		double dblPreviousPhase = 0.;
 
 		org.drip.quant.fourier.RotationCountPhaseTracker rcpt1 =
 			org.drip.quant.fourier.PhaseAdjuster.MULTI_VALUE_BRANCH_PHASE_TRACKER_ROTATION_COUNT ==
@@ -513,10 +506,20 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 
 		double dblB1 = dblB2 - _fphp.rho() * _fphp.sigma();
 
+		_dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry);
+
+		int i = 0;
+		_dblCallProb1 = 0.;
+		_dblCallProb2 = 0.;
+		double dblU1 = 0.5;
+		double dblU2 = -0.5;
+		double dblPreviousPhase = 0.;
+		double dblSpot = bIsForward ? dblUnderlier * _dblDF : dblUnderlier;
+
 		for (double dblFreq = FOURIER_FREQ_INIT; dblFreq <= FOURIER_FREQ_FINAL; dblFreq +=
 			FOURIER_FREQ_INCREMENT, ++i) {
 			PhaseCorrectedF pcf1 = payoffTransform (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot,
-				dblSpotVolatility, dblA, dblFreq, dblB1, dblU1, rcpt1);
+				dblInitialVolatility, dblA, dblFreq, dblB1, dblU1, rcpt1);
 
 			if (null != rcpt1) {
 				if (0 == i)
@@ -538,7 +541,7 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 			}
 
 			PhaseCorrectedF pcf2 = payoffTransform (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot,
-				dblSpotVolatility, dblA, dblFreq, dblB2, dblU2, rcpt2);
+				dblInitialVolatility, dblA, dblFreq, dblB2, dblU2, rcpt2);
 
 			if (null != rcpt2) {
 				if (0 == i)
@@ -564,26 +567,13 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 			_dblCallProb2 += pcf2._cnF.real() * FOURIER_FREQ_INCREMENT;
 		}
 
-		_dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry);
-
 		double dblPIScaler = 1. / java.lang.Math.PI;
 		_dblCallProb1 = 0.5 + _dblCallProb1 * dblPIScaler;
 		_dblCallProb2 = 0.5 + _dblCallProb2 * dblPIScaler;
 		_dblCallDelta = _dblCallProb1;
 		_dblCallPrice = dblSpot * _dblCallProb1 - dblStrike * _dblDF * _dblCallProb2;
 		_dblPutPriceFromParity = _dblCallPrice + dblStrike * _dblDF - dblSpot;
-
-		try {
-			_dblBlackScholesImpliedVolatility = new
-				org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility (dblStrike,
-					dbTimeToExpiry, dblRiskFreeRate, dblSpot, _dblCallPrice);
-
-			return true;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return true;
 	}
 
 	@Override public double df()
@@ -634,10 +624,5 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 	@Override public double putProb2()
 	{
 		return java.lang.Double.NaN;
-	}
-
-	public double impliedBlackScholesVolatility()
-	{
-		return _dblBlackScholesImpliedVolatility;
 	}
 }

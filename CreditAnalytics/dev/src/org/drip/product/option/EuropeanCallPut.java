@@ -83,7 +83,8 @@ public class EuropeanCallPut {
 	 * Generate the Measure Set for the Option
 	 * 
 	 * @param valParams The Valuation Parameters
-	 * @param dblSpot The Underlying Spot
+	 * @param dblUnderlier The Underlier
+	 * @param bIsForward TRUE => The Underlier represents the Forward, FALSE => it represents Spot
 	 * @param dc Discount Curve
 	 * @param dblVolatility The Option Volatility
 	 * @param fpg The Fokker Planck-based Option Pricer
@@ -93,7 +94,8 @@ public class EuropeanCallPut {
 
 	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final double dblSpot,
+		final double dblUnderlier,
+		final boolean bIsForward,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility,
 		final org.drip.pricer.option.FokkerPlanckGenerator fpg)
@@ -124,7 +126,8 @@ public class EuropeanCallPut {
 			return null;
 		}
 
-		if (!fpg.compute (_dblStrike, dblTTE, dblRiskFreeRate, dblSpot, dblTimeAveragedVolatility))
+		if (!fpg.compute (_dblStrike, dblTTE, dblRiskFreeRate, dblUnderlier, bIsForward,
+			dblTimeAveragedVolatility))
 			return null;
 
 		double dblCallPrice = fpg.callPrice();
@@ -132,7 +135,7 @@ public class EuropeanCallPut {
 		try {
 			dblImpliedCallVolatility = new
 				org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility (_dblStrike,
-					dblTTE, dblRiskFreeRate, dblSpot, dblCallPrice);
+					dblTTE, dblRiskFreeRate, dblUnderlier, bIsForward, dblCallPrice);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -175,7 +178,8 @@ public class EuropeanCallPut {
 	 * Imply the Option Volatility given the Call Price
 	 * 
 	 * @param valParams The Valuation Parameters
-	 * @param dblSpot The Underlying Spot
+	 * @param dblUnderlier The Underlier
+	 * @param bIsForward TRUE => The Underlier represents the Forward, FALSE => it represents Spot
 	 * @param dc Discount Curve
 	 * @param dblCallPrice The Option Call Price
 	 * 
@@ -186,7 +190,8 @@ public class EuropeanCallPut {
 
 	public double implyVolatility (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final double dblSpot,
+		final double dblUnderlier,
+		final boolean bIsForward,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblCallPrice)
 		throws java.lang.Exception
@@ -204,8 +209,14 @@ public class EuropeanCallPut {
 		double dblTTE = (dblMaturity - dblValueDate) / 365.25;
 
 		return new org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility (_dblStrike,
-			dblTTE, dc.zero (dblMaturity), dblSpot, dblCallPrice);
+			dblTTE, dc.zero (dblMaturity), dblUnderlier, bIsForward, dblCallPrice);
 	}
+
+	/**
+	 * Retrieve the Set of the Measure Names
+	 * 
+	 * @return The Set of the Measure Names
+	 */
 
 	public java.util.Set<java.lang.String> getMeasureNames()
 	{

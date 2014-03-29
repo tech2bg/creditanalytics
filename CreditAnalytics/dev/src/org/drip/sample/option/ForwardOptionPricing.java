@@ -1,12 +1,11 @@
 
 package org.drip.sample.option;
 
-import java.util.Map;
-
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
+import org.drip.param.pricer.HestonOptionPricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.*;
 import org.drip.product.creator.*;
@@ -14,7 +13,7 @@ import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.common.FormatUtil;
+import org.drip.quant.fourier.PhaseAdjuster;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 
@@ -46,13 +45,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * VanillaBlackScholesPricing contains an illustration of the Vanilla Black Scholes based European Call and
- * 	Put Options Pricer.
+ * ForwardOptionPricing illustrates pricing a forward using the Black '76 variant and the Heston's stochastic
+ * 	Volatility Models.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class VanillaBlackScholesPricing {
+public class ForwardOptionPricing {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -219,24 +218,89 @@ public class VanillaBlackScholesPricing {
 			dblStrike);
 
 		double dblSpot = 1.;
-		double dblVolatility = 1.;
 
-		Map<String, Double> mapOptionCalc = option.value (
-			valParams,
-			dblSpot,
-			false,
-			dc,
-			new FlatUnivariate (dblVolatility),
-			new BlackScholesAlgorithm());
+		double dblRho = 0.3;
+		double dblKappa = 1.;
+		double dblSigma = 0.5;
+		double dblTheta = 0.2;
+		double dblLambda = 0.;
+		double dblSpotVolatility = 0.2;
 
-		for (Map.Entry<String, Double> me : mapOptionCalc.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
+		HestonOptionPricerParams fphp = new HestonOptionPricerParams (
+			HestonStochasticVolatilityAlgorithm.PAYOFF_TRANSFORM_SCHEME_HESTON_1993,
+			dblRho, 			// Rho
+			dblKappa,			// Kappa
+			dblSigma,			// Sigma
+			dblTheta,			// Theta
+			dblLambda,			// Lambda
+			PhaseAdjuster.MULTI_VALUE_BRANCH_POWER_PHASE_TRACKER_KAHL_JACKEL); // Indicates Apply Phase Tracking Adjustment for Log + Power
 
-		System.out.println ("\n\tImplied Vol:" + FormatUtil.FormatDouble (option.implyVolatility (
-			valParams,
-			dblSpot,
-			false,
-			dc,
-			mapOptionCalc.get ("CallPrice")), 2, 2, 100.) + "%");
+		FokkerPlanckGenerator fpg = new HestonStochasticVolatilityAlgorithm (
+			fphp);				// FP Heston Parameters
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println ("\t\t HESTON 1993 SPOT OPTION PRICING");
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println (
+			option.value (
+				valParams,
+				dblSpot,
+				false,
+				dc,
+				new FlatUnivariate (dblSpotVolatility),
+				fpg
+				)
+			);
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println ("\t\t HESTON 1993 FORWARD OPTION PRICING");
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println (
+			option.value (
+				valParams,
+				dblSpot,
+				true,
+				dc,
+				new FlatUnivariate (dblSpotVolatility),
+				fpg)
+			);
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println ("\t\t BLACK SCHOLES SPOT OPTION PRICING");
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println (
+			option.value (
+				valParams,
+				dblSpot,
+				false,
+				dc,
+				new FlatUnivariate (dblSpotVolatility),
+				new BlackScholesAlgorithm())
+			);
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println ("\t\t BLACK '76 FORWARD OPTION PRICING");
+
+		System.out.println ("---------------------------------------------------------");
+
+		System.out.println (
+			option.value (
+				valParams,
+				dblSpot,
+				true,
+				dc,
+				new FlatUnivariate (dblSpotVolatility),
+				new BlackScholesAlgorithm())
+			);
 	}
 }

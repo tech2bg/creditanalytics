@@ -56,28 +56,33 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		final double dblStrike,
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
-		final double dblSpot,
-		final double dblSpotVolatility)
+		final double dblUnderlier,
+		final boolean bIsForward,
+		final double dblVolatility)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStrike) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblSpot) || !org.drip.quant.common.NumberUtil.IsValid
-				(dblSpotVolatility) || !org.drip.quant.common.NumberUtil.IsValid (dbTimeToExpiry) ||
-					!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate))
+			!org.drip.quant.common.NumberUtil.IsValid (dblUnderlier) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblVolatility) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dbTimeToExpiry) ||
+						!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate))
 			return false;
 
-		double dblD1D2Diff = dblSpotVolatility * java.lang.Math.sqrt (dbTimeToExpiry);
+		double dblD1D2Diff = dblVolatility * java.lang.Math.sqrt (dbTimeToExpiry);
+
+		_dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry);
 
 		double dblD1 = java.lang.Double.NaN;
 		double dblD2 = java.lang.Double.NaN;
+		double dblForward = bIsForward ? dblUnderlier : dblUnderlier / _dblDF;
 
-		if (0. != dblSpotVolatility) {
-			dblD1 = (java.lang.Math.log (dblSpot / dblStrike) + dbTimeToExpiry * (dblRiskFreeRate + 0.5 *
-				dblSpotVolatility * dblSpotVolatility)) / dblD1D2Diff;
+		if (0. != dblVolatility) {
+			dblD1 = (java.lang.Math.log (dblForward / dblStrike) + dbTimeToExpiry * (0.5 * dblVolatility *
+				dblVolatility)) / dblD1D2Diff;
 
 			dblD2 = dblD1 - dblD1D2Diff;
 		} else {
-			dblD1 = dblSpot > dblStrike * java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry) ?
-				java.lang.Double.POSITIVE_INFINITY : java.lang.Double.NEGATIVE_INFINITY;
+			dblD1 = dblForward > dblStrike ? java.lang.Double.POSITIVE_INFINITY :
+				java.lang.Double.NEGATIVE_INFINITY;
 			dblD2 = dblD1;
 		}
 
@@ -95,11 +100,9 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 			return false;
 		}
 
-		_dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry);
-
-		_dblCallPrice = dblSpot * _dblCallProb1 - dblStrike * _dblDF * _dblCallProb2;
-		_dblPutPrice = -1. * dblSpot * _dblPutProb1 + dblStrike * _dblDF * _dblPutProb2;
-		_dblPutPriceFromParity = _dblCallPrice + dblStrike * _dblDF - dblSpot;
+		_dblCallPrice = _dblDF * (dblForward * _dblCallProb1 - dblStrike * _dblCallProb2);
+		_dblPutPrice = _dblDF * (-1. * dblForward * _dblPutProb1 + dblStrike * _dblPutProb2);
+		_dblPutPriceFromParity = _dblDF * (_dblCallPrice + dblStrike - dblForward);
 		return true;
 	}
 
@@ -153,11 +156,27 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		return _dblPutProb2;
 	}
 
+	/**
+	 * Imply the Constant Black Scholes Volatility From the Call Price
+	 * 
+	 * @param dblStrike Strike
+	 * @param dbTimeToExpiry Time To Expiry
+	 * @param dblRiskFreeRate Risk Free Rate
+	 * @param dblUnderlier The Underlier
+	 * @param bIsForward TRUE => The Underlier represents the Forward, FALSE => it represents Spot
+	 * @param dblCallPrice The Call Price
+	 * 
+	 * @return The Implied Constant Black Scholes Volatility
+	 * 
+	 * @throws java.lang.Exception Thrown if the Constant Black Scholes Volatility cannot be implied
+	 */
+
 	public double implyBlackScholesVolatility (
 		final double dblStrike,
 		final double dbTimeToExpiry,
 		final double dblRiskFreeRate,
-		final double dblSpot,
+		final double dblUnderlier,
+		final boolean bIsForward,
 		final double dblCallPrice)
 		throws java.lang.Exception
 	{
@@ -170,10 +189,10 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 			{
 				// System.out.println ("dblSpotVolatility = " + java.lang.Math.abs (dblSpotVolatility));
 
-				if (!compute (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblSpot, java.lang.Math.abs
-					(dblSpotVolatility)))
+				if (!compute (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblUnderlier, bIsForward,
+					java.lang.Math.abs (dblSpotVolatility)))
 					throw new java.lang.Exception
-						("BlackScholesAlgorithm::implyVolatility => Cannot compute Measure");
+						("BlackScholesAlgorithm::implyBlackScholesVolatility => Cannot compute Measure");
 
 				return callPrice() - dblCallPrice;
 			}

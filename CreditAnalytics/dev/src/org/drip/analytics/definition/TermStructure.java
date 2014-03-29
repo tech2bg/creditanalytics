@@ -128,9 +128,9 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 	}
 
 	/**
-	 * Get the Market Node at the given Maturity
+	 * Get the Market Node at the given Predictor Ordinate
 	 * 
-	 * @param dblDate The Julian Maturity Date
+	 * @param dblPredictorOrdinate The Predictor Ordinate
 	 * 
 	 * @return The Node evaluated from the Term Structure
 	 * 
@@ -138,7 +138,23 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 	 */
 
 	public abstract double node (
-		final double dblDate)
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception;
+
+	/**
+	 * Get the Market Node Derivative at the given Predictor Ordinate
+	 * 
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * @param iOrder Order of the Derivative
+	 * 
+	 * @return The Node Derivative evaluated from the Term Structure
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public abstract double nodeDerivative (
+		final double dblPredictorOrdinate,
+		final int iOrder)
 		throws java.lang.Exception;
 
 	/**
@@ -178,5 +194,48 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 			throw new java.lang.Exception ("TermStructure::node => Invalid Inputs");
 
 		return node (epoch().addTenor (strTenor).getJulian());
+	}
+
+	/**
+	 * Get the Market Node Derivative at the given Maturity
+	 * 
+	 * @param dt The Julian Maturity Date
+	 * @param iOrder Order of the Derivative
+	 * 
+	 * @return The Node Derivative evaluated from the Term Structure
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double nodeDerivative (
+		final org.drip.analytics.date.JulianDate dt,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		if (null == dt) throw new java.lang.Exception ("TermStructure::nodeDerivative => Invalid Inputs");
+
+		return nodeDerivative (dt.getJulian(), iOrder);
+	}
+
+	/**
+	 * Get the Market Node Derivative at the given Maturity
+	 * 
+	 * @param strTenor The Maturity Tenor
+	 * @param iOrder Order of the Derivative
+	 * 
+	 * @return The Node Derivative evaluated from the Term Structure
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double nodeDerivative (
+		final java.lang.String strTenor,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		if (null == strTenor || strTenor.isEmpty())
+			throw new java.lang.Exception ("TermStructure::nodeDerivative => Invalid Inputs");
+
+		return nodeDerivative (epoch().addTenor (strTenor).getJulian(), iOrder);
 	}
 }

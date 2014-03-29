@@ -68,7 +68,7 @@ public interface SingleSegmentSequence {
 		final int iCalibrationDetail);
 
 	/**
-	 * Calculate the Response Value for the given Predictor Ordinate
+	 * Calculate the Response Value at the given Predictor Ordinate
 	 * 
 	 * @param dblPredictorOrdinate Predictor Ordinate
 	 * 
@@ -79,6 +79,22 @@ public interface SingleSegmentSequence {
 
 	public abstract double responseValue (
 		final double dblPredictorOrdinate)
+		throws java.lang.Exception;
+
+	/**
+	 * Calculate the Response Value Derivative at the given Predictor Ordinate for the specified order
+	 * 
+	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * @param iOrder Order the Derivative
+	 * 
+	 * @return The Response Value
+	 * 
+	 * @throws java.lang.Exception Thrown if the Response Value Derivative cannot be calculated
+	 */
+
+	public abstract double responseValueDerivative (
+		final double dblPredictorOrdinate,
+		final int iOrder)
 		throws java.lang.Exception;
 
 	/**

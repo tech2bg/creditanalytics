@@ -182,6 +182,28 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		return dblResponse;
 	}
 
+	@Override public double responseValueDerivative (
+		final double dblPredictorOrdinate,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate) || 0 >= iOrder)
+			throw new java.lang.Exception
+				("SingleSegmentLagrangePolynomial::responseValueDerivative => Invalid inputs!");
+
+		org.drip.quant.function1D.AbstractUnivariate au = new org.drip.quant.function1D.AbstractUnivariate
+			(null) {
+			@Override public double evaluate (
+				double dblX)
+				throws java.lang.Exception
+			{
+				return responseValue (dblX);
+			}
+		};
+
+		return au.calcDerivative (dblPredictorOrdinate, iOrder);
+	}
+
 	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDCalibrationInput (
 		final double dblPredictorOrdinate,
 		final int iOrder)

@@ -185,4 +185,55 @@ public abstract class MarketSurface extends org.drip.service.stream.Serializer i
 
 		return node (dblStrike, epoch().addTenor (strTenor).getJulian());
 	}
+
+	/**
+	 * Extract the Term Structure Constructed at the Strike Node
+	 * 
+	 * @param dblStrike The Strike Node
+	 * 
+	 * @return The Term Structure Constructed at the Strike Node
+	 */
+
+	public abstract org.drip.analytics.definition.TermStructure strikeTermStructure (
+		final double dblStrike);
+
+	/**
+	 * Extract the Term Structure Constructed at the Maturity Node
+	 * 
+	 * @param dblMaturityDate The Maturity Date
+	 * 
+	 * @return The Term Structure Constructed at the Maturity Node
+	 */
+
+	public abstract org.drip.analytics.definition.TermStructure maturityTermStructure (
+		final double dblMaturityDate);
+
+	/**
+	 * Extract the Term Structure Constructed at the Maturity Node
+	 * 
+	 * @param dtMaturity The Maturity Date
+	 * 
+	 * @return The Term Structure Constructed at the Maturity Node
+	 */
+
+	public org.drip.analytics.definition.TermStructure maturityTermStructure (
+		final org.drip.analytics.date.JulianDate dtMaturity)
+	{
+		return null == dtMaturity ? null : maturityTermStructure (dtMaturity.getJulian());
+	}
+
+	/**
+	 * Extract the Term Structure Constructed at the Maturity Tenor
+	 * 
+	 * @param strTenor The Tenor
+	 * 
+	 * @return The Term Structure Constructed at the Maturity Tenor
+	 */
+
+	public org.drip.analytics.definition.TermStructure maturityTermStructure (
+		final java.lang.String strTenor)
+	{
+		return null == strTenor || strTenor.isEmpty() ? null : maturityTermStructure (epoch().addTenor
+			(strTenor).getJulian());
+	}
 }

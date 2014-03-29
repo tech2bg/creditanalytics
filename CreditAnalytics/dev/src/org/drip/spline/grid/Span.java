@@ -96,6 +96,22 @@ public interface Span {
 		throws java.lang.Exception;
 
 	/**
+	 * Compute the Response Value Derivative from the containing Stretches
+	 * 
+	 * @param dblPredictorOrdinate The Predictor Ordinate
+	 * @param iOrder Order of the Derivative to be calculated
+	 * 
+	 * @return The Response Value Derivative
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public abstract double calcResponseValueDerivative (
+		final double dblPredictorOrdinate,
+		final int iOrder)
+		throws java.lang.Exception;
+
+	/**
 	 * Add a Stretch to the Span
 	 * 
 	 * @param mss Stretch to be added
@@ -147,5 +163,5 @@ public interface Span {
 	 * Display the Span Edge Coordinates
 	 */
 
-	public void displayString();
+	public java.lang.String displayString();
 }

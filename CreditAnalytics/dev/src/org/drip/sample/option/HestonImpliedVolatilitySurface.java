@@ -2,6 +2,7 @@
 package org.drip.sample.option;
 
 import org.drip.param.pricer.HestonOptionPricerParams;
+import org.drip.pricer.option.BlackScholesAlgorithm;
 import org.drip.pricer.option.HestonStochasticVolatilityAlgorithm;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.fourier.PhaseAdjuster;
@@ -67,9 +68,9 @@ public class HestonImpliedVolatilitySurface {
 		double dblStrike = dblATMFactor;
 		double dblRiskFreeRate = 0.0;
 		double dblSpot = 1.;
-		double dblSpotVolatility = 0.1;
+		double dblInitialVolatility = 0.1;
 
-		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, dblSpotVolatility);
+		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblInitialVolatility);
 
 		return hsva.callPrice();
 	}
@@ -100,11 +101,18 @@ public class HestonImpliedVolatilitySurface {
 		double dblStrike = dblATMFactor;
 		double dblRiskFreeRate = 0.0;
 		double dblSpot = 1.;
-		double dblSpotVolatility = 0.1;
+		double dblInitialVolatility = 0.1;
 
-		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, dblSpotVolatility);
+		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblInitialVolatility);
 
-		return hsva.impliedBlackScholesVolatility();
+		return new BlackScholesAlgorithm().implyBlackScholesVolatility (
+			dblStrike,
+			dblTimeToExpiry,
+			dblRiskFreeRate,
+			dblSpot,
+			false,
+			hsva.callPrice()
+		);
 	}
 
 	public static final void main (

@@ -36,7 +36,7 @@ import org.drip.spline.stretch.*;
  */
 
 /**
- * StretchEstimation demonstrates the Stretch builder and usage API. It shows the following:
+ * TensionStretchEstimator demonstrates the Stretch builder and usage API. It shows the following:
  * 	- Construction of segment control parameters - polynomial (regular/Bernstein) segment control,
  * 		exponential/hyperbolic tension segment control, Kaklis-Pandelis tension segment control.
  * 	- Tension Basis Spline Test using the specified predictor/response set and the array of segment custom
@@ -46,7 +46,7 @@ import org.drip.spline.stretch.*;
  * @author Lakshmi Krishnamurthy
  */
 
-public class TensionStretchEstimation {
+public class TensionStretchEstimator {
 
 	/*
 	 * Build KLK Exponential Tension Segment Control Parameters

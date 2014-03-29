@@ -511,8 +511,9 @@ public class ScenarioMarketSurfaceBuilder {
 	 * @param dtStart Epoch/Start Date
 	 * @param strCurrency Currency
 	 * @param dblRiskFreeRate Risk-Free Rate
-	 * @param dblSpot Spot
-	 * @param dblSpotVolatility Spot Volatility
+	 * @param dblUnderlier The Underlier
+	 * @param bIsForward TRUE => The Underlier represents the Forward, FALSE => it represents Spot
+	 * @param dblInitialVolatility Initial Volatility
 	 * @param collatParams Collateral Parameters
 	 * @param adblStrike Array of Strikes
 	 * @param astrTenor Array of Maturity Tenors
@@ -529,8 +530,9 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final double dblRiskFreeRate,
-		final double dblSpot,
-		final double dblSpotVolatility,
+		final double dblUnderlier,
+		final boolean bIsForward,
+		final double dblInitialVolatility,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final double[] adblStrike,
 		final java.lang.String[] astrTenor,
@@ -540,8 +542,9 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.spline.params.SegmentCustomBuilderControl scbcSurface)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblSpot) || !org.drip.quant.common.NumberUtil.IsValid
-				(dblSpotVolatility) || null == adblStrike || null == astrTenor || null == fphp)
+			!org.drip.quant.common.NumberUtil.IsValid (dblUnderlier) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblInitialVolatility) || null == adblStrike ||
+					null == astrTenor || null == fphp)
 			return null;
 
 		int iStrike = 0;
@@ -568,12 +571,14 @@ public class ScenarioMarketSurfaceBuilder {
 					double dblTimeToExpiry = org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction
 						(strTenor);
 
-					if (!hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot,
-						dblSpotVolatility))
+					if (!hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblUnderlier, bIsForward,
+						dblInitialVolatility))
 						return null;
 
-					aadblImpliedNode[iStrike][iTenor++] = bPriceSurface ? hsva.callPrice() :
-						hsva.impliedBlackScholesVolatility();
+					aadblImpliedNode[iStrike][iTenor++] = bPriceSurface ? hsva.callPrice() : new
+						org.drip.pricer.option.BlackScholesAlgorithm().implyBlackScholesVolatility
+							(dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblUnderlier, false,
+								hsva.callPrice());
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

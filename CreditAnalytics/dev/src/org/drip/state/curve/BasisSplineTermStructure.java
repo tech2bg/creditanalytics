@@ -82,20 +82,41 @@ public class BasisSplineTermStructure extends org.drip.analytics.definition.Term
 	}
 
 	@Override public double node (
-		final double dblDate)
+		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate))
 			throw new java.lang.Exception ("BasisSplineTermStructure::node => Invalid Inputs");
 
 		double dblSpanLeft = _span.left();
 
-		if (dblSpanLeft >= dblDate) return _span.calcResponseValue (dblSpanLeft);
+		if (dblSpanLeft >= dblPredictorOrdinate) return _span.calcResponseValue (dblSpanLeft);
 
 		double dblSpanRight = _span.right();
 
-		if (dblSpanRight <= dblDate) return _span.calcResponseValue (dblSpanRight);
+		if (dblSpanRight <= dblPredictorOrdinate) return _span.calcResponseValue (dblSpanRight);
 
-		return _span.calcResponseValue (dblDate);
+		return _span.calcResponseValue (dblPredictorOrdinate);
+	}
+
+	@Override public double nodeDerivative (
+		final double dblPredictorOrdinate,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate))
+			throw new java.lang.Exception ("BasisSplineTermStructure::nodeDerivative => Invalid Inputs");
+
+		double dblSpanLeft = _span.left();
+
+		if (dblSpanLeft >= dblPredictorOrdinate)
+			return _span.calcResponseValueDerivative (dblSpanLeft, iOrder);
+
+		double dblSpanRight = _span.right();
+
+		if (dblSpanRight <= dblPredictorOrdinate)
+			return _span.calcResponseValueDerivative (dblSpanRight, iOrder);
+
+		return _span.calcResponseValueDerivative (dblPredictorOrdinate, iOrder);
 	}
 }
