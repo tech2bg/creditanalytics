@@ -88,12 +88,12 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		return _wss.responseValue (dblStrike, dblDate);
 	}
 
-	@Override public org.drip.analytics.definition.TermStructure strikeTermStructure (
-		final double dblStrike)
+	@Override public org.drip.analytics.definition.TermStructure strikeAnchorTermStructure (
+		final double dblStrikeAnchor)
 	{
 		try {
-			return new SplineVolatilityTermStructure (epoch().getJulian(), name() + "_" + dblStrike,
-				currency(), _wss.wireSpanX (dblStrike), _collatParams);
+			return new BasisSplineTermStructure (epoch().getJulian(), name() + "_" + dblStrikeAnchor,
+				currency(), _wss.wireSpanXAnchor (dblStrikeAnchor), _collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -101,13 +101,13 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		return null;
 	}
 
-	@Override public org.drip.analytics.definition.TermStructure maturityTermStructure (
-		final double dblMaturityDate)
+	@Override public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
+		final double dblMaturityDateAnchor)
 	{
 		try {
 			return new BasisSplineTermStructure (epoch().getJulian(), name() + "_" + new
-				org.drip.analytics.date.JulianDate (dblMaturityDate), currency(), _wss.wireSpanY
-					(dblMaturityDate), _collatParams);
+				org.drip.analytics.date.JulianDate (dblMaturityDateAnchor), currency(), _wss.wireSpanYAnchor
+					(dblMaturityDateAnchor), _collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

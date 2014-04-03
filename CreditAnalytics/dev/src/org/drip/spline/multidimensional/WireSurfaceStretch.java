@@ -130,16 +130,18 @@ public class WireSurfaceStretch {
 	}
 
 	/**
-	 * Retrieve the Surface Span Stretch that corresponds to the given Y
+	 * Retrieve the Surface Span Stretch that corresponds to the given Y Anchor
 	 * 
-	 * @param dblY Y
+	 * @param dblYAnchor Y Anchor
 	 * 
 	 * @return The Surface Span Stretch Instance
 	 */
 
-	public org.drip.spline.grid.Span wireSpanY (
-		final double dblY)
+	public org.drip.spline.grid.Span wireSpanYAnchor (
+		final double dblYAnchor)
 	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblYAnchor)) return null;
+
 		int iSize = _mapWireSpan.size();
 
 		int i = 0;
@@ -164,12 +166,12 @@ public class WireSurfaceStretch {
 
 				double dblRightY = wireSpan.right();
 
-				if (dblY <= dblLeftY)
+				if (dblYAnchor <= dblLeftY)
 					adblZ[i++] = wireSpan.calcResponseValue (dblLeftY);
-				else if (dblY >= dblRightY)
+				else if (dblYAnchor >= dblRightY)
 					adblZ[i++] = wireSpan.calcResponseValue (dblRightY);
 				else
-					adblZ[i++] = wireSpan.calcResponseValue (dblY);
+					adblZ[i++] = wireSpan.calcResponseValue (dblYAnchor);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -192,17 +194,17 @@ public class WireSurfaceStretch {
 	}
 
 	/**
-	 * Retrieve the Surface Span Stretch that corresponds to the given X
+	 * Retrieve the Surface Span Stretch that corresponds to the given X Anchor
 	 * 
-	 * @param dblX X
+	 * @param dblXAnchor X Anchor
 	 * 
 	 * @return The Surface Span Stretch Instance
 	 */
 
-	public org.drip.spline.grid.Span wireSpanX (
-		final double dblX)
+	public org.drip.spline.grid.Span wireSpanXAnchor (
+		final double dblXAnchor)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblX)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblXAnchor)) return null;
 
 		org.drip.spline.grid.Span spanPrev = null;
 		org.drip.spline.grid.Span spanCurrent = null;
@@ -217,14 +219,15 @@ public class WireSurfaceStretch {
 			spanCurrent = me.getValue();
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblXAnchorPrev)) {
-				if (dblX <= (dblXAnchorPrev = dblXAnchorCurrent)) return spanCurrent;
+				if (dblXAnchor <= (dblXAnchorPrev = dblXAnchorCurrent)) return spanCurrent;
 
 				spanPrev = spanCurrent;
 				continue;
 			}
 
-			if (dblX > dblXAnchorPrev && dblX <= dblXAnchorCurrent) {
-				double dblLeftWeight = (dblXAnchorCurrent - dblX) / (dblXAnchorCurrent - dblXAnchorPrev);
+			if (dblXAnchor > dblXAnchorPrev && dblXAnchor <= dblXAnchorCurrent) {
+				double dblLeftWeight = (dblXAnchorCurrent - dblXAnchor) / (dblXAnchorCurrent -
+					dblXAnchorPrev);
 
 				java.util.List<java.lang.Double> lsWeight = new java.util.ArrayList<java.lang.Double>();
 

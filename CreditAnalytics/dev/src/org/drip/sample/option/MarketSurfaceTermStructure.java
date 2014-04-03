@@ -15,6 +15,40 @@ import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
 
+/*
+ * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ */
+
+/*!
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
+ * 
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
+ * 
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *   	you may not use this file except in compliance with the License.
+ *   
+ *  You may obtain a copy of the License at
+ *  	http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  	distributed under the License is distributed on an "AS IS" BASIS,
+ *  	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  
+ *  See the License for the specific language governing permissions and
+ *  	limitations under the License.
+ */
+
+/**
+ * MarketSurfaceTermStructure contains an illustration of the Creation and Usage of the Strike Anchored and
+ * 	Maturity Anchored Term Structures extracted from the given Market Surface.
+ * 
+ * @author Lakshmi Krishnamurthy
+ */
+
 public class MarketSurfaceTermStructure {
 
 	private static final SegmentCustomBuilderControl CubicPolySCBC()
@@ -78,7 +112,7 @@ public class MarketSurfaceTermStructure {
 		for (double dblStrike : adblStrikeATMFactor) {
 			System.out.print ("\t|  " + FormatUtil.FormatDouble (dblStrike, 1, 2, 1.) + "    =>");
 
-			TermStructure tsStrike = mktSurf.strikeTermStructure (dblStrike);
+			TermStructure tsStrike = mktSurf.strikeAnchorTermStructure (dblStrike);
 
 			for (String strMaturity : astrMaturityTenor)
 				System.out.print ("  " + FormatUtil.FormatDouble (tsStrike.node (strMaturity), 2, 2, 100.) + "%");
@@ -106,7 +140,7 @@ public class MarketSurfaceTermStructure {
 		for (String strMaturity : astrMaturityTenor) {
 			System.out.print ("    " + strMaturity + "  ");
 
-			mapMaturityTS.put (strMaturity, mktSurf.maturityTermStructure (strMaturity));
+			mapMaturityTS.put (strMaturity, mktSurf.maturityAnchorTermStructure (strMaturity));
 		}
 
 		System.out.println ("  |\n\t|------------------------------------------------------------|");

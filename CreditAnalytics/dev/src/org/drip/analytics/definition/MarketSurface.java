@@ -187,53 +187,53 @@ public abstract class MarketSurface extends org.drip.service.stream.Serializer i
 	}
 
 	/**
-	 * Extract the Term Structure Constructed at the Strike Node
+	 * Extract the Term Structure Constructed at the Strike Anchor Node
 	 * 
-	 * @param dblStrike The Strike Node
+	 * @param dblStrike The Strike Anchor Node
 	 * 
-	 * @return The Term Structure Constructed at the Strike Node
+	 * @return The Term Structure Constructed at the Strike Anchor Node
 	 */
 
-	public abstract org.drip.analytics.definition.TermStructure strikeTermStructure (
-		final double dblStrike);
+	public abstract org.drip.analytics.definition.TermStructure strikeAnchorTermStructure (
+		final double dblStrikeAnchor);
 
 	/**
-	 * Extract the Term Structure Constructed at the Maturity Node
+	 * Extract the Term Structure Constructed at the Maturity Anchor Node
 	 * 
-	 * @param dblMaturityDate The Maturity Date
+	 * @param dblMaturityDateAnchor The Maturity Date Anchor
 	 * 
-	 * @return The Term Structure Constructed at the Maturity Node
+	 * @return The Term Structure Constructed at the Maturity Anchor Node
 	 */
 
-	public abstract org.drip.analytics.definition.TermStructure maturityTermStructure (
-		final double dblMaturityDate);
+	public abstract org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
+		final double dblMaturityDateAnchor);
 
 	/**
-	 * Extract the Term Structure Constructed at the Maturity Node
+	 * Extract the Term Structure Constructed at the Maturity Anchor Node
 	 * 
-	 * @param dtMaturity The Maturity Date
+	 * @param dtMaturityAnchor The Maturity Date Anchor
 	 * 
-	 * @return The Term Structure Constructed at the Maturity Node
+	 * @return The Term Structure Constructed at the Maturity Anchor Node
 	 */
 
-	public org.drip.analytics.definition.TermStructure maturityTermStructure (
-		final org.drip.analytics.date.JulianDate dtMaturity)
+	public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
+		final org.drip.analytics.date.JulianDate dtMaturityAnchor)
 	{
-		return null == dtMaturity ? null : maturityTermStructure (dtMaturity.getJulian());
+		return null == dtMaturityAnchor ? null : maturityAnchorTermStructure (dtMaturityAnchor.getJulian());
 	}
 
 	/**
-	 * Extract the Term Structure Constructed at the Maturity Tenor
+	 * Extract the Term Structure Constructed at the Maturity Anchor Tenor
 	 * 
-	 * @param strTenor The Tenor
+	 * @param strTenorAnchor The Anchor Tenor
 	 * 
-	 * @return The Term Structure Constructed at the Maturity Tenor
+	 * @return The Term Structure Constructed at the Maturity Anchor Tenor
 	 */
 
-	public org.drip.analytics.definition.TermStructure maturityTermStructure (
-		final java.lang.String strTenor)
+	public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
+		final java.lang.String strTenorAnchor)
 	{
-		return null == strTenor || strTenor.isEmpty() ? null : maturityTermStructure (epoch().addTenor
-			(strTenor).getJulian());
+		return null == strTenorAnchor || strTenorAnchor.isEmpty() ? null : maturityAnchorTermStructure
+			(epoch().addTenor (strTenorAnchor).getJulian());
 	}
 }

@@ -24,7 +24,6 @@ import org.drip.service.api.CreditAnalytics;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -47,12 +46,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * SWPM contains the sample demonstrating the replication of Bloomberg's SWPM functionality.
+ * SWPMOIS contains the sample demonstrating the replication of Bloomberg's SWPM functionality, using OIS
+ * 	discounting.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class SWPM {
+public class SWPMOIS {
 	private static final String FIELD_SEPARATOR = "    ";
 
 	/*
@@ -280,11 +280,13 @@ public class SWPM {
 
 		System.out.println ("\n---- Swap Output Measures ----\n");
 
-		System.out.println ("Mkt Val      : " + FormatUtil.FormatDouble (dblBasePV, 0, 0, 1.));
+		System.out.println ("Mkt Val       : " + FormatUtil.FormatDouble (dblBasePV, 0, 0, 1.));
 
-		System.out.println ("Par Cpn      : " + FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 5, 100.));
+		System.out.println ("Mkt Val Fixed : " + FormatUtil.FormatDouble (mapSwapCalc.get ("DirtyFixedPV"), 0, 0, 1.));
 
-		System.out.println ("Fixed DV01   : " + FormatUtil.FormatDouble (dblBaseFixedDV01, 0, 0, 1.));
+		System.out.println ("Par Cpn       : " + FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 5, 100.));
+
+		System.out.println ("Fixed DV01    : " + FormatUtil.FormatDouble (dblBaseFixedDV01, 0, 0, 1.));
 
 		/*
 		 * Set up the fixings bumped market parameters - these use base discount curve and the bumped fixing

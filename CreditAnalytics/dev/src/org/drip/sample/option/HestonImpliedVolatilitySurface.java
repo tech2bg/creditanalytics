@@ -2,7 +2,6 @@
 package org.drip.sample.option;
 
 import org.drip.param.pricer.HestonOptionPricerParams;
-import org.drip.pricer.option.BlackScholesAlgorithm;
 import org.drip.pricer.option.HestonStochasticVolatilityAlgorithm;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.fourier.PhaseAdjuster;
@@ -42,7 +41,7 @@ import org.drip.quant.fourier.PhaseAdjuster;
  */
 
 public class HestonImpliedVolatilitySurface {
-	public static final double CallPrice (
+	private static final double CallPrice (
 		final double dblATMFactor,
 		final double dblTimeToExpiry,
 		final int iPayoffTransformScheme)
@@ -73,46 +72,6 @@ public class HestonImpliedVolatilitySurface {
 		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblInitialVolatility);
 
 		return hsva.callPrice();
-	}
-
-	public static final double ImpliedCallVol (
-		final double dblATMFactor,
-		final double dblTimeToExpiry,
-		final int iPayoffTransformScheme)
-		throws Exception
-	{
-		double dblRho = 0.3;
-		double dblKappa = 1.;
-		double dblSigma = 0.5;
-		double dblTheta = 0.2;
-		double dblLambda = 0.;
-
-		HestonOptionPricerParams fphp = new HestonOptionPricerParams (
-			iPayoffTransformScheme,
-			dblRho,
-			dblKappa,
-			dblSigma,
-			dblTheta,
-			dblLambda,
-			PhaseAdjuster.MULTI_VALUE_BRANCH_POWER_PHASE_TRACKER_KAHL_JACKEL);
-
-		HestonStochasticVolatilityAlgorithm hsva = new HestonStochasticVolatilityAlgorithm (fphp);
-
-		double dblStrike = dblATMFactor;
-		double dblRiskFreeRate = 0.0;
-		double dblSpot = 1.;
-		double dblInitialVolatility = 0.1;
-
-		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblInitialVolatility);
-
-		return new BlackScholesAlgorithm().implyBlackScholesVolatility (
-			dblStrike,
-			dblTimeToExpiry,
-			dblRiskFreeRate,
-			dblSpot,
-			false,
-			hsva.callPrice()
-		);
 	}
 
 	public static final void main (
