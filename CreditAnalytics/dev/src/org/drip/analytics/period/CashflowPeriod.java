@@ -391,6 +391,72 @@ public class CashflowPeriod extends Period {
 	}
 
 	/**
+	 * Generate the daily period list starting from the start.
+	 * 
+	 * @param dblEffective Effective date
+	 * @param dblMaturity Maturity date
+	 * @param dapReset Reset Date Adjust Parameters
+	 * @param dapPay Pay Date Adjust Parameters
+	 * @param strDC Accrual/Coupon day count
+	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * 
+	 * @return List of coupon Periods
+	 */
+
+	public static final java.util.List<CashflowPeriod> GenerateDailyPeriod (
+		final double dblEffective,
+		final double dblMaturity,
+		final org.drip.analytics.daycount.DateAdjustParams dapReset,
+		final org.drip.analytics.daycount.DateAdjustParams dapPay,
+		final java.lang.String strDC,
+		final java.lang.String strCalendar)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity)
+			return null;
+
+		boolean bTerminationReached = false;
+		double dblPeriodStartDate = dblEffective;
+
+		java.util.List<CashflowPeriod> lsCashflowPeriod = new java.util.ArrayList<CashflowPeriod>();
+
+		while (!bTerminationReached) {
+			try {
+				double dblAdjustedStartDate = org.drip.analytics.daycount.Convention.RollDate
+					(dblPeriodStartDate, org.drip.analytics.daycount.Convention.DR_FOLL, strCalendar);
+
+				double dblAdjustedEndDate = org.drip.analytics.daycount.Convention.RollDate
+					(dblAdjustedStartDate + 1, org.drip.analytics.daycount.Convention.DR_FOLL, strCalendar);
+
+				if (dblAdjustedStartDate >= dblMaturity) {
+					dblAdjustedStartDate = dblPeriodStartDate;
+					bTerminationReached = true;
+				}
+
+				if (dblAdjustedEndDate >= dblMaturity) {
+					dblAdjustedEndDate = dblMaturity;
+					bTerminationReached = true;
+				}
+
+				if (dblAdjustedStartDate < dblAdjustedEndDate)
+					lsCashflowPeriod.add (new CashflowPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
+						dblAdjustedStartDate, dblAdjustedEndDate, DAPAdjust (dblAdjustedEndDate, dapPay),
+							DAPAdjust (dblPeriodStartDate, dapReset), 360, (dblAdjustedEndDate -
+								dblAdjustedStartDate) / 360., strDC, false, strDC, false, dblMaturity,
+									strCalendar));
+
+				dblPeriodStartDate = dblAdjustedEndDate;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return lsCashflowPeriod;
+	}
+
+	/**
 	 * Construct a CashflowPeriod instance from the specified dates
 	 * 
 	 * @param dblStart Period Start Date
@@ -479,5 +545,38 @@ public class CashflowPeriod extends Period {
 		return org.drip.analytics.daycount.Convention.YearFraction (_dblAccrualStart, dblAccrualEnd,
 			_strAccrualDC, _bApplyAccEOMAdj, _dblMaturity, new org.drip.analytics.daycount.ActActDCParams
 				(_iFreq, _dblAccrualStart, _dblAccrualEnd), _strCalendar);
+	}
+
+	/**
+	 * Retrieve the Calendar
+	 * 
+	 * @return The Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _strCalendar;
+	}
+
+	/**
+	 * Retrieve the Accrual Day Count
+	 * 
+	 * @return The Accrual Day Count
+	 */
+
+	public java.lang.String accrualDC()
+	{
+		return _strAccrualDC;
+	}
+
+	/**
+	 * Retrieve the Coupon Day Count
+	 * 
+	 * @return The Coupon Day Count
+	 */
+
+	public java.lang.String couponDC()
+	{
+		return _strCouponDC;
 	}
 }

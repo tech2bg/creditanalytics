@@ -99,9 +99,9 @@ public class IRSVolCorrAnalysis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(),
+			FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
+					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
 						null, null, -1., strCurrency, strCurrency);
 
 			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
@@ -212,18 +212,18 @@ public class IRSVolCorrAnalysis {
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = new FloatingStream (dtEffective.getJulian(),
+			FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
+					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
 						null, null, -1., strCurrency, strCurrency);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = new FloatingStream (dtEffective.getJulian(),
+			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					12 / iTenorInMonths, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
+					12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
 						null, null, 1., strCurrency, strCurrency);
 
 			/*
@@ -438,8 +438,8 @@ public class IRSVolCorrAnalysis {
 	{
 		JulianDate dtMaturity = dtEffective.addTenorAndAdjust (strTenor, strCurrency);
 
-		FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
-			true, fri, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, null,
+		FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
+			true, fri, 2, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null, null, null,
 				-1., strCurrency, strCurrency);
 
 		FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 2,

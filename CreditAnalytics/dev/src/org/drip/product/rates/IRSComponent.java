@@ -695,10 +695,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.05, 2, "30/360", "30/360", false, null, null,
 				null, null, null, null, null, null, 100., "JPY", "JPY");
 
-		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
+		org.drip.product.rates.FloatingStream floatStream = org.drip.product.rates.FloatingStream.Create
 			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01, true,
-				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-3M"), 4, "Act/360", "Act/360",
-					false, null, null, null, null, null, null, null, null, null, -100., "JPY", "JPY");
+				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-3M"), 4, "Act/360", false,
+					"Act/360", false, false, null, null, null, null, null, null, null, null, null, -100.,
+						"JPY", "JPY");
 
 		IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
 

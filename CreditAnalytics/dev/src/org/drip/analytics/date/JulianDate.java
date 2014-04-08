@@ -1173,23 +1173,26 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	/**
 	 * Add the tenor to the JulianDate to create a new date
 	 * 
-	 * @param strTenor String representing the tenor to add
+	 * @param strTenorIn String representing the Input Tenor to add
 	 * 
 	 * @return The new JulianDate
 	 */
 
 	public JulianDate addTenor (
-		final java.lang.String strTenor)
+		final java.lang.String strTenorIn)
 	{
-		if (null == strTenor || strTenor.isEmpty()) return null;
+		if (null == strTenorIn || strTenorIn.isEmpty()) return null;
 
-		char chTenor = strTenor.charAt (strTenor.length() - 1);
+		java.lang.String strTenor = "ON".equalsIgnoreCase (strTenorIn) ? "1D" : strTenorIn;
+
+		int iNumChar = strTenor.length();
+
+		char chTenor = strTenor.charAt (iNumChar - 1);
 
 		int iTimeUnit = -1;
 
 		try {
-			iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -
-				1)).doubleValue();
+			iTimeUnit = new java.lang.Integer (strTenor.substring (0, iNumChar - 1));
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad time unit " + iTimeUnit + " in tenor " + strTenor);
 
@@ -1241,23 +1244,26 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	/**
 	 * Subtract the tenor to the JulianDate to create a new date
 	 * 
-	 * @param strTenor String representing the tenor to add
+	 * @param strTenorIn String representing the tenor to add
 	 * 
 	 * @return The new JulianDate
 	 */
 
 	public JulianDate subtractTenor (
-		final java.lang.String strTenor)
+		final java.lang.String strTenorIn)
 	{
-		if (null == strTenor || strTenor.isEmpty()) return null;
+		if (null == strTenorIn || strTenorIn.isEmpty()) return null;
 
-		char chTenor = strTenor.charAt (strTenor.length() - 1);
+		java.lang.String strTenor = "ON".equalsIgnoreCase (strTenorIn) ? "1D" : strTenorIn;
+
+		int iNumChar = strTenor.length();
+
+		char chTenor = strTenor.charAt (iNumChar - 1);
 
 		int iTimeUnit = -1;
 
 		try {
-			iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -
-				1)).doubleValue();
+			iTimeUnit = new java.lang.Integer (strTenor.substring (0, iNumChar - 1));
 		} catch (java.lang.Exception e) {
 			System.out.println ("Bad time unit " + iTimeUnit + " in tenor " + strTenor);
 
@@ -1273,6 +1279,33 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		if ('m' == chTenor || 'M' == chTenor) return addMonths (-iTimeUnit);
 
 		if ('y' == chTenor || 'Y' == chTenor) return addYears (-iTimeUnit);
+
+		return null;
+	}
+
+	/**
+	 * Subtract the tenor to the JulianDate to create a new business date
+	 * 
+	 * @param strTenor The Tenor
+	 * @param strCalendarSet The Holiday Calendar Set
+	 * 
+	 * @return The new JulianDate
+	 */
+
+	public JulianDate subtractTenorAndAdjust (
+		final java.lang.String strTenor,
+		final java.lang.String strCalendarSet)
+	{
+		JulianDate dtNew = subtractTenor (strTenor);
+
+		if (null == dtNew) return null;
+
+		try {
+			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.getJulian(),
+				org.drip.analytics.daycount.Convention.DR_FOLL, strCalendarSet));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
 
 		return null;
 	}

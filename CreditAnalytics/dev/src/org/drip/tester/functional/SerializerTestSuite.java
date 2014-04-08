@@ -321,20 +321,20 @@ public class SerializerTestSuite {
 			("7Y").getJulian(), 0.07, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null,
 				null, 100., "MNO", "PQR");
 
-		aFloatStream[0] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
+		aFloatStream[0] = org.drip.product.rates.FloatingStream.Create (dtToday.getJulian(), dtToday.addTenor
 			("3Y").getJulian(), 0.03, true, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"),
-				4, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100.,
-					"ABC", "DEF");
+				4, "Act/360", false, "Act/360", false, false, null, null, dap, dap, dap, dap, null, null,
+					null, -100., "ABC", "DEF");
 
-		aFloatStream[1] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
+		aFloatStream[1] = org.drip.product.rates.FloatingStream.Create (dtToday.getJulian(), dtToday.addTenor
 			("5Y").getJulian(), 0.05, true, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"),
-				4, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100.,
-					"ABC", "DEF");
+				4, "Act/360", false, "Act/360", false, false, null, null, dap, dap, dap, dap, null, null,
+					null, -100., "ABC", "DEF");
 
-		aFloatStream[2] = new org.drip.product.rates.FloatingStream (dtToday.getJulian(), dtToday.addTenor
+		aFloatStream[2] = org.drip.product.rates.FloatingStream.Create (dtToday.getJulian(), dtToday.addTenor
 			("7Y").getJulian(), 0.07, true, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-12M"),
-				1, "Act/360", "Act/360", false, null, null, dap, dap, dap, dap, null, null, null, -100.,
-					"ABC", "DEF");
+				1, "Act/360", false, "Act/360", false, false, null, null, dap, dap, dap, dap, null, null,
+					null, -100., "ABC", "DEF");
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
 			aFloatStream).serialize();

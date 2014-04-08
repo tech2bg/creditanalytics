@@ -128,7 +128,11 @@ public class RatesClosesLoader {
 		double dbl1DFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
 			dt1D.getJulian(), "Act/360", false, java.lang.Double.NaN, null, strCurrency);
 
-		double dblDV01 = calcMeasure (comp, dt0D, dcDateSpotQuoteSpot, "FixedDV01", strCurrency);
+		double dblCleanFixedDV01 = calcMeasure (comp, dt0D, dcDateSpotQuoteSpot, "FixedDV01", strCurrency);
+
+		double dblCleanFloatDV01 = calcMeasure (comp, dt0D, dcDateSpotQuoteSpot, "Fixing01", strCurrency);
+
+		double dblDV01 = dblCleanFixedDV01 + dblCleanFloatDV01;
 
 		double dbl1DCarry = dblProductFloatingRate * dbl1DFloatingDCF - dblFixedCoupon * dbl1DFixedDCF;
 
@@ -179,11 +183,12 @@ public class RatesClosesLoader {
 		try {
 			return new org.drip.service.api.ProductDailyPnL (dbl1DTotalReturnPnL, dbl1DCleanReturnPnL,
 				dbl1DDirtyReturnPnL, dbl1DCarry, dbl1DRollDownPnL, dbl1DCurveShiftPnL, dbl1MCarryPnL,
-					dbl1MRollDownPnL, dbl3MCarryPnL, dbl3MRollDownPnL, dblDV01, dblBaselineSwapRate,
-						dbl1DRolldownSwapRate, dbl1DCurveShiftSwapRate, dbl1MRolldownSwapRate,
-							dbl3MRolldownSwapRate, dblFixedCoupon, dblCurveFloatingRate,
-								dblProductFloatingRate, dbl1DFixedDCF, dbl1DFloatingDCF, dbl1MFixedDCF,
-									dbl1MFloatingDCF, dbl3MFixedDCF, dbl3MFloatingDCF).toString();
+					dbl1MRollDownPnL, dbl3MCarryPnL, dbl3MRollDownPnL, dblDV01, dblCleanFixedDV01,
+						dblCleanFloatDV01, dblBaselineSwapRate, dbl1DRolldownSwapRate,
+							dbl1DCurveShiftSwapRate, dbl1MRolldownSwapRate, dbl3MRolldownSwapRate,
+								dblFixedCoupon, dblCurveFloatingRate, dblProductFloatingRate, dbl1DFixedDCF,
+									dbl1DFloatingDCF, dbl1MFixedDCF, dbl1MFloatingDCF, dbl3MFixedDCF,
+										dbl3MFloatingDCF).toString();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -625,7 +630,7 @@ public class RatesClosesLoader {
 				strCurrency + "_Clean_Input.txt"));
 
 			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\G10Rates\\" +
-				strCurrency + "_Metric.csv"));
+				strCurrency + "_Metric_TestOutput.csv"));
 
 			while (null != (strCOBQuote = brSwapCOB.readLine())) {
 				java.lang.String[] astrCOBRecord = strCOBQuote.split (",");
@@ -655,7 +660,7 @@ public class RatesClosesLoader {
 
 					_writeCOB.write ("1DCarryPnL, 1DRollDownPnL, 1DCurveShiftPnL, ");
 
-					_writeCOB.write ("1MCarryPnL, 1MRollDownPnL, 3MCarryPnL, 3MRollDownPnL, DV01, ");
+					_writeCOB.write ("1MCarryPnL, 1MRollDownPnL, 3MCarryPnL, 3MRollDownPnL, DV01, CleanFixedDV01, CleanFloatDV01, ");
 
 					_writeCOB.write ("BaselineSwapRate, 1DRolldownSwapRate, 1MRolldownSwapRate, 3MRolldownSwapRate, 1DCurveShiftSwapRate, ");
 
@@ -663,7 +668,7 @@ public class RatesClosesLoader {
 
 					_writeCOB.write ("1DFixedDCF, 1DFloatingDCF, 1MFixedDCF, 1MFloatingDCF, 3MFixedDCF, 3MFloatingDCF, ");
 
-					_writeCOB.write ("1Y1YF, 1Y2YF, 1Y3YF, 1Y4YF, 1Y5YF, 1Y6YF, 1Y7YF, 1Y8YF, 1Y8YF, 1Y10YF, 1Y11YF, ");
+					_writeCOB.write ("1Y1YF, 1Y2YF, 1Y3YF, 1Y4YF, 1Y5YF, 1Y6YF, 1Y7YF, 1Y8YF, 1Y9YF, 1Y10YF, 1Y11YF, ");
 
 					_writeCOB.write ("2Y1YF, 2Y2YF, 2Y3YF, 2Y4YF, 2Y5YF, 2Y6YF, 2Y7YF, 2Y8YF, 2Y9YF, 2Y10YF, ");
 
@@ -900,7 +905,7 @@ public class RatesClosesLoader {
 
 		ProcessCDXQuote (mapDatedCDXClose); */
 
-		GenerateDiscountCurveMetrics ("USD");
+		GenerateDiscountCurveMetrics ("NOK");
 
 		// ExecUnitSequence();
 

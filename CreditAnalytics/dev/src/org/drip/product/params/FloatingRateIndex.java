@@ -32,6 +32,7 @@ package org.drip.product.params;
 /**
  * FloatingRateIndex contains the Index Parameters corresponding to a Floating Stream. It provides the
  *  following functionality:
+ *  - Indicate if the Index is an Overnight Index
  *  - Retrieve Index, Tenor, Currency, and Fully Qualified Name.
  *  - Serialization into and de-serialization out of byte arrays.
  *  
@@ -213,6 +214,17 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 	public java.lang.String tenor()
 	{
 		return _strTenor;
+	}
+
+	/**
+	 * Indicate if the Index is an Overnight INdex
+	 * 
+	 * @return TRUE => Index is an Overnight INdex
+	 */
+
+	public boolean isOvernight()
+	{
+		return "ON".equalsIgnoreCase (_strTenor);
 	}
 
 	@Override public java.lang.String fullyQualifiedName()

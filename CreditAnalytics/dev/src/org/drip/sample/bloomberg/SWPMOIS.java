@@ -101,9 +101,9 @@ public class SWPMOIS {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(),
+			FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-3M"),
-					3, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
+					3, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
 						null, null, -1., strCurrency, strCurrency);
 
 			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
@@ -167,7 +167,7 @@ public class SWPMOIS {
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
-			new double[] {0.00092, 0.0009875, 0.00122, 0.00223, 0.00383, 0.00827, 0.01245, 0.01605, 0.02597},
+			adblSwapQuote,
 			strCurrency);
 
 		/*
@@ -231,9 +231,9 @@ public class SWPMOIS {
 		 * Build the Floating Pay Stream
 		 */
 
-		FloatingStream floatStream = new FloatingStream (dtEffective.getJulian(),
+		FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
 			dtMaturity.getJulian(), 0., true, org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), 4,
-				"Act/360", "Act/360", false, null, null,
+				"Act/360", false, "Act/360", false, false, null, null,
 					dap, dap, dap, dap, dap, null, null, -dblNotional, "USD", "USD");
 
 		/*

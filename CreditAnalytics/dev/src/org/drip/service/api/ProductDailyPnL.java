@@ -57,6 +57,8 @@ public class ProductDailyPnL {
 	private double _dbl1DFloatingDCF = java.lang.Double.NaN;
 	private double _dbl1MFloatingDCF = java.lang.Double.NaN;
 	private double _dbl3MFloatingDCF = java.lang.Double.NaN;
+	private double _dblCleanFixedDV01 = java.lang.Double.NaN;
+	private double _dblCleanFloatDV01 = java.lang.Double.NaN;
 	private double _dblPeriodFixedRate = java.lang.Double.NaN;
 	private double _dblBaselineSwapRate = java.lang.Double.NaN;
 	private double _dbl1DRolldownSwapRate = java.lang.Double.NaN;
@@ -80,6 +82,8 @@ public class ProductDailyPnL {
 	 * @param dbl3MCarry 3M Carry PnL
 	 * @param dbl3MRollDown 3M Roll Down PnL
 	 * @param dblDV01 DV01
+	 * @param dblCleanFixedDV01 Clean Fixed DV01
+	 * @param dblCleanFloatDV01 Clean Float DV01
 	 * @param dblBaselineSwapRate Baseline Par Swap Rate
 	 * @param dbl1DRolldownSwapRate 1D Curve Roll down implied Par Swap rate
 	 * @param dbl1MRolldownSwapRate 1M Curve Roll down implied Par Swap rate
@@ -110,6 +114,8 @@ public class ProductDailyPnL {
 		final double dbl3MCarry,
 		final double dbl3MRollDown,
 		final double dblDV01,
+		final double dblCleanFixedDV01,
+		final double dblCleanFloatDV01,
 		final double dblBaselineSwapRate,
 		final double dbl1DRolldownSwapRate,
 		final double dbl1MRolldownSwapRate,
@@ -141,29 +147,30 @@ public class ProductDailyPnL {
 														!org.drip.quant.common.NumberUtil.IsValid (_dblDV01 =
 															dblDV01) ||
 																!org.drip.quant.common.NumberUtil.IsValid
-																	(_dblBaselineSwapRate =
-																		dblBaselineSwapRate) ||
-																			!org.drip.quant.common.NumberUtil.IsValid
-			(_dbl1DRolldownSwapRate = dbl1DRolldownSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
-				(_dbl1MRolldownSwapRate = dbl1MRolldownSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
-					(_dbl3MRolldownSwapRate = dbl3MRolldownSwapRate) ||
-						!org.drip.quant.common.NumberUtil.IsValid (_dbl1DCurveShiftSwapRate =
-							dbl1DCurveShiftSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
-								(_dblPeriodFixedRate = dblPeriodFixedRate) ||
-									!org.drip.quant.common.NumberUtil.IsValid (_dblPeriodCurveFloatingRate =
-										dblPeriodCurveFloatingRate) ||
-											!org.drip.quant.common.NumberUtil.IsValid
-												(_dblPeriodProductFloatingRate =
-													dblPeriodProductFloatingRate) ||
+			(_dblCleanFixedDV01 = dblCleanFixedDV01) || !org.drip.quant.common.NumberUtil.IsValid
+				(_dblCleanFloatDV01 = dblCleanFloatDV01) || !org.drip.quant.common.NumberUtil.IsValid
+					(_dblBaselineSwapRate = dblBaselineSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
+						(_dbl1DRolldownSwapRate = dbl1DRolldownSwapRate) ||
+							!org.drip.quant.common.NumberUtil.IsValid (_dbl1MRolldownSwapRate =
+								dbl1MRolldownSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
+									(_dbl3MRolldownSwapRate = dbl3MRolldownSwapRate) ||
+										!org.drip.quant.common.NumberUtil.IsValid (_dbl1DCurveShiftSwapRate =
+											dbl1DCurveShiftSwapRate) ||
+												!org.drip.quant.common.NumberUtil.IsValid
+													(_dblPeriodFixedRate = dblPeriodFixedRate) ||
 														!org.drip.quant.common.NumberUtil.IsValid
-															(_dbl1DFixedDCF = dbl1DFixedDCF) ||
-																!org.drip.quant.common.NumberUtil.IsValid
-																	(_dbl1DFloatingDCF = dbl1DFloatingDCF) ||
-																		!org.drip.quant.common.NumberUtil.IsValid
-			(_dbl1MFixedDCF = dbl1MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl1MFloatingDCF
-				= dbl1MFloatingDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFixedDCF =
-					dbl3MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFloatingDCF =
-						dbl3MFloatingDCF))
+															(_dblPeriodCurveFloatingRate =
+																dblPeriodCurveFloatingRate) ||
+																	!org.drip.quant.common.NumberUtil.IsValid
+																		(_dblPeriodProductFloatingRate =
+																			dblPeriodProductFloatingRate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dbl1DFixedDCF = dbl1DFixedDCF) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dbl1DFloatingDCF = dbl1DFloatingDCF) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dbl1MFixedDCF = dbl1MFixedDCF) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dbl1MFloatingDCF = dbl1MFloatingDCF) ||
+							!org.drip.quant.common.NumberUtil.IsValid (_dbl3MFixedDCF = dbl3MFixedDCF) ||
+								!org.drip.quant.common.NumberUtil.IsValid (_dbl3MFloatingDCF =
+									dbl3MFloatingDCF))
 			throw new java.lang.Exception ("ProductDailyPnL ctr: Invalid Inputs!");
 	}
 
@@ -286,6 +293,28 @@ public class ProductDailyPnL {
 	public double DV01()
 	{
 		return _dblDV01;
+	}
+
+	/**
+	 * Retrieve the Clean Fixed DV01
+	 * 
+	 * @return The Clean Fixed DV01
+	 */
+
+	public double cleanFixedDV01()
+	{
+		return _dblCleanFixedDV01;
+	}
+
+	/**
+	 * Retrieve the Clean Float DV01
+	 * 
+	 * @return The Clean Float DV01
+	 */
+
+	public double cleanFloatDV01()
+	{
+		return _dblCleanFloatDV01;
 	}
 
 	/**
@@ -452,27 +481,31 @@ public class ProductDailyPnL {
 	{
 		java.util.List<java.lang.Double> lsPnLMetric = new java.util.ArrayList<java.lang.Double>();
 
-		lsPnLMetric.add (_dbl1DTotalReturn);
+		lsPnLMetric.add (-1. * _dbl1DTotalReturn);
 
-		lsPnLMetric.add (_dbl1DCleanReturn);
+		lsPnLMetric.add (-1. * _dbl1DCleanReturn);
 
-		lsPnLMetric.add (_dbl1DDirtyReturn);
+		lsPnLMetric.add (-1. * _dbl1DDirtyReturn);
 
-		lsPnLMetric.add (_dbl1DCarry);
+		lsPnLMetric.add (-1. * _dbl1DCarry);
 
-		lsPnLMetric.add (_dbl1DRollDown);
+		lsPnLMetric.add (-1. * _dbl1DRollDown);
 
-		lsPnLMetric.add (_dbl1DCurveShift);
+		lsPnLMetric.add (-1. * _dbl1DCurveShift);
 
-		lsPnLMetric.add (_dbl1MCarry);
+		lsPnLMetric.add (-1. * _dbl1MCarry);
 
-		lsPnLMetric.add (_dbl1MRollDown);
+		lsPnLMetric.add (-1. * _dbl1MRollDown);
 
-		lsPnLMetric.add (_dbl3MCarry);
+		lsPnLMetric.add (-1. * _dbl3MCarry);
 
-		lsPnLMetric.add (_dbl3MRollDown);
+		lsPnLMetric.add (-1. * _dbl3MRollDown);
 
-		lsPnLMetric.add (_dblDV01);
+		lsPnLMetric.add (-1. * _dblDV01);
+
+		lsPnLMetric.add (-1. * _dblCleanFixedDV01);
+
+		lsPnLMetric.add (-1. * _dblCleanFloatDV01);
 
 		lsPnLMetric.add (_dblBaselineSwapRate);
 

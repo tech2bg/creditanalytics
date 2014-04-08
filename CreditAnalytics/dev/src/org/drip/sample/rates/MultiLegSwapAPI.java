@@ -158,16 +158,16 @@ public class MultiLegSwapAPI {
 
 		FloatingStream[] aFloatStream = new FloatingStream[3];
 
-		aFloatStream[0] = new FloatingStream (dtEffective.getJulian(), dtEffective.addTenor ("3Y").getJulian(),
-			0.03, true, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", "Act/360", false, null, null,
+		aFloatStream[0] = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("3Y").getJulian(),
+			0.03, true, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", false, "Act/360", false, false, null, null,
 				dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
 
-		aFloatStream[1] = new FloatingStream (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(),
-			0.05, true, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", "Act/360", false, null, null,
+		aFloatStream[1] = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(),
+			0.05, true, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", false, "Act/360", false, false, null, null,
 				dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
 
-		aFloatStream[2] = new FloatingStream (dtEffective.getJulian(), dtEffective.addTenor ("7Y").getJulian(),
-			0.07, true, FloatingRateIndex.Create ("ABC-RI-12M"), 1, "Act/360", "Act/360", false, null, null,
+		aFloatStream[2] = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("7Y").getJulian(),
+			0.07, true, FloatingRateIndex.Create ("ABC-RI-12M"), 1, "Act/360", false, "Act/360", false, false, null, null,
 				dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
 
 		/*

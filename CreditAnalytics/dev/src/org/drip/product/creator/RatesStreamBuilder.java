@@ -106,10 +106,10 @@ public class RatesStreamBuilder {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCalendar);
 
-			return new org.drip.product.rates.FloatingStream (dtEffective.getJulian(),
+			return org.drip.product.rates.FloatingStream.Create (dtEffective.getJulian(),
 				dtMaturity.getJulian(), 0., bIsReference, org.drip.product.params.FloatingRateIndex.Create
-					(strFloatingRateIndex), 4, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap,
-						dap, null, null, -1., strIR, strCalendar);
+					(strFloatingRateIndex), 4, "Act/360", false, "Act/360", false, false, null, dap, dap,
+						dap, dap, dap, dap, null, null, -1., strIR, strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

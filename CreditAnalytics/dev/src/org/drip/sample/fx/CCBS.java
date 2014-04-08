@@ -65,18 +65,18 @@ public class CCBS {
 		 * The Reference 6M Leg
 		 */
 
-		FloatingStream fsReference = new FloatingStream (dtEffective.getJulian(),
+		FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(),
 			dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-				2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
+				2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
 					null, null, -1., strCurrency, strCurrency);
 
 		/*
 		 * The Derived Leg
 		 */
 
-		FloatingStream fsDerived = new FloatingStream (dtEffective.getJulian(),
+		FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
 			dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-				12 / iTenorInMonths, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, dap,
+				12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
 					null, null, 1., strCurrency, strCurrency);
 
 		/*
