@@ -11,8 +11,7 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.ois.OISFloatingStream;
-import org.drip.product.params.FloatingRateIndex;
+import org.drip.product.ois.*;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -104,8 +103,8 @@ public class OISProduct {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			OISFloatingStream floatStream = OISFloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., FloatingRateIndex.Create (strCurrency + "-OIS-ON"),
+			OvernightFundFloatingStream floatStream = OvernightFundFloatingStream.Create (dtEffective.getJulian(),
+				dtMaturity.getJulian(), 0., OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					"Act/360", dap, dap, null, -1., strCurrency, strCurrency, false);
 
 			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
@@ -286,8 +285,8 @@ public class OISProduct {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenorAndAdjust ("4M", "USD");
 
-		OISFloatingStream floatStream = OISFloatingStream.Create (dtCustomOISStart.getJulian(),
-			dtCustomOISMaturity.getJulian(), 0., FloatingRateIndex.Create (strCurrency + "-OIS-ON"),
+		OvernightFundFloatingStream floatStream = OvernightFundFloatingStream.Create (dtCustomOISStart.getJulian(),
+			dtCustomOISMaturity.getJulian(), 0., OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				"Act/360", null, null, null, -1., strCurrency, strCurrency, false);
 
 		FixedStream fixStream = new FixedStream (dtCustomOISStart.getJulian(), dtCustomOISMaturity.getJulian(),

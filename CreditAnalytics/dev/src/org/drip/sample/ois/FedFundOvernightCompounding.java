@@ -1,16 +1,20 @@
 
 package org.drip.sample.ois;
 
+import java.util.*;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
+import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.ois.*;
+import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -46,13 +50,13 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * CustomOISCurveBuilder contains a sample of the construction and usage of the OIS Curve built using the
- * 	Overnight Indexed Swap Product Instruments.
+ * FedFundOvernightCompounding demonstrates in detail the methodology behind the overnight compounding used
+ * 	in the Overnight fund Floating Stream Accrual.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CustomOISCurveBuilder {
+public class FedFundOvernightCompounding {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -81,51 +85,12 @@ public class CustomOISCurveBuilder {
 	}
 
 	/*
-	 * Construct the Array of Overnight Index Instruments from the given set of parameters
+	 * Construct the Array of OIS Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] OvernightIndexFromMaturityTenor (
-		final JulianDate dtEffective,
-		final String[] astrTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
-		throws Exception
-	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
-
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
-		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
-
-			OvernightIndexFloatingStream floatStream = OvernightIndexFloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., false, OvernightFRIBuilder.JurisdictionFRI (strCurrency), 4, "Act/360",
-					false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap, null, null, -1., strCurrency,
-						strCurrency);
-
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
-
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
-
-			ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
-
-			aCalibComp[i] = ois;
-		}
-
-		return aCalibComp;
-	}
-
-	/*
-	 * Construct the Array of Overnight Fund Instruments from the given set of parameters
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	private static final CalibratableFixedIncomeComponent[] OvernightFundFromMaturityTenor (
+	private static final CalibratableFixedIncomeComponent[] OISInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrTenor,
 		final double[] adblCoupon,
@@ -157,28 +122,20 @@ public class CustomOISCurveBuilder {
 		return aCalibComp;
 	}
 
-	private static final void CustomOISCurveBuilderSample (
-		final String strHeaderComment,
-		final boolean bOvernightIndex)
+	private static final DiscountCurve CustomOISCurveBuilderSample (
+		final JulianDate dtSpot,
+		final String strCurrency)
 		throws Exception
 	{
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t     " + strHeaderComment);
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
-
 		/*
 		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
 		 */
 
 		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
-			dtToday,
+			dtSpot,
 			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
 			4,
-			"USD");
+			strCurrency);
 
 		double[] adblCashQuote = new double[] {
 			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850, // Cash
@@ -211,19 +168,12 @@ public class CustomOISCurveBuilder {
 			0.03488     // 10Y
 		};
 
-		CalibratableFixedIncomeComponent[] aOISComp = bOvernightIndex ?
-			OvernightIndexFromMaturityTenor (
-				dtToday,
-				new java.lang.String[]
-					{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"},
-				adblOISQuote,
-				"USD") :
-			OvernightFundFromMaturityTenor (
-				dtToday,
-				new java.lang.String[]
-					{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"},
-				adblOISQuote,
-				"USD");
+		CalibratableFixedIncomeComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
+			dtSpot,
+			new java.lang.String[]
+				{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"},
+			adblOISQuote,
+			strCurrency);
 
 		/*
 		 * Construct the OIS Instrument Set Stretch Builder
@@ -265,51 +215,42 @@ public class CustomOISCurveBuilder {
 		 *  of Cash and Swap Stretches.
 		 */
 
-		DiscountCurve dc = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
+		return ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
 			aRBS,
-			new ValuationParams (dtToday, dtToday, "USD"),
+			new ValuationParams (dtSpot, dtSpot, strCurrency),
 			null,
 			null,
 			null,
 			1.);
+	}
 
-		/*
-		 * Cross-Comparison of the Cash Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
+	private static final Map<JulianDate, CaseInsensitiveTreeMap<Double>> SetFlatOvernightFixings (
+		final JulianDate dtStart,
+		final JulianDate dtEnd,
+		final JulianDate dtValue,
+		final FloatingRateIndex fri,
+		final double dblFlatFixing,
+		final double dblNotional)
+	{
+		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mapFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
 
-		System.out.println ("\t----------------------------------------------------------------");
+		JulianDate dt = dtStart;
 
-		System.out.println ("\t     CASH INSTRUMENTS CALIBRATION RECOVERY");
+		while (dt.getJulian() <= dtEnd.getJulian()) {
+			CaseInsensitiveTreeMap<Double> mapFixing = new CaseInsensitiveTreeMap<Double>();
 
-		System.out.println ("\t----------------------------------------------------------------");
+			mapFixing.put (fri.fullyQualifiedName(), dblFlatFixing);
 
-		for (int i = 0; i < aCashComp.length; ++i)
-			System.out.println ("\t[" + aCashComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aCashComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.));
+			mapFixings.put (dt, mapFixing);
 
-		/*
-		 * Cross-Comparison of the OIS Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
+			dt = dt.addDays (1);
+		}
 
-		System.out.println ("\n\t----------------------------------------------------------------");
+		System.out.println ("\tManual Calc Float Accrued: " +
+			((dtValue.getJulian() - dtStart.getJulian()) * dblNotional * dblFlatFixing / 360.));
 
-		System.out.println ("\t     OIS INSTRUMENTS CALIBRATION RECOVERY");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		for (int i = 0; i < aOISComp.length; ++i)
-			System.out.println ("\t[" + aOISComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aOISComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (aOISComp[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-								ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-									null, "FairPremium"), 1, 6, 1.));
+		return mapFixings;
 	}
 
 	public static final void main (
@@ -322,8 +263,53 @@ public class CustomOISCurveBuilder {
 
 		CreditAnalytics.Init ("");
 
-		CustomOISCurveBuilderSample ("OVERNIGHT INDEX RUN RECONCILIATION", true);
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
 
-		CustomOISCurveBuilderSample ("OVERNIGHT FUND RUN RECONCILIATION", false);
+		String strCurrency = "USD";
+
+		DiscountCurve dc = CustomOISCurveBuilderSample (
+			dtToday,
+			strCurrency);
+
+		JulianDate dtCustomOISStart = dtToday.subtractTenorAndAdjust ("2M", "USD");
+
+		JulianDate dtCustomOISMaturity = dtToday.addTenorAndAdjust ("4M", "USD");
+
+		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
+
+		FloatingRateIndex fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
+
+		OvernightIndexFloatingStream floatStream = OvernightIndexFloatingStream.Create (dtCustomOISStart.getJulian(),
+			dtCustomOISMaturity.getJulian(), 0., false, fri, 4, "Act/360", false, "Act/360", false, false, null,
+				dap, dap, dap, dap, dap, dap, null, null, -1., strCurrency, strCurrency);
+
+		FixedStream fixStream = new FixedStream (dtCustomOISStart.getJulian(), dtCustomOISMaturity.getJulian(),
+			0.0, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, 1.,
+				strCurrency, strCurrency);
+
+		IRSComponent ois = new IRSComponent (fixStream, floatStream);
+
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
+			dc,
+			null,
+			null,
+			null,
+			null,
+			null,
+			SetFlatOvernightFixings (
+				dtCustomOISStart,
+				dtCustomOISMaturity,
+				dtToday,
+				fri,
+				0.003,
+				-1.));
+
+		Map<String, Double> mapOISOutput = ois.value (
+			new ValuationParams (dtToday, dtToday, strCurrency),
+			null,
+			cmp,
+			null);
+
+		System.out.println ("\tMachine Calc Float Accrued: " + mapOISOutput.get ("FloatAccrued"));
 	}
 }

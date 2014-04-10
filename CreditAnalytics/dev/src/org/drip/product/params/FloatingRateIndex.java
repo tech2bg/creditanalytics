@@ -216,17 +216,6 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 		return _strTenor;
 	}
 
-	/**
-	 * Indicate if the Index is an Overnight INdex
-	 * 
-	 * @return TRUE => Index is an Overnight INdex
-	 */
-
-	public boolean isOvernight()
-	{
-		return "ON".equalsIgnoreCase (_strTenor);
-	}
-
 	@Override public java.lang.String fullyQualifiedName()
 	{
 		return _strFullyQualifiedName;

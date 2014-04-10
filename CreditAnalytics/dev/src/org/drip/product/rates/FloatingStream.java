@@ -90,7 +90,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	 * return Instance of FloatingStream
 	 */
 
-	public static final FloatingStream Create (
+	public static FloatingStream Create (
 		final double dblEffective,
 		final double dblMaturity,
 		final double dblSpread,
@@ -228,94 +228,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
 	}
-
-	/**
-	 * FloatingStream constructor
-	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
-	 * @param dblSpread Spread
-	 * @param fri Floating Rate Index
-	 * @param iFreq Frequency
-	 * @param strCouponDC Coupon Day Count
-	 * @param strAccrualDC Accrual Day Count
-	 * @param bFullStub TRUE => Generate full first-stub
-	 * @param dapEffective Effective DAP
-	 * @param dapMaturity Maturity DAP
-	 * @param dapPeriodStart Period Start DAP
-	 * @param dapPeriodEnd Period End DAP
-	 * @param dapAccrualStart Accrual Start DAP
-	 * @param dapAccrualEnd Accrual End DAP
-	 * @param dapPay Pay DAP
-	 * @param dapReset Reset DAP
-	 * @param notlSchedule Notional Schedule
-	 * @param dblNotional Initial Notional Amount
-	 * @param strIR IR Curve
-	 * @param strCalendar Calendar
-	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
-	 * 
-	 * @throws java.lang.Exception Thrown if inputs are invalid
-	 */
-
-	/* public FloatingStream (
-		final double dblEffective,
-		final double dblMaturity,
-		final double dblSpread,
-		final boolean bIsReference,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final int iFreq,
-		final java.lang.String strCouponDC,
-		final java.lang.String strAccrualDC,
-		final boolean bFullStub,
-		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
-		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapPay,
-		final org.drip.analytics.daycount.DateAdjustParams dapReset,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final double dblNotional,
-		final java.lang.String strIR,
-		final java.lang.String strCalendar)
-		throws java.lang.Exception
-	{
-		if (null == (_strIR = strIR) || _strIR.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
-			(_dblMaturity = dblMaturity) || !org.drip.quant.common.NumberUtil.IsValid (_dblSpread =
-				dblSpread) || null == (_fri = fri) || !org.drip.quant.common.NumberUtil.IsValid (_dblNotional
-					= dblNotional) || 0. == _dblNotional)
-			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params! " + _fri);
-
-		_bIsReference = bIsReference;
-
-		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
-
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
-			dblEffective, // Effective
-			dblMaturity, // Maturity
-			dapEffective, // Effective DAP
-			dapMaturity, // Maturity DAP
-			dapPeriodStart, // Period Start DAP
-			dapPeriodEnd, // Period End DAP
-			dapAccrualStart, // Accrual Start DAP
-			dapAccrualEnd, // Accrual End DAP
-			dapPay, // Pay DAP
-			dapReset, // Reset DAP
-			iFreq, // Coupon Freq
-			strCouponDC, // Coupon Day Count
-			false,
-			strAccrualDC, // Accrual Day Count
-			false,
-			bFullStub, // Full First Coupon Period?
-			false, // Merge the first 2 Periods - create a long stub?
-			false,
-			strCalendar)) || 0 == _lsCouponPeriod.size())
-			throw new java.lang.Exception ("FloatingStream ctr: Cannot generate Period Schedule");
-
-		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
-	} */
 
 	/**
 	 * FloatingStream de-serialization from input byte array
@@ -657,7 +569,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (null == mktParams.getFixings() || null == mktParams.getFixings().get (new
+					dblResetRate = dblFloatingRate = null == fc ? getCoupon (valParams.valueDate(),
+						mktParams) : fc.forward (period.getPayDate());
+
+					/* if (null == mktParams.getFixings() || null == mktParams.getFixings().get (new
 						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
 							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
 								(period.getResetDate())).get (strFRI))
@@ -665,7 +580,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 							mktParams) : fc.forward (period.getPayDate());
 					else
 						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
-							org.drip.analytics.date.JulianDate (period.getResetDate())).get (strFRI);
+							org.drip.analytics.date.JulianDate (period.getResetDate())).get (strFRI); */
 
 					dblFixing01 = period.getAccrualDCF (valParams.valueDate()) * 0.0001 * getNotional
 						(period.getAccrualStartDate(), valParams.valueDate());
