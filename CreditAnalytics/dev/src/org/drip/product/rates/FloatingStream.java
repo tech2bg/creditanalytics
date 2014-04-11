@@ -891,9 +891,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == lsmm ||
-			null == mktParams || !(lsmm instanceof org.drip.analytics.rates.RatesLSMM))
+		if (null == valParams || null == lsmm || null == mktParams || !(lsmm instanceof
+			org.drip.analytics.rates.RatesLSMM))
 			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= getMaturityDate().getJulian()) return null;
 
 		java.lang.String strQuantificationMetric = lsmm.getQuantificationMetric();
 
@@ -930,14 +934,17 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 				double dblPayDate = period.getPayDate();
 
-				if (valParams.valueDate() > dblPayDate) continue;
+				if (dblValueDate > dblPayDate) {
+					bFirstPeriod = false;
+					continue;
+				}
 
 				double dblPeriodDCF = period.getCouponDCF();
 
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					dblPeriodDCF -= period.getAccrualDCF (valParams.valueDate());
+					if (dblValueDate < dblPayDate) dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
 				}
 
 				double dblPeriodCV100 = dblPeriodDCF * dc.df (dblPayDate) * getNotional (dblPayDate);

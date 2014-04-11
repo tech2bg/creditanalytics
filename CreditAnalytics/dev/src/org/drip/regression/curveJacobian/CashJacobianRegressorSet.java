@@ -98,7 +98,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 						astrCalibMeasure[i] = "Rate";
 
 						try {
-							aCompCalib[i] = org.drip.product.creator.CashBuilder.CreateCash (dtStart.addDays
+							aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtStart.addDays
 								(2), new org.drip.analytics.date.JulianDate (adblDate[i]), "USD");
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();

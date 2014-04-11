@@ -74,7 +74,7 @@ public class FedFundOvernightCompounding {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addBusDays (aiDay[i], strCurrency), strCurrency);
+			aCalibComp[i] = DepositBuilder.CreateDeposit (dtEffective, dtEffective.addBusDays (aiDay[i], strCurrency), strCurrency);
 
 		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
 
@@ -302,7 +302,8 @@ public class FedFundOvernightCompounding {
 				dtToday,
 				fri,
 				0.003,
-				-1.));
+				-1.)
+			);
 
 		Map<String, Double> mapOISOutput = ois.value (
 			new ValuationParams (dtToday, dtToday, strCurrency),

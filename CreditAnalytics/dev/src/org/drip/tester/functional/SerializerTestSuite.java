@@ -282,9 +282,9 @@ public class SerializerTestSuite {
 		Verify (abPLPCM, new org.drip.analytics.period.LossPeriodCurveFactors (abPLPCM),
 			"LossPeriodCurveFactors");
 
-		byte[] abCash = org.drip.product.creator.CashBuilder.CreateCash (dtToday, "1Y", "AUD").serialize();
+		byte[] abCash = org.drip.product.creator.DepositBuilder.CreateDeposit (dtToday, "1Y", "AUD").serialize();
 
-		Verify (abCash, org.drip.product.creator.CashBuilder.FromByteArray (abCash), "Cash");
+		Verify (abCash, org.drip.product.creator.DepositBuilder.FromByteArray (abCash), "Cash");
 
 		byte[] abEDF = org.drip.product.creator.EDFutureBuilder.CreateEDF (dtToday, "1Y", "GBP").serialize();
 

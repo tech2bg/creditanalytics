@@ -659,7 +659,7 @@ public class ProductTestSuite {
 			adblRate[i] = 0.02;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = org.drip.product.creator.CashBuilder.CreateCash (dt.addDays (2), new
+			aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), new
 				org.drip.analytics.date.JulianDate (adblDate[i]), "USD");
 		}
 
@@ -1089,7 +1089,7 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.RatesComponent cash = org.drip.product.creator.CashBuilder.CreateCash
+		org.drip.product.definition.RatesComponent cash = org.drip.product.creator.DepositBuilder.CreateDeposit
 			(dt.addDays (2), dt.addDays (10), "USD");
 
 		org.drip.analytics.output.ComponentMeasures cashOut = cash.calcMeasures (new

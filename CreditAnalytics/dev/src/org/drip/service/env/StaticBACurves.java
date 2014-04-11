@@ -439,7 +439,7 @@ public class StaticBACurves {
 			astrCalibMeasure[i] = "Rate";
 
 			try {
-				aCompCalib[i] = org.drip.product.creator.CashBuilder.CreateCash (dt.addDays (2), new
+				aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), new
 					org.drip.analytics.date.JulianDate (adblDate[i]), strCurrency);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

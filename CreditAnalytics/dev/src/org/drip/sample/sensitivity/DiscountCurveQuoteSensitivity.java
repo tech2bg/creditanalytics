@@ -81,7 +81,7 @@ public class DiscountCurveQuoteSensitivity {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addBusDays (aiDay[i], "USD"), "USD");
+			aCalibComp[i] = DepositBuilder.CreateDeposit (dtEffective, dtEffective.addBusDays (aiDay[i], "USD"), "USD");
 
 		return aCalibComp;
 	}

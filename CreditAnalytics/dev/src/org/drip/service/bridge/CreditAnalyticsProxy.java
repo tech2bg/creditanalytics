@@ -84,7 +84,7 @@ public class CreditAnalyticsProxy {
 				System.out.println ("Instr[" + i + "]: " + dtStart.addDays (2) + " => " + new
 					org.drip.analytics.date.JulianDate (adblDate[i]));
 
-				aCompCalib[i] = org.drip.product.creator.CashBuilder.CreateCash (dtStart.addDays (2), new
+				aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtStart.addDays (2), new
 					org.drip.analytics.date.JulianDate (adblDate[i]), "USD");
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

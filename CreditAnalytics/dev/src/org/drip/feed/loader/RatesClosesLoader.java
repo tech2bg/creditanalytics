@@ -271,7 +271,7 @@ public class RatesClosesLoader {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			aCalibComp[i] = org.drip.product.creator.CashBuilder.CreateCash (dtEffective,
+			aCalibComp[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective,
 				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency), strCurrency);
 
 		return aCalibComp;

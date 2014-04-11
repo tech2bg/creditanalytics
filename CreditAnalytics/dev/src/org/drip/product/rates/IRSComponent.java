@@ -334,10 +334,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("Upfront", mapFixStreamResult.get ("Upfront") + mapFloatStreamResult.get ("Upfront"));
 
+		double dblValueDate = valParams.valueDate();
+
 		double dblValueNotional = java.lang.Double.NaN;
 
 		try {
-			dblValueNotional = getNotional (valParams.valueDate());
+			dblValueNotional = getNotional (dblValueDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -354,12 +356,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblStartDate = getEffectiveDate().getJulian();
 
-				mapResult.put ("CalibSwapRatePV", (dc.df (dblStartDate > valParams.valueDate() ? dblStartDate
-					: valParams.valueDate()) - dc.df (getMaturityDate())));
+				mapResult.put ("CalibSwapRatePV", (dc.df (dblStartDate > dblValueDate ? dblStartDate :
+					dblValueDate) - dc.df (getMaturityDate())));
 
-				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > valParams.valueDate() ? dblStartDate :
-					valParams.valueDate()) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
-						(valParams.valueDate()) * 0.0001);
+				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > dblValueDate ? dblStartDate :
+					dblValueDate) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
+						(dblValueDate) * 0.0001);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -568,13 +570,21 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == lsmm ||
-			!(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
-				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
-					(lsmm.getID()))
+		if (null == valParams  || null == lsmm || !(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
+			!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (lsmm.getID()))
 			return null;
 
+		double dblValueDate = valParams.valueDate();
+
+		double dblMaturityDate = getMaturityDate().getJulian();
+
+		if (dblValueDate >= dblMaturityDate) return null;
+
+		double dblEffectiveDate = getEffectiveDate().getJulian();
+
+		boolean bFirstPeriod = true;
 		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
+		double dblInitialDate = dblEffectiveDate > dblValueDate ? dblEffectiveDate : dblValueDate;
 
 		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(ratesLSMM.getQuantificationMetric())) {
@@ -587,28 +597,39 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				try {
 					for (org.drip.analytics.period.CashflowPeriod period : _fixStream.getCashFlowPeriod()) {
-						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
-							period.getPayDate());
+						if (null == period) continue;
 
-						double dblPay01 = period.getCouponDCF() * dblPeriodTurnDF;
+						double dblPayDate = period.getPayDate();
 
-						if (null == period || !prlc.addPredictorResponseWeight (period.getPayDate(),
-							ratesLSMM.getMeasureQuoteValue() * dblPay01) ||
-								!prlc.addDResponseWeightDManifestMeasure ("Rate", period.getPayDate(),
-									dblPay01))
+						if (dblValueDate > dblPayDate) continue;
+
+						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
+							dblPayDate);
+
+						double dblPeriodDCF = period.getCouponDCF();
+
+						if (bFirstPeriod) {
+							bFirstPeriod = false;
+
+							// dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
+						}
+
+						double dblPay01 = dblPeriodDCF * dblPeriodTurnDF;
+
+						if (!prlc.addPredictorResponseWeight (dblPayDate, ratesLSMM.getMeasureQuoteValue() *
+							dblPay01) || !prlc.addDResponseWeightDManifestMeasure ("Rate", dblPayDate,
+								dblPay01))
 							return null;
 					}
 
-					double dblMaturity = getMaturityDate().getJulian();
+					double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
+						dblMaturityDate);
 
-					double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
-						dblMaturity);
-
-					return prlc.addPredictorResponseWeight (valParams.valueDate(), -1.) &&
-						prlc.addPredictorResponseWeight (dblMaturity, dblPeriodMaturityDF) &&
-							prlc.addDResponseWeightDManifestMeasure ("Rate", valParams.valueDate(), 0.) &&
-								prlc.addDResponseWeightDManifestMeasure ("Rate", dblMaturity, 0.) ? prlc :
-									null;
+					return prlc.addPredictorResponseWeight (dblInitialDate, -1.) &&
+						prlc.addPredictorResponseWeight (dblMaturityDate, dblPeriodMaturityDF) &&
+							prlc.addDResponseWeightDManifestMeasure ("Rate", dblInitialDate, 0.) &&
+								prlc.addDResponseWeightDManifestMeasure ("Rate", dblMaturityDate, 0.) ? prlc
+									: null;
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

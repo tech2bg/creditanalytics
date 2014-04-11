@@ -32,9 +32,9 @@ package org.drip.product.rates;
  */
 
 /**
- * CashComponent contains the implementation of the Cash IR product and its contract/valuation details. It
- *  exports the following functionality:
- *  - Standard/Custom Constructor for the Cash Component
+ * DepositComponent contains the implementation of the Deposit IR product and its contract/valuation details.
+ * 	It exports the following functionality:
+ *  - Standard/Custom Constructor for the Deposit Component
  *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
  *  - Coupon/Notional Outstanding as well as schedules
  *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
@@ -47,7 +47,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CashComponent extends org.drip.product.definition.RatesComponent {
+public class DepositComponent extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 100.;
 	private java.lang.String _strIR = "";
 	private java.lang.String _strCode = "";
@@ -59,7 +59,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
 	/**
-	 * Construct a CashComponent instance
+	 * Construct a DepositComponent instance
 	 * 
 	 * @param dtEffective Effective Date
 	 * @param dtMaturity Maturity Date
@@ -70,7 +70,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public CashComponent (
+	public DepositComponent (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final java.lang.String strIR,
@@ -80,7 +80,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == dtEffective || null == dtMaturity || null == (_strIR = strIR) || strIR.isEmpty() ||
 			(_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective = dtEffective.getJulian()))
-			throw new java.lang.Exception ("CashComponent ctr: Invalid Inputs!");
+			throw new java.lang.Exception ("DepositComponent ctr: Invalid Inputs!");
 
 		_strDC = strDC;
 		_strCalendar = strCalendar;
@@ -98,47 +98,47 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
-	 * CashComponent de-serialization from input byte array
+	 * DepositComponent de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if CashComponent cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if DepositComponent cannot be properly de-serialized
 	 */
 
-	public CashComponent (
+	public DepositComponent (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CashComponent de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CashComponent de-serializer: Empty state");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Empty state");
 
-		java.lang.String strSerializedCash = strRawString.substring (0, strRawString.indexOf
+		java.lang.String strSerializedDeposit = strRawString.substring (0, strRawString.indexOf
 			(getObjectTrailer()));
 
-		if (null == strSerializedCash || strSerializedCash.isEmpty())
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate state");
+		if (null == strSerializedDeposit || strSerializedDeposit.isEmpty())
+			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCash,
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedDeposit,
 			getFieldDelimiter());
 
 		if (null == astrField || 9 > astrField.length)
-			throw new java.lang.Exception ("CashComponent de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate notional");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate IR curve name");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate IR curve name");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strIR = astrField[2];
@@ -146,7 +146,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			_strIR = "";
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate cash code");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate Deposit code");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strCode = astrField[3];
@@ -155,7 +155,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception
-				("CashComponent de-serializer: Cannot locate day count convention");
+				("DepositComponent de-serializer: Cannot locate day count convention");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strDC = astrField[4];
@@ -163,7 +163,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			_strDC = "";
 
 		if (null == astrField[5] || astrField[5].isEmpty())
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate Calendar");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate Calendar");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strCalendar = astrField[5];
@@ -172,18 +172,19 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate maturity date");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate maturity date");
 
 		_dblMaturity = new java.lang.Double (astrField[6]);
 
 		if (null == astrField[7] || astrField[7].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate effective date");
+			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate effective date");
 
 		_dblEffective = new java.lang.Double (astrField[7]);
 
 		if (null == astrField[8] || astrField[8].isEmpty())
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate notional schedule");
+			throw new java.lang.Exception
+				("DepositComponent de-serializer: Cannot locate notional schedule");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_notlSchedule = null;
@@ -191,7 +192,8 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[8].getBytes());
 
 		if (null == astrField[9] || astrField[9].isEmpty())
-			throw new java.lang.Exception ("CashComponent de-serializer: Cannot locate cash settle params");
+			throw new java.lang.Exception
+				("DepositComponent de-serializer: Cannot locate cash settle params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_settleParams = null;
@@ -235,7 +237,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		throws java.lang.Exception
 	{
 		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("CashComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("DepositComponent::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate);
 	}
@@ -247,7 +249,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
-			throw new java.lang.Exception ("CashComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("DepositComponent::getNotional => Bad date into getNotional");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
 	}
@@ -577,7 +579,7 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final byte[] ab)
 	{
 		try {
-			return new CashComponent (ab);
+			return new DepositComponent (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -589,15 +591,15 @@ public class CashComponent extends org.drip.product.definition.RatesComponent {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		CashComponent cash = new CashComponent (org.drip.analytics.date.JulianDate.Today(),
+		DepositComponent deposit = new DepositComponent (org.drip.analytics.date.JulianDate.Today(),
 			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"), "AUD", "Act/360", "BMA");
 
-		byte[] abCash = cash.serialize();
+		byte[] abDeposit = deposit.serialize();
 
-		System.out.println (new java.lang.String (abCash));
+		System.out.println (new java.lang.String (abDeposit));
 
-		CashComponent cashDeser = new CashComponent (abCash);
+		DepositComponent depositDeser = new DepositComponent (abDeposit);
 
-		System.out.println (new java.lang.String (cashDeser.serialize()));
+		System.out.println (new java.lang.String (depositDeser.serialize()));
 	}
 }

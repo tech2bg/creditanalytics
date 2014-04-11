@@ -168,7 +168,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtCashEffective, // Effective
+			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective, // Effective
 				new JulianDate (adblMaturity[i]).addBusDays (2, "USD"), // Maturity
 				"USD");
 		}
@@ -341,7 +341,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = CashBuilder.CreateCash (dtCashEffective, new JulianDate (adblMaturity[i]), "USD");
+			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective, new JulianDate (adblMaturity[i]), "USD");
 		}
 
 		/*

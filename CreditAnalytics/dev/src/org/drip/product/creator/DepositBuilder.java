@@ -32,26 +32,26 @@ package org.drip.product.creator;
  */
 
 /**
- * CashBuilder contains the suite of helper functions for creating the Cash product from the
+ * DepositBuilder contains the suite of helper functions for creating the Deposit product from the
  * 	parameters/codes/byte array streams.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CashBuilder {
+public class DepositBuilder {
 
 	/**
-	 * Create a cash product from effective date, tenor, IR curve name, and code.
+	 * Create a Deposit product from effective date, tenor, IR curve name, and code.
 	 * 
 	 * @param dtEffective JulianDate specifying the effective date
 	 * @param strTenor String tenor
 	 * @param strIR IR curve name
 	 * @param strCode Product Code
 	 * 
-	 * @return Cash Object
+	 * @return Deposit Object
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateCash (
+	public static final org.drip.product.definition.RatesComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strTenor,
 		final java.lang.String strIR,
@@ -59,18 +59,18 @@ public class CashBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty() || null == strIR ||
 			strIR.isEmpty()) {
-			System.out.println ("Invalid CashBuilder.CreateCash params!");
+			System.out.println ("Invalid DepositBuilder.CreateDeposit params!");
 
 			return null;
 		}
 
 		try {
-			org.drip.product.definition.RatesComponent cash = new org.drip.product.rates.CashComponent (dtEffective,
-				dtEffective.addTenor (strTenor), strIR, "Act/360", strIR);
+			org.drip.product.definition.RatesComponent deposit = new org.drip.product.rates.DepositComponent
+				(dtEffective, dtEffective.addTenor (strTenor), strIR, "Act/360", strIR);
 
-			cash.setPrimaryCode (strCode + "." + strTenor + "." + strIR);
+			deposit.setPrimaryCode (strCode + "." + strTenor + "." + strIR);
 
-			return cash;
+			return deposit;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -79,33 +79,33 @@ public class CashBuilder {
 	}
 
 	/**
-	 * Create a cash product from effective and maturity dates, and the IR curve
+	 * Create a Deposit product from effective and maturity dates, and the IR curve
 	 * 
 	 * @param dtEffective Effective date
 	 * @param dtMaturity Maturity
 	 * @param strIR IR Curve name
 	 * 
-	 * @return Cash product
+	 * @return Deposit product
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateCash (
+	public static final org.drip.product.definition.RatesComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final java.lang.String strIR)
 	{
 		if (null == dtMaturity) {
-			System.out.println ("Invalid CashBuilder.CreateCash params!");
+			System.out.println ("Invalid DepositBuilder.CreateDeposit params!");
 
 			return null;
 		}
 
 		try {
-			org.drip.product.definition.RatesComponent cash = new org.drip.product.rates.CashComponent (dtEffective,
-				dtMaturity, strIR, "Act/360", strIR);
+			org.drip.product.definition.RatesComponent deposit = new org.drip.product.rates.DepositComponent
+				(dtEffective, dtMaturity, strIR, "Act/360", strIR);
 
-			cash.setPrimaryCode ("CD." + dtMaturity + "." + strIR);
+			deposit.setPrimaryCode ("CD." + dtMaturity + "." + strIR);
 
-			return cash;
+			return deposit;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -114,29 +114,29 @@ public class CashBuilder {
 	}
 
 	/**
-	 * Create the cash product from the effective date, tenor, and the IR curve name.
+	 * Create the Deposit product from the effective date, tenor, and the IR curve name.
 	 * 
 	 * @param dtEffective JulianDate Effective
 	 * @param strTenor String tenor
 	 * @param strIR IR Curve Name
 	 * 
-	 * @return Cash object
+	 * @return Deposit object
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateCash (
+	public static final org.drip.product.definition.RatesComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strTenor,
 		final java.lang.String strIR)
 	{
-		return CreateCash (dtEffective, strTenor, strIR, "CD");
+		return CreateDeposit (dtEffective, strTenor, strIR, "CD");
 	}
 
 	/**
-	 * Create a Cash Instance from the byte array
+	 * Create a Deposit Instance from the byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @return Cash Instance
+	 * @return Deposit Instance
 	 */
 
 	public static final org.drip.product.definition.RatesComponent FromByteArray (
@@ -145,7 +145,7 @@ public class CashBuilder {
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.product.rates.CashComponent (ab);
+			return new org.drip.product.rates.DepositComponent (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

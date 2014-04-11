@@ -6,7 +6,7 @@ import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.creator.CashBuilder;
+import org.drip.product.creator.DepositBuilder;
 import org.drip.product.creator.EDFutureBuilder;
 import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -81,7 +81,7 @@ public class TemplatedDiscountCurveBuilder {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = CashBuilder.CreateCash (dtEffective, dtEffective.addBusDays (aiDay[i], "USD"), "USD");
+			aCalibComp[i] = DepositBuilder.CreateDeposit (dtEffective, dtEffective.addBusDays (aiDay[i], "USD"), "USD");
 
 		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, "USD");
 

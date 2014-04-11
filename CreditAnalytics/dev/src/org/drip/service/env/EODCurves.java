@@ -62,11 +62,11 @@ public class EODCurves {
 
 		try {
 			if (bTSY)
-				return org.drip.product.creator.CashBuilder.CreateCash (dtEffective.addDays (2), strTenor,
+				return org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective.addDays (2), strTenor,
 					strCurrency, "TSY");
 
 			if ("M".equalsIgnoreCase (strInstrCode))
-				return org.drip.product.creator.CashBuilder.CreateCash (dtEffective.addDays (2), strTenor,
+				return org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective.addDays (2), strTenor,
 					strCurrency);
 
 			if ("S".equalsIgnoreCase (strInstrCode))
