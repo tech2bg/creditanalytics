@@ -94,8 +94,10 @@ public class YAS {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective,
+			aCompCalib[i] = DepositBuilder.CreateDeposit (
+				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
+				null,
 				strCurrency);
 		}
 

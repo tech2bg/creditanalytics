@@ -81,7 +81,7 @@ public class ScenarioDiscountCurveBuilder {
 			org.drip.product.definition.CalibratableFixedIncomeComponent comp = bIsIRS ?
 				org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective, dtMaturity, 0.,
 					strCurrency, strCurrency + "-LIBOR-3M", strCurrency) :
-						org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective, dtMaturity,
+						org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective, dtMaturity, null,
 							strCurrency);
 
 			if (null == comp) return null;

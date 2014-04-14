@@ -75,7 +75,7 @@ public class ScenarioForwardCurveBuilder {
 
 		try {
 			org.drip.analytics.rates.ForwardCurve fc = new org.drip.state.curve.BasisSplineForwardRate (fri,
-				(lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
+				lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, cmp));
 
 			return fc.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
 				pricerParam, quotingParam, cmp)) ? fc : null;

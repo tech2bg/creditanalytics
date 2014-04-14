@@ -66,7 +66,7 @@ public class DepositBuilder {
 
 		try {
 			org.drip.product.definition.RatesComponent deposit = new org.drip.product.rates.DepositComponent
-				(dtEffective, dtEffective.addTenor (strTenor), strIR, "Act/360", strIR);
+				(dtEffective, dtEffective.addTenor (strTenor), null, strIR, "Act/360", strIR);
 
 			deposit.setPrimaryCode (strCode + "." + strTenor + "." + strIR);
 
@@ -83,6 +83,7 @@ public class DepositBuilder {
 	 * 
 	 * @param dtEffective Effective date
 	 * @param dtMaturity Maturity
+	 * @param fri The Floating Rate Index
 	 * @param strIR IR Curve name
 	 * 
 	 * @return Deposit product
@@ -91,6 +92,7 @@ public class DepositBuilder {
 	public static final org.drip.product.definition.RatesComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
+		final org.drip.product.params.FloatingRateIndex fri,
 		final java.lang.String strIR)
 	{
 		if (null == dtMaturity) {
@@ -101,7 +103,7 @@ public class DepositBuilder {
 
 		try {
 			org.drip.product.definition.RatesComponent deposit = new org.drip.product.rates.DepositComponent
-				(dtEffective, dtMaturity, strIR, "Act/360", strIR);
+				(dtEffective, dtMaturity, fri, strIR, "Act/360", strIR);
 
 			deposit.setPrimaryCode ("CD." + dtMaturity + "." + strIR);
 

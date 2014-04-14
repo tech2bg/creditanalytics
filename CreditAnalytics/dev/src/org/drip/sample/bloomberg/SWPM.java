@@ -71,7 +71,11 @@ public class SWPM {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = DepositBuilder.CreateDeposit (dtEffective, dtEffective.addBusDays (aiDay[i], strCurrency), strCurrency);
+			aCalibComp[i] = DepositBuilder.CreateDeposit (
+				dtEffective,
+				dtEffective.addBusDays (aiDay[i], strCurrency),
+				null,
+				strCurrency);
 
 		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
 

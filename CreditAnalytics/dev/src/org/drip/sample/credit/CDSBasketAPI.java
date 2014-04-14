@@ -103,6 +103,7 @@ public class CDSBasketAPI {
 
 			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
+				null,
 				strCurrency);
 		}
 

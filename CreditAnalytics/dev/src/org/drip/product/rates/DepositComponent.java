@@ -55,7 +55,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	private java.lang.String _strCalendar = "USD";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.params.FactorSchedule _notlSchedule = null;
+	private org.drip.product.params.FloatingRateIndex _fri = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
 	/**
@@ -73,6 +73,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	public DepositComponent (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
+		final org.drip.product.params.FloatingRateIndex fri,
 		final java.lang.String strIR,
 		final java.lang.String strDC,
 		final java.lang.String strCalendar)
@@ -82,10 +83,9 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 			(_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective = dtEffective.getJulian()))
 			throw new java.lang.Exception ("DepositComponent ctr: Invalid Inputs!");
 
+		_fri = fri;
 		_strDC = strDC;
 		_strCalendar = strCalendar;
-
-		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -184,21 +184,21 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception
-				("DepositComponent de-serializer: Cannot locate notional schedule");
+				("DepositComponent de-serializer: Cannot locate cash settle params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
-			_notlSchedule = null;
+			_settleParams = null;
 		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[8].getBytes());
+			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[8].getBytes());
 
 		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception
-				("DepositComponent de-serializer: Cannot locate cash settle params");
+				("DepositComponent de-serializer: Cannot locate the floating Rate Index");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
-			_settleParams = null;
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
+			_fri = null;
 		else
-			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[9].getBytes());
+			_fri = org.drip.product.params.FloatingRateIndex.Create (astrField[8]);
 	}
 
 	@Override public java.lang.String getPrimaryCode()
@@ -236,10 +236,10 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DepositComponent::getNotional => Bad date into getNotional");
 
-		return _notlSchedule.getFactor (dblDate);
+		return 1.;
 	}
 
 	@Override public double getNotional (
@@ -247,11 +247,11 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblDate2))
 			throw new java.lang.Exception ("DepositComponent::getNotional => Bad date into getNotional");
 
-		return _notlSchedule.getFactor (dblDate1, dblDate2);
+		return 1.;
 	}
 
 	@Override public double getCoupon (
@@ -334,14 +334,32 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
-
-		if (null == dc) return null;
-
 		long lStart = System.nanoTime();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+
+		org.drip.analytics.rates.ForwardCurve fc = mktParams.getForwardCurve();
+
+		if (null != fc && null != _fri && fc.name().equalsIgnoreCase (_fri.fullyQualifiedName())) {
+			try {
+				double dblForwardRate = fc.forward (_dblMaturity);
+
+				mapResult.put ("forward", dblForwardRate);
+
+				mapResult.put ("forwardrate", dblForwardRate);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+
+		if (null == dc) {
+			mapResult.put ("calctime", (System.nanoTime() - lStart) * 1.e-09);
+
+			return mapResult;
+		}
 
 		try {
 			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
@@ -374,6 +392,10 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
 		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("Forward");
+
+		setstrMeasureNames.add ("ForwardRate");
 
 		setstrMeasureNames.add ("Price");
 
@@ -469,22 +491,27 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == lsmm || !(lsmm instanceof
-			org.drip.analytics.rates.RatesLSMM) ||
-				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
-					(lsmm.getID()))
-			return null;
+		if (null == valParams || null == lsmm) return null;
 
-		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
+		double dblValueDate = valParams.valueDate();
 
-		java.lang.String[] astrManifestMeasure = ratesLSMM.getManifestMeasures();
+		if (dblValueDate >= _dblMaturity) return null;
 
-		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(ratesLSMM.getQuantificationMetric())) {
+		java.lang.String strLatentState = lsmm.getID();
+
+		java.lang.String[] astrManifestMeasure = lsmm.getManifestMeasures();
+
+		java.lang.String strQuantificationMetric = lsmm.getQuantificationMetric();
+
+		if (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (strLatentState) &&
+			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+				(strQuantificationMetric)) {
 			try {
+				org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
+
 				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
-				double dblTurnDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(), _dblMaturity);
+				double dblTurnDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate, _dblMaturity);
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
 					java.lang.String[] {"Price"}, false)) {
@@ -527,6 +554,21 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 			}
 		}
 
+		if (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD.equalsIgnoreCase (strLatentState) &&
+			org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
+				(strQuantificationMetric)) {
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
+				java.lang.String[] {"Forward", "ForwardRate", "Rate"}, false)) {
+				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+					org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+				return prlc.addPredictorResponseWeight (_dblMaturity, 1.) && prlc.updateValue
+					(lsmm.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure ("ForwardRate",
+						_dblMaturity, 1.) && prlc.updateDValueDManifestMeasure ("ForwardRate", 1.) ? prlc :
+							null;
+			}
+		}
+
 		return null;
 	}
 
@@ -562,15 +604,15 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 		sb.append (_dblEffective + getFieldDelimiter());
 
-		if (null == _notlSchedule)
+		if (null == _settleParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (new java.lang.String (_notlSchedule.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_settleParams.serialize()) + getFieldDelimiter());
 
-		if (null == _settleParams)
+		if (null == _fri)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else
-			sb.append (new java.lang.String (_settleParams.serialize()));
+			sb.append (new java.lang.String (_fri.serialize()));
 
 		return sb.append (getObjectTrailer()).toString().getBytes();
 	}
@@ -592,7 +634,8 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		throws java.lang.Exception
 	{
 		DepositComponent deposit = new DepositComponent (org.drip.analytics.date.JulianDate.Today(),
-			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"), "AUD", "Act/360", "BMA");
+			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"),
+				org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), "AUD", "Act/360", "BMA");
 
 		byte[] abDeposit = deposit.serialize();
 

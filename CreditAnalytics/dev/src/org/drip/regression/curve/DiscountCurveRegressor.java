@@ -132,7 +132,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						try {
 							_aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit
 								(_dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i]),
-									_strCurrency);
+									null, _strCurrency);
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 

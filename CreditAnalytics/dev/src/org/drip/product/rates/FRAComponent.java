@@ -480,6 +480,22 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == lsmm) return null;
 
+		if (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD.equalsIgnoreCase (lsmm.getID()) &&
+			org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
+				(lsmm.getQuantificationMetric())) {
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasures(), new
+				java.lang.String[] {"Rate"}, false)) {
+				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
+					org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+				double dblMaturity = _dtMaturity.getJulian();
+
+				return prlc.addPredictorResponseWeight (dblMaturity, 1.) && prlc.updateValue
+					(lsmm.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure ("Rate",
+						dblMaturity, 1.) && prlc.updateDValueDManifestMeasure ("Rate", 1.) ? prlc : null;
+			}
+		}
+
 		return null;
 	}
 

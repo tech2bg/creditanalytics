@@ -85,7 +85,7 @@ public class CreditAnalyticsProxy {
 					org.drip.analytics.date.JulianDate (adblDate[i]));
 
 				aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtStart.addDays (2), new
-					org.drip.analytics.date.JulianDate (adblDate[i]), "USD");
+					org.drip.analytics.date.JulianDate (adblDate[i]), null, "USD");
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}

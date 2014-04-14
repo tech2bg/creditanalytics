@@ -52,7 +52,7 @@ public class BasisSplineForwardRate extends org.drip.analytics.rates.ForwardCurv
 
 	public BasisSplineForwardRate (
 		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.spline.grid.Span span)
+		final org.drip.spline.grid.OverlappingStretchSpan span)
 		throws java.lang.Exception
 	{
 		super (span.left(), fri);

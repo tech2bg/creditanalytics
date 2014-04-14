@@ -944,7 +944,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (dblValueDate < dblPayDate) dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
+					if (dblValueDate > period.getStartDate())
+						dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
 				}
 
 				double dblPeriodCV100 = dblPeriodDCF * dc.df (dblPayDate) * getNotional (dblPayDate);

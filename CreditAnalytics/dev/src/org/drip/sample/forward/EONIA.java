@@ -1,21 +1,16 @@
 
-package org.drip.sample.ois;
-
-import java.util.Map;
+package org.drip.sample.forward;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.creator.*;
+import org.drip.product.creator.DepositBuilder;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.ois.*;
 import org.drip.product.rates.*;
-import org.drip.quant.common.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
-import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
@@ -49,13 +44,12 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * OISProduct demonstrates the Construction, Usage, Coupon Extraction and Measure Generation for an OIS
- * 	Product Sample.
+ * EONIA illustrates the Construction and Usage of the EONIA Discount Curve.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class OISProduct {
+public class EONIA {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -75,7 +69,7 @@ public class OISProduct {
 			aDepositComp[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				strCurrency);
 
 		return aDepositComp;
@@ -241,17 +235,24 @@ public class OISProduct {
 		return aCalibComp;
 	}
 
-	private static final DiscountCurve CustomOISCurveBuilderSample (
+	/**
+	 * Construct an elaborate EONIA Discount Curve
+	 * 
+	 * @param dtSpot The Spot Date
+	 * @param strCurrency The Currency
+	 * @param bOvernightIndex TRUE => Use the Overnight Index; FALSE => Use the Fund
+	 * 
+	 * @return Instance of the EONIA Discount Curve
+	 * 
+	 * @throws Exception Thrown if the OIS Discount Curve Could not be created
+	 */
+
+	public static final DiscountCurve MakeDC (
 		final JulianDate dtSpot,
-		final String strHeaderComment,
 		final String strCurrency,
 		final boolean bOvernightIndex)
 		throws Exception
 	{
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t" + strHeaderComment);
-
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
@@ -267,12 +268,11 @@ public class OISProduct {
 		};
 
 		/*
-		 * Setup the Deposit instruments stretch latent state representation - this uses the discount factor
-		 * 	quantification metric and the "rate" manifest measure.
+		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
 		StretchRepresentationSpec srsDeposit = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"DEPOSITS",
+			"CASH",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aDepositComp,
@@ -310,7 +310,7 @@ public class OISProduct {
 		 */
 
 		StretchRepresentationSpec srsShortEndOIS = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"OISSHORT",
+			"OIS SHORT END",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aShortEndOISComp,
@@ -336,13 +336,13 @@ public class OISProduct {
 				new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
 				new java.lang.String[] {"1M", "1M", "1M", "1M", "1M"},
 				adblOISFutureQuote,
-				"EUR") :
+				strCurrency) :
 			OvernightFundFutureFromMaturityTenor (
 				dtSpot,
 				new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
 				new java.lang.String[] {"1M", "1M", "1M", "1M", "1M"},
 				adblOISFutureQuote,
-				"EUR");
+				strCurrency);
 
 		/*
 		 * Construct the OIS Future Instrument Set Stretch Builder
@@ -401,7 +401,7 @@ public class OISProduct {
 		 */
 
 		StretchRepresentationSpec srsLongEndOIS = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"OIS LONG",
+			"OIS LONG END",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aLongEndOISComp,
@@ -409,7 +409,7 @@ public class OISProduct {
 			adblLongEndOISQuote,
 			null);
 
-		StretchRepresentationSpec[] aSRS = new StretchRepresentationSpec[] {
+		StretchRepresentationSpec[] aRBS = new StretchRepresentationSpec[] {
 			srsDeposit,
 			srsShortEndOIS,
 			srsOISFuture,
@@ -436,168 +436,18 @@ public class OISProduct {
 			null,
 			null);
 
-		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
-
 		/*
 		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
 		 *  of Deposit and Swap Stretches.
 		 */
 
-		DiscountCurve dc = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
+		return ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
-			aSRS,
-			valParams,
+			aRBS,
+			new ValuationParams (dtSpot, dtSpot, strCurrency),
 			null,
 			null,
 			null,
 			1.);
-
-		/*
-		 * Cross-Comparison of the Deposit Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t     CASH INSTRUMENTS CALIBRATION RECOVERY");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aDepositComp[i].calcMeasureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
-
-		/*
-		 * Cross-Recovery of the OIS Short End Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t      OIS SHORT END INSTRUMENTS CALIBRATION RECOVERY");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		for (int i = 0; i < aShortEndOISComp.length; ++i)
-			System.out.println ("\t[" + aShortEndOISComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aShortEndOISComp[i].calcMeasureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
-
-		/*
-		 * Cross-Recovery of the OIS Future Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t      OIS FUTURE INSTRUMENTS CALIBRATION RECOVERY");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		for (int i = 0; i < aOISFutureComp.length; ++i)
-			System.out.println ("\t[" + aOISFutureComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aOISFutureComp[i].calcMeasureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
-
-		/*
-		 * Cross-Recovery of the OIS Long End Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t      OIS LONG END INSTRUMENTS CALIBRATION RECOVERY");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		for (int i = 0; i < aLongEndOISComp.length; ++i)
-			System.out.println ("\t[" + aLongEndOISComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aLongEndOISComp[i].calcMeasureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.));
-
-		return dc;
-	}
-
-	public static final void main (
-		final String[] astrArgs)
-		throws Exception
-	{
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
-
-		CreditAnalytics.Init ("");
-
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
-
-		String strCurrency = "USD";
-
-		DiscountCurve dcIndex = CustomOISCurveBuilderSample (
-			dtToday,
-			"---- DISCOUNT CURVE WITH OVERNIGHT INDEX ---",
-			strCurrency,
-			false);
-
-		DiscountCurve dcFund = CustomOISCurveBuilderSample (
-			dtToday,
-			"---- DISCOUNT CURVE WITH OVERNIGHT FUND ---",
-			strCurrency,
-			false);
-
-		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
-
-		JulianDate dtCustomOISMaturity = dtToday.addTenorAndAdjust ("4M", "USD");
-
-		OvernightFundFloatingStream floatStream = OvernightFundFloatingStream.Create (dtCustomOISStart.getJulian(),
-			dtCustomOISMaturity.getJulian(), 0., OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				"Act/360", null, null, null, -1., strCurrency, strCurrency, false);
-
-		FixedStream fixStream = new FixedStream (dtCustomOISStart.getJulian(), dtCustomOISMaturity.getJulian(),
-			0.003, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, 1.,
-				strCurrency, strCurrency);
-
-		IRSComponent ois = new IRSComponent (fixStream, floatStream);
-
-		ComponentMarketParams cmpIndex = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcIndex, null, null, null, null, null, null);
-
-		ComponentMarketParams cmpFund = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcFund, null, null, null, null, null, null);
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t----------------------------------------------------------------\n");
-
-		Map<String, Double> mapOISOutputIndex = ois.value (
-			new ValuationParams (dtToday, dtToday, strCurrency),
-			null,
-			cmpIndex,
-			null);
-
-		Map<String, Double> mapOISOutputFund = ois.value (
-			new ValuationParams (dtToday, dtToday, strCurrency),
-			null,
-			cmpFund,
-			null);
-
-		for (Map.Entry<String, Double> me : mapOISOutputIndex.entrySet()) {
-			String strKey = me.getKey();
-
-			double dblIndexMeasure = me.getValue();
-
-			double dblFundMeasure = mapOISOutputFund.get (strKey);
-
-			String strReconcile = NumberUtil.WithinTolerance (dblIndexMeasure, dblFundMeasure, 1.e-04, 1.e-08) ?
-				"RECONCILES" :
-				"DOES NOT RECONCILE";
-				
-			System.out.println ("\t" +
-				FormatUtil.FormatDouble (dblIndexMeasure, 1, 8, 1.) + " | " +
-				FormatUtil.FormatDouble (dblFundMeasure, 1, 8, 1.) + " | " +
-				strReconcile + " <= " + strKey);
-		}
 	}
 }

@@ -70,7 +70,11 @@ public class CustomOISCurveReconciler {
 		CalibratableFixedIncomeComponent[] aDepositComp = new CalibratableFixedIncomeComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDepositComp[i] = DepositBuilder.CreateDeposit (dtEffective, dtEffective.addBusDays (aiDay[i], strCurrency), strCurrency);
+			aDepositComp[i] = DepositBuilder.CreateDeposit (
+				dtEffective,
+				dtEffective.addBusDays (aiDay[i], strCurrency),
+				null,
+				strCurrency);
 
 		return aDepositComp;
 	}

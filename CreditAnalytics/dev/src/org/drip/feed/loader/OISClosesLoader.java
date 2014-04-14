@@ -7,7 +7,6 @@ package org.drip.feed.loader;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -30,12 +29,12 @@ package org.drip.feed.loader;
  */
 
 /**
- * RatesClosesLoader Loads the closing marks for a given Rates Curve.
+ * OISClosesLoader Loads the closing marks, and computes the PnL/RV Metrics for the given OIS Curve.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class RatesClosesLoader {
+public class OISClosesLoader {
 	private static java.io.BufferedWriter _writeCOB = null;
 	private static final java.lang.String[] s_astrFwdTenor = new java.lang.String[] {"1Y", "2Y", "3Y", "4Y",
 		"5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y"};
@@ -257,11 +256,10 @@ public class RatesClosesLoader {
 		return lsstrDump;
 	}
 
-	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
-		CashInstrumentsFromTenor (
-			final org.drip.analytics.date.JulianDate dtEffective,
-			final java.lang.String[] astrTenor,
-			final java.lang.String strCurrency)
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[] CashInstrumentsFromTenor (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String[] astrTenor,
+		final java.lang.String strCurrency)
 	{
 		if (null == astrTenor) return null;
 
@@ -278,12 +276,11 @@ public class RatesClosesLoader {
 		return aCalibComp;
 	}
 
-	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
-		SwapInstrumentsFromTenor (
-			final org.drip.analytics.date.JulianDate dtEffective,
-			final java.lang.String[] astrTenor,
-			final double[] adblQuote,
-			final java.lang.String strCurrency)
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[] SwapInstrumentsFromTenor (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String[] astrTenor,
+		final double[] adblQuote,
+		final java.lang.String strCurrency)
 	{
 		if (null == astrTenor) return null;
 

@@ -139,7 +139,11 @@ public class ShapeDFZeroLocalSmooth {
 		CalibratableFixedIncomeComponent[] aCash = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
-			aCash[i] = DepositBuilder.CreateDeposit (dtEffective, dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"), "MXN");
+			aCash[i] = DepositBuilder.CreateDeposit (
+				dtEffective,
+				dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"),
+				null,
+				"MXN");
 
 		return aCash;
 	}
