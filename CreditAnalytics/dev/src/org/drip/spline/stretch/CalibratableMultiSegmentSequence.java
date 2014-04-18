@@ -164,11 +164,8 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		if (org.drip.spline.stretch.BoundarySettings.BOUNDARY_CONDITION_FLOATING ==
 			_ssb.getCalibrationBoundaryCondition().boundaryCondition()) {
 			if (!_ssb.calibStartingSegment (0.) || !_ssb.calibSegmentSequence (1) ||
-				!_ssb.manifestMeasureSensitivity (0.)) {
-				System.out.println ("\tFloater Fail");
-
+				!_ssb.manifestMeasureSensitivity (0.))
 				return false;
-			}
 		} else if (0 != (org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE & iCalibrationDetail)) {
 			org.drip.quant.solver1D.FixedPointFinderOutput fpop = null;
 
@@ -502,7 +499,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 			return wjDResponseDManifestMeasure;
 		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 		return null;

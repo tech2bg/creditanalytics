@@ -196,7 +196,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "FRA=" + _fri.fullyQualifiedName();
 	}
@@ -268,12 +268,12 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
-		return _fri.fullyQualifiedName();
+		return new java.lang.String[] {_fri.fullyQualifiedName()};
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}
@@ -339,7 +339,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == dc) return null;
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve();
+		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve (_fri);
 
 		if (null == fc || !_fri.match (fc.index())) return null;
 
@@ -389,12 +389,18 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 			mapResult.put ("discountcurveparforward", dblDCParForward);
 
+			mapResult.put ("forward", dblParForward);
+
+			mapResult.put ("forwardrate", dblParForward);
+
 			mapResult.put ("mercuriorfactor", (dblDCF * dblDCParForward + 1.) / (dblDCF *
 				dblQuantoAdjustedParForward + 1.));
 
 			mapResult.put ("multiplicativequantoadjustment", dblMultiplicativeQuantoAdjustment);
 
 			mapResult.put ("parforward", dblParForward);
+
+			mapResult.put ("parforwardrate", dblParForward);
 
 			mapResult.put ("price", dblPV);
 
@@ -428,11 +434,17 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		setstrMeasureNames.add ("DiscountCurveParForward");
 
+		setstrMeasureNames.add ("Forward");
+
+		setstrMeasureNames.add ("ForwardRate");
+
 		setstrMeasureNames.add ("MercurioRFactor");
 
 		setstrMeasureNames.add ("MultiplicativeQuantoAdjustment");
 
 		setstrMeasureNames.add ("ParForward");
+
+		setstrMeasureNames.add ("ParForwardRate");
 
 		setstrMeasureNames.add ("Price");
 
@@ -484,15 +496,17 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
 				(lsmm.getQuantificationMetric())) {
 			if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasures(), new
-				java.lang.String[] {"Rate"}, false)) {
+				java.lang.String[] {"Forward", "ForwardRate", "ParForward", "ParForwardRate", "Rate"},
+					false)) {
 				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 					org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 				double dblMaturity = _dtMaturity.getJulian();
 
 				return prlc.addPredictorResponseWeight (dblMaturity, 1.) && prlc.updateValue
-					(lsmm.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure ("Rate",
-						dblMaturity, 1.) && prlc.updateDValueDManifestMeasure ("Rate", 1.) ? prlc : null;
+					(lsmm.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure
+						("ParForwardRate", dblMaturity, 1.) && prlc.updateDValueDManifestMeasure
+							("ParForwardRate", 1.) ? prlc : null;
 			}
 		}
 

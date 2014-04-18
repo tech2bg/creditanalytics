@@ -122,7 +122,14 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		throws java.lang.Exception
 	{
 		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
-			if (mss.in (dblPredictorOrdinate)) return mss.responseValue (dblPredictorOrdinate);
+			if (mss.in (dblPredictorOrdinate)) {
+				double dblResponseValue =  mss.responseValue (dblPredictorOrdinate);
+
+				/* System.out.println ("\t" + new org.drip.analytics.date.JulianDate (dblPredictorOrdinate) +
+					" | " + mss.name() + " => " + dblResponseValue); */
+
+				return dblResponseValue;
+			}
 		}
 
 		throw new java.lang.Exception ("OverlappingStretchSpan::calcResponseValue => Cannot Calculate!");
@@ -198,6 +205,17 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		return org.drip.quant.common.CollectionUtil.AppendWengert (lsWJ);
 	}
 
+	@Override public boolean in (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception
+	{
+		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
+			if (mss.in (dblPredictorOrdinate)) return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Convert the Overlapping Stretch Span to a non-overlapping Stretch Span. Overlapping Stretches are
 	 *  clipped from the Left.
@@ -244,8 +262,9 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 
 		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
 			try {
-				sb.append (new org.drip.analytics.date.JulianDate (mss.getLeftPredictorOrdinateEdge()) +
-					" => " + new org.drip.analytics.date.JulianDate (mss.getRightPredictorOrdinateEdge()));
+				sb.append (mss.name() + " | " + new org.drip.analytics.date.JulianDate
+					(mss.getLeftPredictorOrdinateEdge()) + " => " + new org.drip.analytics.date.JulianDate
+						(mss.getRightPredictorOrdinateEdge()) + "\n");
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}

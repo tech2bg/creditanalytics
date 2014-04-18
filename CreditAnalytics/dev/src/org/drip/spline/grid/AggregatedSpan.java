@@ -174,6 +174,17 @@ public class AggregatedSpan implements org.drip.spline.grid.Span {
 		return wjAggregate;
 	}
 
+	@Override public boolean in (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception
+	{
+		for (org.drip.spline.grid.Span span : _lsSpan) {
+			if (span.in (dblPredictorOrdinate)) return true;
+		}
+
+		return false;
+	}
+
 	@Override public java.lang.String displayString()
 	{
 		int i = 0;

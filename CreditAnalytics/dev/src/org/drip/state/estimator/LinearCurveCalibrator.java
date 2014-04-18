@@ -91,7 +91,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		if (0 == iNumStretch) return null;
 
 		for (org.drip.state.estimator.StretchRepresentationSpec srs : aSRS) {
-			if (null == srs) return null;
+			if (null == srs) continue;
 
 			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = srs.getCalibComp();
 
@@ -100,6 +100,8 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 			double[] adblPredictorOrdinate = new double[iNumCalibComp + 1];
 			org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
 				org.drip.spline.params.SegmentCustomBuilderControl[iNumCalibComp];
+
+			// if (0 == iNumCalibComp) continue;
 
 			for (int i = 0; i <= iNumCalibComp; ++i) {
 				adblPredictorOrdinate[i] = 0 == i ? valParams.valueDate() :
@@ -114,7 +116,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 						(adblPredictorOrdinate, aSCBC), aSCBC);
 
 				if (!cs.setup (org.drip.state.estimator.RatesSegmentSequenceBuilder.Create (dblEpochResponse,
-					srs, valParams, pricerParams, cmp, quotingParams, csPrev, bestFitWeightedResponse(),
+					srs, valParams, pricerParams, cmp, quotingParams, csPrev, oss, bestFitWeightedResponse(),
 						aSCBC[0].preceedingManifestSensitivityControl(),
 							bestFitWeightedResponseSensitivity(), calibrationBoundaryCondition()),
 								calibrationDetail())) {

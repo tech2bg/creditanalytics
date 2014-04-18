@@ -285,7 +285,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "FixedStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}
@@ -351,12 +351,12 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
-		return "";
+		return null;
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}

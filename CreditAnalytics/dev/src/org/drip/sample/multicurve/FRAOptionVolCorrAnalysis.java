@@ -443,7 +443,7 @@ public class FRAOptionVolCorrAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		FloatingRateIndex fri = FloatingRateIndex.Create (fra.getForwardCurveName());
+		FloatingRateIndex fri = FloatingRateIndex.Create (fra.getForwardCurveName()[0]);
 
 		JulianDate dtForward = fra.getEffectiveDate();
 

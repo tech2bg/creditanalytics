@@ -267,7 +267,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return new java.lang.String[] {astrCodeTokens[0]};
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return _strEDCode;
 	}
@@ -333,12 +333,12 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
-		return "";
+		return null;
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}

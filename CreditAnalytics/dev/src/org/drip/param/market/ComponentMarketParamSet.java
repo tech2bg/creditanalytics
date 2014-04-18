@@ -41,7 +41,6 @@ package org.drip.param.market;
 
 public class ComponentMarketParamSet extends org.drip.param.definition.ComponentMarketParams {
 	private org.drip.analytics.definition.CreditCurve _cc = null;
-	private org.drip.analytics.rates.ForwardCurve _fc = null;
 	private org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 	private org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 	private org.drip.analytics.rates.DiscountCurve _dcFunding = null;
@@ -59,6 +58,10 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		_mapDCForeignCurrencyDomesticCollateral = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
+		_mapForward = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.quant.function1D.AbstractUnivariate>> _mapLatentStateForwardVolatility = new
@@ -95,7 +98,6 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
 		_cc = cc;
-		_fc = fc;
 		_dcTSY = dcTSY;
 		_dcEDSF = dcEDSF;
 		_compQuote = compQuote;
@@ -103,6 +105,8 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		_mmFixings = mmFixings;
 		_mTSYQuotes = mTSYQuotes;
 		_dcDomesticCollateral = dcDomesticCollateral;
+
+		if (null != fc) _mapForward.put (fc.index().fullyQualifiedName(), fc);
 	}
 
 	/**
@@ -160,7 +164,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 				("ComponentMarketParamSet de-serializer: Cannot locate forward curve");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			_fc = null;
+			_mapForward = null;
 
 		if (null == astrField[4] || astrField[4].isEmpty())
 			throw new java.lang.Exception
@@ -438,17 +442,24 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.ForwardCurve getForwardCurve()
+	@Override public org.drip.analytics.rates.ForwardCurve getForwardCurve (
+		final org.drip.product.params.FloatingRateIndex fri)
 	{
-		return _fc;
+		if (null == fri) return null;
+
+		java.lang.String strFullyQualifiedName = fri.fullyQualifiedName();
+
+		return _mapForward.containsKey (strFullyQualifiedName) ? _mapForward.get (strFullyQualifiedName) :
+			null;
 	}
 
 	@Override public boolean setForwardCurve (
 		final org.drip.analytics.rates.ForwardCurve fc)
 	{
-		if (null == _fc) return false;
+		if (null == fc) return false;
 
-		_fc = fc;
+		_mapForward.put (fc.index().fullyQualifiedName(), fc);
+
 		return true;
 	}
 
@@ -592,10 +603,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		else
 			sb.append (new java.lang.String (_dcFunding.serialize()) + getFieldDelimiter());
 
-		if (null == _fc)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
-		else
-			sb.append (new java.lang.String (_fc.serialize()) + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 
 		if (null == _dcTSY)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());

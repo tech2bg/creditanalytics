@@ -64,7 +64,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 		super (fixStream, floatStream);
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "STIR=" + getFloatStream().fri() + " | " + getEffectiveDate();
 	}
@@ -81,7 +81,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 		double dblEffectiveDate = getEffectiveDate().getJulian();
 
-		java.lang.String strComponentName = getComponentName();
+		java.lang.String strComponentName = componentName();
 
 		if (dblValueDate >= dblEffectiveDate) return null;
 

@@ -173,9 +173,9 @@ public abstract class FixedIncomeOptionComponent implements
 		return _strCalendar;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
-		return _comp.getComponentName();
+		return _comp.componentName();
 	}
 
 	@Override public java.lang.String getIRCurveName()
@@ -183,14 +183,14 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.getIRCurveName();
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
 		return _comp.getForwardCurveName();
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
-		return _comp.getCreditCurveName();
+		return _comp.creditCurveName();
 	}
 
 	@Override public java.lang.String getTreasuryCurveName()

@@ -72,14 +72,14 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 	 * Mark the Range of the "built" Segments
 	 * 
 	 * @param iSegment The Current Segment Range Built
-	 * @param fri The Floating Rate Index
+	 * @param aFRI Array of the Floating Rate Indices
 	 * 
 	 * @return TRUE => Range successfully marked as "built"
 	 */
 
 	public boolean setSegmentBuilt (
 		final int iSegment,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.product.params.FloatingRateIndex[] aFRI)
 	{
 		org.drip.spline.segment.LatentStateResponseModel[] aCS = segments();
 
@@ -87,18 +87,21 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 
 		_dblBuiltPredictorOrdinateRight = aCS[iSegment].right();
 
-		if (null == fri) return true;
-
 		if (null == _msm) _msm = new org.drip.state.representation.MergeSubStretchManager();
 
-		try {
-			return _msm.addMergeStretch (new org.drip.state.representation.LatentStateMergeSubStretch
-				(aCS[iSegment].left(), aCS[iSegment].right(), fri));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
+		int iNumFRI = null == aFRI ? 0 : aFRI.length;
+
+		for (int j = 0; j < iNumFRI; ++j) {
+			try {
+				if (!_msm.addMergeStretch (new org.drip.state.representation.LatentStateMergeSubStretch
+					(aCS[iSegment].left(), aCS[iSegment].right(), aFRI[j])))
+					return false;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
 		}
 
-		return false;
+		return true;
 	}
 
 	/**

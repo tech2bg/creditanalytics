@@ -160,6 +160,20 @@ public interface Span {
 		final int iOrder);
 
 	/**
+	 * Check if the Predictor Ordinate is in the Stretch Range
+	 * 
+	 * @param dblPredictorOrdinate Predictor Ordinate
+	 * 
+	 * @return TRUE => Predictor Ordinate is in the Range
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public abstract boolean in (
+		final double dblPredictorOrdinate)
+		throws java.lang.Exception;
+
+	/**
 	 * Display the Span Edge Coordinates
 	 */
 

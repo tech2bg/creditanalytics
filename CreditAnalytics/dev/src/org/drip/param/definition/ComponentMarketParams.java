@@ -189,10 +189,13 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	/**
 	 * Retrieve the Component Forward Curve
 	 * 
+	 * @param fri Floating Rate Index
+	 * 
 	 * @return Component Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.ForwardCurve getForwardCurve();
+	public abstract org.drip.analytics.rates.ForwardCurve getForwardCurve (
+		final org.drip.product.params.FloatingRateIndex fri);
 
 	/**
 	 * Retrieve the Component TSY Discount Curve

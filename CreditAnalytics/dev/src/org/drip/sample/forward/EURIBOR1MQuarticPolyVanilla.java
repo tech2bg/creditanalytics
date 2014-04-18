@@ -38,7 +38,7 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * EURIBOR 1M illustrates the Construction and Usage of the EURIBOR 1M Forward Curve Using Vanilla Quartic
+ * This Sample illustrates the Construction and Usage of the EURIBOR 1M Forward Curve Using Vanilla Quartic
  * 	Polynomial.
  * 
  * @author Lakshmi Krishnamurthy
@@ -182,12 +182,20 @@ public class EURIBOR1MQuarticPolyVanilla {
 			0.023000
 		};
 
+		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
+			dtValue,
+			strCurrency,
+			"6M");
+
 		ForwardCurve fc = EURIBOR.CustomEURIBORBuilderSample (
 			dcEONIA,
+			fc6M,
 			fri,
 			scbcQuartic,
 			astrDepositTenor,
 			adblDepositQuote,
+			null,
+			null,
 			astrFixFloatTenor,
 			adblFixFloatQuote,
 			astrFloatFloatTenor,

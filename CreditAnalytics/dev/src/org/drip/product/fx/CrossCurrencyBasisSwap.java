@@ -109,9 +109,9 @@ public class CrossCurrencyBasisSwap extends org.drip.product.definition.BasketPr
 	{
 		java.util.Set<java.lang.String> setstrCredit = new java.util.TreeSet<java.lang.String>();
 
-		setstrCredit.add (_ffcReference.getCreditCurveName());
+		setstrCredit.add (_ffcReference.creditCurveName());
 
-		setstrCredit.add (_ffcDerived.getCreditCurveName());
+		setstrCredit.add (_ffcDerived.creditCurveName());
 
 		return setstrCredit;
 	}

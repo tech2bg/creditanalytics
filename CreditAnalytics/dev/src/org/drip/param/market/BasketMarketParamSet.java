@@ -441,8 +441,8 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		return new ComponentMarketParamSet (_mapDC.get (compRef.getIRCurveName()), null, _mapFC.get
 			(compRef.getForwardCurveName()), _mapDC.get (compRef.getTreasuryCurveName()), _mapDC.get
-				(compRef.getEDSFCurveName()), _mapCC.get (compRef.getCreditCurveName()), _mapCQComp.get
-					(compRef.getComponentName()), _mapCQComp, _mmFixings);
+				(compRef.getEDSFCurveName()), _mapCC.get (compRef.creditCurveName()), _mapCQComp.get
+					(compRef.componentName()), _mapCQComp, _mmFixings);
 	}
 
 	@Override public java.lang.String getCollectionKeyValueDelimiter()

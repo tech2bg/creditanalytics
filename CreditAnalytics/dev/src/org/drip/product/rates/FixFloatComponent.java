@@ -143,7 +143,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		return _strCode;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "IBS=" + getMaturityDate();
 	}
@@ -201,12 +201,12 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		return _fixReference.getIRCurveName();
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
 		return _floatDerived.getForwardCurveName();
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}
@@ -288,48 +288,48 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	{
 		long lStart = System.nanoTime();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatReferenceStreamResult =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixedReferenceStreamResult =
 			_fixReference.value (valParams, pricerParams, mktParams, quotingParams);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatDerivedStreamResult =
 			_floatDerived.value (valParams, pricerParams, mktParams, quotingParams);
 
-		if (null == mapFloatReferenceStreamResult || 0 == mapFloatReferenceStreamResult.size() || null ==
+		if (null == mapFixedReferenceStreamResult || 0 == mapFixedReferenceStreamResult.size() || null ==
 			mapFloatDerivedStreamResult || 0 == mapFloatDerivedStreamResult.size())
 			return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		mapResult.put ("ReferenceAccrued01", mapFloatReferenceStreamResult.get ("Accrued01"));
+		mapResult.put ("ReferenceAccrued01", mapFixedReferenceStreamResult.get ("Accrued01"));
 
-		mapResult.put ("ReferenceAccrued", mapFloatReferenceStreamResult.get ("FloatAccrued"));
+		mapResult.put ("ReferenceAccrued", mapFixedReferenceStreamResult.get ("FloatAccrued"));
 
-		double dblReferenceCleanDV01 = mapFloatReferenceStreamResult.get ("CleanDV01");
+		double dblReferenceCleanDV01 = mapFixedReferenceStreamResult.get ("CleanDV01");
 
 		mapResult.put ("ReferenceCleanDV01", dblReferenceCleanDV01);
 
-		double dblReferenceCleanPV = mapFloatReferenceStreamResult.get ("CleanPV");
+		double dblReferenceCleanPV = mapFixedReferenceStreamResult.get ("CleanPV");
 
 		mapResult.put ("ReferenceCleanPV", dblReferenceCleanPV);
 
-		mapResult.put ("ReferenceDirtyDV01", mapFloatReferenceStreamResult.get ("DirtyDV01"));
+		mapResult.put ("ReferenceDirtyDV01", mapFixedReferenceStreamResult.get ("DirtyDV01"));
 
-		double dblReferenceDirtyPV = mapFloatReferenceStreamResult.get ("DirtyPV");
+		double dblReferenceDirtyPV = mapFixedReferenceStreamResult.get ("DirtyPV");
 
 		mapResult.put ("ReferenceDirtyPV", dblReferenceDirtyPV);
 
-		mapResult.put ("ReferenceDV01", mapFloatReferenceStreamResult.get ("DV01"));
+		mapResult.put ("ReferenceDV01", mapFixedReferenceStreamResult.get ("DV01"));
 
-		mapResult.put ("ReferenceFixing01", mapFloatReferenceStreamResult.get ("Fixing01"));
+		mapResult.put ("ReferenceFixing01", mapFixedReferenceStreamResult.get ("Fixing01"));
 
-		double dblReferencePV = mapFloatReferenceStreamResult.get ("PV");
+		double dblReferencePV = mapFixedReferenceStreamResult.get ("PV");
 
 		mapResult.put ("ReferencePV", dblReferencePV);
 
-		mapResult.put ("ReferenceResetDate", mapFloatReferenceStreamResult.get ("ResetDate"));
+		mapResult.put ("ReferenceResetDate", mapFixedReferenceStreamResult.get ("ResetDate"));
 
-		mapResult.put ("ReferenceResetRate", mapFloatReferenceStreamResult.get ("ResetRate"));
+		mapResult.put ("ReferenceResetRate", mapFixedReferenceStreamResult.get ("ResetRate"));
 
 		mapResult.put ("DerivedAccrued01", mapFloatDerivedStreamResult.get ("Accrued01"));
 
@@ -369,7 +369,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 
 		mapResult.put ("PV", dblReferencePV + dblDerivedPV);
 
-		mapResult.put ("Upfront", mapFloatReferenceStreamResult.get ("Upfront") +
+		mapResult.put ("Upfront", mapFixedReferenceStreamResult.get ("Upfront") +
 			mapFloatDerivedStreamResult.get ("Upfront"));
 
 		mapResult.put ("ReferenceParBasisSpread", -1. * (dblReferenceCleanPV + dblDerivedCleanPV) /
@@ -377,6 +377,8 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 
 		mapResult.put ("DerivedParBasisSpread", -1. * (dblReferenceCleanPV + dblDerivedCleanPV) /
 			dblDerivedCleanDV01);
+
+		mapResult.put ("ParSwapRate", -1. * dblDerivedCleanPV / dblReferenceCleanDV01);
 
 		double dblValueNotional = java.lang.Double.NaN;
 
@@ -537,6 +539,12 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 						lsmm.getMeasureQuoteValue())) || !prwc.updateDValueDManifestMeasure
 							("ReferenceParBasisSpread", -10000. * mapReferenceValue.get ("CleanDV01")) ? null
 								: prwc;
+
+		if (org.drip.quant.common.StringUtil.MatchInStringArray ("SwapRate", astrManifestMeasure, false))
+			return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanDV01") ||
+				!prwc.updateValue (-1. * mapReferenceValue.get ("CleanDV01") * 10000. *
+					lsmm.getMeasureQuoteValue()) || !prwc.updateDValueDManifestMeasure ("SwapRate", -10000. *
+						mapReferenceValue.get ("CleanDV01")) ? null : prwc;
 
 		return null;
 	}

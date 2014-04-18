@@ -144,7 +144,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		return _strCode;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "IBS=" + getMaturityDate();
 	}
@@ -202,12 +202,12 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		return _floatReference.getIRCurveName();
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
 		return _floatDerived.getForwardCurveName();
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}
@@ -392,9 +392,9 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
 
-				mapResult.put ("Price", dblCleanPrice);
-
 				mapResult.put ("CleanPrice", dblCleanPrice);
+
+				mapResult.put ("Price", dblCleanPrice);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

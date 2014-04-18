@@ -212,7 +212,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "CD=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}
@@ -278,12 +278,12 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return _strIR;
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
-		return "";
+		return null == _fri ? null : new java.lang.String[] {_fri.fullyQualifiedName()};
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}
@@ -339,7 +339,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		org.drip.analytics.rates.ForwardCurve fc = mktParams.getForwardCurve();
+		org.drip.analytics.rates.ForwardCurve fc = mktParams.getForwardCurve (_fri);
 
 		if (null != fc && null != _fri && fc.name().equalsIgnoreCase (_fri.fullyQualifiedName())) {
 			try {

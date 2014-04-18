@@ -369,7 +369,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "FloatingStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}
@@ -475,12 +475,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return _strIR;
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
-		return _fri.fullyQualifiedName();
+		return new java.lang.String[] {_fri.fullyQualifiedName()};
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}
@@ -553,9 +553,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		java.lang.String strFRI = _fri.fullyQualifiedName();
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve();
-
-		if (null != fc && !_fri.match (fc.index())) fc = null;
+		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve (_fri);
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblFloatingRate = 0.;
@@ -572,29 +570,26 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					dblResetRate = dblFloatingRate = null == fc ? getCoupon (valParams.valueDate(),
 						mktParams) : fc.forward (period.getPayDate());
 
-					/* if (null == mktParams.getFixings() || null == mktParams.getFixings().get (new
-						org.drip.analytics.date.JulianDate (period.getResetDate())) || null ==
-							mktParams.getFixings().get (new org.drip.analytics.date.JulianDate
-								(period.getResetDate())).get (strFRI))
-						dblResetRate = dblFloatingRate = null == fc ? getCoupon (valParams.valueDate(),
-							mktParams) : fc.forward (period.getPayDate());
-					else
-						dblResetRate = dblFloatingRate = mktParams.getFixings().get (new
-							org.drip.analytics.date.JulianDate (period.getResetDate())).get (strFRI); */
-
 					dblFixing01 = period.getAccrualDCF (valParams.valueDate()) * 0.0001 * getNotional
 						(period.getAccrualStartDate(), valParams.valueDate());
 
 					if (period.getStartDate() < valParams.valueDate()) dblAccrued01 = dblFixing01;
 
 					dblResetDate = period.getResetDate();
-				} else
+				} else {
+					double dblPeriodQuantoAdjust =
+						org.drip.analytics.support.AnalyticsHelper.MultiplicativeCrossVolQuanto (mktParams,
+							strFRI, "ForwardToDomesticExchangeVolatility",
+								"FRIForwardToDomesticExchangeCorrelation", valParams.valueDate(),
+									period.getStartDate());
+
 					dblFloatingRate = (null == fc ? dc.libor (period.getStartDate(), period.getPayDate(),
-						period.getCouponDCF()) : fc.forward (period.getPayDate())) *
-							org.drip.analytics.support.AnalyticsHelper.MultiplicativeCrossVolQuanto
-								(mktParams, strFRI, "ForwardToDomesticExchangeVolatility",
-									"FRIForwardToDomesticExchangeCorrelation", valParams.valueDate(),
-										period.getStartDate());
+						period.getCouponDCF()) : fc.forward (period.getPayDate())) * dblPeriodQuantoAdjust;
+				}
+
+				/* System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (period.getPayDate()) +
+					" | " + strFRI + " | " + dblFloatingRate + " | " + fc.forward (period.getPayDate()) +
+						" | " + _dblSpread); */
 
 				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * getNotional
 					(period.getAccrualStartDate(), period.getEndDate());
@@ -916,7 +911,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		double dblDirtyCV100 = 0.;
+		double dblCleanCV100 = 0.;
 		boolean bFirstPeriod = true;
 		double dblManifestMeasureQuote = 0.;
 
@@ -950,20 +945,22 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 				double dblPeriodCV100 = dblPeriodDCF * dc.df (dblPayDate) * getNotional (dblPayDate);
 
-				dblDirtyCV100 += dblPeriodCV100;
+				dblCleanCV100 += dblPeriodCV100;
 				double dblNotionalPeriodCV100 = dblPeriodCV100 * _dblNotional;
 
 				if (!_bIsReference && (!prwc.addPredictorResponseWeight (dblPayDate, dblNotionalPeriodCV100)
 					|| !prwc.addDResponseWeightDManifestMeasure ("DerivedParBasisSpread", dblPayDate,
 						dblNotionalPeriodCV100) || !prwc.addDResponseWeightDManifestMeasure
-							("ReferenceParBasisSpread", dblPayDate, dblNotionalPeriodCV100)))
+							("ReferenceParBasisSpread", dblPayDate, dblNotionalPeriodCV100) ||
+								!prwc.addDResponseWeightDManifestMeasure ("SwapRate", dblPayDate,
+									dblNotionalPeriodCV100)))
 						return null;
 			}
 
-			double dblNotionalDirtyCV100 = dblDirtyCV100 * _dblNotional;
+			double dblNotionalCleanCV100 = dblCleanCV100 * _dblNotional;
 
-			if (!_bIsReference && (!prwc.updateValue (-1. * dblNotionalDirtyCV100 * dblManifestMeasureQuote)
-				|| !prwc.updateDValueDManifestMeasure ("DerivedParBasisSpread", -1. * dblNotionalDirtyCV100)
+			if (!_bIsReference && (!prwc.updateValue (-1. * dblNotionalCleanCV100 * dblManifestMeasureQuote)
+				|| !prwc.updateDValueDManifestMeasure ("DerivedParBasisSpread", -1. * dblNotionalCleanCV100)
 					|| !prwc.updateDValueDManifestMeasure ("ReferenceParBasisSpread", 0.)))
 					return null;
 

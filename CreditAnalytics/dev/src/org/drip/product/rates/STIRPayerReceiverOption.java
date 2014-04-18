@@ -82,7 +82,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		long lStart = System.nanoTime();
 
-		java.lang.String strComponentName = getComponentName();
+		java.lang.String strComponentName = componentName();
 
 		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface =
 			mktParams.getLatentStateVolSurface (strComponentName + "SwapRateVolatility", exercise());

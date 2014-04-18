@@ -584,7 +584,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return true;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		if (null != _strName && !_strName.isEmpty()) return _strName;
 
@@ -705,12 +705,12 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _strIR;
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
-		return "";
+		return null;
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return _crValParams._strCC;
 	}
@@ -1105,7 +1105,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		try {
 			if (null == (ccQS = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
-				(getComponentName(), new org.drip.analytics.date.JulianDate (valParams.valueDate()), aComp,
+				(componentName(), new org.drip.analytics.date.JulianDate (valParams.valueDate()), aComp,
 					mktParams.getFundingCurve(), adblQS, astrCalibMeasure, null != cc ? cc.getRecovery
 						(valParams.valueDate()) : 0.4, false)))
 				return null;

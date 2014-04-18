@@ -63,6 +63,8 @@ public class EURIBOR {
 		final FloatingRateIndex fri)
 		throws Exception
 	{
+		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
+
 		RatesComponent[] aDeposit = new RatesComponent[astrMaturityTenor.length];
 
 		String strCurrency = fri.currency();
@@ -78,6 +80,39 @@ public class EURIBOR {
 	}
 
 	/*
+	 * Construct the Array of FRA from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final RatesComponent[] FRAFromMaturityDays (
+		final JulianDate dtEffective,
+		final FloatingRateIndex fri,
+		final String[] astrMaturityTenor,
+		final double[] adblFRAStrike)
+		throws Exception
+	{
+		if (null == astrMaturityTenor || null == adblFRAStrike || 0 == astrMaturityTenor.length) return null;
+
+		RatesComponent[] aFRA = new RatesComponent[astrMaturityTenor.length];
+
+		String strCurrency = fri.currency();
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aFRA[i] = new FRAComponent (
+				1.,
+				strCurrency,
+				"FRA::" + strCurrency,
+				strCurrency,
+				dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency).getJulian(),
+				fri,
+				adblFRAStrike[i],
+				"Act/365");
+
+		return aFRA;
+	}
+
+	/*
 	 * Construct an array of fix-float swaps from the fixed reference and the xM floater derived legs.
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -86,16 +121,19 @@ public class EURIBOR {
 	private static final FixFloatComponent[] FixFloatSwap (
 		final JulianDate dtEffective,
 		final FloatingRateIndex fri,
-		final int iForwardTenorFreq,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon)
 		throws Exception
 	{
+		if (null == astrMaturityTenor || null == adblCoupon || 0 == astrMaturityTenor.length) return null;
+
 		String strCurrency = fri.currency();
 
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
 
 		FixFloatComponent[] aFFC = new FixFloatComponent[astrMaturityTenor.length];
+
+		int iForwardTenorFreq = new Integer (fri.tenor().split ("M")[0]);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency);
@@ -113,7 +151,7 @@ public class EURIBOR {
 			 */
 
 			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
-				false, fri, iForwardTenorFreq, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap,
+				false, fri, 12 / iForwardTenorFreq, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap,
 					dap, dap, null, null, 1., strCurrency, strCurrency);
 
 			/*
@@ -135,15 +173,18 @@ public class EURIBOR {
 	private static final FloatFloatComponent[] FloatFloatSwap (
 		final JulianDate dtEffective,
 		final FloatingRateIndex fri,
-		final int iForwardTenorFreq,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
+		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
+
 		String strCurrency = fri.currency();
 
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
 
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
+
+		int iForwardTenorFreq = new Integer (fri.tenor().split ("M")[0]);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency);
@@ -161,7 +202,7 @@ public class EURIBOR {
 			 */
 
 			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(), dtMaturity.getJulian(),
-				0., false, fri, iForwardTenorFreq, "Act/360", false, "Act/360", false, false, null, dap, dap,
+				0., false, fri, 12 / iForwardTenorFreq, "Act/360", false, "Act/360", false, false, null, dap, dap,
 					dap, dap, dap, dap, null, null, 1., strCurrency, strCurrency);
 
 			/*
@@ -176,10 +217,13 @@ public class EURIBOR {
 
 	public static final ForwardCurve CustomEURIBORBuilderSample (
 		final DiscountCurve dc,
+		final ForwardCurve fcReference,
 		final FloatingRateIndex fri,
 		final SegmentCustomBuilderControl scbc,
 		final String[] astrDepositTenor,
 		final double[] adblDepositQuote,
+		final String[] astrFRATenor,
+		final double[] adblFRAQuote,
 		final String[] astrFixFloatTenor,
 		final double[] adblFixFloatQuote,
 		final String[] astrFloatFloatTenor,
@@ -197,7 +241,7 @@ public class EURIBOR {
 
 		JulianDate dtValue = dc.epoch();
 
-		CalibratableFixedIncomeComponent[] aDepositComp = DepositFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDeposit = DepositFromMaturityDays (
 			dtValue,
 			astrDepositTenor,
 			fri
@@ -211,15 +255,43 @@ public class EURIBOR {
 			"DEPOSIT",
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
-			aDepositComp,
+			aDeposit,
 			"ForwardRate",
 			adblDepositQuote,
 			null);
 
+		CalibratableFixedIncomeComponent[] aFRA = FRAFromMaturityDays (
+			dtValue,
+			fri,
+			astrFRATenor,
+			adblFRAQuote
+		);
+
+		/*
+		 * Construct the FRA Instrument Set Stretch Builder
+		 */
+
+		StretchRepresentationSpec srsFRA = StretchRepresentationSpec.CreateStretchBuilderSet (
+			"FRA",
+			ForwardCurve.LATENT_STATE_FORWARD,
+			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+			aFRA,
+			"ParForwardRate",
+			adblFRAQuote,
+			null);
+
+		double[] adblFixFloatDerivedParBasisSpread = null;
+
+		if (null != adblFixFloatQuote && 0 != adblFixFloatQuote.length) {
+			adblFixFloatDerivedParBasisSpread = new double[adblFixFloatQuote.length];
+
+			for (int j = 0; j < adblFixFloatQuote.length; ++j)
+				adblFixFloatDerivedParBasisSpread[j] = 0.;
+		}
+
 		FixFloatComponent[] aFixFloat = FixFloatSwap (
 			dtValue,
 			fri,
-			12,
 			astrFixFloatTenor,
 			adblFixFloatQuote);
 
@@ -233,13 +305,12 @@ public class EURIBOR {
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aFixFloat,
 			"DerivedParBasisSpread",
-			adblFixFloatQuote,
+			adblFixFloatDerivedParBasisSpread,
 			null);
 
 		FloatFloatComponent[] aFloatFloat = FloatFloatSwap (
 			dtValue,
 			fri,
-			12,
 			astrFloatFloatTenor
 		);
 
@@ -259,7 +330,6 @@ public class EURIBOR {
 		FloatFloatComponent[] aSyntheticFloatFloat = FloatFloatSwap (
 			dtValue,
 			fri,
-			12,
 			astrSyntheticFloatFloatTenor
 		);
 
@@ -278,6 +348,7 @@ public class EURIBOR {
 
 		StretchRepresentationSpec[] aSRS = new StretchRepresentationSpec[] {
 			srsDeposit,
+			srsFRA,
 			srsFixFloat,
 			srsFloatFloat,
 			srsSyntheticFloatFloat
@@ -304,14 +375,15 @@ public class EURIBOR {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+			(dc, fcReference, null, null, null, null, null, null);
 
 		/*
 		 * Construct the Shape Preserving Forward Curve by applying the linear curve calibrator to the array
 		 *  of Deposit and Swap Stretches.
 		 */
 
-		ForwardCurve fc = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
+		ForwardCurve fcDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			lcc,
 			aSRS,
 			fri,
@@ -319,76 +391,105 @@ public class EURIBOR {
 			null,
 			cmp,
 			null,
-			adblDepositQuote[0]);
+			null == adblDepositQuote || 0 == adblDepositQuote.length ? adblFRAQuote[0] : adblDepositQuote[0]);
 
 		/*
 		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmpFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fc, null, null, null, null, null, null);
+		cmp.setForwardCurve (fcDerived);
 
 		/*
 		 * Cross-Comparison of the Deposit Calibration Instrument "Forward" metric.
 		 */
 
-		System.out.println ("\t----------------------------------------------------------------");
+		if (null != aDeposit && null != adblDepositQuote) {
+			System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t     DEPOSIT INSTRUMENTS QUOTE RECOVERY");
+			System.out.println ("\t     DEPOSIT INSTRUMENTS QUOTE RECOVERY");
 
-		System.out.println ("\t----------------------------------------------------------------");
+			System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aDepositComp[i].calcMeasureValue (valParams, null, cmpFwd, null, "Forward"), 1, 6, 1.) +
-					" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
+			for (int i = 0; i < aDeposit.length; ++i)
+				System.out.println ("\t[" + aDeposit[i].getEffectiveDate() + " - " + aDeposit[i].getMaturityDate() + "] = " +
+					FormatUtil.FormatDouble (aDeposit[i].calcMeasureValue (valParams, null, cmp, null, "Forward"), 1, 6, 1.) +
+						" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.) + " | " +
+							FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].getMaturityDate()), 1, 4, 100.) + "%");
+		}
+
+		/*
+		 * Cross-Comparison of the FRA Calibration Instrument "Forward" metric.
+		 */
+
+		if (null != aFRA && null != adblFRAQuote) {
+			System.out.println ("\t----------------------------------------------------------------");
+
+			System.out.println ("\t     FRA INSTRUMENTS QUOTE RECOVERY");
+
+			System.out.println ("\t----------------------------------------------------------------");
+
+			for (int i = 0; i < aFRA.length; ++i)
+				System.out.println ("\t[" + aFRA[i].getEffectiveDate() + " - " + aFRA[i].getMaturityDate() + "] = " +
+					FormatUtil.FormatDouble (aFRA[i].calcMeasureValue (valParams, null, cmp, null, "ParForwardRate"), 1, 6, 1.) +
+						" | " + FormatUtil.FormatDouble (adblFRAQuote[i], 1, 6, 1.) + " | " +
+							FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].getMaturityDate()), 1, 4, 100.) + "%");
+		}
 
 		/*
 		 * Cross-Comparison of the Fix-Float Calibration Instrument "DerivedParBasisSpread" metric.
 		 */
 
-		System.out.println ("\t----------------------------------------------------------------");
+		if (null != aFixFloat && null != adblFixFloatQuote) {
+			System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t     FIX-FLOAT INSTRUMENTS QUOTE RECOVERY");
+			System.out.println ("\t     FIX-FLOAT INSTRUMENTS QUOTE RECOVERY");
 
-		System.out.println ("\t----------------------------------------------------------------");
+			System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aFixFloat.length; ++i)
-			System.out.println ("\t[" + aFixFloat[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aFixFloat[i].calcMeasureValue (valParams, null, cmpFwd, null, "DerivedParBasisSpread"), 1, 2, 1.) +
-					" | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 10000.));
+			for (int i = 0; i < aFixFloat.length; ++i)
+				System.out.println ("\t[" + aFixFloat[i].getEffectiveDate() + " - " + aFixFloat[i].getMaturityDate() + "] = " +
+					FormatUtil.FormatDouble (aFixFloat[i].calcMeasureValue (valParams, null, cmp, null, "ParSwapRate"), 1, 2, 0.01) +
+						"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
+							FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
+		}
 
 		/*
 		 * Cross-Comparison of the Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
 		 */
 
-		System.out.println ("\t----------------------------------------------------------------");
+		if (null != aFloatFloat && null != adblFloatFloatQuote) {
+			System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t     FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
+			System.out.println ("\t     FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
 
-		System.out.println ("\t----------------------------------------------------------------");
+			System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aFloatFloat.length; ++i)
-			System.out.println ("\t[" + aFloatFloat[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aFloatFloat[i].calcMeasureValue (valParams, null, cmpFwd, null, "DerivedParBasisSpread"), 1, 2, 1.) +
-					" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.));
+			for (int i = 0; i < aFloatFloat.length; ++i)
+				System.out.println ("\t[" + aFloatFloat[i].getEffectiveDate() + " - " + aFloatFloat[i].getMaturityDate() + "] = " +
+					FormatUtil.FormatDouble (aFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, "DerivedParBasisSpread"), 1, 2, 1.) +
+						" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.) + " | " +
+							FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
+		}
 
 		/*
 		 * Cross-Comparison of the Synthetic Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
 		 */
 
-		System.out.println ("\t----------------------------------------------------------------");
+		if (null != aSyntheticFloatFloat && null != adblSyntheticFloatFloatQuote) {
+			System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t     SYNTHETIC FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
+			System.out.println ("\t     SYNTHETIC FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
 
-		System.out.println ("\t----------------------------------------------------------------");
+			System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
-			System.out.println ("\t[" + aSyntheticFloatFloat[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aSyntheticFloatFloat[i].calcMeasureValue (valParams, null, cmpFwd, null, "DerivedParBasisSpread"), 1, 2, 1.) +
-					" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.));
+			for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
+				System.out.println ("\t[" + aSyntheticFloatFloat[i].getEffectiveDate() + " - " + aSyntheticFloatFloat[i].getMaturityDate() + "] = " +
+					FormatUtil.FormatDouble (aSyntheticFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, "DerivedParBasisSpread"), 1, 2, 1.) +
+						" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.) + " | " +
+							FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
+		}
 
-		return fc;
+		return fcDerived;
 	}
 
 	private static final void ForwardJack (

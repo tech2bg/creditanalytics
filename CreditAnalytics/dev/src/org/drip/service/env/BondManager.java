@@ -1144,7 +1144,7 @@ public class BondManager {
 			stmt.executeQuery ("delete from BondHist where CUSIP = '" + bond.getCUSIP() + "' and EOD = '" +
 				strOracleEOD + "'");
 		} catch (java.lang.Exception e) {
-			System.out.println (e.getMessage() + "; " + bond.getComponentName() + " for price=" + dblPrice);
+			System.out.println (e.getMessage() + "; " + bond.componentName() + " for price=" + dblPrice);
 
 			e.printStackTrace();
 
@@ -1160,7 +1160,7 @@ public class BondManager {
 		try {
 			wi = bond.calcExerciseYieldFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null, dblPrice);
 		} catch (java.lang.Exception e) {
-			System.out.println (e.getMessage() + "; " + bond.getComponentName() + " for price=" + dblPrice);
+			System.out.println (e.getMessage() + "; " + bond.componentName() + " for price=" + dblPrice);
 
 			e.printStackTrace();
 
@@ -1194,7 +1194,7 @@ public class BondManager {
 				sbSQLInsertBondClose.append ("'" + (new org.drip.analytics.date.JulianDate
 					(wi.date()).toOracleDate()) + "', ");
 		} catch (java.lang.Exception e) {
-			System.out.println (e.getMessage() + "; " + bond.getComponentName() + " for price=" + dblPrice);
+			System.out.println (e.getMessage() + "; " + bond.componentName() + " for price=" + dblPrice);
 
 			return false;
 		}
@@ -1272,7 +1272,7 @@ public class BondManager {
 			if (bond.getMaturityDate().getJulian() > dtEOD.getJulian()) {
 				if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
 					(bond.getCUSIP())) {
-					if (s_bBlog) System.out.println ("No price entry found for " + bond.getComponentName());
+					if (s_bBlog) System.out.println ("No price entry found for " + bond.componentName());
 
 					++iNumMarksUnavailable;
 					continue;

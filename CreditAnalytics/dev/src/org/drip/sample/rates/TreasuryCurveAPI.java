@@ -155,7 +155,7 @@ public class TreasuryCurveAPI {
 				1.,
 				0.);
 
-			System.out.println ("\tPrice[" + aTSYBond[i].getComponentName() + "]: " +
+			System.out.println ("\tPrice[" + aTSYBond[i].componentName() + "]: " +
 				FormatUtil.FormatDouble (dblPrice, 2, 3, 100.));
 
 			double dblYield = aTSYBond[i].calcYieldFromPrice (
@@ -164,7 +164,7 @@ public class TreasuryCurveAPI {
 				null,
 				dblPrice);
 
-			System.out.println ("\tYield[" + aTSYBond[i].getComponentName() + "]: " +
+			System.out.println ("\tYield[" + aTSYBond[i].componentName() + "]: " +
 				FormatUtil.FormatDouble (dblYield, 1, 3, 100.));
 		}
 

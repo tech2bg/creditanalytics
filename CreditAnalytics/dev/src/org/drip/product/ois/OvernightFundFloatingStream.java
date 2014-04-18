@@ -132,7 +132,7 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 		super (ab);
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "OvernightFundFloatingStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}

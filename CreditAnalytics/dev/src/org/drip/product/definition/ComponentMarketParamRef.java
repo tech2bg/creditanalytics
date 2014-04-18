@@ -46,7 +46,7 @@ public interface ComponentMarketParamRef {
 	 * @return The component name
 	 */
 
-	public abstract java.lang.String getComponentName();
+	public abstract java.lang.String componentName();
 
 	/**
 	 * Get the IR curve name
@@ -57,12 +57,12 @@ public interface ComponentMarketParamRef {
 	public abstract java.lang.String getIRCurveName();
 
 	/**
-	 * Get the Forward Curve Name
+	 * Get the Forward Curve Names
 	 * 
-	 * @return The Forward Curve Name
+	 * @return Array of the Forward Curve Names
 	 */
 
-	public abstract java.lang.String getForwardCurveName();
+	public abstract java.lang.String[] getForwardCurveName();
 
 	/**
 	 * Get the credit curve name
@@ -70,7 +70,7 @@ public interface ComponentMarketParamRef {
 	 * @return The credit curve name
 	 */
 
-	public abstract java.lang.String getCreditCurveName();
+	public abstract java.lang.String creditCurveName();
 
 	/**
 	 * Get the treasury curve name

@@ -152,8 +152,7 @@ public class CDSManager {
 							null), null);
 
 			if (null == mapCalc) {
-				System.out.println ("CDS Calc for " + strSPN + " and " + aCDS[1].getComponentName() +
-					"failed");
+				System.out.println ("CDS Calc for " + strSPN + " and " + aCDS[1].componentName() + "failed");
 
 				continue;
 			}

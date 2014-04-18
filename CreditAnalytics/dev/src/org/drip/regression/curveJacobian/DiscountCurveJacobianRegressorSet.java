@@ -174,7 +174,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					for (int i = 0; i < aCompCalib.length; ++i) {
-						if (!rnvd.set ("PVDFMicroJack_" + aCompCalib[i].getComponentName(),
+						if (!rnvd.set ("PVDFMicroJack_" + aCompCalib[i].componentName(),
 							aWJComp[i].displayString()))
 							return false;
 					}

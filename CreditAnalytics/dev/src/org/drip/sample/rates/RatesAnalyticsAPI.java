@@ -286,7 +286,7 @@ public class RatesAnalyticsAPI {
 				ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 				null);
 
-			System.out.println ("PV/DF Micro Jack[" + aCompCalib[i].getComponentName() + "]=" +
+			System.out.println ("PV/DF Micro Jack[" + aCompCalib[i].componentName() + "]=" +
 				(null == wjComp ? null : wjComp.displayString()));
 		}
 	}

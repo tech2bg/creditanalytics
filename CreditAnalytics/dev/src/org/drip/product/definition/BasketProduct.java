@@ -441,8 +441,18 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
 
-		for (int i = 0; i < iNumComp; ++i)
-			sIR.add (aComp[i].getForwardCurveName());
+		for (int i = 0; i < iNumComp; ++i) {
+			java.lang.String[] astrForwardCurveName = aComp[i].getForwardCurveName();
+
+			if (null == astrForwardCurveName) continue;
+
+			int iNumForwardCurve = astrForwardCurveName.length;
+
+			if (0 == iNumForwardCurve) continue;
+
+			for (int j = 0; j < iNumForwardCurve; ++j)
+				sIR.add (astrForwardCurveName[j]);
+		}
 
 		return sIR;
 	}
@@ -470,7 +480,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		java.util.Set<java.lang.String> sCC = new java.util.HashSet<java.lang.String>();
 
 		for (int i = 0; i < iNumComp; ++i)
-			sCC.add (aComp[i].getCreditCurveName());
+			sCC.add (aComp[i].creditCurveName());
 
 		return sCC;
 	}
@@ -730,8 +740,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 					mapBasketOP.put (strKey, (null == dblCompValue ? 0. : adblWeight[i] * dblCompValue) +
 						(null == dblBasketValue ? 0. : dblBasketValue));
 				else if (MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE == measureAggregationType (strKey))
-					mapBasketOP.put (aComp[i].getComponentName() + "[" + strKey + "]", (null == dblCompValue
-						? 0. : dblCompValue));
+					mapBasketOP.put (aComp[i].componentName() + "[" + strKey + "]", (null == dblCompValue ?
+						0. : dblCompValue));
 			}
 		}
 

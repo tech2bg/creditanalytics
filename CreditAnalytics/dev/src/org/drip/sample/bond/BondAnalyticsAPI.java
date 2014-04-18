@@ -399,7 +399,7 @@ public class BondAnalyticsAPI {
 
 			aBond[i].value (valParams, null, cmp, null);
 
-			System.out.println ("\n" + aBond[i].getComponentName() + " Valuation OP: " + aBond[i].value (valParams, null, cmp, null));
+			System.out.println ("\n" + aBond[i].componentName() + " Valuation OP: " + aBond[i].value (valParams, null, cmp, null));
 
 			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
 				(valParams, cmp, null, 0.03), 1, 3, 100.));

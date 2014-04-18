@@ -496,19 +496,19 @@ public class STIROption {
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
 		cmp.setLatentStateVolSurface (
-			stir.getComponentName() + "SwapRateVolatility",
+			stir.componentName() + "SwapRateVolatility",
 			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
 		cmp.setLatentStateVolSurface (
-			stir.getComponentName() + "SwapRateExchangeVolatility",
+			stir.componentName() + "SwapRateExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
 		cmp.setLatentStateVolSurface (
-			stir.getComponentName() + "SwapRateToSwapRateExchangeCorrelation",
+			stir.componentName() + "SwapRateToSwapRateExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);

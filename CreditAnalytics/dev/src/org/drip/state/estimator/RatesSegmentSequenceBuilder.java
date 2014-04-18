@@ -40,6 +40,7 @@ package org.drip.state.estimator;
  */
 
 public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.SegmentSequenceBuilder {
+	private org.drip.spline.grid.Span _span = null;
 	private double _dblEpochResponse = java.lang.Double.NaN;
 	private org.drip.spline.stretch.BoundarySettings _bs = null;
 	private org.drip.state.estimator.CurveStretch _stretch = null;
@@ -47,10 +48,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfr = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
-	private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
-	private org.drip.spline.stretch.MultiSegmentSequence _mssPrev = null;
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
+	private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 	private
 		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
 			_mapPMSC = null;
@@ -69,6 +69,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	 * @param cmp Component Market Parameter
 	 * @param quotingParams Quoting Parameter
 	 * @param mssPrev The Previous Stretch Used to value cash flows that fall in those segments
+	 * @param span The Containing Span this Stretch will become a part of
 	 * @param sbfr Stretch Fitness Weighted Response
 	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * @param sbfrQuoteSensitivity Stretch Fitness Weighted Response Quote Sensitivity
@@ -85,6 +86,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.param.definition.ComponentMarketParams cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
+		final org.drip.spline.grid.Span span,
 		final org.drip.spline.params.StretchBestFitResponse sbfr,
 		final org.drip.spline.params.PreceedingManifestSensitivityControl pmsc,
 		final org.drip.spline.params.StretchBestFitResponse sbfrQuoteSensitivity,
@@ -105,7 +107,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		try {
 			return new RatesSegmentSequenceBuilder (dblEpochResponse, srs, valParams, pricerParams, cmp,
-				quotingParams, mssPrev, sbfr, mapPMSC, sbfrQuoteSensitivity, bs);
+				quotingParams, mssPrev, span, sbfr, mapPMSC, sbfrQuoteSensitivity, bs);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -119,17 +121,17 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return _mapPMSC.containsKey (strManifestMeasure) ? _mapPMSC.get (strManifestMeasure) : null;
 	}
 
-	private boolean generateSegmentConstraintSet (
+	private boolean generateSegmentConstraintSet2 (
 		final double dblSegmentRight,
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
 		final java.lang.String strManifestMeasure)
 	{
-		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentCalibResponseConstraint
+		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentCalibResponseConstraint2
 			(prlc);
 
 		if (null == srvcBase) return false;
 
-		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentSensResponseConstraint
+		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentSensResponseConstraint2
 			(prlc, strManifestMeasure);
 
 		if (null == srvcSensitivity) return false;
@@ -151,7 +153,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return true;
 	}
 
-	protected org.drip.spline.params.SegmentResponseValueConstraint segmentCalibResponseConstraint (
+	protected org.drip.spline.params.SegmentResponseValueConstraint segmentCalibResponseConstraint2 (
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc)
 	{
 		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPredictorResponseWeight =
@@ -176,9 +178,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			double dblPredictorDate = me.getKey();
 
 			try {
-				if (null != _mssPrev && _mssPrev.in (dblPredictorDate))
-					dblValue -= _mssPrev.responseValue (dblPredictorDate) * me.getValue();
-				else if (null != _stretch && _stretch.inBuiltRange (dblPredictorDate))
+				if (null != _span && _span.in (dblPredictorDate))
+					dblValue -= _span.calcResponseValue (dblPredictorDate) * me.getValue();
+				else if (_stretch.inBuiltRange (dblPredictorDate))
 					dblValue -= _stretch.responseValue (dblPredictorDate) * me.getValue();
 				else {
 					lsPredictor.add (dblPredictorDate);
@@ -213,7 +215,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return null;
 	}
 
-	protected org.drip.spline.params.SegmentResponseValueConstraint segmentSensResponseConstraint (
+	protected org.drip.spline.params.SegmentResponseValueConstraint segmentSensResponseConstraint2 (
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
 		final java.lang.String strManifestMeasure)
 	{
@@ -239,9 +241,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			double dblPredictorDate = me.getKey();
 
 			try {
-				if (null != _mssPrev && _mssPrev.in (dblPredictorDate))
-					dblValue -= _mssPrev.responseValue (dblPredictorDate) * me.getValue();
-				else if (null != _stretch && _stretch.inBuiltRange (dblPredictorDate))
+				if (null != _span && _span.in (dblPredictorDate))
+					dblValue -= _span.calcResponseValue (dblPredictorDate) * me.getValue();
+				else if (_stretch.inBuiltRange (dblPredictorDate))
 					dblValue -= _stretch.responseValue (dblPredictorDate) * me.getValue();
 				else {
 					lsPredictor.add (dblPredictorDate);
@@ -286,6 +288,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	 * @param cmp Component Market Parameter
 	 * @param quotingParams Quoting Parameter
 	 * @param mssPrev The Previous Stretch Used to value cash flows that fall in those segments
+	 * @param span The Containing Span this Stretch will become a part of
 	 * @param sbfr Stretch Fitness Weighted Response
 	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
 	 * @param sbfrQuoteSensitivity Stretch Fitness Weighted Response Quote Sensitivity
@@ -302,6 +305,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.param.definition.ComponentMarketParams cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
+		final org.drip.spline.grid.Span span,
 		final org.drip.spline.params.StretchBestFitResponse sbfr,
 		final
 			org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
@@ -316,7 +320,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		_cmp = cmp;
 		_sbfr = sbfr;
-		_mssPrev = mssPrev;
+		_span = span;
 		_pricerParams = pricerParams;
 		_quotingParams = quotingParams;
 		_sbfrQuoteSensitivity = sbfrQuoteSensitivity;
@@ -359,7 +363,11 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		double dblSegmentRight = aCS[0].right();
 
-		if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc, _srs.getLSMM
+		/* if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc, _srs.getLSMM
+			(0).getManifestMeasures()[0]))
+			return false; */
+
+		if (null == prlc || !generateSegmentConstraintSet2 (dblSegmentRight, prlc, _srs.getLSMM
 			(0).getManifestMeasures()[0]))
 			return false;
 
@@ -369,9 +377,23 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null == rvcLeading) return false;
 
+		org.drip.product.params.FloatingRateIndex[] aFRI = null;
+
+		java.lang.String[] astrForwardCurveName = cc.getForwardCurveName();
+
+		if (null != astrForwardCurveName) {
+			int iNumFRI = astrForwardCurveName.length;
+
+			if (0 != iNumFRI) {
+				aFRI = new org.drip.product.params.FloatingRateIndex[iNumFRI];
+
+				for (int j = 0; j < iNumFRI; ++j)
+					aFRI[j] = org.drip.product.params.FloatingRateIndex.Create (astrForwardCurveName[j]);
+			}
+		}
+
 		return aCS[0].calibrate (rvcLeading, dblLeftSlope, _mapRVSC.get (dblSegmentRight).base(), null ==
-			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
-				org.drip.product.params.FloatingRateIndex.Create (cc.getForwardCurveName()));
+			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0, aFRI);
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -391,14 +413,32 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			double dblSegmentRight = aCS[iSegment].right();
 
-			if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc,
+			/* if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc,
 				_srs.getLSMM (iSegment).getManifestMeasures()[0]))
+				return false; */
+
+			if (null == prlc || !generateSegmentConstraintSet2 (dblSegmentRight, prlc, _srs.getLSMM
+				(iSegment).getManifestMeasures()[0]))
 				return false;
+
+			org.drip.product.params.FloatingRateIndex[] aFRI = null;
+
+			java.lang.String[] astrForwardCurveName = cc.getForwardCurveName();
+
+			if (null != astrForwardCurveName) {
+				int iNumFRI = astrForwardCurveName.length;
+
+				if (0 != iNumFRI) {
+					aFRI = new org.drip.product.params.FloatingRateIndex[iNumFRI];
+
+					for (int j = 0; j < iNumFRI; ++j)
+						aFRI[j] = org.drip.product.params.FloatingRateIndex.Create (astrForwardCurveName[j]);
+				}
+			}
 
 			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapRVSC.get
 				(dblSegmentRight).base(), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
-					!_stretch.setSegmentBuilt (iSegment, org.drip.product.params.FloatingRateIndex.Create
-						(cc.getForwardCurveName())))
+					!_stretch.setSegmentBuilt (iSegment, aFRI))
 				return false;
 		}
 

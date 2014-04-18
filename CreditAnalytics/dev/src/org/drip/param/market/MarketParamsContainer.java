@@ -532,8 +532,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		if (null != comp.getEDSFCurveName() && null != _mapIRCSC.get (comp.getEDSFCurveName()))
 			dcEDSF = _mapIRCSC.get (comp.getEDSFCurveName()).getDCBase();
 
-		if (null != comp.getCreditCurveName() && null != _mapCCSC.get (comp.getCreditCurveName()))
-			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBase();
+		if (null != comp.creditCurveName() && null != _mapCCSC.get (comp.creditCurveName()))
+			cc = _mapCCSC.get (comp.creditCurveName()).getCCBase();
 
 		if ("FlatIRBumpUp".equalsIgnoreCase (strScen) && null != comp.getIRCurveName() && null !=
 			_mapIRCSC.get (comp.getIRCurveName()))
@@ -551,16 +551,16 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			_mapSFC.get (comp.getForwardCurveName()))
 			fc = _mapSFC.get (comp.getForwardCurveName()).getFCBumpDn();
 
-		if ("FlatCreditBumpUp".equalsIgnoreCase (strScen) && null != comp.getCreditCurveName() && null !=
-			_mapCCSC.get (comp.getCreditCurveName()))
-			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBumpUp();
+		if ("FlatCreditBumpUp".equalsIgnoreCase (strScen) && null != comp.creditCurveName() && null !=
+			_mapCCSC.get (comp.creditCurveName()))
+			cc = _mapCCSC.get (comp.creditCurveName()).getCCBumpUp();
 
-		if ("FlatCreditBumpDn".equalsIgnoreCase (strScen) && null != comp.getCreditCurveName() && null !=
-			_mapCCSC.get (comp.getCreditCurveName()))
-			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBumpDn();
+		if ("FlatCreditBumpDn".equalsIgnoreCase (strScen) && null != comp.creditCurveName() && null !=
+			_mapCCSC.get (comp.creditCurveName()))
+			cc = _mapCCSC.get (comp.creditCurveName()).getCCBumpDn();
 
 		return org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
-			dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()), _mapCQTSY, _mmFixings);
+			dcTSY, dcEDSF, cc, _mapCQComp.get (comp.componentName()), _mapCQTSY, _mmFixings);
 	}
 
 	@Override public
@@ -594,8 +594,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		if (null != comp.getEDSFCurveName() && null != _mapIRCSC.get (comp.getEDSFCurveName()))
 			dcEDSF = _mapIRCSC.get (comp.getEDSFCurveName()).getDCBase();
 
-		if (null != comp.getCreditCurveName() && null != _mapCCSC.get (comp.getCreditCurveName()))
-			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBase();
+		if (null != comp.creditCurveName() && null != _mapCCSC.get (comp.creditCurveName()))
+			cc = _mapCCSC.get (comp.creditCurveName()).getCCBase();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams> mapCMP
 			= new
@@ -612,7 +612,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meDC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(meDC.getValue(), fc, dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+						(meDC.getValue(), fc, dcTSY, dcEDSF, cc, _mapCQComp.get (comp.componentName()),
 							_mapCQTSY, _mmFixings));
 			}
 		} else {
@@ -626,7 +626,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meDC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(meDC.getValue(), fc, dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+						(meDC.getValue(), fc, dcTSY, dcEDSF, cc, _mapCQComp.get (comp.componentName()),
 							_mapCQTSY, _mmFixings));
 			}
 		}
@@ -665,8 +665,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 		if (null != comp.getEDSFCurveName() && null != _mapIRCSC.get (comp.getEDSFCurveName()))
 			dcEDSF = _mapIRCSC.get (comp.getEDSFCurveName()).getDCBase();
 
-		if (null != comp.getCreditCurveName() && null != _mapCCSC.get (comp.getCreditCurveName()))
-			cc = _mapCCSC.get (comp.getCreditCurveName()).getCCBase();
+		if (null != comp.creditCurveName() && null != _mapCCSC.get (comp.creditCurveName()))
+			cc = _mapCCSC.get (comp.creditCurveName()).getCCBase();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
 			mapCMP = new
@@ -683,7 +683,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meFC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-						meFC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+						meFC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.componentName()),
 							_mapCQTSY, _mmFixings));
 			}
 		} else {
@@ -697,7 +697,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meFC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-						meFC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.getComponentName()),
+						meFC.getValue(), dcTSY, dcEDSF, cc, _mapCQComp.get (comp.componentName()),
 							_mapCQTSY, _mmFixings));
 			}
 		}
@@ -711,16 +711,15 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp)
 	{
-		if (null == comp || null == comp.getCreditCurveName() || null == _mapCCSC.get
-			(comp.getCreditCurveName()))
+		if (null == comp || null == comp.creditCurveName() || null == _mapCCSC.get (comp.creditCurveName()))
 			return null;
 
-		if (bBumpUp && (null == _mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpUp() || null ==
-			_mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpUp().entrySet()))
+		if (bBumpUp && (null == _mapCCSC.get (comp.creditCurveName()).getTenorCCBumpUp() || null ==
+			_mapCCSC.get (comp.creditCurveName()).getTenorCCBumpUp().entrySet()))
 			return null;
 
-		if (!bBumpUp && (null == _mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpDn() || null ==
-			_mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpDn().entrySet()))
+		if (!bBumpUp && (null == _mapCCSC.get (comp.creditCurveName()).getTenorCCBumpDn() || null ==
+			_mapCCSC.get (comp.creditCurveName()).getTenorCCBumpDn().entrySet()))
 			return null;
 
 		org.drip.analytics.rates.ForwardCurve fc = null;
@@ -745,31 +744,31 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>();
 
 		if (bBumpUp) {
-			if (null == _mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpUp() || null == _mapCCSC.get
-				(comp.getCreditCurveName()).getTenorCCBumpUp().entrySet())
+			if (null == _mapCCSC.get (comp.creditCurveName()).getTenorCCBumpUp() || null == _mapCCSC.get
+				(comp.creditCurveName()).getTenorCCBumpUp().entrySet())
 				return null;
 
 			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.CreditCurve> meCC :
-				_mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpUp().entrySet()) {
+				_mapCCSC.get (comp.creditCurveName()).getTenorCCBumpUp().entrySet()) {
 				if (null == meCC || null == meCC.getKey() || meCC.getKey().isEmpty()) continue;
 
 				mapCMP.put (meCC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
-						dcTSY, dcEDSF, meCC.getValue(), _mapCQComp.get (comp.getComponentName()), _mapCQTSY,
+						dcTSY, dcEDSF, meCC.getValue(), _mapCQComp.get (comp.componentName()), _mapCQTSY,
 							_mmFixings));
 			}
 		} else {
-			if (null == _mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpDn() || null == _mapCCSC.get
-				(comp.getCreditCurveName()).getTenorCCBumpDn().entrySet())
+			if (null == _mapCCSC.get (comp.creditCurveName()).getTenorCCBumpDn() || null == _mapCCSC.get
+				(comp.creditCurveName()).getTenorCCBumpDn().entrySet())
 				return null;
 
 			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.definition.CreditCurve> meCC :
-				_mapCCSC.get (comp.getCreditCurveName()).getTenorCCBumpDn().entrySet()) {
+				_mapCCSC.get (comp.creditCurveName()).getTenorCCBumpDn().entrySet()) {
 				if (null == meCC || null == meCC.getKey() || meCC.getKey().isEmpty()) continue;
 
 				mapCMP.put (meCC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
-						dcTSY, dcEDSF, meCC.getValue(), _mapCQComp.get (comp.getComponentName()), _mapCQTSY,
+						dcTSY, dcEDSF, meCC.getValue(), _mapCQComp.get (comp.componentName()), _mapCQTSY,
 							_mmFixings));
 			}
 		}

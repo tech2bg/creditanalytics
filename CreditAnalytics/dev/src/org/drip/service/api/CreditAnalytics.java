@@ -1111,7 +1111,7 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = cds.getIRCurveName();
 
-		java.lang.String strCC = cds.getCreditCurveName();
+		java.lang.String strCC = cds.creditCurveName();
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty()) return null;
 
@@ -3516,7 +3516,7 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getIRCurveName();
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -3557,7 +3557,7 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getIRCurveName();
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4136,7 +4136,7 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getIRCurveName();
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4177,7 +4177,7 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getIRCurveName();
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4776,7 +4776,7 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getIRCurveName();
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4825,7 +4825,7 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getIRCurveName();
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -5449,7 +5449,7 @@ public class CreditAnalytics {
 			return null;
 		}
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		java.lang.String strTSY = bond.getTreasuryCurveName();
 
@@ -5533,7 +5533,7 @@ public class CreditAnalytics {
 			return null;
 		}
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		java.lang.String strTSY = bond.getTreasuryCurveName();
 
@@ -5617,7 +5617,7 @@ public class CreditAnalytics {
 			return null;
 		}
 
-		java.lang.String strCC = bond.getCreditCurveName();
+		java.lang.String strCC = bond.creditCurveName();
 
 		java.lang.String strTSY = bond.getTreasuryCurveName();
 
@@ -5827,7 +5827,7 @@ public class CreditAnalytics {
 
 		if ("CouponType".equalsIgnoreCase (strField)) return bond.getCouponType();
 
-		if ("CreditCurve".equalsIgnoreCase (strField)) return bond.getCreditCurveName();
+		if ("CreditCurve".equalsIgnoreCase (strField)) return bond.creditCurveName();
 
 		if ("CUSIP".equalsIgnoreCase (strField)) return bond.getCUSIP();
 

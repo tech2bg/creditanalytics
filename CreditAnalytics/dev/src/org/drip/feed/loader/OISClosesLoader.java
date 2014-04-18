@@ -122,7 +122,7 @@ public class OISClosesLoader {
 				(dcDateSpotQuoteSpot, null, null, null, null, null, null));
 
 		double dblCurveFloatingRate = dcDateSpotQuoteSpot.libor (dt0D.getJulian(),
-			org.drip.product.params.FloatingRateIndex.Create (irs.getForwardCurveName()).tenor());
+			org.drip.product.params.FloatingRateIndex.Create (irs.getForwardCurveName()[0]).tenor());
 
 		double dbl1DFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
 			dt1D.getJulian(), "Act/360", false, java.lang.Double.NaN, null, strCurrency);

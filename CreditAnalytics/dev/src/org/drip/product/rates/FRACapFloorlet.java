@@ -82,7 +82,7 @@ public class FRACapFloorlet extends org.drip.product.definition.FixedIncomeOptio
 
 		long lStart = System.nanoTime();
 
-		java.lang.String strFRI = _fra.getForwardCurveName();
+		java.lang.String strFRI = _fra.getForwardCurveName()[0];
 
 		org.drip.quant.function1D.AbstractUnivariate auFRAVolSurface = mktParams.getLatentStateVolSurface
 			(strFRI, exercise());

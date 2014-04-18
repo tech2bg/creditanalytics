@@ -293,7 +293,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 						" and reset date " + org.drip.analytics.date.JulianDate.fromJulian
 							(period.getResetDate()) + " not found; defaulting to implied");
 
-				org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve();
+				org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve
+					(_fltParams._fri);
 
 				if (null == fc || !_fltParams._fri.match (fc.index()))
 					fc = dc.forwardRateEstimator (period.getPayDate(), _fltParams._fri);
@@ -1250,7 +1251,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return _idParams._strCUSIP;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		if (null == _idParams) return null;
 
@@ -1352,14 +1353,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return _irValParams._strTradeDiscountCurve;
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
-		if (null == _fltParams) return "";
+		if (null == _fltParams) return null;
 
-		return _fltParams._fri.fullyQualifiedName();
+		return new java.lang.String[] {_fltParams._fri.fullyQualifiedName()};
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		if (null == _crValParams) return "";
 

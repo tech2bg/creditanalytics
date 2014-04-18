@@ -469,7 +469,7 @@ public class STIRVolCorrAnalysis {
 	{
 		JulianDate dtEffective = stir.getEffectiveDate();
 
-		String strComponentName = stir.getComponentName();
+		String strComponentName = stir.componentName();
 
 		cmp.setLatentStateVolSurface (
 			strComponentName + "SwapRateVolatility",

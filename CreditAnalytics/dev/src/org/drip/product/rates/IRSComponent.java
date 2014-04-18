@@ -142,7 +142,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String getComponentName()
+	@Override public java.lang.String componentName()
 	{
 		return "IRS=" + getMaturityDate();
 	}
@@ -200,12 +200,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _floatStream.getIRCurveName();
 	}
 
-	@Override public java.lang.String getForwardCurveName()
+	@Override public java.lang.String[] getForwardCurveName()
 	{
 		return _floatStream.getForwardCurveName();
 	}
 
-	@Override public java.lang.String getCreditCurveName()
+	@Override public java.lang.String creditCurveName()
 	{
 		return "";
 	}
