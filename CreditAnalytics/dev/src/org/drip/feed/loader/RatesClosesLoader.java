@@ -36,49 +36,179 @@ package org.drip.feed.loader;
  */
 
 public class RatesClosesLoader {
+	private static java.util.Map<java.lang.String, java.lang.String> _mapFixedDC = new
+		java.util.HashMap<java.lang.String, java.lang.String>();
+
+	private static java.util.Map<java.lang.String, java.lang.String> _mapFixedTenor = new
+		java.util.HashMap<java.lang.String, java.lang.String>();
+
+	private static java.util.Map<java.lang.String, java.lang.String> _mapFloatingDC = new
+		java.util.HashMap<java.lang.String, java.lang.String>();
+
+	private static java.util.Map<java.lang.String, java.lang.String> _mapFloatingTenor = new
+		java.util.HashMap<java.lang.String, java.lang.String>();
+
+	private static java.util.Map<java.lang.String, java.lang.Integer> _mapFixedFrequency = new
+		java.util.HashMap<java.lang.String, java.lang.Integer>();
+
+	private static java.util.Map<java.lang.String, java.lang.Integer> _mapFloatingFrequency = new
+		java.util.HashMap<java.lang.String, java.lang.Integer>();
+
 	private static java.io.BufferedWriter _writeCOB = null;
 	private static final java.lang.String[] s_astrFwdTenor = new java.lang.String[] {"1Y", "2Y", "3Y", "4Y",
 		"5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y"};
+
+	private static final boolean InitStatic()
+	{
+		_mapFixedDC.put ("EUR", "30/360");
+
+		_mapFixedTenor.put ("EUR", "12M");
+
+		_mapFloatingDC.put ("EUR", "Act/360");
+
+		_mapFloatingTenor.put ("EUR", "6M");
+
+		_mapFixedFrequency.put ("EUR", 1);
+
+		_mapFloatingFrequency.put ("EUR", 2);
+
+		_mapFixedDC.put ("GBP", "Act/365");
+
+		_mapFixedTenor.put ("GBP", "6M");
+
+		_mapFloatingDC.put ("GBP", "Act/365");
+
+		_mapFloatingTenor.put ("GBP", "6M");
+
+		_mapFixedFrequency.put ("GBP", 2);
+
+		_mapFloatingFrequency.put ("GBP", 2);
+
+		_mapFixedDC.put ("JPY", "Act/365");
+
+		_mapFixedTenor.put ("JPY", "6M");
+
+		_mapFloatingDC.put ("JPY", "Act/360");
+
+		_mapFloatingTenor.put ("JPY", "6M");
+
+		_mapFixedFrequency.put ("JPY", 2);
+
+		_mapFloatingFrequency.put ("JPY", 2);
+
+		_mapFixedDC.put ("USD", "30/360");
+
+		_mapFixedTenor.put ("USD", "6M");
+
+		_mapFloatingDC.put ("USD", "Act/360");
+
+		_mapFloatingTenor.put ("USD", "3M");
+
+		_mapFixedFrequency.put ("USD", 2);
+
+		_mapFloatingFrequency.put ("USD", 4);
+
+		return true;
+	}
+
+	private static final org.drip.product.definition.RatesComponent CreateIRS (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String strMaturityTenor,
+		final double dblCoupon,
+		final java.lang.String strCurrency)
+	{
+		if (null == dtEffective || null == strMaturityTenor || strMaturityTenor.isEmpty() ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblCoupon))
+			return null;
+
+		org.drip.analytics.date.JulianDate dtMaturity = dtEffective.addTenorAndAdjust (strMaturityTenor,
+			strCurrency);
+
+		if (null == dtMaturity) return null;
+
+		java.lang.String strFixedDC = _mapFixedDC.get (strCurrency);
+
+		java.lang.String strFloatingDC = _mapFloatingDC.get (strCurrency);
+
+		boolean bApplyEOMAdjustmentFixed = "30/360".equalsIgnoreCase (strFixedDC);
+
+		boolean bApplyEOMAdjustmentFloating = "30/360".equalsIgnoreCase (strFloatingDC);
+
+		try {
+			org.drip.analytics.daycount.DateAdjustParams dap = new
+				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
+					strCurrency);
+
+			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
+				(dtEffective.getJulian(), strMaturityTenor, dblCoupon, _mapFixedFrequency.get (strCurrency),
+					strFixedDC, bApplyEOMAdjustmentFixed, strFixedDC, bApplyEOMAdjustmentFixed, false, dap,
+						null, 1., strCurrency, strCurrency);
+
+			org.drip.product.rates.FloatingStream floatStream = org.drip.product.rates.FloatingStream.Create
+				(dtEffective.getJulian(), strMaturityTenor, 0., false,
+					org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR",
+						_mapFloatingTenor.get (strCurrency)), _mapFloatingFrequency.get (strCurrency),
+							strFloatingDC, bApplyEOMAdjustmentFloating, strFloatingDC,
+								bApplyEOMAdjustmentFloating, dap, null, -1., strCurrency, strCurrency);
+
+			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+				floatStream);
+
+			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
+
+			return irs;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	private static final double calcMeasure (
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strMeasure,
-		final java.lang.String strCurrency)
+		final java.lang.String strCurrency,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 		throws java.lang.Exception
 	{
 		if (comp.getMaturityDate().getJulian() <= dt.getJulian()) return 0.;
 
 		return comp.value (new org.drip.param.valuation.ValuationParams (dt, dt, strCurrency), null,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				null, null, null, null), null).get (strMeasure);
+				null, null, null, mmFixings), null).get (strMeasure);
 	}
 
-	private static final double calcCleanReturn (
+	private static final double calcCleanPnL (
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2,
 		final org.drip.analytics.rates.DiscountCurve dc1,
 		final org.drip.analytics.rates.DiscountCurve dc2,
-		final java.lang.String strCurrency)
+		final java.lang.String strCurrency,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 		throws java.lang.Exception
 	{
-		return calcMeasure (comp, dt1, dc1, "CleanPV", strCurrency) - calcMeasure (comp, dt2, dc2, "CleanPV",
-			strCurrency);
+		return calcMeasure (comp, dt2, dc2, "CleanPV", strCurrency, mmFixings) - calcMeasure (comp, dt1, dc1,
+			"CleanPV", strCurrency, mmFixings);
 	}
 
-	private static final double calcDirtyReturn (
+	private static final double calcDirtyPnL (
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2,
 		final org.drip.analytics.rates.DiscountCurve dc1,
 		final org.drip.analytics.rates.DiscountCurve dc2,
-		final java.lang.String strCurrency)
+		final java.lang.String strCurrency,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 		throws java.lang.Exception
 	{
-		return calcMeasure (comp, dt1, dc1, "DirtyPV", strCurrency) - calcMeasure (comp, dt2, dc2, "DirtyPV",
-			strCurrency);
+		return calcMeasure (comp, dt2, dc2, "DirtyPV", strCurrency, mmFixings) - calcMeasure (comp, dt1, dc1,
+			"DirtyPV", strCurrency, mmFixings);
 	}
 
 	private static final double Forward (
@@ -93,102 +223,150 @@ public class RatesClosesLoader {
 	}
 
 	private static final java.lang.String ComputePnLMetrics (
-		final org.drip.analytics.date.JulianDate dt0D,
-		final org.drip.analytics.date.JulianDate dt1D,
+		final org.drip.analytics.date.JulianDate dtPrev,
+		final org.drip.analytics.date.JulianDate dtCurr,
+		final org.drip.analytics.date.JulianDate dt1MPast,
+		final org.drip.analytics.date.JulianDate dt3MPast,
 		final org.drip.product.definition.FixedIncomeComponent comp,
-		final org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDateSpotQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDateNextQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDateSpotQuoteNext,
-		final org.drip.analytics.rates.DiscountCurve dcDateNextQuoteNext,
-		final org.drip.analytics.rates.DiscountCurve dcDate1MPrevQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDate3MPrevQuoteSpot,
+		final org.drip.analytics.rates.DiscountCurve dcDatePastQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDatePrevQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDateCurrQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteCurr,
+		final org.drip.analytics.rates.DiscountCurve dcDateCurrQuoteCurr,
+		final org.drip.analytics.rates.DiscountCurve dcDate1MPastQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDate3MPastQuotePrev,
 		final double dblBaselineSwapRate,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.date.JulianDate dt1M = dt0D.addTenor ("1M");
-
-		org.drip.analytics.date.JulianDate dt3M = dt0D.addTenor ("3M");
-
 		org.drip.product.rates.IRSComponent irs = (org.drip.product.rates.IRSComponent) comp;
 
-		double dblFixedCoupon = irs.getFixedStream().getCoupon (dt0D.getJulian(), null);
+		double dblFixedCoupon = irs.getFixedStream().getCoupon (dtPrev.getJulian(), null);
 
-		double dbl1DFixedDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
-			dt1D.getJulian(), "30/360", false, java.lang.Double.NaN, null, strCurrency);
+		boolean bApplyFixedCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFixedDC.get (strCurrency));
 
-		double dblProductFloatingRate = irs.getFloatStream().getCoupon (dt0D.getJulian(),
+		boolean bApplyFloatingCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFloatingDC.get (strCurrency));
+
+		int i1DFixedAccrualDays = org.drip.analytics.daycount.Convention.DaysAccrued (dtPrev.getJulian(),
+			dtCurr.getJulian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj, java.lang.Double.NaN,
+				null, strCurrency);
+
+		double dbl1DFixedDCF = (calcMeasure (irs.getFixedStream(), dtCurr, dcDatePrevQuotePrev, "Accrued01",
+			strCurrency, null) - calcMeasure (irs.getFixedStream(), dtPrev, dcDatePrevQuotePrev, "Accrued01",
+				strCurrency, null)) * 10000.;
+
+		double dblProductFloatingRate = irs.getFloatStream().getCoupon (dtPrev.getJulian(),
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcDateSpotQuoteSpot, null, null, null, null, null, null));
+				(dcDatePrevQuotePrev, null, null, null, null, null, null));
 
-		double dblCurveFloatingRate = dcDateSpotQuoteSpot.libor (dt0D.getJulian(),
+		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.getJulian(),
 			org.drip.product.params.FloatingRateIndex.Create (irs.getForwardCurveName()[0]).tenor());
 
-		double dbl1DFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
-			dt1D.getJulian(), "Act/360", false, java.lang.Double.NaN, null, strCurrency);
+		int i1DFloatingAccrualDays = org.drip.analytics.daycount.Convention.DaysAccrued (dtPrev.getJulian(),
+			dtCurr.getJulian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
+				java.lang.Double.NaN, null, strCurrency);
 
-		double dblCleanFixedDV01 = calcMeasure (comp, dt0D, dcDateSpotQuoteSpot, "FixedDV01", strCurrency);
+		double dbl1DFloatingDCF = (calcMeasure (irs.getFloatStream(), dtPrev, dcDatePrevQuotePrev,
+			"Accrued01", strCurrency, null) - calcMeasure (irs.getFloatStream(), dtCurr, dcDatePrevQuotePrev,
+				"Accrued01", strCurrency, null)) * 10000.;
 
-		double dblCleanFloatDV01 = calcMeasure (comp, dt0D, dcDateSpotQuoteSpot, "Fixing01", strCurrency);
+		double dblCleanFixedDV01 = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "FixedDV01", strCurrency,
+			null);
+
+		double dblCleanFloatDV01 = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01", strCurrency,
+			null);
 
 		double dblDV01 = dblCleanFixedDV01 + dblCleanFloatDV01;
+		double dbl1DCarry = dblFixedCoupon * dbl1DFixedDCF - dblProductFloatingRate * dbl1DFloatingDCF;
 
-		double dbl1DCarry = dblProductFloatingRate * dbl1DFloatingDCF - dblFixedCoupon * dbl1DFixedDCF;
+		double dbl1DCleanPnL = calcCleanPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev, dcDateCurrQuoteCurr,
+			strCurrency, null);
 
-		double dbl1DCleanReturnPnL = calcCleanReturn (comp, dt0D, dt1D, dcDateSpotQuoteSpot,
-			dcDateNextQuoteNext, strCurrency);
+		double dbl1DDirtyPnL = calcDirtyPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev, dcDateCurrQuoteCurr,
+			strCurrency, null);
 
-		double dbl1DDirtyReturnPnL = calcDirtyReturn (comp, dt0D, dt1D, dcDateSpotQuoteSpot,
-			dcDateNextQuoteNext, strCurrency);
+		double dbl1DTotalPnL = dbl1DCleanPnL + dbl1DCarry;
 
-		double dbl1DTotalReturnPnL = dbl1DCleanReturnPnL + dbl1DCarry;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		double dbl1DRolldownSwapRate = calcMeasure (comp, dt0D, dcDatePrevQuoteSpot, "CalibSwapRate",
-			strCurrency);
+		mapFixing.put (irs.getFloatStream().getForwardCurveName()[0], dblProductFloatingRate);
 
-		double dbl1DRollDownPnL = (dbl1DRolldownSwapRate - dblBaselineSwapRate) * 10000. * dblDV01;
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.TreeMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-		double dbl1DCurveShiftSwapRate = calcMeasure (comp, dt0D, dcDateSpotQuoteNext, "CalibSwapRate",
-			strCurrency);
+		mmFixings.put (dtPrev, mapFixing);
 
-		double dbl1DCurveShiftPnL = (dbl1DCurveShiftSwapRate - dblBaselineSwapRate) * 10000. * dblDV01;
+		double dbl1DCleanPnLWithFixing = calcCleanPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev,
+			dcDateCurrQuoteCurr, strCurrency, mmFixings);
 
-		double dbl1MFixedDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
-			dt1M.getJulian(), "30/360", false, java.lang.Double.NaN, null, strCurrency);
+		double dbl1DDirtyPnLWithFixing = calcDirtyPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev,
+			dcDateCurrQuoteCurr, strCurrency, mmFixings);
 
-		double dbl1MFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
-			dt1M.getJulian(), "Act/360", false, java.lang.Double.NaN, null, strCurrency);
+		double dbl1DTotalPnLWithFixing = dbl1DCleanPnLWithFixing + dbl1DCarry;
 
-		double dbl1MCarryPnL = dblProductFloatingRate * dbl1MFloatingDCF - dblFixedCoupon * dbl1MFixedDCF;
+		double dblFloatingRateUsed = irs.getFloatStream().getCoupon (dtPrev.getJulian(),
+			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+				(dcDatePrevQuotePrev, null, null, null, null, null, mmFixings));
 
-		double dbl1MRolldownSwapRate = calcMeasure (comp, dt0D, dcDate1MPrevQuoteSpot, "CalibSwapRate",
-			strCurrency);
+		double dblCleanFloatDV01WithFixing = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01",
+			strCurrency, mmFixings);
 
-		double dbl1MRollDownPnL = (dbl1MRolldownSwapRate - dblBaselineSwapRate) * 10000. * dblDV01;
+		double dblDV01WithFixing = dblCleanFixedDV01 + dblCleanFloatDV01WithFixing;
 
-		double dbl3MFixedDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
-			dt3M.getJulian(), "30/360", false, java.lang.Double.NaN, null, strCurrency);
+		double dbl1DRolldownSwapRate = calcMeasure (comp, dtPrev, dcDatePastQuotePrev, "CalibSwapRate",
+			strCurrency, null);
 
-		double dbl3MFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt0D.getJulian(),
-			dt3M.getJulian(), "Act/360", false, java.lang.Double.NaN, null, strCurrency);
+		double dbl1DRollDownPnL = (dblBaselineSwapRate - dbl1DRolldownSwapRate) * 10000. * dblDV01;
 
-		double dbl3MCarryPnL = dblProductFloatingRate * dbl3MFloatingDCF - dblFixedCoupon * dbl3MFixedDCF;
+		double dbl1DCurveShiftSwapRate = calcMeasure (comp, dtPrev, dcDatePrevQuoteCurr, "CalibSwapRate",
+			strCurrency, null);
 
-		double dbl3MRolldownSwapRate = calcMeasure (comp, dt0D, dcDate3MPrevQuoteSpot, "CalibSwapRate",
-			strCurrency);
+		double dbl1DCurveShiftPnL = (dblBaselineSwapRate - dbl1DCurveShiftSwapRate) * 10000. * dblDV01;
 
-		double dbl3MRollDownPnL = (dbl3MRolldownSwapRate - dblBaselineSwapRate) * 10000. * dblDV01;
+		double dbl1MFixedDCF = org.drip.analytics.daycount.Convention.YearFraction (dt1MPast.getJulian(),
+			dtPrev.getJulian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj,
+				java.lang.Double.NaN, null, strCurrency);
+
+		double dbl1MFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt1MPast.getJulian(),
+			dtPrev.getJulian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
+				java.lang.Double.NaN, null, strCurrency);
+
+		double dbl1MCarryPnL = dblFixedCoupon * dbl1MFixedDCF - dblCurveFloatingRate * dbl1MFloatingDCF;
+
+		double dbl1MRolldownSwapRate = calcMeasure (comp, dtPrev, dcDate1MPastQuotePrev, "CalibSwapRate",
+			strCurrency, null);
+
+		double dbl1MRollDownPnL = (dblBaselineSwapRate - dbl1MRolldownSwapRate) * 10000. * dblDV01;
+
+		double dbl3MFixedDCF = org.drip.analytics.daycount.Convention.YearFraction (dt3MPast.getJulian(),
+			dtPrev.getJulian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj,
+				java.lang.Double.NaN, null, strCurrency);
+
+		double dbl3MFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt3MPast.getJulian(),
+			dtPrev.getJulian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
+				java.lang.Double.NaN, null, strCurrency);
+
+		double dbl3MCarryPnL = dblFixedCoupon * dbl3MFixedDCF - dblCurveFloatingRate * dbl3MFloatingDCF;
+
+		double dbl3MRolldownSwapRate = calcMeasure (comp, dtPrev, dcDate3MPastQuotePrev, "CalibSwapRate",
+			strCurrency, null);
+
+		double dbl3MRollDownPnL = (dblBaselineSwapRate - dbl3MRolldownSwapRate) * 10000. * dblDV01;
 
 		try {
-			return new org.drip.service.api.ProductDailyPnL (dbl1DTotalReturnPnL, dbl1DCleanReturnPnL,
-				dbl1DDirtyReturnPnL, dbl1DCarry, dbl1DRollDownPnL, dbl1DCurveShiftPnL, dbl1MCarryPnL,
-					dbl1MRollDownPnL, dbl3MCarryPnL, dbl3MRollDownPnL, dblDV01, dblCleanFixedDV01,
-						dblCleanFloatDV01, dblBaselineSwapRate, dbl1DRolldownSwapRate,
-							dbl1DCurveShiftSwapRate, dbl1MRolldownSwapRate, dbl3MRolldownSwapRate,
-								dblFixedCoupon, dblCurveFloatingRate, dblProductFloatingRate, dbl1DFixedDCF,
-									dbl1DFloatingDCF, dbl1MFixedDCF, dbl1MFloatingDCF, dbl3MFixedDCF,
-										dbl3MFloatingDCF).toString();
+			return new org.drip.service.api.ProductDailyPnL (dbl1DTotalPnL, dbl1DCleanPnL, dbl1DDirtyPnL,
+				dbl1DTotalPnLWithFixing, dbl1DCleanPnLWithFixing, dbl1DDirtyPnLWithFixing, dbl1DCarry,
+					dbl1DRollDownPnL, dbl1DCurveShiftPnL, dbl1MCarryPnL, dbl1MRollDownPnL, dbl3MCarryPnL,
+						dbl3MRollDownPnL, dblDV01, dblDV01WithFixing, dblCleanFixedDV01, dblCleanFloatDV01,
+							dblCleanFloatDV01WithFixing, dblBaselineSwapRate, dbl1DRolldownSwapRate,
+								dbl1MRolldownSwapRate, dbl3MRolldownSwapRate, dbl1DCurveShiftSwapRate,
+									dblFixedCoupon, dblCurveFloatingRate, dblProductFloatingRate,
+										dblFloatingRateUsed, i1DFixedAccrualDays, i1DFloatingAccrualDays,
+											dbl1DFixedDCF, dbl1DFloatingDCF, dbl1MFixedDCF, dbl1MFloatingDCF,
+												dbl3MFixedDCF, dbl3MFloatingDCF).toString();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -215,15 +393,17 @@ public class RatesClosesLoader {
 	}
 
 	private static final java.util.List<java.lang.String> GenerateMetrics (
-		final org.drip.analytics.date.JulianDate dt0D,
-		final org.drip.analytics.date.JulianDate dt1D,
-		final org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDateSpotQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDateNextQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDateSpotQuoteNext,
-		final org.drip.analytics.rates.DiscountCurve dcDateNextQuoteNext,
-		final org.drip.analytics.rates.DiscountCurve dcDate1MPrevQuoteSpot,
-		final org.drip.analytics.rates.DiscountCurve dcDate3MPrevQuoteSpot,
+		final org.drip.analytics.date.JulianDate dtPrev,
+		final org.drip.analytics.date.JulianDate dtCurr,
+		final org.drip.analytics.date.JulianDate dt1MPast,
+		final org.drip.analytics.date.JulianDate dt3MPast,
+		final org.drip.analytics.rates.DiscountCurve dcDatePastQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDatePrevQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDateCurrQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteCurr,
+		final org.drip.analytics.rates.DiscountCurve dcDateCurrQuoteCurr,
+		final org.drip.analytics.rates.DiscountCurve dcDate1MPastQuotePrev,
+		final org.drip.analytics.rates.DiscountCurve dcDate3MPastQuotePrev,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
@@ -234,34 +414,34 @@ public class RatesClosesLoader {
 			org.drip.product.definition.FixedIncomeComponent[s_astrFwdTenor.length];
 
 		for (int i = 0; i < s_astrFwdTenor.length; ++i) {
-			org.drip.product.definition.FixedIncomeComponent comp =
-				org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt0D, dt0D.addTenorAndAdjust
-					(s_astrFwdTenor[i], strCurrency), 0.01, strCurrency, strCurrency + "-LIBOR-3M",
-						strCurrency);
-
-			adblBaselineSwapRate[i] = calcMeasure (comp, dt0D, dcDateSpotQuoteSpot, "CalibSwapRate",
+			org.drip.analytics.date.JulianDate dtMaturity = dtPrev.addTenorAndAdjust (s_astrFwdTenor[i],
 				strCurrency);
 
-			aComp[i] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt0D, dt0D.addTenorAndAdjust
-				(s_astrFwdTenor[i], strCurrency), adblBaselineSwapRate[i], strCurrency, strCurrency +
-					"-LIBOR-3M", strCurrency);
+			if (null == dtMaturity) return null;
+
+			org.drip.product.definition.FixedIncomeComponent comp = CreateIRS (dtPrev, s_astrFwdTenor[i],
+				0.01, strCurrency);
+
+			adblBaselineSwapRate[i] = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "CalibSwapRate",
+				strCurrency, null);
+
+			aComp[i] = CreateIRS (dtPrev, s_astrFwdTenor[i], adblBaselineSwapRate[i], strCurrency);
 		}
 
 		for (int i = 0; i < s_astrFwdTenor.length; ++i)
-			lsstrDump.add (dt1D.toString() + "," + aComp[i].tenor() + "," + ComputePnLMetrics (dt0D, dt1D,
-				aComp[i], dcDatePrevQuoteSpot, dcDateSpotQuoteSpot, dcDateNextQuoteSpot, dcDateSpotQuoteNext,
-					dcDateNextQuoteNext, dcDate1MPrevQuoteSpot, dcDate3MPrevQuoteSpot,
-						adblBaselineSwapRate[i], strCurrency) + "," + ComputeForwardMetric (aComp,
-							dcDateNextQuoteNext));
+			lsstrDump.add (dtCurr.toString() + "," + aComp[i].tenor() + "," + ComputePnLMetrics (dtPrev,
+				dtCurr, dt1MPast, dt3MPast, aComp[i], dcDatePastQuotePrev, dcDatePrevQuotePrev,
+					dcDateCurrQuotePrev, dcDatePrevQuoteCurr, dcDateCurrQuoteCurr, dcDate1MPastQuotePrev,
+						dcDate3MPastQuotePrev, adblBaselineSwapRate[i], strCurrency) + "," +
+							ComputeForwardMetric (aComp, dcDateCurrQuoteCurr));
 
 		return lsstrDump;
 	}
 
-	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
-		CashInstrumentsFromTenor (
-			final org.drip.analytics.date.JulianDate dtEffective,
-			final java.lang.String[] astrTenor,
-			final java.lang.String strCurrency)
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[] CashInstrumentsFromTenor (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String[] astrTenor,
+		final java.lang.String strCurrency)
 	{
 		if (null == astrTenor) return null;
 
@@ -272,18 +452,17 @@ public class RatesClosesLoader {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			aCalibComp[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency), null, strCurrency);
+			aCalibComp[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective, astrTenor[i],
+				strCurrency);
 
 		return aCalibComp;
 	}
 
-	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
-		SwapInstrumentsFromTenor (
-			final org.drip.analytics.date.JulianDate dtEffective,
-			final java.lang.String[] astrTenor,
-			final double[] adblQuote,
-			final java.lang.String strCurrency)
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[] SwapInstrumentsFromTenor (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String[] astrTenor,
+		final double[] adblQuote,
+		final java.lang.String strCurrency)
 	{
 		if (null == astrTenor) return null;
 
@@ -294,9 +473,7 @@ public class RatesClosesLoader {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			aCalibComp[i] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency), adblQuote[i], strCurrency,
-					strCurrency + "-LIBOR-3M", strCurrency);
+			aCalibComp[i] = CreateIRS (dtEffective, astrTenor[i], adblQuote[i], strCurrency);
 
 		return aCalibComp;
 	}
@@ -352,7 +529,7 @@ public class RatesClosesLoader {
 					org.drip.spline.params.SegmentCustomBuilderControl
 						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc, null),
-					org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+					org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
 						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
 			if (null == (dcShapePreserving =
@@ -412,8 +589,8 @@ public class RatesClosesLoader {
 			}
 
 			if (org.drip.quant.common.NumberUtil.IsValid (dblQuote)) {
-				if ("1M".equalsIgnoreCase (astrTenor[i - 1])) {
-					lsCashTenor.add ("1M");
+				if (astrTenor[i - 1].endsWith ("M")) {
+					lsCashTenor.add (astrTenor[i - 1]);
 
 					lsCashQuote.add (dblQuote);
 				} else {
@@ -481,8 +658,8 @@ public class RatesClosesLoader {
 
 			if (org.drip.quant.common.NumberUtil.IsValid (dblQuote1) &&
 				org.drip.quant.common.NumberUtil.IsValid (dblQuote2)) {
-				if ("1M".equalsIgnoreCase (astrTenor[i - 1])) {
-					lsCashTenor.add ("1M");
+				if (astrTenor[i - 1].endsWith ("M")) {
+					lsCashTenor.add (astrTenor[i - 1]);
 
 					lsCashQuote1.add (dblQuote1);
 
@@ -528,55 +705,91 @@ public class RatesClosesLoader {
 
 		if (null == aDCII || 2 != aDCII.length) return null;
 
-		org.drip.analytics.date.JulianDate dtPrev = aDCII[0].date().subtractBusDays (1, strCurrency);
+		org.drip.service.api.DiscountCurveInputInstrument dciiPrev = aDCII[0];
+		org.drip.service.api.DiscountCurveInputInstrument dciiCurr = aDCII[1];
 
-		org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteSpot = BuildCurve (dtPrev,
-			aDCII[0].cashTenor(), aDCII[0].cashQuote(), aDCII[0].swapTenor(), aDCII[0].swapQuote(),
-				strCurrency);
+		if (null == dciiPrev || null == dciiCurr) return null;
 
-		org.drip.analytics.date.JulianDate dt1MPrev = aDCII[0].date().subtractTenor ("1M");
+		org.drip.analytics.date.JulianDate dtPrev = dciiPrev.date();
 
-		org.drip.analytics.rates.DiscountCurve dcDate1MPrevQuoteSpot = BuildCurve (dt1MPrev,
-			aDCII[0].cashTenor(), aDCII[0].cashQuote(), aDCII[0].swapTenor(), aDCII[0].swapQuote(),
-				strCurrency);
+		org.drip.analytics.date.JulianDate dtCurr = dciiCurr.date();
 
-		org.drip.analytics.date.JulianDate dt3MPrev = aDCII[0].date().subtractTenor ("3M");
+		java.lang.String[] astrCashTenorPrev = dciiPrev.cashTenor();
 
-		org.drip.analytics.rates.DiscountCurve dcDate3MPrevQuoteSpot = BuildCurve (dt3MPrev,
-			aDCII[0].cashTenor(), aDCII[0].cashQuote(), aDCII[0].swapTenor(), aDCII[0].swapQuote(),
-				strCurrency);
+		java.lang.String[] astrSwapTenorPrev = dciiPrev.swapTenor();
 
-		org.drip.analytics.date.JulianDate dtSpot = aDCII[0].date();
+		double[] adblCashQuotePrev = dciiPrev.cashQuote();
 
-		org.drip.analytics.rates.DiscountCurve dcDateSpotQuoteSpot = BuildCurve (dtSpot,
-			aDCII[0].cashTenor(), aDCII[0].cashQuote(), aDCII[0].swapTenor(), aDCII[0].swapQuote(),
-				strCurrency);
+		double[] adblSwapQuotePrev = dciiPrev.swapQuote();
 
-		org.drip.analytics.date.JulianDate dtNext = aDCII[1].date();
+		java.lang.String[] astrCashTenorCurr = dciiCurr.cashTenor();
 
-		org.drip.analytics.rates.DiscountCurve dcDateNextQuoteSpot = BuildCurve (dtNext,
-			aDCII[0].cashTenor(), aDCII[0].cashQuote(), aDCII[0].swapTenor(), aDCII[0].swapQuote(),
-				strCurrency);
+		java.lang.String[] astrSwapTenorCurr = dciiCurr.swapTenor();
 
-		org.drip.analytics.rates.DiscountCurve dcDateSpotQuoteNext = BuildCurve (dtSpot,
-			aDCII[1].cashTenor(), aDCII[1].cashQuote(), aDCII[1].swapTenor(), aDCII[1].swapQuote(),
-				strCurrency);
+		double[] adblCashQuoteCurr = dciiCurr.cashQuote();
 
-		org.drip.analytics.rates.DiscountCurve dcDateNextQuoteNext = BuildCurve (dtNext,
-			aDCII[1].cashTenor(), aDCII[1].cashQuote(), aDCII[1].swapTenor(), aDCII[1].swapQuote(),
-				strCurrency);
+		double[] adblSwapQuoteCurr = dciiCurr.swapQuote();
+
+		if (null == dtPrev || null == dtCurr) return null;
+
+		org.drip.analytics.date.JulianDate dtPast = dtPrev.subtractBusDays (1, strCurrency);
+
+		if (null == dtPast) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcDatePastQuotePrev = BuildCurve (dtPast, astrCashTenorPrev,
+			adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+
+		if (null == dcDatePastQuotePrev) return null;
+
+		org.drip.analytics.date.JulianDate dt1MPast = dtPrev.subtractTenor ("1M");
+
+		if (null == dt1MPast) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcDate1MPastQuotePrev= BuildCurve (dt1MPast,
+			astrCashTenorPrev, adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+
+		if (null == dcDate1MPastQuotePrev) return null;
+
+		org.drip.analytics.date.JulianDate dt3MPast = dtPrev.subtractTenor ("3M");
+
+		if (null == dt3MPast) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcDate3MPastQuotePrev = BuildCurve (dt3MPast,
+			astrCashTenorPrev, adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+
+		if (null == dcDate3MPastQuotePrev) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcDatePrevQuotePrev = BuildCurve (dtPrev, astrCashTenorPrev,
+			adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+
+		if (null == dcDatePrevQuotePrev) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcDateCurrQuotePrev = BuildCurve (dtCurr, astrCashTenorPrev,
+			adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+
+		if (null == dcDateCurrQuotePrev) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteCurr = BuildCurve (dtPrev, astrCashTenorCurr,
+			adblCashQuoteCurr, astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency);
+
+		if (null == dcDatePrevQuoteCurr) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcDateCurrQuoteCurr = BuildCurve (dtCurr, astrCashTenorCurr,
+			adblCashQuoteCurr, astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency);
+
+		if (null == dcDateCurrQuoteCurr) return null;
 
 		java.util.List<java.lang.String> lsstrDump = null;
 
-		if (null != dtPrev && null != dtSpot && null != dtNext && null != dcDatePrevQuoteSpot && null !=
-			dcDateSpotQuoteSpot && null != dcDateNextQuoteSpot && null != dcDateSpotQuoteNext && null !=
-				dcDateNextQuoteNext && null != dcDate1MPrevQuoteSpot && null != dcDate3MPrevQuoteSpot) {
-			System.out.println ("\t" + strCurrency + "[" + dtSpot + "]");
+		if (null != dtPast && null != dtPrev && null != dtCurr && null != dcDatePastQuotePrev && null !=
+			dcDatePrevQuotePrev && null != dcDateCurrQuotePrev && null != dcDatePrevQuoteCurr && null !=
+				dcDateCurrQuoteCurr && null != dcDate1MPastQuotePrev && null != dcDate3MPastQuotePrev) {
+			System.out.println ("\t" + strCurrency + "[" + dtPrev + "]");
 
 			try {
-				lsstrDump = GenerateMetrics (dtSpot, dtNext, dcDatePrevQuoteSpot, dcDateSpotQuoteSpot,
-					dcDateNextQuoteSpot, dcDateSpotQuoteNext, dcDateNextQuoteNext, dcDate1MPrevQuoteSpot,
-						dcDate3MPrevQuoteSpot, strCurrency);
+				lsstrDump = GenerateMetrics (dtPrev, dtCurr, dt1MPast, dt3MPast, dcDatePastQuotePrev,
+					dcDatePrevQuotePrev, dcDateCurrQuotePrev, dcDatePrevQuoteCurr, dcDateCurrQuoteCurr,
+						dcDate1MPastQuotePrev, dcDate3MPastQuotePrev, strCurrency);
 
 				for (java.lang.String strDump : lsstrDump) {
 					if (bDumpOnDemand) {
@@ -631,8 +844,8 @@ public class RatesClosesLoader {
 			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader ("C:\\IFA\\G10Rates\\" +
 				strCurrency + "_Clean_Input.txt"));
 
-			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter ("C:\\IFA\\G10Rates\\" +
-				strCurrency + "_Metric_TestOutput.csv"));
+			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter
+				("C:\\IFA\\G10Rates\\FinancialBoundary\\" + strCurrency + "_PnL.csv"));
 
 			while (null != (strCOBQuote = brSwapCOB.readLine())) {
 				java.lang.String[] astrCOBRecord = strCOBQuote.split (",");
@@ -658,15 +871,15 @@ public class RatesClosesLoader {
 					for (int i = 1; i < iNumQuote; ++i)
 						astrTenor[i - 1] = astrCOBRecord[i];
 
-					_writeCOB.write ("Date, Instrument, 1DTotalPnL, 1DCleanPnL, 1DDirtyPnL, ");
+					_writeCOB.write ("Date, Instrument, 1DTotalPnL, 1DCleanPnL, 1DDirtyPnL, 1DTotalPnLWithFixing, 1DCleanPnLWithFixing, 1DDirtyPnLWithFixing, ");
 
 					_writeCOB.write ("1DCarryPnL, 1DRollDownPnL, 1DCurveShiftPnL, ");
 
-					_writeCOB.write ("1MCarryPnL, 1MRollDownPnL, 3MCarryPnL, 3MRollDownPnL, DV01, CleanFixedDV01, CleanFloatDV01, ");
+					_writeCOB.write ("1MCarryPnL, 1MRollDownPnL, 3MCarryPnL, 3MRollDownPnL, DV01, DV01WithFixing, CleanFixedDV01, CleanFloatDV01, CleanFloatDV01WithFixing, ");
 
 					_writeCOB.write ("BaselineSwapRate, 1DRolldownSwapRate, 1MRolldownSwapRate, 3MRolldownSwapRate, 1DCurveShiftSwapRate, ");
 
-					_writeCOB.write ("PeriodFixedRate, PeriodCurveFloatingRate, PeriodProductFloatingRate, ");
+					_writeCOB.write ("PeriodFixedRate, PeriodCurveFloatingRate, PeriodProductFloatingRate, FloatingRateUsed, FixedDays, FloatingDays, ");
 
 					_writeCOB.write ("1DFixedDCF, 1DFloatingDCF, 1MFixedDCF, 1MFloatingDCF, 3MFixedDCF, 3MFloatingDCF, ");
 
@@ -902,12 +1115,14 @@ public class RatesClosesLoader {
 
 		org.drip.service.api.CreditAnalytics.Init ("");
 
+		InitStatic();
+
 		/* java.util.Map<org.drip.analytics.date.JulianDate, java.util.List<org.drip.service.api.CDXCOB>>
 			mapDatedCDXClose = LoadCDXCloses ("c:\\IFA\\CDXOP\\CDX_HY_PX_5Y_CONTRACTS_LAST_Orig.txt");
 
 		ProcessCDXQuote (mapDatedCDXClose); */
 
-		GenerateDiscountCurveMetrics ("NOK");
+		GenerateDiscountCurveMetrics ("GBP");
 
 		// ExecUnitSequence();
 

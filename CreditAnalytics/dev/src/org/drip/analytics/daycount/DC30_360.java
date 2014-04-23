@@ -74,8 +74,9 @@ public class DC30_360 implements org.drip.analytics.daycount.DCFCalculator {
 		return (360.* (org.drip.analytics.date.JulianDate.Year (dblEnd) -
 			org.drip.analytics.date.JulianDate.Year (dblStart)) + 30. *
 				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart) + dm.posterior() - dm.anterior()) + (org.drip.analytics.date.JulianDate.Day
-						(dblEnd) - org.drip.analytics.date.JulianDate.Day (dblStart))) / 360.;
+					(dblStart)) + (org.drip.analytics.date.JulianDate.Day (dblEnd) -
+						org.drip.analytics.date.JulianDate.Day (dblStart) + dm.posterior() - dm.anterior()))
+							/ 360.;
 	}
 
 	@Override public int daysAccrued (
@@ -95,7 +96,7 @@ public class DC30_360 implements org.drip.analytics.daycount.DCFCalculator {
 		return 360 * (org.drip.analytics.date.JulianDate.Year (dblEnd) -
 			org.drip.analytics.date.JulianDate.Year (dblStart)) + 30 *
 				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart) + dm.posterior() - dm.anterior()) + (org.drip.analytics.date.JulianDate.Day
-						(dblEnd) - org.drip.analytics.date.JulianDate.Day (dblStart));
+					(dblStart)) + (org.drip.analytics.date.JulianDate.Day (dblEnd) -
+						org.drip.analytics.date.JulianDate.Day (dblStart) + dm.posterior() - dm.anterior());
 	}
 }

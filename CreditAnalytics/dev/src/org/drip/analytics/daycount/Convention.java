@@ -578,6 +578,7 @@ public class Convention {
 
 		return sbDCSet.toString();
 	}
+
 	/**
 	 * Calculate the accrual fraction in years between 2 given days for the given day count convention and
 	 * 	the other parameters
@@ -619,6 +620,46 @@ public class Convention {
 			"; defaulting to Actual/365.25");
 
 		return (dblEnd - dblStart) / 365.25;
+	}
+
+	/**
+	 * Calculate the days accrued between 2 given days for the given day count convention and the other
+	 *  parameters
+	 * 
+	 * @param dblStart Start Date
+	 * @param dblEnd End Date
+	 * @param strDayCount Day count convention
+	 * @param bApplyEOMAdj Apply end-of-month adjustment (true)
+	 * @param dblMaturity Maturity Date
+	 * @param actactParams ActActParams
+	 * @param strCalendar Holiday Calendar
+	 * 
+	 * @return Number fo Days Accrued
+	 * 
+	 * @throws java.lang.Exception Thrown if the accrual fraction cannot be calculated
+	 */
+
+	public static final int DaysAccrued (
+		final double dblStart,
+		final double dblEnd,
+		final java.lang.String strDayCount,
+		final boolean bApplyEOMAdj,
+		final double dblMaturity,
+		final ActActDCParams actactParams,
+		final java.lang.String strCalendar)
+		throws java.lang.Exception
+	{
+		if ("BUS252".equalsIgnoreCase (strDayCount) || "BUS DAYS252".equalsIgnoreCase (strDayCount) ||
+			"BUS/252".equalsIgnoreCase (strDayCount))
+			return BusDays (dblStart, dblEnd, strCalendar);
+
+		org.drip.analytics.daycount.DCFCalculator dfcCalc = s_mapDCCalc.get (strDayCount);
+
+		if (null != dfcCalc)
+			return dfcCalc.daysAccrued (dblStart, dblEnd, bApplyEOMAdj, dblMaturity, actactParams,
+				strCalendar);
+
+		return (int) (dblEnd - dblStart);
 	}
 
 	/**

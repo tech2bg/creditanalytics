@@ -244,7 +244,11 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	{
 		double dblNumDays = getMaturityDate().getJulian() - getEffectiveDate().getJulian();
 
-		if (365. > dblNumDays) return ((int) (0.5 + (dblNumDays / 30.))) + "M";
+		if (365. > dblNumDays) {
+			int iNumMonth = (int) (0.5 + (dblNumDays / 30.));
+
+			return 12 == iNumMonth ? "1Y" : iNumMonth + "M";
+		}
 
 		 return ((int) (0.5 + (dblNumDays / 365.))) + "Y";
 	}

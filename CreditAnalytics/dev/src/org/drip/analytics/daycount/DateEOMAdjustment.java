@@ -120,29 +120,22 @@ public class DateEOMAdjustment {
 			return null;
 
 		try {
-			if (bApplyEOMAdj) {
+			if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD1Adj -= 1;
+
+			if (!org.drip.analytics.date.JulianDate.IsLeapYear (dblStart)) {
 				if (org.drip.analytics.date.JulianDate.FEBRUARY == org.drip.analytics.date.JulianDate.Month
-					(dblStart) && org.drip.analytics.date.JulianDate.IsEOM (dblStart) &&
-						org.drip.analytics.date.JulianDate.FEBRUARY ==
-							org.drip.analytics.date.JulianDate.Month (dblEnd) &&
-								org.drip.analytics.date.JulianDate.IsEOM (dblEnd))
-					dm._iD2Adj = (28 == org.drip.analytics.date.JulianDate.DaysInMonth
-						(org.drip.analytics.date.JulianDate.Month (dblEnd),
-							org.drip.analytics.date.JulianDate.Year (dblEnd)) ? 2 : 1);
-
+					(dblStart) && 28 == org.drip.analytics.date.JulianDate.Day (dblStart))
+					dm._iD1Adj += 2;
+			} else {
 				if (org.drip.analytics.date.JulianDate.FEBRUARY == org.drip.analytics.date.JulianDate.Month
-					(dblStart) && org.drip.analytics.date.JulianDate.IsEOM (dblStart))
-					dm._iD1Adj = (28 == org.drip.analytics.date.JulianDate.DaysInMonth
-						(org.drip.analytics.date.JulianDate.Month (dblStart),
-							org.drip.analytics.date.JulianDate.Year (dblStart)) ? 2 : 1);
-
-				if (31 == org.drip.analytics.date.JulianDate.Day (dblEnd) + dm._iD2Adj && (30 ==
-					org.drip.analytics.date.JulianDate.Day (dblStart) + dm._iD1Adj || 31 ==
-						org.drip.analytics.date.JulianDate.Day (dblStart) + dm._iD1Adj))
-					dm._iD2Adj -= 1;
-
-				if (31 == org.drip.analytics.date.JulianDate.Day (dblStart) + dm._iD1Adj) dm._iD1Adj -= 1;
+					(dblStart) && 29 == org.drip.analytics.date.JulianDate.Day (dblStart))
+					dm._iD1Adj += 1;
 			}
+
+			if (31 == org.drip.analytics.date.JulianDate.Day (dblEnd) && (30 ==
+				org.drip.analytics.date.JulianDate.Day (dblStart) || 31 ==
+					org.drip.analytics.date.JulianDate.Day (dblStart)))
+				dm._iD2Adj -= 1;
 
 			return dm;
 		} catch (java.lang.Exception e) {

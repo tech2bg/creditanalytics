@@ -147,6 +147,153 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	/**
+	 * Create an Instance of FloatingStream
+	 * 
+	 * @param dblEffective Effective Date
+	 * @param strMaturityTenor Maturity Tenor
+	 * @param dblSpread Spread
+	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
+	 * @param fri Floating Rate Index
+	 * @param iFreq Frequency
+	 * @param strCouponDC Coupon Day Count
+	 * @param bApplyCpnEOMAdj TRUE => Apply the Coupon EOM Adjustment
+	 * @param strAccrualDC Accrual Day Count
+	 * @param bApplyAccEOMAdj TRUE => Apply the Accrual EOM Adjustment
+	 * @param dapEffective Effective DAP
+	 * @param dapMaturity Maturity DAP
+	 * @param dapPeriodStart Period Start DAP
+	 * @param dapPeriodEnd Period End DAP
+	 * @param dapAccrualStart Accrual Start DAP
+	 * @param dapAccrualEnd Accrual End DAP
+	 * @param dapPay Pay DAP
+	 * @param dapReset Reset DAP
+	 * @param notlSchedule Notional Schedule
+	 * @param dblNotional Initial Notional Amount
+	 * @param strIR IR Curve
+	 * @param strCalendar Calendar
+	 * 
+	 * return Instance of FloatingStream
+	 */
+
+	public static FloatingStream Create (
+		final double dblEffective,
+		final java.lang.String strMaturityTenor,
+		final double dblSpread,
+		final boolean bIsReference,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final int iFreq,
+		final java.lang.String strCouponDC,
+		final boolean bApplyCpnEOMAdj,
+		final java.lang.String strAccrualDC,
+		final boolean bApplyAccEOMAdj,
+		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
+		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
+		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
+		final org.drip.analytics.daycount.DateAdjustParams dapPeriodEnd,
+		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
+		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
+		final org.drip.analytics.daycount.DateAdjustParams dapPay,
+		final org.drip.analytics.daycount.DateAdjustParams dapReset,
+		final org.drip.product.params.FactorSchedule notlSchedule,
+		final double dblNotional,
+		final java.lang.String strIR,
+		final java.lang.String strCalendar)
+	{
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriods (
+				dblEffective, 			// Effective
+				strMaturityTenor, 		// Maturity Tenor
+				dapEffective, 			// Effective DAP
+				dapMaturity, 			// Maturity DAP
+				dapPeriodStart, 		// Period Start DAP
+				dapPeriodEnd, 			// Period End DAP
+				dapAccrualStart, 		// Accrual Start DAP
+				dapAccrualEnd, 			// Accrual End DAP
+				dapPay, 				// Pay DAP
+				null, 					// Reset DAP
+				iFreq, 					// Coupon Freq
+				strCouponDC, 			// Coupon Day Count
+				bApplyCpnEOMAdj,
+				strAccrualDC, 			// Accrual Day Count
+				bApplyAccEOMAdj,
+				false,
+				strCalendar);
+
+		try {
+			return new FloatingStream (dblEffective, new org.drip.analytics.date.JulianDate
+				(dblEffective).addTenor (strMaturityTenor).getJulian(), dblSpread, bIsReference, fri,
+					notlSchedule, dblNotional, strIR, lsCouponPeriod);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create an Instance of FloatingStream
+	 * 
+	 * @param dblEffective Effective Date
+	 * @param strMaturityTenor Maturity Tenor
+	 * @param dblSpread Spread
+	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
+	 * @param fri Floating Rate Index
+	 * @param iFreq Frequency
+	 * @param strCouponDC Coupon Day Count
+	 * @param bApplyCpnEOMAdj TRUE => Apply the Coupon EOM Adjustment
+	 * @param strAccrualDC Accrual Day Count
+	 * @param bApplyAccEOMAdj TRUE => Apply the Accrual EOM Adjustment
+	 * @param dap DAP
+	 * @param notlSchedule Notional Schedule
+	 * @param dblNotional Initial Notional Amount
+	 * @param strIR IR Curve
+	 * @param strCalendar Calendar
+	 * 
+	 * return Instance of FloatingStream
+	 */
+
+	public static FloatingStream Create (
+		final double dblEffective,
+		final java.lang.String strMaturityTenor,
+		final double dblSpread,
+		final boolean bIsReference,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final int iFreq,
+		final java.lang.String strCouponDC,
+		final boolean bApplyCpnEOMAdj,
+		final java.lang.String strAccrualDC,
+		final boolean bApplyAccEOMAdj,
+		final org.drip.analytics.daycount.DateAdjustParams dap,
+		final org.drip.product.params.FactorSchedule notlSchedule,
+		final double dblNotional,
+		final java.lang.String strIR,
+		final java.lang.String strCalendar)
+	{
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriods (
+				dblEffective, 			// Effective
+				strMaturityTenor, 		// Maturity Tenor
+				dap, 					// DAP
+				iFreq, 					// Coupon Freq
+				strCouponDC, 			// Coupon Day Count
+				bApplyCpnEOMAdj,
+				strAccrualDC, 			// Accrual Day Count
+				bApplyAccEOMAdj,
+				false,
+				strCalendar);
+
+		try {
+			return new FloatingStream (dblEffective, new org.drip.analytics.date.JulianDate
+				(dblEffective).addTenor (strMaturityTenor).getJulian(), dblSpread, bIsReference, fri,
+					notlSchedule, dblNotional, strIR, lsCouponPeriod);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	protected double getFixing (
 		final double dblValueDate,
 		final org.drip.product.params.FloatingRateIndex fri,

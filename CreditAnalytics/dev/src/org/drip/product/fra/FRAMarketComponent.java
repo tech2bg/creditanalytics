@@ -131,8 +131,8 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 					dc.name() + "_VOL_TS", fri.fullyQualifiedName() + "_VOL_TS", dc.name() + "::" +
 						fri.fullyQualifiedName() + "_VOL_TS", dblValueDate, dblEffectiveDate);
 
-			double dblShiftedLogNormalParMarketFRA = (dblForwardDCF * dblParStandardFRA + 1.) *
-				(dblShiftedLogNormalConvexityAdjustmentExponent - 1.) / dblForwardDCF;
+			double dblShiftedLogNormalParMarketFRA = ((dblForwardDCF * dblParStandardFRA + 1.) *
+				java.lang.Math.exp (dblShiftedLogNormalConvexityAdjustmentExponent) - 1.) / dblForwardDCF;
 
 			mapResult.put ("discountcurveparforward", dblParDCForward);
 
