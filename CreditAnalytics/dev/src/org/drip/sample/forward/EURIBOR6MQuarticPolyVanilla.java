@@ -192,14 +192,19 @@ public class EURIBOR6MQuarticPolyVanilla {
 			scbcQuartic,
 			astrDepositTenor,
 			adblDepositQuote,
+			"ForwardRate",
 			astrFRATenor,
 			adblFRAQuote,
+			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
+			"DerivedParBasisSpread",
 			null,
 			null,
+			"DerivedParBasisSpread",
 			null,
 			null,
+			"DerivedParBasisSpread",
 			"---- EURIBOR 6M VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---");
 
 		EURIBOR.ForwardJack (

@@ -578,7 +578,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					dblResetDate = period.getResetDate();
 				} else {
 					double dblPeriodQuantoAdjust =
-						org.drip.analytics.support.AnalyticsHelper.MultiplicativeCrossVolQuanto (mktParams,
+						org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (mktParams,
 							strFRI, "ForwardToDomesticExchangeVolatility",
 								"FRIForwardToDomesticExchangeCorrelation", valParams.valueDate(),
 									period.getStartDate());
@@ -586,10 +586,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					dblFloatingRate = (null == fc ? dc.libor (period.getStartDate(), period.getPayDate(),
 						period.getCouponDCF()) : fc.forward (period.getPayDate())) * dblPeriodQuantoAdjust;
 				}
-
-				/* System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (period.getPayDate()) +
-					" | " + strFRI + " | " + dblFloatingRate + " | " + fc.forward (period.getPayDate()) +
-						" | " + _dblSpread); */
 
 				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * getNotional
 					(period.getAccrualStartDate(), period.getEndDate());

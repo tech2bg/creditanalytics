@@ -94,7 +94,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 		try {
 			dblMultiplicativeSwapRateQuantoAdjustment =
-				org.drip.analytics.support.AnalyticsHelper.MultiplicativeCrossVolQuanto (mktParams,
+				org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (mktParams,
 					strComponentName + "SwapRateVolatility", strComponentName + "SwapRateExchangeVolatility",
 						strComponentName + "SwapRateToSwapRateExchangeCorrelation", dblValueDate,
 							dblEffectiveDate);

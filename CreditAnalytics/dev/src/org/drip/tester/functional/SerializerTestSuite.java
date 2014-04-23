@@ -296,12 +296,12 @@ public class SerializerTestSuite {
 		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
 			"InterestRateSwap");
 
-		byte[] abFRA = new org.drip.product.rates.FRAComponent (1., "JPY", "JPY-FRA-3M", "JPY",
+		byte[] abFRA = new org.drip.product.fra.FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().getJulian(),
 				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01,
 					"Act/360").serialize();
 
-		Verify (abFRA, new org.drip.product.rates.FRAComponent (abFRA), "FloatingRateAgreement");
+		Verify (abFRA, new org.drip.product.fra.FRAStandardComponent (abFRA), "FloatingRateAgreement");
 
 		org.drip.product.rates.FixedStream[] aFixedStream = new org.drip.product.rates.FixedStream[3];
 		org.drip.product.rates.FloatingStream[] aFloatStream = new org.drip.product.rates.FloatingStream[3];

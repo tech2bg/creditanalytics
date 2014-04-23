@@ -90,7 +90,7 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 		if (dblDate <= _dblEpochDate) return 1.;
 
 		return _dcForeignCollateralized.df (dblDate) * _auFX.evaluate (dblDate) * java.lang.Math.exp (-1. *
-			org.drip.analytics.support.AnalyticsHelper.IntegratedCrossVolQuanto (_auFXVolSurface,
+			org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (_auFXVolSurface,
 				_auForeignRatesVolSurface, _auFXForeignRatesCorrSurface, _dblEpochDate, dblDate));
 	}
 

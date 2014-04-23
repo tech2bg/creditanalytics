@@ -1,5 +1,5 @@
 
-package org.drip.product.rates;
+package org.drip.product.fra;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,17 +29,17 @@ package org.drip.product.rates;
  */
 
 /**
- * FRACapFloor implements the FRA Caps and Floors.
+ * FRAStandardCapFloor implements the Caps and Floors on the Standard FRA.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRACapFloor extends org.drip.product.definition.FixedIncomeOptionComponent {
-	private java.util.List<org.drip.product.rates.FRACapFloorlet> _lsFRACapFloorlet = new
-		java.util.ArrayList<org.drip.product.rates.FRACapFloorlet>();
+public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncomeOptionComponent {
+	private java.util.List<org.drip.product.fra.FRAStandardCapFloorlet> _lsFRACapFloorlet = new
+		java.util.ArrayList<org.drip.product.fra.FRAStandardCapFloorlet>();
 
 	/**
-	 * FRACapFloor constructor
+	 * FRAStandardCapFloor constructor
 	 * 
 	 * @param fs The Floating Stream for which the FRA Components are to be constructed
 	 * @param strManifestMeasure Measure of the Underlying Component
@@ -52,7 +52,7 @@ public class FRACapFloor extends org.drip.product.definition.FixedIncomeOptionCo
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public FRACapFloor (
+	public FRAStandardCapFloor (
 		final org.drip.product.rates.FloatingStream fs,
 		final java.lang.String strManifestMeasure,
 		final boolean bIsCap,
@@ -73,11 +73,11 @@ public class FRACapFloor extends org.drip.product.definition.FixedIncomeOptionCo
 		for (org.drip.analytics.period.CashflowPeriod period : fs.getCashFlowPeriod()) {
 			double dblFRAStartDate = period.getStartDate();
 
-			org.drip.product.rates.FRAComponent fra = new org.drip.product.rates.FRAComponent (dblNotional,
+			org.drip.product.fra.FRAStandardComponent fra = new org.drip.product.fra.FRAStandardComponent (dblNotional,
 				strIR, strFRACodePrefix + new org.drip.analytics.date.JulianDate (dblFRAStartDate),
 					strCalendar, dblFRAStartDate, fri, dblStrike, strDayCount);
 
-			_lsFRACapFloorlet.add (new org.drip.product.rates.FRACapFloorlet (fra, strManifestMeasure,
+			_lsFRACapFloorlet.add (new org.drip.product.fra.FRAStandardCapFloorlet (fra, strManifestMeasure,
 				bIsCap, dblStrike, dblNotional, strDayCount, strCalendar));
 		}
 	}
@@ -94,7 +94,7 @@ public class FRACapFloor extends org.drip.product.definition.FixedIncomeOptionCo
 
 		long lStart = System.nanoTime();
 
-		for (org.drip.product.rates.FRACapFloorlet fracfl : _lsFRACapFloorlet) {
+		for (org.drip.product.fra.FRAStandardCapFloorlet fracfl : _lsFRACapFloorlet) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRAResult = fracfl.value
 				(valParams, pricerParams, mktParams, quotingParams);
 

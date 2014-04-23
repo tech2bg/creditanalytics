@@ -38,8 +38,8 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * This Sample illustrates the Construction and Usage of the EURIBOR 1M Forward Curve Using Tension B Spline
- * 	Based KLK Cubic Hyperbolic Spline.
+ * This Sample illustrates the Construction and Usage of the EURIBOR 1M Forward Curve Using Vanilla Cubic
+ * 	KLK Hyperbolic Tension B-Splines.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -67,7 +67,7 @@ public class EURIBOR1MCubicKLKHyperbolic {
 			strCurrency,
 			false);
 
-		SegmentCustomBuilderControl scbcKLKHyperbolic = new SegmentCustomBuilderControl (
+		SegmentCustomBuilderControl scbcCubicKLKHyperbolic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 			new ExponentialTensionSetParams (1.),
 			SegmentInelasticDesignControl.Create (2, 2),
@@ -129,21 +129,21 @@ public class EURIBOR1MCubicKLKHyperbolic {
 		 */
 
 		double[] adblFloatFloatQuote = new double[] {
-			0.000980,
-			0.001860,
-			0.003300,
-			0.005120,
-			0.007040,
-			0.008870,
-			0.010580,
-			0.012110,
-			0.013470,
-			0.014700,
-			0.015810,
-			0.018260,
-			0.019980,
-			0.020590,
-			0.020930
+			0.002260,	//  2Y
+			0.002380,	//  3Y
+			0.002460,	//  4Y
+			0.002500,	//  5Y
+			0.002500,	//  6Y
+			0.002480,	//  7Y
+			0.002450,	//  8Y
+			0.002410,	//  9Y
+			0.002370,	// 10Y
+			0.002330,	// 11Y
+			0.002280,	// 12Y
+			0.002110,	// 15Y
+			0.001890,	// 20Y
+			0.001750,	// 25Y
+			0.001630	// 30Y
 		};
 
 		String[] astrFloatFloatTenor = new String[] {
@@ -176,10 +176,10 @@ public class EURIBOR1MCubicKLKHyperbolic {
 		};
 
 		double[] adblSyntheticFloatFloatQuote = new double[] {
-			0.021320,
-			0.021850,
-			0.022580,
-			0.023000
+			0.001630,
+			0.001630,
+			0.001630,
+			0.001630
 		};
 
 		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
@@ -191,22 +191,27 @@ public class EURIBOR1MCubicKLKHyperbolic {
 			dcEONIA,
 			fc6M,
 			fri,
-			scbcKLKHyperbolic,
+			scbcCubicKLKHyperbolic,
 			astrDepositTenor,
 			adblDepositQuote,
+			"ForwardRate",
 			null,
 			null,
+			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
+			"DerivedParBasisSpread",
 			astrFloatFloatTenor,
 			adblFloatFloatQuote,
+			"DerivedParBasisSpread",
 			astrSyntheticFloatFloatTenor,
 			adblSyntheticFloatFloatQuote,
-			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---");
+			"DerivedParBasisSpread",
+			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---");
 
 		EURIBOR.ForwardJack (
 			dtValue,
-			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
+			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
 			fc);
 	}
 }

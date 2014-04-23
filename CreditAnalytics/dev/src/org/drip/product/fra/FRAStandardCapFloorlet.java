@@ -1,5 +1,5 @@
 
-package org.drip.product.rates;
+package org.drip.product.fra;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,19 +29,19 @@ package org.drip.product.rates;
  */
 
 /**
- * FRACapFloorlet implements the FRA Caplet and Floorlet.
+ * FRAStandardCapFloorlet implements the Standard FRA Caplet and Floorlet.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRACapFloorlet extends org.drip.product.definition.FixedIncomeOptionComponent {
+public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedIncomeOptionComponent {
 	private boolean _bIsCaplet = false;
-	private org.drip.product.rates.FRAComponent _fra = null;
+	private org.drip.product.fra.FRAStandardComponent _fra = null;
 
 	/**
-	 * FRACapFloorlet constructor
+	 * FRAStandardCapFloorlet constructor
 	 * 
-	 * @param fra The Underlying FRA Component
+	 * @param fra The Underlying FRA Standard Component
 	 * @param strManifestMeasure Measure of the Underlying Component
 	 * @param bIsCaplet Is the FRA Option a Caplet? TRUE => YES
 	 * @param dblStrike Strike of the Underlying Component's Measure
@@ -52,8 +52,8 @@ public class FRACapFloorlet extends org.drip.product.definition.FixedIncomeOptio
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public FRACapFloorlet (
-		final org.drip.product.rates.FRAComponent fra,
+	public FRAStandardCapFloorlet (
+		final org.drip.product.fra.FRAStandardComponent fra,
 		final java.lang.String strManifestMeasure,
 		final boolean bIsCaplet,
 		final double dblStrike,
@@ -104,14 +104,14 @@ public class FRACapFloorlet extends org.drip.product.definition.FixedIncomeOptio
 
 		try {
 			double dblIntegratedQuantoDrift =
-				org.drip.analytics.support.AnalyticsHelper.IntegratedCrossVolQuanto (mktParams, strFRI,
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (mktParams, strFRI,
 					"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
 						dblValueDate, dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedQuantoDrift)) return null;
 
 			double dblIntegratedSurfaceVariance =
-				org.drip.analytics.support.AnalyticsHelper.IntegratedSurfaceVariance (mktParams, strFRI,
+				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (mktParams, strFRI,
 					dblValueDate, dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedSurfaceVariance)) return null;

@@ -6,7 +6,7 @@ import org.drip.analytics.rates.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.spline.basis.ExponentialTensionSetParams;
+import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
 
@@ -38,13 +38,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * This Sample illustrates the Construction and Usage of the EURIBOR 3M Forward Curve Using Cubic KLK
- * 	Hyperbolic Tension B-Spline.
+ * This Sample illustrates the Construction and Usage of the EURIBOR 12M Forward Curve Using Vanilla Quartic
+ * 	Polynomial.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EURIBOR3MCubicKLKHyperbolic {
+public class EURIBOR12MQuarticPolyVanilla {
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -57,7 +57,7 @@ public class EURIBOR3MCubicKLKHyperbolic {
 
 		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
 
-		String strTenor = "3M";
+		String strTenor = "12M";
 		String strCurrency = "EUR";
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
@@ -67,9 +67,9 @@ public class EURIBOR3MCubicKLKHyperbolic {
 			strCurrency,
 			false);
 
-		SegmentCustomBuilderControl scbcKLKHyperbolic = new SegmentCustomBuilderControl (
-			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
-			new ExponentialTensionSetParams (1.),
+		SegmentCustomBuilderControl scbcQuartic = new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (5),
 			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 			null);
@@ -79,81 +79,79 @@ public class EURIBOR3MCubicKLKHyperbolic {
 		 */
 
 		double[] adblDepositQuote = new double[] {
-			0.001865,
-			0.001969,
-			0.001951,
-			0.001874
+			0.006537,
+			0.006187,
+			0.005772,
+			0.005563,
+			0.005400
 		};
 
 		String[] astrDepositTenor = new String[] {
-			"2W",
-			"3W",
-			"1M",
-			"2M"
-		};
-
-		/*
-		 * Construct the Array of FRAs and their Quotes from the given set of parameters
-		 */
-
-		double[] adblFRAQuote = new double[] {
-			0.001790,
-			0.001775,
-			0.001274,
-			0.001222,
-			0.001269,
-			0.001565,
-			0.001961,
-			0.002556,
-			0.003101
-		};
-
-		String[] astrFRATenor = new String[] {
-			 "0D",
 			 "1M",
 			 "3M",
 			 "6M",
 			 "9M",
-			"12M",
-			"15M",
-			"18M",
-			"21M"
+			"12M"
 		};
 
 		/*
 		 * Construct the Array of Fix-Float Component and their Quotes from the given set of parameters
 		 */
 
-		double[] adblFixFloatQuote = new double[] {
-			0.002850,	//  3Y
-			0.004370,	//  4Y
-			0.006230,	//  5Y
-			0.008170,	//  6Y
-			0.010000,	//  7Y
-			0.011710,	//  8Y
-			0.013240,	//  9Y
-			0.014590,	// 10Y
-			0.016920,	// 12Y
-			0.019330,	// 15Y
-			0.020990,	// 20Y
-			0.021560,	// 25Y
-			0.021860 	// 30Y
+		double[] adblFRAQuote = new double[] {
+			0.004974,
+			0.004783,
+			0.004822,
+			0.005070,
+			0.005481,
+			0.006025
 		};
 
-		String[] astrFixFloatTenor = new String[] {
-			 "3Y",
-			 "4Y",
-			 "5Y",
-			 "6Y",
-			 "7Y",
-			 "8Y",
-			 "9Y",
-			"10Y",
-			"12Y",
-			"15Y",
-			"20Y",
-			"25Y",
-			"30Y"
+		String[] astrFRATenor = new String[] {
+			 "3M",
+			 "6M",
+			 "9M",
+			"12M",
+			"15M",
+			"18M",
+		};
+
+		/*
+		 * Construct the Array of Float-Float Component and their Quotes from the given set of parameters
+		 */
+
+		double[] adblFloatFloatQuote = new double[] {
+			0.002070,	//  3Y
+			0.001640,	//  4Y
+			0.001510,	//  5Y
+			0.001390,	//  6Y
+			0.001300,	//  7Y
+			0.001230,	//  8Y
+			0.001180,	//  9Y
+			0.001130,	// 10Y
+			0.001090,	// 11Y
+			0.001060,	// 12Y
+			0.000930,	// 15Y
+			0.000800,	// 20Y
+			0.000720,	// 25Y
+			0.000660	// 30Y
+		};
+
+		String[] astrFloatFloatTenor = new String[] {
+			  "3Y",
+			  "4Y",
+			  "5Y",
+			  "6Y",
+			  "7Y",
+			  "8Y",
+			  "9Y",
+			 "10Y",
+			 "11Y",
+			 "12Y",
+			 "15Y",
+			 "20Y",
+			 "25Y",
+			 "30Y"
 		};
 
 		/*
@@ -168,10 +166,10 @@ public class EURIBOR3MCubicKLKHyperbolic {
 		};
 
 		double[] adblSyntheticFloatFloatQuote = new double[] {
-			0.00065,
-			0.00060,
-			0.00054,
-			0.00050
+			0.000660,
+			0.000660,
+			0.000660,
+			0.000660
 		};
 
 		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
@@ -183,27 +181,27 @@ public class EURIBOR3MCubicKLKHyperbolic {
 			dcEONIA,
 			fc6M,
 			fri,
-			scbcKLKHyperbolic,
+			scbcQuartic,
 			astrDepositTenor,
 			adblDepositQuote,
 			"ForwardRate",
 			astrFRATenor,
 			adblFRAQuote,
 			"ParForwardRate",
-			astrFixFloatTenor,
-			adblFixFloatQuote,
-			"DerivedParBasisSpread",
 			null,
 			null,
-			"DerivedParBasisSpread",
+			"ReferenceParBasisSpread",
+			astrFloatFloatTenor,
+			adblFloatFloatQuote,
+			"ReferenceParBasisSpread",
 			astrSyntheticFloatFloatTenor,
 			adblSyntheticFloatFloatQuote,
-			"DerivedParBasisSpread",
-			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---");
+			"ReferenceParBasisSpread",
+			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---");
 
 		EURIBOR.ForwardJack (
 			dtValue,
-			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
+			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
 			fc);
 	}
 }

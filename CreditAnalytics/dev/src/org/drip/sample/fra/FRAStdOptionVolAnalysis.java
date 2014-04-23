@@ -1,5 +1,5 @@
 
-package org.drip.sample.multicurve;
+package org.drip.sample.fra;
 
 import java.util.*;
 
@@ -11,6 +11,8 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.fra.FRAStandardCapFloorlet;
+import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
@@ -46,13 +48,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * FRAOptionVolCorrAnalysis contains the demonstration of the custom volatility-correlation analysis of the
- * 	Multi-Curve FRA Option sample.
+ * FRAStdOptionVolAnalysis contains the demonstration of the custom volatility-correlation analysis of Option
+ * 	on a Standard Multi-Curve FRA.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAOptionVolCorrAnalysis {
+public class FRAStdOptionVolAnalysis {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -435,7 +437,7 @@ public class FRAOptionVolCorrAnalysis {
 	}
 
 	private static final void VolCorrScenario (
-		final FRAComponent fra,
+		final FRAStandardComponent fra,
 		final ValuationParams valParams,
 		final ComponentMarketParams cmp,
 		final double dblFRIVol,
@@ -473,7 +475,7 @@ public class FRAOptionVolCorrAnalysis {
 
 		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
 
-		FRACapFloorlet fraCaplet = new FRACapFloorlet (
+		FRAStandardCapFloorlet fraCaplet = new FRAStandardCapFloorlet (
 			fra,
 			strManifestMeasure,
 			true,
@@ -482,7 +484,7 @@ public class FRAOptionVolCorrAnalysis {
 			strCurrency,
 			strCurrency);
 
-		FRACapFloorlet fraFloorlet = new FRACapFloorlet (
+		FRAStandardCapFloorlet fraFloorlet = new FRAStandardCapFloorlet (
 			fra,
 			strManifestMeasure,
 			false,
@@ -543,7 +545,7 @@ public class FRAOptionVolCorrAnalysis {
 
 		JulianDate dtForward = dtToday.addTenor (strTenor);
 
-		FRAComponent fra = new FRAComponent (
+		FRAStandardComponent fra = new FRAStandardComponent (
 			1.,
 			strCurrency,
 			strCurrency + "-FRA-" + strTenor,

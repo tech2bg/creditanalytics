@@ -9,6 +9,7 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.DepositBuilder;
 import org.drip.product.definition.*;
+import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
@@ -99,7 +100,7 @@ public class EURIBOR {
 		String strCurrency = fri.currency();
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aFRA[i] = new FRAComponent (
+			aFRA[i] = new FRAStandardComponent (
 				1.,
 				strCurrency,
 				"FRA::" + strCurrency,
@@ -222,14 +223,19 @@ public class EURIBOR {
 		final SegmentCustomBuilderControl scbc,
 		final String[] astrDepositTenor,
 		final double[] adblDepositQuote,
+		final String strDepositCalibMeasure,
 		final String[] astrFRATenor,
 		final double[] adblFRAQuote,
+		final String strFRACalibMeasure,
 		final String[] astrFixFloatTenor,
 		final double[] adblFixFloatQuote,
+		final String strFixFloatCalibMeasure,
 		final String[] astrFloatFloatTenor,
 		final double[] adblFloatFloatQuote,
+		final String strFloatFloatCalibMeasure,
 		final String[] astrSyntheticFloatFloatTenor,
 		final double[] adblSyntheticFloatFloatQuote,
+		final String strSyntheticFloatFloatCalibMeasure,
 		final String strHeaderComment)
 		throws Exception
 	{
@@ -256,7 +262,7 @@ public class EURIBOR {
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aDeposit,
-			"ForwardRate",
+			strDepositCalibMeasure,
 			adblDepositQuote,
 			null);
 
@@ -276,7 +282,7 @@ public class EURIBOR {
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aFRA,
-			"ParForwardRate",
+			strFRACalibMeasure,
 			adblFRAQuote,
 			null);
 
@@ -304,7 +310,7 @@ public class EURIBOR {
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aFixFloat,
-			"DerivedParBasisSpread",
+			strFixFloatCalibMeasure,
 			adblFixFloatDerivedParBasisSpread,
 			null);
 
@@ -323,7 +329,7 @@ public class EURIBOR {
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aFloatFloat,
-			"DerivedParBasisSpread",
+			strFloatFloatCalibMeasure,
 			adblFloatFloatQuote,
 			null);
 
@@ -342,7 +348,7 @@ public class EURIBOR {
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aSyntheticFloatFloat,
-			"DerivedParBasisSpread",
+			strSyntheticFloatFloatCalibMeasure,
 			adblSyntheticFloatFloatQuote,
 			null);
 
@@ -412,7 +418,7 @@ public class EURIBOR {
 
 			for (int i = 0; i < aDeposit.length; ++i)
 				System.out.println ("\t[" + aDeposit[i].getEffectiveDate() + " - " + aDeposit[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aDeposit[i].calcMeasureValue (valParams, null, cmp, null, "Forward"), 1, 6, 1.) +
+					FormatUtil.FormatDouble (aDeposit[i].calcMeasureValue (valParams, null, cmp, null, strDepositCalibMeasure), 1, 6, 1.) +
 						" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.) + " | " +
 							FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].getMaturityDate()), 1, 4, 100.) + "%");
 		}
@@ -430,7 +436,7 @@ public class EURIBOR {
 
 			for (int i = 0; i < aFRA.length; ++i)
 				System.out.println ("\t[" + aFRA[i].getEffectiveDate() + " - " + aFRA[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aFRA[i].calcMeasureValue (valParams, null, cmp, null, "ParForwardRate"), 1, 6, 1.) +
+					FormatUtil.FormatDouble (aFRA[i].calcMeasureValue (valParams, null, cmp, null, strFRACalibMeasure), 1, 6, 1.) +
 						" | " + FormatUtil.FormatDouble (adblFRAQuote[i], 1, 6, 1.) + " | " +
 							FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].getMaturityDate()), 1, 4, 100.) + "%");
 		}
@@ -466,7 +472,7 @@ public class EURIBOR {
 
 			for (int i = 0; i < aFloatFloat.length; ++i)
 				System.out.println ("\t[" + aFloatFloat[i].getEffectiveDate() + " - " + aFloatFloat[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, "DerivedParBasisSpread"), 1, 2, 1.) +
+					FormatUtil.FormatDouble (aFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
 						" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.) + " | " +
 							FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
 		}
@@ -484,7 +490,7 @@ public class EURIBOR {
 
 			for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
 				System.out.println ("\t[" + aSyntheticFloatFloat[i].getEffectiveDate() + " - " + aSyntheticFloatFloat[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aSyntheticFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, "DerivedParBasisSpread"), 1, 2, 1.) +
+					FormatUtil.FormatDouble (aSyntheticFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
 						" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.) + " | " +
 							FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
 		}

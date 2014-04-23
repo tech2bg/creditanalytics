@@ -1,5 +1,5 @@
 
-package org.drip.product.rates;
+package org.drip.product.fra;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,12 +29,12 @@ package org.drip.product.rates;
  */
 
 /**
- * FRAComponent contains the implementation of the Multi-Curve FRA product.
+ * FRAStandardComponent contains the implementation of the Standard Multi-Curve FRA product.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAComponent extends org.drip.product.definition.RatesComponent {
+public class FRAStandardComponent extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 1.;
 	private java.lang.String _strIR = "";
 	private java.lang.String _strCode = "";
@@ -56,7 +56,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
-	 * FRAComponent constructor
+	 * FRAStandardComponent constructor
 	 * 
 	 * @param dblNotional Component Notional
 	 * @param strIR IR Curve
@@ -70,7 +70,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public FRAComponent (
+	public FRAStandardComponent (
 		final double dblNotional,
 		final java.lang.String strIR,
 		final java.lang.String strCode,
@@ -87,53 +87,54 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 					!org.drip.quant.common.NumberUtil.IsValid (_dblEffectiveDate = dblEffectiveDate) || null
 						== (_fri = fri) || !org.drip.quant.common.NumberUtil.IsValid (_dblStrike =
 							dblStrike) || null == (_strDayCount = strDayCount) || _strDayCount.isEmpty())
-			throw new java.lang.Exception ("FRAComponent ctr => Invalid Inputs!");
+			throw new java.lang.Exception ("FRAStandardComponent ctr => Invalid Inputs!");
 
 		_dtMaturity = new org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor());
 	}
 
 	/**
-	 * FRAComponent de-serialization from input byte array
+	 * FRAStandardComponent de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if FRAComponent cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if FRAStandardComponent cannot be properly de-serialized
 	 */
 
-	public FRAComponent (
+	public FRAStandardComponent (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FRAComponent de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Invalid input Byte array");
 
 		java.lang.String strFRAComponent = new java.lang.String (ab);
 
 		if (null == strFRAComponent || strFRAComponent.isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Empty state");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Empty state");
 
 		java.lang.String strSerializedFRAComponent = strFRAComponent.substring (0, strFRAComponent.indexOf
 			(getObjectTrailer()));
 
 		if (null == strSerializedFRAComponent || strSerializedFRAComponent.isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFRAComponent,
 			getFieldDelimiter());
 
 		if (null == astrField || 9 > astrField.length)
-			throw new java.lang.Exception ("FRAComponent de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate notional");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate notional");
 
 		_dblNotional = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate IR curve name");
+			throw new java.lang.Exception
+				("FRAStandardComponent de-serializer: Cannot locate IR curve name");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strIR = astrField[2];
@@ -141,7 +142,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 			_strIR = "";
 
 		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate code");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate code");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			_strCode = astrField[3];
@@ -149,7 +150,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 			_strCode = "";
 
 		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate calendar");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate calendar");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			_strCalendar = astrField[4];
@@ -158,12 +159,13 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate Effective Date");
+			throw new java.lang.Exception
+				("FRAStandardComponent de-serializer: Cannot locate Effective Date");
 
 		_dblEffectiveDate = new java.lang.Double (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate rate index");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate rate index");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_fri = null;
@@ -171,7 +173,8 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 			_fri = new org.drip.product.params.FloatingRateIndex (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate cash settle params");
+			throw new java.lang.Exception
+				("FRAStandardComponent de-serializer: Cannot locate cash settle params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			_settleParams = null;
@@ -180,7 +183,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == astrField[8] || astrField[8].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
-			throw new java.lang.Exception ("FRAComponent de-serializer: Cannot locate Strike");
+			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate Strike");
 
 		_dblStrike = new java.lang.Double (astrField[8]);
 	}
@@ -222,7 +225,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || dblDate < _dblEffectiveDate || dblDate >
 			_dtMaturity.getJulian())
-			throw new java.lang.Exception ("FRAComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("FRAStandardComponent::getNotional => Bad date into getNotional");
 
 		return 1.;
 	}
@@ -234,12 +237,12 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2) || dblDate1 < _dblEffectiveDate || dblDate2 < _dblEffectiveDate)
-			throw new java.lang.Exception ("FRAComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("FRAStandardComponent::getNotional => Bad date into getNotional");
 
 		double dblMaturity = _dtMaturity.getJulian();
 
 		if (dblDate1 > dblMaturity || dblDate2 > dblMaturity)
-			throw new java.lang.Exception ("FRAComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("FRAStandardComponent::getNotional => Bad date into getNotional");
 
 		return 1.;
 	}
@@ -366,7 +369,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 				dblParForward = fc.forward (dblMaturity);
 
 			double dblMultiplicativeQuantoAdjustment =
-				org.drip.analytics.support.AnalyticsHelper.MultiplicativeCrossVolQuanto (mktParams, strFRI,
+				org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (mktParams, strFRI,
 					"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
 						dblValueDate, _dblEffectiveDate);
 
@@ -546,12 +549,23 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		final byte[] ab)
 	{
 		try {
-			return new FRAComponent (ab);
+			return new FRAStandardComponent (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
+	}
+
+	/**
+	 * Retrieve the Floating Rate Index
+	 * 
+	 * @return The Floating Rate Index
+	 */
+
+	public org.drip.product.params.FloatingRateIndex fri()
+	{
+		return _fri;
 	}
 
 	/**
@@ -565,11 +579,33 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 		return _dblStrike;
 	}
 
+	/**
+	 * Retrieve the Day Count
+	 * 
+	 * @return The Day Count
+	 */
+
+	public java.lang.String dayCount()
+	{
+		return _strDayCount;
+	}
+
+	/**
+	 * Retrieve the Calendar
+	 * 
+	 * @return The Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _strCalendar;
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		FRAComponent fra = new FRAComponent (1., "JPY", "JPY-FRA-3M", "JPY",
+		FRAStandardComponent fra = new FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().getJulian(),
 				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01, "Act/360");
 
@@ -577,7 +613,7 @@ public class FRAComponent extends org.drip.product.definition.RatesComponent {
 
 		System.out.println (new java.lang.String (abFRA));
 
-		FRAComponent fraDeser = new FRAComponent (abFRA);
+		FRAStandardComponent fraDeser = new FRAStandardComponent (abFRA);
 
 		System.out.println (new java.lang.String (fraDeser.serialize()));
 	}

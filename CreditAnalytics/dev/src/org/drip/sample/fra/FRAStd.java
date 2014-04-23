@@ -1,5 +1,5 @@
 
-package org.drip.sample.multicurve;
+package org.drip.sample.fra;
 
 import java.util.*;
 
@@ -11,10 +11,9 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.function1D.AndersenPiterbargMeanReverter;
-import org.drip.quant.function1D.ExponentialDecay;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -48,12 +47,12 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * FRAOption contains the demonstration of the Multi-Curve FRA Option sample.
+ * FRAStd contains the demonstration of the Standard Multi-Curve FRA product sample.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAOption {
+public class FRAStd {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -447,11 +446,9 @@ public class FRAOption {
 
 		String strTenor = "3M";
 		String strCurrency = "EUR";
-		String strManifestMeasure = "QuantoAdjustedParForward";
 		double dblFRIVol = 0.3;
 		double dblMultiplicativeQuantoExchangeVol = 0.1;
 		double dblFRIQuantoExchangeCorr = 0.2;
-		double dblCorrMeanReverterHazard = 0.4 / 365.25;
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -467,7 +464,7 @@ public class FRAOption {
 
 		JulianDate dtForward = dtToday.addTenor (strTenor);
 
-		FRAComponent fra = new FRAComponent (
+		FRAStandardComponent fra = new FRAStandardComponent (
 			1.,
 			strCurrency,
 			strCurrency + "-FRA-" + strTenor,
@@ -497,47 +494,12 @@ public class FRAOption {
 		cmp.setLatentStateVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
-			new AndersenPiterbargMeanReverter (
-				new ExponentialDecay (
-					dtToday.getJulian(),
-					dblCorrMeanReverterHazard),
-				new FlatUnivariate (dblFRIQuantoExchangeCorr))
+			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
 		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
 
-		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
-
-		FRACapFloorlet fraCaplet = new FRACapFloorlet (
-			fra,
-			strManifestMeasure,
-			true,
-			dblStrike,
-			1.,
-			strCurrency,
-			strCurrency);
-
-		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, cmp, null);
-
-		for (Map.Entry<String, Double> me : mapFRACapletOutput.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
-
-		System.out.println ("\n------------------------------------------------------------------");
-
-		System.out.println ("------------------------------------------------------------------\n");
-
-		FRACapFloorlet fraFloorlet = new FRACapFloorlet (
-			fra,
-			strManifestMeasure,
-			false,
-			dblStrike,
-			1.,
-			strCurrency,
-			strCurrency);
-
-		Map<String, Double> mapFRAFloorletOutput = fraFloorlet.value (valParams, null, cmp, null);
-
-		for (Map.Entry<String, Double> me : mapFRAFloorletOutput.entrySet())
+		for (Map.Entry<String, Double> me : mapFRAOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

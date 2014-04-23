@@ -192,14 +192,19 @@ public class EURIBOR6MCubicKLKHyperbolic {
 			scbcCubicKLKHyperbolic,
 			astrDepositTenor,
 			adblDepositQuote,
+			"ForwardRate",
 			astrFRATenor,
 			adblFRAQuote,
+			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
+			"DerivedParBasisSpread",
 			null,
 			null,
+			"DerivedParBasisSpread",
 			null,
 			null,
+			"DerivedParBasisSpread",
 			"---- EURIBOR 6M CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---");
 
 		EURIBOR.ForwardJack (

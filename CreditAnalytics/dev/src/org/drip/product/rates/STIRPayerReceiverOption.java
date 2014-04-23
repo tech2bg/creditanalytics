@@ -106,7 +106,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		try {
 			double dblSTIRIntegratedQuantoDrift =
-				org.drip.analytics.support.AnalyticsHelper.IntegratedCrossVolQuanto (mktParams,
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (mktParams,
 					strComponentName + "SwapRateVolatility", strComponentName + "SwapRateExchangeVolatility",
 						strComponentName + "SwapRateToSwapRateExchangeCorrelation", dblValueDate,
 							dblExerciseDate);
@@ -114,7 +114,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedQuantoDrift)) return null;
 
 			double dblSTIRIntegratedSurfaceVariance =
-				org.drip.analytics.support.AnalyticsHelper.IntegratedSurfaceVariance (mktParams,
+				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (mktParams,
 					strComponentName + "SwapRateVolatility", dblValueDate, dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedSurfaceVariance)) return null;

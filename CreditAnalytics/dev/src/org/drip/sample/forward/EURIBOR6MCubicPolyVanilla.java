@@ -192,14 +192,19 @@ public class EURIBOR6MCubicPolyVanilla {
 			scbcCubic,
 			astrDepositTenor,
 			adblDepositQuote,
+			"ForwardRate",
 			astrFRATenor,
 			adblFRAQuote,
+			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
+			"DerivedParBasisSpread",
 			null,
 			null,
+			"DerivedParBasisSpread",
 			null,
 			null,
+			"DerivedParBasisSpread",
 			"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---");
 
 		EURIBOR.ForwardJack (

@@ -1,5 +1,5 @@
 
-package org.drip.sample.multicurve;
+package org.drip.sample.fra;
 
 import java.util.*;
 
@@ -11,6 +11,7 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.fra.FRAStandardCapFloor;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
@@ -46,12 +47,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * FRAVolCorrAnalysis contains an analysis if the correlation and volatility impact on the FRA.
+ * FRAStdCapFloorVolAnalysis contains an analysis if the correlation and volatility impact on a Cap/Floor of
+ * 	the standard FRA.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAVolCorrAnalysis {
+public class FRAStdCapFloorVolAnalysis {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -112,8 +114,7 @@ public class FRAVolCorrAnalysis {
 				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
 					strCurrency, strCurrency);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
+			IRSComponent irs = new IRSComponent (fixStream, floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -433,9 +434,8 @@ public class FRAVolCorrAnalysis {
 		return mapFC;
 	}
 
-	private static final void RunWithVolCorrSurface (
-		final FRAComponent fra,
-		final ValuationParams valParams,
+	private static final void SetVolCorrSurface (
+		final FloatingStream floatstream,
 		final ComponentMarketParams cmp,
 		final FloatingRateIndex fri,
 		final double dblFRIVol,
@@ -443,34 +443,27 @@ public class FRAVolCorrAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		cmp.setLatentStateVolSurface (
-			fri.fullyQualifiedName(),
-			fra.getEffectiveDate(),
-			new FlatUnivariate (dblFRIVol)
-		);
+		for (org.drip.analytics.period.CashflowPeriod period : floatstream.getCashFlowPeriod()) {
+			JulianDate dtFRADate = new JulianDate (period.getStartDate());
 
-		cmp.setLatentStateVolSurface (
-			"ForwardToDomesticExchangeVolatility",
-			fra.getEffectiveDate(),
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-		);
+			cmp.setLatentStateVolSurface (
+				fri.fullyQualifiedName(),
+				dtFRADate,
+				new FlatUnivariate (dblFRIVol)
+			);
 
-		cmp.setLatentStateVolSurface (
-			"FRIForwardToDomesticExchangeCorrelation",
-			fra.getEffectiveDate(),
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
-		);
+			cmp.setLatentStateVolSurface (
+				"ForwardToDomesticExchangeVolatility",
+				dtFRADate,
+				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+			);
 
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
-
-		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
-			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("ParForward"), 1, 4, 100.) + "% |" +
-			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("QuantoAdjustedParForward"), 1, 4, 100.) + "% |" +
-			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("MultiplicativeQuantoAdjustment"), 1, 4, 1.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("AdditiveQuantoAdjustment"), 1, 4, 10000.));
+			cmp.setLatentStateVolSurface (
+				"FRIForwardToDomesticExchangeCorrelation",
+				dtFRADate,
+				new FlatUnivariate (dblFRIQuantoExchangeCorr)
+			);
+		}
 	}
 
 	public static final void main (
@@ -483,8 +476,10 @@ public class FRAVolCorrAnalysis {
 
 		CreditAnalytics.Init ("");
 
-		String strTenor = "3M";
+		double dblStrike = 0.01;
+		String strTenor = "6M";
 		String strCurrency = "EUR";
+		String strManifestMeasure = "QuantoAdjustedParForward";
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -498,15 +493,29 @@ public class FRAVolCorrAnalysis {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		FRAComponent fra = new FRAComponent (
+		JulianDate dtEffective = dtToday.addTenor (strTenor);
+
+		FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(), 0.,
+			true, fri, 2, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null, null, null,
+				-1., strCurrency, strCurrency);
+
+		FRAStandardCapFloor fraCap = new FRAStandardCapFloor (
+			floatStream,
+			strManifestMeasure,
+			true,
+			dblStrike,
 			1.,
-			strCurrency,
-			strCurrency + "-FRA-" + strTenor,
-			strCurrency,
-			dtToday.addTenor (strTenor).getJulian(),
-			fri,
-			0.006,
-			"Act/360");
+			"Act/360",
+			strCurrency);
+
+		FRAStandardCapFloor fraFloor = new FRAStandardCapFloor (
+			floatStream,
+			strManifestMeasure,
+			false,
+			dblStrike,
+			1.,
+			"Act/360",
+			strCurrency);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
@@ -517,15 +526,11 @@ public class FRAVolCorrAnalysis {
 		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
 		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
 
-		System.out.println ("\tPrinting the FRA Output in Order (Left -> Right):");
+		System.out.println ("\tPrinting the Cap/Floor Output in Order (Left -> Right):");
 
-		System.out.println ("\t\tParForward (%)");
+		System.out.println ("\t\tCap Price");
 
-		System.out.println ("\t\tQuantoAdjustedParForward (%)");
-
-		System.out.println ("\t\tMultiplicativeQuantoAdjustment (absolute)");
-
-		System.out.println ("\t\tAdditiveQuantoAdjustment (bp)");
+		System.out.println ("\t\tFloor Price");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
@@ -533,15 +538,26 @@ public class FRAVolCorrAnalysis {
 
 		for (double dblSigmaFwd : adblSigmaFwd) {
 			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
-					RunWithVolCorrSurface (
-						fra,
-						valParams,
+				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX) {
+					SetVolCorrSurface (
+						floatStream,
 						cmp,
 						fri,
 						dblSigmaFwd,
 						dblSigmaFwd2DomX,
 						dblCorrFwdFwd2DomX);
+
+					Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, cmp, null);
+
+					Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, cmp, null);
+
+					System.out.println ("\t[" +
+						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd, 2, 0, 100.) + "%," +
+						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd2DomX, 2, 0, 100.) + "%," +
+						org.drip.quant.common.FormatUtil.FormatDouble (dblCorrFwdFwd2DomX, 2, 0, 100.) + "%] =" +
+						org.drip.quant.common.FormatUtil.FormatDouble (mapFRACapOutput.get ("Price"), 1, 2, 1.) + " | " +
+						org.drip.quant.common.FormatUtil.FormatDouble (mapFRAFloorOutput.get ("Price"), 1, 2, 1.));
+				}
 			}
 		}
 	}

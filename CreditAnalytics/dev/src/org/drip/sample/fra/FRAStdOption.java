@@ -1,5 +1,5 @@
 
-package org.drip.sample.multicurve;
+package org.drip.sample.fra;
 
 import java.util.*;
 
@@ -11,8 +11,12 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.fra.FRAStandardCapFloorlet;
+import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.quant.function1D.AndersenPiterbargMeanReverter;
+import org.drip.quant.function1D.ExponentialDecay;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -46,12 +50,12 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * FRAOptionCapFloor demonstrates the creation, invocation, usage, and valuation of the FRA Cap/Floor.
+ * FRAStdOption contains the demonstration of Option on a Multi-Curve FRA Standard.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAOptionCapFloor {
+public class FRAStdOption {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -112,7 +116,8 @@ public class FRAOptionCapFloor {
 				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
 					strCurrency, strCurrency);
 
-			IRSComponent irs = new IRSComponent (fixStream, floatStream);
+			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+				floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -432,38 +437,6 @@ public class FRAOptionCapFloor {
 		return mapFC;
 	}
 
-	private static final void SetVolCorrSurface (
-		final FloatingStream floatstream,
-		final ComponentMarketParams cmp,
-		final FloatingRateIndex fri,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
-		throws Exception
-	{
-		for (org.drip.analytics.period.CashflowPeriod period : floatstream.getCashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.getStartDate());
-
-			cmp.setLatentStateVolSurface (
-				fri.fullyQualifiedName(),
-				dtFRADate,
-				new FlatUnivariate (dblFRIVol)
-			);
-
-			cmp.setLatentStateVolSurface (
-				"ForwardToDomesticExchangeVolatility",
-				dtFRADate,
-				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-			);
-
-			cmp.setLatentStateVolSurface (
-				"FRIForwardToDomesticExchangeCorrelation",
-				dtFRADate,
-				new FlatUnivariate (dblFRIQuantoExchangeCorr)
-			);
-		}
-	}
-
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -474,10 +447,13 @@ public class FRAOptionCapFloor {
 
 		CreditAnalytics.Init ("");
 
-		double dblStrike = 0.01;
-		String strTenor = "6M";
+		String strTenor = "3M";
 		String strCurrency = "EUR";
 		String strManifestMeasure = "QuantoAdjustedParForward";
+		double dblFRIVol = 0.3;
+		double dblMultiplicativeQuantoExchangeVol = 0.1;
+		double dblFRIQuantoExchangeCorr = 0.2;
+		double dblCorrMeanReverterHazard = 0.4 / 365.25;
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -491,59 +467,79 @@ public class FRAOptionCapFloor {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		JulianDate dtEffective = dtToday.addTenor (strTenor);
+		JulianDate dtForward = dtToday.addTenor (strTenor);
 
-		FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(), 0.,
-			true, fri, 2, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null, null, null,
-				-1., strCurrency, strCurrency);
-
-		FRACapFloor fraCap = new FRACapFloor (
-			floatStream,
-			strManifestMeasure,
-			true,
-			dblStrike,
+		FRAStandardComponent fra = new FRAStandardComponent (
 			1.,
-			"Act/360",
-			strCurrency);
-
-		FRACapFloor fraFloor = new FRACapFloor (
-			floatStream,
-			strManifestMeasure,
-			false,
-			dblStrike,
-			1.,
-			"Act/360",
-			strCurrency);
+			strCurrency,
+			strCurrency + "-FRA-" + strTenor,
+			strCurrency,
+			dtForward.getJulian(),
+			fri,
+			0.006,
+			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
-		double dblSigmaFwd = 0.50;
-		double dblSigmaFwd2DomX = 0.50;
-		double dblCorrFwdFwd2DomX = 0.50;
-
-		SetVolCorrSurface (
-			floatStream,
-			cmp,
-			fri,
-			dblSigmaFwd,
-			dblSigmaFwd2DomX,
-			dblCorrFwdFwd2DomX);
-
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, cmp, null);
+		cmp.setLatentStateVolSurface (
+			fri.fullyQualifiedName(),
+			dtForward,
+			new FlatUnivariate (dblFRIVol)
+		);
 
-		for (Map.Entry<String, Double> me : mapFRACapOutput.entrySet())
+		cmp.setLatentStateVolSurface (
+			"ForwardToDomesticExchangeVolatility",
+			dtForward,
+			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		);
+
+		cmp.setLatentStateVolSurface (
+			"FRIForwardToDomesticExchangeCorrelation",
+			dtForward,
+			new AndersenPiterbargMeanReverter (
+				new ExponentialDecay (
+					dtToday.getJulian(),
+					dblCorrMeanReverterHazard),
+				new FlatUnivariate (dblFRIQuantoExchangeCorr))
+		);
+
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
+
+		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
+
+		FRAStandardCapFloorlet fraCaplet = new FRAStandardCapFloorlet (
+			fra,
+			strManifestMeasure,
+			true,
+			dblStrike,
+			1.,
+			strCurrency,
+			strCurrency);
+
+		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, cmp, null);
+
+		for (Map.Entry<String, Double> me : mapFRACapletOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 
-		System.out.println ("\t-------------------------------------------------------------");
+		System.out.println ("\n------------------------------------------------------------------");
 
-		System.out.println ("\t-------------------------------------------------------------");
+		System.out.println ("------------------------------------------------------------------\n");
 
-		Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, cmp, null);
+		FRAStandardCapFloorlet fraFloorlet = new FRAStandardCapFloorlet (
+			fra,
+			strManifestMeasure,
+			false,
+			dblStrike,
+			1.,
+			strCurrency,
+			strCurrency);
 
-		for (Map.Entry<String, Double> me : mapFRAFloorOutput.entrySet())
+		Map<String, Double> mapFRAFloorletOutput = fraFloorlet.value (valParams, null, cmp, null);
+
+		for (Map.Entry<String, Double> me : mapFRAFloorletOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

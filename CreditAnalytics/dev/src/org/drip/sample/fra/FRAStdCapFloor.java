@@ -1,5 +1,5 @@
 
-package org.drip.sample.multicurve;
+package org.drip.sample.fra;
 
 import java.util.*;
 
@@ -11,6 +11,7 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.fra.FRAStandardCapFloor;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
@@ -46,12 +47,12 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * FRACapFloorVolCorrAnalysis contains an analysis if the correlation and volatility impact on FRA Cap/Floor.
+ * FRAStdCapFloor demonstrates the creation, invocation, usage, and valuation of the FRA Cap/Floor.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRACapFloorVolCorrAnalysis {
+public class FRAStdCapFloor {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -497,7 +498,7 @@ public class FRACapFloorVolCorrAnalysis {
 			true, fri, 2, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null, null, null,
 				-1., strCurrency, strCurrency);
 
-		FRACapFloor fraCap = new FRACapFloor (
+		FRAStandardCapFloor fraCap = new FRAStandardCapFloor (
 			floatStream,
 			strManifestMeasure,
 			true,
@@ -506,7 +507,7 @@ public class FRACapFloorVolCorrAnalysis {
 			"Act/360",
 			strCurrency);
 
-		FRACapFloor fraFloor = new FRACapFloor (
+		FRAStandardCapFloor fraFloor = new FRAStandardCapFloor (
 			floatStream,
 			strManifestMeasure,
 			false,
@@ -518,45 +519,32 @@ public class FRACapFloorVolCorrAnalysis {
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
+		double dblSigmaFwd = 0.50;
+		double dblSigmaFwd2DomX = 0.50;
+		double dblCorrFwdFwd2DomX = 0.50;
+
+		SetVolCorrSurface (
+			floatStream,
+			cmp,
+			fri,
+			dblSigmaFwd,
+			dblSigmaFwd2DomX,
+			dblCorrFwdFwd2DomX);
+
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
-		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
-		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
+		Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, cmp, null);
 
-		System.out.println ("\tPrinting the Cap/Floor Output in Order (Left -> Right):");
-
-		System.out.println ("\t\tCap Price");
-
-		System.out.println ("\t\tFloor Price");
+		for (Map.Entry<String, Double> me : mapFRACapOutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 
 		System.out.println ("\t-------------------------------------------------------------");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
-		for (double dblSigmaFwd : adblSigmaFwd) {
-			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX) {
-					SetVolCorrSurface (
-						floatStream,
-						cmp,
-						fri,
-						dblSigmaFwd,
-						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX);
+		Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, cmp, null);
 
-					Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, cmp, null);
-
-					Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, cmp, null);
-
-					System.out.println ("\t[" +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd, 2, 0, 100.) + "%," +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd2DomX, 2, 0, 100.) + "%," +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblCorrFwdFwd2DomX, 2, 0, 100.) + "%] =" +
-						org.drip.quant.common.FormatUtil.FormatDouble (mapFRACapOutput.get ("Price"), 1, 2, 1.) + " | " +
-						org.drip.quant.common.FormatUtil.FormatDouble (mapFRAFloorOutput.get ("Price"), 1, 2, 1.));
-				}
-			}
-		}
+		for (Map.Entry<String, Double> me : mapFRAFloorOutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

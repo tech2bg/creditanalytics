@@ -1,5 +1,5 @@
 
-package org.drip.sample.multicurve;
+package org.drip.sample.fra;
 
 import java.util.*;
 
@@ -11,6 +11,7 @@ import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
@@ -46,12 +47,12 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * FRA contains the demonstration of the Multi-Curve FRA product sample.
+ * FRAStdVolAnalysis contains an analysis if the correlation and volatility impact on the Standard FRA.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRA {
+public class FRAStdVolAnalysis {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -433,6 +434,46 @@ public class FRA {
 		return mapFC;
 	}
 
+	private static final void RunWithVolCorrSurface (
+		final FRAStandardComponent fra,
+		final ValuationParams valParams,
+		final ComponentMarketParams cmp,
+		final FloatingRateIndex fri,
+		final double dblFRIVol,
+		final double dblMultiplicativeQuantoExchangeVol,
+		final double dblFRIQuantoExchangeCorr)
+		throws Exception
+	{
+		cmp.setLatentStateVolSurface (
+			fri.fullyQualifiedName(),
+			fra.getEffectiveDate(),
+			new FlatUnivariate (dblFRIVol)
+		);
+
+		cmp.setLatentStateVolSurface (
+			"ForwardToDomesticExchangeVolatility",
+			fra.getEffectiveDate(),
+			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		);
+
+		cmp.setLatentStateVolSurface (
+			"FRIForwardToDomesticExchangeCorrelation",
+			fra.getEffectiveDate(),
+			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+		);
+
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
+
+		System.out.println ("\t[" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("ParForward"), 1, 4, 100.) + "% |" +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("QuantoAdjustedParForward"), 1, 4, 100.) + "% |" +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("MultiplicativeQuantoAdjustment"), 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("AdditiveQuantoAdjustment"), 1, 4, 10000.));
+	}
+
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -445,9 +486,6 @@ public class FRA {
 
 		String strTenor = "3M";
 		String strCurrency = "EUR";
-		double dblFRIVol = 0.3;
-		double dblMultiplicativeQuantoExchangeVol = 0.1;
-		double dblFRIQuantoExchangeCorr = 0.2;
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
@@ -461,14 +499,12 @@ public class FRA {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		JulianDate dtForward = dtToday.addTenor (strTenor);
-
-		FRAComponent fra = new FRAComponent (
+		FRAStandardComponent fra = new FRAStandardComponent (
 			1.,
 			strCurrency,
 			strCurrency + "-FRA-" + strTenor,
 			strCurrency,
-			dtForward.getJulian(),
+			dtToday.addTenor (strTenor).getJulian(),
 			fri,
 			0.006,
 			"Act/360");
@@ -478,27 +514,36 @@ public class FRA {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setLatentStateVolSurface (
-			fri.fullyQualifiedName(),
-			dtForward,
-			new FlatUnivariate (dblFRIVol)
-		);
+		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
+		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
+		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
 
-		cmp.setLatentStateVolSurface (
-			"ForwardToDomesticExchangeVolatility",
-			dtForward,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-		);
+		System.out.println ("\tPrinting the FRA Output in Order (Left -> Right):");
 
-		cmp.setLatentStateVolSurface (
-			"FRIForwardToDomesticExchangeCorrelation",
-			dtForward,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
-		);
+		System.out.println ("\t\tParForward (%)");
 
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
+		System.out.println ("\t\tQuantoAdjustedParForward (%)");
 
-		for (Map.Entry<String, Double> me : mapFRAOutput.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
+		System.out.println ("\t\tMultiplicativeQuantoAdjustment (absolute)");
+
+		System.out.println ("\t\tAdditiveQuantoAdjustment (bp)");
+
+		System.out.println ("\t-------------------------------------------------------------");
+
+		System.out.println ("\t-------------------------------------------------------------");
+
+		for (double dblSigmaFwd : adblSigmaFwd) {
+			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
+				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
+					RunWithVolCorrSurface (
+						fra,
+						valParams,
+						cmp,
+						fri,
+						dblSigmaFwd,
+						dblSigmaFwd2DomX,
+						dblCorrFwdFwd2DomX);
+			}
+		}
 	}
 }

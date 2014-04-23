@@ -187,14 +187,19 @@ public class EURIBOR3MQuarticPolyVanilla {
 			scbcQuartic,
 			astrDepositTenor,
 			adblDepositQuote,
+			"ForwardRate",
 			astrFRATenor,
 			adblFRAQuote,
+			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
+			"DerivedParBasisSpread",
 			null,
 			null,
+			"DerivedParBasisSpread",
 			astrSyntheticFloatFloatTenor,
 			adblSyntheticFloatFloatQuote,
+			"DerivedParBasisSpread",
 			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---");
 
 		EURIBOR.ForwardJack (
