@@ -555,7 +555,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc) return null;
 
@@ -701,13 +701,13 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
-			mktParams.getFundingCurve())
+			mktParams.fundingCurve())
 			return null;
 
 		try {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
@@ -755,7 +755,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null == mktParams
-			|| null == mktParams.getFundingCurve())
+			|| null == mktParams.fundingCurve())
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote) || "SwapRate".equalsIgnoreCase (strQuote)) {
@@ -771,7 +771,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();

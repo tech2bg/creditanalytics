@@ -154,7 +154,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-			double dblSpotPrice = dblForwardPrice * mktParams.getFundingCurve().df (dblExerciseDate);
+			double dblSpotPrice = dblForwardPrice * mktParams.fundingCurve().df (dblExerciseDate);
 
 			mapResult.put ("ATMFRA", dblATMManifestMeasure);
 

@@ -213,4 +213,12 @@ public interface SingleSegmentSequence {
 	 */
 
 	public abstract double getRightPredictorOrdinateEdge();
+
+	/**
+	 * Convert the Segment Sequence into an AbstractUnivariate Instance
+	 * 
+	 * @return The AbstractUnivariate Instance
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate toAU();
 }

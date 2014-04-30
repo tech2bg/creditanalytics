@@ -291,7 +291,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return "~";
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getFundingCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve fundingCurve()
 	{
 		return _dcFunding;
 	}
@@ -305,7 +305,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getDomesticCollateralCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve domesticCollateralCurve()
 	{
 		return _dcDomesticCollateral;
 	}
@@ -319,7 +319,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getForeignCollateralCurve (
+	@Override public org.drip.analytics.rates.DiscountCurve foreignCollateralCurve (
 		final java.lang.String strCurrency)
 	{
 		if (null == _mapDCForeignCollateral || null == strCurrency || !_mapDCForeignCollateral.containsKey
@@ -344,7 +344,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getDomesticCurrencyForeignCollateralCurve (
+	@Override public org.drip.analytics.rates.DiscountCurve domesticCurrencyForeignCollateralCurve (
 		final java.lang.String strCurrency)
 	{
 		if (null == _mapDCDomesticCurrencyForeignCollateral || null == strCurrency || strCurrency.isEmpty()
@@ -370,7 +370,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getForeignCurrencyDomesticCollateralCurve (
+	@Override public org.drip.analytics.rates.DiscountCurve foreignCurrencyDomesticCollateralCurve (
 		final java.lang.String strCurrency)
 	{
 		if (null == _mapDCForeignCurrencyDomesticCollateral || null == strCurrency || strCurrency.isEmpty()
@@ -396,7 +396,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getCollateralChoiceDiscountCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve collateralChoiceDiscountCurve()
 	{
 		if (null == _mapDCDomesticCurrencyForeignCollateral) return _dcDomesticCollateral;
 
@@ -428,7 +428,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return null;
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve getCreditCurve()
+	@Override public org.drip.analytics.definition.CreditCurve creditCurve()
 	{
 		return _cc;
 	}
@@ -442,7 +442,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.ForwardCurve getForwardCurve (
+	@Override public org.drip.analytics.rates.ForwardCurve forwardCurve (
 		final org.drip.product.params.FloatingRateIndex fri)
 	{
 		if (null == fri) return null;
@@ -463,12 +463,12 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getTSYDiscountCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve fundingCurveGovvie()
 	{
 		return _dcTSY;
 	}
 
-	@Override public boolean setTSYDiscountCurve (
+	@Override public boolean setfundingCurveGovvie (
 		final org.drip.analytics.rates.DiscountCurve dcTSY)
 	{
 		if (null == dcTSY) return false;
@@ -477,12 +477,12 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getEDSFDiscountCurve()
+	@Override public org.drip.analytics.rates.DiscountCurve futuresFundingCurve()
 	{
 		return _dcEDSF;
 	}
 
-	@Override public boolean setEDSFDiscountCurve (
+	@Override public boolean setFuturesFundingCurve (
 		final org.drip.analytics.rates.DiscountCurve dcEDSF)
 	{
 		if (null == dcEDSF) return false;
@@ -491,7 +491,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.param.definition.ComponentQuote getComponentQuote()
+	@Override public org.drip.param.definition.ComponentQuote componentQuote()
 	{
 		return _compQuote;
 	}

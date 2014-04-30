@@ -119,9 +119,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null != cqTsyBmkYield && null != cqTsyBmkYield.getQuote ("Yield"))
 			return cqTsyBmkYield.getQuote ("Yield").getQuote ("mid");
 
-		if (null == mktParams.getEDSFDiscountCurve()) return java.lang.Double.NaN;
+		if (null == mktParams.futuresFundingCurve()) return java.lang.Double.NaN;
 
-		return mktParams.getEDSFDiscountCurve().libor (valParams.valueDate(), dblWorkoutDate);
+		return mktParams.futuresFundingCurve().libor (valParams.valueDate(), dblWorkoutDate);
 	}
 
 	private org.drip.param.valuation.WorkoutInfo calcExerciseCallYieldFromPrice (
@@ -282,7 +282,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null ==
 				_mmFixings ? mktParams.getFixings() : _mmFixings;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null != period) {
 			if (null == mmFixings || null == mmFixings.get (new org.drip.analytics.date.JulianDate
@@ -293,8 +293,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 						" and reset date " + org.drip.analytics.date.JulianDate.fromJulian
 							(period.getResetDate()) + " not found; defaulting to implied");
 
-				org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve
-					(_fltParams._fri);
+				org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.forwardCurve (_fltParams._fri);
 
 				if (null == fc || !_fltParams._fri.match (fc.index()))
 					fc = dc.forwardRateEstimator (period.getPayDate(), _fltParams._fri);
@@ -373,7 +372,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve() ||
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve() ||
 			java.lang.Double.isNaN (dblWorkoutDate) || java.lang.Double.isNaN (dblWorkoutFactor) ||
 				valParams.valueDate() >= dblWorkoutDate)
 			return null;
@@ -412,7 +411,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				double dblPeriodCoupon = 0.;
 
-				double dblPeriodDF = mktParams.getFundingCurve().df (period.getPayDate());
+				double dblPeriodDF = mktParams.fundingCurve().df (period.getPayDate());
 
 				if (null == _fltParams) dblPeriodCoupon = getCoupon (valParams.valueDate(), mktParams);
 
@@ -438,16 +437,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				double dblPeriodCreditRiskyDirtyDV01 = dblPeriodCreditRisklessDirtyDV01;
 				double dblPeriodCreditRiskyPrincipalPV = dblPeriodCreditRiskessPrincipalPV;
 
-				if (null != mktParams.getCreditCurve() && null != pricerParams) {
+				if (null != mktParams.creditCurve() && null != pricerParams) {
 					double dblSurvProb = java.lang.Double.NaN;
 
 					if (dblPeriodEndDate < period.getEndDate())
-						dblSurvProb = mktParams.getCreditCurve().getSurvival (dblPeriodEndDate);
+						dblSurvProb = mktParams.creditCurve().getSurvival (dblPeriodEndDate);
 					else {
 						if (pricerParams._bSurvToPayDate)
-							dblSurvProb = mktParams.getCreditCurve().getSurvival (period.getPayDate());
+							dblSurvProb = mktParams.creditCurve().getSurvival (period.getPayDate());
 						else
-							dblSurvProb = mktParams.getCreditCurve().getSurvival (dblPeriodEndDate);
+							dblSurvProb = mktParams.creditCurve().getSurvival (dblPeriodEndDate);
 					}
 
 					dblPeriodCreditRiskyDirtyDV01 *= dblSurvProb;
@@ -466,22 +465,22 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 						double dblSubPeriodStart = lp.getStartDate();
 
-						double dblSubPeriodDF = mktParams.getFundingCurve().effectiveDF
+						double dblSubPeriodDF = mktParams.fundingCurve().effectiveDF
 							(dblSubPeriodStart + _crValParams._iDefPayLag, dblSubPeriodEnd +
 								_crValParams._iDefPayLag);
 
 						double dblSubPeriodNotional = getNotional (dblSubPeriodStart, dblSubPeriodEnd);
 
-						double dblSubPeriodSurvival = mktParams.getCreditCurve().getSurvival
-							(dblSubPeriodStart) - mktParams.getCreditCurve().getSurvival (dblSubPeriodEnd);
+						double dblSubPeriodSurvival = mktParams.creditCurve().getSurvival (dblSubPeriodStart)
+							- mktParams.creditCurve().getSurvival (dblSubPeriodEnd);
 
 						if (_crValParams._bAccrOnDefault)
-							dblPeriodCreditRiskyDirtyDV01 += 0.0001 * lp.accrualDCF() *
-								dblSubPeriodSurvival * dblSubPeriodDF * dblSubPeriodNotional;
+							dblPeriodCreditRiskyDirtyDV01 += 0.0001 * lp.accrualDCF() * dblSubPeriodSurvival
+								* dblSubPeriodDF * dblSubPeriodNotional;
 
 						double dblRecovery = _crValParams._bUseCurveRec ?
-							mktParams.getCreditCurve().getEffectiveRecovery (dblSubPeriodStart,
-								dblSubPeriodEnd) : _crValParams._dblRecovery;
+							mktParams.creditCurve().getEffectiveRecovery (dblSubPeriodStart, dblSubPeriodEnd)
+								: _crValParams._dblRecovery;
 
 						double dblSubPeriodExpRecovery = dblRecovery * dblSubPeriodSurvival *
 							dblSubPeriodNotional;
@@ -521,13 +520,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		try {
-			double dblCashPayDF = mktParams.getFundingCurve().df (dblCashPayDate);
+			double dblCashPayDF = mktParams.fundingCurve().df (dblCashPayDate);
 
-			dblCreditRisklessParPV = mktParams.getFundingCurve().df (_periodParams._dblMaturity) *
+			dblCreditRisklessParPV = mktParams.fundingCurve().df (_periodParams._dblMaturity) *
 				getNotional (_periodParams._dblMaturity) * dblWorkoutFactor;
 
-			if (null != mktParams.getCreditCurve() && null != pricerParams)
-				dblCreditRiskyParPV = dblCreditRisklessParPV * mktParams.getCreditCurve().getSurvival
+			if (null != mktParams.creditCurve() && null != pricerParams)
+				dblCreditRiskyParPV = dblCreditRisklessParPV * mktParams.creditCurve().getSurvival
 					(_periodParams._dblMaturity);
 
 			org.drip.analytics.output.BondCouponMeasures bcmCreditRisklessDirty = new
@@ -541,16 +540,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			double dblLossOnInstantaneousDefault = java.lang.Double.NaN;
 			org.drip.analytics.output.BondCouponMeasures bcmCreditRiskyDirty = null;
 
-			if (null != mktParams.getCreditCurve() && null != pricerParams) {
+			if (null != mktParams.creditCurve() && null != pricerParams) {
 				bcmCreditRiskyDirty = new org.drip.analytics.output.BondCouponMeasures
 					(dblCreditRiskyDirtyDV01, dblCreditRiskyDirtyIndexCouponPV, dblCreditRiskyDirtyCouponPV,
 						dblCreditRiskyDirtyCouponPV + dblCreditRiskyPrincipalPV + dblCreditRiskyParPV);
 
 				dblDefaultExposure = (dblDefaultExposureNoRec = getNotional (valParams.valueDate())) *
-					mktParams.getCreditCurve().getRecovery (valParams.valueDate());
+					mktParams.creditCurve().getRecovery (valParams.valueDate());
 
 				dblLossOnInstantaneousDefault = getNotional (valParams.valueDate()) * (1. -
-					mktParams.getCreditCurve().getRecovery (valParams.valueDate()));
+					mktParams.creditCurve().getRecovery (valParams.valueDate()));
 			}
 
 			return new org.drip.analytics.output.BondWorkoutMeasures (bcmCreditRiskyDirty,
@@ -680,7 +679,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		try {
-			if (null == mktParams.getCreditCurve())
+			if (null == mktParams.creditCurve())
 				dblCleanPrice = calcPriceFromBumpedDC (valParams, mktParams, dblExerciseDate,
 					dblExerciseFactor, 0.);
 			else
@@ -766,7 +765,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (org.drip.quant.common.StringUtil.MatchInStringArray (pricerParams._calibParams.measure(), new
 			java.lang.String[] {"CreditBasis"}, false)) {
 			try {
-				if (null == mktParams.getCreditCurve()) return null;
+				if (null == mktParams.creditCurve()) return null;
 
 				mapCalibMeasures.put (pricerParams._calibParams.measure(), calcCreditBasisFromPrice
 					(valParams, mktParams, quotingParams, dblExerciseDate, dblExerciseFactor,
@@ -781,7 +780,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (org.drip.quant.common.StringUtil.MatchInStringArray (pricerParams._calibParams.measure(), new
 			java.lang.String[] {"PECS", "ParEquivalentCDSSpread"}, false)) {
 			try {
-				if (null == mktParams.getCreditCurve()) return null;
+				if (null == mktParams.creditCurve()) return null;
 
 				mapCalibMeasures.put (pricerParams._calibParams.measure(), calcPECSFromPrice (valParams,
 					mktParams, quotingParams, dblExerciseDate, dblExerciseFactor, dblCleanPrice));
@@ -1014,9 +1013,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (null != cqTsyBmkYield && null != cqTsyBmkYield.getQuote ("Yield"))
 				adblSecTSYSpread[i] = cqTsyBmkYield.getQuote ("Yield").getQuote ("mid");
-			else if (null != mktParams.getEDSFDiscountCurve()) {
+			else if (null != mktParams.futuresFundingCurve()) {
 				try {
-					adblSecTSYSpread[i] = mktParams.getEDSFDiscountCurve().libor (valParams.valueDate(),
+					adblSecTSYSpread[i] = mktParams.futuresFundingCurve().libor (valParams.valueDate(),
 						_periodParams._dblMaturity);
 				} catch (java.lang.Exception e) {
 					if (!s_bSuppressErrors) e.printStackTrace();
@@ -1058,9 +1057,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null != cqTsyBmkYield && null != cqTsyBmkYield.getQuote ("Yield"))
 			return cqTsyBmkYield.getQuote ("Yield").getQuote ("mid");
 
-		if (null == mktParams.getEDSFDiscountCurve()) return java.lang.Double.NaN;
+		if (null == mktParams.futuresFundingCurve()) return java.lang.Double.NaN;
 
-		return mktParams.getEDSFDiscountCurve().libor (valParams.valueDate(), wi.date());
+		return mktParams.futuresFundingCurve().libor (valParams.valueDate(), wi.date());
 	}
 
 	@Override public boolean setTreasuryBenchmark (
@@ -1431,8 +1430,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve() || null ==
-			mktParams.getCreditCurve())
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve() || null ==
+			mktParams.creditCurve())
 			return null;
 
 		java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> lsCP = new
@@ -1452,15 +1451,15 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				double dblSurvProbEnd = java.lang.Double.NaN;
 
 				if (java.lang.Double.isNaN (dblDFStart))
-					dblDFStart = mktParams.getFundingCurve().df (fp.getStartDate());
+					dblDFStart = mktParams.fundingCurve().df (fp.getStartDate());
 
 				if (java.lang.Double.isNaN (dblSurvProbStart))
-					dblSurvProbStart = mktParams.getCreditCurve().getSurvival (fp.getStartDate());
+					dblSurvProbStart = mktParams.creditCurve().getSurvival (fp.getStartDate());
 
 				if (pricerParams._bSurvToPayDate)
-					dblSurvProbEnd = mktParams.getCreditCurve().getSurvival (fp.getPayDate());
+					dblSurvProbEnd = mktParams.creditCurve().getSurvival (fp.getPayDate());
 				else
-					dblSurvProbEnd = mktParams.getCreditCurve().getSurvival (fp.getEndDate());
+					dblSurvProbEnd = mktParams.creditCurve().getSurvival (fp.getEndDate());
 
 				if (null != _fltParams) {
 					double dblCpnFactor = _cpnParams._fsCoupon.getFactor (fp.getEndDate());
@@ -1471,7 +1470,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblFloatSpread = _cpnParams._dblCoupon * dblCpnFactor;
 				}
 
-				double dblDFEnd = mktParams.getFundingCurve().df (fp.getPayDate());
+				double dblDFEnd = mktParams.fundingCurve().df (fp.getPayDate());
 
 				cp = new org.drip.analytics.period.CashflowPeriodCurveFactors (fp.getStartDate(),
 					fp.getEndDate(), fp.getAccrualStartDate(), fp.getAccrualEndDate(), fp.getPayDate(),
@@ -2044,9 +2043,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		org.drip.analytics.rates.DiscountCurve dcBase = null;
 
 		if (ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE == iZeroCurveBaseDC)
-			dcBase = mktParams.getFundingCurve();
+			dcBase = mktParams.fundingCurve();
 		else if (ZERO_OFF_OF_TREASURIES_DISCOUNT_CURVE == iZeroCurveBaseDC)
-			dcBase = mktParams.getTSYDiscountCurve();
+			dcBase = mktParams.fundingCurveGovvie();
 
 		if (null == dcBase)
 			throw new java.lang.Exception ("BondComponent::calcPriceFromZC => Invalid discount curve");
@@ -2124,7 +2123,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDCBump)
 		throws java.lang.Exception
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve() ||
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve() ||
 			java.lang.Double.isNaN (dblWorkoutDate) || java.lang.Double.isNaN (dblWorkoutFactor) ||
 				java.lang.Double.isNaN (dblDCBump))
 			throw new java.lang.Exception ("Invalid inputs into BondComponent::calcPriceFromBumpedDC");
@@ -2140,7 +2139,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (0. != dblDCBump)
 			dc = (org.drip.analytics.rates.DiscountCurve) dc.parallelShiftManifestMeasure (dblDCBump);
@@ -2209,8 +2208,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final boolean bFlat)
 		throws java.lang.Exception
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve() || null ==
-			mktParams.getCreditCurve() || java.lang.Double.isNaN (dblWorkoutDate) || java.lang.Double.isNaN
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve() || null ==
+			mktParams.creditCurve() || java.lang.Double.isNaN (dblWorkoutDate) || java.lang.Double.isNaN
 				(dblWorkoutFactor) || java.lang.Double.isNaN (dblCreditBasis))
 			throw new java.lang.Exception ("Invalid inputs into BondComponent::calcPriceFromBumpedCC");
 
@@ -2227,10 +2226,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (null != _crValParams && !_crValParams._bUseCurveRec)
 				dblRecoveryCalib = _crValParams._dblRecovery;
 
-			cc = mktParams.getCreditCurve().createFlatCurve (dblCreditBasis, true, dblRecoveryCalib);
+			cc = mktParams.creditCurve().createFlatCurve (dblCreditBasis, true, dblRecoveryCalib);
 		} else
 			cc = (org.drip.analytics.definition.CreditCurve)
-				mktParams.getCreditCurve().parallelShiftManifestMeasure (dblCreditBasis);
+				mktParams.creditCurve().parallelShiftManifestMeasure (dblCreditBasis);
 
 		if (null == cc)
 			throw new java.lang.Exception
@@ -2270,11 +2269,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				_notlParams._iPeriodAmortizationMode)
 				dblCouponNotional = getNotional (period.getStartDate(), dblNotionalEndDate);
 
-			dblPVFromCC += period.getAccrualDCF (dblAccrualEndDate) * mktParams.getFundingCurve().df
+			dblPVFromCC += period.getAccrualDCF (dblAccrualEndDate) * mktParams.fundingCurve().df
 				(period.getPayDate()) * dblPeriodEndSurv * dblPeriodCoupon * dblCouponNotional;
 
 			dblPVFromCC += (getNotional (period.getStartDate()) - getNotional (period.getEndDate())) *
-				mktParams.getFundingCurve().df (period.getPayDate()) * dblPeriodEndSurv;
+				mktParams.fundingCurve().df (period.getPayDate()) * dblPeriodEndSurv;
 
 			if (s_bBlog)
 				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dblPeriodStart) + "=>" +
@@ -2295,19 +2294,19 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				double dblSubPeriodStart = lp.getStartDate();
 
-				double dblSubPeriodDF = mktParams.getFundingCurve().effectiveDF (dblSubPeriodStart +
+				double dblSubPeriodDF = mktParams.fundingCurve().effectiveDF (dblSubPeriodStart +
 					_crValParams._iDefPayLag, dblSubPeriodEnd + _crValParams._iDefPayLag);
 
 				double dblSubPeriodNotional = getNotional (dblSubPeriodStart, dblSubPeriodEnd);
 
-				double dblSubPeriodSurvival = mktParams.getCreditCurve().getSurvival (dblSubPeriodStart) -
-					mktParams.getCreditCurve().getSurvival (dblSubPeriodEnd);
+				double dblSubPeriodSurvival = mktParams.creditCurve().getSurvival (dblSubPeriodStart) -
+					mktParams.creditCurve().getSurvival (dblSubPeriodEnd);
 
 				if (_crValParams._bAccrOnDefault)
 					dblPVFromCC += 0.0001 * lp.accrualDCF() * dblSubPeriodSurvival * dblSubPeriodDF *
 						dblSubPeriodNotional * dblPeriodCoupon;
 
-				double dblRec = _crValParams._bUseCurveRec ? mktParams.getCreditCurve().getEffectiveRecovery
+				double dblRec = _crValParams._bUseCurveRec ? mktParams.creditCurve().getEffectiveRecovery
 					(dblSubPeriodStart, dblSubPeriodEnd) : _crValParams._dblRecovery;
 
 				dblPVFromCC += dblRec * dblSubPeriodSurvival * dblSubPeriodNotional * dblSubPeriodDF;
@@ -2334,9 +2333,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (!_notlParams._bPriceOffOriginalNotional) dblScalingNotional = getNotional (dblWorkoutDate);
 
-		return ((dblPVFromCC + dblWorkoutFactor * mktParams.getFundingCurve().df (dblWorkoutDate) *
+		return ((dblPVFromCC + dblWorkoutFactor * mktParams.fundingCurve().df (dblWorkoutDate) *
 			cc.getSurvival (dblWorkoutDate) * getNotional (dblWorkoutDate)) /
-				mktParams.getFundingCurve().df (dblCashPayDate) - calcAccrued (valParams.valueDate(),
+				mktParams.fundingCurve().df (dblCashPayDate) - calcAccrued (valParams.valueDate(),
 					mktParams)) / dblScalingNotional;
 	}
 
@@ -2633,7 +2632,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc) throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
 
@@ -4708,7 +4707,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
@@ -5721,7 +5720,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromYield => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcTSY = mktParams.getTSYDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dcTSY = mktParams.fundingCurveGovvie();
 
 		if (null == dcTSY)
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromYield => Invalid inputs");
@@ -6211,7 +6210,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYield => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYield => Invalid inputs");
@@ -8514,7 +8513,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc) throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
 
@@ -9826,7 +9825,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblDiscountMargin))
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
@@ -9877,7 +9876,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			+ LEFT_EOS_SNIP || null == mktParams)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromGSpread => Invalid Inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcGovvie = mktParams.getTSYDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dcGovvie = mktParams.fundingCurveGovvie();
 
 		if (null == dcGovvie)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromGSpread => Invalid Inputs");
@@ -9924,7 +9923,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			+ LEFT_EOS_SNIP || null == mktParams)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromISpread => Invalid Inputs");
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getTSYDiscountCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurveGovvie();
 
 		if (null == dc)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromISpread => Invalid Inputs");
@@ -11711,7 +11710,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.valuation.WorkoutInfo wi,
 		final double dblPrice)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve() || null == wi ||
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve() || null == wi ||
 			java.lang.Double.isNaN (dblPrice) || valParams.valueDate() >= wi.date() + LEFT_EOS_SNIP)
 			return null;
 
@@ -11847,7 +11846,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve()) return null;
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve()) return null;
 
 		if (null != pricerParams && null != pricerParams._calibParams) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalibMeasures =
@@ -11861,7 +11860,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = calcFairMeasureSet
 			(valParams, pricerParams, mktParams, quotingParams);
 
-		if (null == mapMeasures || null == mktParams.getComponentQuote()) return mapMeasures;
+		if (null == mapMeasures || null == mktParams.componentQuote()) return mapMeasures;
 
 		if (null == _fltParams) {
 			double dblParSpread = (mapMeasures.get ("FairDirtyPV") - mapMeasures.get ("FairParPV") -
@@ -11886,21 +11885,21 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		org.drip.param.valuation.WorkoutInfo wiMarket = null;
 
-		if (null != mktParams.getComponentQuote().getQuote ("Price")) {
-			double dblMarketPrice = mktParams.getComponentQuote().getQuote ("Price").getQuote ("mid");
+		if (null != mktParams.componentQuote().getQuote ("Price")) {
+			double dblMarketPrice = mktParams.componentQuote().getQuote ("Price").getQuote ("mid");
 
 			mapMeasures.put ("MarketInputType=CleanPrice", dblMarketPrice);
 
 			wiMarket = calcExerciseYieldFromPrice (valParams, mktParams, quotingParams, dblMarketPrice);
-		} else if (null != mktParams.getComponentQuote().getQuote ("CleanPrice")) {
-			double dblCleanMarketPrice = mktParams.getComponentQuote().getQuote ("CleanPrice").getQuote
+		} else if (null != mktParams.componentQuote().getQuote ("CleanPrice")) {
+			double dblCleanMarketPrice = mktParams.componentQuote().getQuote ("CleanPrice").getQuote
 				("mid");
 
 			mapMeasures.put ("MarketInputType=CleanPrice", dblCleanMarketPrice);
 
 			wiMarket = calcExerciseYieldFromPrice (valParams, mktParams, quotingParams, dblCleanMarketPrice);
-		} else if (null != mktParams.getComponentQuote().getQuote ("QuotedMargin")) {
-			double dblQuotedMargin = mktParams.getComponentQuote().getQuote ("QuotedMargin").getQuote
+		} else if (null != mktParams.componentQuote().getQuote ("QuotedMargin")) {
+			double dblQuotedMargin = mktParams.componentQuote().getQuote ("QuotedMargin").getQuote
 				("mid");
 
 			mapMeasures.put ("MarketInputType=QuotedMargin", dblQuotedMargin);
@@ -11911,9 +11910,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 			}
-		} else if (null != mktParams.getComponentQuote().getQuote ("DirtyPrice")) {
+		} else if (null != mktParams.componentQuote().getQuote ("DirtyPrice")) {
 			try {
-				double dblDirtyMarketPrice = mktParams.getComponentQuote().getQuote ("DirtyPrice").getQuote
+				double dblDirtyMarketPrice = mktParams.componentQuote().getQuote ("DirtyPrice").getQuote
 					("mid");
 
 				mapMeasures.put ("MarketInputType=DirtyPrice", dblDirtyMarketPrice);
@@ -11925,9 +11924,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				wiMarket = null;
 			}
-		} else if (null != mktParams.getComponentQuote().getQuote ("TSYSpread")) {
+		} else if (null != mktParams.componentQuote().getQuote ("TSYSpread")) {
 			try {
-				double dblTSYSpread = mktParams.getComponentQuote().getQuote ("TSYSpread").getQuote ("mid");
+				double dblTSYSpread = mktParams.componentQuote().getQuote ("TSYSpread").getQuote ("mid");
 
 				mapMeasures.put ("MarketInputType=TSYSpread", dblTSYSpread);
 
@@ -11939,9 +11938,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				wiMarket = null;
 			}
-		} else if (null != mktParams.getComponentQuote().getQuote ("Yield")) {
+		} else if (null != mktParams.componentQuote().getQuote ("Yield")) {
 			try {
-				double dblYield = mktParams.getComponentQuote().getQuote ("Yield").getQuote ("mid");
+				double dblYield = mktParams.componentQuote().getQuote ("Yield").getQuote ("mid");
 
 				mapMeasures.put ("MarketInputType=Yield", dblYield);
 
@@ -11952,9 +11951,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				wiMarket = null;
 			}
-		} else if (null != mktParams.getComponentQuote().getQuote ("ZSpread")) {
+		} else if (null != mktParams.componentQuote().getQuote ("ZSpread")) {
 			try {
-				double dblZSpread = mktParams.getComponentQuote().getQuote ("ZSpread").getQuote ("mid");
+				double dblZSpread = mktParams.componentQuote().getQuote ("ZSpread").getQuote ("mid");
 
 				mapMeasures.put ("MarketInputType=ZSpread", dblZSpread);
 
@@ -11966,9 +11965,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				wiMarket = null;
 			}
-		} else if (null != mktParams.getComponentQuote().getQuote ("ISpread")) {
+		} else if (null != mktParams.componentQuote().getQuote ("ISpread")) {
 			try {
-				double dblISpread = mktParams.getComponentQuote().getQuote ("ISpread").getQuote ("mid");
+				double dblISpread = mktParams.componentQuote().getQuote ("ISpread").getQuote ("mid");
 
 				mapMeasures.put ("MarketInputType=ISpread", dblISpread);
 
@@ -11980,9 +11979,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				wiMarket = null;
 			}
-		} else if (null != mktParams.getComponentQuote().getQuote ("CreditBasis")) {
+		} else if (null != mktParams.componentQuote().getQuote ("CreditBasis")) {
 			try {
-				double dblCreditBasis = mktParams.getComponentQuote().getQuote ("CreditBasis").getQuote
+				double dblCreditBasis = mktParams.componentQuote().getQuote ("CreditBasis").getQuote
 					("mid");
 
 				mapMeasures.put ("MarketInputType=CreditBasis", dblCreditBasis);
@@ -11995,9 +11994,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				wiMarket = null;
 			}
-		} else if (null != mktParams.getComponentQuote().getQuote ("PECS")) {
+		} else if (null != mktParams.componentQuote().getQuote ("PECS")) {
 			try {
-				double dblCreditBasis = mktParams.getComponentQuote().getQuote ("PECS").getQuote ("mid");
+				double dblCreditBasis = mktParams.componentQuote().getQuote ("PECS").getQuote ("mid");
 
 				mapMeasures.put ("MarketInputType=PECS", dblCreditBasis);
 
@@ -12042,10 +12041,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				org.drip.param.definition.ComponentMarketParams cmpMarket =
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 						((org.drip.analytics.rates.DiscountCurve)
-							mktParams.getFundingCurve().parallelShiftQuantificationMetric
+							mktParams.fundingCurve().parallelShiftQuantificationMetric
 								(wiMarket.yield() - mapMeasures.get ("FairYield")),
-									mktParams.getTSYDiscountCurve(), mktParams.getEDSFDiscountCurve(),
-										mktParams.getCreditCurve(), mktParams.getComponentQuote(),
+									mktParams.fundingCurveGovvie(), mktParams.futuresFundingCurve(),
+										mktParams.creditCurve(), mktParams.componentQuote(),
 											mktParams.getTSYBenchmarkQuotes(), mktParams.getFixings());
 
 				if (null != cmpMarket) {
@@ -12476,7 +12475,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian()|| null ==
-			strQuote || null == mktParams || null == mktParams.getFundingCurve())
+			strQuote || null == mktParams || null == mktParams.fundingCurve())
 			return null;
 
 		return null;

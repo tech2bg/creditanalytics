@@ -84,7 +84,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc) return null;
 
@@ -94,14 +94,16 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		org.drip.product.params.FloatingRateIndex fri = fri();
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve (fri);
+		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.forwardCurve (fri);
 
 		if (null == fc || !fri.match (fc.index())) return null;
 
 		java.lang.String strFRI = fri.fullyQualifiedName();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = super.value
+			(valParams, pricerParams, mktParams, quotingParams);
+
+		if (null == mapResult || 0 == mapResult.size()) return null;
 
 		try {
 			java.util.Map<org.drip.analytics.date.JulianDate,
@@ -123,13 +125,17 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 			double dblParDCForward = dc.libor (dblEffectiveDate, dblMaturity);
 
+			double dblShiftedLogNormalScaler = dblForwardDCF * dblParStandardFRA;
+			dblShiftedLogNormalScaler = dblShiftedLogNormalScaler / (1. + dblShiftedLogNormalScaler);
+
 			double dblForwardPrice = dblForwardDCF * (dblParStandardFRA - strike()) / (1. + dblForwardDCF *
 				dblParStandardFRA);
 
 			double dblShiftedLogNormalConvexityAdjustmentExponent =
 				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (mktParams,
 					dc.name() + "_VOL_TS", fri.fullyQualifiedName() + "_VOL_TS", dc.name() + "::" +
-						fri.fullyQualifiedName() + "_VOL_TS", dblValueDate, dblEffectiveDate);
+						fri.fullyQualifiedName() + "_VOL_TS", dblShiftedLogNormalScaler,
+							dblShiftedLogNormalScaler, dblValueDate, dblEffectiveDate);
 
 			double dblShiftedLogNormalParMarketFRA = ((dblForwardDCF * dblParStandardFRA + 1.) *
 				java.lang.Math.exp (dblShiftedLogNormalConvexityAdjustmentExponent) - 1.) / dblForwardDCF;

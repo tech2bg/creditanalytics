@@ -389,7 +389,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams || valParams.valueDate() >= _dblMaturity) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc) return null;
 
@@ -446,7 +446,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == mktParams
-			|| null == mktParams.getFundingCurve())
+			|| null == mktParams.fundingCurve())
 			return null;
 
 		try {
@@ -455,7 +455,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			if (null == mapMeasures) return null;
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 			double dblDFEffective = dc.df (_dblEffective);
 
@@ -502,12 +502,12 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
-			null == mktParams || null == mktParams.getFundingCurve())
+			null == mktParams || null == mktParams.fundingCurve())
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote)) {
 			try {
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 				double dblDFEffective = dc.df (_dblEffective);
 

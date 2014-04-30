@@ -338,11 +338,11 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 		double dblMaturity = _dtMaturity.getJulian();
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc) return null;
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.getForwardCurve (_fri);
+		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.forwardCurve (_fri);
 
 		if (null == fc || !_fri.match (fc.index())) return null;
 
@@ -466,7 +466,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.getFundingCurve())
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve())
 			return null;
 
 		return null;
@@ -480,7 +480,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == strQuote || null == mktParams || null ==
-			mktParams.getFundingCurve())
+			mktParams.fundingCurve())
 			return null;
 
 		return null;

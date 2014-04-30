@@ -119,13 +119,13 @@ public class DateTime extends org.drip.service.stream.Serializer {
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate long time");
 
-		_lTime = new java.lang.Long (astrField[1]);
+		_lTime = new java.lang.Long (astrField[1]).longValue();
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate date");
 
-		_dblDate = new java.lang.Double (astrField[2]);
+		_dblDate = new java.lang.Double (astrField[2]).doubleValue();
 	}
 
 	/**

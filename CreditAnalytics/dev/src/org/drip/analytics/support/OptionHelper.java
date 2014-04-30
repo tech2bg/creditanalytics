@@ -63,11 +63,15 @@ public class OptionHelper {
 	}
 
 	static class CrossVolatilityConvexityExponent extends org.drip.quant.function1D.AbstractUnivariate {
+		double _dblForwardShiftedLogNormalScaler = java.lang.Double.NaN;
+		double _dblDiscountShiftedLogNormalScaler = java.lang.Double.NaN;
 		org.drip.quant.function1D.AbstractUnivariate _auForwardVolTS = null;
 		org.drip.quant.function1D.AbstractUnivariate _auDiscountVolTS = null;
 		org.drip.quant.function1D.AbstractUnivariate _auDiscountForwardCorrTS = null;
 
 		CrossVolatilityConvexityExponent (
+			final double dblDiscountShiftedLogNormalScaler,
+			final double dblForwardShiftedLogNormalScaler,
 			final org.drip.quant.function1D.AbstractUnivariate auDiscountVolTS,
 			final org.drip.quant.function1D.AbstractUnivariate auForwardVolTS,
 			final org.drip.quant.function1D.AbstractUnivariate auDiscountForwardCorrTS)
@@ -77,15 +81,25 @@ public class OptionHelper {
 			_auForwardVolTS = auForwardVolTS;
 			_auDiscountVolTS = auDiscountVolTS;
 			_auDiscountForwardCorrTS = auDiscountForwardCorrTS;
+			_dblForwardShiftedLogNormalScaler = dblForwardShiftedLogNormalScaler;
+			_dblDiscountShiftedLogNormalScaler = dblDiscountShiftedLogNormalScaler;
 		}
 
 		@Override public double evaluate (
 			final double dblVariate)
 			throws java.lang.Exception
 		{
+			double dblDiscountShiftedLogNormalScaler = java.lang.Double.isNaN
+				(_dblDiscountShiftedLogNormalScaler) ? 1. : _dblDiscountShiftedLogNormalScaler;
+
+			double dblForwardShiftedLogNormalScaler = java.lang.Double.isNaN
+				(_dblForwardShiftedLogNormalScaler) ? 1. : _dblForwardShiftedLogNormalScaler;
+
 			return _auDiscountForwardCorrTS.evaluate (dblVariate) * _auDiscountVolTS.evaluate (dblVariate) *
-				_auForwardVolTS.evaluate (dblVariate) - _auForwardVolTS.evaluate (dblVariate) *
-					_auForwardVolTS.evaluate (dblVariate);
+				_auForwardVolTS.evaluate (dblVariate) * dblDiscountShiftedLogNormalScaler *
+					dblForwardShiftedLogNormalScaler - _auForwardVolTS.evaluate (dblVariate) *
+						_auForwardVolTS.evaluate (dblVariate) * dblForwardShiftedLogNormalScaler *
+							dblForwardShiftedLogNormalScaler;
 		}
 	}
 
@@ -182,6 +196,8 @@ public class OptionHelper {
 	 * @param auDiscountVolTS Volatility Term Structure of the Forward Rate
 	 * @param auForwardVolTS Volatility Term Structure of the Discount Rate
 	 * @param auDiscountForwardCorrTS Correlation Term Structure between the Forward and the Discount Rates
+	 * @param dblDiscountShiftedLogNormalScaler Scaling for the Discount Log Normal Volatility
+	 * @param dblForwardShiftedLogNormalScaler Scaling for the Forward Log Normal Volatility
 	 * @param dblStartDate Evolution Start Date
 	 * @param dblEndDate Evolution End Date
 	 * 
@@ -194,6 +210,8 @@ public class OptionHelper {
 		final org.drip.quant.function1D.AbstractUnivariate auDiscountVolTS,
 		final org.drip.quant.function1D.AbstractUnivariate auForwardVolTS,
 		final org.drip.quant.function1D.AbstractUnivariate auDiscountForwardCorrTS,
+		final double dblDiscountShiftedLogNormalScaler,
+		final double dblForwardShiftedLogNormalScaler,
 		final double dblStartDate,
 		final double dblEndDate)
 		throws java.lang.Exception
@@ -204,8 +222,9 @@ public class OptionHelper {
 				("OptionHelper::IntegratedFRACrossVolConvexityExponent => Invalid Inputs");
 
 		return null == auDiscountVolTS || null == auForwardVolTS || null == auDiscountForwardCorrTS ? 0. :
-			new CrossVolatilityConvexityExponent (auDiscountVolTS, auForwardVolTS,
-				auDiscountForwardCorrTS).integrate (dblStartDate, dblEndDate) / 365.25;
+			new CrossVolatilityConvexityExponent (dblDiscountShiftedLogNormalScaler,
+				dblForwardShiftedLogNormalScaler, auDiscountVolTS, auForwardVolTS,
+					auDiscountForwardCorrTS).integrate (dblStartDate, dblEndDate) / 365.25;
 	}
 
 	/**
@@ -286,6 +305,8 @@ public class OptionHelper {
 	 * @param strDiscountVolTS Name of the Discount Forward Rate Volatility Term Structure
 	 * @param strForwardVolTS Name of the Forward Rate Volatility Term Structure
 	 * @param strDiscountForwardCorrTS Name of the Discount-Forward Correlation Surface
+	 * @param dblDiscountShiftedLogNormalScaler Scaling for the Discount Log Normal Volatility
+	 * @param dblForwardShiftedLogNormalScaler Scaling for the Forward Log Normal Volatility
 	 * @param dblStartDate Evolution Start Date
 	 * @param dblEndDate Evolution End Date
 	 * 
@@ -299,6 +320,8 @@ public class OptionHelper {
 		final java.lang.String strDiscountVolTS,
 		final java.lang.String strForwardVolTS,
 		final java.lang.String strDiscountForwardCorrTS,
+		final double dblDiscountShiftedLogNormalScaler,
+		final double dblForwardShiftedLogNormalScaler,
 		final double dblStartDate,
 		final double dblEndDate)
 		throws java.lang.Exception
@@ -315,8 +338,10 @@ public class OptionHelper {
 
 		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
 
-		return IntegratedCrossVolQuanto (mktParams.getLatentStateVolSurface (strDiscountVolTS, dtEnd),
-			mktParams.getLatentStateVolSurface (strForwardVolTS, dtEnd), mktParams.getLatentStateVolSurface
-				(strDiscountForwardCorrTS, dtEnd), dblStartDate, dblEndDate);
+		return IntegratedFRACrossVolConvexityExponent (mktParams.getLatentStateVolSurface (strDiscountVolTS,
+			dtEnd), mktParams.getLatentStateVolSurface (strForwardVolTS, dtEnd),
+				mktParams.getLatentStateVolSurface (strDiscountForwardCorrTS, dtEnd),
+					dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
+						dblEndDate);
 	}
 }

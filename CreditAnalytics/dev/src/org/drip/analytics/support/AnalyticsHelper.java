@@ -869,7 +869,7 @@ public class AnalyticsHelper {
 			final org.drip.param.definition.ComponentMarketParams mktParams)
 	{
 		if (null == comp || null == valParams || null == period || null == pricerParams || null == mktParams
-			|| null == mktParams.getFundingCurve() || null == mktParams.getCreditCurve() ||
+			|| null == mktParams.fundingCurve() || null == mktParams.creditCurve() ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) || period.getStartDate() >
 					dblWorkoutDate)
 			return null;
@@ -880,17 +880,17 @@ public class AnalyticsHelper {
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP ==
 			pricerParams._iDiscretizationScheme)
 			return GenerateDayStepLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams._iUnitSize, mktParams.getFundingCurve(), mktParams.getCreditCurve());
+				pricerParams._iUnitSize, mktParams.fundingCurve(), mktParams.creditCurve());
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_PERIOD_STEP ==
 			pricerParams._iDiscretizationScheme)
 			return GeneratePeriodUnitLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams._iUnitSize, mktParams.getFundingCurve(), mktParams.getCreditCurve());
+				pricerParams._iUnitSize, mktParams.fundingCurve(), mktParams.creditCurve());
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON ==
 			pricerParams._iDiscretizationScheme)
 			return GenerateWholeLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				mktParams.getFundingCurve(), mktParams.getCreditCurve());
+				mktParams.fundingCurve(), mktParams.creditCurve());
 
 		return null;
 	}

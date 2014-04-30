@@ -339,7 +339,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		org.drip.analytics.rates.ForwardCurve fc = mktParams.getForwardCurve (_fri);
+		org.drip.analytics.rates.ForwardCurve fc = mktParams.forwardCurve (_fri);
 
 		if (null != fc && null != _fri && fc.name().equalsIgnoreCase (_fri.fullyQualifiedName())) {
 			try {
@@ -353,7 +353,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 			}
 		}
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 		if (null == dc) {
 			mapResult.put ("calctime", (System.nanoTime() - lStart) * 1.e-09);
@@ -413,7 +413,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
-			mktParams.getFundingCurve())
+			mktParams.fundingCurve())
 			return null;
 
 		try {
@@ -422,7 +422,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 			if (null == mapMeasures) return null;
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+			org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 			org.drip.quant.calculus.WengertJacobian wjDFDF = dc.jackDDFDManifestMeasure (_dblMaturity,
 				"Rate");
@@ -454,12 +454,12 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null ==
-			mktParams || null == mktParams.getFundingCurve())
+			mktParams || null == mktParams.fundingCurve())
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote)) {
 			try {
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 				org.drip.quant.calculus.WengertJacobian wjDF = dc.jackDDFDManifestMeasure (_dblMaturity,
 					"Rate");

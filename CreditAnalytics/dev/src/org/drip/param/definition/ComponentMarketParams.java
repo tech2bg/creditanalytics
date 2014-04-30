@@ -48,7 +48,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component Credit Curve
 	 */
 
-	public abstract org.drip.analytics.definition.CreditCurve getCreditCurve();
+	public abstract org.drip.analytics.definition.CreditCurve creditCurve();
 
 	/**
 	 * (Re)-set the Component Credit Curve
@@ -67,7 +67,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component's Funding Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getFundingCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve fundingCurve();
 
 	/**
 	 * (Re)-set the Component's Funding Curve
@@ -86,7 +86,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component's Domestic Collateral Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDomesticCollateralCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve domesticCollateralCurve();
 
 	/**
 	 * (Re)-set the Component's Domestic Collateral Curve
@@ -105,7 +105,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component's Foreign Collateral Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getForeignCollateralCurve (
+	public abstract org.drip.analytics.rates.DiscountCurve foreignCollateralCurve (
 		final java.lang.String strCurrency);
 
 	/**
@@ -127,7 +127,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component's Domestic Currency Collateralized in Foreign Collateral Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDomesticCurrencyForeignCollateralCurve (
+	public abstract org.drip.analytics.rates.DiscountCurve domesticCurrencyForeignCollateralCurve (
 		final java.lang.String strCurrency);
 
 	/**
@@ -150,7 +150,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component's Foreign Currency Collateralized in Domestic Collateral Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getForeignCurrencyDomesticCollateralCurve (
+	public abstract org.drip.analytics.rates.DiscountCurve foreignCurrencyDomesticCollateralCurve (
 		final java.lang.String strCurrency);
 
 	/**
@@ -173,7 +173,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component's Collateral Choice Discount Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getCollateralChoiceDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve collateralChoiceDiscountCurve();
 
 	/**
 	 * (Re)-set the Component Forward Curve
@@ -194,46 +194,46 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.ForwardCurve getForwardCurve (
+	public abstract org.drip.analytics.rates.ForwardCurve forwardCurve (
 		final org.drip.product.params.FloatingRateIndex fri);
 
 	/**
-	 * Retrieve the Component TSY Discount Curve
+	 * Retrieve the Component Government Funding Curve
 	 * 
-	 * @return Component TSY Discount Curve
+	 * @return Component Government Funding Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getTSYDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve fundingCurveGovvie();
 
 	/**
-	 * (Re)-set the Component TSY Discount Curve
+	 * (Re)-set the Component Government Discount Curve
 	 * 
-	 * @param dcTSY Component TSY Discount Curve
+	 * @param dcTSY Component Government Discount Curve
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setTSYDiscountCurve (
+	public abstract boolean setfundingCurveGovvie (
 		final org.drip.analytics.rates.DiscountCurve dcTSY);
 
 	/**
-	 * Retrieve the Component EDSF Discount Curve
+	 * Retrieve the Component Futures Funding Curve
 	 * 
-	 * @return Component EDSF Discount Curve
+	 * @return Component Futures Funding Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getEDSFDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve futuresFundingCurve();
 
 	/**
-	 * (Re)-set the Component EDSF Discount Curve
+	 * (Re)-set the Component Futures Funding Curve
 	 * 
-	 * @param dcEDSF Component EDSF Discount Curve
+	 * @param dcFutures Component Futures Funding Curve
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setEDSFDiscountCurve (
-		final org.drip.analytics.rates.DiscountCurve dcEDSF);
+	public abstract boolean setFuturesFundingCurve (
+		final org.drip.analytics.rates.DiscountCurve dcFutures);
 
 	/**
 	 * Retrieve the Component Quote
@@ -241,7 +241,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component Quote
 	 */
 
-	public abstract org.drip.param.definition.ComponentQuote getComponentQuote();
+	public abstract org.drip.param.definition.ComponentQuote componentQuote();
 
 	/**
 	 * (Re)-set the Component Quote

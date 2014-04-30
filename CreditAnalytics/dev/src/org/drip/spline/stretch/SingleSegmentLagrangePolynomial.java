@@ -455,6 +455,30 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		return false;
 	}
 
+	@Override public org.drip.quant.function1D.AbstractUnivariate toAU()
+	{
+		org.drip.quant.function1D.AbstractUnivariate au = new
+			org.drip.quant.function1D.AbstractUnivariate (null)
+		{
+			@Override public double evaluate (
+				final double dblVariate)
+				throws java.lang.Exception
+			{
+				return responseValue (dblVariate);
+			}
+
+			@Override public double calcDerivative (
+				final double dblVariate,
+				final int iOrder)
+				throws java.lang.Exception
+			{
+				return responseValueDerivative (dblVariate, iOrder);
+			}
+		};
+
+		return au;
+	}
+
 	@Override public double getLeftPredictorOrdinateEdge()
 	{
 		return _adblPredictorOrdinate[0];

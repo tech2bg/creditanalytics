@@ -79,8 +79,8 @@ public class CreditAnalyticsStub {
 		final org.drip.param.definition.MarketParams mpc,
 		final java.lang.String strMeasure)
 	{
-		org.drip.param.definition.ComponentQuote cq = (null != cmp && null != cmp.getComponentQuote()) ?
-			cmp.getComponentQuote() : mpc.getCompQuote (bond.getIdentifierSet()._strID);
+		org.drip.param.definition.ComponentQuote cq = (null != cmp && null != cmp.componentQuote()) ?
+			cmp.componentQuote() : mpc.getCompQuote (bond.getIdentifierSet()._strID);
 
 		return null == cq ? null : cq.getQuote (strMeasure);
 	}

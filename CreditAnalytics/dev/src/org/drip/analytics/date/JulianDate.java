@@ -1391,7 +1391,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		return fromJulian (_dblJulian);
 	}
 
-	@Override public int compareTo (
+	public int compareTo (
 		final JulianDate dtOther)
 	{
 		if ((int) _dblJulian > (int) (dtOther._dblJulian)) return 1;

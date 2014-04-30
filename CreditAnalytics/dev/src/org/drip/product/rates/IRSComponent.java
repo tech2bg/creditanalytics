@@ -348,7 +348,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 				mapResult.put ("Price", dblCleanPrice);
 
@@ -499,7 +499,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
-			null == mktParams || null == mktParams.getFundingCurve())
+			null == mktParams || null == mktParams.fundingCurve())
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strQuote) || "SwapRate".equalsIgnoreCase (strQuote)) {
@@ -515,7 +515,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.getFundingCurve();
+				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 				for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
 					double dblPeriodPayDate = p.getPayDate();
