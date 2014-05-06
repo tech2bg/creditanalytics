@@ -35,7 +35,7 @@ package org.drip.product.rates;
  *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
  *  - Coupon/Notional Outstanding as well as schedules
  *  - Retrieve the constituent fixed and floating streams
- *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Market Parameters: Discount, Forward, Credit, Treasury Curves
  *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
  *  - Valuation: Named Measure Generation
  *  - Calibration: The codes and constraints generation
@@ -66,7 +66,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 	@Override public java.lang.String componentName()
 	{
-		return "STIR=" + getFloatStream().fri() + " | " + getEffectiveDate();
+		return "STIR=" + getFloatStream().fri() + " | " + effective();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -79,7 +79,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblEffectiveDate = getEffectiveDate().getJulian();
+		double dblEffectiveDate = effective().getJulian();
 
 		java.lang.String strComponentName = componentName();
 
@@ -119,9 +119,9 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 		return mapResult;
 	}
 
-	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	@Override public java.util.Set<java.lang.String> measureNames()
 	{
-		java.util.Set<java.lang.String> setstrMeasureNames = super.getMeasureNames();
+		java.util.Set<java.lang.String> setstrMeasureNames = super.measureNames();
 
 		setstrMeasureNames.add ("AdditiveSwapRateQuantoAdjustment");
 

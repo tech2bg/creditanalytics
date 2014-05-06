@@ -93,41 +93,41 @@ public class FRAMkt {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
+			(dcEONIA, fcEURIBOR6M, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			fri.fullyQualifiedName(),
 			dtForward,
 			new FlatUnivariate (dblEURIBOR6MVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			dcEONIA.name() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEONIAVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			fri.fullyQualifiedName() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEURIBOR6MVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			dcEONIA.name() + "::" + fri.fullyQualifiedName() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)

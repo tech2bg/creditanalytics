@@ -910,9 +910,8 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 
 		BondComponent bond = new BondComponent();
 
-		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TreasuryBenchmark (new
-			org.drip.product.params.TsyBmkSet ("USD5YON", new java.lang.String[] {"USD3YON", "USD7YON"}),
-				"USDTSY", "USDEDSF"))) {
+		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TsyBmkSet ("USD5YON", new
+			java.lang.String[] {"USD3YON", "USD7YON"}))) {
 			System.out.println ("Cannot initialize bond TSY params!");
 
 			System.exit (126);
@@ -947,7 +946,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			System.exit (130);
 		}
 
-		if (!bond.setCurrencySet (new org.drip.product.params.CurrencySet ("USD", "USD", "USD"))) {
+		if (!bond.setCurrencySet (org.drip.product.params.CurrencySet.Create ("USD"))) {
 			System.out.println ("Cannot initialize bond currency params!");
 
 			System.exit (131);

@@ -1713,20 +1713,6 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Get the Bond's treasury Parameters
-	 * 
-	 * @return BondTSYParams object
-	 */
-
-	public org.drip.product.params.TreasuryBenchmark getTSYParams()
-	{
-		org.drip.product.params.TreasuryBenchmark tsyParams = new org.drip.product.params.TreasuryBenchmark
-			(null, _strCouponCurrency + "TSY", _strCouponCurrency + "EDSF");
-
-		return tsyParams.validate() ? tsyParams : null;
-	}
-
-	/**
 	 * Get the Bond's identifier Parameters
 	 * 
 	 * @return BondIdentifierParams object
@@ -1762,8 +1748,8 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 	public org.drip.product.params.CurrencySet getCurrencyParams()
 	{
-		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet
-			(_strTradeCurrency, _strCouponCurrency, _strRedemptionCurrency);
+		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet (new
+			java.lang.String[] {_strTradeCurrency}, new java.lang.String[] {_strRedemptionCurrency});
 
 		return ccyParams.validate() ? ccyParams : null;
 	}

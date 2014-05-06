@@ -92,11 +92,11 @@ public class ForeignCollateralDomesticForex {
 			new FlatUnivariate (dblFXForeignRatesCorrelation));
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(null, null, null, null, null, null, null, null);
+			(null, null, null, null, null, null, null);
 
-		cmp.setDomesticCurrencyForeignCollateralCurve (strForeignCurrency, dcCcyDomesticCollatForeign);
+		cmp.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
 
-		cmp.setForeignCollateralCurve (strForeignCurrency, dcCcyForeignCollatForeign);
+		cmp.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
 
 		cmp.setFXCurve (cp.getCode(), auFX);
 

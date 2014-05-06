@@ -178,9 +178,8 @@ public class CreditAnalyticsAPI {
 		 */
 
 		for (int i = 0; i < aCDS.length; ++i)
-			System.out.println ("\t" + astrCalibMeasure[i] + "[" + i + "] = " +
-				aCDS[i].calcMeasureValue (valParams, pricerParams,
-				ComponentMarketParamsBuilder.CreateComponentMarketParams
+			System.out.println ("\t" + astrCalibMeasure[i] + "[" + i + "] = " + aCDS[i].measureValue
+				(valParams, pricerParams, ComponentMarketParamsBuilder.CreateComponentMarketParams
 					(dc, null, null, cc, null, null, null), null, astrCalibMeasure[i]));
 	}
 

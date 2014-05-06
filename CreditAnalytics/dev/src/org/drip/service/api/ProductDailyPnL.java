@@ -53,8 +53,6 @@ public class ProductDailyPnL {
 	private double _dbl1DDirtyPnL = java.lang.Double.NaN;
 	private double _dbl1DTotalPnL = java.lang.Double.NaN;
 	private double _dbl1DTimeRollPnL = java.lang.Double.NaN;
-	private double _dbl1MTimeRollPnL = java.lang.Double.NaN;
-	private double _dbl3MTimeRollPnL = java.lang.Double.NaN;
 	private double _dbl1DFloatingDCF = java.lang.Double.NaN;
 	private double _dbl1MFloatingDCF = java.lang.Double.NaN;
 	private double _dbl3MFloatingDCF = java.lang.Double.NaN;
@@ -65,8 +63,6 @@ public class ProductDailyPnL {
 	private double _dblPeriodFixedRate = java.lang.Double.NaN;
 	private double _dblBaselineSwapRate = java.lang.Double.NaN;
 	private double _dbl1DTimeRollSwapRate = java.lang.Double.NaN;
-	private double _dbl1MTimeRollSwapRate = java.lang.Double.NaN;
-	private double _dbl3MTimeRollSwapRate = java.lang.Double.NaN;
 	private double _dbl1DCleanPnLWithFixing = java.lang.Double.NaN;
 	private double _dbl1DDirtyPnLWithFixing = java.lang.Double.NaN;
 	private double _dbl1DTotalPnLWithFixing = java.lang.Double.NaN;
@@ -77,9 +73,13 @@ public class ProductDailyPnL {
 	private double _dblCleanFloatDV01WithFixing = java.lang.Double.NaN;
 	private double _dblPeriodProductFloatingRate = java.lang.Double.NaN;
 	private double _dbl1DMaturityRollDownSwapRate = java.lang.Double.NaN;
+	private double _dbl1MMaturityRollDownSwapRate = java.lang.Double.NaN;
+	private double _dbl3MMaturityRollDownSwapRate = java.lang.Double.NaN;
 	private double _dbl1DMaturityRollUpSwapRatePnL = java.lang.Double.NaN;
 	private double _dbl1DMaturityRollUpFairPremium = java.lang.Double.NaN;
 	private double _dbl1DMaturityRollDownSwapRatePnL = java.lang.Double.NaN;
+	private double _dbl1MMaturityRollDownSwapRatePnL = java.lang.Double.NaN;
+	private double _dbl3MMaturityRollDownSwapRatePnL = java.lang.Double.NaN;
 	private double _dbl1DMaturityRollUpFairPremiumPnL = java.lang.Double.NaN;
 	private double _dbl1DMaturityRollUpFairPremiumWithFixing = java.lang.Double.NaN;
 	private double _dbl1DMaturityRollUpFairPremiumWithFixingPnL = java.lang.Double.NaN;
@@ -101,9 +101,9 @@ public class ProductDailyPnL {
 	 * @param dbl1DMaturityRollUpFairPremiumWithFixingPnL 1D Curve Maturity Roll Up implied Fair Premium With
 	 * 	Fixing PnL
 	 * @param dbl1DCurveShiftPnL 1D Curve Shift PnL
-	 * @param dbl1MCarryPnL 1M Carry PnL
+	 * @param dbl1MMaturityRollDownSwapRatePnL 1M Curve Maturity Roll Down implied Par Swap rate PnL
 	 * @param dbl1MTimeRollPnL 1M Time Roll PnL
-	 * @param dbl3MCarryPnL 3M Carry PnL
+	 * @param dbl3MMaturityRollDownSwapRatePnL 3M Curve Maturity Roll Down implied Par Swap rate PnL
 	 * @param dbl3MTimeRollPnL 3M Time Roll PnL
 	 * @param dblDV01 DV01
 	 * @param dblDV01WithFixing DV01 With Fixing
@@ -112,9 +112,9 @@ public class ProductDailyPnL {
 	 * @param dblCleanFloatDV01WithFixing Clean Float DV01 With Fixing
 	 * @param dblBaselineSwapRate Baseline Par Swap Rate
 	 * @param dbl1DTimeRollSwapRate 1D Curve Time Roll implied Par Swap rate
-	 * @param dbl1MTimeRollSwapRate 1M Curve Time Roll implied Par Swap rate
-	 * @param dbl3MTimeRollSwapRate 3M Curve Time Roll implied Par Swap rate
 	 * @param dbl1DMaturityRollDownSwapRate 1D Curve Maturity Roll Down Implied Par Swap rate
+	 * @param dbl1MMaturityRollDownSwapRate 1M Curve Maturity Roll Down implied Par Swap rate
+	 * @param dbl3MMaturityRollDownSwapRate 3M Curve Maturity Roll Down implied Par Swap rate
 	 * @param dbl1DMaturityRollUpSwapRate 1D Curve Maturity Roll Up Implied Par Swap rate
 	 * @param dbl1DMaturityRollUpFairPremium 1D Curve Maturity Roll Up Implied Fair Premium
 	 * @param dbl1DMaturityRollUpFairPremiumWithFixing 1D Curve Maturity Roll Up Implied Fair Premium With
@@ -149,9 +149,9 @@ public class ProductDailyPnL {
 		final double dbl1DMaturityRollUpFairPremiumWithFixingPnL,
 		final double dbl1DCurveShiftPnL,
 		final double dbl1MCarryPnL,
-		final double dbl1MTimeRollPnL,
+		final double dbl1MMaturityRollDownSwapRatePnL,
 		final double dbl3MCarryPnL,
-		final double dbl3MTimeRollPnL,
+		final double dbl3MMaturityRollDownSwapRatePnL,
 		final double dblDV01,
 		final double dblDV01WithFixing,
 		final double dblCleanFixedDV01,
@@ -159,9 +159,9 @@ public class ProductDailyPnL {
 		final double dblCleanFloatDV01WithFixing,
 		final double dblBaselineSwapRate,
 		final double dbl1DTimeRollSwapRate,
-		final double dbl1MTimeRollSwapRate,
-		final double dbl3MTimeRollSwapRate,
 		final double dbl1DMaturityRollDownSwapRate,
+		final double dbl1MMaturityRollDownSwapRate,
+		final double dbl3MMaturityRollDownSwapRate,
 		final double dbl1DMaturityRollUpSwapRate,
 		final double dbl1DMaturityRollUpFairPremium,
 		final double dbl1DMaturityRollUpFairPremiumWithFixing,
@@ -204,53 +204,55 @@ public class ProductDailyPnL {
 							!org.drip.quant.common.NumberUtil.IsValid (_dbl1DCurveShiftPnL =
 								dbl1DCurveShiftPnL) || !org.drip.quant.common.NumberUtil.IsValid
 									(_dbl1MCarryPnL = dbl1MCarryPnL) ||
-										!org.drip.quant.common.NumberUtil.IsValid (_dbl1MTimeRollPnL =
-											dbl1MTimeRollPnL) || !org.drip.quant.common.NumberUtil.IsValid
-												(_dbl3MCarryPnL = dbl3MCarryPnL) ||
-													!org.drip.quant.common.NumberUtil.IsValid
-														(_dbl3MTimeRollPnL = dbl3MTimeRollPnL) ||
-															!org.drip.quant.common.NumberUtil.IsValid
-																(_dblDV01 = dblDV01) ||
-																	!org.drip.quant.common.NumberUtil.IsValid
-																		(_dblDV01WithFixing =
-																			dblDV01WithFixing) ||
-																				!org.drip.quant.common.NumberUtil.IsValid
-			(_dblCleanFixedDV01 = dblCleanFixedDV01) || !org.drip.quant.common.NumberUtil.IsValid
-				(_dblCleanFloatDV01 = dblCleanFloatDV01) || !org.drip.quant.common.NumberUtil.IsValid
-					(_dblCleanFloatDV01WithFixing = dblCleanFloatDV01WithFixing) ||
-						!org.drip.quant.common.NumberUtil.IsValid (_dblBaselineSwapRate =
-							dblBaselineSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
-								(_dbl1DTimeRollSwapRate = dbl1DTimeRollSwapRate) ||
-									!org.drip.quant.common.NumberUtil.IsValid (_dbl1MTimeRollSwapRate =
-										dbl1MTimeRollSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
-											(_dbl3MTimeRollSwapRate = dbl3MTimeRollSwapRate) ||
-												!org.drip.quant.common.NumberUtil.IsValid
-													(_dbl1DMaturityRollDownSwapRate =
-														dbl1DMaturityRollDownSwapRate) ||
-															!org.drip.quant.common.NumberUtil.IsValid
-																(_dbl1DMaturityRollUpSwapRate =
-																	dbl1DMaturityRollUpSwapRate) ||
-																		!org.drip.quant.common.NumberUtil.IsValid
-			(_dbl1DMaturityRollUpFairPremium = dbl1DMaturityRollUpFairPremium) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dbl1DMaturityRollUpFairPremiumWithFixing =
-					dbl1DMaturityRollUpFairPremiumWithFixing) || !org.drip.quant.common.NumberUtil.IsValid
-						(_dbl1DCurveShiftSwapRate = dbl1DCurveShiftSwapRate) ||
-							!org.drip.quant.common.NumberUtil.IsValid (_dblPeriodFixedRate =
-								dblPeriodFixedRate) || !org.drip.quant.common.NumberUtil.IsValid
-									(_dblPeriodCurveFloatingRate = dblPeriodCurveFloatingRate) ||
 										!org.drip.quant.common.NumberUtil.IsValid
-											(_dblPeriodProductFloatingRate = dblPeriodProductFloatingRate) ||
-												!org.drip.quant.common.NumberUtil.IsValid
-													(_dblPeriodFloatingRateUsed = dblPeriodFloatingRateUsed)
-														|| !org.drip.quant.common.NumberUtil.IsValid
-															(_dbl1DFixedDCF = dbl1DFixedDCF) ||
-																!org.drip.quant.common.NumberUtil.IsValid
-																	(_dbl1DFloatingDCF = dbl1DFloatingDCF) ||
+											(_dbl1MMaturityRollDownSwapRatePnL =
+												dbl1MMaturityRollDownSwapRatePnL) ||
+													!org.drip.quant.common.NumberUtil.IsValid (_dbl3MCarryPnL
+														= dbl3MCarryPnL) ||
+															!org.drip.quant.common.NumberUtil.IsValid
+																(_dbl3MMaturityRollDownSwapRatePnL =
+																	dbl3MMaturityRollDownSwapRatePnL) ||
 																		!org.drip.quant.common.NumberUtil.IsValid
-			(_dbl1MFixedDCF = dbl1MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl1MFloatingDCF
-				= dbl1MFloatingDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFixedDCF =
-					dbl3MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFloatingDCF =
-						dbl3MFloatingDCF))
+			(_dblDV01 = dblDV01) || !org.drip.quant.common.NumberUtil.IsValid (_dblDV01WithFixing =
+				dblDV01WithFixing) || !org.drip.quant.common.NumberUtil.IsValid (_dblCleanFixedDV01 =
+					dblCleanFixedDV01) || !org.drip.quant.common.NumberUtil.IsValid (_dblCleanFloatDV01 =
+						dblCleanFloatDV01) || !org.drip.quant.common.NumberUtil.IsValid
+							(_dblCleanFloatDV01WithFixing = dblCleanFloatDV01WithFixing) ||
+								!org.drip.quant.common.NumberUtil.IsValid (_dblBaselineSwapRate =
+									dblBaselineSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
+										(_dbl1DTimeRollSwapRate = dbl1DTimeRollSwapRate) ||
+											!org.drip.quant.common.NumberUtil.IsValid
+												(_dbl1DMaturityRollDownSwapRate =
+													dbl1DMaturityRollDownSwapRate) ||
+														!org.drip.quant.common.NumberUtil.IsValid
+															(_dbl1MMaturityRollDownSwapRate =
+																dbl1MMaturityRollDownSwapRate) ||
+																	!org.drip.quant.common.NumberUtil.IsValid
+																		(_dbl3MMaturityRollDownSwapRate =
+																			dbl3MMaturityRollDownSwapRate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dbl1DMaturityRollUpSwapRate =
+				dbl1DMaturityRollUpSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
+					(_dbl1DMaturityRollUpFairPremium = dbl1DMaturityRollUpFairPremium) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dbl1DMaturityRollUpFairPremiumWithFixing
+							= dbl1DMaturityRollUpFairPremiumWithFixing) ||
+								!org.drip.quant.common.NumberUtil.IsValid (_dbl1DCurveShiftSwapRate =
+									dbl1DCurveShiftSwapRate) || !org.drip.quant.common.NumberUtil.IsValid
+										(_dblPeriodFixedRate = dblPeriodFixedRate) ||
+											!org.drip.quant.common.NumberUtil.IsValid
+												(_dblPeriodCurveFloatingRate = dblPeriodCurveFloatingRate) ||
+													!org.drip.quant.common.NumberUtil.IsValid
+														(_dblPeriodProductFloatingRate =
+															dblPeriodProductFloatingRate) ||
+																!org.drip.quant.common.NumberUtil.IsValid
+																	(_dblPeriodFloatingRateUsed =
+																		dblPeriodFloatingRateUsed) ||
+																			!org.drip.quant.common.NumberUtil.IsValid
+			(_dbl1DFixedDCF = dbl1DFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl1DFloatingDCF
+				= dbl1DFloatingDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl1MFixedDCF =
+					dbl1MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl1MFloatingDCF =
+						dbl1MFloatingDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFixedDCF =
+							dbl3MFixedDCF) || !org.drip.quant.common.NumberUtil.IsValid (_dbl3MFloatingDCF =
+								dbl3MFloatingDCF))
 			throw new java.lang.Exception ("ProductDailyPnL ctr: Invalid Inputs!");
 
 		_i1DFixedAccrualDays = i1DFixedAccrualDays;
@@ -412,14 +414,14 @@ public class ProductDailyPnL {
 	}
 
 	/**
-	 * Retrieve the 1M Time Roll PnL
+	 * Retrieve the 1M Maturity Roll Down Swap Rate PnL
 	 * 
-	 * @return The 1M Time Roll PnL
+	 * @return The 1M Maturity Roll Down Swap Rate PnL
 	 */
 
-	public double timeRoll1MPnL()
+	public double maturityRollDownSwapRate1MPnL()
 	{
-		return _dbl1MTimeRollPnL;
+		return _dbl1MMaturityRollDownSwapRatePnL;
 	}
 
 	/**
@@ -434,14 +436,14 @@ public class ProductDailyPnL {
 	}
 
 	/**
-	 * Retrieve the 3M Time Roll PnL
+	 * Retrieve the 3M Maturity Roll Down Swap Rate PnL
 	 * 
-	 * @return The 3M Time Roll PnL
+	 * @return The 3M Maturity Roll Down Swap Rate PnL
 	 */
 
-	public double timeRoll3MPnL()
+	public double maturityRollDownSwapRate3MPnL()
 	{
-		return _dbl3MTimeRollPnL;
+		return _dbl3MMaturityRollDownSwapRatePnL;
 	}
 
 	/**
@@ -522,28 +524,6 @@ public class ProductDailyPnL {
 	}
 
 	/**
-	 * Retrieve the 1M Time Roll Swap Rate
-	 * 
-	 * @return The 1M Time Roll Swap Rate
-	 */
-
-	public double timeRollSwapRate1M()
-	{
-		return _dbl1MTimeRollSwapRate;
-	}
-
-	/**
-	 * Retrieve the 3M Time Roll Swap Rate
-	 * 
-	 * @return The 3M Time Roll Swap Rate
-	 */
-
-	public double timeRollSwapRate3M()
-	{
-		return _dbl3MTimeRollSwapRate;
-	}
-
-	/**
 	 * Retrieve the 1D Maturity Roll Down Swap Rate
 	 * 
 	 * @return The 1D Maturity Roll Down Swap Rate
@@ -552,6 +532,28 @@ public class ProductDailyPnL {
 	public double maturityRollDownSwapRate1D()
 	{
 		return _dbl1DMaturityRollDownSwapRate;
+	}
+
+	/**
+	 * Retrieve the 1M Maturity Roll Down Swap Rate
+	 * 
+	 * @return The 1M Maturity Roll Down Swap Rate
+	 */
+
+	public double maturityRollDownSwapRate1M()
+	{
+		return _dbl1MMaturityRollDownSwapRate;
+	}
+
+	/**
+	 * Retrieve the 3M Maturity Roll Down Swap Rate
+	 * 
+	 * @return The 3M Maturity Roll Down Swap Rate
+	 */
+
+	public double maturityRollDownSwapRate3M()
+	{
+		return _dbl3MMaturityRollDownSwapRate;
 	}
 
 	/**
@@ -768,11 +770,11 @@ public class ProductDailyPnL {
 
 		lsPnLMetric.add (_dbl1MCarryPnL);
 
-		lsPnLMetric.add (_dbl1MTimeRollPnL);
+		lsPnLMetric.add (_dbl1MMaturityRollDownSwapRatePnL);
 
 		lsPnLMetric.add (_dbl3MCarryPnL);
 
-		lsPnLMetric.add (_dbl3MTimeRollPnL);
+		lsPnLMetric.add (_dbl3MMaturityRollDownSwapRatePnL);
 
 		lsPnLMetric.add (_dblDV01);
 
@@ -788,11 +790,11 @@ public class ProductDailyPnL {
 
 		lsPnLMetric.add (_dbl1DTimeRollSwapRate);
 
-		lsPnLMetric.add (_dbl1MTimeRollSwapRate);
-
-		lsPnLMetric.add (_dbl3MTimeRollSwapRate);
-
 		lsPnLMetric.add (_dbl1DMaturityRollDownSwapRate);
+
+		lsPnLMetric.add (_dbl1MMaturityRollDownSwapRate);
+
+		lsPnLMetric.add (_dbl3MMaturityRollDownSwapRate);
 
 		lsPnLMetric.add (_dbl1DMaturityRollUpSwapRate);
 

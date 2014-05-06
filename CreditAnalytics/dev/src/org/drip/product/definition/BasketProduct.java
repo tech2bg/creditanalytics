@@ -389,7 +389,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		for (int i = 0; i < iNumComp; ++i) {
 			try {
-				dblTotalWeight += (adblWeight[i] = aComp[i].getInitialNotional());
+				dblTotalWeight += (adblWeight[i] = aComp[i].initialNotional());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -405,7 +405,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		return adblWeight;
 	}
 
-	@Override public java.util.Set<java.lang.String> getComponentIRCurveNames()
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
@@ -414,21 +414,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
 
 		for (int i = 0; i < iNumComp; ++i)
-			sIR.add (aComp[i].getIRCurveName());
-
-		return sIR;
-	}
-
-	@Override public java.util.Set<java.lang.String> getComponentEDSFCurveNames()
-	{
-		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
-
-		int iNumComp = aComp.length;
-
-		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
-
-		for (int i = 0; i < iNumComp; ++i)
-			sIR.add (aComp[i].getEDSFCurveName());
+			sIR.add (aComp[i].couponCurrency()[0]);
 
 		return sIR;
 	}
@@ -442,7 +428,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
 
 		for (int i = 0; i < iNumComp; ++i) {
-			java.lang.String[] astrForwardCurveName = aComp[i].getForwardCurveName();
+			java.lang.String[] astrForwardCurveName = aComp[i].forwardCurveName();
 
 			if (null == astrForwardCurveName) continue;
 
@@ -466,7 +452,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		java.util.Set<java.lang.String> sIR = new java.util.HashSet<java.lang.String>();
 
 		for (int i = 0; i < iNumComp; ++i)
-			sIR.add (aComp[i].getTreasuryCurveName());
+			sIR.add (aComp[i].couponCurrency()[0]);
 
 		return sIR;
 	}
@@ -502,7 +488,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		double dblInitialNotional = 0.;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblInitialNotional += aComp[i].getInitialNotional();
+			dblInitialNotional += aComp[i].initialNotional();
 
 		return dblInitialNotional;
 	}
@@ -527,7 +513,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblNotional += aComp[i].getNotional (dblDate);
+			dblNotional += aComp[i].notional (dblDate);
 
 		return dblNotional;
 	}
@@ -554,7 +540,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblNotional += aComp[i].getNotional (dblDate1, dblDate2);
+			dblNotional += aComp[i].notional (dblDate1, dblDate2);
 
 		return dblNotional;
 	}
@@ -586,7 +572,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblCoupon += aComp[i].getCoupon (dblDate, bmp.getComponentMarketParams (aComp[i]));
+			dblCoupon += aComp[i].coupon (dblDate, bmp.getComponentMarketParams (aComp[i]));
 
 		return dblCoupon / dblNotional;
 	}
@@ -603,10 +589,10 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		int iNumComp = aComp.length;
 
-		org.drip.analytics.date.JulianDate dtEffective = aComp[0].getEffectiveDate();
+		org.drip.analytics.date.JulianDate dtEffective = aComp[0].effective();
 
 		for (int i = 1; i < iNumComp; ++i) {
-			org.drip.analytics.date.JulianDate dtCompEffective = aComp[i].getEffectiveDate();
+			org.drip.analytics.date.JulianDate dtCompEffective = aComp[i].effective();
 
 			if (dtCompEffective.getJulian() < dtEffective.getJulian()) dtEffective = dtCompEffective;
 		}
@@ -620,16 +606,16 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 * @return Maturity date of the basket product
 	 */
 
-	public org.drip.analytics.date.JulianDate getMaturityDate()
+	public org.drip.analytics.date.JulianDate maturity()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 
-		org.drip.analytics.date.JulianDate dtMaturity = aComp[0].getMaturityDate();
+		org.drip.analytics.date.JulianDate dtMaturity = aComp[0].maturity();
 
 		for (int i = 1; i < iNumComp; ++i) {
-			org.drip.analytics.date.JulianDate dtCompMaturity = aComp[i].getMaturityDate();
+			org.drip.analytics.date.JulianDate dtCompMaturity = aComp[i].maturity();
 
 			if (dtCompMaturity.getJulian() < dtMaturity.getJulian()) dtMaturity = dtCompMaturity;
 		}
@@ -666,17 +652,17 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 * @return First Coupon Date
 	 */
 
-	public org.drip.analytics.date.JulianDate getFirstCouponDate()
+	public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = getComponents();
 
 		int iNumComp = aComp.length;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = aComp[0].getFirstCouponDate();
+		org.drip.analytics.date.JulianDate dtFirstCoupon = aComp[0].firstCouponDate();
 
 		for (int i = 1; i < iNumComp; ++i) {
-			if (dtFirstCoupon.getJulian() > aComp[i].getFirstCouponDate().getJulian())
-				dtFirstCoupon = aComp[i].getFirstCouponDate();
+			if (dtFirstCoupon.getJulian() > aComp[i].firstCouponDate().getJulian())
+				dtFirstCoupon = aComp[i].firstCouponDate();
 		}
 
 		return dtFirstCoupon;
@@ -787,7 +773,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 * @return BasketOutput object
 	 */
 
-	public org.drip.analytics.output.BasketMeasures calcMeasures (
+	public org.drip.analytics.output.BasketMeasures measures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,

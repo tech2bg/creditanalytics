@@ -363,23 +363,23 @@ public class ShapePreservingDFZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCashComp.length; ++i)
-			System.out.println ("\t[" + aCashComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aCashComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aCashComp[i].calcMeasureValue (
+					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aCashComp[i].calcMeasureValue (
+					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcGloballySmooth, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aCashComp[i].calcMeasureValue (
+					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocallySmooth, null, null, null, null, null, null),
 						null,
@@ -408,23 +408,23 @@ public class ShapePreservingDFZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapComp.length; ++i)
-			System.out.println ("\t[" + aSwapComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aSwapComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aSwapComp[i].calcMeasureValue (
+					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aSwapComp[i].calcMeasureValue (
+					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcGloballySmooth, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aSwapComp[i].calcMeasureValue (
+					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocallySmooth, null, null, null, null, null, null),
 						null,
@@ -456,21 +456,21 @@ public class ShapePreservingDFZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCC.length; ++i)
-			System.out.println ("\t[" + aCC[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aCC[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
+					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
+					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcGloballySmooth, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
+					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocallySmooth, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),

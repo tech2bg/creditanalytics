@@ -359,7 +359,7 @@ public class BondAnalyticsAPI {
 			 * Generates and displays the coupon period details for the bonds
 			 */
 
-			for (Period p : aBond[i].getCashFlowPeriod())
+			for (Period p : aBond[i].cashFlowPeriod())
 				System.out.println (
 					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
@@ -375,8 +375,7 @@ public class BondAnalyticsAPI {
 
 			ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
 				dc,		// Discount curve
-				dcTSY,	// TSY Discount Curve
-				dcTSY,	// EDSF Discount Curve (proxied to TSY Discount Curve
+				dcTSY,	// TSY Discount Curve (Includes Optional EDSF if available, or BILLS etc)
 				cc,		// Credit Curve
 				null,	// TSY quotes
 				null,	// Bond market quote
@@ -504,7 +503,7 @@ public class BondAnalyticsAPI {
 		 * Theoretical Price
 		 */
 
-		double dblTheoreticalPrice = bond.calcPriceFromCreditBasis (valParams, cmp, null, bond.getMaturityDate().getJulian(), 1., 0.01);
+		double dblTheoreticalPrice = bond.calcPriceFromCreditBasis (valParams, cmp, null, bond.maturity().getJulian(), 1., 0.01);
 
 
 		System.out.println ("Credit Price From DC and CC: " + dblTheoreticalPrice);
@@ -564,7 +563,7 @@ public class BondAnalyticsAPI {
 		 * Verify the CDS fair premium using the calibrated credit curve
 		 */
 
-		System.out.println (cds.getPrimaryCode() + " => " + cds.calcMeasureValue (
+		System.out.println (cds.primaryCode() + " => " + cds.measureValue (
 			valParams,
 			PricerParams.MakeStdPricerParams(),
 			cmpCalib,
@@ -575,11 +574,11 @@ public class BondAnalyticsAPI {
 		 * Verify the Bond fair price using the calibrated credit curve
 		 */
 
-		System.out.println (bond.getPrimaryCode() + " => " + bond.calcPriceFromCreditBasis (
+		System.out.println (bond.primaryCode() + " => " + bond.calcPriceFromCreditBasis (
 			valParams,
 			cmpCalib,
 			null,
-			bond.getMaturityDate().getJulian(),
+			bond.maturity().getJulian(),
 			1.,
 			0.));
 	}

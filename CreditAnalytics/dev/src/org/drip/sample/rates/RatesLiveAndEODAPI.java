@@ -107,7 +107,7 @@ public class RatesLiveAndEODAPI {
 		// Display the component named codes and the corresponding quotes
 
 		for (int i = 0; i < aCC.length; ++i)
-			System.out.println (aCC[i].getPrimaryCode() + " => " + dc.manifestMeasure (aCC[i].getPrimaryCode()));
+			System.out.println (aCC[i].primaryCode() + " => " + dc.manifestMeasure (aCC[i].primaryCode()));
 
 		JulianDate dt2 = JulianDate.CreateFromYMD (2012, 1, 17);
 
@@ -143,7 +143,7 @@ public class RatesLiveAndEODAPI {
 		CalibratableFixedIncomeComponent[] aCCCash = dcCash.calibComp();
 
 		for (int i = 0; i < aCCCash.length; ++i)
-			System.out.println (aCCCash[i].getPrimaryCode() + " => " + (int) (10000. * dcCash.manifestMeasure (aCCCash[i].getPrimaryCode())));
+			System.out.println (aCCCash[i].primaryCode() + " => " + (int) (10000. * dcCash.manifestMeasure (aCCCash[i].primaryCode()).get ("Rate")));
 
 		/*
 		 * Load the cash curves available between the dates for the currency specified.
@@ -158,34 +158,34 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcEOD = meCashDC.getValue();
 
-			System.out.println (dt + "[3M] => " + (int) (10000. * dcEOD.manifestMeasure ("3M")));
+			System.out.println (dt + "[3M] => " + (int) (10000. * dcEOD.manifestMeasure ("3M").get ("Rate")));
 		}
 
 		/*
-		 *  Load the closing rates curve built from EDF (futures) instruments for the given date and currency
+		 *  Load the closing rates curve built from EDSF (futures) instruments for the given date and currency
 		 */
 
-		DiscountCurve dcEDF = CreditAnalytics.LoadEODEDFCurve ("EUR", dt1);
+		DiscountCurve dcTSY = CreditAnalytics.LoadEODEDSFCurve ("EUR", dt1);
 
 		// Discount factor for the Closing EDF curve
 
-		if (null != dcEDF) System.out.println ("DF (2021, 1, 14): " + dcEDF.df (JulianDate.CreateFromYMD (2021, 1, 14)));
+		if (null != dcTSY) System.out.println ("DF (2021, 1, 14): " + dcTSY.df (JulianDate.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
-		if (null != dcEDF) {
-			CalibratableFixedIncomeComponent[] aCCEDF = dcEDF.calibComp();
+		if (null != dcTSY) {
+			CalibratableFixedIncomeComponent[] aCCEDF = dcTSY.calibComp();
 
 			for (int i = 0; i < aCCEDF.length; ++i)
-				System.out.println (aCCEDF[i].getPrimaryCode() + " => " +
-					(int) (10000. * dcEDF.manifestMeasure (aCCEDF[i].getPrimaryCode())));
+				System.out.println (aCCEDF[i].primaryCode() + " => " +
+					(int) (10000. * dcTSY.manifestMeasure (aCCEDF[i].primaryCode()).get ("Rate")));
 		}
 
 		/*
 		 * Load the EDF curves available between the dates for the currency specified.
 		 */
 
-		Map<JulianDate, DiscountCurve> mapEDFDC = CreditAnalytics.LoadEODEDFCurves ("EUR", dt1, dt2);
+		Map<JulianDate, DiscountCurve> mapEDFDC = CreditAnalytics.LoadEODEDSFCurves ("EUR", dt1, dt2);
 
 		// Navigate through them, and display the EDZ3 EDF rate
 
@@ -194,7 +194,7 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcEOD = meEDFDC.getValue();
 
-			System.out.println (dt + "[EDZ3] => " + (int) (10000. * dcEOD.manifestMeasure ("EDZ3")));
+			System.out.println (dt + "[EDZ3] => " + (int) (10000. * dcEOD.manifestMeasure ("EDZ3").get ("Rate")));
 		}
 
 		/*
@@ -212,8 +212,8 @@ public class RatesLiveAndEODAPI {
 		CalibratableFixedIncomeComponent[] aCCIRS = dcIRS.calibComp();
 
 		for (int i = 0; i < aCCIRS.length; ++i)
-			System.out.println (aCCIRS[i].getPrimaryCode() + " => " +
-				(int) (10000. * dcIRS.manifestMeasure (aCCIRS[i].getPrimaryCode())));
+			System.out.println (aCCIRS[i].primaryCode() + " => " +
+				(int) (10000. * dcIRS.manifestMeasure (aCCIRS[i].primaryCode()).get ("Rate")));
 
 		/*
 		 * Load all the Closing IRS curves available between the dates for the currency specified.
@@ -244,7 +244,7 @@ public class RatesLiveAndEODAPI {
 		 *  Load the closing rates curve built from TSY bond instruments for the given date and currency
 		 */
 
-		DiscountCurve dcTSY = CreditAnalytics.LoadEODTSYCurve ("USD", dt1);
+		dcTSY = CreditAnalytics.LoadEODTSYCurve ("USD", dt1);
 
 		// Discount factor for the Closing TSY curve
 
@@ -255,8 +255,8 @@ public class RatesLiveAndEODAPI {
 		CalibratableFixedIncomeComponent[] aCompTSY = dcTSY.calibComp();
 
 		for (int i = 0; i < aCompTSY.length; ++i)
-			System.out.println (aCompTSY[i].getPrimaryCode() + " => " + (int)
-				(10000. * dcTSY.manifestMeasure (aCompTSY[i].getPrimaryCode())));
+			System.out.println (aCompTSY[i].primaryCode() + " => " + (int)
+				(10000. * dcTSY.manifestMeasure (aCompTSY[i].primaryCode()).get ("Rate")));
 
 		/*
 		 * Load all the Closing TSY curves available between the dates for the currency specified.
@@ -271,7 +271,7 @@ public class RatesLiveAndEODAPI {
 
 			DiscountCurve dcTSYEOD = meTSYDC.getValue();
 
-			System.out.println (dt + "[5Y] => " + (int) (10000. * dcTSYEOD.manifestMeasure ("5Y")));
+			System.out.println (dt + "[5Y] => " + (int) (10000. * dcTSYEOD.manifestMeasure ("5Y").get ("Rate")));
 		}
 	}
 

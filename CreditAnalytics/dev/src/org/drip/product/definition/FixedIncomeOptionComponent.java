@@ -32,7 +32,7 @@ package org.drip.product.definition;
  * FixedIncomeOptionComponent extends ComponentMarketParamRef and provides the following methods:
  *  - Get the component's initial notional, notional, and coupon.
  *  - Get the Effective date, Maturity date, First Coupon Date.
- *  - Set the market curves - discount, TSY, forward, Credit, and EDSF curves.
+ *  - Set the market curves - discount, TSY, forward, and Credit curves.
  *  - Retrieve the component's settlement parameters.
  *  - Value the component using standard/custom market parameters.
  *  - Retrieve the component's named measures and named measure values.
@@ -148,7 +148,7 @@ public abstract class FixedIncomeOptionComponent implements
 
 	public org.drip.analytics.date.JulianDate exercise()
 	{
-		return _comp.getEffectiveDate();
+		return _comp.effective();
 	}
 
 	/**
@@ -178,29 +178,14 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.componentName();
 	}
 
-	@Override public java.lang.String getIRCurveName()
+	@Override public java.lang.String[] forwardCurveName()
 	{
-		return _comp.getIRCurveName();
-	}
-
-	@Override public java.lang.String[] getForwardCurveName()
-	{
-		return _comp.getForwardCurveName();
+		return _comp.forwardCurveName();
 	}
 
 	@Override public java.lang.String creditCurveName()
 	{
 		return _comp.creditCurveName();
-	}
-
-	@Override public java.lang.String getTreasuryCurveName()
-	{
-		return _comp.getTreasuryCurveName();
-	}
-
-	@Override public java.lang.String getEDSFCurveName()
-	{
-		return _comp.getEDSFCurveName();
 	}
 
 	/**

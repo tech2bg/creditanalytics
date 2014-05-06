@@ -445,23 +445,23 @@ public class FRAStdOptionVolAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		FloatingRateIndex fri = FloatingRateIndex.Create (fra.getForwardCurveName()[0]);
+		FloatingRateIndex fri = FloatingRateIndex.Create (fra.forwardCurveName()[0]);
 
-		JulianDate dtForward = fra.getEffectiveDate();
+		JulianDate dtForward = fra.effective();
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			fri.fullyQualifiedName(),
 			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
@@ -471,7 +471,7 @@ public class FRAStdOptionVolAnalysis {
 
 		String strManifestMeasure = "QuantoAdjustedParForward";
 
-		String strCurrency = fra.getIRCurveName();
+		String strCurrency = fra.couponCurrency()[0];
 
 		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
 
@@ -556,7 +556,7 @@ public class FRAStdOptionVolAnalysis {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

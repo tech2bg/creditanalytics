@@ -38,7 +38,7 @@ package org.drip.product.rates;
  *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
  *  - Coupon/Notional Outstanding as well as schedules
  *  - Retrieve the constituent fixed and floating streams
- *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Market Parameters: Discount, Forward, Credit, Treasury Curves
  *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
  *  - Valuation: Named Measure Generation
  *  - Calibration: The codes and constraints generation
@@ -131,7 +131,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			_floatStream = new org.drip.product.rates.FloatingStream (astrField[2].getBytes());
 	}
 
-	@Override public java.lang.String getPrimaryCode()
+	@Override public java.lang.String primaryCode()
 	{
 		return _strCode;
 	}
@@ -144,65 +144,102 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 	@Override public java.lang.String componentName()
 	{
-		return "IRS=" + getMaturityDate();
+		return "IRS=" + maturity();
 	}
 
-	@Override public java.lang.String getTreasuryCurveName()
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
-		return "";
+		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
+
+		setCcy.addAll (_fixStream.cashflowCurrencySet());
+
+		setCcy.addAll (_floatStream.cashflowCurrencySet());
+
+		return setCcy;
 	}
 
-	@Override public java.lang.String getEDSFCurveName()
+	@Override public java.lang.String[] couponCurrency()
 	{
-		return "";
+		java.lang.String[] astrReferenceCouponCurrency = _fixStream.couponCurrency();
+
+		java.lang.String[] astrDerivedCouponCurrency = _floatStream.couponCurrency();
+
+		int iNumReferenceCouponCurrency = null == astrReferenceCouponCurrency ? 0 :
+			astrReferenceCouponCurrency.length;
+		int iNumDerivedCouponCurrency = null == astrDerivedCouponCurrency ? 0 :
+			astrDerivedCouponCurrency.length;
+		int iNumCouponCurrency = iNumReferenceCouponCurrency + iNumDerivedCouponCurrency;
+
+		if (0 == iNumCouponCurrency) return null;
+
+		java.lang.String[] astrCouponCurrency = new java.lang.String[iNumCouponCurrency];
+
+		for (int i = 0; i < iNumReferenceCouponCurrency; ++i)
+			astrCouponCurrency[i] = astrReferenceCouponCurrency[i];
+
+		for (int i = iNumReferenceCouponCurrency; i < iNumCouponCurrency; ++i)
+			astrCouponCurrency[i] = astrDerivedCouponCurrency[i - iNumReferenceCouponCurrency];
+
+		return astrCouponCurrency;
 	}
 
-	@Override public double getInitialNotional()
+	@Override public java.lang.String[] principalCurrency()
+	{
+		java.lang.String[] astrReferencePrincipalCurrency = _fixStream.principalCurrency();
+
+		java.lang.String[] astrDerivedPrincipalCurrency = _floatStream.principalCurrency();
+
+		int iNumReferencePrincipalCurrency = null == astrReferencePrincipalCurrency ? 0 :
+			astrReferencePrincipalCurrency.length;
+		int iNumDerivedPrincipalCurrency = null == astrDerivedPrincipalCurrency ? 0 :
+			astrDerivedPrincipalCurrency.length;
+		int iNumPrincipalCurrency = iNumReferencePrincipalCurrency + iNumDerivedPrincipalCurrency;
+
+		if (0 == iNumPrincipalCurrency) return null;
+
+		java.lang.String[] astrPrincipalCurrency = new java.lang.String[iNumPrincipalCurrency];
+
+		for (int i = 0; i < iNumReferencePrincipalCurrency; ++i)
+			astrPrincipalCurrency[i] = astrReferencePrincipalCurrency[i];
+
+		for (int i = iNumReferencePrincipalCurrency; i < iNumPrincipalCurrency; ++i)
+			astrPrincipalCurrency[i] = astrDerivedPrincipalCurrency[i - iNumReferencePrincipalCurrency];
+
+		return astrPrincipalCurrency;
+	}
+
+	@Override public double initialNotional()
 		throws java.lang.Exception
 	{
-		return _fixStream.getInitialNotional();
+		return _fixStream.initialNotional();
 	}
 
-	@Override public double getNotional (
+	@Override public double notional (
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		return _fixStream.getNotional (dblDate);
+		return _fixStream.notional (dblDate);
 	}
 
-	@Override public double getNotional (
+	@Override public double notional (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		return _fixStream.getNotional (dblDate1, dblDate2);
+		return _fixStream.notional (dblDate1, dblDate2);
 	}
 
-	@Override public boolean setCurves (
-		final java.lang.String strIR,
-		final java.lang.String strIRTSY,
-		final java.lang.String strCC)
-	{
-		return _fixStream.setCurves (strIR, strIRTSY, strCC) && _floatStream.setCurves (strIR, strIRTSY,
-			strCC);
-	}
-
-	@Override public double getCoupon (
+	@Override public double coupon (
 		final double dblValue,
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 		throws java.lang.Exception
 	{
-		return _fixStream.getCoupon (dblValue, mktParams);
+		return _fixStream.coupon (dblValue, mktParams);
 	}
 
-	@Override public java.lang.String getIRCurveName()
+	@Override public java.lang.String[] forwardCurveName()
 	{
-		return _floatStream.getIRCurveName();
-	}
-
-	@Override public java.lang.String[] getForwardCurveName()
-	{
-		return _floatStream.getForwardCurveName();
+		return _floatStream.forwardCurveName();
 	}
 
 	@Override public java.lang.String creditCurveName()
@@ -210,33 +247,33 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return "";
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getEffectiveDate()
+	@Override public org.drip.analytics.date.JulianDate effective()
 	{
-		org.drip.analytics.date.JulianDate dtFixEffective = _fixStream.getEffectiveDate();
+		org.drip.analytics.date.JulianDate dtFixEffective = _fixStream.effective();
 
-		org.drip.analytics.date.JulianDate dtFloatEffective = _floatStream.getEffectiveDate();
+		org.drip.analytics.date.JulianDate dtFloatEffective = _floatStream.effective();
 
 		if (null == dtFixEffective || null == dtFloatEffective) return null;
 
 		return dtFixEffective.getJulian() < dtFloatEffective.getJulian() ? dtFixEffective : dtFloatEffective;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getMaturityDate()
+	@Override public org.drip.analytics.date.JulianDate maturity()
 	{
-		org.drip.analytics.date.JulianDate dtFixMaturity = _fixStream.getMaturityDate();
+		org.drip.analytics.date.JulianDate dtFixMaturity = _fixStream.maturity();
 
-		org.drip.analytics.date.JulianDate dtFloatMaturity = _floatStream.getMaturityDate();
+		org.drip.analytics.date.JulianDate dtFloatMaturity = _floatStream.maturity();
 
 		if (null == dtFixMaturity || null == dtFloatMaturity) return null;
 
 		return dtFixMaturity.getJulian() > dtFloatMaturity.getJulian() ? dtFixMaturity : dtFloatMaturity;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getFirstCouponDate()
+	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
-		org.drip.analytics.date.JulianDate dtFixFirstCoupon = _fixStream.getFirstCouponDate();
+		org.drip.analytics.date.JulianDate dtFixFirstCoupon = _fixStream.firstCouponDate();
 
-		org.drip.analytics.date.JulianDate dtFloatFirstCoupon = _floatStream.getFirstCouponDate();
+		org.drip.analytics.date.JulianDate dtFloatFirstCoupon = _floatStream.firstCouponDate();
 
 		if (null == dtFixFirstCoupon || null == dtFloatFirstCoupon) return null;
 
@@ -244,15 +281,15 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			dtFloatFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
-		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixStream.getCashFlowPeriod(),
-			_floatStream.getCashFlowPeriod());
+		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixStream.cashFlowPeriod(),
+			_floatStream.cashFlowPeriod());
 	}
 
-	@Override public org.drip.param.valuation.CashSettleParams getCashSettleParams()
+	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
 	{
-		return _fixStream.getCashSettleParams();
+		return _fixStream.cashSettleParams();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -339,14 +376,14 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		double dblValueNotional = java.lang.Double.NaN;
 
 		try {
-			dblValueNotional = getNotional (dblValueDate);
+			dblValueNotional = notional (dblValueDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		try {
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
-				double dblCleanPrice = 100. * (1. + (dblCleanPV / getInitialNotional() / dblValueNotional));
+				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
 				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
@@ -354,14 +391,14 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				mapResult.put ("CleanPrice", dblCleanPrice);
 
-				double dblStartDate = getEffectiveDate().getJulian();
+				double dblStartDate = effective().getJulian();
 
 				mapResult.put ("CalibSwapRatePV", (dc.df (dblStartDate > dblValueDate ? dblStartDate :
-					dblValueDate) - dc.df (getMaturityDate())));
+					dblValueDate) - dc.df (maturity())));
 
 				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > dblValueDate ? dblStartDate :
-					dblValueDate) - dc.df (getMaturityDate())) / dblFixedCleanDV01 * getNotional
-						(dblValueDate) * 0.0001);
+					dblValueDate) - dc.df (maturity())) / dblFixedCleanDV01 * notional (dblValueDate)
+						* 0.0001);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -374,7 +411,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return mapResult;
 	}
 
-	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	@Override public java.util.Set<java.lang.String> measureNames()
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
@@ -471,7 +508,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == jackDDirtyPVDManifestMeasureIRS) {
 			try {
-				dblNotionalScaleDown = 1. / getInitialNotional();
+				dblNotionalScaleDown = 1. / initialNotional();
 
 				jackDDirtyPVDManifestMeasureIRS = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
 			} catch (java.lang.Exception e) {
@@ -491,20 +528,21 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return jackDDirtyPVDManifestMeasureIRS;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
-		final java.lang.String strQuote,
+	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= getMaturityDate().getJulian() || null == strQuote ||
-			null == mktParams || null == mktParams.fundingCurve())
+		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
+			strManifestMeasure || null == mktParams || null == mktParams.fundingCurve())
 			return null;
 
-		if ("Rate".equalsIgnoreCase (strQuote) || "SwapRate".equalsIgnoreCase (strQuote)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
-				pricerParams, mktParams, quotingParams);
+		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
+		{
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
+				(valParams, pricerParams, mktParams, quotingParams);
 
 			if (null == mapMeasures) return null;
 
@@ -517,7 +555,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
-				for (org.drip.analytics.period.Period p : getCashFlowPeriod()) {
+				for (org.drip.analytics.period.Period p : cashFlowPeriod()) {
 					double dblPeriodPayDate = p.getPayDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
@@ -539,7 +577,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
-					double dblPeriodNotional = getNotional (p.getStartDate(), p.getEndDate());
+					double dblPeriodNotional = notional (p.getStartDate(), p.getEndDate());
 
 					double dblPeriodDCF = p.getCouponDCF();
 
@@ -563,6 +601,78 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	private boolean generateFixedLegPRWC (
+		final double dblValueDate,
+		final double dblInitialDate,
+		final org.drip.analytics.rates.RatesLSMM ratesLSMM,
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prwc)
+	{
+		boolean bFirstPeriod = true;
+
+		// double dblMaturityDate = maturity().getJulian();
+
+		org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
+
+		try {
+			for (org.drip.analytics.period.CashflowPeriod period : _fixStream.cashFlowPeriod()) {
+				if (null == period) continue;
+
+				double dblPayDate = period.getPayDate();
+
+				if (dblValueDate > dblPayDate) continue;
+
+				double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
+					dblPayDate);
+
+				double dblPeriodDCF = period.getCouponDCF();
+
+				if (bFirstPeriod) {
+					bFirstPeriod = false;
+
+					if (dblValueDate > period.getStartDate())
+						dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
+				}
+
+				double dblPay01 = dblPeriodDCF * dblPeriodTurnDF;
+
+				if (!prwc.addPredictorResponseWeight (dblPayDate, ratesLSMM.getMeasureQuoteValue ("Rate") *
+					dblPay01) || !prwc.addDResponseWeightDManifestMeasure ("Rate", dblPayDate, dblPay01))
+					return false;
+			}
+
+			return true;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	private boolean generateFloatingLegPRWC (
+		final double dblValueDate,
+		final double dblInitialDate,
+		final org.drip.analytics.rates.RatesLSMM ratesLSMM,
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prwc)
+	{
+		double dblMaturityDate = maturity().getJulian();
+
+		org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
+
+		try {
+			double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
+				dblMaturityDate);
+
+			return prwc.addPredictorResponseWeight (dblInitialDate, -1.) &&
+				prwc.addPredictorResponseWeight (dblMaturityDate, dblPeriodMaturityDF) &&
+					prwc.addDResponseWeightDManifestMeasure ("Rate", dblInitialDate, 0.) &&
+						prwc.addDResponseWeightDManifestMeasure ("Rate", dblMaturityDate, 0.);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -576,70 +686,43 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblMaturityDate = getMaturityDate().getJulian();
+		double dblMaturityDate = maturity().getJulian();
 
 		if (dblValueDate >= dblMaturityDate) return null;
 
-		double dblEffectiveDate = getEffectiveDate().getJulian();
+		double dblEffectiveDate = effective().getJulian();
 
-		boolean bFirstPeriod = true;
+		double dblUpfront = 0.;
 		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
 		double dblInitialDate = dblEffectiveDate > dblValueDate ? dblEffectiveDate : dblValueDate;
 
-		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(ratesLSMM.getQuantificationMetric())) {
-			if (org.drip.quant.common.StringUtil.MatchInStringArray (ratesLSMM.getManifestMeasures(), new
-				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
-				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
-					org.drip.state.estimator.PredictorResponseWeightConstraint();
+		java.lang.String[] astrManifestMeasure = ratesLSMM.getManifestMeasures();
 
-				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
+		if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new java.lang.String[]
+			{"Upfront"}, false)) {
+			try {
+				dblUpfront = ratesLSMM.getMeasureQuoteValue ("Upfront");
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
 
-				try {
-					for (org.drip.analytics.period.CashflowPeriod period : _fixStream.getCashFlowPeriod()) {
-						if (null == period) continue;
-
-						double dblPayDate = period.getPayDate();
-
-						if (dblValueDate > dblPayDate) continue;
-
-						double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
-							dblPayDate);
-
-						double dblPeriodDCF = period.getCouponDCF();
-
-						if (bFirstPeriod) {
-							bFirstPeriod = false;
-
-							if (dblValueDate > period.getStartDate())
-								dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
-						}
-
-						double dblPay01 = dblPeriodDCF * dblPeriodTurnDF;
-
-						if (!prlc.addPredictorResponseWeight (dblPayDate, ratesLSMM.getMeasureQuoteValue() *
-							dblPay01) || !prlc.addDResponseWeightDManifestMeasure ("Rate", dblPayDate,
-								dblPay01))
-							return null;
-					}
-
-					double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
-						dblMaturityDate);
-
-					return prlc.addPredictorResponseWeight (dblInitialDate, -1.) &&
-						prlc.addPredictorResponseWeight (dblMaturityDate, dblPeriodMaturityDF) &&
-							prlc.addDResponseWeightDManifestMeasure ("Rate", dblInitialDate, 0.) &&
-								prlc.addDResponseWeightDManifestMeasure ("Rate", dblMaturityDate, 0.) ? prlc
-									: null;
-				} catch (java.lang.Exception e) {
-					e.printStackTrace();
-
-					return null;
-				}
+				return null;
 			}
 		}
 
-		return null;
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			(ratesLSMM.getQuantificationMetric())) {
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
+				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
+				if (!generateFixedLegPRWC (dblValueDate, dblInitialDate, ratesLSMM, prwc)) return null;
+
+				if (!generateFloatingLegPRWC (dblValueDate, dblInitialDate, ratesLSMM, prwc)) return null;
+			}
+		}
+
+		return prwc.updateValue (dblUpfront) ? prwc : null;
 	}
 
 	@Override public java.lang.String getFieldDelimiter()

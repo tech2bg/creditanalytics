@@ -480,23 +480,23 @@ public class FRAStdOption {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			fri.fullyQualifiedName(),
 			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
 			new AndersenPiterbargMeanReverter (

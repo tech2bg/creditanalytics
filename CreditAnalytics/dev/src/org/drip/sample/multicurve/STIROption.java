@@ -491,23 +491,23 @@ public class STIROption {
 		STIRFutureComponent stir = CreateSTIR (dtForward, "5Y", fri, 0.05, strCurrency);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			stir.componentName() + "SwapRateVolatility",
 			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			stir.componentName() + "SwapRateExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			stir.componentName() + "SwapRateToSwapRateExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)

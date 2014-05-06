@@ -90,8 +90,6 @@ public class BondStaticAPI {
 
 		System.out.println ("Description: " + CreditAnalytics.GetBondStringField (strBondISIN, "Description"));
 
-		System.out.println ("EDSFCurve: " + CreditAnalytics.GetBondStringField (strBondISIN, "EDSFCurve"));
-
 		System.out.println ("ExchangeCode: " + CreditAnalytics.GetBondStringField (strBondISIN, "ExchangeCode"));
 
 		System.out.println ("Fitch: " + CreditAnalytics.GetBondStringField (strBondISIN, "Fitch"));

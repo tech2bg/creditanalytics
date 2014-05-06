@@ -74,7 +74,6 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 	@Override public boolean cookScenarioDC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
@@ -92,8 +91,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 			return false;
 		}
 
-		if (null == (_dcBase = _irsg.createIRCurve (valParams, dcTSY, dcEDSF, adblQuotes, 0.,
-			astrCalibMeasure, mmFixings, quotingParams))) {
+		if (null == (_dcBase = _irsg.createIRCurve (valParams, dcTSY, adblQuotes, 0., astrCalibMeasure,
+			mmFixings, quotingParams))) {
 			if (s_bBlog)
 				System.out.println ("Base DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
 
@@ -101,7 +100,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		}
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_FLAT_UP & iDCMode)) {
-			if (null == (_dcBumpUp = _irsg.createIRCurve (valParams, dcTSY, dcEDSF, adblQuotes, dblBump,
+			if (null == (_dcBumpUp = _irsg.createIRCurve (valParams, dcTSY, adblQuotes, dblBump,
 				astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
@@ -112,7 +111,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		}
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_FLAT_DN & iDCMode)) {
-			if (null == (_dcBumpDn = _irsg.createIRCurve (valParams, dcTSY, dcEDSF, adblQuotes, -dblBump,
+			if (null == (_dcBumpDn = _irsg.createIRCurve (valParams, dcTSY, adblQuotes, -dblBump,
 				astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
@@ -123,8 +122,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		}
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_TENOR_UP & iDCMode)) {
-			if (null == (_mapDCBumpUp = _irsg.createTenorIRCurveMap (valParams, dcTSY, dcEDSF, adblQuotes,
-				dblBump, astrCalibMeasure, mmFixings, quotingParams))) {
+			if (null == (_mapDCBumpUp = _irsg.createTenorIRCurveMap (valParams, dcTSY, adblQuotes, dblBump,
+				astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
 						("Partial bump up DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
@@ -134,8 +133,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		}
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_TENOR_DN & iDCMode)) {
-			if (null == (_mapDCBumpDn = _irsg.createTenorIRCurveMap (valParams, dcTSY, dcEDSF, adblQuotes,
-				-dblBump, astrCalibMeasure, mmFixings, quotingParams))) {
+			if (null == (_mapDCBumpDn = _irsg.createTenorIRCurveMap (valParams, dcTSY, adblQuotes, -dblBump,
+				astrCalibMeasure, mmFixings, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
 						("Partial bump dn DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
@@ -152,34 +151,26 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		final java.lang.String strCustomName,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpTSY,
-		final org.drip.param.definition.ResponseValueTweakParams mmtpEDSF,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpDC)
 	{
 		if (null == strCustomName || strCustomName.isEmpty() || null == _irsg || null == adblQuotes || 0 ==
 			adblQuotes.length || null == astrCalibMeasure || 0 == astrCalibMeasure.length ||
-				astrCalibMeasure.length != adblQuotes.length || (null == mmtpTSY && null == mmtpEDSF && null
-					== mmtpDC))
+				astrCalibMeasure.length != adblQuotes.length || (null == mmtpTSY && null == mmtpDC))
 			return false;
 
 		org.drip.analytics.rates.DiscountCurve dcTSYAdj = (org.drip.analytics.rates.DiscountCurve)
-			dcTSY.customTweakManifestMeasure (mmtpTSY);
+			dcTSY.customTweakManifestMeasure ("Rate", mmtpTSY);
 
 		if (null == dcTSYAdj) dcTSYAdj = dcTSY;
 
-		org.drip.analytics.rates.DiscountCurve dcEDSFAdj = (org.drip.analytics.rates.DiscountCurve)
-			dcEDSF.customTweakManifestMeasure (mmtpEDSF);
-
-		if (null == dcEDSFAdj) dcEDSFAdj = dcEDSF;
-
 		org.drip.analytics.rates.DiscountCurve dcBaseCustom = _irsg.createIRCurve (valParams, dcTSYAdj,
-			dcEDSFAdj, adblQuotes, 0., astrCalibMeasure, mmFixings, quotingParams);
+			adblQuotes, 0., astrCalibMeasure, mmFixings, quotingParams);
 
 		if (null == dcBaseCustom) return false;
 
@@ -188,7 +179,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 		org.drip.analytics.rates.DiscountCurve dcCustom = (org.drip.analytics.rates.DiscountCurve)
-			dcBaseCustom.customTweakManifestMeasure (mmtpDC);
+			dcBaseCustom.customTweakManifestMeasure ("Rate", mmtpDC);
 
 		if (null == dcCustom)
 			_mapCustomDC.put (strCustomName, dcBaseCustom);

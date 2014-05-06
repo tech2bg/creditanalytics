@@ -33,7 +33,7 @@ package org.drip.product.definition;
 
 /**
  * ComponentMarketParamRef interface provides stubs for component name, IR curve, forward curve, credit
- *  curve, TSY curve, and EDSF curve needed to value the component.
+ *  curve, TSY curve, and needed to value the component.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -49,20 +49,36 @@ public interface ComponentMarketParamRef {
 	public abstract java.lang.String componentName();
 
 	/**
-	 * Get the IR curve name
+	 * Get the Cash Flow Currency Set
 	 * 
-	 * @return The IR curve name
+	 * @return The Cash Flow Currency Set
 	 */
 
-	public abstract java.lang.String getIRCurveName();
+	public abstract java.util.Set<java.lang.String> cashflowCurrencySet();
 
 	/**
-	 * Get the Forward Curve Names
+	 * Get the Coupon Currency
+	 * 
+	 * @return The Coupon Currency
+	 */
+
+	public abstract java.lang.String[] couponCurrency();
+
+	/**
+	 * Get the Principal Currency
+	 * 
+	 * @return The Principal Currency
+	 */
+
+	public abstract java.lang.String[] principalCurrency();
+
+	/**
+	 * Get the Array of Forward Curve Names
 	 * 
 	 * @return Array of the Forward Curve Names
 	 */
 
-	public abstract java.lang.String[] getForwardCurveName();
+	public abstract java.lang.String[] forwardCurveName();
 
 	/**
 	 * Get the credit curve name
@@ -71,20 +87,4 @@ public interface ComponentMarketParamRef {
 	 */
 
 	public abstract java.lang.String creditCurveName();
-
-	/**
-	 * Get the treasury curve name
-	 * 
-	 * @return The treasury curve name
-	 */
-
-	public abstract java.lang.String getTreasuryCurveName();
-
-	/**
-	 * Get the EDSF curve name
-	 * 
-	 * @return The EDSF curve name
-	 */
-
-	public abstract java.lang.String getEDSFCurveName();
 }

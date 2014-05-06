@@ -34,8 +34,8 @@ package org.drip.param.definition;
 /**
  * ComponentMarketParams abstract class provides stub for the ComponentMarketParamsRef interface. It serves
  *  as a place holder for the market parameters needed to value the component object – the discount curve,
- *  the forward curve, the treasury curve, the EDSF curve, the credit curve, the component quote, the
- *  treasury quote map, and the fixings map.
+ *  the forward curve, the treasury curve, the credit curve, the component quote, the treasury quote map, and
+ *  the fixings map.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -81,99 +81,47 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.analytics.rates.DiscountCurve dcFunding);
 
 	/**
-	 * Retrieve the Component's Domestic Collateral Curve
+	 * Retrieve the Discount Curve associated with the Pay Cash-flow Collateralized using a different
+	 * 	Collateral Currency Numeraire 
 	 * 
-	 * @return Component's Domestic Collateral Curve
+	 * @param strPayCurrency The Pay Currency
+	 * @param strCollateralCurrency The Collateral Currency
+	 * 
+	 * @return The Discount Curve associated with the Pay Cash-flow Collateralized using a different
+	 * 	Collateral Currency Numeraire
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve domesticCollateralCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve payCurrencyCollateralCurrencyCurve (
+		final java.lang.String strPayCurrency,
+		final java.lang.String strCollateralCurrency);
 
 	/**
-	 * (Re)-set the Component's Domestic Collateral Curve
+	 * Set the Discount Curve associated with the Pay Cash-flow Collateralized using a different
+	 * 	Collateral Currency Numeraire
 	 * 
-	 * @param dcDomesticCollateral Component's Domestic Collateral Curve
+	 * @param strPayCurrency The Pay Currency
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param dcPayCurrencyCollateralCurrency The Discount Curve associated with the Pay Cash-flow
+	 *  Collateralized using a different Collateral Currency Numeraire
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setDomesticCollateralCurve (
-		final org.drip.analytics.rates.DiscountCurve dcDomesticCollateral);
+	public abstract boolean setPayCurrencyCollateralCurrencyCurve (
+		final java.lang.String strPayCurrency,
+		final java.lang.String strCollateralCurrency,
+		final org.drip.analytics.rates.DiscountCurve dcPayCurrencyCollateralCurrency);
 
 	/**
-	 * Retrieve the Component's Foreign Collateral Curve
+	 * Retrieve the Collateral Choice Discount Curve for the specified Pay Currency
 	 * 
-	 * @return Component's Foreign Collateral Curve
-	 */
-
-	public abstract org.drip.analytics.rates.DiscountCurve foreignCollateralCurve (
-		final java.lang.String strCurrency);
-
-	/**
-	 * (Re)-set the Component's Foreign Collateral Curve
-	 * 
-	 * @param strCurrency Component's Foreign Collateral Currency
-	 * @param dcForeignCollateral Component's Foreign Collateral Curve
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setForeignCollateralCurve (
-		final java.lang.String strCurrency,
-		final org.drip.analytics.rates.DiscountCurve dcForeignCollateral);
-
-	/**
-	 * Retrieve the Component's Domestic Currency Collateralized in Foreign Collateral Curve
-	 * 
-	 * @return Component's Domestic Currency Collateralized in Foreign Collateral Curve
-	 */
-
-	public abstract org.drip.analytics.rates.DiscountCurve domesticCurrencyForeignCollateralCurve (
-		final java.lang.String strCurrency);
-
-	/**
-	 * (Re)-set the Component's Domestic Currency Collateralized in Foreign Collateral Curve
-	 * 
-	 * @param strCurrency Component's Foreign Collateral Currency
-	 * @param dcDomesticCurrencyForeignCollateral Component's Domestic Currency Collateralized in Foreign
-	 * 	Collateral Curve
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setDomesticCurrencyForeignCollateralCurve (
-		final java.lang.String strCurrency,
-		final org.drip.analytics.rates.DiscountCurve dcDomesticCurrencyForeignCollateral);
-
-	/**
-	 * Retrieve the Component's Foreign Currency Collateralized in Domestic Collateral Curve
-	 * 
-	 * @return Component's Foreign Currency Collateralized in Domestic Collateral Curve
-	 */
-
-	public abstract org.drip.analytics.rates.DiscountCurve foreignCurrencyDomesticCollateralCurve (
-		final java.lang.String strCurrency);
-
-	/**
-	 * (Re)-set the Component's Foreign Currency Collateralized in Domestic Collateral Curve
-	 * 
-	 * @param strCurrency Component's Foreign Collateral Currency
-	 * @param dcForeignCurrencyDomesticCollateral Component's Foreign Currency Collateralized in Domestic
-	 * 	Collateral Curve
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setForeignCurrencyDomesticCollateralCurve (
-		final java.lang.String strCurrency,
-		final org.drip.analytics.rates.DiscountCurve dcForeignCurrencyDomesticCollateral);
-
-	/**
-	 * Retrieve the Component's Collateral Choice Discount Curve
+	 * @param strPayCurrency The Pay Currency
 	 * 
 	 * @return Component's Collateral Choice Discount Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve collateralChoiceDiscountCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve collateralChoiceDiscountCurve (
+		final java.lang.String strPayCurrency);
 
 	/**
 	 * (Re)-set the Component Forward Curve
@@ -203,7 +151,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component Government Funding Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve fundingCurveGovvie();
+	public abstract org.drip.analytics.rates.DiscountCurve govvieFundingCurve();
 
 	/**
 	 * (Re)-set the Component Government Discount Curve
@@ -213,27 +161,8 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setfundingCurveGovvie (
+	public abstract boolean setGovvieFundingCurve (
 		final org.drip.analytics.rates.DiscountCurve dcTSY);
-
-	/**
-	 * Retrieve the Component Futures Funding Curve
-	 * 
-	 * @return Component Futures Funding Curve
-	 */
-
-	public abstract org.drip.analytics.rates.DiscountCurve futuresFundingCurve();
-
-	/**
-	 * (Re)-set the Component Futures Funding Curve
-	 * 
-	 * @param dcFutures Component Futures Funding Curve
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setFuturesFundingCurve (
-		final org.drip.analytics.rates.DiscountCurve dcFutures);
 
 	/**
 	 * Retrieve the Component Quote
@@ -262,7 +191,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
-			getTSYBenchmarkQuotes();
+			benchmarkTSYQuotes();
 
 	/**
 	 * Retrieve the Fixings
@@ -271,7 +200,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 */
 
 	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> getFixings();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixings();
 
 	/**
 	 * (Re)-set the Fixings
@@ -294,8 +223,8 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return The Latent State Volatility Surface
 	 */
 
-	public abstract org.drip.quant.function1D.AbstractUnivariate getLatentStateVolSurface (
-		final java.lang.String strFRI,
+	public abstract org.drip.quant.function1D.AbstractUnivariate volSurface (
+		final java.lang.String strLatentState,
 		final org.drip.analytics.date.JulianDate dtForward);
 
 	/**
@@ -308,7 +237,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setLatentStateVolSurface (
+	public abstract boolean setVolSurface (
 		final java.lang.String strLatentState,
 		final org.drip.analytics.date.JulianDate dtForward,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
@@ -319,7 +248,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	 * @return Component's FX Curve
 	 */
 
-	public abstract org.drip.quant.function1D.AbstractUnivariate getFXCurve (
+	public abstract org.drip.quant.function1D.AbstractUnivariate fxCurve (
 		final java.lang.String strFXCode);
 
 	/**

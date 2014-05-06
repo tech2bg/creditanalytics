@@ -622,7 +622,7 @@ public class CreditAnalytics {
 	}
 
 	/**
-	 * Loads the closing IR EDF curve
+	 * Loads the closing IR EDSF (Euro-dollar Synthetic Futures) Curve
 	 * 
 	 * @param strName Name of the EDF curve to be loaded
 	 * @param dtEOD JulianDate EOD
@@ -630,7 +630,7 @@ public class CreditAnalytics {
 	 * @return Closing EDF discount curve
 	 */
 
-	public static final org.drip.analytics.rates.DiscountCurve LoadEODEDFCurve (
+	public static final org.drip.analytics.rates.DiscountCurve LoadEODEDSFCurve (
 		final java.lang.String strName,
 		final org.drip.analytics.date.JulianDate dtEOD)
 	{
@@ -656,7 +656,7 @@ public class CreditAnalytics {
 	 */
 
 	public static final java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.rates.DiscountCurve>	LoadEODEDFCurves (
+		org.drip.analytics.rates.DiscountCurve>	LoadEODEDSFCurves (
 			final java.lang.String strName,
 			final org.drip.analytics.date.JulianDate dtStart,
 			final org.drip.analytics.date.JulianDate dtEnd)
@@ -680,7 +680,7 @@ public class CreditAnalytics {
 				org.drip.analytics.rates.DiscountCurve>();
 
 		while (dt.getJulian() <= dtEnd.getJulian()) {
-			org.drip.analytics.rates.DiscountCurve dc = LoadEODEDFCurve (strName, dt);
+			org.drip.analytics.rates.DiscountCurve dc = LoadEODEDSFCurve (strName, dt);
 
 			if (null != dc) mapDC.put (dt, dc);
 
@@ -1109,7 +1109,7 @@ public class CreditAnalytics {
 	{
 		if (null == cds || null == dtEOD) return null;
 
-		java.lang.String strIR = cds.getIRCurveName();
+		java.lang.String strIR = "";
 
 		java.lang.String strCC = cds.creditCurveName();
 
@@ -1914,8 +1914,8 @@ public class CreditAnalytics {
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
 		return GetBond (strBondId).calcTSYSpreadFromPriceToOptimalExercise (valParams,
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), quotingParams, dblPrice);
+			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
+				null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -1950,7 +1950,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcTSYSpreadFromPrice (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), quotingParams, dblPrice);
+				null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2011,7 +2011,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcGSpreadFromPriceToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), quotingParams, dblPrice);
+				null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2046,7 +2046,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcGSpreadFromPrice (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), quotingParams, dblPrice);
+				null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2298,7 +2298,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcPriceFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2357,7 +2357,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcYieldFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), null, dblTSYSpread);
+				null, null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2416,7 +2416,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcZSpreadFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2477,7 +2477,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcOASFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2536,7 +2536,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcISpreadFromTSYSpreadToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), null, dblTSYSpread);
+				null, null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2595,8 +2595,8 @@ public class CreditAnalytics {
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
 		return GetBond (strBondId).calcDiscountMarginFromTSYSpreadToOptimalExercise (valParams,
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), null, dblTSYSpread);
+			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
+				null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2654,8 +2654,8 @@ public class CreditAnalytics {
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
 		return GetBond (strBondId).calcGSpreadFromTSYSpreadToOptimalExercise (valParams,
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), null, dblTSYSpread);
+			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
+				null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2715,8 +2715,8 @@ public class CreditAnalytics {
 			throw new java.lang.Exception ("Bad inputs into CreditAnalytics.BondCreditBasisFromTSYSpread");
 
 		return GetBond (strBondId).calcCreditBasisFromTSYSpread (valParams,
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, cc, null, null, null), quotingParams, dblTSYSpread);
+			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, cc,
+				null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2779,8 +2779,8 @@ public class CreditAnalytics {
 			throw new java.lang.Exception ("Bad inputs into CreditAnalytics.BondPECSFromTSYSpread");
 
 		return GetBond (strBondId).calcCreditBasisFromTSYSpread (valParams,
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, cc, null, null, null), quotingParams, dblTSYSpread);
+			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, cc,
+				null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -3072,8 +3072,8 @@ public class CreditAnalytics {
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
 		return GetBond (strBondId).calcGSpreadFromYield (valParams,
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				dcTSY, null, null, null, null), null, dblYield);
+			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
+				null, null, null), null, dblYield);
 	}
 
 	/**
@@ -3294,7 +3294,7 @@ public class CreditAnalytics {
 	{
 		if (null == strBondId || strBondId.isEmpty() || null == GetBond (strBondId)) return null;
 
-		return GetBond (strBondId).getEffectiveDate();
+		return GetBond (strBondId).effective();
 	}
 
 	/**
@@ -3310,7 +3310,7 @@ public class CreditAnalytics {
 	{
 		if (null == strBondId || strBondId.isEmpty() || null == GetBond (strBondId)) return null;
 
-		return GetBond (strBondId).getMaturityDate();
+		return GetBond (strBondId).maturity();
 	}
 
 	/**
@@ -3478,7 +3478,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
@@ -3514,7 +3514,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		java.lang.String strCC = bond.creditCurveName();
 
@@ -3555,7 +3555,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		java.lang.String strCC = bond.creditCurveName();
 
@@ -3596,7 +3596,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
@@ -3632,12 +3632,12 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strTSY = bond.getTreasuryCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
 		if (null == strTSY || strTSY.isEmpty())
 			throw new java.lang.Exception ("Cannot locate TSY Curve for bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = LoadEODTSYCurve (strIR, dtEOD);
 
@@ -3647,7 +3647,7 @@ public class CreditAnalytics {
 
 		return bond.calcGSpreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				dcTSY, null, null, null, null, null), null, dblPrice);
+				dcTSY, null, null, null, null), null, dblPrice);
 	}
 
 	/**
@@ -3675,7 +3675,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -3712,7 +3712,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -3749,7 +3749,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -3787,19 +3787,19 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
 
 		return bond.calcTSYSpreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
 					strIR), null), null, dblPrice);
 	}
 
@@ -3830,7 +3830,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -3871,7 +3871,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4100,7 +4100,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -4134,7 +4134,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		java.lang.String strCC = bond.creditCurveName();
 
@@ -4175,7 +4175,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		java.lang.String strCC = bond.creditCurveName();
 
@@ -4216,7 +4216,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
@@ -4252,12 +4252,12 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strTSY = bond.getTreasuryCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
 		if (null == strTSY || strTSY.isEmpty())
 			throw new java.lang.Exception ("Cannot locate TSY Curve for bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = LoadEODTSYCurve (strIR, dtEOD);
 
@@ -4267,7 +4267,7 @@ public class CreditAnalytics {
 
 		return bond.calcGSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				dcTSY, null, null, null, null, null), null, dblYield);
+				dcTSY, null, null, null, null), null, dblYield);
 	}
 
 	/**
@@ -4295,7 +4295,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4332,7 +4332,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4369,7 +4369,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4408,7 +4408,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -4443,19 +4443,19 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcTSYSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
 					strIR), null), null, dblYield);
 	}
 
@@ -4484,7 +4484,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4732,19 +4732,19 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
 
 		return bond.calcConvexityFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
 					strIR), null), null, dblTSYSpread);
 	}
 
@@ -4774,7 +4774,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		java.lang.String strCC = bond.creditCurveName();
 
@@ -4785,15 +4785,15 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcCreditBasisFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, ccEOD, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+				(dcEOD, null, dcTSY, ccEOD, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
 					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
@@ -4823,7 +4823,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		java.lang.String strCC = bond.creditCurveName();
 
@@ -4834,15 +4834,15 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcPECSFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, ccEOD, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+				(dcEOD, null, dcTSY, ccEOD, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
 					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
@@ -4872,20 +4872,20 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcDurationFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
 					strIR), null), null, dblTSYSpread);
 	}
 
@@ -4915,29 +4915,24 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 
-		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (bond.getIRCurveName(), dtEOD);
+		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (bond.getCouponCurrency(), dtEOD);
 
-		java.lang.String strTSY = bond.getTreasuryCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
 		if (null == strTSY || strTSY.isEmpty())
 			throw new java.lang.Exception ("Cannot locate TSY Curve for bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = LoadEODTSYCurve (strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
-
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
-
 		return bond.calcGSpreadFromTSYSpreadToOptimalExercise
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-						strIR), null), null, dblTSYSpread);
+					dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
+						null), null, dblTSYSpread);
 	}
 
 	/**
@@ -4966,23 +4961,23 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcISpreadFromTSYSpreadToOptimalExercise
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD, null,
-					dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
+					dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
 						null), null, dblTSYSpread);
 	}
 
@@ -5012,23 +5007,23 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcDiscountMarginFromTSYSpreadToOptimalExercise
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD, null,
-					dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
+					dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
 						null), null, dblTSYSpread);
 	}
 
@@ -5058,22 +5053,22 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcOASFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
+				null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
 					null), null, dblTSYSpread);
 	}
 
@@ -5104,19 +5099,19 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcPriceFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
 					strIR), null), null, dblTSYSpread);
 	}
 
@@ -5147,19 +5142,19 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcYieldFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
 					strIR), null), null, dblTSYSpread);
 	}
 
@@ -5189,22 +5184,22 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
+		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
+		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.calcZSpreadFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcEDSF, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
 					strIR), null), null, dblTSYSpread);
 	}
 
@@ -5430,7 +5425,7 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty()) return null;
 
@@ -5451,25 +5446,20 @@ public class CreditAnalytics {
 
 		java.lang.String strCC = bond.creditCurveName();
 
-		java.lang.String strTSY = bond.getTreasuryCurveName();
-
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 		org.drip.analytics.definition.CreditCurve ccEOD = null;
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
-
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
 
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, dcEDSF, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-						strIR), null), null);
+					dcTSY, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
+						null), null);
 	}
 
 	/**
@@ -5513,7 +5503,7 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty()) return null;
 
@@ -5535,25 +5525,20 @@ public class CreditAnalytics {
 
 		java.lang.String strCC = bond.creditCurveName();
 
-		java.lang.String strTSY = bond.getTreasuryCurveName();
-
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 		org.drip.analytics.definition.CreditCurve ccEOD = null;
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
-
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
 
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, dcEDSF, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-						strIR), null), null);
+					dcTSY, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
+						null), null);
 	}
 
 	/**
@@ -5597,7 +5582,7 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		java.lang.String strIR = bond.getIRCurveName();
+		java.lang.String strIR = bond.getCouponCurrency();
 
 		if (null == strIR || strIR.isEmpty()) return null;
 
@@ -5619,25 +5604,20 @@ public class CreditAnalytics {
 
 		java.lang.String strCC = bond.creditCurveName();
 
-		java.lang.String strTSY = bond.getTreasuryCurveName();
-
-		java.lang.String strEDSF = bond.getEDSFCurveName();
+		java.lang.String strTSY = bond.couponCurrency()[0];
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
-		org.drip.analytics.rates.DiscountCurve dcEDSF = null;
 		org.drip.analytics.definition.CreditCurve ccEOD = null;
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
-
-		if (null == strEDSF || strEDSF.isEmpty()) dcEDSF = LoadEODEDFCurve (strEDSF, dtEOD);
 
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, dcEDSF, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-						strIR), null), null);
+					dcTSY, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
+						null), null);
 	}
 
 	/**
@@ -5770,7 +5750,7 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot get Bond " + strBondId);
 
 		if ("Coupon".equalsIgnoreCase (strField))
-			return bond.getCoupon (org.drip.analytics.date.JulianDate.Today().getJulian(), null);
+			return bond.coupon (org.drip.analytics.date.JulianDate.Today().getJulian(), null);
 
 		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.getCurrentCoupon();
 
@@ -5833,11 +5813,9 @@ public class CreditAnalytics {
 
 		if ("CouponDC".equalsIgnoreCase (strField)) return bond.getCouponDC();
 
-		if ("EDSFCurve".equalsIgnoreCase (strField)) return bond.getEDSFCurveName();
-
 		if ("FloatCouponConvention".equalsIgnoreCase (strField)) return bond.getFloatCouponConvention();
 
-		if ("IRCurve".equalsIgnoreCase (strField)) return bond.getIRCurveName();
+		if ("IRCurve".equalsIgnoreCase (strField)) return bond.getCouponCurrency();
 
 		if ("ISIN".equalsIgnoreCase (strField)) return bond.getISIN();
 
@@ -5849,9 +5827,7 @@ public class CreditAnalytics {
 
 		if ("Ticker".equalsIgnoreCase (strField)) return bond.getTicker();
 
-		if ("TradeCurrency".equalsIgnoreCase (strField)) return bond.getTradeCurrency();
-
-		if ("TreasuryCurve".equalsIgnoreCase (strField)) return bond.getTreasuryCurveName();
+		if ("TreasuryCurve".equalsIgnoreCase (strField)) return bond.couponCurrency()[0];
 
 		if (null == strBondId || strBondId.isEmpty() || null == strField || strField.isEmpty()) return null;
 
@@ -5939,7 +5915,7 @@ public class CreditAnalytics {
 
 		if ("FinalMaturity".equalsIgnoreCase (strField)) return bond.getFinalMaturity();
 
-		if ("Maturity".equalsIgnoreCase (strField)) return bond.getMaturityDate();
+		if ("Maturity".equalsIgnoreCase (strField)) return bond.maturity();
 
 		org.drip.product.creator.BondRefDataBuilder brdb = GetBondRefData (strBondId);
 
@@ -6002,12 +5978,12 @@ public class CreditAnalytics {
 			org.drip.product.definition.Bond bond = CreditAnalytics.GetBond (strISIN);
 
 			if (null != bond && !bond.hasVariableCoupon() && !bond.hasBeenExercised() && !bond.hasDefaulted()
-				&& bond.getMaturityDate().getJulian() > dtCurrent.getJulian()) {
+				&& bond.maturity().getJulian() > dtCurrent.getJulian()) {
 				try {
 					double dblOutstandingAmount = GetBondDoubleField (strISIN, "OutstandingAmount");
 
 					for (org.drip.analytics.date.JulianDate dt : mapOutstandingNotionals.keySet()) {
-						if (bond.getMaturityDate().getJulian() <= dt.getJulian()) {
+						if (bond.maturity().getJulian() <= dt.getJulian()) {
 							double dblCumulativeNotional = mapOutstandingNotionals.get (dt);
 
 							mapOutstandingNotionals.put (dt, dblCumulativeNotional + dblOutstandingAmount);

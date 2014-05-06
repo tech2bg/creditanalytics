@@ -344,24 +344,26 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		mmFixings.put (dtStart, mIndexFixings);
 
 		org.drip.param.market.ComponentMarketParamSet cmp = new org.drip.param.market.ComponentMarketParamSet
-			(this, null, null, null, null, null, null, null, mmFixings);
+			(this, null, null, null, null, null, null, mmFixings);
 
-		return irs.calcMeasureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
+		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
 	}
 
-	@Override public double estimateMeasure (
+	@Override public double estimateManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Invalid input");
+		if (null == strManifestMeasure || strManifestMeasure.isEmpty() ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("DiscountCurve.estimateManifestMeasure => Invalid input");
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = calibComp();
 
 		if (null == aCalibComp)
 			throw new java.lang.Exception
-				("DiscountCurve.estimateMeasure => Calib Components not available");
+				("DiscountCurve.estimateManifestMeasure => Calib Components not available");
 
 		org.drip.spline.params.SegmentCustomBuilderControl sbp = new
 			org.drip.spline.params.SegmentCustomBuilderControl
@@ -377,22 +379,24 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		if (0 == iNumComponent)
 			throw new java.lang.Exception
-				("DiscountCurve.estimateMeasure => Calib Components not available");
+				("DiscountCurve.estimateManifestMeasure => Calib Components not available");
 
 		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = lsmm();
 
 		if (null == aLSMM || iNumComponent != aLSMM.length)
-			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Calib Quotes not available");
+			throw new java.lang.Exception
+				("DiscountCurve.estimateManifestMeasure => Calib Quotes not available");
 
 		for (int i = 0; i < iNumComponent; ++i) {
 			if (0 != i) aSBP[i - 1] = sbp;
 
 			if (null == aCalibComp[i])
-				throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot locate a component");
+				throw new java.lang.Exception
+					("DiscountCurve.estimateManifestMeasure => Cannot locate a component");
 
-			adblQuote[i] = aLSMM[i].getMeasureQuoteValue();
+			adblQuote[i] = aLSMM[i].getMeasureQuoteValue (strManifestMeasure);
 
-			adblDate[i] = aCalibComp[i].getMaturityDate().getJulian();
+			adblDate[i] = aCalibComp[i].maturity().getJulian();
 		}
 
 		org.drip.spline.stretch.MultiSegmentSequence regime =
@@ -518,8 +522,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
 		org.drip.param.definition.ComponentMarketParams mktParams = new
-			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null, null,
-				null == _ccis ? null : _ccis.getFixing());
+			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null, null ==
+				_ccis ? null : _ccis.getFixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
 			org.drip.quant.calculus.WengertJacobian wjCompDDirtyPVDManifestMeasure =
@@ -747,11 +751,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		for (org.drip.product.definition.CalibratableFixedIncomeComponent cc : aCC) {
 			if (null == cc) continue;
 
-			java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = cc.getCashFlowPeriod();
+			java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = cc.cashFlowPeriod();
 
 			if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
 
-			for (org.drip.analytics.period.CashflowPeriod cpnPeriod : cc.getCashFlowPeriod()) {
+			for (org.drip.analytics.period.CashflowPeriod cpnPeriod : cc.cashFlowPeriod()) {
 				if (null == cpnPeriod) continue;
 
 				double dblPay = cpnPeriod.getPayDate();

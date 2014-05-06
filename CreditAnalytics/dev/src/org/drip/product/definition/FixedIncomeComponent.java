@@ -36,7 +36,7 @@ package org.drip.product.definition;
  *  - Get the component's initial notional, notional, and coupon.
  *  - Get the Effective date, Maturity date, First Coupon Date.
  *  - List the coupon periods.
- *  - Set the market curves - discount, TSY, forward, Credit, and EDSF curves.
+ *  - Set the market curves - discount, TSY, forward, and Credit curves.
  *  - Retrieve the component's settlement parameters.
  *  - Value the component using standard/custom market parameters.
  *  - Retrieve the component's named measures and named measure values.
@@ -105,7 +105,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @throws java.lang.Exception Thrown if Initial Notional cannot be computed
 	 */
 
-	public abstract double getInitialNotional()
+	public abstract double initialNotional()
 		throws java.lang.Exception;
 
 	/**
@@ -118,7 +118,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @throws java.lang.Exception Thrown if Notional cannot be computed
 	 */
 
-	public abstract double getNotional (
+	public abstract double notional (
 		final double dblDate)
 		throws java.lang.Exception;
 
@@ -133,7 +133,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @throws java.lang.Exception Thrown if Notional cannot be computed
 	 */
 
-	public abstract double getNotional (
+	public abstract double notional (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception;
@@ -149,7 +149,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @throws java.lang.Exception Thrown if Component's coupon cannot be calculated
 	 */
 
-	public abstract double getCoupon (
+	public abstract double coupon (
 		final double dblValue,
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 		throws java.lang.Exception;
@@ -160,7 +160,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return Effective Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getEffectiveDate();
+	public abstract org.drip.analytics.date.JulianDate effective();
 
 	/**
 	 * Get the Maturity Date
@@ -168,7 +168,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return Maturity Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getMaturityDate();
+	public abstract org.drip.analytics.date.JulianDate maturity();
 
 	/**
 	 * Get the First Coupon Date
@@ -176,22 +176,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return First Coupon Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getFirstCouponDate();
-
-	/**
-	 * Set the component's IR, treasury, and credit curve names
-	 * 
-	 * @param strIR IR curve name
-	 * @param strIRTSY Treasury Curve Name
-	 * @param strCC Credit Curve Name
-	 * 
-	 * @return Success (True), Failure (false)
-	 */
-
-	public abstract boolean setCurves (
-		final java.lang.String strIR,
-		final java.lang.String strIRTSY,
-		final java.lang.String strCC);
+	public abstract org.drip.analytics.date.JulianDate firstCouponDate();
 
 	/**
 	 * Get the Component's Cash Flow Periods
@@ -199,7 +184,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return List of the Component's Cash Flow Periods
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod();
+	public abstract java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod();
 
 	/**
 	 * Get the component cash settlement parameters
@@ -207,7 +192,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return Cash settlement Parameters
 	 */
 
-	public abstract org.drip.param.valuation.CashSettleParams getCashSettleParams();
+	public abstract org.drip.param.valuation.CashSettleParams cashSettleParams();
 
 	/**
 	 * Generate a full list of the component measures for the full input set of market parameters
@@ -232,7 +217,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return Set of Measure Names
 	 */
 
-	public abstract java.util.Set<java.lang.String> getMeasureNames();
+	public abstract java.util.Set<java.lang.String> measureNames();
 
 	/**
 	 * Retrieve the Instrument's Imputed Tenor
@@ -242,7 +227,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 
 	public java.lang.String tenor()
 	{
-		double dblNumDays = getMaturityDate().getJulian() - getEffectiveDate().getJulian();
+		double dblNumDays = maturity().getJulian() - effective().getJulian();
 
 		if (365. > dblNumDays) {
 			int iNumMonth = (int) (0.5 + (dblNumDays / 30.));
@@ -267,7 +252,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @throws java.lang.Exception Thrown if the measure cannot be calculated
 	 */
 
-	public double calcMeasureValue (
+	public double measureValue (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -290,7 +275,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return ComponentOutput object
 	 */
 
-	public org.drip.analytics.output.ComponentMeasures calcMeasures (
+	public org.drip.analytics.output.ComponentMeasures measures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,
@@ -557,7 +542,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return Custom Scenarios Measures output set
 	 */
 
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calcCustomScenarioMeasures (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> customScenarioMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.MarketParams mpc,

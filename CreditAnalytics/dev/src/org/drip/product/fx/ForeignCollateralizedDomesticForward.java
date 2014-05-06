@@ -123,19 +123,19 @@ public class ForeignCollateralizedDomesticForward {
 
 		if (dblValueDate > _dblMaturity) return null;
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.getFXCurve (_ccyPair.getCode());
+		org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve (_ccyPair.getCode());
 
 		if (null == auFX) return null;
 
 		java.lang.String strForeignCurrency = _ccyPair.getNumCcy();
 
-		org.drip.analytics.rates.DiscountCurve dcForeignCollateral = mktParams.foreignCollateralCurve
-			(strForeignCurrency);
+		org.drip.analytics.rates.DiscountCurve dcForeignCollateral =
+			mktParams.payCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency);
 
 		if (null == dcForeignCollateral) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcDomesticCurrencyForeignCollateral =
-			mktParams.domesticCurrencyForeignCollateralCurve (strForeignCurrency);
+			mktParams.payCurrencyCollateralCurrencyCurve (_ccyPair.getDenomCcy(), strForeignCurrency);
 
 		if (null == dcDomesticCurrencyForeignCollateral) return null;
 

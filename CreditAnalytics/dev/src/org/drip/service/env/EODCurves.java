@@ -365,8 +365,8 @@ public class EODCurves {
 		try {
 			if (!(ccsc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDS)).cookScenarioCC
 				(strSPN, new org.drip.param.valuation.ValuationParams (dtEOD, dtEOD.addBusDays (3,
-					strCurrency), "USD"), dc, null, null, adblQuotes, dblRecovery, astrCalibMeasure, null,
-						null, false, s_iCreditCalibMode)) {
+					strCurrency), "USD"), dc, null, adblQuotes, dblRecovery, astrCalibMeasure, null, null,
+						false, s_iCreditCalibMode)) {
 				System.out.println ("CC[" + strSPN + "] failed to cook");
 
 				return null;
@@ -379,7 +379,7 @@ public class EODCurves {
 			sb.append ("Recovery=").append (dblRecovery).append (";");
 
 			for (int i = 0; i < aCDS.length; ++i)
-				sb.append (" " + aCDS[i].getMaturityDate().toString()).append ("=").append
+				sb.append (" " + aCDS[i].maturity().toString()).append ("=").append
 					(adblQuotes[i]).append (";");
 
 			System.out.println (strSPN + " failed: " + sb.toString());
@@ -869,7 +869,7 @@ public class EODCurves {
 			(ircsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurveName,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
-						dtEOD.addBusDays (3, strCurrency), "USD"), null, null, adblCompCalibValue, 0.0001,
+						dtEOD.addBusDays (3, strCurrency), "USD"), null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mmFixings, null, s_iIRCalibMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1088,7 +1088,7 @@ public class EODCurves {
 			(ircsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurveName,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
-						dtEOD.addBusDays (3, strCurrency), "USD"), null, null, adblCompCalibValue, 0.0001,
+						dtEOD.addBusDays (3, strCurrency), "USD"), null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mmFixings, null, s_iIRCalibMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

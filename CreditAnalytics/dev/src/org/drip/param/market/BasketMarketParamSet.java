@@ -439,10 +439,10 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	{
 		if (null == compRef) return null;
 
-		return new ComponentMarketParamSet (_mapDC.get (compRef.getIRCurveName()), null, _mapFC.get
-			(compRef.getForwardCurveName()), _mapDC.get (compRef.getTreasuryCurveName()), _mapDC.get
-				(compRef.getEDSFCurveName()), _mapCC.get (compRef.creditCurveName()), _mapCQComp.get
-					(compRef.componentName()), _mapCQComp, _mmFixings);
+		return new ComponentMarketParamSet (_mapDC.get (compRef.couponCurrency()[0]), null, _mapFC.get
+			(compRef.forwardCurveName()), _mapDC.get (compRef.couponCurrency()[0]), _mapCC.get
+				(compRef.creditCurveName()), _mapCQComp.get (compRef.componentName()), _mapCQComp,
+					_mmFixings);
 	}
 
 	@Override public java.lang.String getCollectionKeyValueDelimiter()
@@ -632,14 +632,12 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		double[] adblDate = new double[3];
 		double[] adblRate = new double[3];
 		double[] adblRateTSY = new double[3];
-		double[] adblRateEDSF = new double[3];
 		double[] adblHazardRate = new double[3];
 
 		for (int i = 0; i < 3; ++i) {
 			adblDate[i] = dblStart + 365. * (i + 1);
 			adblRate[i] = 0.015 * (i + 1);
 			adblRateTSY[i] = 0.01 * (i + 1);
-			adblRateEDSF[i] = 0.0125 * (i + 1);
 			adblHazardRate[i] = 0.01 * (i + 1);
 		}
 
@@ -652,20 +650,12 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", null, adblDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
-		org.drip.analytics.rates.DiscountCurve dcEDSF =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", null, adblDate, adblRateEDSF,
-					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =
 			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 		mapDC.put ("ABC", dc);
 
 		mapDC.put ("ABCTSY", dcTSY);
-
-		mapDC.put ("ABCEDSF", dcEDSF);
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.CreateCreditCurve

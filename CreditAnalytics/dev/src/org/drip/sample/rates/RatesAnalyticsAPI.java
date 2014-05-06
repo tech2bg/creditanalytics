@@ -193,7 +193,7 @@ public class RatesAnalyticsAPI {
 			aCompCalib[i + 7] = aEDF[i];
 			astrCalibMeasure[i + 7] = "Rate";
 
-			adblMaturity[i + 7] = aEDF[i].getMaturityDate().getJulian();
+			adblMaturity[i + 7] = aEDF[i].maturity().getJulian();
 		}
 
 		// Final 15 instruments - IRS calibration
@@ -269,7 +269,7 @@ public class RatesAnalyticsAPI {
 
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-				FormatUtil.FormatDouble (aCompCalib[i].calcMeasureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
+				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
@@ -364,7 +364,7 @@ public class RatesAnalyticsAPI {
 
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-				FormatUtil.FormatDouble (aCompCalib[i].calcMeasureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
+				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
@@ -409,7 +409,7 @@ public class RatesAnalyticsAPI {
 			aCompCalib[i] = aEDF[i];
 			astrCalibMeasure[i] = "Rate";
 
-			adblMaturity[i + 7] = aEDF[i].getMaturityDate().getJulian();
+			adblMaturity[i + 7] = aEDF[i].maturity().getJulian();
 		}
 
 		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
@@ -422,7 +422,7 @@ public class RatesAnalyticsAPI {
 
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-				FormatUtil.FormatDouble (aCompCalib[i].calcMeasureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
+				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
@@ -520,7 +520,7 @@ public class RatesAnalyticsAPI {
 
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-				FormatUtil.FormatDouble (aCompCalib[i].calcMeasureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
+				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 

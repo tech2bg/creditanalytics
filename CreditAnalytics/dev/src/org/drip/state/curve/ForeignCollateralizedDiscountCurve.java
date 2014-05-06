@@ -138,6 +138,7 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 	}
 
 	@Override public FlatForwardDiscountCurve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
@@ -145,12 +146,14 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 
 	@Override public FlatForwardDiscountCurve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
 	}
 
 	@Override public org.drip.analytics.rates.ExplicitBootDiscountCurve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return null;

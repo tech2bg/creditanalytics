@@ -80,7 +80,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblEffectiveDate = getEffectiveDate().getJulian();
+		double dblEffectiveDate = effective().getJulian();
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
@@ -88,7 +88,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		if (null == dc) return null;
 
-		org.drip.analytics.date.JulianDate dtMaturity = getMaturityDate();
+		org.drip.analytics.date.JulianDate dtMaturity = maturity();
 
 		double dblMaturity = dtMaturity.getJulian();
 
@@ -108,7 +108,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 		try {
 			java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-					mktParams.getFixings();
+					mktParams.fixings();
 
 			if (null != mapFixings && mapFixings.containsKey (dtMaturity)) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing =

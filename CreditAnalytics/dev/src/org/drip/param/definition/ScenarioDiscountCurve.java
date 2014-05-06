@@ -77,7 +77,6 @@ public abstract class ScenarioDiscountCurve {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param dcTSY The Treasury Discount Curve
-	 * @param dcEDSF The EDSF Discount Curve
 	 * @param adblQuotes Matched array of the calibration instrument quotes
 	 * @param dblBump Amount of bump to be applied
 	 * @param astrCalibMeasure Matched array of the calibration instrument measures
@@ -91,7 +90,6 @@ public abstract class ScenarioDiscountCurve {
 	public abstract boolean cookScenarioDC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
@@ -107,13 +105,11 @@ public abstract class ScenarioDiscountCurve {
 	 * @param strCustomName Custom Scenario Name
 	 * @param valParams Valuation Parameters
 	 * @param dcTSY TSY Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Double array of input quotes
 	 * @param astrCalibMeasure Array of calibration measures
 	 * @param mmFixings Date/Index fixings
 	 * @param quotingParams Calibration quoting parameters
 	 * @param ntpTSY Node Tweak Parameters for the TSY Discount Curve
-	 * @param ntpEDSF Node Tweak Parameters for the EDSF Discount Curve
 	 * @param ntpDC Node Tweak Parameters for the Base Discount Curve
 	 * 
 	 * @return Creates a custom discount curve
@@ -124,14 +120,12 @@ public abstract class ScenarioDiscountCurve {
 		final java.lang.String strCustomName,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
-		final org.drip.param.definition.ResponseValueTweakParams ntpEDSF,
 		final org.drip.param.definition.ResponseValueTweakParams ntpDC);
 
 	/**

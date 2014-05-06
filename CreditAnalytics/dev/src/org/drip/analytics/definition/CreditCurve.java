@@ -64,14 +64,14 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	protected org.drip.param.pricer.PricerParams _pricerParam = null;
 	protected org.drip.analytics.rates.DiscountCurve _dc = null;
 	protected org.drip.analytics.rates.DiscountCurve _dcTSY = null;
-	protected org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 	protected org.drip.param.valuation.ValuationParams _valParam = null;
 	protected org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 	protected org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
-	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
 	protected java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
+	protected org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+		_mapQuote = null;
 
 	protected CreditCurve (
 		final double dblEpochDate,
@@ -474,7 +474,6 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @param bFlat Flat calibration desired (True)
 	 * @param dc Base Discount Curve
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param pricerParam PricerParams
 	 * @param aCalibInst Array of calibration instruments
 	 * @param adblCalibQuote Array of calibration quotes
@@ -488,7 +487,6 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		final boolean bFlat,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double[] adblCalibQuote,
@@ -500,7 +498,6 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		_dc = dc;
 		_bFlat = bFlat;
 		_dcTSY = dcTSY;
-		_dcEDSF = dcEDSF;
 		_valParam = valParam;
 		_mmFixing = mmFixing;
 		_aCalibInst = aCalibInst;
@@ -509,20 +506,26 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		_adblCalibQuote = adblCalibQuote;
 		_astrCalibMeasure = astrCalibMeasure;
 
-		_mapQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		_mapQuote = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		_mapMeasure = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
 		for (int i = 0; i < aCalibInst.length; ++i) {
-			_mapMeasure.put (_aCalibInst[i].getPrimaryCode(), astrCalibMeasure[i]);
+			_mapMeasure.put (_aCalibInst[i].primaryCode(), astrCalibMeasure[i]);
 
-			_mapQuote.put (_aCalibInst[i].getPrimaryCode(), adblCalibQuote[i]);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestMeasureCalibQuote
+				= new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-			java.lang.String[] astrSecCode = _aCalibInst[i].getSecondaryCode();
+			mapManifestMeasureCalibQuote.put (_astrCalibMeasure[i], adblCalibQuote[i]);
+
+			_mapQuote.put (_aCalibInst[i].primaryCode(), mapManifestMeasureCalibQuote);
+
+			java.lang.String[] astrSecCode = _aCalibInst[i].secondaryCode();
 
 			if (null != astrSecCode) {
 				for (int j = 0; j < astrSecCode.length; ++j)
-					_mapQuote.put (astrSecCode[j], adblCalibQuote[i]);
+					_mapQuote.put (astrSecCode[j], mapManifestMeasureCalibQuote);
 			}
 		}
 	}
@@ -550,10 +553,10 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 
 		for (int i = 0; i < iNumLSMM; ++i) {
 			try {
-				aLSMM[i] = new org.drip.state.representation.LatentStateMetricMeasure
+				aLSMM[i] = org.drip.state.representation.LatentStateMetricMeasure.Create
 					(org.drip.state.representation.LatentStateMetricMeasure.LATENT_STATE_SURVIVAL,
 						org.drip.state.representation.LatentStateMetricMeasure.QUANTIFICATION_METRIC_FORWARD_HAZARD_RATE,
-							new java.lang.String[] {_astrCalibMeasure[i]}, _adblCalibQuote[i]);
+					_astrCalibMeasure[i], _adblCalibQuote[i]);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -564,13 +567,12 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		return aLSMM;
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstr)
-		throws java.lang.Exception
 	{
 		if (null == _mapQuote || 0 == _mapQuote.size() || null == strInstr || strInstr.isEmpty() ||
 			!_mapQuote.containsKey (strInstr))
-			throw new java.lang.Exception ("CreditCurve::getManifestMeasure => Cannot get " + strInstr);
+			return null;
 
 		return _mapQuote.get (strInstr);
 	}

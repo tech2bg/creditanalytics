@@ -347,8 +347,8 @@ public class CreditAnalyticsProxy {
 		org.drip.product.creator.BondProductBuilder bpb =
 			org.drip.product.creator.BondProductBuilder.CreateFromJSONMap (mapBondParams, null);
 
-		return null == bpb ? null : org.drip.product.creator.BondBuilder.CreateBondFromParams
-			(bpb.getTSYParams(), bpb.getIdentifierParams(), bpb.getCouponParams(), bpb.getCurrencyParams(),
+		return null == bpb ? null : org.drip.product.creator.BondBuilder.CreateBondFromParams (null,
+			bpb.getIdentifierParams(), bpb.getCouponParams(), bpb.getCurrencyParams(),
 				bpb.getFloaterParams(), bpb.getMarketConvention(), bpb.getRatesValuationParams(),
 					bpb.getCRValuationParams(), bpb.getCFTEParams(), bpb.getPeriodGenParams(),
 						bpb.getNotionalParams());
@@ -362,25 +362,17 @@ public class CreditAnalyticsProxy {
 
 		double[] adblDate = new double[3];
 		double[] adblRateTSY = new double[3];
-		double[] adblRateEDSF = new double[3];
 
 		for (int i = 0; i < 3; ++i) {
 			adblDate[i] = dblStart + 365. * (i + 1);
 			adblRateTSY[i] = 0.01 * (i + 1);
-			adblRateEDSF[i] = 0.0125 * (i + 1);
 		}
 
 		org.drip.analytics.rates.DiscountCurve dc = MakeDC (dtStart);
 
-		org.drip.analytics.rates.DiscountCurve dcTSY =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCTSY", null, adblDate,
-				adblRateTSY,
-					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
-		org.drip.analytics.rates.DiscountCurve dcEDSF =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC (dtStart, "ABCEDSF", null, adblDate,
-				adblRateEDSF,
-					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
+		org.drip.analytics.rates.DiscountCurve dcTSY = org.drip.state.creator.DiscountCurveBuilder.CreateDC
+			(dtStart, "ABCTSY", null, adblDate, adblRateTSY,
+				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.CreditCurve cc = MakeCC (dtStart, dc);
 
@@ -427,8 +419,8 @@ public class CreditAnalyticsProxy {
 		}
 
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, dcEDSF, cc,
-				cqBond, mapTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, cc, cqBond,
+				mapTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

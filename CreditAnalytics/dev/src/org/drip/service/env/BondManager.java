@@ -294,12 +294,12 @@ public class BondManager {
 			if (null == me.getValue()) continue;
 
 			org.drip.product.params.EmbeddedOptionSchedule eosCall = ExtractEOS (stmt,
-				me.getValue().getISIN(), me.getValue().getEffectiveDate().getJulian(), false);
+				me.getValue().getISIN(), me.getValue().effective().getJulian(), false);
 
 			if (null != eosCall) me.getValue().setEmbeddedCallSchedule (eosCall);
 
 			org.drip.product.params.EmbeddedOptionSchedule eosPut = ExtractEOS (stmt,
-				me.getValue().getISIN(), me.getValue().getEffectiveDate().getJulian(), true);
+				me.getValue().getISIN(), me.getValue().effective().getJulian(), true);
 
 			if (null != eosPut) me.getValue().setEmbeddedPutSchedule (eosPut);
 		}
@@ -397,13 +397,13 @@ public class BondManager {
 
 		org.drip.product.definition.Bond bond = s_mapBonds.get (strCUSIPIn);
 
-		if (null != bond && bond.getMaturityDate().getJulian() > dt.getJulian()) {
+		if (null != bond && bond.maturity().getJulian() > dt.getJulian()) {
 	        java.text.DecimalFormat df2p = new java.text.DecimalFormat ("#00.000");
 
 			try {
-				java.lang.String strRunName = bond.getTicker() + "  " + df2p.format (100. * bond.getCoupon
+				java.lang.String strRunName = bond.getTicker() + "  " + df2p.format (100. * bond.coupon
 					(valParams.valueDate(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
-						(bond.getMaturityDate().getJulian()) - 2000);
+						(bond.maturity().getJulian()) - 2000);
 
 				if (bond.isFloater()) {
 					if (s_bBlog)
@@ -466,16 +466,16 @@ public class BondManager {
 			s_mapBonds.entrySet()) {
 			org.drip.product.definition.Bond bond = me.getValue();
 
-			if (bond.getMaturityDate().getJulian() > dt.getJulian()) {
+			if (bond.maturity().getJulian() > dt.getJulian()) {
 				java.lang.String strRunTicker = bond.getTicker();
 
 				for (int i = bond.getTicker().length() - 1; i < 6; ++i)
 					strRunTicker += " ";
 
 				try {
-					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.getCoupon
+					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.coupon
 						(valParams.valueDate(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
-							(bond.getMaturityDate().getJulian()) - 2000);
+							(bond.maturity().getJulian()) - 2000);
 
 					if (bond.isFloater())
 						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
@@ -523,16 +523,16 @@ public class BondManager {
 			s_mapBonds.entrySet()) {
 			org.drip.product.definition.Bond bond = me.getValue();
 
-			if (bond.getMaturityDate().getJulian() > dt.getJulian()) {
+			if (bond.maturity().getJulian() > dt.getJulian()) {
 				java.lang.String strRunTicker = bond.getTicker();
 
 				for (int i = bond.getTicker().length() - 1; i < 6; ++i)
 					strRunTicker += " ";
 
 				try {
-					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.getCoupon
+					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.coupon
 						(dt.getJulian(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
-							(bond.getMaturityDate().getJulian()) - 2000);
+							(bond.maturity().getJulian()) - 2000);
 
 					if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
 						(bond.getCUSIP())) {
@@ -697,10 +697,6 @@ public class BondManager {
 
 		if (null == crValParams) return null;
 
-		org.drip.product.params.TreasuryBenchmark tsyParams = bpb.getTSYParams();
-
-		if (null == tsyParams) return null;
-
 		org.drip.product.params.TerminationSetting cfteParams = bpb.getCFTEParams();
 
 		if (null == cfteParams) return null;
@@ -724,8 +720,6 @@ public class BondManager {
 		bond.setRatesSetting (irValParams);
 
 		bond.setCreditSetting (crValParams);
-
-		bond.setTreasuryBenchmark (tsyParams);
 
 		bond.setTerminationSetting (cfteParams);
 
@@ -1269,7 +1263,7 @@ public class BondManager {
 			s_mapBonds.entrySet()) {
 			org.drip.product.definition.Bond bond = me.getValue();
 
-			if (bond.getMaturityDate().getJulian() > dtEOD.getJulian()) {
+			if (bond.maturity().getJulian() > dtEOD.getJulian()) {
 				if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
 					(bond.getCUSIP())) {
 					if (s_bBlog) System.out.println ("No price entry found for " + bond.componentName());
@@ -1658,12 +1652,11 @@ public class BondManager {
 				if (null != bond.getTreasuryBenchmark()) {
 					java.lang.String strPrimaryBmk = "";
 
-					if (null != bond.getTreasuryBenchmark()._tsyBmkSet)
-						strPrimaryBmk = bond.getTreasuryBenchmark()._tsyBmkSet.getPrimaryBmk();
+					if (null != bond.getTreasuryBenchmark())
+						strPrimaryBmk = bond.getTreasuryBenchmark().getPrimaryBmk();
 
 					bw.write ("\t\tbond" + bond.getISIN() + ".setTSYParams (CreateTSYParams (\"" +
-						strPrimaryBmk + "\", \"" + bond.getTreasuryBenchmark()._strIRTSY + "\", \"" +
-							bond.getTreasuryBenchmark()._strIREDSF + "\"));\n\n");
+						strPrimaryBmk + "\", \"NONE\", \"NONE\"));\n\n");
 				}
 
 				bw.write ("\t\tmapBondCache.add (\"" + bond.getISIN() + "\", bond" + bond.getISIN() +

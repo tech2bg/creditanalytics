@@ -68,17 +68,50 @@ public class LatentStateMetricMeasure {
 
 	private java.lang.String _strID = "";
 	private java.lang.String _strQuantificationMetric = "";
-	private java.lang.String[] _astrManifestMeasure = null;
-	private double _dblMeasureQuoteValue = java.lang.Double.NaN;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		_mapManifestMeasureCalibQuote = null;
 
 	/**
 	 * LatentStateMetricMeasure constructor
 	 * 
 	 * @param strID Name/ID of the Hidden State
 	 * @param strQuantificationMetric The Quantification Metric of the Latent State
-	 * @param astrManifestMeasure Array of the Product Measure Names from which the Calibration/Inference
-	 * 	estimates the Latent State's Quantification Metric
-	 * @param dblMeasureQuoteValue Manifest Measure Quote Value
+	 * @param strManifestMeasure The Manifest Measure
+	 * @param dblMeasureQuoteValue The Manifest Measure Quote Value
+	 * 
+	 * @return The LatentStateMetricMeasure Instance
+	 */
+
+	public static final LatentStateMetricMeasure Create (
+		final java.lang.String strID,
+		final java.lang.String strQuantificationMetric,
+		final java.lang.String strManifestMeasure,
+		final double dblMeasureQuoteValue)
+	{
+		if (null == strManifestMeasure || strManifestMeasure.isEmpty() ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblMeasureQuoteValue))
+			return null;
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestMeasureCalibQuote =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+
+		mapManifestMeasureCalibQuote.put (strManifestMeasure, dblMeasureQuoteValue);
+
+		try {
+			new LatentStateMetricMeasure (strID, strQuantificationMetric, mapManifestMeasureCalibQuote);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * LatentStateMetricMeasure constructor
+	 * 
+	 * @param strID Name/ID of the Hidden State
+	 * @param strQuantificationMetric The Quantification Metric of the Latent State
+	 * @param mapManifestMeasureCalibQuote Array of the Manifest Measure Calibration Quotes
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
@@ -86,25 +119,15 @@ public class LatentStateMetricMeasure {
 	public LatentStateMetricMeasure (
 		final java.lang.String strID,
 		final java.lang.String strQuantificationMetric,
-		final java.lang.String[] astrManifestMeasure,
-		final double dblMeasureQuoteValue)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+			mapManifestMeasureCalibQuote)
 		throws java.lang.Exception
 	{
 		if (null == (_strID = strID) || _strID.isEmpty() || null == (_strQuantificationMetric =
-			strQuantificationMetric) || _strQuantificationMetric.isEmpty() || null == (_astrManifestMeasure =
-				astrManifestMeasure) || !org.drip.quant.common.NumberUtil.IsValid (_dblMeasureQuoteValue =
-					dblMeasureQuoteValue))
+			strQuantificationMetric) || _strQuantificationMetric.isEmpty() || null ==
+				(_mapManifestMeasureCalibQuote = mapManifestMeasureCalibQuote) || 0 ==
+					_mapManifestMeasureCalibQuote.size())
 			throw new java.lang.Exception ("LatentStateMetricMeasure ctr: Invalid Inputs!");
-
-		int iNumManifestMeasure = _astrManifestMeasure.length;
-
-		if (0 == iNumManifestMeasure)
-			throw new java.lang.Exception ("LatentStateMetricMeasure ctr: Invalid Inputs!");
-
-		for (int i = 0; i < iNumManifestMeasure; ++i) {
-			if (null == _astrManifestMeasure[i] || _astrManifestMeasure[i].isEmpty())
-				throw new java.lang.Exception ("LatentStateMetricMeasure ctr: Invalid Inputs!");
-		}
 	}
 
 	/**
@@ -137,17 +160,45 @@ public class LatentStateMetricMeasure {
 
 	public java.lang.String[] getManifestMeasures()
 	{
-		return _astrManifestMeasure;
+		java.lang.String[] astrManifestMeasure = new java.lang.String[_mapManifestMeasureCalibQuote.size()];
+
+		int i = 0;
+
+		for (java.lang.String strManifestMeasure : _mapManifestMeasureCalibQuote.keySet())
+			astrManifestMeasure[i++] = strManifestMeasure;
+
+		return astrManifestMeasure;
 	}
 
 	/**
 	 * Retrieve the Manifest Measure Quote Value
 	 * 
+	 * @param The Manifest Measure
+	 * 
 	 * @return The Manifest Measure Quote Value
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public double getMeasureQuoteValue()
+	public double getMeasureQuoteValue (
+		final java.lang.String strManifestMeasure)
+		throws java.lang.Exception
 	{
-		return _dblMeasureQuoteValue;
+		if (null == strManifestMeasure || !_mapManifestMeasureCalibQuote.containsKey (strManifestMeasure))
+			throw new java.lang.Exception
+				("LatentStateMetricMeasure::getMeasureQuoteValue => Invalid Manifest Measure");
+
+		return _mapManifestMeasureCalibQuote.get (strManifestMeasure);
+	}
+
+	/**
+	 * Retrieve the Entire Manifest Measure Quote Value Map
+	 * 
+	 * @return The Full Manifest Measure Quote Value Map
+	 */
+
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> quoteMap()
+	{
+		return _mapManifestMeasureCalibQuote;
 	}
 }

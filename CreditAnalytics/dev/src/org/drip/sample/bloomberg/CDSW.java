@@ -173,9 +173,9 @@ public class CDSW {
 
 		for (int i = 0; i < aCDS.length; ++i)
 			System.out.println (
-				aCDS[i].getMaturityDate() + " | " +
-				cc.manifestMeasure(aCDS[i].getPrimaryCode()) + " | " +
-				org.drip.quant.common.FormatUtil.FormatDouble (1. - cc.getSurvival (aCDS[i].getMaturityDate()), 1, 3, 1.));
+				aCDS[i].maturity() + " | " +
+				cc.manifestMeasure(aCDS[i].primaryCode()) + " | " +
+				org.drip.quant.common.FormatUtil.FormatDouble (1. - cc.getSurvival (aCDS[i].maturity()), 1, 3, 1.));
 	}
 
 	/*
@@ -268,9 +268,9 @@ public class CDSW {
 
 		System.out.println ("\n---- CDS Details ----");
 
-		System.out.println ("Effective    : " + cds.getEffectiveDate());
+		System.out.println ("Effective    : " + cds.effective());
 
-		System.out.println ("Maturity     : " + cds.getMaturityDate());
+		System.out.println ("Maturity     : " + cds.maturity());
 
 		/*
 		 * Generate the base CDS Measures
@@ -349,7 +349,7 @@ public class CDSW {
 
 		System.out.println ("\n---- CDS Coupon Flows ----");
 
-		for (CashflowPeriod p : cds.getCashFlowPeriod())
+		for (CashflowPeriod p : cds.cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +

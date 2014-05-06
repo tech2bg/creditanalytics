@@ -139,7 +139,7 @@ public class OvernightIndexFloatingStream extends org.drip.product.rates.Floatin
 
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-				mktParams.getFixings();
+				mktParams.fixings();
 
 		if (null == mapFixings || 0 == mapFixings.size())
 			throw new java.lang.Exception

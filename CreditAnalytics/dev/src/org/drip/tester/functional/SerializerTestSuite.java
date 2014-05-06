@@ -569,14 +569,7 @@ public class SerializerTestSuite {
 
 		Verify (abTBS, new org.drip.product.params.TsyBmkSet (abTBS), "TsyBmkSet");
 
-		org.drip.product.params.TreasuryBenchmark btp = new org.drip.product.params.TreasuryBenchmark (tbs,
-			"USDTSY", "USDEDSF");
-
-		byte[] abBTP = btp.serialize();
-
-		Verify (abBTP, new org.drip.product.params.TreasuryBenchmark (abBTP), "ComponentTSYParams");
-
-		if (!bond.setTreasuryBenchmark (btp)) {
+		if (!bond.setTreasuryBenchmark (tbs)) {
 			System.out.println ("Cannot initialize component TSY params!");
 
 			System.exit (126);
@@ -638,8 +631,7 @@ public class SerializerTestSuite {
 			System.exit (130);
 		}
 
-		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet ("USD",
-			"USD", "USD");
+		org.drip.product.params.CurrencySet ccyParams = org.drip.product.params.CurrencySet.Create ("USD");
 
 		byte[] abCcyParams = ccyParams.serialize();
 
@@ -746,21 +738,13 @@ public class SerializerTestSuite {
 		Verify (abBond, new org.drip.product.credit.BondComponent (abBond), "Bond");
 
 		double[] adblRateTSY = new double[3];
-		double[] adblRateEDSF = new double[3];
 
-		for (int i = 0; i < 3; ++i) {
+		for (int i = 0; i < 3; ++i)
 			adblRateTSY[i] = 0.01 * (i + 1);
-			adblRateEDSF[i] = 0.0125 * (i + 1);
-		}
 
 		org.drip.analytics.rates.DiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", null, adblDCDate, adblRateTSY,
-					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
-		org.drip.analytics.rates.DiscountCurve dcEDSF =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", null, adblDCDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
@@ -772,7 +756,7 @@ public class SerializerTestSuite {
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
 		byte[] abCMP = org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-			dcTSY, dcEDSF, cc, cq, mapTSYQuotes, mmFixings).serialize();
+			dcTSY, cc, cq, mapTSYQuotes, mmFixings).serialize();
 
 		Verify (abCMP, org.drip.param.creator.ComponentMarketParamsBuilder.FromByteArray (abCMP),
 			"ComponentMarketParams");
@@ -783,8 +767,6 @@ public class SerializerTestSuite {
 		mapDC.put ("ABC", dc);
 
 		mapDC.put ("ABCTSY", dcTSY);
-
-		mapDC.put ("ABCEDSF", dcEDSF);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapCC =
 			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();

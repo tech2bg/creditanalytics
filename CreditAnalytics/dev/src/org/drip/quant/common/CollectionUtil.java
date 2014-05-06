@@ -296,7 +296,8 @@ public class CollectionUtil {
 				|| null == strRecordDelimiter || strRecordDelimiter.isEmpty())
 			return null;
 
-		java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (str2DMap, strRecordDelimiter);
+		java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (str2DMap,
+			strRecordDelimiter);
 
 		if (null == astrRecord || 0 == astrRecord.length) return null;
 

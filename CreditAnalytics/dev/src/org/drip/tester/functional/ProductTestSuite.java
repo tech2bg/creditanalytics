@@ -102,17 +102,6 @@ public class ProductTestSuite {
 	{
 		org.drip.product.credit.BondComponent simpleBond = new org.drip.product.credit.BondComponent();
 
-		org.drip.product.params.TreasuryBenchmark tsyParams = new org.drip.product.params.TreasuryBenchmark
-			(null, strCurrency + "TSY", strCurrency + "EDSF");
-
-		if (!tsyParams.validate()) {
-			System.out.println ("TSY params for " + strName + " could not be validated!");
-
-			return null;
-		}
-
-		simpleBond.setTreasuryBenchmark (tsyParams);
-
 		org.drip.product.params.IdentifierSet idParams = new
 			org.drip.product.params.IdentifierSet (strName, strName, strName, strTicker);
 
@@ -135,8 +124,8 @@ public class ProductTestSuite {
 
 		simpleBond.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet
-			(strCurrency, strCurrency, strCurrency);
+		org.drip.product.params.CurrencySet ccyParams = org.drip.product.params.CurrencySet.Create
+			(strCurrency);
 
 		if (!ccyParams.validate()) {
 			System.out.println ("CCY params for " + strName + " could not be validated!");
@@ -148,9 +137,9 @@ public class ProductTestSuite {
 
 		simpleBond.setFloaterSetting (null);
 
-		org.drip.product.params.QuoteConvention mktConv = new
-			org.drip.product.params.QuoteConvention (null, "", dtEffective.getJulian(), 1.,
-				0, strCurrency, org.drip.analytics.daycount.Convention.DR_MOD_FOLL);
+		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (null,
+			"", dtEffective.getJulian(), 1., 0, strCurrency,
+				org.drip.analytics.daycount.Convention.DR_MOD_FOLL);
 
 		if (!mktConv.validate()) {
 			System.out.println ("IR Val params for " + strName + " could not be validated!");
@@ -232,17 +221,6 @@ public class ProductTestSuite {
 	{
 		org.drip.product.credit.BondComponent bondTSY = new org.drip.product.credit.BondComponent();
 
-		org.drip.product.params.TreasuryBenchmark tsyParams = new org.drip.product.params.TreasuryBenchmark
-			(null, "USDTSY", "USDEDSF");
-
-		if (!tsyParams.validate()) {
-			System.out.println ("TSY params for " + strName + " could not be validated!");
-
-			return null;
-		}
-
-		bondTSY.setTreasuryBenchmark (tsyParams);
-
 		org.drip.product.params.IdentifierSet idParams = new
 			org.drip.product.params.IdentifierSet (strName, strName, strName, "UST");
 
@@ -265,8 +243,8 @@ public class ProductTestSuite {
 
 		bondTSY.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet
-			("USDTSY", "USDTSY", "USDTSY");
+		org.drip.product.params.CurrencySet ccyParams = org.drip.product.params.CurrencySet.Create
+			("USDTSY");
 
 		if (!ccyParams.validate()) {
 			System.out.println ("CCY params for " + strName + " could not be validated!");
@@ -481,7 +459,7 @@ public class ProductTestSuite {
 			org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG ("USDTSY",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
-		irscUSDTSY.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,
+		irscUSDTSY.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);
 
 		System.out.println ("TSYDC Cook in: " + (System.nanoTime() - lStart) * 1.e-09 + " sec");
@@ -502,9 +480,9 @@ public class ProductTestSuite {
 
 			for (int i = 0; i < aCompCalib.length; ++i) {
 				System.out.println ("TSYRate[" + i + "] = " + dcBaseTSY.zero
-					(aCompCalib[i].getMaturityDate().getJulian()));
+					(aCompCalib[i].maturity().getJulian()));
 
-				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].calcMeasureValue
+				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
 					(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 						(dcBaseTSY, null, null, null, null, null,
@@ -530,7 +508,7 @@ public class ProductTestSuite {
 
 				for (int i = 0; i < aCompCalib.length; ++i)
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].calcMeasureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
+						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
 								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 						(dcBumpUp, null, null, null, null, null, mpc.getFixings()), null,
@@ -551,7 +529,7 @@ public class ProductTestSuite {
 
 				for (int i = 0; i < aCompCalib.length; ++i)
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].calcMeasureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
+						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
 								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 						(dcBumpDn, null, null, null, null, null, mpc.getFixings()), null,
@@ -577,7 +555,7 @@ public class ProductTestSuite {
 
 					for (int i = 0; i < aCompCalib.length; ++i)
 						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
-							aCompCalib[i].getPrimaryCode() + "] = " + aCompCalib[i].calcMeasureValue (new
+							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 										(me.getValue().fundingCurve(), null, null, null, null, null,
@@ -604,7 +582,7 @@ public class ProductTestSuite {
 
 					for (int i = 0; i < aCompCalib.length; ++i)
 						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
-							aCompCalib[i].getPrimaryCode() + "] = " + aCompCalib[i].calcMeasureValue (new
+							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 										(me.getValue().fundingCurve(), null, null, null, null, null,
@@ -751,7 +729,7 @@ public class ProductTestSuite {
 			org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG ("USD",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
-		irscUSD.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, null,
+		irscUSD.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);
 
 		System.out.println ("DC Cook in: " + (System.nanoTime() - lStart) * 1.e-09 + " sec");
@@ -773,7 +751,7 @@ public class ProductTestSuite {
 			System.out.println ("\n\n------------------\nTesting Base DC Curve\n--------\n");
 
 			for (int i = 0; i < aCompCalib.length; ++i)
-				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].calcMeasureValue
+				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
 					(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 						(dcBase, null, null, null, null, null,
@@ -797,7 +775,7 @@ public class ProductTestSuite {
 
 				for (int i = 0; i < aCompCalib.length; ++i)
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].calcMeasureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
+						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
 								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 									(dcBumpUp, null, null, null, null, null, mpc.getFixings()), null,
@@ -818,7 +796,7 @@ public class ProductTestSuite {
 
 				for (int i = 0; i < aCompCalib.length; ++i)
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].calcMeasureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
+						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
 								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 									(dcBumpDn, null, null, null, null, null, mpc.getFixings()), null,
@@ -844,7 +822,7 @@ public class ProductTestSuite {
 
 					for (int i = 0; i < aCompCalib.length; ++i)
 						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
-							aCompCalib[i].getPrimaryCode() + "] = " + aCompCalib[i].calcMeasureValue (new
+							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 							(me.getValue().fundingCurve(), null, null, null, null, null,
@@ -871,7 +849,7 @@ public class ProductTestSuite {
 
 					for (int i = 0; i < aCompCalib.length; ++i)
 						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
-							aCompCalib[i].getPrimaryCode() + "] = " + aCompCalib[i].calcMeasureValue (new
+							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 							(me.getValue().fundingCurve(), null, null, null, null, null,
@@ -933,14 +911,14 @@ public class ProductTestSuite {
 		org.drip.param.definition.ScenarioCreditCurve ccscARG =
 			org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDSARG);
 
-		ccscARG.cookScenarioCC ("ARG", valParams, dc, null, null, adblQuotesARG, 0.40, astrCalibMeasure,
-			null, null, false, 63);
+		ccscARG.cookScenarioCC ("ARG", valParams, dc, null, adblQuotesARG, 0.40, astrCalibMeasure, null,
+			null, false, 63);
 
 		org.drip.param.definition.ScenarioCreditCurve ccscBRA =
 			org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDSBRA);
 
-		ccscBRA.cookScenarioCC ("BRA", valParams, dc, null, null, adblQuotesBRA, 0.40, astrCalibMeasure,
-			null, null, false, 63);
+		ccscBRA.cookScenarioCC ("BRA", valParams, dc, null, adblQuotesBRA, 0.40, astrCalibMeasure, null,
+			null, false, 63);
 
 		System.out.println ("All CC Cook in: " + (System.nanoTime() - lStart) * 1.e-09 + " sec");
 
@@ -957,7 +935,7 @@ public class ProductTestSuite {
 			System.out.println ("Base: " + ccBase.toString());
 		else if (TD_DETAILED == iTestDetail) {
 			for (int i = 0; i < aCDSBRA.length; ++i)
-				System.out.println ("Base Fair premium = " + aCDSBRA[i].calcMeasureValue (valParams,
+				System.out.println ("Base Fair premium = " + aCDSBRA[i].measureValue (valParams,
 					pricerParams,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
 							null, null, ccBase, null, null, null), null, "FairPremium"));
@@ -973,7 +951,7 @@ public class ProductTestSuite {
 				System.out.println ("CC Up01: " + ccBumpUp.toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (int i = 0; i < aCDSBRA.length; ++i)
-					System.out.println ("Up01 Fair premium = " + aCDSBRA[i].calcMeasureValue (valParams,
+					System.out.println ("Up01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 								(dc, null, null, ccBumpUp, null, null, null), null, "FairPremium"));
@@ -990,7 +968,7 @@ public class ProductTestSuite {
 				System.out.println ("CC Dn01: " + ccBumpDn.toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (int i = 0; i < aCDSBRA.length; ++i)
-					System.out.println ("Dn01 Fair premium = " + aCDSBRA[i].calcMeasureValue (valParams,
+					System.out.println ("Dn01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 								(dc, null, null, ccBumpDn, null, null, null), null, "FairPremium"));
@@ -1007,7 +985,7 @@ public class ProductTestSuite {
 				System.out.println ("CC RR Up01: " + ccRecoveryUp.toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (int i = 0; i < aCDSBRA.length; ++i)
-					System.out.println ("RR Up01 Fair premium = " + aCDSBRA[i].calcMeasureValue (valParams,
+					System.out.println ("RR Up01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 								(dc, null, null, ccRecoveryUp, null, null, null), null, "FairPremium"));
@@ -1024,7 +1002,7 @@ public class ProductTestSuite {
 				System.out.println ("CC RR Dn01: " + ccRecoveryDn.toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (int i = 0; i < aCDSBRA.length; ++i)
-					System.out.println ("RR Dn01 Fair premium = " + aCDSBRA[i].calcMeasureValue (valParams,
+					System.out.println ("RR Dn01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 								(dc, null, null, ccRecoveryDn, null, null, null), null, "FairPremium"));
@@ -1049,7 +1027,7 @@ public class ProductTestSuite {
 
 					for (int i = 0; i < aCDSBRA.length; ++i)
 						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
-							aCDSBRA[i].getPrimaryCode() + "] = " + aCDSBRA[i].calcMeasureValue (new
+							aCDSBRA[i].primaryCode() + "] = " + aCDSBRA[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), pricerParams,
 									me.getValue(), null, astrCalibMeasure[i]));
 				}
@@ -1074,7 +1052,7 @@ public class ProductTestSuite {
 
 					for (int i = 0; i < aCDSBRA.length; ++i)
 						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
-							aCDSBRA[i].getPrimaryCode() + "] = " + aCDSBRA[i].calcMeasureValue (new
+							aCDSBRA[i].primaryCode() + "] = " + aCDSBRA[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), pricerParams,
 									me.getValue(), null, astrCalibMeasure[i]));
 				}
@@ -1093,7 +1071,7 @@ public class ProductTestSuite {
 			org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), dt.addDays (10), null,
 				"USD");
 
-		org.drip.analytics.output.ComponentMeasures cashOut = cash.calcMeasures (new
+		org.drip.analytics.output.ComponentMeasures cashOut = cash.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
 
 		System.out.println ("Cash calcs in " + cashOut._dblCalcTime + " sec");
@@ -1192,7 +1170,7 @@ public class ProductTestSuite {
 		
 		org.drip.product.definition.CalibratableFixedIncomeComponent edf = aEDF[0];
 
-		org.drip.analytics.output.ComponentMeasures edfOut = edf.calcMeasures (new
+		org.drip.analytics.output.ComponentMeasures edfOut = edf.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
 
 		System.out.println ("EDF calcs in " + edfOut._dblCalcTime + " sec");
@@ -1289,7 +1267,7 @@ public class ProductTestSuite {
 		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.RatesStreamBuilder.CreateIRS
 			(dt.addDays (2), dt.addDays ((int)(365.25 * 9 + 2)), 0.04, "USD","USD-LIBOR-6M", "USD");
 
-		org.drip.analytics.output.ComponentMeasures irsOut = irs.calcMeasures (new
+		org.drip.analytics.output.ComponentMeasures irsOut = irs.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
 
 		System.out.println ("IRS calcs in " + irsOut._dblCalcTime + " sec");
@@ -1403,7 +1381,7 @@ public class ProductTestSuite {
 		org.drip.product.definition.CreditDefaultSwap cds = org.drip.product.creator.CDSBuilder.CreateCDS
 			(dt, dt.addYears (5), 0.01, "USD", 0.40, "BRA", "USD", true);
 
-		org.drip.analytics.output.ComponentMeasures cdsOut = cds.calcMeasures (new
+		org.drip.analytics.output.ComponentMeasures cdsOut = cds.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"),
 				org.drip.param.pricer.PricerParams.MakeStdPricerParams(), mpc, null);
 
@@ -1621,7 +1599,7 @@ public class ProductTestSuite {
 				adblAmericanCallDates, adblAmericanCallFactors, false, 30, false, java.lang.Double.NaN, "",
 					java.lang.Double.NaN)); */
 
-		org.drip.analytics.output.ComponentMeasures bondOut = bond.calcMeasures (new
+		org.drip.analytics.output.ComponentMeasures bondOut = bond.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"),
 				org.drip.param.pricer.PricerParams.MakeStdPricerParams(), mpc, null);
 
@@ -1860,7 +1838,7 @@ public class ProductTestSuite {
 		org.drip.param.pricer.PricerParams pricerParams =
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams();
 
-		org.drip.analytics.output.BasketMeasures cdxOp = cdx.calcMeasures (valParams, pricerParams, mpc,
+		org.drip.analytics.output.BasketMeasures cdxOp = cdx.measures (valParams, pricerParams, mpc,
 			null);
 
 		System.out.println ("CDX calcs in " + cdxOp._dblCalcTime + " sec");
@@ -2274,9 +2252,8 @@ public class ProductTestSuite {
 
 		org.drip.product.credit.BondComponent bond = new org.drip.product.credit.BondComponent();
 
-		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TreasuryBenchmark (new
-			org.drip.product.params.TsyBmkSet ("USD5YON", new java.lang.String[] {"USD3YON", "USD7YON"}),
-				"USDTSY", "USDEDSF"))) {
+		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TsyBmkSet ("USD5YON", new
+			java.lang.String[] {"USD3YON", "USD7YON"}))) {
 			System.out.println ("Cannot initialize bond TSY params!");
 
 			System.exit (126);
@@ -2311,7 +2288,7 @@ public class ProductTestSuite {
 			System.exit (130);
 		}
 
-		if (!bond.setCurrencySet (new org.drip.product.params.CurrencySet ("USD", "USD", "USD"))) {
+		if (!bond.setCurrencySet (org.drip.product.params.CurrencySet.Create ("USD"))) {
 			System.out.println ("Cannot initialize bond currency params!");
 
 			System.exit (131);
@@ -2378,7 +2355,7 @@ public class ProductTestSuite {
 		org.drip.param.pricer.PricerParams pricerParams =
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams();
 
-		org.drip.analytics.output.BasketMeasures bbOp = bb.calcMeasures (valParams, pricerParams, mpc, null);
+		org.drip.analytics.output.BasketMeasures bbOp = bb.measures (valParams, pricerParams, mpc, null);
 
 		System.out.println ("Bond Basket calcs in " + bbOp._dblCalcTime + " sec");
 

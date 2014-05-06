@@ -443,22 +443,22 @@ public class FRAStdCapFloorVolAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CashflowPeriod period : floatstream.getCashFlowPeriod()) {
+		for (org.drip.analytics.period.CashflowPeriod period : floatstream.cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.getStartDate());
 
-			cmp.setLatentStateVolSurface (
+			cmp.setVolSurface (
 				fri.fullyQualifiedName(),
 				dtFRADate,
 				new FlatUnivariate (dblFRIVol)
 			);
 
-			cmp.setLatentStateVolSurface (
+			cmp.setVolSurface (
 				"ForwardToDomesticExchangeVolatility",
 				dtFRADate,
 				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 			);
 
-			cmp.setLatentStateVolSurface (
+			cmp.setVolSurface (
 				"FRIForwardToDomesticExchangeCorrelation",
 				dtFRADate,
 				new FlatUnivariate (dblFRIQuantoExchangeCorr)
@@ -518,7 +518,7 @@ public class FRAStdCapFloorVolAnalysis {
 			strCurrency);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

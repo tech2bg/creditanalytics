@@ -53,7 +53,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @return Primary Code
 	 */
 
-	public abstract java.lang.String getPrimaryCode();
+	public abstract java.lang.String primaryCode();
 
 	/**
 	 * Set the component's primary code
@@ -70,9 +70,9 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @return Array of strings containing the secondary codes
 	 */
 
-	public java.lang.String[] getSecondaryCode()
+	public java.lang.String[] secondaryCode()
 	{
-		java.lang.String strPrimaryCode = getPrimaryCode();
+		java.lang.String strPrimaryCode = primaryCode();
 
 		int iNumTokens = 0;
 		java.lang.String astrCodeTokens[] = new java.lang.String[3];
@@ -108,7 +108,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	/**
 	 * Compute the micro-Jacobian of the given measure to the DF
 	 * 
-	 * @param strQuote Quote Name
+	 * @param strMainfestMeasure Manifest Measure Name
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
 	 * @param mktParams Component Market Parameters
@@ -117,8 +117,8 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @return The micro-Jacobian
 	 */
 
-	public abstract org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
-		final java.lang.String strQuote,
+	public abstract org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+		final java.lang.String strMainfestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
@@ -153,6 +153,6 @@ public abstract class CalibratableFixedIncomeComponent extends
 
 	public org.drip.analytics.date.JulianDate terminalDate()
 	{
-		return getMaturityDate();
+		return maturity();
 	}
 }

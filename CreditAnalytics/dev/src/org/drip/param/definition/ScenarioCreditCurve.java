@@ -91,7 +91,6 @@ public abstract class ScenarioCreditCurve {
 	 * @param valParams ValuationParams
 	 * @param dc Base Discount Curve
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Matched array of Quotes
 	 * @param dblRecovery Curve Recovery
 	 * @param astrCalibMeasure Matched array of Calibration measures
@@ -108,7 +107,6 @@ public abstract class ScenarioCreditCurve {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
@@ -126,7 +124,6 @@ public abstract class ScenarioCreditCurve {
 	 * @param valParams Valuation Parameters
 	 * @param dc Discount Curve
 	 * @param dcTSY TSY Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Double array of input quotes
 	 * @param dblRecovery Recovery Rate
 	 * @param astrCalibMeasure Array of calibration measures
@@ -135,7 +132,6 @@ public abstract class ScenarioCreditCurve {
 	 * @param bFlat Whether the calibration is flat
 	 * @param ntpDC Node Tweak Parameters for the Base Discount Curve
 	 * @param ntpTSY Node Tweak Parameters for the TSY Discount Curve
-	 * @param ntpEDSF Node Tweak Parameters for the EDSF Discount Curve
 	 * @param ntpCC Node Tweak Parameters for the Credit Curve
 	 * 
 	 * @return True => Credit Curve successfully created
@@ -147,7 +143,6 @@ public abstract class ScenarioCreditCurve {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
@@ -157,7 +152,6 @@ public abstract class ScenarioCreditCurve {
 		final boolean bFlat,
 		final org.drip.param.definition.ResponseValueTweakParams ntpDC,
 		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
-		final org.drip.param.definition.ResponseValueTweakParams ntpEDSF,
 		final org.drip.param.definition.ResponseValueTweakParams ntpCC);
 
 	/**
@@ -206,8 +200,9 @@ public abstract class ScenarioCreditCurve {
 	 * @return The Tenor Bumped up credit curve Map
 	 */
 
-	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
-		getTenorCCBumpUp();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+			getTenorCCBumpUp();
 
 	/**
 	 * Return the tenor bump down credit curve map
@@ -215,6 +210,7 @@ public abstract class ScenarioCreditCurve {
 	 * @return The Tenor Bumped Down credit curve Map
 	 */
 
-	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
-		getTenorCCBumpDn();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+			getTenorCCBumpDn();
 }

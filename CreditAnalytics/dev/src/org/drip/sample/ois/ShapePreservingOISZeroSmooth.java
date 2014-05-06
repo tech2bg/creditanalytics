@@ -400,23 +400,23 @@ public class ShapePreservingOISZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCashComp.length; ++i)
-			System.out.println ("\t[" + aCashComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aCashComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aCashComp[i].calcMeasureValue (
+					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "USD"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				/* FormatUtil.FormatDouble (
-					aCashComp[i].calcMeasureValue (
+					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "USD"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcGloballySmooth, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " + */
 				FormatUtil.FormatDouble (
-					aCashComp[i].calcMeasureValue (
+					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "USD"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocallySmooth, null, null, null, null, null, null),
 						null,
@@ -445,23 +445,23 @@ public class ShapePreservingOISZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aOISComp.length; ++i)
-			System.out.println ("\t[" + aOISComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aOISComp[i].calcMeasureValue (
+					aOISComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "USD"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				/* FormatUtil.FormatDouble (
-					aOISComp[i].calcMeasureValue (
+					aOISComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "USD"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcGloballySmooth, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " + */
 				FormatUtil.FormatDouble (
-					aOISComp[i].calcMeasureValue (
+					aOISComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "USD"), null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocallySmooth, null, null, null, null, null, null),
 						null,
@@ -497,21 +497,21 @@ public class ShapePreservingOISZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCC.length; ++i)
-			System.out.println ("\t[" + aCC[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aCC[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
+					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
 				/* FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
+					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcGloballySmooth, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " + */
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
+					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocallySmooth, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),

@@ -55,10 +55,11 @@ public abstract class CurveSpanConstructionInput implements
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
 	private org.drip.param.definition.ComponentMarketParams _cmp = null;
 	private org.drip.state.estimator.StretchRepresentationSpec[] _aSRS = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+		_mapQuote = null;
 
 	/**
 	 * CurveSpanConstructionInput constructor
@@ -133,13 +134,16 @@ public abstract class CurveSpanConstructionInput implements
 		return aCC;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> getQuote()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			getQuote()
 	{
 		if (null != _mapQuote) return _mapQuote;
 
 		if (null == _aSRS || 0 == _aSRS.length) return null;
 
-		_mapQuote = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		_mapQuote = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : _aSRS) {
 			if (null == rbs) continue;
@@ -155,7 +159,7 @@ public abstract class CurveSpanConstructionInput implements
 			if (0 == iNumComp || iNumComp != aLSMM.length) continue;
 
 			for (int i = 0; i < iNumComp; ++i)
-				_mapQuote.put (aCC[i].getPrimaryCode(), aLSMM[i].getMeasureQuoteValue());
+				_mapQuote.put (aCC[i].primaryCode(), aLSMM[i].quoteMap());
 		}
 
 		return _mapQuote;
@@ -183,7 +187,7 @@ public abstract class CurveSpanConstructionInput implements
 			if (0 == iNumComp || iNumComp != aLSMM.length) continue;
 
 			for (int i = 0; i < iNumComp; ++i)
-				_mapMeasures.put (aCC[i].getPrimaryCode(), aLSMM[i].getManifestMeasures());
+				_mapMeasures.put (aCC[i].primaryCode(), aLSMM[i].getManifestMeasures());
 		}
 
 		return _mapMeasures;

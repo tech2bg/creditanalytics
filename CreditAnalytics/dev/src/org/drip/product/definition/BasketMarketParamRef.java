@@ -46,7 +46,7 @@ public interface BasketMarketParamRef {
 	 * @return The set of the component IR curve names
 	 */
 
-	public abstract java.util.Set<java.lang.String> getComponentIRCurveNames();
+	public abstract java.util.Set<java.lang.String> cashflowCurrencySet();
 
 	/**
 	 * Retrieve the set of the component Forward curve names
@@ -70,13 +70,4 @@ public interface BasketMarketParamRef {
 	 * @return The set of the component Treasury curve names
 	 */
 
-	public abstract java.util.Set<java.lang.String> getComponentTreasuryCurveNames();
-
-	/**
-	 * Retrieve the set of the component EDSF curve names
-	 * 
-	 * @return The set of the component EDSF curve names
-	 */
-
-	public abstract java.util.Set<java.lang.String> getComponentEDSFCurveNames();
-}
+	public abstract java.util.Set<java.lang.String> getComponentTreasuryCurveNames();}

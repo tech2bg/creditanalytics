@@ -311,6 +311,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 	}
 
 	@Override public ForwardHazardCreditCurve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
@@ -338,7 +339,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 
 		for (int i = 0; i < _adblCalibQuote.length; ++i) {
 			try {
-				calibrator.bootstrapHazardRate (cc, _aCalibInst[i], i, _valParam, _dc, _dcTSY, _dcEDSF,
+				calibrator.bootstrapHazardRate (cc, _aCalibInst[i], i, _valParam, _dc, _dcTSY,
 					_pricerParam, _astrCalibMeasure[i], adblCalibQuote[i] = _adblCalibQuote[i] + dblShift,
 						_mmFixing, _quotingParams, _bFlat);
 			} catch (java.lang.Exception e) {
@@ -348,14 +349,15 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			}
 		}
 
-		cc.setInstrCalibInputs (_valParam, _bFlat, _dc, _dcTSY, _dcEDSF, _pricerParam, _aCalibInst,
-			adblCalibQuote, _astrCalibMeasure, _mmFixing, _quotingParams);
+		cc.setInstrCalibInputs (_valParam, _bFlat, _dc, _dcTSY, _pricerParam, _aCalibInst, adblCalibQuote,
+			_astrCalibMeasure, _mmFixing, _quotingParams);
 
 		return cc;
 	}
 
 	@Override public ForwardHazardCreditCurve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
@@ -385,9 +387,9 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 
 		for (int i = 0; i < _adblCalibQuote.length; ++i) {
 			try {
-				calibrator.bootstrapHazardRate (cc, _aCalibInst[i], i, _valParam, _dc, _dcTSY, _dcEDSF,
-					_pricerParam, _astrCalibMeasure[i], adblCalibQuote[i] = _adblCalibQuote[i] + (i ==
-						iSpanIndex ? dblShift : 0.), _mmFixing, _quotingParams, _bFlat);
+				calibrator.bootstrapHazardRate (cc, _aCalibInst[i], i, _valParam, _dc, _dcTSY, _pricerParam,
+					_astrCalibMeasure[i], adblCalibQuote[i] = _adblCalibQuote[i] + (i == iSpanIndex ?
+						dblShift : 0.), _mmFixing, _quotingParams, _bFlat);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -395,8 +397,8 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			}
 		}
 
-		cc.setInstrCalibInputs (_valParam, _bFlat, _dc, _dcTSY, _dcEDSF, _pricerParam, _aCalibInst,
-			adblCalibQuote, _astrCalibMeasure, _mmFixing, _quotingParams);
+		cc.setInstrCalibInputs (_valParam, _bFlat, _dc, _dcTSY, _pricerParam, _aCalibInst, adblCalibQuote,
+			_astrCalibMeasure, _mmFixing, _quotingParams);
 
 		return cc;
 	}
@@ -435,8 +437,8 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 
 		for (int i = 0; i < _adblCalibQuote.length; ++i) {
 			try {
-				calibrator.bootstrapHazardRate (cc, _aCalibInst[i], i, _valParam, _dc, _dcTSY, _dcEDSF,
-					_pricerParam, _astrCalibMeasure[i], dblFlatNodeValue, _mmFixing, _quotingParams, true);
+				calibrator.bootstrapHazardRate (cc, _aCalibInst[i], i, _valParam, _dc, _dcTSY, _pricerParam,
+					_astrCalibMeasure[i], dblFlatNodeValue, _mmFixing, _quotingParams, true);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -445,7 +447,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		}
 
 		if (bSingleNode)
-			cc.setInstrCalibInputs (_valParam, true, _dc, _dcTSY, _dcEDSF, _pricerParam, new
+			cc.setInstrCalibInputs (_valParam, true, _dc, _dcTSY, _pricerParam, new
 				org.drip.product.definition.CalibratableFixedIncomeComponent[] {_aCalibInst[0]}, new double[]
 					{dblFlatNodeValue}, _astrCalibMeasure, _mmFixing, _quotingParams);
 		else {
@@ -454,14 +456,15 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			for (int i = 0; i < _adblCalibQuote.length; ++i)
 				adblCalibValue[i] = dblFlatNodeValue;
 
-			cc.setInstrCalibInputs (_valParam, true, _dc, _dcTSY, _dcEDSF, _pricerParam, _aCalibInst,
-				adblCalibValue, _astrCalibMeasure, _mmFixing, _quotingParams);
+			cc.setInstrCalibInputs (_valParam, true, _dc, _dcTSY, _pricerParam, _aCalibInst, adblCalibValue,
+				_astrCalibMeasure, _mmFixing, _quotingParams);
 		}
 
 		return cc;
 	}
 
 	@Override  public org.drip.analytics.definition.CreditCurve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams mmtp)
 	{
 		if (null == mmtp) return null;
@@ -539,7 +542,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 				for (int i = 0; i < adblQuoteBumped.length; ++i) {
 					try {
 						calibrator.bootstrapHazardRate (cc, _aCalibInst[i], i, _valParam, _dc, _dcTSY,
-							_dcEDSF, _pricerParam, _astrCalibMeasure[i], adblQuoteBumped[i], _mmFixing,
+							_pricerParam, _astrCalibMeasure[i], adblQuoteBumped[i], _mmFixing,
 								_quotingParams, _bFlat);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
@@ -548,7 +551,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 					}
 				}
 
-				cc.setInstrCalibInputs (_valParam, _bFlat, _dc, _dcTSY, _dcEDSF, _pricerParam, _aCalibInst,
+				cc.setInstrCalibInputs (_valParam, _bFlat, _dc, _dcTSY, _pricerParam, _aCalibInst,
 					adblQuoteBumped, _astrCalibMeasure, _mmFixing, _quotingParams);
 
 				return cc;

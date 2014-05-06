@@ -151,7 +151,7 @@ public class TreasuryCurveAPI {
 			double dblPrice = aTSYBond[i].calcPriceFromBumpedDC (
 				new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 				ComponentMarketParamsBuilder.MakeDiscountCMP (dcTSY),
-				aTSYBond[i].getMaturityDate().getJulian(),
+				aTSYBond[i].maturity().getJulian(),
 				1.,
 				0.);
 
@@ -281,7 +281,7 @@ public class TreasuryCurveAPI {
 		double dblPrice = bondOffTheRun.calcPriceFromBumpedDC (
 			new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 			ComponentMarketParamsBuilder.MakeDiscountCMP (dcTSY),
-			bondOffTheRun.getMaturityDate().getJulian(),
+			bondOffTheRun.maturity().getJulian(),
 			1.,
 			0.);
 

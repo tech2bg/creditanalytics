@@ -68,6 +68,21 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		_bIsCaplet = bIsCaplet;
 	}
 
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	{
+		return _fra.cashflowCurrencySet();
+	}
+
+	@Override public java.lang.String[] couponCurrency()
+	{
+		return _fra.couponCurrency();
+	}
+
+	@Override public java.lang.String[] principalCurrency()
+	{
+		return _fra.principalCurrency();
+	}
+
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -82,10 +97,10 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		long lStart = System.nanoTime();
 
-		java.lang.String strFRI = _fra.getForwardCurveName()[0];
+		java.lang.String strFRI = _fra.forwardCurveName()[0];
 
-		org.drip.quant.function1D.AbstractUnivariate auFRAVolSurface = mktParams.getLatentStateVolSurface
-			(strFRI, exercise());
+		org.drip.quant.function1D.AbstractUnivariate auFRAVolSurface = mktParams.volSurface (strFRI,
+			exercise());
 
 		if (null == auFRAVolSurface) return null;
 

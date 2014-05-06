@@ -284,16 +284,18 @@ public interface DiscountFactorEstimator {
 		throws java.lang.Exception;
 
 	/**
-	 * Estimates the estimated calibrated measure value for the given date
+	 * Estimate the manifest measure value for the given date
 	 * 
+	 * @param strManifestMeasure The Manifest Measure to be Estimated
 	 * @param dblDate Date
 	 * 
 	 * @return The estimated calibrated measure value
 	 * 
-	 * @throws java.lang.Exception Thrown if the estimated calibrated measure value cannot be computed
+	 * @throws java.lang.Exception Thrown if the estimated manifest measure cannot be computed
 	 */
 
-	public abstract double estimateMeasure (
+	public abstract double estimateManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblDate)
 		throws java.lang.Exception;
 }

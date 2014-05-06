@@ -105,7 +105,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 
 			for (int i = 0; i <= iNumCalibComp; ++i) {
 				adblPredictorOrdinate[i] = 0 == i ? valParams.valueDate() :
-					aCalibComp[i - 1].getMaturityDate().getJulian();
+					aCalibComp[i - 1].maturity().getJulian();
 
 				if (i != iNumCalibComp) aSCBC[i] = segmentBuilderControl (srs.getName());
 			}

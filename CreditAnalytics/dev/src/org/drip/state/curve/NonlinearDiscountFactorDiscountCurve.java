@@ -86,11 +86,11 @@ public class NonlinearDiscountFactorDiscountCurve extends
 					_adblDate, adblShiftedManifestMeasure);
 
 			for (int i = 0; i < iNumComp; ++i) {
-				java.lang.String strInstrumentCode = aCalibInst[i].getPrimaryCode();
+				java.lang.String strInstrumentCode = aCalibInst[i].primaryCode();
 
-				calibrator.calibrateIRNode (nldfdc, null, null, aCalibInst[i], i, valParam,
-					astrCalibMeasure[i] = mapMeasures.get (strInstrumentCode)[0],
-						adblShiftedManifestMeasure[i], mmFixing, quotingParam, false, java.lang.Double.NaN);
+				calibrator.calibrateIRNode (nldfdc, null, aCalibInst[i], i, valParam, astrCalibMeasure[i] =
+					mapMeasures.get (strInstrumentCode)[0], adblShiftedManifestMeasure[i], mmFixing,
+						quotingParam, false, java.lang.Double.NaN);
 			}
 
 			return nldfdc.setCCIS (org.drip.analytics.definition.BootCurveConstructionInput.Create (valParam,
@@ -311,32 +311,37 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	}
 
 	@Override public NonlinearDiscountFactorDiscountCurve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapQuote = _ccis.getQuote();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShiftedManifestMeasure = new double[iNumComp];
 
 		for (int i = 0; i < iNumComp; ++i)
-			adblShiftedManifestMeasure[i] = mapQuote.get (aCalibInst[i].getPrimaryCode()) + dblShift;
+			adblShiftedManifestMeasure[i] = mapQuote.get (aCalibInst[i].primaryCode()).get
+				(strManifestMeasure) + dblShift;
 
 		return shiftManifestMeasure (adblShiftedManifestMeasure);
 	}
 
 	@Override public NonlinearDiscountFactorDiscountCurve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+	mapQuote = _ccis.getQuote();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShiftedManifestMeasure = new double[iNumComp];
@@ -344,26 +349,28 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		if (iSpanIndex >= iNumComp) return null;
 
 		for (int i = 0; i < iNumComp; ++i)
-			adblShiftedManifestMeasure[i] = mapQuote.get (aCalibInst[i].getPrimaryCode()) + (iSpanIndex == i
-				? dblShift : 0.);
+			adblShiftedManifestMeasure[i] = mapQuote.get (aCalibInst[i].primaryCode()).get
+				(strManifestMeasure) + (iSpanIndex == i ? dblShift : 0.);
 
 		return shiftManifestMeasure (adblShiftedManifestMeasure);
 	}
 
 	@Override public org.drip.analytics.rates.ExplicitBootDiscountCurve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		if (null == rvtp) return null;
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapQuote = _ccis.getQuote();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblManifestMeasure = new double[iNumComp];
 
 		for (int i = 0; i < iNumComp; ++i)
-			adblManifestMeasure[i] = mapQuote.get (aCalibInst[i].getPrimaryCode());
+			adblManifestMeasure[i] = mapQuote.get (aCalibInst[i].primaryCode()).get (strManifestMeasure);
 
 		return shiftManifestMeasure (org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure
 			(adblManifestMeasure, rvtp));

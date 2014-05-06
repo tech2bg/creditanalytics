@@ -280,7 +280,7 @@ public class YAS {
 
 		bond.setEmbeddedCallSchedule (eos);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, dcTSY, null, null,
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		System.out.println ("\n---- Valuation Details ----");
@@ -365,7 +365,7 @@ public class YAS {
 
 		System.out.println ("\nCashflow\n--------");
 
-		for (Period p : bond.getCashFlowPeriod())
+		for (Period p : bond.cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +

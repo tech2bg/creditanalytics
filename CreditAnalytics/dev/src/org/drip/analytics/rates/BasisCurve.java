@@ -132,11 +132,10 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 		return null;
 	}
 
-	@Override public double manifestMeasure (
-		final java.lang.String strInstrumentCode)
-		throws java.lang.Exception
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
+		final java.lang.String strInstr)
 	{
-		return java.lang.Double.NaN;
+		return null;
 	}
 
 	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
@@ -145,6 +144,7 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 	}
 
 	@Override public org.drip.state.representation.LatentState parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
@@ -152,12 +152,14 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 
 	@Override public org.drip.state.representation.LatentState shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
 	}
 
 	@Override public org.drip.state.representation.LatentState customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return null;

@@ -36,10 +36,10 @@ package org.drip.product.fra;
 
 public class FRAStandardComponent extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 1.;
-	private java.lang.String _strIR = "";
 	private java.lang.String _strCode = "";
 	private java.lang.String _strDayCount = "";
-	private java.lang.String _strCalendar = "USD";
+	private java.lang.String _strCalendar = "";
+	private java.lang.String _strCurrency = "";
 	private double _dblStrike = java.lang.Double.NaN;
 	private double _dblEffectiveDate = java.lang.Double.NaN;
 	private org.drip.analytics.date.JulianDate _dtMaturity = null;
@@ -59,7 +59,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	 * FRAStandardComponent constructor
 	 * 
 	 * @param dblNotional Component Notional
-	 * @param strIR IR Curve
+	 * @param strCurrency Pay Currency
 	 * @param strCode FRA Product Code
 	 * @param strCalendar FRA Calendar
 	 * @param dblEffectiveDate FRA Effective Date
@@ -72,7 +72,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 	public FRAStandardComponent (
 		final double dblNotional,
-		final java.lang.String strIR,
+		final java.lang.String strCurrency,
 		final java.lang.String strCode,
 		final java.lang.String strCalendar,
 		final double dblEffectiveDate,
@@ -82,7 +82,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional ||
-			null == (_strIR = strIR) || _strIR.isEmpty() || null == (_strCode = strCode) ||
+			null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strCode = strCode) ||
 				_strCode.isEmpty() || null == (_strCalendar = strCalendar) || _strCalendar.isEmpty() ||
 					!org.drip.quant.common.NumberUtil.IsValid (_dblEffectiveDate = dblEffectiveDate) || null
 						== (_fri = fri) || !org.drip.quant.common.NumberUtil.IsValid (_dblStrike =
@@ -137,9 +137,9 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 				("FRAStandardComponent de-serializer: Cannot locate IR curve name");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_strIR = astrField[2];
+			_strCurrency = astrField[2];
 		else
-			_strIR = "";
+			_strCurrency = "";
 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate code");
@@ -188,7 +188,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		_dblStrike = new java.lang.Double (astrField[8]);
 	}
 
-	@Override public java.lang.String getPrimaryCode()
+	@Override public java.lang.String primaryCode()
 	{
 		return _strCode;
 	}
@@ -204,50 +204,59 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return "FRA=" + _fri.fullyQualifiedName();
 	}
 
-	@Override public java.lang.String getTreasuryCurveName()
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
-		return "";
+		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
+
+		setCcy.add (_strCurrency);
+
+		return setCcy;
 	}
 
-	@Override public java.lang.String getEDSFCurveName()
+	@Override public java.lang.String[] couponCurrency()
 	{
-		return "";
+		return new java.lang.String[] {_strCurrency};
 	}
 
-	@Override public double getInitialNotional()
+	@Override public java.lang.String[] principalCurrency()
+	{
+		return new java.lang.String[] {_strCurrency};
+	}
+
+	@Override public double initialNotional()
 	{
 		return _dblNotional;
 	}
 
-	@Override public double getNotional (
+	@Override public double notional (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || dblDate < _dblEffectiveDate || dblDate >
 			_dtMaturity.getJulian())
-			throw new java.lang.Exception ("FRAStandardComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
 
 		return 1.;
 	}
 
-	@Override public double getNotional (
+	@Override public double notional (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2) || dblDate1 < _dblEffectiveDate || dblDate2 < _dblEffectiveDate)
-			throw new java.lang.Exception ("FRAStandardComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
 
 		double dblMaturity = _dtMaturity.getJulian();
 
 		if (dblDate1 > dblMaturity || dblDate2 > dblMaturity)
-			throw new java.lang.Exception ("FRAStandardComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
 
 		return 1.;
 	}
 
-	@Override public double getCoupon (
+	@Override public double coupon (
 		final double dblValue,
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 		throws java.lang.Exception
@@ -255,23 +264,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return 0.;
 	}
 
-	@Override public boolean setCurves (
-		final java.lang.String strIR,
-		final java.lang.String strIRTSY,
-		final java.lang.String strCC)
-	{
-		if (null == strIR || strIR.isEmpty()) return false;
-
-		_strIR = strIR;
-		return true;
-	}
-
-	@Override public java.lang.String getIRCurveName()
-	{
-		return _strIR;
-	}
-
-	@Override public java.lang.String[] getForwardCurveName()
+	@Override public java.lang.String[] forwardCurveName()
 	{
 		return new java.lang.String[] {_fri.fullyQualifiedName()};
 	}
@@ -281,7 +274,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return "";
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getEffectiveDate()
+	@Override public org.drip.analytics.date.JulianDate effective()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblEffectiveDate);
@@ -292,17 +285,17 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getMaturityDate()
+	@Override public org.drip.analytics.date.JulianDate maturity()
 	{
 		return _dtMaturity;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getFirstCouponDate()
+	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
-		return getMaturityDate();
+		return maturity();
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
 		try {
 			return org.drip.analytics.period.CashflowPeriod.GetSinglePeriod (_dblEffectiveDate, new
@@ -315,7 +308,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return null;
 	}
 
-	@Override public org.drip.param.valuation.CashSettleParams getCashSettleParams()
+	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
 	{
 		return _settleParams;
 	}
@@ -357,7 +350,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 			java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-					mktParams.getFixings();
+					mktParams.fixings();
 
 			if (null != mapFixings && mapFixings.containsKey (_dtMaturity)) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing =
@@ -423,7 +416,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return mapResult;
 	}
 
-	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	@Override public java.util.Set<java.lang.String> measureNames()
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
@@ -472,14 +465,14 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return null;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
-		final java.lang.String strQuote,
+	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == strQuote || null == mktParams || null ==
+		if (null == valParams || null == strManifestMeasure || null == mktParams || null ==
 			mktParams.fundingCurve())
 			return null;
 
@@ -506,10 +499,14 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 				double dblMaturity = _dtMaturity.getJulian();
 
-				return prlc.addPredictorResponseWeight (dblMaturity, 1.) && prlc.updateValue
-					(lsmm.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure
-						("ParForwardRate", dblMaturity, 1.) && prlc.updateDValueDManifestMeasure
-							("ParForwardRate", 1.) ? prlc : null;
+				try {
+					return prlc.addPredictorResponseWeight (dblMaturity, 1.) && prlc.updateValue
+						(lsmm.getMeasureQuoteValue ("ParForwardRate")) &&
+							prlc.addDResponseWeightDManifestMeasure ("ParForwardRate", dblMaturity, 1.) &&
+								prlc.updateDValueDManifestMeasure ("ParForwardRate", 1.) ? prlc : null;
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -524,7 +521,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 		sb.append (_dblNotional + getFieldDelimiter());
 
-		sb.append (_strIR + getFieldDelimiter());
+		sb.append (_strCurrency + getFieldDelimiter());
 
 		sb.append (_strCode + getFieldDelimiter());
 

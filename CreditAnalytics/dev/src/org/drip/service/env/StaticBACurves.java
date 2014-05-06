@@ -34,7 +34,7 @@ package org.drip.service.env;
 /**
  * StaticBACurves that creates the closing curves from custom/user defined marks for a given EOD and
  *  populates them onto the MPC. It builds the following:
- *  - Discount Curve (from cash/future/swap - typical sequence), EDSF Curve, and TSY Curve
+ *  - Discount Curve (from cash/future/swap - typical sequence) and TSY Curve
  *  - Credit Curve from CDS quotes
  *  - On-the-run TSY yield quotes
  * 
@@ -55,16 +55,8 @@ public class StaticBACurves {
 
 		org.drip.product.credit.BondComponent bondTSY = new org.drip.product.credit.BondComponent();
 
-		org.drip.product.params.TreasuryBenchmark tsyParams = new org.drip.product.params.TreasuryBenchmark
-			(null, strCurrency + "TSY", strCurrency + "EDSF");
-
-		if (!tsyParams.validate()) return null;
-
-		bondTSY.setTreasuryBenchmark (tsyParams);
-
-		org.drip.product.params.IdentifierSet idParams = new
-			org.drip.product.params.IdentifierSet (strTSYName, strTSYName, strTSYName, strCurrency +
-				"TSY");
+		org.drip.product.params.IdentifierSet idParams = new org.drip.product.params.IdentifierSet
+			(strTSYName, strTSYName, strTSYName, strCurrency + "TSY");
 
 		if (!idParams.validate()) return null;
 
@@ -77,8 +69,8 @@ public class StaticBACurves {
 
 		bondTSY.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet
-			(strCurrency + "TSY", strCurrency + "TSY", strCurrency + "TSY");
+		org.drip.product.params.CurrencySet ccyParams = org.drip.product.params.CurrencySet.Create
+			(strCurrency + "TSY");
 
 		if (!ccyParams.validate()) return null;
 
@@ -283,7 +275,7 @@ public class StaticBACurves {
 			if (!(irscTSY = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency + "TSY",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
-						dt.addBusDays (3, strCurrency), strCurrency), null, null, adblCompCalibValue, 0.0001,
+						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mpc.getFixings(), null, 15)) {
 				System.out.println ("Cannot cook " + strCurrency + "TSY curve!");
 
@@ -356,7 +348,7 @@ public class StaticBACurves {
 			if (!(irsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency + "EDSF",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
-						dt.addBusDays (3, strCurrency), strCurrency), null, null, adblCompCalibValue, 0.0001,
+						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mpc.getFixings(), null, 15)) {
 				System.out.println ("Cannot cook " + strCurrency + " curve!");
 
@@ -575,7 +567,7 @@ public class StaticBACurves {
 			(irsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
-						dt.addBusDays (3, strCurrency), strCurrency), null, null, adblCompCalibValue, 0.0001,
+						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
 							astrCalibMeasure, mpc.getFixings(), null, 15);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -659,8 +651,8 @@ public class StaticBACurves {
 		try {
 			if (!(ccsc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDS)).cookScenarioCC
 				(strCC, new org.drip.param.valuation.ValuationParams (dt, dt, strIR), mpc.getScenCMP
-					(aCDS[0], "Base").fundingCurve(), null, null, adblQuotes, dblRecovery, astrCalibMeasure,
-						null, null, false, 63)) {
+					(aCDS[0], "Base").fundingCurve(), null, adblQuotes, dblRecovery, astrCalibMeasure, null,
+						null, false, 63)) {
 				System.out.println ("CC[" + strCC + "] failed to cook");
 
 				return false;

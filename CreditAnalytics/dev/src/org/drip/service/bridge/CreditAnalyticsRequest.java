@@ -367,9 +367,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 
 		org.drip.product.credit.BondComponent bond = new org.drip.product.credit.BondComponent();
 
-		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TreasuryBenchmark (new
-			org.drip.product.params.TsyBmkSet ("USD5YON", new java.lang.String[] {"USD3YON", "USD7YON"}),
-				"USDTSY", "USDEDSF"))) {
+		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TsyBmkSet ("USD5YON", new
+			java.lang.String[] {"USD3YON", "USD7YON"}))) {
 			System.out.println ("Cannot initialize bond TSY params!");
 
 			System.exit (126);
@@ -397,7 +396,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			System.exit (130);
 		}
 
-		if (!bond.setCurrencySet (new org.drip.product.params.CurrencySet ("USD", "USD", "USD"))) {
+		if (!bond.setCurrencySet (org.drip.product.params.CurrencySet.Create ("USD"))) {
 			System.out.println ("Cannot initialize bond currency params!");
 
 			System.exit (131);
@@ -456,14 +455,12 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		double[] adblDate = new double[3];
 		double[] adblRate = new double[3];
 		double[] adblRateTSY = new double[3];
-		double[] adblRateEDSF = new double[3];
 		double[] adblHazardRate = new double[3];
 
 		for (int i = 0; i < 3; ++i) {
 			adblDate[i] = dblStart + 365. * (i + 1);
 			adblRate[i] = 0.015 * (i + 1);
 			adblRateTSY[i] = 0.01 * (i + 1);
-			adblRateEDSF[i] = 0.0125 * (i + 1);
 			adblHazardRate[i] = 0.01 * (i + 1);
 		}
 
@@ -475,11 +472,6 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		org.drip.analytics.rates.ExplicitBootDiscountCurve dcTSY =
 			org.drip.state.creator.DiscountCurveBuilder.CreateDC
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", null, adblDate, adblRateTSY,
-					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
-		org.drip.analytics.rates.ExplicitBootDiscountCurve dcEDSF =
-			org.drip.state.creator.DiscountCurveBuilder.CreateDC
-				(org.drip.analytics.date.JulianDate.Today(), "ABCEDSF", null, adblDate, adblRateEDSF,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
 		org.drip.analytics.definition.ExplicitBootCreditCurve cc =
@@ -518,8 +510,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			java.lang.Double.NaN), true);
 
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, dcEDSF, cc,
-				cqBond, mapTSYQuotes, mmFixings);
+			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, cc, cqBond,
+				mapTSYQuotes, mmFixings);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

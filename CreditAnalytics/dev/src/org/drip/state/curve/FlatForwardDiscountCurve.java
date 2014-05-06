@@ -63,7 +63,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		org.drip.param.valuation.ValuationCustomizationParams quotingParam = _ccis.getQuotingParameter();
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapQuote = _ccis.getQuote();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
 			_ccis.getMeasures();
@@ -87,12 +88,12 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 					_adblDate, _adblRate);
 
 			for (int i = 0; i < iNumComp; ++i) {
-				java.lang.String strInstrumentCode = aCalibInst[i].getPrimaryCode();
+				java.lang.String strInstrumentCode = aCalibInst[i].primaryCode();
 
-				calibrator.calibrateIRNode (frdc, null, null, aCalibInst[i], i, valParam, astrCalibMeasure[i]
-					= mapMeasures.get (strInstrumentCode)[0], adblCalibQuoteShifted[i] = mapQuote.get
-						(strInstrumentCode) + adblShift[i], mmFixing, quotingParam, false,
-							java.lang.Double.NaN);
+				calibrator.calibrateIRNode (frdc, null, aCalibInst[i], i, valParam, astrCalibMeasure[i] =
+					mapMeasures.get (strInstrumentCode)[0], adblCalibQuoteShifted[i] = mapQuote.get
+						(strInstrumentCode).get (astrCalibMeasure[i]) + adblShift[i], mmFixing, quotingParam,
+							false, java.lang.Double.NaN);
 			}
 
 			return frdc.setCCIS (new org.drip.analytics.definition.BootCurveConstructionInput (valParam,
@@ -307,6 +308,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	}
 
 	@Override public FlatForwardDiscountCurve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
@@ -324,6 +326,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 	@Override public FlatForwardDiscountCurve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
@@ -342,6 +345,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	}
 
 	@Override public org.drip.analytics.rates.ExplicitBootDiscountCurve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return shiftManifestMeasure (org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure

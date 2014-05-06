@@ -97,7 +97,6 @@ public class RatesCurveScenarioGenerator {
 	 * 
 	 * @param valParams ValuationParams
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Quote bump
 	 * @param astrCalibMeasure Array of the calibration measures
@@ -110,7 +109,6 @@ public class RatesCurveScenarioGenerator {
 	public org.drip.analytics.rates.DiscountCurve createIRCurve (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
@@ -133,13 +131,13 @@ public class RatesCurveScenarioGenerator {
 		for (int i = 0; i < adblQuotes.length; ++i) {
 			adblRates[i] = 0.02;
 
-			if (null == _aCalibInst[i] || null == _aCalibInst[i].getMaturityDate()) {
+			if (null == _aCalibInst[i] || null == _aCalibInst[i].maturity()) {
 				System.out.println ("Param " + i + " invalid in IRCurveScenarioGenerator::createIRCurve!");
 
 				return null;
 			}
 
-			adblDates[i] = _aCalibInst[i].getMaturityDate().getJulian();
+			adblDates[i] = _aCalibInst[i].maturity().getJulian();
 		}
 
 		try {
@@ -152,14 +150,14 @@ public class RatesCurveScenarioGenerator {
 			return null;
 		}
 
-		if (!_compCalib.bootstrapInterestRateSequence (dc, dcTSY, dcEDSF, _aCalibInst, valParams,
-			astrCalibMeasure, adblQuotes, dblBump, mmFixings, quotingParams, false))
+		if (!_compCalib.bootstrapInterestRateSequence (dc, dcTSY, _aCalibInst, valParams, astrCalibMeasure,
+			adblQuotes, dblBump, mmFixings, quotingParams, false))
 			return null;
 
 		if (s_bBlog) {
 			for (int i = 0; i < adblQuotes.length; ++i) {
 				try {
-					System.out.println (i + "=" +_aCalibInst[i].calcMeasureValue (valParams, null,
+					System.out.println (i + "=" +_aCalibInst[i].measureValue (valParams, null,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
 							null, null, null, null, null, mmFixings), null, astrCalibMeasure[i]));
 				} catch (java.lang.Exception e) {
@@ -179,7 +177,6 @@ public class RatesCurveScenarioGenerator {
 	 * 
 	 * @param valParams ValuationParams
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Quote bump
 	 * @param astrCalibMeasure Array of the calibration measures
@@ -192,7 +189,6 @@ public class RatesCurveScenarioGenerator {
 	public org.drip.analytics.rates.DiscountCurve[] createTenorIRCurves (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
@@ -221,7 +217,7 @@ public class RatesCurveScenarioGenerator {
 					adblTenorQuotes[j] = adblQuotes[j];
 			}
 
-			if (null == (aDC[i] = createIRCurve (valParams, dcTSY, dcEDSF, adblQuotes, 0., astrCalibMeasure,
+			if (null == (aDC[i] = createIRCurve (valParams, dcTSY, adblQuotes, 0., astrCalibMeasure,
 				mmFixings, quotingParams)))
 				return null;
 		}
@@ -234,7 +230,6 @@ public class RatesCurveScenarioGenerator {
 	 * 
 	 * @param valParams ValuationParams
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Quote bump
 	 * @param astrCalibMeasure Array of the calibration measures
@@ -248,7 +243,6 @@ public class RatesCurveScenarioGenerator {
 		createTenorIRCurveMap (
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.analytics.rates.DiscountCurve dcTSY,
-			final org.drip.analytics.rates.DiscountCurve dcEDSF,
 			final double[] adblQuotes,
 			final double dblBump,
 			final java.lang.String[] astrCalibMeasure,
@@ -279,7 +273,7 @@ public class RatesCurveScenarioGenerator {
 			}
 
 			mapTenorDC.put (org.drip.analytics.date.JulianDate.fromJulian
-				(_aCalibInst[i].getMaturityDate().getJulian()), createIRCurve (valParams, dcTSY, dcEDSF,
+				(_aCalibInst[i].maturity().getJulian()), createIRCurve (valParams, dcTSY,
 					adblTenorQuotes, 0., astrCalibMeasure, mmFixings, quotingParams));
 		}
 

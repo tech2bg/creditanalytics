@@ -89,7 +89,7 @@ public class AnalyticsHelper {
 				org.drip.analytics.period.LossPeriodCurveFactors lp =
 					org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblSubPeriodStart,
 						dblSubPeriodEnd, period.getAccrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
-							comp.getNotional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
+							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
 									comp.getCRValParams()._iDefPayLag);
 
@@ -146,7 +146,7 @@ public class AnalyticsHelper {
 				org.drip.analytics.period.LossPeriodCurveFactors lp =
 					org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblSubPeriodStart,
 						dblSubPeriodEnd, period.getAccrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
-							comp.getNotional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
+							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
 									comp.getCRValParams()._iDefPayLag);
 
@@ -182,7 +182,7 @@ public class AnalyticsHelper {
 			org.drip.analytics.period.LossPeriodCurveFactors lp =
 				org.drip.analytics.period.LossPeriodCurveFactors.MakeDefaultPeriod (dblPeriodStartDate,
 					dblPeriodEndDate, period.getAccrualDCF (0.5 * (dblPeriodStartDate + dblPeriodEndDate)),
-						comp.getNotional (dblPeriodStartDate, dblPeriodEndDate), comp.getRecovery
+						comp.notional (dblPeriodStartDate, dblPeriodEndDate), comp.getRecovery
 							(dblPeriodStartDate, dblPeriodEndDate, cc),  dc, cc,
 								comp.getCRValParams()._iDefPayLag);
 
@@ -1072,7 +1072,7 @@ public class AnalyticsHelper {
 			if (null == aComp[i]) continue;
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsCompPeriod =
-				aComp[i].getCashFlowPeriod();
+				aComp[i].cashFlowPeriod();
 
 			if (null == lsCompPeriod || 0 == lsCompPeriod.size()) continue;
 

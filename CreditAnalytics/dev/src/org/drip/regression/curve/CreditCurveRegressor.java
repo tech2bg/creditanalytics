@@ -318,16 +318,16 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					for (int i = 0; i < _aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = _aCalibComp[i].getMaturityDate();
+						org.drip.analytics.date.JulianDate dt = _aCalibComp[i].maturity();
 
-						java.lang.String strCode = _aCalibComp[i].getPrimaryCode();
+						java.lang.String strCode = _aCalibComp[i].primaryCode();
 
 						if (null == dt || null == strCode || strCode.isEmpty()) return false;
 
 						try {
 							rnvd.set ("CompQuote" + "_" + strCode + "[" + dt + "]",
 								org.drip.quant.common.FormatUtil.FormatDouble (_cc.manifestMeasure
-									(strCode), 1, 4, 1));
+									(strCode).get ("FairPremium"), 1, 4, 1));
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 
@@ -367,7 +367,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = aCalibComp[i].getMaturityDate();
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturity();
 
 						double dblBaseHazard = java.lang.Double.NaN;
 						double dblShiftedHazard = java.lang.Double.NaN;
@@ -414,7 +414,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccParallelShifted = (org.drip.analytics.definition.CreditCurve)
-						_cc.parallelShiftManifestMeasure (5.));
+						_cc.parallelShiftManifestMeasure ("FairPremium", 5.));
 				}
 
 				@Override public boolean postRegression (
@@ -426,23 +426,24 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = aCalibComp[i].getMaturityDate();
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturity();
 
 						try {
 							rnvd.set ("BaseCurveQuote[" + dt + "]",
 								org.drip.quant.common.FormatUtil.FormatDouble (_cc.manifestMeasure
-									(aCalibComp[i].getPrimaryCode()), 1, 5, 1));
+									(aCalibComp[i].primaryCode()).get ("FairPremium"), 1, 5, 1));
 
 							rnvd.set ("ParallelShiftedCurveQuote[" + dt + "]",
 								org.drip.quant.common.FormatUtil.FormatDouble
-									(_ccParallelShifted.manifestMeasure (aCalibComp[i].getPrimaryCode()),
-										1, 5, 1));
+									(_ccParallelShifted.manifestMeasure (aCalibComp[i].primaryCode()).get
+										("FairPremium"), 1, 5, 1));
 
 							dt = dt1;
 
 							if (!org.drip.quant.common.NumberUtil.WithinTolerance (_cc.manifestMeasure
-								(aCalibComp[i].getPrimaryCode()) + 5., _ccParallelShifted.manifestMeasure
-									(aCalibComp[i].getPrimaryCode())))
+								(aCalibComp[i].primaryCode()).get ("FairPremium") + 5.,
+									_ccParallelShifted.manifestMeasure (aCalibComp[i].primaryCode()).get
+										("FairPremium")))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
@@ -487,7 +488,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccTweakedCurve = (org.drip.analytics.definition.CreditCurve)
-						_cc.customTweakManifestMeasure (_cntp));
+						_cc.customTweakManifestMeasure ("FairPremium", _cntp));
 				}
 
 				@Override public boolean postRegression (
@@ -499,7 +500,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = aCalibComp[i].getMaturityDate();
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturity();
 
 						double dblBaseHazard = java.lang.Double.NaN;
 						double dblShiftedHazard = java.lang.Double.NaN;

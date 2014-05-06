@@ -240,9 +240,8 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstr)
-		throws java.lang.Exception
 	{
 		return _dc.manifestMeasure (strInstr);
 	}
@@ -257,18 +256,22 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 	}
 
 	@Override public org.drip.analytics.definition.Curve parallelShiftManifestMeasure (
-		final double dblShift) {
+		final java.lang.String strManifestMeasure,
+		final double dblShift)
+	{
 		return null;
 	}
 
 	@Override public org.drip.analytics.definition.Curve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
 	}
 
 	@Override public org.drip.analytics.definition.Curve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams mmtp)
 	{
 		return null;

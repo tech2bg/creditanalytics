@@ -165,6 +165,7 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 	}
 
 	@Override public DiscountFactorDiscountCurve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
@@ -172,12 +173,14 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 
 	@Override public DiscountFactorDiscountCurve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
 	}
 
 	@Override public org.drip.analytics.rates.DiscountCurve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return null;
@@ -218,12 +221,10 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 		return null;
 	}
 
-	@Override public double manifestMeasure (
-		final java.lang.String strInstrumentCode)
-		throws java.lang.Exception
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
+		final java.lang.String strInstr)
 	{
-		throw new java.lang.Exception
-			("CollateralChoiceDiscountCurve::getManifestMeasure => Not Implemented!");
+		return null;
 	}
 
 	@Override public byte[] serialize()

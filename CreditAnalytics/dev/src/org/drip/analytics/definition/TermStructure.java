@@ -89,14 +89,14 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 		return null;
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstr)
-		throws java.lang.Exception
 	{
-		throw new java.lang.Exception ("TermStructure::manifestMeasure => Cannot get " + strInstr);
+		return null;
 	}
 
 	@Override public org.drip.state.representation.LatentState parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
@@ -104,12 +104,14 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 
 	@Override public org.drip.state.representation.LatentState shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
 	}
 
 	@Override public org.drip.state.representation.LatentState customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return null;

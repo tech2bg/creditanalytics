@@ -128,7 +128,7 @@ public class TemplatedDiscountCurveBuilder {
 		final String strMeasure)
 		throws Exception
 	{
-		return comp.calcMeasureValue (
+		return comp.measureValue (
 			valParams,
 			null,
 			ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
@@ -291,7 +291,7 @@ public class TemplatedDiscountCurveBuilder {
 		System.out.println ("\t---------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aCashComp.length; ++i)
-			System.out.println ("\t[" + aCashComp[i].getMaturityDate() + "] =    " +
+			System.out.println ("\t[" + aCashComp[i].maturity() + "] =    " +
 				FormatUtil.FormatDouble (ComponentMetric (aCashComp[i], valParams, dcKLKHyperbolicShapePreserver, "Rate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aCashComp[i], valParams, dcKLKHyperbolicSmoother, "Rate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aCashComp[i], valParams, dcCubicPolyShapePreserver, "Rate"), 1, 6, 1.) + "    |    " +
@@ -316,7 +316,7 @@ public class TemplatedDiscountCurveBuilder {
 		System.out.println ("\t---------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapComp.length; ++i)
-			System.out.println ("\t[" + aSwapComp[i].getMaturityDate() + "] =    " +
+			System.out.println ("\t[" + aSwapComp[i].maturity() + "] =    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcKLKHyperbolicShapePreserver, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcKLKHyperbolicSmoother, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcCubicPolyShapePreserver, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
@@ -336,9 +336,9 @@ public class TemplatedDiscountCurveBuilder {
 
 		System.out.println ("\t-----------------------------------------------------------------------------------------------------------------------------------");
 
-		double dblStartDate = aCashComp[0].getMaturityDate().getJulian();
+		double dblStartDate = aCashComp[0].maturity().getJulian();
 
-		double dblEndDate = aSwapComp[aSwapComp.length - 1].getMaturityDate().getJulian();
+		double dblEndDate = aSwapComp[aSwapComp.length - 1].maturity().getJulian();
 
 		double dblDateIncrement = 0.05 * (dblEndDate - dblStartDate);
 

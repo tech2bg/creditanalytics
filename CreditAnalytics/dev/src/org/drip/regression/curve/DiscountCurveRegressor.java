@@ -440,12 +440,12 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					for (int i = 0; i < _aCalibComp.length; ++i) {
-						java.lang.String strCalibCompCode = _aCalibComp[i].getPrimaryCode();
+						java.lang.String strCalibCompCode = _aCalibComp[i].primaryCode();
 
 						try {
-							double dblQuote = _dc.manifestMeasure (strCalibCompCode);
+							double dblQuote = _dc.manifestMeasure (strCalibCompCode).get ("Rate");
 
-							org.drip.analytics.date.JulianDate dt = _aCalibComp[i].getMaturityDate();
+							org.drip.analytics.date.JulianDate dt = _aCalibComp[i].maturity();
 
 							rnvd.set ("CompQuote" + "_" + strCalibCompCode + "{" + dt + "}",
 								org.drip.quant.common.FormatUtil.FormatDouble (dblQuote, 1, 4, 1));
@@ -473,21 +473,23 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean execRegression()
 				{
 					return null != (_dcShifted = (org.drip.analytics.rates.DiscountCurve)
-						_dc.parallelShiftManifestMeasure (0.0004));
+						_dc.parallelShiftManifestMeasure ("Rate", 0.0004));
 				}
 
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
-					org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = _dc.calibComp();
+					org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp =
+						_dc.calibComp();
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
-						java.lang.String strCalibCompCode = aCalibComp[i].getPrimaryCode();
+						java.lang.String strCalibCompCode = aCalibComp[i].primaryCode();
 
 						try {
-							double dblQuote = _dc.manifestMeasure (strCalibCompCode);
+							double dblQuote = _dc.manifestMeasure (strCalibCompCode).get ("Rate");
 
-							double dblQuoteShifted = _dcShifted.manifestMeasure (strCalibCompCode);
+							double dblQuoteShifted = _dcShifted.manifestMeasure (strCalibCompCode).get
+								("Rate");
 
 							rnvd.set ("BaseCurve" + "_" + strCalibCompCode,
 								org.drip.quant.common.FormatUtil.FormatDouble (dblQuote, 1, 4, 1));
@@ -518,7 +520,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean execRegression()
 				{
 					return null != (_dcShifted = (org.drip.analytics.rates.DiscountCurve)
-						_dcFromFlatRate.parallelShiftManifestMeasure (0.0004));
+						_dcFromFlatRate.parallelShiftManifestMeasure ("Rate", 0.0004));
 				}
 
 				@Override public boolean postRegression (
@@ -661,7 +663,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean execRegression()
 				{
 					return null != (_dcNTP = (org.drip.analytics.rates.DiscountCurve)
-						_dcFromFlatRate.customTweakManifestMeasure (_ntp));
+						_dcFromFlatRate.customTweakManifestMeasure ("Rate", _ntp));
 				}
 
 				@Override public boolean postRegression (

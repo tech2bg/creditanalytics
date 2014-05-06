@@ -299,7 +299,7 @@ public class OISCurveQuoteSensitivity {
 			0.01,
 			strCurrency);
 
-		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (oisBespoke.getMaturityDate(), "Rate");
+		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (oisBespoke.maturity(), "Rate");
 
 		System.out.println (strTenor + " => " + wjDFQuoteBespokeMat.displayString());
 	}
@@ -615,8 +615,8 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aDepositComp[i].calcMeasureValue (valParams, null,
+			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
+				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
@@ -632,8 +632,8 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
-			System.out.println ("\t[" + aShortEndOISComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aShortEndOISComp[i].calcMeasureValue (valParams, null,
+			System.out.println ("\t[" + aShortEndOISComp[i].maturity() + "] = " +
+				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
 
@@ -649,8 +649,8 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aOISFutureComp.length; ++i)
-			System.out.println ("\t[" + aOISFutureComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aOISFutureComp[i].calcMeasureValue (valParams, null,
+			System.out.println ("\t[" + aOISFutureComp[i].maturity() + "] = " +
+				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
 
@@ -666,8 +666,8 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
-			System.out.println ("\t[" + aLongEndOISComp[i].getMaturityDate() + "] = " +
-				FormatUtil.FormatDouble (aLongEndOISComp[i].calcMeasureValue (valParams, null,
+			System.out.println ("\t[" + aLongEndOISComp[i].maturity() + "] = " +
+				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.));
 
@@ -682,9 +682,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDepositComp[i].getMaturityDate(), "Rate");
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDepositComp[i].maturity(), "Rate");
 
-			System.out.println (aDepositComp[i].getMaturityDate() + " => " + wj.displayString());
+			System.out.println (aDepositComp[i].maturity() + " => " + wj.displayString());
 		}
 
 		/*
@@ -698,9 +698,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aShortEndOISComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aShortEndOISComp[i].getMaturityDate(), "Rate");
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aShortEndOISComp[i].maturity(), "Rate");
 
-			System.out.println (aShortEndOISComp[i].getMaturityDate() + " => " + wjDFQuote.displayString());
+			System.out.println (aShortEndOISComp[i].maturity() + " => " + wjDFQuote.displayString());
 		}
 
 		/*
@@ -714,9 +714,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aOISFutureComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aOISFutureComp[i].getMaturityDate(), "Rate");
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aOISFutureComp[i].maturity(), "Rate");
 
-			System.out.println (aOISFutureComp[i].getMaturityDate() + " => " + wjDFQuote.displayString());
+			System.out.println (aOISFutureComp[i].maturity() + " => " + wjDFQuote.displayString());
 		}
 
 		/*
@@ -730,9 +730,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aLongEndOISComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aLongEndOISComp[i].getMaturityDate(), "Rate");
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aLongEndOISComp[i].maturity(), "Rate");
 
-			System.out.println (aLongEndOISComp[i].getMaturityDate() + " => " + wjDFQuote.displayString());
+			System.out.println (aLongEndOISComp[i].maturity() + " => " + wjDFQuote.displayString());
 		}
 
 		System.out.println ("\n\t----------------------------------------------------------------");
@@ -760,7 +760,7 @@ public class OISCurveQuoteSensitivity {
 		WengertJacobian wjOISBespokeQuoteJack = ois35Y.jackDDirtyPVDManifestMeasure (
 			valParams,
 			null,
-			new ComponentMarketParamSet (dc, null, null, null, null, null, null, null, null),
+			new ComponentMarketParamSet (dc, null, null, null, null, null, null, null),
 			null);
 
 		System.out.println (wjOISBespokeQuoteJack.displayString());

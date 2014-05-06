@@ -492,10 +492,10 @@ public class CreditAnalyticsTestSuite {
 			mapCashDC = org.drip.service.api.CreditAnalytics.LoadEODIRCashCurves ("EUR", dt1, dt2);
 
 		org.drip.analytics.rates.DiscountCurve dcEDF =
-			org.drip.service.api.CreditAnalytics.LoadEODEDFCurve ("EUR", dt1);
+			org.drip.service.api.CreditAnalytics.LoadEODEDSFCurve ("EUR", dt1);
 
 		java.util.Map <org.drip.analytics.date.JulianDate, org.drip.analytics.rates.DiscountCurve>
-			mapEDFDC = org.drip.service.api.CreditAnalytics.LoadEODEDFCurves ("EUR", dt1, dt2);
+			mapEDSFDC = org.drip.service.api.CreditAnalytics.LoadEODEDSFCurves ("EUR", dt1, dt2);
 
 		org.drip.analytics.rates.DiscountCurve dcIRS =
 			org.drip.service.api.CreditAnalytics.LoadEODIRSwapCurve ("EUR", dt1);
@@ -587,8 +587,8 @@ public class CreditAnalyticsTestSuite {
 
 			for (int i = 0; i < aCC.length; ++i) {
 				try {
-					System.out.println (aCC[i].getPrimaryCode() + " => " + dc.manifestMeasure
-						(aCC[i].getPrimaryCode()));
+					System.out.println (aCC[i].primaryCode() + " => " + dc.manifestMeasure
+						(aCC[i].primaryCode()));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -636,8 +636,8 @@ public class CreditAnalyticsTestSuite {
 
 			for (int i = 0; i < aCCCash.length; ++i) {
 				try {
-					System.out.println (aCCCash[i].getPrimaryCode() + " => " + (int) (10000. *
-						dcCash.manifestMeasure (aCCCash[i].getPrimaryCode())));
+					System.out.println (aCCCash[i].primaryCode() + " => " + (int) (10000. *
+						dcCash.manifestMeasure (aCCCash[i].primaryCode()).get ("Rate")));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -654,7 +654,8 @@ public class CreditAnalyticsTestSuite {
 				org.drip.analytics.rates.DiscountCurve dcEOD = meCashDC.getValue();
 
 				try {
-					System.out.println (dt + "[3M] => " + (int) (10000. * dcEOD.manifestMeasure ("3M")));
+					System.out.println (dt + "[3M] => " + (int) (10000. * dcEOD.manifestMeasure ("3M").get
+						("Rate")));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("DiscountCurveAPISample failed.");
@@ -685,8 +686,8 @@ public class CreditAnalyticsTestSuite {
 
 			for (int i = 0; i < aCCEDF.length; ++i) {
 				try {
-					System.out.println (aCCEDF[i].getPrimaryCode() + " => " + (int) (10000. *
-						dcEDF.manifestMeasure (aCCEDF[i].getPrimaryCode())));
+					System.out.println (aCCEDF[i].primaryCode() + " => " + (int) (10000. *
+						dcEDF.manifestMeasure (aCCEDF[i].primaryCode()).get ("Rate")));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -697,13 +698,14 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bPrintEODIREDFCurves) {
 			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.rates.DiscountCurve> meEDFDC : mapEDFDC.entrySet()) {
+				org.drip.analytics.rates.DiscountCurve> meEDFDC : mapEDSFDC.entrySet()) {
 				org.drip.analytics.date.JulianDate dt = meEDFDC.getKey();
 
 				org.drip.analytics.rates.DiscountCurve dcEOD = meEDFDC.getValue();
 
 				try {
-					System.out.println (dt + "[EDZ3] => " + (int) (10000. * dcEOD.manifestMeasure ("EDZ3")));
+					System.out.println (dt + "[EDZ3] => " + (int) (10000. * dcEOD.manifestMeasure
+						("EDZ3").get ("Rate")));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("DiscountCurveAPISample failed.");
@@ -734,8 +736,8 @@ public class CreditAnalyticsTestSuite {
 
 			for (int i = 0; i < aCCIRS.length; ++i) {
 				try {
-					System.out.println (aCCIRS[i].getPrimaryCode() + " => " + (int) (10000. *
-						dcIRS.manifestMeasure (aCCIRS[i].getPrimaryCode())));
+					System.out.println (aCCIRS[i].primaryCode() + " => " + (int) (10000. *
+						dcIRS.manifestMeasure (aCCIRS[i].primaryCode()).get ("Rate")));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -752,8 +754,8 @@ public class CreditAnalyticsTestSuite {
 				org.drip.analytics.rates.DiscountCurve dcEOD = meIRSDC.getValue();
 
 				try {
-					System.out.println (dt + "[IRS.40Y bp] => " + (int) (dcEOD.manifestMeasure ("IRS.40Y") *
-						10000.));
+					System.out.println (dt + "[IRS.40Y bp] => " + (int) (dcEOD.manifestMeasure
+						("IRS.40Y").get ("Rate") * 10000.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("DiscountCurveAPISample failed.");
@@ -835,8 +837,8 @@ public class CreditAnalyticsTestSuite {
 
 			for (int i = 0; i < aCompTSY.length; ++i) {
 				try {
-					System.out.println (aCompTSY[i].getPrimaryCode() + " => " + (int) (10000. *
-						dcTSY.manifestMeasure (aCompTSY[i].getPrimaryCode())));
+					System.out.println (aCompTSY[i].primaryCode() + " => " + (int) (10000. *
+						dcTSY.manifestMeasure (aCompTSY[i].primaryCode()).get ("Rate")));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -853,7 +855,8 @@ public class CreditAnalyticsTestSuite {
 				org.drip.analytics.rates.DiscountCurve dcTSYEOD = meTSYDC.getValue();
 
 				try {
-					System.out.println (dt + "[5Y] => " + (int) (10000. * dcTSYEOD.manifestMeasure ("5Y")));
+					System.out.println (dt + "[5Y] => " + (int) (10000. * dcTSYEOD.manifestMeasure ("5Y").get
+						("Rate")));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("DiscountCurveAPISample failed.");
@@ -991,8 +994,8 @@ public class CreditAnalyticsTestSuite {
 
 			for (int i = 0; i < aCompCDS.length; ++i) {
 				try {
-					System.out.println (aCompCDS[i].getPrimaryCode() + " => " + (int)
-						(ccEOD.manifestMeasure (aCompCDS[i].getPrimaryCode())));
+					System.out.println (aCompCDS[i].primaryCode() + " => " + (ccEOD.manifestMeasure
+						(aCompCDS[i].primaryCode()).get ("Rate")));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -1009,7 +1012,8 @@ public class CreditAnalyticsTestSuite {
 				org.drip.analytics.definition.CreditCurve ccCOB = meCC.getValue();
 
 				try {
-					System.out.println (dt + "[CDS.5Y] => " + (int) (ccCOB.manifestMeasure ("CDS.5Y")));
+					System.out.println (dt + "[CDS.5Y] => " + (ccCOB.manifestMeasure ("CDS.5Y").get
+						("Rate")));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("CreditCurveAPISample failed.");
@@ -1378,10 +1382,10 @@ public class CreditAnalyticsTestSuite {
 		if (s_bBondAnalDisplay) {
 			try {
 				System.out.println (strISIN + "    " + bond.getTicker() + " " +
-					org.drip.quant.common.FormatUtil.FormatDouble (bond.getCoupon
+					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 						(org.drip.analytics.date.JulianDate.Today().getJulian(),
 							org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)), 2,
-								3, 100.) + " " + bond.getMaturityDate());
+								3, 100.) + " " + bond.maturity());
 
 				System.out.println ("Work-out date From Price: " + new org.drip.analytics.date.JulianDate
 					(wi.date()));
@@ -1530,7 +1534,7 @@ public class CreditAnalyticsTestSuite {
 				System.out.println
 					("---------    ---------    ---------    ---------    ---------    --------");
 
-				for (org.drip.analytics.period.Period p : aBond[i].getCashFlowPeriod()) {
+				for (org.drip.analytics.period.Period p : aBond[i].cashFlowPeriod()) {
 					try {
 						System.out.println (org.drip.analytics.date.JulianDate.fromJulian
 							(p.getAccrualStartDate()) + "    " +
@@ -1556,8 +1560,8 @@ public class CreditAnalyticsTestSuite {
 
 			org.drip.param.definition.ComponentMarketParams cmp =
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-					dcTSY, cc, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
-						(aBond[i], org.drip.analytics.date.JulianDate.Today(), 0.04));
+					cc, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (aBond[i],
+						org.drip.analytics.date.JulianDate.Today(), 0.04));
 
 			if (s_bCustomBondAnalDisplay) {
 				try {
@@ -1717,7 +1721,7 @@ public class CreditAnalyticsTestSuite {
 			org.drip.product.definition.Bond bond = org.drip.service.api.CreditAnalytics.GetBond (strISIN);
 
 			if (null != bond && !bond.hasVariableCoupon() && !bond.hasBeenExercised() && !bond.hasDefaulted()
-				&& bond.getMaturityDate().getJulian() > dtToday.getJulian()) {
+				&& bond.maturity().getJulian() > dtToday.getJulian()) {
 				try {
 					++iNumBonds;
 					double dblPECSFromPrice = java.lang.Double.NaN;
@@ -1757,10 +1761,10 @@ public class CreditAnalyticsTestSuite {
 
 					if (s_bTickerAnalDisplay)
 						System.out.println (strISIN + "    " + bond.getTicker() + " " +
-							org.drip.quant.common.FormatUtil.FormatDouble (bond.getCoupon
+							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 								(org.drip.analytics.date.JulianDate.Today().getJulian(),
 									org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc,
-										cc)), 2, 3, 100.) + " " + bond.getMaturityDate() + "    " +
+										cc)), 2, 3, 100.) + " " + bond.maturity() + "    " +
 											(bond.isFloater() ? "FLOAT" : "FIXED") + "     " +
 												org.drip.quant.common.FormatUtil.FormatDouble
 													(dblYieldFromPrice, 2, 3, 100.) + "    " +
@@ -1796,10 +1800,10 @@ public class CreditAnalyticsTestSuite {
 
 				if (s_bTickerNotionalDisplay)
 					System.out.println (strISIN + "    " + bond.getTicker() + " " +
-						org.drip.quant.common.FormatUtil.FormatDouble (bond.getCoupon
+						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 							(org.drip.analytics.date.JulianDate.Today().getJulian(),
 								org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)),
-									2, 3, 100.) + " " + bond.getMaturityDate() + "    " +
+									2, 3, 100.) + " " + bond.maturity() + "    " +
 										org.drip.quant.common.FormatUtil.FormatDouble
 											(dblOutstandingAmount, 10, 0, 1.));
 			} catch (java.lang.Exception e) {
@@ -2342,9 +2346,6 @@ public class CreditAnalyticsTestSuite {
 		java.lang.String strDescription = org.drip.service.api.CreditAnalytics.GetBondStringField
 			(strBondISIN, "Description");
 
-		java.lang.String strEDSFCurve = org.drip.service.api.CreditAnalytics.GetBondStringField (strBondISIN,
-			"EDSFCurve");
-
 		java.lang.String strExchangeCode = org.drip.service.api.CreditAnalytics.GetBondStringField
 			(strBondISIN, "ExchangeCode");
 
@@ -2574,8 +2575,6 @@ public class CreditAnalyticsTestSuite {
 
 			System.out.println ("Description: " + strDescription);
 
-			System.out.println ("EDSFCurve: " + strEDSFCurve);
-
 			System.out.println ("ExchangeCode: " + strExchangeCode);
 
 			System.out.println ("Fitch: " + strFitch);
@@ -2740,7 +2739,7 @@ public class CreditAnalyticsTestSuite {
 					org.drip.analytics.daycount.Convention.DR_ACTUAL);
 		try {
 			dblCreditPrice = bond.calcPriceFromCreditBasis (valParams, cmp, null,
-				bond.getMaturityDate().getJulian(), 1., 0.);
+				bond.maturity().getJulian(), 1., 0.);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
 				System.out.println ("BondCDSCurveCalibration failed.");
@@ -2773,9 +2772,9 @@ public class CreditAnalyticsTestSuite {
 			org.drip.state.estimator.CreditCurveScenarioGenerator ccsg = new
 				org.drip.state.estimator.CreditCurveScenarioGenerator (aCalibInst);
 
-			ccCalib = ccsg.createCC ("CC", valParams, dc, null, null, adblQuotes, 0.40, astrCalibMeasure,
-				null, new org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null,
-					"USD", false, null, null), false);
+			ccCalib = ccsg.createCC ("CC", valParams, dc, null, adblQuotes, 0.40, astrCalibMeasure, null, new
+				org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "USD", false,
+					null, null), false);
 
 			if (s_bCDSBondCreditCurve)
 				System.out.println ("Surv (2021, 1, 14): " + ccCalib.getSurvival
@@ -2792,7 +2791,7 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bCDSBondCreditCurve) {
 			try {
-				System.out.println (cds.getPrimaryCode() + " => " + cds.calcMeasureValue (valParams,
+				System.out.println (cds.primaryCode() + " => " + cds.measureValue (valParams,
 					org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
 							null, null, ccCalib, null, null,
@@ -2800,13 +2799,13 @@ public class CreditAnalyticsTestSuite {
 									org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
 										"FairPremium"));
 
-				System.out.println (bond.getPrimaryCode() + " => " + bond.calcPriceFromCreditBasis
+				System.out.println (bond.primaryCode() + " => " + bond.calcPriceFromCreditBasis
 					(valParams,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
 							null, null, ccCalib, null, null,
 								org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
 									org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
-										bond.getMaturityDate().getJulian(), 1., 0.));
+										bond.maturity().getJulian(), 1., 0.));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -3060,10 +3059,10 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bBasketCDS) {
 			System.out.println (bpCDX.getName() + ": " + bpCDX.getEffectiveDate() + "=>" +
-				bpCDX.getMaturityDate());
+				bpCDX.maturity());
 
 			System.out.println (bpCDXOTR.getName() + ": " + bpCDXOTR.getEffectiveDate() + "=>" +
-				bpCDXOTR.getMaturityDate());
+				bpCDXOTR.maturity());
 		}
 
 		if (s_bStandardCDXNames) {
@@ -3080,10 +3079,10 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bOnTheRun) {
 			System.out.println (bpPresetOTR.getName() + ": " + bpPresetOTR.getEffectiveDate() + "=>" +
-				bpPresetOTR.getMaturityDate());
+				bpPresetOTR.maturity());
 
 			System.out.println (bpPreLoadedOTR.getName() + ": " + bpPreLoadedOTR.getEffectiveDate() + "=>" +
-				bpPreLoadedOTR.getMaturityDate());
+				bpPreLoadedOTR.maturity());
 		}
 
 		if (s_bCDXSeries) {

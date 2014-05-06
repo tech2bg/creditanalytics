@@ -44,24 +44,24 @@ package org.drip.product.definition;
 public interface BondProduct {
 
 	/**
-	 * Set the bond treasury benchmark
+	 * Set the bond treasury benchmark Set
 	 * 
-	 * @param tsyBmk Bond treasury benchmark
+	 * @param tsyBmkSet Bond treasury benchmark Set
 	 * 
-	 * @return True if succeeded
+	 * @return TRUE if succeeded
 	 */
 
 	public abstract boolean setTreasuryBenchmark (
-		final org.drip.product.params.TreasuryBenchmark tsyBmk
+		final org.drip.product.params.TsyBmkSet tsyBmkSet
 	);
 
 	/**
-	 * Retrieve the bond treasury benchmark
+	 * Retrieve the bond treasury benchmark Set
 	 * 
-	 * @return Bond treasury benchmark
+	 * @return Bond treasury benchmark Set
 	 */
 
-	public abstract org.drip.product.params.TreasuryBenchmark getTreasuryBenchmark();
+	public abstract org.drip.product.params.TsyBmkSet getTreasuryBenchmark();
 
 	/**
 	 * Set the bond identifier set
@@ -163,7 +163,7 @@ public interface BondProduct {
 	 */
 
 	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> getFixings();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixings();
 
 	/**
 	 * Set the Bond's Market Convention

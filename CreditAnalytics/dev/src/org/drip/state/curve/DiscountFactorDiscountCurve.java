@@ -186,6 +186,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	}
 
 	@Override public DiscountFactorDiscountCurve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
@@ -205,6 +206,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 
 	@Override public DiscountFactorDiscountCurve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
@@ -225,6 +227,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	}
 
 	@Override public org.drip.analytics.rates.DiscountCurve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		if (null == rvtp) return null;
@@ -233,13 +236,14 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 
 		if (null == aCC) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _rcci.getQuote();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapQuote = _rcci.getQuote();
 
 		int iNumComp = aCC.length;
 		double[] adblQuote = new double[iNumComp];
 
 		for (int i = 0; i < iNumComp; ++i)
-			adblQuote[i] = mapQuote.get (aCC[i].getPrimaryCode());
+			adblQuote[i] = mapQuote.get (aCC[i].primaryCode()).get (strManifestMeasure);
 
 		double[] adblShiftedManifestMeasure = org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure
 			(adblQuote, rvtp);
@@ -309,19 +313,15 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		return aLSMM;
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstrumentCode)
-		throws java.lang.Exception
 	{
-		if (null == _rcci)
-			throw new java.lang.Exception ("DiscountFactorDiscountCurve::getManifestMeasure => Cannot get " +
-				strInstrumentCode);
+		if (null == _rcci) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _rcci.getQuote();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapQuote = _rcci.getQuote();
 
-		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode))
-			throw new java.lang.Exception ("DiscountFactorDiscountCurve::getManifestMeasure => Cannot get " +
-				strInstrumentCode);
+		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode)) return null;
 
 		return mapQuote.get (strInstrumentCode);
 	}

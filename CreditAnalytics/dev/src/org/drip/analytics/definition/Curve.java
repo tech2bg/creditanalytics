@@ -95,14 +95,13 @@ public interface Curve extends org.drip.state.representation.LatentState {
 	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp();
 
 	/**
-	 * Retrieve the Manifest Measure of the given Instrument used to construct the Curve
+	 * Retrieve the Manifest Measure Map of the given Instrument used to construct the Curve
 	 * 
-	 * @param strInstrumentCode The Calibration Instrument's Code whose Manifest Measure is sought
+	 * @param strInstrumentCode The Calibration Instrument's Code whose Manifest Measure Map is sought
 	 * 
-	 * @return The Manifest Measure of the given Instrument used to construct the Curve
+	 * @return The Manifest Measure Map of the given Instrument used to construct the Curve
 	 */
 
-	public abstract double manifestMeasure (
-		final java.lang.String strInstrumentCode)
-		throws java.lang.Exception;
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
+		final java.lang.String strInstrumentCode);
 }

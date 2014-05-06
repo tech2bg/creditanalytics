@@ -200,17 +200,10 @@ public class StretchRepresentationSpec {
 		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = new
 			org.drip.state.representation.LatentStateMetricMeasure[iNumQuote];
 
-		for (int i = 0; i < iNumQuote; ++i) {
-			try {
-				aLSMM[i] = new org.drip.analytics.rates.RatesLSMM (_strLatentStateID,
-					_strLatentStateQuantificationMetric, _lsstrCompManifestMeasure.get (i), _adblQuote[i],
-						_tldf);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
+		for (int i = 0; i < iNumQuote; ++i)
+			aLSMM[i] = org.drip.analytics.rates.RatesLSMM.Create (_strLatentStateID,
+				_strLatentStateQuantificationMetric, _lsstrCompManifestMeasure.get (i)[0], _adblQuote[i],
+					_tldf);
 
 		return aLSMM;
 	}
@@ -228,15 +221,9 @@ public class StretchRepresentationSpec {
 	{
 		if (iIndex >= _aCalibComp.length) return null;
 
-		try {
-			return new org.drip.analytics.rates.RatesLSMM (_strLatentStateID,
-				_strLatentStateQuantificationMetric, _lsstrCompManifestMeasure.get (iIndex),
-					_adblQuote[iIndex], _tldf);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return org.drip.analytics.rates.RatesLSMM.Create (_strLatentStateID,
+			_strLatentStateQuantificationMetric, _lsstrCompManifestMeasure.get (iIndex)[0],
+				_adblQuote[iIndex], _tldf);
 	}
 
 	/**

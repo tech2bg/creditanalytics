@@ -324,10 +324,10 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		try {
 			if (bBasisOnDenom)
 				dcBasis = (org.drip.analytics.rates.ExplicitBootDiscountCurve)
-					dcDenom.parallelShiftManifestMeasure (0.);
+					dcDenom.parallelShiftManifestMeasure ("Rate", 0.);
 			else
 				dcBasis = (org.drip.analytics.rates.ExplicitBootDiscountCurve)
-					dcNum.parallelShiftManifestMeasure (0.);
+					dcNum.parallelShiftManifestMeasure ("Rate", 0.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -408,11 +408,10 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return null;
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstr)
-		throws java.lang.Exception
 	{
-		return java.lang.Double.NaN;
+		return null;
 	}
 
 	@Override public boolean setCCIS (
@@ -454,6 +453,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 	}
 
 	@Override public org.drip.analytics.definition.Curve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		double[] adblFXForwardBumped = new double[_adblFXFwd.length];
@@ -473,6 +473,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 	@Override public org.drip.analytics.definition.Curve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		int iNumForward = _adblFXFwd.length;
@@ -495,6 +496,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 	}
 
 	@Override public org.drip.analytics.definition.Curve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams mmtp)
 	{
 		if (null == mmtp) return null;

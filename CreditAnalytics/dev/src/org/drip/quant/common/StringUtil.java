@@ -289,7 +289,8 @@ public class StringUtil {
 
 	public static final boolean IntegerListFromString (
 		final java.util.List<java.lang.Integer> lsi,
-		final java.lang.String strList, final java.lang.String strDelim)
+		final java.lang.String strList,
+		final java.lang.String strDelim)
 	{
 		if (null == lsi || null == strList || strList.isEmpty() || null == strDelim || strDelim.isEmpty())
 			return false;
@@ -336,5 +337,41 @@ public class StringUtil {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Convert the String Array to a Record Delimited String
+	 * 
+	 * @param astr Input String Array
+	 * @param strRecordDelimiter The String Record Delimiter
+	 * @param strNULL NULL String Indicator
+	 * 
+	 * @return The Record Delimited String Array
+	 */
+
+	public static final java.lang.String StringArrayToString (
+		final java.lang.String[] astr,
+		final java.lang.String strRecordDelimiter,
+		final java.lang.String strNULL)
+	{
+		if (null == astr || null == strRecordDelimiter || strRecordDelimiter.isEmpty() || null == strNULL ||
+			strNULL.isEmpty())
+			return null;
+
+		int iNumStr = astr.length;
+
+		if (0 == iNumStr) return null;
+
+		java.lang.StringBuffer sb = new java.lang.StringBuffer();
+
+		for (int i = 0; i < iNumStr; ++i) {
+			java.lang.String str = astr[i];
+
+			if (0 != i) sb.append (strRecordDelimiter);
+
+			sb.append (null == str || str.isEmpty() ? strNULL : str);
+		}
+
+		return sb.toString();
 	}
 }

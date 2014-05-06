@@ -379,7 +379,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		org.drip.product.params.FloatingRateIndex[] aFRI = null;
 
-		java.lang.String[] astrForwardCurveName = cc.getForwardCurveName();
+		java.lang.String[] astrForwardCurveName = cc.forwardCurveName();
 
 		if (null != astrForwardCurveName) {
 			int iNumFRI = astrForwardCurveName.length;
@@ -423,7 +423,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			org.drip.product.params.FloatingRateIndex[] aFRI = null;
 
-			java.lang.String[] astrForwardCurveName = cc.getForwardCurveName();
+			java.lang.String[] astrForwardCurveName = cc.forwardCurveName();
 
 			if (null != astrForwardCurveName) {
 				int iNumFRI = astrForwardCurveName.length;

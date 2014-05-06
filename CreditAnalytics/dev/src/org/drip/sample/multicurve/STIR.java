@@ -466,23 +466,23 @@ public class STIR {
 		final double dblSwapRateToSwapRateExchangeCorrelation)
 		throws Exception
 	{
-		JulianDate dtEffective = stir.getEffectiveDate();
+		JulianDate dtEffective = stir.effective();
 
 		String strComponentName = stir.componentName();
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			strComponentName + "SwapRateVolatility",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateVolatility)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			strComponentName + "SwapRateExchangeVolatility",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateExchangeVolatility)
 		);
 
-		cmp.setLatentStateVolSurface (
+		cmp.setVolSurface (
 			strComponentName + "SwapRateToSwapRateExchangeCorrelation",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateToSwapRateExchangeCorrelation)
@@ -525,7 +525,7 @@ public class STIR {
 		STIRFutureComponent stir = CreateSTIR (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

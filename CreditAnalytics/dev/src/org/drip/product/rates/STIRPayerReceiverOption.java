@@ -68,6 +68,21 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 		_bIsReceiver = bIsReceiver;
 	}
 
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	{
+		return _stir.cashflowCurrencySet();
+	}
+
+	@Override public java.lang.String[] couponCurrency()
+	{
+		return _stir.couponCurrency();
+	}
+
+	@Override public java.lang.String[] principalCurrency()
+	{
+		return _stir.principalCurrency();
+	}
+
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -84,8 +99,8 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		java.lang.String strComponentName = componentName();
 
-		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface =
-			mktParams.getLatentStateVolSurface (strComponentName + "SwapRateVolatility", exercise());
+		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface = mktParams.volSurface
+			(strComponentName + "SwapRateVolatility", exercise());
 
 		if (null == auSTIRSwapRateVolSurface) return null;
 

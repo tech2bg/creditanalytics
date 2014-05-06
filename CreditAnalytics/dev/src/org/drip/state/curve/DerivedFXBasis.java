@@ -303,11 +303,10 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return null;
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstr)
-		throws java.lang.Exception
 	{
-		return java.lang.Double.NaN;
+		return null;
 	}
 
 	@Override public boolean setCCIS (
@@ -349,6 +348,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	}
 
 	@Override public org.drip.analytics.definition.Curve parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		double[] adblFXBasisBumped = new double[_adblFXBasis.length];
@@ -368,6 +368,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 	@Override public org.drip.analytics.definition.Curve shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		int iNumBasis = _adblFXBasis.length;
@@ -390,6 +391,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	}
 
 	@Override public org.drip.analytics.definition.Curve customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams mmtp)
 	{
 		if (null == mmtp) return null;

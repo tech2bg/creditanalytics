@@ -362,14 +362,6 @@ public abstract class Bond extends CreditComponent {
 		throws java.lang.Exception;
 
 	/**
-	 * Return the bond's trade currency
-	 * 
-	 * @return Bond's trade currency
-	 */
-
-	public abstract java.lang.String getTradeCurrency();
-
-	/**
 	 * Return the bond's floating coupon convention
 	 * 
 	 * @return Bond's floating coupon convention

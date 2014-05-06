@@ -90,11 +90,11 @@ public class ForeignCollateralDomesticForexVolCorr {
 			new FlatUnivariate (0.));
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(null, null, null, null, null, null, null, null);
+			(null, null, null, null, null, null, null);
 
-		cmp.setDomesticCurrencyForeignCollateralCurve (strForeignCurrency, dcCcyDomesticCollatForeign);
+		cmp.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
 
-		cmp.setForeignCollateralCurve (strForeignCurrency, dcCcyForeignCollatForeign);
+		cmp.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
 
 		cmp.setFXCurve (cp.getCode(), auFX);
 
@@ -142,7 +142,7 @@ public class ForeignCollateralDomesticForexVolCorr {
 						new FlatUnivariate (dblFXVolatility),
 						new FlatUnivariate (dblFXForeignRatesCorrelation));
 
-					cmp.setDomesticCurrencyForeignCollateralCurve (strForeignCurrency, dcCcyDomesticCollatForeign);
+					cmp.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
 
 					CaseInsensitiveTreeMap<Double> mapFCFF = fcff.value (
 						valParams,

@@ -37,7 +37,7 @@ package org.drip.product.rates;
  *  - Standard/Custom Constructor for the Deposit Component
  *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
  *  - Coupon/Notional Outstanding as well as schedules
- *  - Market Parameters: Discount, Forward, Credit, Treasury, EDSF Curves
+ *  - Market Parameters: Discount, Forward, Credit, Treasury Curves
  *  - Cash Flow Periods: Coupon flows and (Optionally) Loss Flows
  *  - Valuation: Named Measure Generation
  *  - Calibration: The codes and constraints generation
@@ -49,10 +49,10 @@ package org.drip.product.rates;
 
 public class DepositComponent extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 100.;
-	private java.lang.String _strIR = "";
 	private java.lang.String _strCode = "";
-	private java.lang.String _strDC = "Act/360";
-	private java.lang.String _strCalendar = "USD";
+	private java.lang.String _strCalendar = "";
+	private java.lang.String _strCurrency = "";
+	private java.lang.String _strDayCount = "Act/360";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.params.FloatingRateIndex _fri = null;
@@ -63,8 +63,8 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	 * 
 	 * @param dtEffective Effective Date
 	 * @param dtMaturity Maturity Date
-	 * @param strIR IR Curve
-	 * @param strDC Day Count
+	 * @param strCurrency Pay Currency
+	 * @param strDayCount Day Count
 	 * @param strCalendar Calendar
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
@@ -74,18 +74,19 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final org.drip.product.params.FloatingRateIndex fri,
-		final java.lang.String strIR,
-		final java.lang.String strDC,
+		final java.lang.String strCurrency,
+		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		if (null == dtEffective || null == dtMaturity || null == (_strIR = strIR) || strIR.isEmpty() ||
-			(_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective = dtEffective.getJulian()))
+		if (null == dtEffective || null == dtMaturity || null == (_strCurrency = strCurrency) ||
+			_strCurrency.isEmpty() || (_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective =
+				dtEffective.getJulian()))
 			throw new java.lang.Exception ("DepositComponent ctr: Invalid Inputs!");
 
 		_fri = fri;
-		_strDC = strDC;
 		_strCalendar = strCalendar;
+		_strDayCount = strDayCount;
 	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -138,12 +139,13 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		_dblNotional = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate IR curve name");
+			throw new java.lang.Exception
+				("DepositComponent de-serializer: Cannot locate principal currency");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_strIR = astrField[2];
+			_strCurrency = astrField[2];
 		else
-			_strIR = "";
+			_strCurrency = "";
 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate Deposit code");
@@ -158,9 +160,9 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 				("DepositComponent de-serializer: Cannot locate day count convention");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			_strDC = astrField[4];
+			_strDayCount = astrField[4];
 		else
-			_strDC = "";
+			_strDayCount = "";
 
 		if (null == astrField[5] || astrField[5].isEmpty())
 			throw new java.lang.Exception ("DepositComponent de-serializer: Cannot locate Calendar");
@@ -201,7 +203,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 			_fri = org.drip.product.params.FloatingRateIndex.Create (astrField[8]);
 	}
 
-	@Override public java.lang.String getPrimaryCode()
+	@Override public java.lang.String primaryCode()
 	{
 		return _strCode;
 	}
@@ -217,44 +219,53 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return "CD=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}
 
-	@Override public java.lang.String getTreasuryCurveName()
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
-		return "";
+		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
+
+		setCcy.add (_strCurrency);
+
+		return setCcy;
 	}
 
-	@Override public java.lang.String getEDSFCurveName()
+	@Override public java.lang.String[] couponCurrency()
 	{
-		return "";
+		return new java.lang.String[] {_strCurrency};
 	}
 
-	@Override public double getInitialNotional()
+	@Override public java.lang.String[] principalCurrency()
+	{
+		return new java.lang.String[] {_strCurrency};
+	}
+
+	@Override public double initialNotional()
 	{
 		return _dblNotional;
 	}
 
-	@Override public double getNotional (
+	@Override public double notional (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DepositComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("DepositComponent::notional => Bad date into getNotional");
 
 		return 1.;
 	}
 
-	@Override public double getNotional (
+	@Override public double notional (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2))
-			throw new java.lang.Exception ("DepositComponent::getNotional => Bad date into getNotional");
+			throw new java.lang.Exception ("DepositComponent::notional => Bad date into getNotional");
 
 		return 1.;
 	}
 
-	@Override public double getCoupon (
+	@Override public double coupon (
 		final double dblValue,
 		final org.drip.param.definition.ComponentMarketParams mktParams)
 		throws java.lang.Exception
@@ -262,23 +273,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return 0.;
 	}
 
-	@Override public boolean setCurves (
-		final java.lang.String strIR,
-		final java.lang.String strIRTSY,
-		final java.lang.String strCC)
-	{
-		if (null == strIR || strIR.isEmpty()) return false;
-
-		_strIR = strIR;
-		return true;
-	}
-
-	@Override public java.lang.String getIRCurveName()
-	{
-		return _strIR;
-	}
-
-	@Override public java.lang.String[] getForwardCurveName()
+	@Override public java.lang.String[] forwardCurveName()
 	{
 		return null == _fri ? null : new java.lang.String[] {_fri.fullyQualifiedName()};
 	}
@@ -288,7 +283,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return "";
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getEffectiveDate()
+	@Override public org.drip.analytics.date.JulianDate effective()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblEffective);
@@ -299,7 +294,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getMaturityDate()
+	@Override public org.drip.analytics.date.JulianDate maturity()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblMaturity);
@@ -310,18 +305,18 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate getFirstCouponDate()
+	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getCashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.period.CashflowPeriod.GetSinglePeriod (_dblEffective, _dblMaturity,
 			_strCalendar);
 	}
 
-	@Override public org.drip.param.valuation.CashSettleParams getCashSettleParams()
+	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
 	{
 		return _settleParams;
 	}
@@ -370,14 +365,14 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.df (dblCashSettle);
 
-			mapResult.put ("pv", dblAdjustedAnnuity * _dblNotional * 0.01 * getNotional (_dblEffective,
+			mapResult.put ("pv", dblAdjustedAnnuity * _dblNotional * 0.01 * notional (_dblEffective,
 				_dblMaturity));
 
 			mapResult.put ("price", 100. * dblAdjustedAnnuity);
 
 			mapResult.put ("rate", ((1. / dblUnadjustedAnnuity) - 1.) /
-				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
-					false, _dblMaturity, null, _strCalendar));
+				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
+					_strDayCount, false, _dblMaturity, null, _strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -387,7 +382,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return mapResult;
 	}
 
-	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	@Override public java.util.Set<java.lang.String> measureNames()
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
@@ -446,18 +441,18 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return null;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian calcQuoteDFMicroJack (
-		final java.lang.String strQuote,
+	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strQuote || null ==
-			mktParams || null == mktParams.fundingCurve())
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure || null
+			== mktParams || null == mktParams.fundingCurve())
 			return null;
 
-		if ("Rate".equalsIgnoreCase (strQuote)) {
+		if ("Rate".equalsIgnoreCase (strManifestMeasure)) {
 			try {
 				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
@@ -519,9 +514,9 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
-						(0.01 * ratesLSMM.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure
-							("Price", _dblMaturity, 0.) && prlc.updateDValueDManifestMeasure ("Price", 0.01)
-								? prlc : null;
+						(0.01 * ratesLSMM.getMeasureQuoteValue ("Price")) &&
+							prlc.addDResponseWeightDManifestMeasure ("Price", _dblMaturity, 0.) &&
+								prlc.updateDValueDManifestMeasure ("Price", 0.01) ? prlc : null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
@@ -530,8 +525,9 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
-						(ratesLSMM.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure ("PV",
-							_dblMaturity, 0.) && prlc.updateDValueDManifestMeasure ("PV", 1.) ? prlc : null;
+						(ratesLSMM.getMeasureQuoteValue ("PV")) && prlc.addDResponseWeightDManifestMeasure
+							("PV", _dblMaturity, 0.) && prlc.updateDValueDManifestMeasure ("PV", 1.) ? prlc :
+								null;
 				}
 
 				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
@@ -540,9 +536,9 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-						_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar);
+						_dblMaturity, _strDayCount, false, _dblMaturity, null, _strCalendar);
 
-					double dblDF = 1. / (1. + ratesLSMM.getMeasureQuoteValue() * dblDCF);
+					double dblDF = 1. / (1. + ratesLSMM.getMeasureQuoteValue ("Rate") * dblDCF);
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
 						(dblDF) && prlc.addDResponseWeightDManifestMeasure ("Rate", _dblMaturity, 0.) &&
@@ -562,10 +558,14 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 					org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-				return prlc.addPredictorResponseWeight (_dblMaturity, 1.) && prlc.updateValue
-					(lsmm.getMeasureQuoteValue()) && prlc.addDResponseWeightDManifestMeasure ("ForwardRate",
-						_dblMaturity, 1.) && prlc.updateDValueDManifestMeasure ("ForwardRate", 1.) ? prlc :
-							null;
+				try {
+					return prlc.addPredictorResponseWeight (_dblMaturity, 1.) && prlc.updateValue
+						(lsmm.getMeasureQuoteValue ("ForwardRate")) &&
+							prlc.addDResponseWeightDManifestMeasure ("ForwardRate", _dblMaturity, 1.) &&
+								prlc.updateDValueDManifestMeasure ("ForwardRate", 1.) ? prlc : null;
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -580,20 +580,20 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 		sb.append (_dblNotional + getFieldDelimiter());
 
-		if (null == _strIR || _strIR.isEmpty())
+		if (null == _strCurrency || _strCurrency.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (_strIR + getFieldDelimiter());
+			sb.append (_strCurrency + getFieldDelimiter());
 
 		if (null == _strCode || _strCode.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
 			sb.append (_strCode + getFieldDelimiter());
 
-		if (null == _strDC || _strDC.isEmpty())
+		if (null == _strDayCount || _strDayCount.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
 		else
-			sb.append (_strDC + getFieldDelimiter());
+			sb.append (_strDayCount + getFieldDelimiter());
 
 		if (null == _strCalendar || _strCalendar.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());

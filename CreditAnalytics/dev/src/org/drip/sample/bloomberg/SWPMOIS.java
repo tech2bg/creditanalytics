@@ -340,7 +340,7 @@ public class SWPMOIS {
 
 		System.out.println ("\n---- Fixed Cashflow ----\n");
 
-		for (Period p : fixStream.getCashFlowPeriod())
+		for (Period p : fixStream.cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
@@ -356,7 +356,7 @@ public class SWPMOIS {
 
 		System.out.println ("\n---- Floating Cashflow ----\n");
 
-		for (Period p : floatStream.getCashFlowPeriod())
+		for (Period p : floatStream.cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +

@@ -30,15 +30,15 @@ package org.drip.product.fx;
 
 /**
  * CrossCurrencyBasisSwap contains the implementation of the dual currency cross swaps. It is composed of two
- * 	different FloatFloatComponents - one each for each currency.
+ * 	different Rates Components - one each for each currency.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CrossCurrencyBasisSwap extends org.drip.product.definition.BasketProduct {
+public class CrossCurrencySwapPair extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
-	private org.drip.product.rates.FloatFloatComponent _ffcDerived = null;
-	private org.drip.product.rates.FloatFloatComponent _ffcReference = null;
+	private org.drip.product.definition.RatesComponent _ffcDerived = null;
+	private org.drip.product.definition.RatesComponent _ffcReference = null;
 
 	protected int measureAggregationType (
 		final java.lang.String strMeasureName)
@@ -50,16 +50,16 @@ public class CrossCurrencyBasisSwap extends org.drip.product.definition.BasketPr
 	 * CrossCurrencyBasisSwap constructor
 	 * 
 	 * @param strName The CrossCurrencyBasisSwap Instance Name
-	 * @param ffcReference The Reference Float-Float Tenor Basis Swap
-	 * @param ffcDerived The Derived Float-Float Tenor Basis Swap
+	 * @param ffcReference The Reference Swap
+	 * @param ffcDerived The Derived Swap
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public CrossCurrencyBasisSwap (
+	public CrossCurrencySwapPair (
 		final java.lang.String strName,
-		final org.drip.product.rates.FloatFloatComponent ffcReference,
-		final org.drip.product.rates.FloatFloatComponent ffcDerived)
+		final org.drip.product.definition.RatesComponent ffcReference,
+		final org.drip.product.definition.RatesComponent ffcDerived)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_ffcDerived = ffcDerived) || null
@@ -68,23 +68,23 @@ public class CrossCurrencyBasisSwap extends org.drip.product.definition.BasketPr
 	}
 
 	/**
-	 * Retrieve the Reference Float-Float Tenor Basis Swap
+	 * Retrieve the Reference Swap
 	 * 
-	 * @return The Reference Float-Float Tenor Basis Swap
+	 * @return The Reference Swap
 	 */
 
-	public org.drip.product.rates.FloatFloatComponent getReferenceSwap()
+	public org.drip.product.definition.RatesComponent getReferenceSwap()
 	{
 		return _ffcReference;
 	}
 
 	/**
-	 * Retrieve the Derived Float-Float Tenor Basis Swap
+	 * Retrieve the Derived Swap
 	 * 
-	 * @return The Derived Float-Float Tenor Basis Swap
+	 * @return The Derived Swap
 	 */
 
-	public org.drip.product.rates.FloatFloatComponent getDerivedSwap()
+	public org.drip.product.definition.RatesComponent getDerivedSwap()
 	{
 		return _ffcDerived;
 	}
@@ -94,15 +94,15 @@ public class CrossCurrencyBasisSwap extends org.drip.product.definition.BasketPr
 		return _strName;
 	}
 
-	@Override public java.util.Set<java.lang.String> getComponentIRCurveNames()
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
-		java.util.Set<java.lang.String> setstrIR = new java.util.TreeSet<java.lang.String>();
+		java.util.Set<java.lang.String> setstrCurrency = new java.util.TreeSet<java.lang.String>();
 
-		setstrIR.add (_ffcReference.getIRCurveName());
+		setstrCurrency.addAll (_ffcReference.cashflowCurrencySet());
 
-		setstrIR.add (_ffcDerived.getIRCurveName());
+		setstrCurrency.addAll (_ffcDerived.cashflowCurrencySet());
 
-		return setstrIR;
+		return setstrCurrency;
 	}
 
 	@Override public java.util.Set<java.lang.String> getComponentCreditCurveNames()

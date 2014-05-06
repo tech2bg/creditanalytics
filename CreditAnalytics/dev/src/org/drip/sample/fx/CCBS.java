@@ -8,7 +8,7 @@ import org.drip.param.creator.*;
 import org.drip.param.definition.BasketMarketParams;
 import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.CrossCurrencyBasisSwap;
+import org.drip.product.fx.CrossCurrencySwapPair;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.service.api.CreditAnalytics;
@@ -118,7 +118,7 @@ public class CCBS {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
 		ComponentMarketParams cmpUSD = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null, null);
+			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null);
 
 		FloatFloatComponent ffcReferenceUSD = MakexM6MBasisSwap (
 			dtToday,
@@ -141,7 +141,7 @@ public class CCBS {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
 		ComponentMarketParams cmpJPY = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null, null);
+			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null);
 
 		FloatFloatComponent ffcDerivedJPY = MakexM6MBasisSwap (
 			dtToday,
@@ -151,7 +151,7 @@ public class CCBS {
 
 		System.out.println (ffcDerivedJPY.value (valParams, null, cmpJPY, null));
 
-		CrossCurrencyBasisSwap ccbsUSDJPY = new CrossCurrencyBasisSwap (
+		CrossCurrencySwapPair ccbsUSDJPY = new CrossCurrencySwapPair (
 			"USDJPY_CCBS",
 			ffcReferenceUSD,
 			ffcDerivedJPY);

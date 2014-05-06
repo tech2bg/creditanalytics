@@ -1071,7 +1071,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	}
 
 	/**
-	 * Generate the First EDSF start date from this JulianDate
+	 * Generate the First EDF start date from this JulianDate
 	 * 
 	 * @param iNumRollMonths Integer representing number of months to roll
 	 * 

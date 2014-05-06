@@ -150,8 +150,8 @@ public class OptionHelper {
 			dblStartDate)
 			return 0.;
 
-		org.drip.quant.function1D.AbstractUnivariate auVolSurface = mktParams.getLatentStateVolSurface
-			(strVolSurface, new org.drip.analytics.date.JulianDate (dblEndDate));
+		org.drip.quant.function1D.AbstractUnivariate auVolSurface = mktParams.volSurface (strVolSurface, new
+			org.drip.analytics.date.JulianDate (dblEndDate));
 
 		return null != auVolSurface ? new PeriodVariance (auVolSurface).integrate (dblStartDate, dblEndDate)
 			/ 365.25 : 0.;
@@ -263,9 +263,8 @@ public class OptionHelper {
 
 		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
 
-		return IntegratedCrossVolQuanto (mktParams.getLatentStateVolSurface (strVolSurface1, dtEnd),
-			mktParams.getLatentStateVolSurface (strVolSurface2, dtEnd), mktParams.getLatentStateVolSurface
-				(strCorrSurface, dtEnd), dblStartDate, dblEndDate);
+		return IntegratedCrossVolQuanto (mktParams.volSurface (strVolSurface1, dtEnd), mktParams.volSurface
+			(strVolSurface2, dtEnd), mktParams.volSurface (strCorrSurface, dtEnd), dblStartDate, dblEndDate);
 	}
 
 	/**
@@ -338,10 +337,9 @@ public class OptionHelper {
 
 		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
 
-		return IntegratedFRACrossVolConvexityExponent (mktParams.getLatentStateVolSurface (strDiscountVolTS,
-			dtEnd), mktParams.getLatentStateVolSurface (strForwardVolTS, dtEnd),
-				mktParams.getLatentStateVolSurface (strDiscountForwardCorrTS, dtEnd),
-					dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
-						dblEndDate);
+		return IntegratedFRACrossVolConvexityExponent (mktParams.volSurface (strDiscountVolTS, dtEnd),
+			mktParams.volSurface (strForwardVolTS, dtEnd), mktParams.volSurface (strDiscountForwardCorrTS,
+				dtEnd), dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
+					dblEndDate);
 	}
 }

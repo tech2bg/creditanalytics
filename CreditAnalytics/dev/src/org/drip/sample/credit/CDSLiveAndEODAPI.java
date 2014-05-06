@@ -108,8 +108,8 @@ public class CDSLiveAndEODAPI {
 		CalibratableFixedIncomeComponent[] aCompCDS = ccEOD.calibComp();
 
 		for (int i = 0; i < aCompCDS.length; ++i)
-			System.out.println (aCompCDS[i].getPrimaryCode() + " => " + (int) (ccEOD.manifestMeasure
-				(aCompCDS[i].getPrimaryCode())));
+			System.out.println (aCompCDS[i].primaryCode() + " => " + (ccEOD.manifestMeasure
+				(aCompCDS[i].primaryCode()).get ("FairPremium")));
 
 		/*
 		 * Loads all available credit curves for the given curve ID built from CDS instruments between 2 dates
@@ -127,7 +127,7 @@ public class CDSLiveAndEODAPI {
 
 			CreditCurve ccCOB = meCC.getValue();
 
-			System.out.println (dtME + "[CDS.5Y] => " + (int) (ccCOB.manifestMeasure ("CDS.5Y")));
+			System.out.println (dtME + "[CDS.5Y] => " + (ccCOB.manifestMeasure ("CDS.5Y").get ("Rate")));
 		}
 	}
 

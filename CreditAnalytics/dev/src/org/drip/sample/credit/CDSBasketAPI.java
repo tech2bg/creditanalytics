@@ -253,7 +253,7 @@ public class CDSBasketAPI {
 
 		aCDS[5] = CDSBuilder.CreateSNAC (dtCurve, "5Y", 0.01, "TUR");
 
-		BasketProduct bds = new CDSBasket (aCDS[0].getEffectiveDate(), aCDS[0].getMaturityDate(),
+		BasketProduct bds = new CDSBasket (aCDS[0].effective(), aCDS[0].maturity(),
 			0.01, aCDS, new double[] {1., 2., 3., 4., 5., 6.}, "BRIC");
 
 		/*

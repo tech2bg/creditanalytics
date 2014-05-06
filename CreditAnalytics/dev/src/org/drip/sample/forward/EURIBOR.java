@@ -382,7 +382,7 @@ public class EURIBOR {
 		 */
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fcReference, null, null, null, null, null, null);
+			(dc, fcReference, null, null, null, null, null);
 
 		/*
 		 * Construct the Shape Preserving Forward Curve by applying the linear curve calibrator to the array
@@ -417,10 +417,10 @@ public class EURIBOR {
 			System.out.println ("\t----------------------------------------------------------------");
 
 			for (int i = 0; i < aDeposit.length; ++i)
-				System.out.println ("\t[" + aDeposit[i].getEffectiveDate() + " - " + aDeposit[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aDeposit[i].calcMeasureValue (valParams, null, cmp, null, strDepositCalibMeasure), 1, 6, 1.) +
+				System.out.println ("\t[" + aDeposit[i].effective() + " - " + aDeposit[i].maturity() + "] = " +
+					FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null, cmp, null, strDepositCalibMeasure), 1, 6, 1.) +
 						" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].getMaturityDate()), 1, 4, 100.) + "%");
+							FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].maturity()), 1, 4, 100.) + "%");
 		}
 
 		/*
@@ -435,10 +435,10 @@ public class EURIBOR {
 			System.out.println ("\t----------------------------------------------------------------");
 
 			for (int i = 0; i < aFRA.length; ++i)
-				System.out.println ("\t[" + aFRA[i].getEffectiveDate() + " - " + aFRA[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aFRA[i].calcMeasureValue (valParams, null, cmp, null, strFRACalibMeasure), 1, 6, 1.) +
+				System.out.println ("\t[" + aFRA[i].effective() + " - " + aFRA[i].maturity() + "] = " +
+					FormatUtil.FormatDouble (aFRA[i].measureValue (valParams, null, cmp, null, strFRACalibMeasure), 1, 6, 1.) +
 						" | " + FormatUtil.FormatDouble (adblFRAQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].getMaturityDate()), 1, 4, 100.) + "%");
+							FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].maturity()), 1, 4, 100.) + "%");
 		}
 
 		/*
@@ -453,10 +453,10 @@ public class EURIBOR {
 			System.out.println ("\t----------------------------------------------------------------");
 
 			for (int i = 0; i < aFixFloat.length; ++i)
-				System.out.println ("\t[" + aFixFloat[i].getEffectiveDate() + " - " + aFixFloat[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aFixFloat[i].calcMeasureValue (valParams, null, cmp, null, "ParSwapRate"), 1, 2, 0.01) +
+				System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
+					FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, cmp, null, "ParSwapRate"), 1, 2, 0.01) +
 						"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
+							FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
 		}
 
 		/*
@@ -471,10 +471,10 @@ public class EURIBOR {
 			System.out.println ("\t----------------------------------------------------------------");
 
 			for (int i = 0; i < aFloatFloat.length; ++i)
-				System.out.println ("\t[" + aFloatFloat[i].getEffectiveDate() + " - " + aFloatFloat[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
+				System.out.println ("\t[" + aFloatFloat[i].effective() + " - " + aFloatFloat[i].maturity() + "] = " +
+					FormatUtil.FormatDouble (aFloatFloat[i].measureValue (valParams, null, cmp, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
 						" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
+							FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].maturity()), 1, 4, 100.) + "%");
 		}
 
 		/*
@@ -489,10 +489,10 @@ public class EURIBOR {
 			System.out.println ("\t----------------------------------------------------------------");
 
 			for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
-				System.out.println ("\t[" + aSyntheticFloatFloat[i].getEffectiveDate() + " - " + aSyntheticFloatFloat[i].getMaturityDate() + "] = " +
-					FormatUtil.FormatDouble (aSyntheticFloatFloat[i].calcMeasureValue (valParams, null, cmp, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
+				System.out.println ("\t[" + aSyntheticFloatFloat[i].effective() + " - " + aSyntheticFloatFloat[i].maturity() + "] = " +
+					FormatUtil.FormatDouble (aSyntheticFloatFloat[i].measureValue (valParams, null, cmp, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
 						" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].getMaturityDate()), 1, 4, 100.) + "%");
+							FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].maturity()), 1, 4, 100.) + "%");
 		}
 
 		return fcDerived;

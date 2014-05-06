@@ -74,7 +74,9 @@ public interface CurveConstructionInputSet {
 	 * @return The Calibration Quote Map
 	 */
 
-	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> getQuote();
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			getQuote();
 
 	/**
 	 * Retrieve the Map containing the array of the Calibration Measures

@@ -118,7 +118,6 @@ public class CreditCurveScenarioGenerator {
 	 * @param valParams ValuationParams
 	 * @param dc Base Discount Curve
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Array of component quotes
 	 * @param dblRecovery Component recovery
 	 * @param astrCalibMeasure Array of the calibration measures
@@ -134,7 +133,6 @@ public class CreditCurveScenarioGenerator {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
@@ -159,7 +157,7 @@ public class CreditCurveScenarioGenerator {
 		for (int i = 0; i < iNumInstr; ++i) {
 			adblHazardRate[i] = java.lang.Double.NaN;
 
-			adblDate[i] = _aCalibInst[i].getMaturityDate().getJulian();
+			adblDate[i] = _aCalibInst[i].maturity().getJulian();
 		}
 
 		try {
@@ -181,12 +179,12 @@ public class CreditCurveScenarioGenerator {
 
 			if (null == tqm) return null;
 
-			if (!_compCalib.bootstrapHazardRate (cc, _aCalibInst[i], i, valParams, dc, dcTSY, dcEDSF,
-				pricerParams, tqm._strMeasure, tqm._dblQuote, mmFixings, quotingParams, bFlat))
+			if (!_compCalib.bootstrapHazardRate (cc, _aCalibInst[i], i, valParams, dc, dcTSY, pricerParams,
+				tqm._strMeasure, tqm._dblQuote, mmFixings, quotingParams, bFlat))
 				return null;
 		}
 
-		cc.setInstrCalibInputs (valParams, bFlat, dc, dcTSY, dcEDSF, pricerParams, _aCalibInst, adblQuotes,
+		cc.setInstrCalibInputs (valParams, bFlat, dc, dcTSY, pricerParams, _aCalibInst, adblQuotes,
 			astrCalibMeasure, mmFixings, quotingParams);
 
 		return cc;
@@ -199,7 +197,6 @@ public class CreditCurveScenarioGenerator {
 	 * @param valParams ValuationParams
 	 * @param dc Base Discount Curve
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Amount of bump applied to the tenor
 	 * @param dblRecovery Component recovery
@@ -216,7 +213,6 @@ public class CreditCurveScenarioGenerator {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final double[] adblQuotes,
 		final double dblBump,
 		final double dblRecovery,
@@ -243,8 +239,8 @@ public class CreditCurveScenarioGenerator {
 				if (j == i) adblTenorQuotes[j] += dblBump;
 			}
 
-			if (null == (aCC[i] = createCC (strName, valParams, dc, dcTSY, dcEDSF, adblTenorQuotes,
-				dblRecovery, astrCalibMeasure, mmFixings, quotingParams, bFlat)))
+			if (null == (aCC[i] = createCC (strName, valParams, dc, dcTSY, adblTenorQuotes, dblRecovery,
+				astrCalibMeasure, mmFixings, quotingParams, bFlat)))
 				return null;
 		}
 
@@ -258,7 +254,6 @@ public class CreditCurveScenarioGenerator {
 	 * @param valParams ValuationParams
 	 * @param dc Base Discount Curve
 	 * @param dcTSY Treasury Discount Curve
-	 * @param dcEDSF EDSF Discount Curve
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Amount of bump applied to the tenor
 	 * @param dblRecovery Component recovery
@@ -276,7 +271,6 @@ public class CreditCurveScenarioGenerator {
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.rates.DiscountCurve dcTSY,
-			final org.drip.analytics.rates.DiscountCurve dcEDSF,
 			final double[] adblQuotes,
 			final double dblBump,
 			final double dblRecovery,
@@ -305,12 +299,12 @@ public class CreditCurveScenarioGenerator {
 					adblTenorQuotes[j] = adblQuotes[j];
 			}
 
-			if (null == (cc = createCC (strName, valParams, dc, dcTSY, dcEDSF, adblTenorQuotes, dblRecovery,
+			if (null == (cc = createCC (strName, valParams, dc, dcTSY, adblTenorQuotes, dblRecovery,
 				astrCalibMeasure, mmFixings, quotingParams, bFlat)))
 				return null;
 
 			mapTenorCC.put (org.drip.analytics.date.JulianDate.fromJulian
-				(_aCalibInst[i].getMaturityDate().getJulian()), cc);
+				(_aCalibInst[i].maturity().getJulian()), cc);
 		}
 
 		return mapTenorCC;

@@ -76,19 +76,15 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = new
 			org.drip.state.representation.LatentStateMetricMeasure[iNumLSMM];
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
-			_ccis.getMeasures();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapQuote = _ccis.getQuote();
 
 		for (int i = 0; i < iNumLSMM; ++i) {
-			java.lang.String strInstrumentCode = _ccis.getComponent()[i].getPrimaryCode();
-
 			try {
 				aLSMM[i] = new org.drip.analytics.rates.RatesLSMM
 					(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-						latentStateQuantificationMetric(), mapMeasures.get (strInstrumentCode), mapQuote.get
-							(strInstrumentCode), null);
+						org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+							mapQuote.get (_ccis.getComponent()[i].primaryCode()), null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -110,19 +106,15 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 		return null == _ccis ? null : _ccis.getComponent();
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstrumentCode)
-		throws java.lang.Exception
 	{
-		if (null == _ccis)
-			throw new java.lang.Exception ("ExplicitBootDiscountCurve::getManifestMeasure => Cannot get " +
-				strInstrumentCode);
+		if (null == _ccis) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQuote = _ccis.getQuote();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			mapQuote = _ccis.getQuote();
 
-		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode))
-			throw new java.lang.Exception ("ExplicitBootDiscountCurve::getManifestMeasure => Cannot get " +
-				strInstrumentCode);
+		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode)) return null;
 
 		return mapQuote.get (strInstrumentCode);
 	}

@@ -89,7 +89,7 @@ public class ScenarioDiscountCurveBuilder {
 			lsCompDENSE.add (comp);
 
 			try {
-				lsCalibQuote.add (comp.calcMeasureValue (valParams, null, cmp, null, "Rate"));
+				lsCalibQuote.add (comp.measureValue (valParams, null, cmp, null, "Rate"));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -169,7 +169,7 @@ public class ScenarioDiscountCurveBuilder {
 			aCalibInst);
 
 		if (null == irsg || !irsg.cookScenarioDC (org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, null, adblQuotes, 0.,
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, adblQuotes, 0.,
 				astrCalibMeasure, mmFixings, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
 			return null;
 
@@ -203,10 +203,10 @@ public class ScenarioDiscountCurveBuilder {
 
 		try {
 			org.drip.state.curve.DiscountFactorDiscountCurve dcdf = new
-				org.drip.state.curve.DiscountFactorDiscountCurve (aSRS[0].getCalibComp()[0].getIRCurveName(),
-					null == quotingParam ? null : quotingParam.coreCollateralizationParams(),
-						(lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam,
-							cmp)));
+				org.drip.state.curve.DiscountFactorDiscountCurve
+					(aSRS[0].getCalibComp()[0].couponCurrency()[0], null == quotingParam ? null :
+						quotingParam.coreCollateralizationParams(), (lcc.calibrateSpan (aSRS,
+							dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
 
 			return dcdf.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
 				pricerParam, quotingParam, cmp)) ? dcdf : null;
@@ -703,7 +703,7 @@ public class ScenarioDiscountCurveBuilder {
 
 		CompQuote[] aCQ1 = null;
 
-		java.lang.String strCurrency = aCalibComp1[0].getIRCurveName();
+		java.lang.String strCurrency = aCalibComp1[0].couponCurrency()[0];
 
 		if (null == strTenor1 || strTenor1.isEmpty()) {
 			if (null != aCalibComp1) {
@@ -717,14 +717,14 @@ public class ScenarioDiscountCurveBuilder {
 				}
 			}
 		} else
-			aCQ1 = CompQuote (valParams, cmp, strCurrency, aCalibComp1[0].getEffectiveDate(),
-				aCalibComp1[0].getMaturityDate(), aCalibComp1[aCalibComp1.length - 1].getMaturityDate(),
+			aCQ1 = CompQuote (valParams, cmp, strCurrency, aCalibComp1[0].effective(),
+				aCalibComp1[0].maturity(), aCalibComp1[aCalibComp1.length - 1].maturity(),
 					strTenor1, false);
 
 		if (null == strTenor2 || strTenor2.isEmpty()) return dcShapePreserver;
 
-		CompQuote[] aCQ2 = CompQuote (valParams, cmp, strCurrency, aCalibComp2[0].getEffectiveDate(),
-			aCalibComp2[0].getMaturityDate(), aCalibComp2[aCalibComp2.length - 1].getMaturityDate(),
+		CompQuote[] aCQ2 = CompQuote (valParams, cmp, strCurrency, aCalibComp2[0].effective(),
+			aCalibComp2[0].maturity(), aCalibComp2[aCalibComp2.length - 1].maturity(),
 				strTenor2, true);
 
 		int iNumDENSEComp1 = null == aCQ1 ? 0 : aCQ1.length;

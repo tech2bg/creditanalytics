@@ -149,11 +149,10 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 		return null;
 	}
 
-	@Override public double manifestMeasure (
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstrumentCode)
-		throws java.lang.Exception
 	{
-		return java.lang.Double.NaN;
+		return null;
 	}
 
 	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
@@ -162,6 +161,7 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 	}
 
 	@Override public org.drip.state.representation.LatentState parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
@@ -169,12 +169,14 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 
 	@Override public org.drip.state.representation.LatentState shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift)
 	{
 		return null;
 	}
 
 	@Override public org.drip.state.representation.LatentState customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return null;

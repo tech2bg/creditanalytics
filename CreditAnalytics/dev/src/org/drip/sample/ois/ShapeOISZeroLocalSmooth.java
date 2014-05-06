@@ -872,51 +872,51 @@ public class ShapeOISZeroLocalSmooth {
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aDepositComp[i].calcMeasureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDepositComp[i].calcMeasureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDepositComp[i].calcMeasureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aDepositComp[i].calcMeasureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDepositComp[i].calcMeasureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDepositComp[i].calcMeasureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDepositComp[i].calcMeasureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
 						null,
@@ -945,51 +945,51 @@ public class ShapeOISZeroLocalSmooth {
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
-			System.out.println ("\t[" + aShortEndOISComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aShortEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aShortEndOISComp[i].calcMeasureValue (
+					aShortEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aShortEndOISComp[i].calcMeasureValue (
+					aShortEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aShortEndOISComp[i].calcMeasureValue (
+					aShortEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aShortEndOISComp[i].calcMeasureValue (
+					aShortEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aShortEndOISComp[i].calcMeasureValue (
+					aShortEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aShortEndOISComp[i].calcMeasureValue (
+					aShortEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aShortEndOISComp[i].calcMeasureValue (
+					aShortEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
 						null,
@@ -1018,51 +1018,51 @@ public class ShapeOISZeroLocalSmooth {
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aOISFutureComp.length; ++i)
-			System.out.println ("\t[" + aOISFutureComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aOISFutureComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aOISFutureComp[i].calcMeasureValue (
+					aOISFutureComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aOISFutureComp[i].calcMeasureValue (
+					aOISFutureComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aOISFutureComp[i].calcMeasureValue (
+					aOISFutureComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aOISFutureComp[i].calcMeasureValue (
+					aOISFutureComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aOISFutureComp[i].calcMeasureValue (
+					aOISFutureComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aOISFutureComp[i].calcMeasureValue (
+					aOISFutureComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aOISFutureComp[i].calcMeasureValue (
+					aOISFutureComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
 						null,
@@ -1086,51 +1086,51 @@ public class ShapeOISZeroLocalSmooth {
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
-			System.out.println ("\t[" + aLongEndOISComp[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aLongEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aLongEndOISComp[i].calcMeasureValue (
+					aLongEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aLongEndOISComp[i].calcMeasureValue (
+					aLongEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aLongEndOISComp[i].calcMeasureValue (
+					aLongEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aLongEndOISComp[i].calcMeasureValue (
+					aLongEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aLongEndOISComp[i].calcMeasureValue (
+					aLongEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aLongEndOISComp[i].calcMeasureValue (
+					aLongEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aLongEndOISComp[i].calcMeasureValue (
+					aLongEndOISComp[i].measureValue (
 						valParams, null,
 						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
 						null,
@@ -1166,45 +1166,45 @@ public class ShapeOISZeroLocalSmooth {
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aCC.length; ++i)
-			System.out.println ("\t[" + aCC[i].getMaturityDate() + "] = " +
+			System.out.println ("\t[" + aCC[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (valParams, null,
+					aCC[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (valParams, null,
+					aCC[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (valParams, null,
+					aCC[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (valParams, null,
+					aCC[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (valParams, null,
+					aCC[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (valParams, null,
+					aCC[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aCC[i].calcMeasureValue (valParams, null,
+					aCC[i].measureValue (valParams, null,
 					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),

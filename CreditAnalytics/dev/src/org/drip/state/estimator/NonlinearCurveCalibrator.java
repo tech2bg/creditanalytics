@@ -60,7 +60,6 @@ public class NonlinearCurveCalibrator {
 		private org.drip.param.pricer.PricerParams _pricerParams = null;
 		private org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 		private org.drip.param.valuation.ValuationParams _valParams = null;
-		private org.drip.analytics.rates.DiscountCurve _dcEDSF = null;
 		private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 		private java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
@@ -72,7 +71,6 @@ public class NonlinearCurveCalibrator {
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.analytics.rates.DiscountCurve dc,
 			final org.drip.analytics.rates.DiscountCurve dcTSY,
-			final org.drip.analytics.rates.DiscountCurve dcEDSF,
 			final org.drip.param.pricer.PricerParams pricerParamsIn,
 			final java.lang.String strMeasure,
 			final double dblCalibValue,
@@ -89,7 +87,6 @@ public class NonlinearCurveCalibrator {
 			_comp = comp;
 			_bFlat = bFlat;
 			_dcTSY = dcTSY;
-			_dcEDSF = dcEDSF;
 			_iInstr = iInstr;
 			_mmFixings = mmFixings;
 			_valParams = valParams;
@@ -109,9 +106,9 @@ public class NonlinearCurveCalibrator {
 			if (!SetNode (_cc, _iInstr, _bFlat, dblRate))
 				throw new java.lang.Exception ("Cannot set CC = " + dblRate + " for node #" + _iInstr);
 
-			return _dblCalibValue - _comp.calcMeasureValue (_valParams, _pricerParams,
+			return _dblCalibValue - _comp.measureValue (_valParams, _pricerParams,
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (_dc, _dcTSY,
-					_dcEDSF, _cc, null, null, _mmFixings), _quotingParams, _strMeasure);
+					_cc, null, null, _mmFixings), _quotingParams, _strMeasure);
 		}
 
 		@Override public double integrate (
@@ -137,7 +134,6 @@ public class NonlinearCurveCalibrator {
 	private double calcCalibrationMetric (
 		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.FixedIncomeComponent[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,
@@ -157,9 +153,8 @@ public class NonlinearCurveCalibrator {
 
 		for (int i = 0; i < aCalibComp.length; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (adblNodeCalibOP[i] = calibrateIRNode (dc, dcTSY,
-				dcEDSF, aCalibComp[i], i, valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump,
-					mmFixings, quotingParams, false, 0 == i ? java.lang.Double.NaN :
-						adblNodeCalibOP[i - 1]))) {
+				aCalibComp[i], i, valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump, mmFixings,
+					quotingParams, false, 0 == i ? java.lang.Double.NaN : adblNodeCalibOP[i - 1]))) {
 				System.out.println ("\t\tCalibration failed for node #" + i);
 
 				throw new java.lang.Exception
@@ -174,7 +169,6 @@ public class NonlinearCurveCalibrator {
 	private double calibrateIRCurve (
 		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.FixedIncomeComponent[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,
@@ -191,7 +185,7 @@ public class NonlinearCurveCalibrator {
 				final double dblShiftedLeftSlope)
 				throws java.lang.Exception
 			{
-				return calcCalibrationMetric (dc, dcTSY, dcEDSF, aCalibComp, valParams, astrCalibMeasure,
+				return calcCalibrationMetric (dc, dcTSY, aCalibComp, valParams, astrCalibMeasure,
 					adblCalibValue, dblBump, mmFixings, quotingParams, dblShiftedLeftSlope);
 			}
 
@@ -230,7 +224,6 @@ public class NonlinearCurveCalibrator {
 	 * @param valParams Calibration Valuation Parameters
 	 * @param dc The discount curve to be bootstrapped
 	 * @param dcTSY The TSY discount curve
-	 * @param dcEDSF The EDSF discount curve
 	 * @param pricerParamsIn Input Pricer Parameters
 	 * @param strMeasure The Calibration Measure
 	 * @param dblCalibValue The Value to be Calibrated to
@@ -250,7 +243,6 @@ public class NonlinearCurveCalibrator {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.param.pricer.PricerParams pricerParamsIn,
 		final java.lang.String strMeasure,
 		final double dblCalibValue,
@@ -271,8 +263,8 @@ public class NonlinearCurveCalibrator {
 		try {
 			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
 				org.drip.quant.solver1D.FixedPointFinderBrent (0., new CreditCurveCalibrator (cc, comp,
-					iInstr, valParams, dc, dcTSY, dcEDSF, pricerParamsIn, strMeasure, dblCalibValue,
-						mmFixings, quotingParams, bFlat), true).findRoot();
+					iInstr, valParams, dc, dcTSY, pricerParamsIn, strMeasure, dblCalibValue, mmFixings,
+						quotingParams, bFlat), true).findRoot();
 
 			return null != rfop && rfop.containsRoot();
 		} catch (java.lang.Exception e) {
@@ -287,7 +279,6 @@ public class NonlinearCurveCalibrator {
 	 * 
 	 * @param dc The discount curve to be bootstrapped
 	 * @param dcTSY The TSY discount curve
-	 * @param dcEDSF The EDSF discount curve
 	 * @param comp The Calibration Component
 	 * @param iInstr The Calibration Instrument Index
 	 * @param valParams Calibration Valuation Parameters
@@ -306,7 +297,6 @@ public class NonlinearCurveCalibrator {
 	public double calibrateIRNode (
 		final org.drip.analytics.rates.ExplicitBootDiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final int iInstr,
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -334,11 +324,11 @@ public class NonlinearCurveCalibrator {
 						("NonlinearCurveCalibrator::calibrateIRNode => Cannot set Value = " + dblValue +
 							" for node " + iInstr);
 
-				return dblCalibValue - comp.calcMeasureValue (valParams, new
+				return dblCalibValue - comp.measureValue (valParams, new
 					org.drip.param.pricer.PricerParams (1, new org.drip.param.definition.CalibrationParams
 						(strMeasure, 0, null), true, 0),
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dc, dcTSY, dcEDSF, null, null, null, mmFixings), quotingParams, strMeasure);
+								(dc, dcTSY, null, null, null, mmFixings), quotingParams, strMeasure);
 			}
 
 			@Override public double integrate (
@@ -350,8 +340,8 @@ public class NonlinearCurveCalibrator {
 			}
 		};
 
-		org.drip.quant.solver1D.FixedPointFinderOutput rfop = new org.drip.quant.solver1D.FixedPointFinderBrent
-			(0., ofIRNode, true).findRoot();
+		org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
+			org.drip.quant.solver1D.FixedPointFinderBrent (0., ofIRNode, true).findRoot();
 
 		if (null == rfop || !rfop.containsRoot())
 			throw new java.lang.Exception
@@ -366,7 +356,6 @@ public class NonlinearCurveCalibrator {
 	 * 
 	 * @param dc The discount curve to be bootstrapped
 	 * @param dcTSY The TSY discount curve
-	 * @param dcEDSF The EDSF discount curve
 	 * @param aCalibComp Array of the calibration components
 	 * @param valParams Calibration Valuation Parameters
 	 * @param astrCalibMeasure Array of Calibration Measures
@@ -382,7 +371,6 @@ public class NonlinearCurveCalibrator {
 	public boolean bootstrapInterestRateSequence (
 		final org.drip.analytics.rates.ExplicitBootDiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.FixedIncomeComponent[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,
@@ -400,14 +388,14 @@ public class NonlinearCurveCalibrator {
 
 		if (dc instanceof org.drip.state.curve.NonlinearDiscountFactorDiscountCurve)
 			return bootstrapNonlinearInterestRateSequence
-				((org.drip.state.curve.NonlinearDiscountFactorDiscountCurve) dc, dcTSY, dcEDSF, aCalibComp,
+				((org.drip.state.curve.NonlinearDiscountFactorDiscountCurve) dc, dcTSY, aCalibComp,
 					valParams, astrCalibMeasure, adblCalibValue, dblBump, mmFixings, quotingParams, bFlat);
 
 		for (int i = 0; i < adblCalibValue.length; ++i) {
 			try {
-				if (!org.drip.quant.common.NumberUtil.IsValid (calibrateIRNode (dc, dcTSY, dcEDSF,
-					aCalibComp[i], i, valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump,
-						mmFixings, quotingParams, false, java.lang.Double.NaN)))
+				if (!org.drip.quant.common.NumberUtil.IsValid (calibrateIRNode (dc, dcTSY, aCalibComp[i], i,
+					valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump, mmFixings, quotingParams,
+						false, java.lang.Double.NaN)))
 					return false;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -424,7 +412,6 @@ public class NonlinearCurveCalibrator {
 	 * 
 	 * @param nldfdc The discount curve to be bootstrapped
 	 * @param dcTSY The TSY discount curve
-	 * @param dcEDSF The EDSF discount curve
 	 * @param aCalibComp Array of the calibration components
 	 * @param valParams Calibration Valuation Parameters
 	 * @param astrCalibMeasure Array of Calibration Measures
@@ -440,7 +427,6 @@ public class NonlinearCurveCalibrator {
 	public boolean bootstrapNonlinearInterestRateSequence (
 		final org.drip.state.curve.NonlinearDiscountFactorDiscountCurve nldfdc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.rates.DiscountCurve dcEDSF,
 		final org.drip.product.definition.FixedIncomeComponent[] aCalibComp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String[] astrCalibMeasure,
@@ -457,7 +443,7 @@ public class NonlinearCurveCalibrator {
 			return false;
 
 		try {
-			calibrateIRCurve (nldfdc, dcTSY, dcEDSF, aCalibComp, valParams, astrCalibMeasure, adblCalibValue,
+			calibrateIRCurve (nldfdc, dcTSY, aCalibComp, valParams, astrCalibMeasure, adblCalibValue,
 				dblBump, mmFixings, quotingParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

@@ -53,18 +53,21 @@ public interface LatentState {
 	/**
 	 * Create a LatentState Instance from the Manifest Measure Parallel Shift
 	 * 
+	 * @param strManifestMeasure The Specified Manifest Measure
 	 * @param dblShift Parallel shift of the Manifest Measure
 	 * 
 	 * @return New LatentState Instance corresponding to the Parallel Shifted Manifest Measure
 	 */
 
 	public abstract LatentState parallelShiftManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final double dblShift);
 
 	/**
 	 * Create a LatentState Instance from the Shift of the Specified Manifest Measure
 	 * 
 	 * @param iSpanIndex Index into the Span that identifies the Instrument
+	 * @param strManifestMeasure The Specified Manifest Measure
 	 * @param dblShift Shift of the Manifest Measure
 	 * 
 	 * @return New LatentState Instance corresponding to the Shift of the Specified Manifest Measure
@@ -72,17 +75,20 @@ public interface LatentState {
 
 	public abstract LatentState shiftManifestMeasure (
 		final int iSpanIndex,
+		final java.lang.String strManifestMeasure,
 		final double dblShift);
 
 	/**
 	 * Create a LatentState Instance from the Manifest Measure Tweak Parameters
 	 * 
+	 * @param strManifestMeasure The Specified Manifest Measure
 	 * @param rvtp Manifest Measure Tweak Parameters
 	 * 
 	 * @return New LatentState Instance corresponding to the Tweaked Manifest Measure
 	 */
 
 	public abstract LatentState customTweakManifestMeasure (
+		final java.lang.String strManifestMeasure,
 		final org.drip.param.definition.ResponseValueTweakParams rvtp);
 
 	/**
