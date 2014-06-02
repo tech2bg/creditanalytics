@@ -44,44 +44,6 @@ public class RatesLSMM extends org.drip.state.representation.LatentStateMetricMe
 	 * 
 	 * @param strID Name/ID of the Hidden State
 	 * @param strQuantificationMetric The Quantification Metric of the Latent State
-	 * @param strManifestMeasure Array of Names of the Product Measure using which the Calibration/Inference
-	 * 	estimates the Latent State's Quantification Metric
-	 * @param dblMeasureQuoteValue Manifest Measure Quote Value
-	 * @param tldf The Turn List Discount Factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the inputs are invalid
-	 */
-
-	public static final RatesLSMM Create (
-		final java.lang.String strID,
-		final java.lang.String strQuantificationMetric,
-		final java.lang.String strManifestMeasure,
-		final double dblMeasureQuoteValue,
-		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
-	{
-		if (null == strManifestMeasure || strManifestMeasure.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblMeasureQuoteValue))
-			return null;
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestMeasureCalibQuote =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-		mapManifestMeasureCalibQuote.put (strManifestMeasure, dblMeasureQuoteValue);
-
-		try {
-			return new RatesLSMM (strID, strQuantificationMetric, mapManifestMeasureCalibQuote, tldf);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * LatentStateMetricMeasure constructor
-	 * 
-	 * @param strID Name/ID of the Hidden State
-	 * @param strQuantificationMetric The Quantification Metric of the Latent State
 	 * @param mapManifestMeasureCalibQuote Array of the Manifest Measure Calibration Quotes
 	 * @param tldf The Turn List Discount Factor
 	 * 

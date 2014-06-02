@@ -126,6 +126,8 @@ public class CCBS {
 			"2Y",
 			3);
 
+		ffcReferenceUSD.setPrimaryCode ("USD_6M::3M::2Y");
+
 		System.out.println (ffcReferenceUSD.value (valParams, null, cmpUSD, null));
 
 		DiscountCurve dcJPYCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
@@ -148,6 +150,8 @@ public class CCBS {
 			"JPY",
 			"2Y",
 			3);
+
+		ffcDerivedJPY.setPrimaryCode ("JPY_6M::3M::2Y");
 
 		System.out.println (ffcDerivedJPY.value (valParams, null, cmpJPY, null));
 

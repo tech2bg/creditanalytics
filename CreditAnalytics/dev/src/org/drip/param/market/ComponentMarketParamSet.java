@@ -55,10 +55,11 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		_mapForward = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.quant.function1D.AbstractUnivariate>> _mapLatentStateForwardVolatility = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
-				org.drip.quant.function1D.AbstractUnivariate>>();
+	private
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.quant.function1D.AbstractUnivariate>> _mapLatentStateForwardVolatility = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.quant.function1D.AbstractUnivariate>>();
 
 	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>>
@@ -66,39 +67,11 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>>();
 
 	/**
-	 * Create a CMP with the funding discount curve, the forward discount curve, the treasury discount curve,
-	 *  the credit curve, the component quote, the map of treasury benchmark quotes, and the double map of
-	 *  date/rate index and fixings.
-	 * 
-	 * @param dcFunding Funding Discount Curve
-	 * @param fc Forward Curve
-	 * @param dcTSY Treasury Discount Curve
-	 * @param cc Credit Curve
-	 * @param compQuote Component quote
-	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
-	 * @param mmFixings Double map of date/rate index and fixings
+	 * Empty ComponentMarketParamSet Constructor
 	 */
 
-	public ComponentMarketParamSet (
-		final org.drip.analytics.rates.DiscountCurve dcFunding,
-		final org.drip.analytics.rates.DiscountCurve dcDomesticCollateral,
-		final org.drip.analytics.rates.ForwardCurve fc,
-		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final org.drip.analytics.definition.CreditCurve cc,
-		final org.drip.param.definition.ComponentQuote compQuote,
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
-			mTSYQuotes,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+	public ComponentMarketParamSet()
 	{
-		_cc = cc;
-		_dcTSY = dcTSY;
-		_compQuote = compQuote;
-		_dcFunding = dcFunding;
-		_mmFixings = mmFixings;
-		_mTSYQuotes = mTSYQuotes;
-
-		if (null != fc) _mapForward.put (fc.index().fullyQualifiedName(), fc);
 	}
 
 	/**
@@ -423,6 +396,14 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return _mTSYQuotes;
 	}
 
+	@Override public boolean setBenchmarkTSYQuotes (
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mTSYQuotes)
+	{
+		_mTSYQuotes = mTSYQuotes;
+		return true;
+	}
+
 	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixings()
 	{
@@ -661,8 +642,20 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
-		ComponentMarketParamSet cmp = new ComponentMarketParamSet (dc, null, null, dcTSY, cc, cq,
-			mapTSYQuotes, mmFixings);
+		org.drip.param.market.ComponentMarketParamSet cmp = new
+			org.drip.param.market.ComponentMarketParamSet();
+
+		cmp.setCreditCurve (cc);
+
+		cmp.setGovvieFundingCurve (dcTSY);
+
+		cmp.setComponentQuote (cq);
+
+		cmp.setFundingCurve (dc);
+
+		cmp.setFixings (mmFixings);
+
+		cmp.setBenchmarkTSYQuotes (mapTSYQuotes);
 
 		byte[] abCMP = cmp.serialize();
 

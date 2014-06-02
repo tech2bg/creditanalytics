@@ -45,34 +45,17 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 public class EURIBOR3MCubicPolyVanilla {
-	public static final void main (
-		final String[] astrArgs)
+
+	public static final ForwardCurve MakeForward3M (
+		final String strTenor,
+		final String strCurrency,
+		final JulianDate dtValue,
+		final DiscountCurve dcEONIA,
+		final ForwardCurve fc6M,
+		final SegmentCustomBuilderControl scbc)
 		throws Exception
 	{
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
-
-		CreditAnalytics.Init ("");
-
-		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
-
-		String strTenor = "3M";
-		String strCurrency = "EUR";
-
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
-
-		DiscountCurve dcEONIA = EONIA.MakeDC (
-			dtValue,
-			strCurrency,
-			false);
-
-		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
-			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialFunctionSetParams (4),
-			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
 
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
@@ -174,17 +157,12 @@ public class EURIBOR3MCubicPolyVanilla {
 			0.00050
 		};
 
-		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
-			dtValue,
-			strCurrency,
-			"6M");
-
 		ForwardCurve fc = 
 			EURIBOR.CustomEURIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
-			scbcCubic,
+			scbc,
 			astrDepositTenor,
 			adblDepositQuote,
 			"ForwardRate",
@@ -201,6 +179,49 @@ public class EURIBOR3MCubicPolyVanilla {
 			adblSyntheticFloatFloatQuote,
 			"DerivedParBasisSpread",
 			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---");
+
+		return fc;
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
+		CreditAnalytics.Init ("");
+
+		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
+
+		String strTenor = "3M";
+		String strCurrency = "EUR";
+
+		DiscountCurve dcEONIA = EONIA.MakeDC (
+			dtValue,
+			strCurrency,
+			false);
+
+		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
+			dtValue,
+			strCurrency,
+			"6M");
+
+		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (4),
+			SegmentInelasticDesignControl.Create (2, 2),
+			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
+			null);
+
+		ForwardCurve fc = MakeForward3M (
+			strTenor,
+			strCurrency,
+			dtValue,
+			dcEONIA,
+			fc6M,
+			scbcCubic);
 
 		EURIBOR.ForwardJack (
 			dtValue,

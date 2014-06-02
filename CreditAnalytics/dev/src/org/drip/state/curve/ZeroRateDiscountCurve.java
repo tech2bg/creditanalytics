@@ -65,26 +65,32 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
 
 			int iNumLSMM = aLSMM.length;
-			double[] adblQuoteBumped = new double[iNumLSMM];
 
-			java.util.List<java.lang.String[]> lsstrCompManifestMeasure = new
-				java.util.ArrayList<java.lang.String[]>();
+			java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				lsMapManifestQuote = new
+					java.util.ArrayList<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 			for (int i = 0; i < iNumLSMM; ++i) {
-				lsstrCompManifestMeasure.add (aLSMM[i].getManifestMeasures());
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-				adblQuoteBumped[i] = adblShiftedManifestMeasure[iCalibInstrIndex++];
+				mapManifestQuote.put (aLSMM[i].manifestMeasures()[0],
+					adblShiftedManifestMeasure[iCalibInstrIndex]);
+
+				lsMapManifestQuote.add (mapManifestQuote);
 
 				if (bLeftMostEntity && 0 == i) {
 					bLeftMostEntity = false;
-					dblLeftMostZero = adblQuoteBumped[i];
+					dblLeftMostZero = adblShiftedManifestMeasure[iCalibInstrIndex];
 				}
+
+				++iCalibInstrIndex;
 			}
 
 			try {
 				aRBSBumped[iRBSIndex++] = new org.drip.state.estimator.StretchRepresentationSpec
-					(rbs.getName(), aLSMM[0].getID(), aLSMM[0].getQuantificationMetric(), rbs.getCalibComp(),
-						lsstrCompManifestMeasure, adblQuoteBumped, null);
+					(rbs.getName(), aLSMM[0].id(), aLSMM[0].quantificationMetric(), rbs.getCalibComp(),
+						lsMapManifestQuote, null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

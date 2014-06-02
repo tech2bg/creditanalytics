@@ -100,7 +100,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null != pmsc) {
 			for (int iSegment = 0; iSegment < srs.getCalibComp().length; ++iSegment) {
-				for (java.lang.String strManifestMeasure : srs.getLSMM (iSegment).getManifestMeasures())
+				for (java.lang.String strManifestMeasure : srs.getLSMM (iSegment).manifestMeasures())
 					mapPMSC.put (strManifestMeasure, pmsc);
 			}
 		}
@@ -368,7 +368,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			return false; */
 
 		if (null == prlc || !generateSegmentConstraintSet2 (dblSegmentRight, prlc, _srs.getLSMM
-			(0).getManifestMeasures()[0]))
+			(0).manifestMeasures()[0]))
 			return false;
 
 		org.drip.spline.params.SegmentResponseValueConstraint rvcLeading =
@@ -413,12 +413,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			double dblSegmentRight = aCS[iSegment].right();
 
-			/* if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc,
-				_srs.getLSMM (iSegment).getManifestMeasures()[0]))
-				return false; */
-
 			if (null == prlc || !generateSegmentConstraintSet2 (dblSegmentRight, prlc, _srs.getLSMM
-				(iSegment).getManifestMeasures()[0]))
+				(iSegment).manifestMeasures()[0]))
 				return false;
 
 			org.drip.product.params.FloatingRateIndex[] aFRI = null;
@@ -455,7 +451,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		for (int iSegment = 0; iSegment < iNumSegment; ++iSegment) {
 			double dblSegmentRight = aCS[iSegment].right();
 
-			for (java.lang.String strManifestMeasure : _srs.getLSMM (iSegment).getManifestMeasures()) {
+			for (java.lang.String strManifestMeasure : _srs.getLSMM (iSegment).manifestMeasures()) {
 				if (!aCS[iSegment].setPreceedingManifestSensitivityControl (strManifestMeasure, getPMSC
 					(strManifestMeasure)))
 					return false;

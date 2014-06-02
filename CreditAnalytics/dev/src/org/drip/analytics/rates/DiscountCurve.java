@@ -343,8 +343,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		mmFixings.put (dtStart, mIndexFixings);
 
-		org.drip.param.market.ComponentMarketParamSet cmp = new org.drip.param.market.ComponentMarketParamSet
-			(this, null, null, null, null, null, null, mmFixings);
+		org.drip.param.definition.ComponentMarketParams cmp =
+			org.drip.param.creator.ComponentMarketParamsBuilder.Create (this, null, null, null, null, null,
+				mmFixings);
 
 		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
@@ -394,7 +395,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 				throw new java.lang.Exception
 					("DiscountCurve.estimateManifestMeasure => Cannot locate a component");
 
-			adblQuote[i] = aLSMM[i].getMeasureQuoteValue (strManifestMeasure);
+			adblQuote[i] = aLSMM[i].measureQuoteValue (strManifestMeasure);
 
 			adblDate[i] = aCalibComp[i].maturity().getJulian();
 		}
@@ -521,9 +522,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		org.drip.param.valuation.ValuationParams valParams =
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
-		org.drip.param.definition.ComponentMarketParams mktParams = new
-			org.drip.param.market.ComponentMarketParamSet (this, null, null, null, null, null, null, null ==
-				_ccis ? null : _ccis.getFixing());
+		org.drip.param.definition.ComponentMarketParams mktParams =
+			org.drip.param.creator.ComponentMarketParamsBuilder.Create (this, null, null, null, null, null,
+				null == _ccis ? null : _ccis.getFixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
 			org.drip.quant.calculus.WengertJacobian wjCompDDirtyPVDManifestMeasure =

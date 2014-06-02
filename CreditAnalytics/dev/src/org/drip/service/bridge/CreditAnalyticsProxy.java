@@ -354,7 +354,7 @@ public class CreditAnalyticsProxy {
 						bpb.getNotionalParams());
 	}
 
-	private static org.drip.param.market.ComponentMarketParamSet MakeCMP (
+	private static org.drip.param.definition.ComponentMarketParams MakeCMP (
 		final org.drip.analytics.date.JulianDate dtStart,
 		final double dblDownShift)
 	{
@@ -418,14 +418,8 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		try {
-			return new org.drip.param.market.ComponentMarketParamSet (dc, null, null, dcTSY, cc, cqBond,
-				mapTSYQuotes, mmFixings);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc, cqBond,
+			mapTSYQuotes, mmFixings);
 	}
 
 	private static final org.drip.service.bridge.CreditAnalyticsRequest CreateRequest (
@@ -456,8 +450,9 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		org.drip.param.market.ComponentMarketParamSet cmp = MakeCMP (dtStart, (1. + PRICE_DOWNSHIFT_AMPLITUDE
-			* (new java.util.Random().nextDouble() - 0.5)) * iTenorInYears * PRICE_DOWNSHIFT_RATE);
+		org.drip.param.definition.ComponentMarketParams cmp = MakeCMP (dtStart, (1. +
+			PRICE_DOWNSHIFT_AMPLITUDE * (new java.util.Random().nextDouble() - 0.5)) * iTenorInYears *
+				PRICE_DOWNSHIFT_RATE);
 
 		try {
 			quotingParams = new org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true,

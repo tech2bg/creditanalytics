@@ -539,11 +539,11 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == lsmm ||
-			null == mktParams)
+		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == lsmm || null ==
+			mktParams)
 			return null;
 
-		java.lang.String strQuantificationMetric = lsmm.getQuantificationMetric();
+		java.lang.String strQuantificationMetric = lsmm.quantificationMetric();
 
 		if (null == strQuantificationMetric) return null;
 
@@ -553,7 +553,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 					(strQuantificationMetric))
 			return null;
 
-		java.lang.String[] astrManifestMeasure = lsmm.getManifestMeasures();
+		java.lang.String[] astrManifestMeasure = lsmm.manifestMeasures();
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRLC
 			(valParams, pricerParams, mktParams, quotingParams, lsmm);
@@ -574,14 +574,14 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
 					!mapReferenceValue.containsKey ("CleanDV01") || !prwc.updateValue (-1. *
 						mapReferenceValue.get ("CleanPV") - (mapReferenceValue.get ("CleanDV01") * 10000. *
-							lsmm.getMeasureQuoteValue ("ReferenceParBasisSpread"))) ||
+							lsmm.measureQuoteValue ("ReferenceParBasisSpread"))) ||
 								!prwc.updateDValueDManifestMeasure ("ReferenceParBasisSpread", -10000. *
 									mapReferenceValue.get ("CleanDV01")) ? null : prwc;
 
 			if (org.drip.quant.common.StringUtil.MatchInStringArray ("SwapRate", astrManifestMeasure, false))
 				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanDV01") ||
 					!prwc.updateValue (-1. * mapReferenceValue.get ("CleanDV01") * 10000. *
-						lsmm.getMeasureQuoteValue ("SwapRate")) || !prwc.updateDValueDManifestMeasure
+						lsmm.measureQuoteValue ("SwapRate")) || !prwc.updateDValueDManifestMeasure
 							("SwapRate", -10000. * mapReferenceValue.get ("CleanDV01")) ? null : prwc;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

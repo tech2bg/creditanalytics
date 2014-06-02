@@ -439,10 +439,32 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	{
 		if (null == compRef) return null;
 
-		return new ComponentMarketParamSet (_mapDC.get (compRef.couponCurrency()[0]), null, _mapFC.get
-			(compRef.forwardCurveName()), _mapDC.get (compRef.couponCurrency()[0]), _mapCC.get
-				(compRef.creditCurveName()), _mapCQComp.get (compRef.componentName()), _mapCQComp,
-					_mmFixings);
+		org.drip.param.definition.ComponentMarketParams cmp =
+			org.drip.param.creator.ComponentMarketParamsBuilder.Create (null, null, _mapDC.get
+				(compRef.couponCurrency()[0]), _mapCC.get (compRef.creditCurveName()), _mapCQComp.get
+					(compRef.componentName()), _mapCQComp, _mmFixings);
+
+		java.lang.String[] astrCurrency = compRef.couponCurrency();
+
+		if (null != astrCurrency && 0 != astrCurrency.length) {
+			for (java.lang.String strCurrency : astrCurrency) {
+				if (null == strCurrency || strCurrency.isEmpty()) continue;
+
+				cmp.setFundingCurve (_mapDC.get (strCurrency));
+			}
+		}
+
+		java.lang.String[] astrForwardCurve = compRef.forwardCurveName();
+
+		if (null != astrForwardCurve && 0 != astrForwardCurve.length) {
+			for (java.lang.String strForwardCurve : astrForwardCurve) {
+				if (null == strForwardCurve || strForwardCurve.isEmpty()) continue;
+
+				cmp.setForwardCurve (_mapFC.get (strForwardCurve));
+			}
+		}
+
+		return cmp;
 	}
 
 	@Override public java.lang.String getCollectionKeyValueDelimiter()

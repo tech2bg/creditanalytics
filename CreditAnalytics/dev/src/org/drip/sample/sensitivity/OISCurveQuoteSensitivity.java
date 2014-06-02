@@ -5,7 +5,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.*;
-import org.drip.param.market.ComponentMarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -760,7 +759,7 @@ public class OISCurveQuoteSensitivity {
 		WengertJacobian wjOISBespokeQuoteJack = ois35Y.jackDDirtyPVDManifestMeasure (
 			valParams,
 			null,
-			new ComponentMarketParamSet (dc, null, null, null, null, null, null, null),
+			ComponentMarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 			null);
 
 		System.out.println (wjOISBespokeQuoteJack.displayString());

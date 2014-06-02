@@ -136,7 +136,7 @@ public class LatentStateMetricMeasure {
 	 * @return The Latent State ID
 	 */
 
-	public java.lang.String getID()
+	public java.lang.String id()
 	{
 		return _strID;
 	}
@@ -147,7 +147,7 @@ public class LatentStateMetricMeasure {
 	 * @return The Latent State Quantification Metric
 	 */
 
-	public java.lang.String getQuantificationMetric()
+	public java.lang.String quantificationMetric()
 	{
 		return _strQuantificationMetric;
 	}
@@ -158,7 +158,7 @@ public class LatentStateMetricMeasure {
 	 * @return The Product Manifest Measure Array
 	 */
 
-	public java.lang.String[] getManifestMeasures()
+	public java.lang.String[] manifestMeasures()
 	{
 		java.lang.String[] astrManifestMeasure = new java.lang.String[_mapManifestMeasureCalibQuote.size()];
 
@@ -180,13 +180,13 @@ public class LatentStateMetricMeasure {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public double getMeasureQuoteValue (
+	public double measureQuoteValue (
 		final java.lang.String strManifestMeasure)
 		throws java.lang.Exception
 	{
 		if (null == strManifestMeasure || !_mapManifestMeasureCalibQuote.containsKey (strManifestMeasure))
 			throw new java.lang.Exception
-				("LatentStateMetricMeasure::getMeasureQuoteValue => Invalid Manifest Measure");
+				("LatentStateMetricMeasure::measureQuoteValue => Invalid Manifest Measure");
 
 		return _mapManifestMeasureCalibQuote.get (strManifestMeasure);
 	}

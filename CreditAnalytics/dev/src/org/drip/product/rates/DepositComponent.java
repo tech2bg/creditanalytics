@@ -492,11 +492,11 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 		if (dblValueDate >= _dblMaturity) return null;
 
-		java.lang.String strLatentState = lsmm.getID();
+		java.lang.String strLatentState = lsmm.id();
 
-		java.lang.String[] astrManifestMeasure = lsmm.getManifestMeasures();
+		java.lang.String[] astrManifestMeasure = lsmm.manifestMeasures();
 
-		java.lang.String strQuantificationMetric = lsmm.getQuantificationMetric();
+		java.lang.String strQuantificationMetric = lsmm.quantificationMetric();
 
 		if (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (strLatentState) &&
 			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
@@ -514,7 +514,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
-						(0.01 * ratesLSMM.getMeasureQuoteValue ("Price")) &&
+						(0.01 * ratesLSMM.measureQuoteValue ("Price")) &&
 							prlc.addDResponseWeightDManifestMeasure ("Price", _dblMaturity, 0.) &&
 								prlc.updateDValueDManifestMeasure ("Price", 0.01) ? prlc : null;
 				}
@@ -525,7 +525,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
-						(ratesLSMM.getMeasureQuoteValue ("PV")) && prlc.addDResponseWeightDManifestMeasure
+						(ratesLSMM.measureQuoteValue ("PV")) && prlc.addDResponseWeightDManifestMeasure
 							("PV", _dblMaturity, 0.) && prlc.updateDValueDManifestMeasure ("PV", 1.) ? prlc :
 								null;
 				}
@@ -538,7 +538,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
 						_dblMaturity, _strDayCount, false, _dblMaturity, null, _strCalendar);
 
-					double dblDF = 1. / (1. + ratesLSMM.getMeasureQuoteValue ("Rate") * dblDCF);
+					double dblDF = 1. / (1. + ratesLSMM.measureQuoteValue ("Rate") * dblDCF);
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, dblTurnDF) && prlc.updateValue
 						(dblDF) && prlc.addDResponseWeightDManifestMeasure ("Rate", _dblMaturity, 0.) &&
@@ -560,9 +560,9 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 				try {
 					return prlc.addPredictorResponseWeight (_dblMaturity, 1.) && prlc.updateValue
-						(lsmm.getMeasureQuoteValue ("ForwardRate")) &&
-							prlc.addDResponseWeightDManifestMeasure ("ForwardRate", _dblMaturity, 1.) &&
-								prlc.updateDValueDManifestMeasure ("ForwardRate", 1.) ? prlc : null;
+						(lsmm.measureQuoteValue ("ForwardRate")) && prlc.addDResponseWeightDManifestMeasure
+							("ForwardRate", _dblMaturity, 1.) && prlc.updateDValueDManifestMeasure
+								("ForwardRate", 1.) ? prlc : null;
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}

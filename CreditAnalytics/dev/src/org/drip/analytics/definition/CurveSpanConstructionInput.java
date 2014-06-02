@@ -187,7 +187,7 @@ public abstract class CurveSpanConstructionInput implements
 			if (0 == iNumComp || iNumComp != aLSMM.length) continue;
 
 			for (int i = 0; i < iNumComp; ++i)
-				_mapMeasures.put (aCC[i].primaryCode(), aLSMM[i].getManifestMeasures());
+				_mapMeasures.put (aCC[i].primaryCode(), aLSMM[i].manifestMeasures());
 		}
 
 		return _mapMeasures;

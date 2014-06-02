@@ -146,7 +146,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 
 	@Override public java.lang.String componentName()
 	{
-		return "IBS=" + maturity();
+		return _strCode;
 	}
 
 	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
@@ -241,7 +241,8 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 
 	@Override public java.lang.String[] forwardCurveName()
 	{
-		return _floatDerived.forwardCurveName();
+		return new java.lang.String[] {_floatReference.forwardCurveName()[0],
+			_floatDerived.forwardCurveName()[0]};
 	}
 
 	@Override public java.lang.String creditCurveName()
@@ -542,17 +543,17 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 			null == mktParams)
 			return null;
 
-		java.lang.String strQuantificationMetric = lsmm.getQuantificationMetric();
+		java.lang.String strQuantificationMetric = lsmm.quantificationMetric();
 
 		if (null == strQuantificationMetric) return null;
 
-		if (!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
+		if (!org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
 			(strQuantificationMetric) &&
 				!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-					(strQuantificationMetric))
+			(strQuantificationMetric))
 			return null;
 
-		java.lang.String[] astrManifestMeasure = lsmm.getManifestMeasures();
+		java.lang.String[] astrManifestMeasure = lsmm.manifestMeasures();
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRLC
 			(valParams, pricerParams, mktParams, quotingParams, lsmm);
@@ -573,9 +574,14 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
 					!mapReferenceValue.containsKey ("CleanDV01") || !prwc.updateValue (-1. *
 						mapReferenceValue.get ("CleanPV") - (mapReferenceValue.get ("CleanDV01") * 10000. *
-							lsmm.getMeasureQuoteValue ("ReferenceParBasisSpread"))) ||
+							lsmm.measureQuoteValue ("ReferenceParBasisSpread"))) ||
 								!prwc.updateDValueDManifestMeasure ("ReferenceParBasisSpread", -10000. *
 									mapReferenceValue.get ("CleanDV01")) ? null : prwc;
+
+			if (org.drip.quant.common.StringUtil.MatchInStringArray ("PV", astrManifestMeasure, false))
+				return null == mapReferenceValue || !mapReferenceValue.containsKey ("PV") ||
+					!prwc.updateValue (lsmm.measureQuoteValue ("PV") - mapReferenceValue.get ("PV")) ||
+						!prwc.updateDValueDManifestMeasure ("PV", 1.) ? null : prwc;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

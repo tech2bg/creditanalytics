@@ -37,8 +37,8 @@ package org.drip.product.fx;
 
 public class CrossCurrencySwapPair extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
-	private org.drip.product.definition.RatesComponent _ffcDerived = null;
-	private org.drip.product.definition.RatesComponent _ffcReference = null;
+	private org.drip.product.rates.FloatFloatComponent _ffcDerived = null;
+	private org.drip.product.rates.FloatFloatComponent _ffcReference = null;
 
 	protected int measureAggregationType (
 		final java.lang.String strMeasureName)
@@ -58,8 +58,8 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 
 	public CrossCurrencySwapPair (
 		final java.lang.String strName,
-		final org.drip.product.definition.RatesComponent ffcReference,
-		final org.drip.product.definition.RatesComponent ffcDerived)
+		final org.drip.product.rates.FloatFloatComponent ffcReference,
+		final org.drip.product.rates.FloatFloatComponent ffcDerived)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_ffcDerived = ffcDerived) || null
@@ -73,7 +73,7 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 	 * @return The Reference Swap
 	 */
 
-	public org.drip.product.definition.RatesComponent getReferenceSwap()
+	public org.drip.product.rates.FloatFloatComponent getReferenceSwap()
 	{
 		return _ffcReference;
 	}
@@ -84,7 +84,7 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 	 * @return The Derived Swap
 	 */
 
-	public org.drip.product.definition.RatesComponent getDerivedSwap()
+	public org.drip.product.rates.FloatFloatComponent getDerivedSwap()
 	{
 		return _ffcDerived;
 	}

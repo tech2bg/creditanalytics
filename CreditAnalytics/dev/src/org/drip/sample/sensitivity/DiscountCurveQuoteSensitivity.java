@@ -4,7 +4,6 @@ package org.drip.sample.sensitivity;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.*;
-import org.drip.param.market.ComponentMarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -455,7 +454,7 @@ public class DiscountCurveQuoteSensitivity {
 		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDManifestMeasure (
 			new ValuationParams (dtToday, dtToday, "USD"),
 			null,
-			new ComponentMarketParamSet (dc, null, null, null, null, null, null, null),
+			ComponentMarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 			null);
 
 		System.out.println (wjIRSBespokeQuoteJack.displayString());

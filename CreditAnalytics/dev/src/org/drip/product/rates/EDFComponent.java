@@ -548,16 +548,15 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == lsmm || !(lsmm instanceof
 			org.drip.analytics.rates.RatesLSMM) ||
-				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase
-					(lsmm.getID()))
+				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (lsmm.id()))
 			return null;
 
 		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
 
-		java.lang.String[] astrManifestMeasure = ratesLSMM.getManifestMeasures();
+		java.lang.String[] astrManifestMeasure = ratesLSMM.manifestMeasures();
 
 		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(ratesLSMM.getQuantificationMetric())) {
+			(ratesLSMM.quantificationMetric())) {
 			try {
 				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
@@ -571,7 +570,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, 0.01 *
-							ratesLSMM.getMeasureQuoteValue ("Price")) && prlc.updateValue (0.) &&
+							ratesLSMM.measureQuoteValue ("Price")) && prlc.updateValue (0.) &&
 								prlc.addDResponseWeightDManifestMeasure ("Price", _dblMaturity, 0.) &&
 									prlc.addDResponseWeightDManifestMeasure ("Price", _dblEffective, 0.01) &&
 										prlc.updateDValueDManifestMeasure ("Price", 0.) ? prlc : null;
@@ -583,9 +582,9 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 						org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
-						prlc.addPredictorResponseWeight (_dblEffective, ratesLSMM.getMeasureQuoteValue
-							("PV")) && prlc.updateValue (0.) && prlc.addDResponseWeightDManifestMeasure
-								("PV", _dblMaturity, 0.) && prlc.addDResponseWeightDManifestMeasure ("PV",
+						prlc.addPredictorResponseWeight (_dblEffective, ratesLSMM.measureQuoteValue ("PV"))
+							&& prlc.updateValue (0.) && prlc.addDResponseWeightDManifestMeasure ("PV",
+								_dblMaturity, 0.) && prlc.addDResponseWeightDManifestMeasure ("PV",
 									_dblEffective, 1.) && prlc.updateDValueDManifestMeasure ("PV", 0.) ? prlc
 										: null;
 				}
@@ -601,7 +600,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
 						_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar);
 
-					double dblDF = 1. / (1. + (ratesLSMM.getMeasureQuoteValue ("Rate") * dblDCF));
+					double dblDF = 1. / (1. + (ratesLSMM.measureQuoteValue ("Rate") * dblDCF));
 
 					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
 						prlc.addPredictorResponseWeight (_dblEffective, dblTurnEffectiveDF * dblDF) &&

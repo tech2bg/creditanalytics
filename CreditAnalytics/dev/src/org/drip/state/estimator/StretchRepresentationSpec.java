@@ -42,46 +42,13 @@ package org.drip.state.estimator;
  */
 
 public class StretchRepresentationSpec {
-	private double[] _adblQuote = null;
 	private java.lang.String _strName = "";
 	private java.lang.String _strLatentStateID = "";
 	private java.lang.String _strLatentStateQuantificationMetric = "";
 	private org.drip.analytics.rates.TurnListDiscountFactor _tldf = null;
-	private java.util.List<java.lang.String[]> _lsstrCompManifestMeasure = null;
 	private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibComp = null;
-
-	/**
-	 * Make a StretchRepresentationSpec instance from the given components, quotes, and the measure.
-	 * 
-	 * @param strName Stretch Name
-	 * @param strLatentStateID Latest State ID
-	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
-	 * @param aCalibComp Array of the Calibration Components
-	 * @param lsstrCompManifestMeasure List of Component Manifest Measures
-	 * @param adblQuote Array of Quotes
-	 * @param tldf Turn List Discount Factor
-	 * 
-	 * @throws java.lang.Exception Thrown if the inputs are invalid
-	 */
-
-	public static final StretchRepresentationSpec CreateStretchBuilderSet (
-		final java.lang.String strName,
-		final java.lang.String strLatentStateID,
-		final java.lang.String strLatentStateQuantificationMetric,
-		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp,
-		final java.util.List<java.lang.String[]> lsstrCompManifestMeasure,
-		final double[] adblQuote,
-		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
-	{
-		try {
-			return new StretchRepresentationSpec (strName, strLatentStateID,
-				strLatentStateQuantificationMetric, aCalibComp, lsstrCompManifestMeasure, adblQuote, tldf);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
+	private java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+		_lsMapManifestQuote = null;
 
 	/**
 	 * Make a StretchRepresentationSpec instance from the given components, quotes, and the measure.
@@ -91,7 +58,7 @@ public class StretchRepresentationSpec {
 	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
 	 * @param aCalibComp Array of the Calibration Components
 	 * @param strManifestMeasure Component Manifest Measure
-	 * @param adblQuote Array of Quotes
+	 * @param adblQuote Array of the Manifest Measure Calibration Quotes
 	 * @param tldf Turn List Discount Factor
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
@@ -112,15 +79,22 @@ public class StretchRepresentationSpec {
 
 		if (0 == iNumComp) return null;
 
-		java.util.List<java.lang.String[]> lsstrCompManifestMeasure = new
-			java.util.ArrayList<java.lang.String[]>();
+		java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			lsMapManifestQuote = new
+				java.util.ArrayList<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-		for (int i = 0; i < iNumComp; ++i)
-			lsstrCompManifestMeasure.add (new java.lang.String[] {strManifestMeasure});
+		for (int i = 0; i < iNumComp; ++i) {
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+
+			mapManifestQuote.put (strManifestMeasure, adblQuote[i]);
+
+			lsMapManifestQuote.add (mapManifestQuote);
+		}
 
 		try {
 			return new StretchRepresentationSpec (strName, strLatentStateID,
-				strLatentStateQuantificationMetric, aCalibComp, lsstrCompManifestMeasure, adblQuote, tldf);
+				strLatentStateQuantificationMetric, aCalibComp, lsMapManifestQuote, tldf);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -135,8 +109,7 @@ public class StretchRepresentationSpec {
 	 * @param strLatentStateID Latest State ID
 	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
 	 * @param aCalibComp Array of the Calibration Components
-	 * @param lsstrCompManifestMeasure List of Component Manifest Measures
-	 * @param adblQuote Array of Quotes
+	 * @param lsMapManifestQuote List of Component Manifest Measures/Quote Map
 	 * @param tldf Turn List Discount Factor
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
@@ -147,22 +120,21 @@ public class StretchRepresentationSpec {
 		final java.lang.String strLatentStateID,
 		final java.lang.String strLatentStateQuantificationMetric,
 		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp,
-		final java.util.List<java.lang.String[]> lsstrCompManifestMeasure,
-		final double[] adblQuote,
+		final java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			lsMapManifestQuote,
 		final org.drip.analytics.rates.TurnListDiscountFactor tldf)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_strLatentStateID =
 			strLatentStateID) || _strLatentStateID.isEmpty() || null == (_strLatentStateQuantificationMetric
 				= strLatentStateQuantificationMetric) || _strLatentStateQuantificationMetric.isEmpty() ||
-					null == (_lsstrCompManifestMeasure = lsstrCompManifestMeasure) || null == (_aCalibComp =
-						aCalibComp) || null == (_adblQuote = adblQuote))
+					null == (_lsMapManifestQuote = lsMapManifestQuote) || null == (_aCalibComp = aCalibComp))
 			throw new java.lang.Exception ("StretchRepresentationSpec ctr: Invalid Inputs");
 
 		_tldf = tldf;
 		int iNumComp = _aCalibComp.length;
 
-		if (1 > iNumComp || _lsstrCompManifestMeasure.size() != iNumComp || adblQuote.length != iNumComp)
+		if (1 > iNumComp || _lsMapManifestQuote.size() != iNumComp)
 			throw new java.lang.Exception ("StretchRepresentationSpec ctr: Invalid Inputs");
 	}
 
@@ -196,14 +168,21 @@ public class StretchRepresentationSpec {
 
 	public org.drip.state.representation.LatentStateMetricMeasure[] getLSMM()
 	{
-		int iNumQuote = _adblQuote.length;
+		int iNumQuote = _lsMapManifestQuote.size();
+
 		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = new
 			org.drip.state.representation.LatentStateMetricMeasure[iNumQuote];
 
-		for (int i = 0; i < iNumQuote; ++i)
-			aLSMM[i] = org.drip.analytics.rates.RatesLSMM.Create (_strLatentStateID,
-				_strLatentStateQuantificationMetric, _lsstrCompManifestMeasure.get (i)[0], _adblQuote[i],
-					_tldf);
+		for (int i = 0; i < iNumQuote; ++i) {
+			try {
+				aLSMM[i] = new org.drip.analytics.rates.RatesLSMM (_strLatentStateID,
+					_strLatentStateQuantificationMetric, _lsMapManifestQuote.get (i), _tldf);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
 
 		return aLSMM;
 	}
@@ -221,9 +200,14 @@ public class StretchRepresentationSpec {
 	{
 		if (iIndex >= _aCalibComp.length) return null;
 
-		return org.drip.analytics.rates.RatesLSMM.Create (_strLatentStateID,
-			_strLatentStateQuantificationMetric, _lsstrCompManifestMeasure.get (iIndex)[0],
-				_adblQuote[iIndex], _tldf);
+		try {
+			return new org.drip.analytics.rates.RatesLSMM (_strLatentStateID,
+				_strLatentStateQuantificationMetric, _lsMapManifestQuote.get (iIndex), _tldf);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	/**

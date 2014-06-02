@@ -635,7 +635,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblPay01 = dblPeriodDCF * dblPeriodTurnDF;
 
-				if (!prwc.addPredictorResponseWeight (dblPayDate, ratesLSMM.getMeasureQuoteValue ("Rate") *
+				if (!prwc.addPredictorResponseWeight (dblPayDate, ratesLSMM.measureQuoteValue ("Rate") *
 					dblPay01) || !prwc.addDResponseWeightDManifestMeasure ("Rate", dblPayDate, dblPay01))
 					return false;
 			}
@@ -681,7 +681,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		if (null == valParams  || null == lsmm || !(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
-			!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (lsmm.getID()))
+			!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (lsmm.id()))
 			return null;
 
 		double dblValueDate = valParams.valueDate();
@@ -696,12 +696,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
 		double dblInitialDate = dblEffectiveDate > dblValueDate ? dblEffectiveDate : dblValueDate;
 
-		java.lang.String[] astrManifestMeasure = ratesLSMM.getManifestMeasures();
+		java.lang.String[] astrManifestMeasure = ratesLSMM.manifestMeasures();
 
 		if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new java.lang.String[]
 			{"Upfront"}, false)) {
 			try {
-				dblUpfront = ratesLSMM.getMeasureQuoteValue ("Upfront");
+				dblUpfront = ratesLSMM.measureQuoteValue ("Upfront");
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -713,7 +713,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(ratesLSMM.getQuantificationMetric())) {
+			(ratesLSMM.quantificationMetric())) {
 			if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
 				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
 				if (!generateFixedLegPRWC (dblValueDate, dblInitialDate, ratesLSMM, prwc)) return null;

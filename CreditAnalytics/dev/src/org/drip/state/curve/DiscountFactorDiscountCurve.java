@@ -54,31 +54,34 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 	{
 		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.getSRS();
 
-		org.drip.state.estimator.StretchRepresentationSpec[] aRBSBumped = new
-			org.drip.state.estimator.StretchRepresentationSpec[aRBS.length];
-
 		int iRBSIndex = 0;
 		int iCalibInstrIndex = 0;
+		org.drip.state.estimator.StretchRepresentationSpec[] aRBSBumped = new
+			org.drip.state.estimator.StretchRepresentationSpec[aRBS.length];
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : aRBS) {
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
 
 			int iNumLSMM = aLSMM.length;
-			double[] adblQuoteBumped = new double[iNumLSMM];
 
-			java.util.List<java.lang.String[]> lsstrCompManifestMeasure = new
-				java.util.ArrayList<java.lang.String[]>();
+			java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				lsMapManifestQuote = new
+					java.util.ArrayList<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 			for (int i = 0; i < iNumLSMM; ++i) {
-				lsstrCompManifestMeasure.add (aLSMM[i].getManifestMeasures());
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-				adblQuoteBumped[i] = adblShiftedManifestMeasure[iCalibInstrIndex++];
+				mapManifestQuote.put (aLSMM[i].manifestMeasures()[0],
+					adblShiftedManifestMeasure[iCalibInstrIndex++]);
+
+				lsMapManifestQuote.add (mapManifestQuote);
 			}
 
 			try {
 				aRBSBumped[iRBSIndex++] = new org.drip.state.estimator.StretchRepresentationSpec
-					(rbs.getName(), aLSMM[0].getID(), aLSMM[0].getQuantificationMetric(), rbs.getCalibComp(),
-						lsstrCompManifestMeasure, adblQuoteBumped, null);
+					(rbs.getName(), aLSMM[0].id(), aLSMM[0].quantificationMetric(), rbs.getCalibComp(),
+						lsMapManifestQuote, null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

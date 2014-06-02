@@ -488,10 +488,10 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	{
 		if (null == valParams || null == lsmm) return null;
 
-		if (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD.equalsIgnoreCase (lsmm.getID()) &&
+		if (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD.equalsIgnoreCase (lsmm.id()) &&
 			org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
-				(lsmm.getQuantificationMetric())) {
-			if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.getManifestMeasures(), new
+				(lsmm.quantificationMetric())) {
+			if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.manifestMeasures(), new
 				java.lang.String[] {"Forward", "ForwardRate", "ParForward", "ParForwardRate", "Rate"},
 					false)) {
 				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
@@ -501,7 +501,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 				try {
 					return prlc.addPredictorResponseWeight (dblMaturity, 1.) && prlc.updateValue
-						(lsmm.getMeasureQuoteValue ("ParForwardRate")) &&
+						(lsmm.measureQuoteValue ("ParForwardRate")) &&
 							prlc.addDResponseWeightDManifestMeasure ("ParForwardRate", dblMaturity, 1.) &&
 								prlc.updateDValueDManifestMeasure ("ParForwardRate", 1.) ? prlc : null;
 				} catch (java.lang.Exception e) {
