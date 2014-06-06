@@ -49,6 +49,8 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		_mapCC = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUFX = null;
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 		_mapCQComp = new
@@ -434,6 +436,31 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		return _mapCQComp.get (strName);
 	}
 
+	@Override public org.drip.quant.function1D.AbstractUnivariate fxCurve (
+		final java.lang.String strFXCode)
+	{
+		if (null == strFXCode || strFXCode.isEmpty() || null == _mapAUFX || !_mapAUFX.containsKey
+			(strFXCode))
+			return null;
+
+		return _mapAUFX.get (strFXCode);
+	}
+
+	@Override public boolean setFXCurve (
+		final java.lang.String strFXCode,
+		final org.drip.quant.function1D.AbstractUnivariate auFX)
+	{
+		if (null == strFXCode || strFXCode.isEmpty() || null == auFX) return false;
+
+		if (null == _mapAUFX)
+			_mapAUFX = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+		_mapAUFX.put (strFXCode, auFX);
+
+		return true;
+	}
+
 	@Override public org.drip.param.definition.ComponentMarketParams getComponentMarketParams (
 		final org.drip.product.definition.ComponentMarketParamRef compRef)
 	{
@@ -461,6 +488,20 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				if (null == strForwardCurve || strForwardCurve.isEmpty()) continue;
 
 				cmp.setForwardCurve (_mapFC.get (strForwardCurve));
+			}
+		}
+
+		java.util.Set<java.lang.String> setCcy = compRef.cashflowCurrencySet();
+
+		if (null != setCcy && null != _mapAUFX && 0 != _mapAUFX.size()) {
+			for (java.lang.String strCcyOut : setCcy) {
+				for (java.lang.String strCcyIn : setCcy) {
+					java.lang.String strFXCode = strCcyOut + "/" + strCcyIn;
+
+					org.drip.quant.function1D.AbstractUnivariate auFX = _mapAUFX.get (strFXCode);
+
+					if (null != auFX && !cmp.setFXCurve (strFXCode, auFX)) return null;
+				}
 			}
 		}
 

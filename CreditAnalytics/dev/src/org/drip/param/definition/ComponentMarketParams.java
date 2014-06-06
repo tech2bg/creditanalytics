@@ -264,7 +264,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final java.lang.String strFXCode);
 
 	/**
-	 * (Re)-set the Component's Foreign Collateral Curve
+	 * (Re)-set the Component's FX Curve
 	 * 
 	 * @param strFXCode Code for the FX Currency Pair
 	 * @param auFX The FX Curve

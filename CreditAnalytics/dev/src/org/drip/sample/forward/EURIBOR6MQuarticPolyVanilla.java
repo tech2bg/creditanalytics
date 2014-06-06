@@ -185,7 +185,7 @@ public class EURIBOR6MQuarticPolyVanilla {
 			"60Y"
 		};
 
-		ForwardCurve fc = EURIBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
 			dcEONIA,
 			null,
 			fri,
@@ -205,9 +205,10 @@ public class EURIBOR6MQuarticPolyVanilla {
 			null,
 			null,
 			"DerivedParBasisSpread",
-			"---- EURIBOR 6M VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---");
+			"---- EURIBOR 6M VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---",
+			true);
 
-		EURIBOR.ForwardJack (
+		IBOR.ForwardJack (
 			dtValue,
 			"---- EURIBOR 6M VANILLA QUARTIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
 			fc);

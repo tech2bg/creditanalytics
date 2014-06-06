@@ -46,13 +46,14 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
 
 public class EURIBOR3MCubicPolyVanilla {
 
-	public static final ForwardCurve MakeForward3M (
+	public static final ForwardCurve Make3MForward (
 		final String strTenor,
 		final String strCurrency,
 		final JulianDate dtValue,
 		final DiscountCurve dcEONIA,
 		final ForwardCurve fc6M,
-		final SegmentCustomBuilderControl scbc)
+		final SegmentCustomBuilderControl scbc,
+		final boolean bPrintMetric)
 		throws Exception
 	{
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
@@ -158,7 +159,7 @@ public class EURIBOR3MCubicPolyVanilla {
 		};
 
 		ForwardCurve fc = 
-			EURIBOR.CustomEURIBORBuilderSample (
+			IBOR.CustomEURIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
@@ -178,7 +179,8 @@ public class EURIBOR3MCubicPolyVanilla {
 			astrSyntheticFloatFloatTenor,
 			adblSyntheticFloatFloatQuote,
 			"DerivedParBasisSpread",
-			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---");
+			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
+			bPrintMetric);
 
 		return fc;
 	}
@@ -206,7 +208,8 @@ public class EURIBOR3MCubicPolyVanilla {
 		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
 			dtValue,
 			strCurrency,
-			"6M");
+			"6M",
+			true);
 
 		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
@@ -215,15 +218,16 @@ public class EURIBOR3MCubicPolyVanilla {
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 			null);
 
-		ForwardCurve fc = MakeForward3M (
+		ForwardCurve fc = Make3MForward (
 			strTenor,
 			strCurrency,
 			dtValue,
 			dcEONIA,
 			fc6M,
-			scbcCubic);
+			scbcCubic,
+			true);
 
-		EURIBOR.ForwardJack (
+		IBOR.ForwardJack (
 			dtValue,
 			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
 			fc);

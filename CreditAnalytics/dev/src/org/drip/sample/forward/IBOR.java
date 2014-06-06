@@ -50,7 +50,7 @@ import org.drip.state.estimator.*;
  * @author Lakshmi Krishnamurthy
  */
 
-public class EURIBOR {
+public class IBOR {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -236,14 +236,17 @@ public class EURIBOR {
 		final String[] astrSyntheticFloatFloatTenor,
 		final double[] adblSyntheticFloatFloatQuote,
 		final String strSyntheticFloatFloatCalibMeasure,
-		final String strHeaderComment)
+		final String strHeaderComment,
+		final boolean bPrintMetric)
 		throws Exception
 	{
-		System.out.println ("\n\t----------------------------------------------------------------");
+		if (bPrintMetric) {
+			System.out.println ("\n\t----------------------------------------------------------------");
 
-		System.out.println ("\t     " + strHeaderComment);
+			System.out.println ("\t     " + strHeaderComment);
 
-		System.out.println ("\t----------------------------------------------------------------");
+			System.out.println ("\t----------------------------------------------------------------");
+		}
 
 		JulianDate dtValue = dc.epoch();
 
@@ -405,94 +408,96 @@ public class EURIBOR {
 
 		cmp.setForwardCurve (fcDerived);
 
-		/*
-		 * Cross-Comparison of the Deposit Calibration Instrument "Forward" metric.
-		 */
+		if (bPrintMetric) {
+			/*
+			 * Cross-Comparison of the Deposit Calibration Instrument "Forward" metric.
+			 */
 
-		if (null != aDeposit && null != adblDepositQuote) {
-			System.out.println ("\t----------------------------------------------------------------");
+			if (null != aDeposit && null != adblDepositQuote) {
+				System.out.println ("\t----------------------------------------------------------------");
 
-			System.out.println ("\t     DEPOSIT INSTRUMENTS QUOTE RECOVERY");
+				System.out.println ("\t     DEPOSIT INSTRUMENTS QUOTE RECOVERY");
 
-			System.out.println ("\t----------------------------------------------------------------");
+				System.out.println ("\t----------------------------------------------------------------");
 
-			for (int i = 0; i < aDeposit.length; ++i)
-				System.out.println ("\t[" + aDeposit[i].effective() + " - " + aDeposit[i].maturity() + "] = " +
-					FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null, cmp, null, strDepositCalibMeasure), 1, 6, 1.) +
-						" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].maturity()), 1, 4, 100.) + "%");
-		}
+				for (int i = 0; i < aDeposit.length; ++i)
+					System.out.println ("\t[" + aDeposit[i].effective() + " - " + aDeposit[i].maturity() + "] = " +
+						FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null, cmp, null, strDepositCalibMeasure), 1, 6, 1.) +
+							" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.) + " | " +
+								FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].maturity()), 1, 4, 100.) + "%");
+			}
 
-		/*
-		 * Cross-Comparison of the FRA Calibration Instrument "Forward" metric.
-		 */
+			/*
+			 * Cross-Comparison of the FRA Calibration Instrument "Forward" metric.
+			 */
 
-		if (null != aFRA && null != adblFRAQuote) {
-			System.out.println ("\t----------------------------------------------------------------");
+			if (null != aFRA && null != adblFRAQuote) {
+				System.out.println ("\t----------------------------------------------------------------");
 
-			System.out.println ("\t     FRA INSTRUMENTS QUOTE RECOVERY");
+				System.out.println ("\t     FRA INSTRUMENTS QUOTE RECOVERY");
 
-			System.out.println ("\t----------------------------------------------------------------");
+				System.out.println ("\t----------------------------------------------------------------");
 
-			for (int i = 0; i < aFRA.length; ++i)
-				System.out.println ("\t[" + aFRA[i].effective() + " - " + aFRA[i].maturity() + "] = " +
-					FormatUtil.FormatDouble (aFRA[i].measureValue (valParams, null, cmp, null, strFRACalibMeasure), 1, 6, 1.) +
-						" | " + FormatUtil.FormatDouble (adblFRAQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].maturity()), 1, 4, 100.) + "%");
-		}
+				for (int i = 0; i < aFRA.length; ++i)
+					System.out.println ("\t[" + aFRA[i].effective() + " - " + aFRA[i].maturity() + "] = " +
+						FormatUtil.FormatDouble (aFRA[i].measureValue (valParams, null, cmp, null, strFRACalibMeasure), 1, 6, 1.) +
+							" | " + FormatUtil.FormatDouble (adblFRAQuote[i], 1, 6, 1.) + " | " +
+								FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].maturity()), 1, 4, 100.) + "%");
+			}
 
-		/*
-		 * Cross-Comparison of the Fix-Float Calibration Instrument "DerivedParBasisSpread" metric.
-		 */
+			/*
+			 * Cross-Comparison of the Fix-Float Calibration Instrument "DerivedParBasisSpread" metric.
+			 */
 
-		if (null != aFixFloat && null != adblFixFloatQuote) {
-			System.out.println ("\t----------------------------------------------------------------");
+			if (null != aFixFloat && null != adblFixFloatQuote) {
+				System.out.println ("\t----------------------------------------------------------------");
 
-			System.out.println ("\t     FIX-FLOAT INSTRUMENTS QUOTE RECOVERY");
+				System.out.println ("\t     FIX-FLOAT INSTRUMENTS QUOTE RECOVERY");
 
-			System.out.println ("\t----------------------------------------------------------------");
+				System.out.println ("\t----------------------------------------------------------------");
 
-			for (int i = 0; i < aFixFloat.length; ++i)
-				System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
-					FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, cmp, null, "ParSwapRate"), 1, 2, 0.01) +
-						"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
-		}
+				for (int i = 0; i < aFixFloat.length; ++i)
+					System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
+						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, cmp, null, "ParSwapRate"), 1, 2, 0.01) +
+							"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
+								FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
+			}
 
-		/*
-		 * Cross-Comparison of the Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
-		 */
+			/*
+			 * Cross-Comparison of the Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
+			 */
 
-		if (null != aFloatFloat && null != adblFloatFloatQuote) {
-			System.out.println ("\t----------------------------------------------------------------");
+			if (null != aFloatFloat && null != adblFloatFloatQuote) {
+				System.out.println ("\t----------------------------------------------------------------");
 
-			System.out.println ("\t     FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
+				System.out.println ("\t     FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
 
-			System.out.println ("\t----------------------------------------------------------------");
+				System.out.println ("\t----------------------------------------------------------------");
 
-			for (int i = 0; i < aFloatFloat.length; ++i)
-				System.out.println ("\t[" + aFloatFloat[i].effective() + " - " + aFloatFloat[i].maturity() + "] = " +
-					FormatUtil.FormatDouble (aFloatFloat[i].measureValue (valParams, null, cmp, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
-						" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].maturity()), 1, 4, 100.) + "%");
-		}
+				for (int i = 0; i < aFloatFloat.length; ++i)
+					System.out.println ("\t[" + aFloatFloat[i].effective() + " - " + aFloatFloat[i].maturity() + "] = " +
+						FormatUtil.FormatDouble (aFloatFloat[i].measureValue (valParams, null, cmp, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
+							" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.) + " | " +
+								FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].maturity()), 1, 4, 100.) + "%");
+			}
 
-		/*
-		 * Cross-Comparison of the Synthetic Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
-		 */
+			/*
+			 * Cross-Comparison of the Synthetic Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
+			 */
 
-		if (null != aSyntheticFloatFloat && null != adblSyntheticFloatFloatQuote) {
-			System.out.println ("\t----------------------------------------------------------------");
+			if (null != aSyntheticFloatFloat && null != adblSyntheticFloatFloatQuote) {
+				System.out.println ("\t----------------------------------------------------------------");
 
-			System.out.println ("\t     SYNTHETIC FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
+				System.out.println ("\t     SYNTHETIC FLOAT-FLOAT INSTRUMENTS QUOTE RECOVERY");
 
-			System.out.println ("\t----------------------------------------------------------------");
+				System.out.println ("\t----------------------------------------------------------------");
 
-			for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
-				System.out.println ("\t[" + aSyntheticFloatFloat[i].effective() + " - " + aSyntheticFloatFloat[i].maturity() + "] = " +
-					FormatUtil.FormatDouble (aSyntheticFloatFloat[i].measureValue (valParams, null, cmp, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
-						" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.) + " | " +
-							FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].maturity()), 1, 4, 100.) + "%");
+				for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
+					System.out.println ("\t[" + aSyntheticFloatFloat[i].effective() + " - " + aSyntheticFloatFloat[i].maturity() + "] = " +
+						FormatUtil.FormatDouble (aSyntheticFloatFloat[i].measureValue (valParams, null, cmp, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
+							" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.) + " | " +
+								FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].maturity()), 1, 4, 100.) + "%");
+			}
 		}
 
 		return fcDerived;

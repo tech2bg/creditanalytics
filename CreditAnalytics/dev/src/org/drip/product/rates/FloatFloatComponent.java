@@ -323,15 +323,15 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
 	{
 		long lStart = System.nanoTime();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatReferenceStreamResult =
-			_floatReference.value (valParams, pricerParams, mktParams, quotingParams);
+			_floatReference.value (valParams, pricerParams, mktParams, vcp);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatDerivedStreamResult =
-			_floatDerived.value (valParams, pricerParams, mktParams, quotingParams);
+			_floatDerived.value (valParams, pricerParams, mktParams, vcp);
 
 		if (null == mapFloatReferenceStreamResult || 0 == mapFloatReferenceStreamResult.size() || null ==
 			mapFloatDerivedStreamResult || 0 == mapFloatDerivedStreamResult.size())
@@ -563,12 +563,17 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapReferenceValue =
 			_floatReference.value (valParams, pricerParams, mktParams, quotingParams);
 
-		if (org.drip.quant.common.StringUtil.MatchInStringArray ("DerivedParBasisSpread",
-			astrManifestMeasure, false))
-			return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
-				!prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV")) ? null : prwc;
-
 		try {
+			if (org.drip.quant.common.StringUtil.MatchInStringArray ("PV", astrManifestMeasure, false))
+				return null == mapReferenceValue || !mapReferenceValue.containsKey ("PV") ||
+					!prwc.updateValue (lsmm.measureQuoteValue ("PV") - mapReferenceValue.get ("PV")) ||
+						!prwc.updateDValueDManifestMeasure ("PV", 1.) ? null : prwc;
+
+			if (org.drip.quant.common.StringUtil.MatchInStringArray ("DerivedParBasisSpread",
+				astrManifestMeasure, false))
+				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
+					!prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV")) ? null : prwc;
+
 			if (org.drip.quant.common.StringUtil.MatchInStringArray ("ReferenceParBasisSpread",
 				astrManifestMeasure, false))
 				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
@@ -577,11 +582,6 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 							lsmm.measureQuoteValue ("ReferenceParBasisSpread"))) ||
 								!prwc.updateDValueDManifestMeasure ("ReferenceParBasisSpread", -10000. *
 									mapReferenceValue.get ("CleanDV01")) ? null : prwc;
-
-			if (org.drip.quant.common.StringUtil.MatchInStringArray ("PV", astrManifestMeasure, false))
-				return null == mapReferenceValue || !mapReferenceValue.containsKey ("PV") ||
-					!prwc.updateValue (lsmm.measureQuoteValue ("PV") - mapReferenceValue.get ("PV")) ||
-						!prwc.updateDValueDManifestMeasure ("PV", 1.) ? null : prwc;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

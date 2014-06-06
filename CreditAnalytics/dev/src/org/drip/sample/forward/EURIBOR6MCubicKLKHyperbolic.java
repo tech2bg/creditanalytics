@@ -185,7 +185,7 @@ public class EURIBOR6MCubicKLKHyperbolic {
 			"60Y"
 		};
 
-		ForwardCurve fc = EURIBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
 			dcEONIA,
 			null,
 			fri,
@@ -205,9 +205,10 @@ public class EURIBOR6MCubicKLKHyperbolic {
 			null,
 			null,
 			"DerivedParBasisSpread",
-			"---- EURIBOR 6M CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---");
+			"---- EURIBOR 6M CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
+			true);
 
-		EURIBOR.ForwardJack (
+		IBOR.ForwardJack (
 			dtValue,
 			"---- EURIBOR 6M CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
 			fc);

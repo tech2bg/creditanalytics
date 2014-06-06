@@ -147,4 +147,26 @@ public abstract class BasketMarketParams extends org.drip.service.stream.Seriali
 
 	public abstract org.drip.param.definition.ComponentMarketParams getComponentMarketParams (
 		final org.drip.product.definition.ComponentMarketParamRef compRef);
+
+	/**
+	 * Retrieve the Specified FX Curve
+	 * 
+	 * @return FX Curve
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate fxCurve (
+		final java.lang.String strFXCode);
+
+	/**
+	 * (Re)-set the Specified FXCurve
+	 * 
+	 * @param strFXCode Code for the FX Currency Pair
+	 * @param auFX The FX Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFXCurve (
+		final java.lang.String strFXCode,
+		final org.drip.quant.function1D.AbstractUnivariate auFX);
 }

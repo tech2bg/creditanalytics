@@ -48,7 +48,8 @@ public class EURIBOR6MCubicPolyVanilla {
 	public static final ForwardCurve Make6MForward (
 		final JulianDate dtValue,
 		final String strCurrency,
-		final String strTenor)
+		final String strTenor,
+		final boolean bPrintMetric)
 		throws Exception
 	{
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
@@ -185,7 +186,7 @@ public class EURIBOR6MCubicPolyVanilla {
 			"60Y"
 		};
 
-		ForwardCurve fc = EURIBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
 			dcEONIA,
 			null,
 			fri,
@@ -205,12 +206,14 @@ public class EURIBOR6MCubicPolyVanilla {
 			null,
 			null,
 			"DerivedParBasisSpread",
-			"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---");
+			"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
+			bPrintMetric);
 
-		EURIBOR.ForwardJack (
-			dtValue,
-			"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
-			fc);
+		if (bPrintMetric)
+			IBOR.ForwardJack (
+				dtValue,
+				"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
+				fc);
 
 		return fc;
 	}
@@ -225,6 +228,11 @@ public class EURIBOR6MCubicPolyVanilla {
 
 		CreditAnalytics.Init ("");
 
-		Make6MForward (JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11), "EUR", "6M");
+		Make6MForward (
+			JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11),
+			"EUR",
+			"6M",
+			true
+		);
 	}
 }

@@ -1,25 +1,22 @@
 
 package org.drip.sample.fx;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.definition.BasketMarketParams;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.definition.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.fx.CrossCurrencySwapPair;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.function1D.QuadraticRationalShapeControl;
-import org.drip.sample.forward.*;
-import org.drip.service.api.CreditAnalytics;
-import org.drip.spline.basis.PolynomialFunctionSetParams;
-import org.drip.spline.params.*;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.function1D.FlatUnivariate;
+import org.drip.sample.forward.IBOR;
+import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 
@@ -51,12 +48,12 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * ForwardCurveFromCCBS demonstrates the setup and construction of the Forward Curve from the CCBS Quotes.
+ * CCBSForwardCurve demonstrates the setup and construction of the Forward Curve from the CCBS Quotes.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForwardCurveFromCCBS {
+public class CCBSForwardCurve {
 
 	/*
 	 * Construct an array of float-float swaps from the corresponding reference (6M) and the derived legs.
@@ -108,22 +105,14 @@ public class ForwardCurveFromCCBS {
 		return aFFC;
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	private static final CrossCurrencySwapPair[] MakeCCSP (
+		final JulianDate dtValue,
+		final String strReferenceCurrency,
+		final String strDerivedCurrency,
+		final String[] astrTenor,
+		final int iTenorInMonths)
 		throws Exception
 	{
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
-
-		CreditAnalytics.Init ("");
-
-		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
-
-		String strReferenceCurrency = "EUR";
-		String strDerivedCurrency = "USD";
-		String[] astrTenor = new String[] {"1Y", "2Y", "3Y", "4Y", "5Y"};
-
 		FloatFloatComponent[] aFFCReference = MakexM6MBasisSwap (
 			dtValue,
 			strReferenceCurrency,
@@ -132,7 +121,7 @@ public class ForwardCurveFromCCBS {
 
 		FloatFloatComponent[] aFFCDerived = MakexM6MBasisSwap (
 			dtValue,
-			"USD",
+			strDerivedCurrency,
 			astrTenor,
 			3);
 
@@ -141,40 +130,40 @@ public class ForwardCurveFromCCBS {
 		for (int i = 0; i < aCCSP.length; ++i)
 			aCCSP[i] = new CrossCurrencySwapPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aFFCDerived[i]);
 
-		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
-			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialFunctionSetParams (4),
-			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+		return aCCSP;
+	}
 
-		DiscountCurve dcReference = EONIA.MakeDC (
+	public static final void MakeForwardCurve (
+		final String strReferenceCurrency,
+		final String strDerivedCurrency,
+		final JulianDate dtValue,
+		final DiscountCurve dcReference,
+		final ForwardCurve fc6MReference,
+		final ForwardCurve fc3MReference,
+		final DiscountCurve dcDerived,
+		final ForwardCurve fc6MDerived,
+		final double dblRefDerFX,
+		final SegmentCustomBuilderControl scbc,
+		final String[] astrTenor,
+		final double[] adblCrossCurrencyBasis)
+		throws Exception
+	{
+		List<CaseInsensitiveTreeMap<Double>> lsMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
+
+		for (int i = 0; i < astrTenor.length; ++i) {
+			CaseInsensitiveTreeMap<Double> mapManifestQuote = new CaseInsensitiveTreeMap<Double>();
+
+			mapManifestQuote.put ("DerivedParBasisSpread", adblCrossCurrencyBasis[i]);
+
+			lsMapManifestQuote.add (mapManifestQuote);
+		}
+
+		CrossCurrencySwapPair[] aCCSP = MakeCCSP (
 			dtValue,
 			strReferenceCurrency,
-			false);
-
-		ForwardCurve fc6MReference = EURIBOR6MCubicPolyVanilla.Make6MForward (
-			dtValue,
-			strReferenceCurrency,
-			"6M");
-
-		ForwardCurve fc3MReference = EURIBOR3MCubicPolyVanilla.MakeForward3M (
-			"3M",
-			strReferenceCurrency,
-			dtValue,
-			dcReference,
-			fc6MReference,
-			scbcCubic);
-
-		DiscountCurve dcDerived = EONIA.MakeDC (
-			dtValue,
 			strDerivedCurrency,
-			false);
-
-		ForwardCurve fc6MDerived = EURIBOR6MCubicPolyVanilla.Make6MForward (
-			dtValue,
-			strDerivedCurrency,
-			"6M");
+			astrTenor,
+			3);
 
 		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
 
@@ -182,44 +171,33 @@ public class ForwardCurveFromCCBS {
 
 		bmp.addDiscountCurve (strDerivedCurrency, dcDerived);
 
-		bmp.addForwardCurve (fc6MReference.index().fullyQualifiedName(), fc6MReference);
-
 		bmp.addForwardCurve (fc3MReference.index().fullyQualifiedName(), fc3MReference);
 
-		System.out.println ("\n--------------------\n");
+		bmp.addForwardCurve (fc6MReference.index().fullyQualifiedName(), fc6MReference);
+
+		bmp.addForwardCurve (fc6MDerived.index().fullyQualifiedName(), fc6MDerived);
+
+		bmp.setFXCurve (strDerivedCurrency + "/" + strReferenceCurrency, new FlatUnivariate (1. / dblRefDerFX));
+
+		bmp.setFXCurve (strReferenceCurrency + "/" + strDerivedCurrency, new FlatUnivariate (dblRefDerFX));
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
-		List<CaseInsensitiveTreeMap<java.lang.Double>> lsMapManifestMeasureQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
-
-		for (int i = 0; i < astrTenor.length; ++i) {
-			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
-
-			double dblPVReference = mapOP.get (aFFCReference[i].componentName() + "[pv]");
-
-			System.out.println (dblPVReference);
-
-			CaseInsensitiveTreeMap<Double> mapManifestQuote = new CaseInsensitiveTreeMap<Double>();
-
-			mapManifestQuote.put ("PV", dblPVReference);
-
-			lsMapManifestMeasureQuote.add (mapManifestQuote);
-		}
-
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
-			scbcCubic,
+			scbc,
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null);
 
-		StretchRepresentationSpec srsFloatFloat = new StretchRepresentationSpec (
+		StretchRepresentationSpec srsFloatFloat = StretchRepresentationSpec.FromCCBS (
 			"FLOATFLOAT",
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
-			aFFCDerived,
-			lsMapManifestMeasureQuote,
-			null);
+			aCCSP,
+			valParams,
+			bmp,
+			lsMapManifestQuote);
 
 		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			lcc,
@@ -236,14 +214,28 @@ public class ForwardCurveFromCCBS {
 
 		cmpDerived.setForwardCurve (fc6MDerived);
 
-		double[] adblPVDerived = new double[astrTenor.length];
+		bmp.addForwardCurve (fc3MDerived.index().fullyQualifiedName(), fc3MDerived);
 
-		System.out.println ("\n--------------------\n");
+		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < astrTenor.length; ++i) {
-			adblPVDerived[i] = aFFCDerived[i].measureValue (valParams, null, cmpDerived, null, "PV");
+		System.out.println ("\t     CCBS INSTRUMENTS QUOTE RECOVERY");
 
-			System.out.println (adblPVDerived[i]);
+		System.out.println ("\t----------------------------------------------------------------");
+
+		for (int i = 0; i < aCCSP.length; ++i) {
+			FloatFloatComponent ffc = aCCSP[i].getDerivedSwap();
+
+			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
+
+			System.out.println ("\t[" + ffc.effective() + " - " + ffc.maturity() + "] = " +
+				FormatUtil.FormatDouble (mapOP.get ("DerivedParCurrencyBasis"), 1, 3, 1.) +
+					" | " + FormatUtil.FormatDouble (adblCrossCurrencyBasis[i], 1, 3, 10000.) + " | " +
+						FormatUtil.FormatDouble (fc3MDerived.forward (ffc.maturity()), 1, 4, 100.) + "%");
 		}
+
+		IBOR.ForwardJack (
+			dtValue,
+			"---- CCBS QUOTE FORWARD CURVE SENSITIVITY ---",
+			fc3MDerived);
 	}
 }

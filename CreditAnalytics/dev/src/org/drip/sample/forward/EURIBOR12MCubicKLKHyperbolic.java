@@ -175,9 +175,10 @@ public class EURIBOR12MCubicKLKHyperbolic {
 		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
 			dtValue,
 			strCurrency,
-			"6M");
+			"6M",
+			true);
 
-		ForwardCurve fc = EURIBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
@@ -197,9 +198,10 @@ public class EURIBOR12MCubicKLKHyperbolic {
 			astrSyntheticFloatFloatTenor,
 			adblSyntheticFloatFloatQuote,
 			"ReferenceParBasisSpread",
-			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---");
+			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
+			true);
 
-			EURIBOR.ForwardJack (
+			IBOR.ForwardJack (
 				dtValue,
 				"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
 				fc);

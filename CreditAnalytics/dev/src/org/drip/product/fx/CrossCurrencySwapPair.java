@@ -127,6 +127,31 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOutput = super.value
 			(valParams, pricerParams, bmp, quotingParams);
 
+		double dblDerivedParBasisSpread = mapOutput.get (_ffcDerived.componentName() +
+			"[DerivedParBasisSpread]");
+
+		double dblDerivedCleanDV01 = mapOutput.get (_ffcDerived.componentName() + "[DerivedCleanDV01]");
+
+		double dblReferencePV = mapOutput.get (_ffcReference.componentName() + "[PV]");
+
+		double dblFX = 1.;
+
+		org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (_ffcDerived.couponCurrency()[0] +
+			"/" + _ffcReference.couponCurrency()[0]);
+
+		if (null != auFX) {
+			try {
+				dblFX = auFX.evaluate (getEffectiveDate().getJulian());
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		mapOutput.put ("DerivedParCurrencyBasis", dblDerivedParBasisSpread + (dblFX * dblReferencePV /
+			dblDerivedCleanDV01));
+
 		mapOutput.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 		return mapOutput;

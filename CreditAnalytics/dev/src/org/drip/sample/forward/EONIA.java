@@ -235,22 +235,20 @@ public class EONIA {
 		return aCalibComp;
 	}
 
-	/**
-	 * Construct an elaborate EONIA Discount Curve
-	 * 
-	 * @param dtSpot The Spot Date
-	 * @param strCurrency The Currency
-	 * @param bOvernightIndex TRUE => Use the Overnight Index; FALSE => Use the Fund
-	 * 
-	 * @return Instance of the EONIA Discount Curve
-	 * 
-	 * @throws Exception Thrown if the OIS Discount Curve Could not be created
-	 */
-
 	public static final DiscountCurve MakeDC (
-		final JulianDate dtSpot,
 		final String strCurrency,
-		final boolean bOvernightIndex)
+		final boolean bOvernightIndex,
+		final JulianDate dtSpot,
+		final int[] aiDepositMaturityDays,
+		final double[] adblDepositQuote,
+		final String[] astrShortEndOISMaturityTenor,
+		final double[] adblShortEndOISQuote,
+		final String[] astrOISFutureTenor,
+		final String[] astrOISFutureMaturityTenor,
+		final double[] adblOISFutureQuote,
+		final String[] astrLongEndOISMaturityTenor,
+		final double[] adblLongEndOISQuote,
+		final SegmentCustomBuilderControl scbc)
 		throws Exception
 	{
 		/*
@@ -259,13 +257,9 @@ public class EONIA {
 
 		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3},
+			aiDepositMaturityDays,
 			strCurrency
 		);
-
-		double[] adblDepositQuote = new double[] {
-			0.0004, 0.0004, 0.0004		 // Deposit
-		};
 
 		/*
 		 * Construct the Deposit Instrument Set Stretch Builder
@@ -284,24 +278,15 @@ public class EONIA {
 		 * Construct the Array of Short End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		double[] adblShortEndOISQuote = new double[] {
-			0.00070,    //   1W
-			0.00069,    //   2W
-			0.00078,    //   3W
-			0.00074     //   1M
-		};
-
 		CalibratableFixedIncomeComponent[] aShortEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtSpot,
-				new java.lang.String[]
-					{"1W", "2W", "3W", "1M"},
+				astrShortEndOISMaturityTenor,
 				adblShortEndOISQuote,
 				strCurrency) :
 			OvernightFundFromMaturityTenor (
 				dtSpot,
-				new java.lang.String[]
-					{"1W", "2W", "3W", "1M"},
+				astrShortEndOISMaturityTenor,
 				adblShortEndOISQuote,
 				strCurrency);
 
@@ -322,25 +307,17 @@ public class EONIA {
 		 * Construct the Array of OIS Futures Instruments and their Quotes from the given set of parameters
 		 */
 
-		double[] adblOISFutureQuote = new double[] {
-			 0.00046,    //   1M x 1M
-			 0.00016,    //   2M x 1M
-			-0.00007,    //   3M x 1M
-			-0.00013,    //   4M x 1M
-			-0.00014     //   5M x 1M
-		};
-
 		CalibratableFixedIncomeComponent[] aOISFutureComp = bOvernightIndex ?
 			OvernightIndexFutureFromMaturityTenor (
 				dtSpot,
-				new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
-				new java.lang.String[] {"1M", "1M", "1M", "1M", "1M"},
+				astrOISFutureMaturityTenor,
+				astrOISFutureTenor,
 				adblOISFutureQuote,
 				strCurrency) :
 			OvernightFundFutureFromMaturityTenor (
 				dtSpot,
-				new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
-				new java.lang.String[] {"1M", "1M", "1M", "1M", "1M"},
+				astrOISFutureMaturityTenor,
+				astrOISFutureTenor,
 				adblOISFutureQuote,
 				strCurrency);
 
@@ -361,38 +338,15 @@ public class EONIA {
 		 * Construct the Array of Long End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		double[] adblLongEndOISQuote = new double[] {
-			0.00002,    //  15M
-			0.00008,    //  18M
-			0.00021,    //  21M
-			0.00036,    //   2Y
-			0.00127,    //   3Y
-			0.00274,    //   4Y
-			0.00456,    //   5Y
-			0.00647,    //   6Y
-			0.00827,    //   7Y
-			0.00996,    //   8Y
-			0.01147,    //   9Y
-			0.01280,    //  10Y
-			0.01404,    //  11Y
-			0.01516,    //  12Y
-			0.01764,    //  15Y
-			0.01939,    //  20Y
-			0.02003,    //  25Y
-			0.02038     //  30Y
-		};
-
 		CalibratableFixedIncomeComponent[] aLongEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtSpot,
-				new java.lang.String[]
-					{"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+				astrLongEndOISMaturityTenor,
 				adblLongEndOISQuote,
 				strCurrency) :
 			OvernightFundFromMaturityTenor (
 				dtSpot,
-				new java.lang.String[]
-					{"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+				astrLongEndOISMaturityTenor,
 				adblLongEndOISQuote,
 				strCurrency);
 
@@ -425,12 +379,7 @@ public class EONIA {
 		 */
 
 		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
-			new SegmentCustomBuilderControl (
-				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialFunctionSetParams (4),
-				SegmentInelasticDesignControl.Create (2, 2),
-				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+			scbc,
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
@@ -449,5 +398,155 @@ public class EONIA {
 			null,
 			null,
 			1.);
+	}
+
+	/**
+	 * Construct an elaborate EONIA Discount Curve
+	 * 
+	 * @param dtSpot The Spot Date
+	 * @param strCurrency The Currency
+	 * @param bOvernightIndex TRUE => Use the Overnight Index; FALSE => Use the Fund
+	 * 
+	 * @return Instance of the EONIA Discount Curve
+	 * 
+	 * @throws Exception Thrown if the OIS Discount Curve Could not be created
+	 */
+
+	public static final DiscountCurve MakeDC (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final boolean bOvernightIndex)
+		throws Exception
+	{
+		/*
+		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
+		 */
+
+		int[] aiDepositMaturityDays = new int[] {
+			1,
+			2,
+			3
+		};
+
+		double[] adblDepositQuote = new double[] {
+			0.0004,	// 1D
+			0.0004,	// 2D
+			0.0004	// 3D
+		};
+
+		/*
+		 * Construct the Array of Short End OIS Instruments and their Quotes from the given set of parameters
+		 */
+
+		String[] astrShortEndOISMaturityTenor = new java.lang.String[] {
+			"1W",
+			"2W",
+			"3W",
+			"1M"
+		};
+
+		double[] adblShortEndOISQuote = new double[] {
+			0.00070,    //   1W
+			0.00069,    //   2W
+			0.00078,    //   3W
+			0.00074     //   1M
+		};
+
+		/*
+		 * Construct the Array of OIS Futures Instruments and their Quotes from the given set of parameters
+		 */
+
+		final String[] astrOISFutureTenor = new java.lang.String[] {
+			"1M",
+			"1M",
+			"1M",
+			"1M",
+			"1M"
+		};
+
+		final String[] astrOISFutureMaturityTenor = new java.lang.String[] {
+			"1M",
+			"2M",
+			"3M",
+			"4M",
+			"5M"
+		};
+
+		double[] adblOISFutureQuote = new double[] {
+			 0.00046,    //   1M x 1M
+			 0.00016,    //   2M x 1M
+			-0.00007,    //   3M x 1M
+			-0.00013,    //   4M x 1M
+			-0.00014     //   5M x 1M
+		};
+
+		/*
+		 * Construct the Array of Long End OIS Instruments and their Quotes from the given set of parameters
+		 */
+
+		String[] astrLongEndOISMaturityTenor = new java.lang.String[] {
+			"15M",
+			"18M",
+			"21M",
+			"2Y",
+			"3Y",
+			"4Y",
+			"5Y",
+			"6Y",
+			"7Y",
+			"8Y",
+			"9Y",
+			"10Y",
+			"11Y",
+			"12Y",
+			"15Y",
+			"20Y",
+			"25Y",
+			"30Y"
+		};
+
+		double[] adblLongEndOISQuote = new double[] {
+			0.00002,    //  15M
+			0.00008,    //  18M
+			0.00021,    //  21M
+			0.00036,    //   2Y
+			0.00127,    //   3Y
+			0.00274,    //   4Y
+			0.00456,    //   5Y
+			0.00647,    //   6Y
+			0.00827,    //   7Y
+			0.00996,    //   8Y
+			0.01147,    //   9Y
+			0.01280,    //  10Y
+			0.01404,    //  11Y
+			0.01516,    //  12Y
+			0.01764,    //  15Y
+			0.01939,    //  20Y
+			0.02003,    //  25Y
+			0.02038     //  30Y
+		};
+
+		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (4),
+			SegmentInelasticDesignControl.Create (2, 2),
+			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
+			null);
+
+		return MakeDC (
+			strCurrency,
+			bOvernightIndex,
+			dtSpot,
+			aiDepositMaturityDays,
+			adblDepositQuote,
+			astrShortEndOISMaturityTenor,
+			adblShortEndOISQuote,
+			astrOISFutureTenor,
+			astrOISFutureMaturityTenor,
+			adblOISFutureQuote,
+			astrLongEndOISMaturityTenor,
+			adblLongEndOISQuote,
+			scbcCubic
+		);
 	}
 }
