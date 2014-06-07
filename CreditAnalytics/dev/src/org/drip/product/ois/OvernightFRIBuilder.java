@@ -54,6 +54,20 @@ public class OvernightFRIBuilder {
 
 		_mapJurisdictionFRI.put ("EUR", friEUR);
 
+		org.drip.product.params.FloatingRateIndex friGBP = org.drip.product.params.FloatingRateIndex.Create
+			("GBP-SONIA-ON");
+
+		_mapOvernightFRI.put ("GBP-SONIA-ON", friGBP);
+
+		_mapJurisdictionFRI.put ("GBP", friGBP);
+
+		org.drip.product.params.FloatingRateIndex friJPY = org.drip.product.params.FloatingRateIndex.Create
+			("JPY-OIS-ON");
+
+		_mapOvernightFRI.put ("JPY-OIS-ON", friJPY);
+
+		_mapJurisdictionFRI.put ("JPY", friJPY);
+
 		org.drip.product.params.FloatingRateIndex friUSD = org.drip.product.params.FloatingRateIndex.Create
 			("USD-OIS-ON");
 

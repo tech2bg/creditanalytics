@@ -112,6 +112,8 @@ public class Convention {
 
 	private static final boolean SetDCCalc()
 	{
+		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC28_360())) return false;
+
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC30_360())) return false;
 
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC30_365())) return false;
@@ -567,6 +569,8 @@ public class Convention {
 		sbDCSet.append ("Actual/360 Fixed;Act/360;A/360;French;US:WIB Act/360;");
 
 		sbDCSet.append ("Actual/365L;ISMA-Year;Actual/Actual AFB;");
+
+		sbDCSet.append ("28/360;");
 
 		sbDCSet.append ("NL/360;");
 

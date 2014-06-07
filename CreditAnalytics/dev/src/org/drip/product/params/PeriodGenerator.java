@@ -173,8 +173,8 @@ public class PeriodGenerator extends PeriodSet {
 					+ " ...");
 
 		if (0 == _iFreq) {
-			if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GetSinglePeriod
-				(_dblEffective, _dblMaturity, _strCalendar)))
+			if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod
+				(_dblEffective, _dblMaturity, _strCouponDC, _strCalendar)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {

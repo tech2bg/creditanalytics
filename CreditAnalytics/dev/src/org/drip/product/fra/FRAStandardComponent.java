@@ -298,9 +298,9 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
 		try {
-			return org.drip.analytics.period.CashflowPeriod.GetSinglePeriod (_dblEffectiveDate, new
+			return org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).getJulian(),
-					_strCalendar);
+					_strDayCount, _strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

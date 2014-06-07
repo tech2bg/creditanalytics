@@ -294,6 +294,51 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	/**
+	 * Create an Instance of the Single Period OvernightIndexFloatingStream
+	 * 
+	 * @param dblEffective Effective Date
+	 * @param dblMaturity Maturity Date
+	 * @param dblSpread Spread
+	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
+	 * @param fri Floating Rate Index
+	 * @param strCouponDC Coupon Day Count
+	 * @param dap DAP
+	 * @param notlSchedule Notional Schedule
+	 * @param dblNotional Initial Notional Amount
+	 * @param strIR IR Curve
+	 * @param strCalendar Calendar
+	 * 
+	 * return Instance of the Single period OvernightIndexFloatingStream
+	 */
+
+	public static FloatingStream CreateSinglePeriod (
+		final double dblEffective,
+		final double dblMaturity,
+		final double dblSpread,
+		final boolean bIsReference,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final java.lang.String strCouponDC,
+		final org.drip.analytics.daycount.DateAdjustParams dap,
+		final org.drip.product.params.FactorSchedule notlSchedule,
+		final double dblNotional,
+		final java.lang.String strIR,
+		final java.lang.String strCalendar)
+	{
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (dblEffective, dblMaturity,
+				strCouponDC, strCalendar);
+
+		try {
+			return new FloatingStream (dblEffective, dblMaturity, dblSpread, bIsReference, fri, notlSchedule,
+				dblNotional, strIR, lsCouponPeriod);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	protected double getFixing (
 		final double dblValueDate,
 		final org.drip.product.params.FloatingRateIndex fri,

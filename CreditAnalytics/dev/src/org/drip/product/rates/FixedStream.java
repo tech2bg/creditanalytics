@@ -292,6 +292,51 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	}
 
 	/**
+	 * Full-featured instantiation of the Fixed Stream instance
+	 * 
+	 * @param dblEffective Effective Date
+	 * @param dblMaturity Maturity Date
+	 * @param dblCoupon Fixed Coupon
+	 * @param strCouponDC Fixed Coupon Day Count
+	 * @param dap => DAP
+	 * @param notlSchedule => Notional Schedule
+	 * @param dblNotional => Notional Amount
+	 * @param strCurrency => Pay Currency
+	 * @param strCalendar => Calendar
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
+
+	public FixedStream (
+		final double dblEffective,
+		final double dblMaturity,
+		final double dblCoupon,
+		final java.lang.String strCouponDC,
+		final org.drip.analytics.daycount.DateAdjustParams dap,
+		final org.drip.product.params.FactorSchedule notlSchedule,
+		final double dblNotional,
+		final java.lang.String strCurrency,
+		final java.lang.String strCalendar)
+		throws java.lang.Exception
+	{
+		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional)
+			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
+
+		if (null == (_notlSchedule = notlSchedule))
+			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+
+		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod
+			(dblEffective, dblMaturity, strCouponDC, strCalendar)) || 0 == _lsCouponPeriod.size())
+			throw new java.lang.Exception ("FixedStream ctr: Cannot generate Period Schedule");
+
+		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
+
+		_dblMaturity = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).getEndDate();
+	}
+
+	/**
 	 * FixedStream de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array

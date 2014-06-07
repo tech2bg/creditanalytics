@@ -312,8 +312,8 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
-		return org.drip.analytics.period.CashflowPeriod.GetSinglePeriod (_dblEffective, _dblMaturity,
-			_strCalendar);
+		return org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (_dblEffective, _dblMaturity,
+			_strDayCount, _strCalendar);
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()

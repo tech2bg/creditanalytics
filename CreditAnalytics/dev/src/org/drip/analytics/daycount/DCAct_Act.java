@@ -70,27 +70,32 @@ public class DCAct_Act implements org.drip.analytics.daycount.DCFCalculator {
 		int iNumLeapDays = 0;
 		int iNumNonLeapDays = 0;
 
+		int iYearStart = org.drip.analytics.date.JulianDate.Year (dblStart);
+
+		int iYearEnd = org.drip.analytics.date.JulianDate.Year (dblEnd);
+
+		if (iYearStart == iYearEnd) {
+			return org.drip.analytics.date.JulianDate.IsLeapYear (dblStart) ? (dblEnd - dblStart) / 366. :
+				(dblEnd - dblStart) / 365.;
+		}
+
 		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblStart))
 			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
 		else
 			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
-
-		int iYearStart = org.drip.analytics.date.JulianDate.Year (dblStart);
-
-		int iYearEnd = org.drip.analytics.date.JulianDate.Year (dblEnd);
 
 		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
 			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
 		else
 			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
 
-		if (iYearEnd == iYearStart) {
+		/* if (iYearEnd == iYearStart) {
 			if (!org.drip.analytics.date.JulianDate.IsLeapYear (dblStart))
 				return 1. * (iNumNonLeapDays - 365) / 365.;
 
 			return 1. * (iNumLeapDays - (org.drip.analytics.date.JulianDate.ContainsFeb29 (dblStart,
 				dblEnd, org.drip.analytics.date.JulianDate.RIGHT_INCLUDE) ? 365 : 365)) / 366.;
-		}
+		} */
 
 		for (int iYear = iYearStart + 1; iYear < iYearEnd; ++iYear) {
 			double dblYear = org.drip.analytics.date.JulianDate.toJulian (iYear,

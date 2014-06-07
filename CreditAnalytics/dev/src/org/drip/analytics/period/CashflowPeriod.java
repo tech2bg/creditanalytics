@@ -565,14 +565,16 @@ public class CashflowPeriod extends Period {
 	 * 
 	 * @param dblEffective Effective date
 	 * @param dblMaturity Maturity date
+	 * @param strDayCount Day Count
 	 * @param strCalendar Optional Holiday Calendar for accrual
 	 * 
 	 * @return List containing the single Cash Flow period
 	 */
 
-	public static final java.util.List<CashflowPeriod> GetSinglePeriod (
+	public static final java.util.List<CashflowPeriod> GenerateSinglePeriod (
 		final double dblEffective,
 		final double dblMaturity,
+		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
@@ -583,8 +585,10 @@ public class CashflowPeriod extends Period {
 
 		try {
 			lsCashflowPeriod.add (0, new CashflowPeriod (dblEffective, dblMaturity, dblEffective,
-				dblMaturity, dblMaturity, dblEffective, 2, 0.5, "30/360", true, "30/360", true, dblMaturity,
-					strCalendar));
+				dblMaturity, dblMaturity, dblEffective, 1,
+					org.drip.analytics.daycount.Convention.YearFraction (dblEffective, dblMaturity,
+						strDayCount, false, dblMaturity, null, strCalendar), strDayCount, false, strDayCount,
+							false, dblMaturity, strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

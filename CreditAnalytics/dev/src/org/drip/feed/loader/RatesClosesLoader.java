@@ -36,6 +36,9 @@ package org.drip.feed.loader;
  */
 
 public class RatesClosesLoader {
+	private static java.util.Map<java.lang.String, java.lang.Boolean> _mapIsON = new
+		java.util.HashMap<java.lang.String, java.lang.Boolean>();
+
 	private static java.util.Map<java.lang.String, java.lang.String> _mapFixedDC = new
 		java.util.HashMap<java.lang.String, java.lang.String>();
 
@@ -60,6 +63,56 @@ public class RatesClosesLoader {
 
 	public static final boolean InitStatic()
 	{
+		_mapFixedDC.put ("AUD", "Act/365");
+
+		_mapFixedTenor.put ("AUD", "6M");
+
+		_mapFloatingDC.put ("AUD", "Act/365");
+
+		_mapFloatingTenor.put ("AUD", "6M");
+
+		_mapFixedFrequency.put ("AUD", 2);
+
+		_mapFloatingFrequency.put ("AUD", 2);
+
+		_mapFixedDC.put ("BRL", "Act/365");
+
+		_mapFixedTenor.put ("BRL", "1Y");
+
+		_mapFloatingDC.put ("BRL", "Act/365");
+
+		_mapFloatingTenor.put ("BRL", "1Y");
+
+		_mapFixedFrequency.put ("BRL", 1);
+
+		_mapFloatingFrequency.put ("BRL", 1);
+
+		_mapIsON.put ("BRL", true);
+
+		_mapFixedDC.put ("CAD", "Act/365");
+
+		_mapFixedTenor.put ("CAD", "6M");
+
+		_mapFloatingDC.put ("CAD", "Act/365");
+
+		_mapFloatingTenor.put ("CAD", "6M");
+
+		_mapFixedFrequency.put ("CAD", 2);
+
+		_mapFloatingFrequency.put ("CAD", 2);
+
+		_mapFixedDC.put ("CHF", "30/360");
+
+		_mapFixedTenor.put ("CHF", "12M");
+
+		_mapFloatingDC.put ("CHF", "Act/360");
+
+		_mapFloatingTenor.put ("CHF", "6M");
+
+		_mapFixedFrequency.put ("CHF", 1);
+
+		_mapFloatingFrequency.put ("CHF", 2);
+
 		_mapFixedDC.put ("CLP", "Act/360");
 
 		_mapFixedTenor.put ("CLP", "6M");
@@ -132,6 +185,18 @@ public class RatesClosesLoader {
 
 		_mapFloatingFrequency.put ("HUF", 2);
 
+		_mapFixedDC.put ("ILS", "Act/365");
+
+		_mapFixedTenor.put ("ILS", "12M");
+
+		_mapFloatingDC.put ("ILS", "Act/365");
+
+		_mapFloatingTenor.put ("ILS", "3M");
+
+		_mapFixedFrequency.put ("ILS", 1);
+
+		_mapFloatingFrequency.put ("ILS", 4);
+
 		_mapFixedDC.put ("JPY", "Act/365");
 
 		_mapFixedTenor.put ("JPY", "6M");
@@ -144,17 +209,41 @@ public class RatesClosesLoader {
 
 		_mapFloatingFrequency.put ("JPY", 2);
 
-		_mapFixedDC.put ("MXN", "Act/360");
+		_mapFixedDC.put ("MXN", "28/360");
 
 		_mapFixedTenor.put ("MXN", "1M");
 
-		_mapFloatingDC.put ("MXN", "Act/360");
+		_mapFloatingDC.put ("MXN", "28/360");
 
 		_mapFloatingTenor.put ("MXN", "1M");
 
 		_mapFixedFrequency.put ("MXN", 12);
 
 		_mapFloatingFrequency.put ("MXN", 12);
+
+		_mapFixedDC.put ("NOK", "2/360");
+
+		_mapFixedTenor.put ("NOK", "12M");
+
+		_mapFloatingDC.put ("NOK", "Act/360");
+
+		_mapFloatingTenor.put ("NOK", "6M");
+
+		_mapFixedFrequency.put ("NOK", 1);
+
+		_mapFloatingFrequency.put ("NOK", 2);
+
+		_mapFixedDC.put ("NZD", "Act/365");
+
+		_mapFixedTenor.put ("NZD", "6M");
+
+		_mapFloatingDC.put ("NZD", "Act/365");
+
+		_mapFloatingTenor.put ("NZD", "3M");
+
+		_mapFixedFrequency.put ("NZD", 2);
+
+		_mapFloatingFrequency.put ("NZD", 4);
 
 		_mapFixedDC.put ("PLN", "Act/Act");
 
@@ -167,6 +256,18 @@ public class RatesClosesLoader {
 		_mapFixedFrequency.put ("PLN", 1);
 
 		_mapFloatingFrequency.put ("PLN", 2);
+
+		_mapFixedDC.put ("SEK", "30/360");
+
+		_mapFixedTenor.put ("SEK", "12M");
+
+		_mapFloatingDC.put ("SEK", "Act/360");
+
+		_mapFloatingTenor.put ("SEK", "3M");
+
+		_mapFixedFrequency.put ("SEK", 1);
+
+		_mapFloatingFrequency.put ("SEK", 4);
 
 		_mapFixedDC.put ("SGD", "Act/365");
 
@@ -192,6 +293,18 @@ public class RatesClosesLoader {
 
 		_mapFloatingFrequency.put ("USD", 4);
 
+		_mapFixedDC.put ("TRY", "Act/360");
+
+		_mapFixedTenor.put ("TRY", "12M");
+
+		_mapFloatingDC.put ("TRY", "Act/360");
+
+		_mapFloatingTenor.put ("TRY", "3M");
+
+		_mapFixedFrequency.put ("TRY", 1);
+
+		_mapFloatingFrequency.put ("TRY", 4);
+
 		_mapFixedDC.put ("ZAR", "Act/365");
 
 		_mapFixedTenor.put ("ZAR", "3M");
@@ -205,6 +318,12 @@ public class RatesClosesLoader {
 		_mapFloatingFrequency.put ("ZAR", 4);
 
 		return true;
+	}
+
+	private static final boolean IsON (
+		final java.lang.String strCurrency)
+	{
+		return _mapIsON.containsKey (strCurrency) && _mapIsON.get (strCurrency);
 	}
 
 	private static final org.drip.product.definition.RatesComponent CreateIRS (
@@ -221,8 +340,7 @@ public class RatesClosesLoader {
 		org.drip.analytics.date.JulianDate dtEffective = 0 == iNumDaysSubtract ? dtEffectiveUnadjusted :
 			dtEffectiveUnadjusted.subtractDays (iNumDaysSubtract);
 
-		org.drip.analytics.date.JulianDate dtMaturity = dtEffective.addTenorAndAdjust (strMaturityTenor,
-			strCurrency);
+		org.drip.analytics.date.JulianDate dtMaturity = dtEffective.addTenor (strMaturityTenor);
 
 		if (null == dtMaturity) return null;
 
@@ -255,6 +373,61 @@ public class RatesClosesLoader {
 				floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
+
+			return irs;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	private static final org.drip.product.definition.RatesComponent CreateDIS (
+		final org.drip.analytics.date.JulianDate dtEffectiveUnadjusted,
+		final java.lang.String strMaturityTenor,
+		final int iNumDaysSubtract,
+		final double dblCoupon,
+		final java.lang.String strCurrency)
+	{
+		if (null == dtEffectiveUnadjusted || null == strMaturityTenor || strMaturityTenor.isEmpty() ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblCoupon))
+			return null;
+
+		org.drip.analytics.date.JulianDate dtEffective = 0 == iNumDaysSubtract ? dtEffectiveUnadjusted :
+			dtEffectiveUnadjusted.subtractDays (iNumDaysSubtract);
+
+		org.drip.analytics.date.JulianDate dtMaturity = dtEffective.addTenor (strMaturityTenor);
+
+		if (null == dtMaturity) return null;
+
+		java.lang.String strFixedDC = _mapFixedDC.get (strCurrency);
+
+		java.lang.String strFloatingDC = _mapFloatingDC.get (strCurrency);
+
+		try {
+			org.drip.analytics.daycount.DateAdjustParams dap = new
+				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
+					strCurrency);
+
+			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
+				(dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, strFixedDC, dap, null, 1.,
+					strCurrency, strCurrency);
+
+			org.drip.product.rates.FloatingStream floatStream =
+				org.drip.product.rates.FloatingStream.CreateSinglePeriod (dtEffective.getJulian(),
+					dtMaturity.getJulian(), 0., false, org.drip.product.params.FloatingRateIndex.Create
+						(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), strFloatingDC, dap,
+							null, -1., strCurrency, strCurrency);
+
+			/* org.drip.product.ois.OvernightIndexFloatingStream diStream =
+				org.drip.product.ois.OvernightIndexFloatingStream.CreateSinglePeriod (dtEffective.getJulian(),
+					dtMaturity.getJulian(), 0., false, org.drip.product.params.FloatingRateIndex.Create
+						(strCurrency, "DI", "ON"), strFloatingDC, dap, null, -1., strCurrency, strCurrency); */
+
+			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+				floatStream);
+
+			irs.setPrimaryCode ("DIS." + dtMaturity.toString() + "." + strCurrency);
 
 			return irs;
 		} catch (java.lang.Exception e) {
@@ -569,22 +742,28 @@ public class RatesClosesLoader {
 
 			if (null == dtMaturity) return null;
 
-			org.drip.product.definition.FixedIncomeComponent comp = CreateIRS (dtPrev, s_astrFwdTenor[i], 0,
-				0.01, strCurrency);
+			org.drip.product.definition.FixedIncomeComponent comp = IsON (strCurrency) ? CreateDIS (dtPrev,
+				s_astrFwdTenor[i], 0, 0.01, strCurrency) : CreateIRS (dtPrev, s_astrFwdTenor[i], 0, 0.01,
+					strCurrency);
 
 			adblBaselineSwapRate[i] = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "CalibSwapRate",
 				strCurrency, null);
 
-			aComp[i] = CreateIRS (dtPrev, s_astrFwdTenor[i], 0, adblBaselineSwapRate[i], strCurrency);
+			aComp[i] = IsON (strCurrency) ? CreateDIS (dtPrev, s_astrFwdTenor[i], 0, adblBaselineSwapRate[i],
+				strCurrency) : CreateIRS (dtPrev, s_astrFwdTenor[i], 0, adblBaselineSwapRate[i],
+					strCurrency);
 
-			aCompMatPrev[i] = CreateIRS (dtPrev, s_astrFwdTenor[i], iNumDaysDiff, adblBaselineSwapRate[i],
-				strCurrency);
+			aCompMatPrev[i] = IsON (strCurrency) ? CreateDIS (dtPrev, s_astrFwdTenor[i], iNumDaysDiff,
+				adblBaselineSwapRate[i], strCurrency) : CreateIRS (dtPrev, s_astrFwdTenor[i], iNumDaysDiff,
+					adblBaselineSwapRate[i], strCurrency);
 
-			aCompMat1MPast[i] = CreateIRS (dtPrev, s_astrFwdTenor[i], 30, adblBaselineSwapRate[i],
-				strCurrency);
+			aCompMat1MPast[i] = IsON (strCurrency) ? CreateDIS (dtPrev, s_astrFwdTenor[i], 30,
+				adblBaselineSwapRate[i], strCurrency) : CreateIRS (dtPrev, s_astrFwdTenor[i], 30,
+					adblBaselineSwapRate[i], strCurrency);
 
-			aCompMat3MPast[i] = CreateIRS (dtPrev, s_astrFwdTenor[i], 90, adblBaselineSwapRate[i],
-				strCurrency);
+			aCompMat3MPast[i] = IsON (strCurrency) ? CreateDIS (dtPrev, s_astrFwdTenor[i], 90,
+				adblBaselineSwapRate[i], strCurrency) : CreateIRS (dtPrev, s_astrFwdTenor[i], 90,
+					adblBaselineSwapRate[i], strCurrency);
 		}
 
 		for (int i = 0; i < s_astrFwdTenor.length; ++i)
@@ -619,11 +798,18 @@ public class RatesClosesLoader {
 		return aCalibComp;
 	}
 
-	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[] SwapInstrumentsFromTenor (
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final java.lang.String[] astrTenor,
-		final double[] adblQuote,
-		final java.lang.String strCurrency)
+	private static final java.lang.String DIMaturityTenorFromIndex (
+		final int iIndex)
+	{
+		 return iIndex <= 3 ? "" + (iIndex + 1) + "M" : "" + (3 * iIndex - 5) + "M";
+	}
+
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
+		FutureInstrumentsFromTenor (
+			final org.drip.analytics.date.JulianDate dtEffective,
+			final java.lang.String[] astrTenor,
+			final double[] adblQuote,
+			final java.lang.String strCurrency)
 	{
 		if (null == astrTenor) return null;
 
@@ -634,7 +820,30 @@ public class RatesClosesLoader {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			aCalibComp[i] = CreateIRS (dtEffective, astrTenor[i], 0, adblQuote[i], strCurrency);
+			aCalibComp[i] = CreateDIS (dtEffective, DIMaturityTenorFromIndex (i), 0, adblQuote[i],
+				strCurrency);
+
+		return aCalibComp;
+	}
+
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
+		SwapInstrumentsFromTenor (
+			final org.drip.analytics.date.JulianDate dtEffective,
+			final java.lang.String[] astrTenor,
+			final double[] adblQuote,
+			final java.lang.String strCurrency)
+	{
+		if (null == astrTenor) return null;
+
+		int iNumTenor = astrTenor.length;
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumTenor];
+
+		if (0 == iNumTenor) return null;
+
+		for (int i = 0; i < iNumTenor; ++i)
+			aCalibComp[i] = IsON (strCurrency) ? CreateDIS (dtEffective, astrTenor[i], 0, adblQuote[i],
+				strCurrency) : CreateIRS (dtEffective, astrTenor[i], 0, adblQuote[i], strCurrency);
 
 		return aCalibComp;
 	}
@@ -643,6 +852,8 @@ public class RatesClosesLoader {
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String[] astrCashTenor,
 		final double[] adblCashQuote,
+		final java.lang.String[] astrFutureTenor,
+		final double[] adblFutureQuote,
 		final java.lang.String[] astrSwapTenor,
 		final double[] adblSwapQuote,
 		final java.lang.String strCurrency)
@@ -717,6 +928,119 @@ public class RatesClosesLoader {
 		return dcShapePreserving;
 	}
 
+	public static final org.drip.analytics.rates.DiscountCurve BuildCurveSingleStretch (
+		final org.drip.analytics.date.JulianDate dt,
+		final java.lang.String[] astrCashTenor,
+		final double[] adblCashQuote,
+		final java.lang.String[] astrFutureTenor,
+		final double[] adblFutureQuote,
+		final java.lang.String[] astrSwapTenor,
+		final double[] adblSwapQuote,
+		final java.lang.String strCurrency)
+	{
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCFICCash = CashInstrumentsFromTenor
+			(dt, astrCashTenor, strCurrency);
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCFICFuture =
+			FutureInstrumentsFromTenor (dt, astrFutureTenor, adblFutureQuote, strCurrency);
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCFICSwap = SwapInstrumentsFromTenor
+			(dt, astrSwapTenor, adblSwapQuote, strCurrency);
+
+		int iNumCash = null == aCFICCash ? 0 : aCFICCash.length;
+		int iNumFuture = null == aCFICFuture ? 0 : aCFICFuture.length;
+		int iNumSwap = null == aCFICSwap ? 0 : aCFICSwap.length;
+		int iNumCFIC = iNumCash + iNumFuture + iNumSwap;
+		double[] adblQuote = new double[iNumCFIC];
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCFIC = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumCFIC];
+
+		if (0 != iNumCash) {
+			for (int i = 0; i < iNumCash; ++i) {
+				aCFIC[i] = aCFICCash[i];
+				adblQuote[i] = adblCashQuote[i];
+			}
+		}
+
+		if (0 != iNumFuture) {
+			for (int i = iNumCash; i < iNumCash + iNumFuture; ++i) {
+				aCFIC[i] = aCFICFuture[i - iNumCash];
+				adblQuote[i] = adblFutureQuote[i - iNumCash];
+			}
+		}
+
+		if (0 != iNumSwap) {
+			for (int i = iNumCash + iNumFuture; i < iNumCFIC; ++i) {
+				aCFIC[i] = aCFICSwap[i - iNumCash - iNumFuture];
+				adblQuote[i] = adblSwapQuote[i - iNumCash - iNumFuture];
+			}
+		}
+
+		org.drip.state.estimator.StretchRepresentationSpec srs =
+			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet ("SINGLE_STRETCH",
+				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR, aCFIC,
+						"Rate", adblQuote, null);
+
+		if (null == srs) return null;
+
+		org.drip.state.estimator.StretchRepresentationSpec[] aRRS = new
+			org.drip.state.estimator.StretchRepresentationSpec[] {srs};
+
+		org.drip.analytics.rates.DiscountCurve dcShapePreserving = null;
+
+		try {
+			org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
+				(dt, dt, strCurrency);
+
+			org.drip.spline.params.ResponseScalingShapeControl rssc = new
+				org.drip.spline.params.ResponseScalingShapeControl (true, new
+					org.drip.quant.function1D.QuadraticRationalShapeControl (0.));
+
+			org.drip.spline.params.SegmentInelasticDesignControl sdic =
+				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2);
+
+			org.drip.state.estimator.LinearCurveCalibrator lcc = new
+				org.drip.state.estimator.LinearCurveCalibrator (new
+					org.drip.spline.params.SegmentCustomBuilderControl
+						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
+				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc, null),
+					org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
+						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
+
+			if (null == (dcShapePreserving =
+				org.drip.param.creator.ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (lcc, aRRS,
+					valParams, null, null, null, 1.0))) {
+				System.out.println ("iNumCash = " + iNumCash);
+
+				System.out.println ("iNumFuture = " + iNumFuture);
+
+				System.out.println ("iNumSwap = " + iNumSwap);
+
+				System.exit (3474);
+
+				return null;
+			}
+
+			/* org.drip.analytics.rates.DiscountCurve dcHyman83Smooth =
+				org.drip.param.creator.RatesScenarioCurveBuilder.SmoothingLocalControlBuild
+					(dcShapePreserving, lcc, new org.drip.state.estimator.LocalControlCurveParams
+						(org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,
+							org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE, new
+								org.drip.spline.params.SegmentCustomBuilderControl
+									(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new org.drip.spline.basis.PolynomialFunctionSetParams (4), sdic, rssc, null),
+					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null, true, true), aRRS,
+						valParams, null, null, null);
+
+			return null == dcHyman83Smooth ? dcShapePreserving : dcHyman83Smooth; */
+		} catch (java.lang.Exception e) {
+			// e.printStackTrace();
+		}
+
+		return dcShapePreserving;
+	}
+
 	private static final org.drip.service.api.DiscountCurveInputInstrument ProcessCOBInput (
 		final java.lang.String[] astrTenor,
 		final java.lang.String[] astrCOBRecord)
@@ -729,9 +1053,13 @@ public class RatesClosesLoader {
 
 		java.util.List<java.lang.String> lsCashTenor = new java.util.ArrayList<java.lang.String>();
 
+		java.util.List<java.lang.String> lsFutureTenor = new java.util.ArrayList<java.lang.String>();
+
 		java.util.List<java.lang.String> lsSwapTenor = new java.util.ArrayList<java.lang.String>();
 
 		java.util.List<java.lang.Double> lsCashQuote = new java.util.ArrayList<java.lang.Double>();
+
+		java.util.List<java.lang.Double> lsFutureQuote = new java.util.ArrayList<java.lang.Double>();
 
 		java.util.List<java.lang.Double> lsSwapQuote = new java.util.ArrayList<java.lang.Double>();
 
@@ -754,17 +1082,21 @@ public class RatesClosesLoader {
 					lsCashTenor.add (astrTenor[i - 1]);
 
 					lsCashQuote.add (dblQuote);
-				} else {
+				} else if (astrTenor[i - 1].endsWith ("Y")) {
 					lsSwapTenor.add (astrTenor[i - 1]);
 
 					lsSwapQuote.add (dblQuote);
+				} else {
+					lsFutureTenor.add (astrTenor[i - 1]);
+
+					lsFutureQuote.add (dblQuote);
 				}
 			}
 		}
 
 		try {
 			return new org.drip.service.api.DiscountCurveInputInstrument (dt, lsCashTenor, lsCashQuote,
-				lsSwapTenor, lsSwapQuote);
+				lsFutureTenor, lsFutureQuote, lsSwapTenor, lsSwapQuote);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -775,9 +1107,11 @@ public class RatesClosesLoader {
 	public static final org.drip.service.api.DiscountCurveInputInstrument[] ProcessCOBInput (
 		final java.lang.String[] astrTenor,
 		final java.lang.String[] astrCOBRecord1,
-		final java.lang.String[] astrCOBRecord2)
+		final java.lang.String[] astrCOBRecord2,
+		final java.lang.String strCurrency)
 	{
-		if (null == astrCOBRecord1 || null == astrCOBRecord2) return null;
+		if (null == strCurrency || strCurrency.isEmpty() || null == astrCOBRecord1 || null == astrCOBRecord2)
+			return null;
 
 		int iNumQuote1 = astrCOBRecord1.length;
 		int iNumQuote2 = astrCOBRecord2.length;
@@ -786,13 +1120,19 @@ public class RatesClosesLoader {
 
 		java.util.List<java.lang.String> lsCashTenor = new java.util.ArrayList<java.lang.String>();
 
+		java.util.List<java.lang.String> lsFutureTenor = new java.util.ArrayList<java.lang.String>();
+
 		java.util.List<java.lang.String> lsSwapTenor = new java.util.ArrayList<java.lang.String>();
 
 		java.util.List<java.lang.Double> lsCashQuote1 = new java.util.ArrayList<java.lang.Double>();
 
+		java.util.List<java.lang.Double> lsFutureQuote1 = new java.util.ArrayList<java.lang.Double>();
+
 		java.util.List<java.lang.Double> lsSwapQuote1 = new java.util.ArrayList<java.lang.Double>();
 
 		java.util.List<java.lang.Double> lsCashQuote2 = new java.util.ArrayList<java.lang.Double>();
+
+		java.util.List<java.lang.Double> lsFutureQuote2 = new java.util.ArrayList<java.lang.Double>();
 
 		java.util.List<java.lang.Double> lsSwapQuote2 = new java.util.ArrayList<java.lang.Double>();
 
@@ -817,15 +1157,32 @@ public class RatesClosesLoader {
 				dblQuote2 = java.lang.Double.NaN;
 			}
 
-			if (org.drip.quant.common.NumberUtil.IsValid (dblQuote1) &&
-				org.drip.quant.common.NumberUtil.IsValid (dblQuote2)) {
-				if (astrTenor[i - 1].endsWith ("M")) {
-					lsCashTenor.add (astrTenor[i - 1]);
+			if (!IsON (strCurrency)) {
+				if (org.drip.quant.common.NumberUtil.IsValid (dblQuote1) &&
+					org.drip.quant.common.NumberUtil.IsValid (dblQuote2)) {
+					if (astrTenor[i - 1].endsWith ("M")) {
+						lsCashTenor.add (astrTenor[i - 1]);
 
-					lsCashQuote1.add (dblQuote1);
+						lsCashQuote1.add (dblQuote1);
 
-					lsCashQuote2.add (dblQuote2);
-				} else {
+						lsCashQuote2.add (dblQuote2);
+					} else if (astrTenor[i - 1].endsWith ("Y")) {
+						lsSwapTenor.add (astrTenor[i - 1]);
+
+						lsSwapQuote1.add (dblQuote1);
+
+						lsSwapQuote2.add (dblQuote2);
+					} else {
+						lsFutureTenor.add (astrTenor[i - 1]);
+
+						lsFutureQuote1.add (dblQuote1);
+
+						lsFutureQuote2.add (dblQuote2);
+					}
+				}
+			} else {
+				if (org.drip.quant.common.NumberUtil.IsValid (dblQuote1) &&
+					org.drip.quant.common.NumberUtil.IsValid (dblQuote2)) {
 					lsSwapTenor.add (astrTenor[i - 1]);
 
 					lsSwapQuote1.add (dblQuote1);
@@ -835,8 +1192,8 @@ public class RatesClosesLoader {
 			}
 		}
 
-		if ((null == lsCashTenor || 0 == lsCashTenor.size()) && (null == lsSwapTenor || 0 ==
-			lsSwapTenor.size())) {
+		if ((null == lsCashTenor || 0 == lsCashTenor.size()) && (null == lsFutureTenor || 0 ==
+			lsFutureTenor.size()) && (null == lsSwapTenor || 0 == lsSwapTenor.size())) {
 			System.out.println ("\t\tBad Tenor Straddle: " + dt1 + " | " + dt2);
 
 			return null;
@@ -845,8 +1202,9 @@ public class RatesClosesLoader {
 		try {
 			return new org.drip.service.api.DiscountCurveInputInstrument[] {new
 				org.drip.service.api.DiscountCurveInputInstrument (dt1, lsCashTenor, lsCashQuote1,
-					lsSwapTenor, lsSwapQuote1), new org.drip.service.api.DiscountCurveInputInstrument (dt2,
-						lsCashTenor, lsCashQuote2, lsSwapTenor, lsSwapQuote2)};
+					lsFutureTenor, lsFutureQuote1, lsSwapTenor, lsSwapQuote1), new
+						org.drip.service.api.DiscountCurveInputInstrument (dt2, lsCashTenor, lsCashQuote2,
+							lsFutureTenor, lsFutureQuote2, lsSwapTenor, lsSwapQuote2)};
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -859,10 +1217,11 @@ public class RatesClosesLoader {
 		final java.lang.String[] astrCOBRecord1,
 		final java.lang.String[] astrCOBRecord2,
 		final java.lang.String strCurrency,
-		boolean bDumpOnDemand)
+		final boolean bBuildSingleStretch,
+		final boolean bDumpOnDemand)
 	{
 		org.drip.service.api.DiscountCurveInputInstrument[] aDCII = ProcessCOBInput (astrTenor,
-			astrCOBRecord1, astrCOBRecord2);
+			astrCOBRecord1, astrCOBRecord2, strCurrency);
 
 		if (null == aDCII || 2 != aDCII.length) return null;
 
@@ -877,17 +1236,25 @@ public class RatesClosesLoader {
 
 		java.lang.String[] astrCashTenorPrev = dciiPrev.cashTenor();
 
+		java.lang.String[] astrFutureTenorPrev = dciiPrev.futureTenor();
+
 		java.lang.String[] astrSwapTenorPrev = dciiPrev.swapTenor();
 
 		double[] adblCashQuotePrev = dciiPrev.cashQuote();
+
+		double[] adblFutureQuotePrev = dciiPrev.futureQuote();
 
 		double[] adblSwapQuotePrev = dciiPrev.swapQuote();
 
 		java.lang.String[] astrCashTenorCurr = dciiCurr.cashTenor();
 
+		java.lang.String[] astrFutureTenorCurr = dciiCurr.futureTenor();
+
 		java.lang.String[] astrSwapTenorCurr = dciiCurr.swapTenor();
 
 		double[] adblCashQuoteCurr = dciiCurr.cashQuote();
+
+		double[] adblFutureQuoteCurr = dciiCurr.futureQuote();
 
 		double[] adblSwapQuoteCurr = dciiCurr.swapQuote();
 
@@ -897,8 +1264,11 @@ public class RatesClosesLoader {
 
 		if (null == dtPast) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcDatePastQuotePrev = BuildCurve (dtPast, astrCashTenorPrev,
-			adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcDatePastQuotePrev = bBuildSingleStretch ?
+			BuildCurveSingleStretch (dtPast, astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev,
+				adblFutureQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency) : BuildCurve (dtPast,
+					astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev, adblFutureQuotePrev,
+						astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
 
 		if (null == dcDatePastQuotePrev) return null;
 
@@ -906,8 +1276,11 @@ public class RatesClosesLoader {
 
 		if (null == dt1MPast) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcDate1MPastQuotePrev= BuildCurve (dt1MPast,
-			astrCashTenorPrev, adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcDate1MPastQuotePrev = bBuildSingleStretch ?
+			BuildCurveSingleStretch (dt1MPast, astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev,
+				adblFutureQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency) : BuildCurve
+					(dt1MPast, astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev,
+						adblFutureQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
 
 		if (null == dcDate1MPastQuotePrev) return null;
 
@@ -915,28 +1288,43 @@ public class RatesClosesLoader {
 
 		if (null == dt3MPast) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcDate3MPastQuotePrev = BuildCurve (dt3MPast,
-			astrCashTenorPrev, adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcDate3MPastQuotePrev = bBuildSingleStretch ?
+			BuildCurveSingleStretch (dt3MPast, astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev,
+				adblFutureQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency) : BuildCurve
+					(dt3MPast, astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev,
+						adblFutureQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
 
 		if (null == dcDate3MPastQuotePrev) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcDatePrevQuotePrev = BuildCurve (dtPrev, astrCashTenorPrev,
-			adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcDatePrevQuotePrev = bBuildSingleStretch ?
+			BuildCurveSingleStretch (dtPrev, astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev,
+				adblFutureQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency) : BuildCurve (dtPrev,
+					astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev, adblFutureQuotePrev,
+						astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
 
 		if (null == dcDatePrevQuotePrev) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcDateCurrQuotePrev = BuildCurve (dtCurr, astrCashTenorPrev,
-			adblCashQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcDateCurrQuotePrev = bBuildSingleStretch ?
+			BuildCurveSingleStretch (dtCurr, astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev,
+				adblFutureQuotePrev, astrSwapTenorPrev, adblSwapQuotePrev, strCurrency) : BuildCurve (dtCurr,
+					astrCashTenorPrev, adblCashQuotePrev, astrFutureTenorPrev, adblFutureQuotePrev,
+						astrSwapTenorPrev, adblSwapQuotePrev, strCurrency);
 
 		if (null == dcDateCurrQuotePrev) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteCurr = BuildCurve (dtPrev, astrCashTenorCurr,
-			adblCashQuoteCurr, astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcDatePrevQuoteCurr = bBuildSingleStretch ?
+			BuildCurveSingleStretch (dtPrev, astrCashTenorCurr, adblCashQuoteCurr, astrFutureTenorCurr,
+				adblFutureQuoteCurr, astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency) : BuildCurve (dtPrev,
+					astrCashTenorCurr, adblCashQuoteCurr, astrFutureTenorCurr, adblFutureQuoteCurr,
+						astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency);
 
 		if (null == dcDatePrevQuoteCurr) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcDateCurrQuoteCurr = BuildCurve (dtCurr, astrCashTenorCurr,
-			adblCashQuoteCurr, astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcDateCurrQuoteCurr = bBuildSingleStretch ?
+			BuildCurveSingleStretch (dtCurr, astrCashTenorCurr, adblCashQuoteCurr, astrFutureTenorCurr,
+				adblFutureQuoteCurr, astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency) : BuildCurve (dtCurr,
+					astrCashTenorCurr, adblCashQuoteCurr, astrFutureTenorCurr, adblFutureQuoteCurr,
+						astrSwapTenorCurr, adblSwapQuoteCurr, strCurrency);
 
 		if (null == dcDateCurrQuoteCurr) return null;
 
@@ -973,6 +1361,7 @@ public class RatesClosesLoader {
 
 	public static final boolean ExecUnitSequence()
 	{
+		boolean bSingleStretch = true;
 		java.lang.String[] astrTenor = new java.lang.String[] {"1M", "1Y", "5Y", "10Y"};
 		java.lang.String[][] aastrCOBRecord = new java.lang.String[][] {
 			new java.lang.String[] {"3/28/2013", "0.21", "0.52", "1.17", "1.68"},
@@ -981,7 +1370,7 @@ public class RatesClosesLoader {
 
 		for (int i = 1; i < aastrCOBRecord.length; ++i) {
 			java.util.List<java.lang.String> lsstrDump = ProcessRecord (astrTenor, aastrCOBRecord[i - 1],
-				aastrCOBRecord[i], "USD", false);
+				aastrCOBRecord[i], "USD", bSingleStretch, false);
 
 			if (null == lsstrDump || 0 == lsstrDump.size()) return false;
 
@@ -993,7 +1382,8 @@ public class RatesClosesLoader {
 	}
 
 	public static final void GenerateDiscountCurveMetrics (
-		final java.lang.String strCurrency)
+		final java.lang.String strCurrency,
+		final boolean bSingleStretch)
 	{
 		boolean bIsHeader = true;
 		java.lang.String strCOBQuote = "";
@@ -1006,7 +1396,7 @@ public class RatesClosesLoader {
 				strCurrency + "_Clean_Input.txt"));
 
 			_writeCOB = new java.io.BufferedWriter (new java.io.FileWriter
-				("C:\\IFA\\G10Rates\\FinancialBoundary\\" + strCurrency + "_PnL.csv"));
+				("C:\\IFA\\G10Rates\\FinancialBoundary\\" + strCurrency + "_Single_Stretch_PnL.csv"));
 
 			while (null != (strCOBQuote = brSwapCOB.readLine())) {
 				java.lang.String[] astrCOBRecord = strCOBQuote.split (",");
@@ -1072,7 +1462,7 @@ public class RatesClosesLoader {
 
 					_writeCOB.flush();
 				} else
-					ProcessRecord (astrTenor, astrCOBRecordPrev, astrCOBRecord, strCurrency, true);
+					ProcessRecord (astrTenor, astrCOBRecordPrev, astrCOBRecord, strCurrency, bSingleStretch, true);
 
 				astrCOBRecordPrev = astrCOBRecord;
 			}
@@ -1221,8 +1611,9 @@ public class RatesClosesLoader {
 						org.drip.param.valuation.ValuationParams valParams = new
 							org.drip.param.valuation.ValuationParams (dtCOB, dtCOB, "USD");
 
-						org.drip.analytics.rates.DiscountCurve dc = BuildCurve (dtCOB, dcci.cashTenor(),
-							dcci.cashQuote(), dcci.swapTenor(), dcci.swapQuote(), "USD");
+						org.drip.analytics.rates.DiscountCurve dc = BuildCurveSingleStretch (dtCOB,
+							dcci.cashTenor(), dcci.cashQuote(), dcci.futureTenor(), dcci.futureQuote(),
+								dcci.swapTenor(), dcci.swapQuote(), "USD");
 
 						System.out.println (dtCOB + " => " + dc);
 
@@ -1285,7 +1676,9 @@ public class RatesClosesLoader {
 
 		ProcessCDXQuote (mapDatedCDXClose); */
 
-		GenerateDiscountCurveMetrics ("USD");
+		boolean bSingleStretch = true;
+
+		GenerateDiscountCurveMetrics ("CAD", bSingleStretch);
 
 		// ExecUnitSequence();
 
