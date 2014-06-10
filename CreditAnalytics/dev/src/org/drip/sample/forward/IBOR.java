@@ -45,7 +45,7 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * EURIBOR illustrates the Construction and Usage of the EURIBOR Forward Curve.
+ * IBOR illustrates the Construction and Usage of the IBOR Forward Curve.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -216,7 +216,7 @@ public class IBOR {
 		return aFFC;
 	}
 
-	public static final ForwardCurve CustomEURIBORBuilderSample (
+	public static final ForwardCurve CustomIBORBuilderSample (
 		final DiscountCurve dc,
 		final ForwardCurve fcReference,
 		final FloatingRateIndex fri,
@@ -506,7 +506,8 @@ public class IBOR {
 	private static final void ForwardJack (
 		final JulianDate dt,
 		final ForwardCurve fc,
-		final String strStartDateTenor)
+		final String strStartDateTenor,
+		final String strManifestMeasure)
 	{
 		JulianDate dtJack = dt.addTenor (strStartDateTenor);
 
@@ -514,7 +515,7 @@ public class IBOR {
 			dtJack + " | " +
 			strStartDateTenor + ": " +
 			fc.jackDForwardDManifestMeasure (
-				"DerivedParBasisSpread",
+				strManifestMeasure,
 				dtJack).displayString()
 			);
 	}
@@ -522,7 +523,8 @@ public class IBOR {
 	public static final void ForwardJack (
 		final JulianDate dt,
 		final String strHeaderComment,
-		final ForwardCurve fc)
+		final ForwardCurve fc,
+		final String strManifestMeasure)
 	{
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -530,14 +532,14 @@ public class IBOR {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		ForwardJack (dt, fc, "1Y");
+		ForwardJack (dt, fc, "1Y", strManifestMeasure);
 
-		ForwardJack (dt, fc, "2Y");
+		ForwardJack (dt, fc, "2Y", strManifestMeasure);
 
-		ForwardJack (dt, fc, "3Y");
+		ForwardJack (dt, fc, "3Y", strManifestMeasure);
 
-		ForwardJack (dt, fc, "5Y");
+		ForwardJack (dt, fc, "5Y", strManifestMeasure);
 
-		ForwardJack (dt, fc, "7Y");
+		ForwardJack (dt, fc, "7Y", strManifestMeasure);
 	}
 }

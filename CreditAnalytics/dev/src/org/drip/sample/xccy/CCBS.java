@@ -1,5 +1,5 @@
 
-package org.drip.sample.fx;
+package org.drip.sample.xccy;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
@@ -8,7 +8,7 @@ import org.drip.param.creator.*;
 import org.drip.param.definition.BasketMarketParams;
 import org.drip.param.definition.ComponentMarketParams;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.CrossCurrencySwapPair;
+import org.drip.product.fx.CrossCurrencyComponentPair;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.service.api.CreditAnalytics;
@@ -155,7 +155,7 @@ public class CCBS {
 
 		System.out.println (ffcDerivedJPY.value (valParams, null, cmpJPY, null));
 
-		CrossCurrencySwapPair ccbsUSDJPY = new CrossCurrencySwapPair (
+		CrossCurrencyComponentPair ccbsUSDJPY = new CrossCurrencyComponentPair (
 			"USDJPY_CCBS",
 			ffcReferenceUSD,
 			ffcDerivedJPY);

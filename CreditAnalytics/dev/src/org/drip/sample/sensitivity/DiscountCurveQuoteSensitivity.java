@@ -112,16 +112,22 @@ public class DiscountCurveQuoteSensitivity {
 	private static final void TenorJack (
 		final JulianDate dtStart,
 		final String strTenor,
+		final String strCurrency,
+		final String strManifestMeasure,
 		final DiscountCurve dc)
 	{
 		RatesComponent irsBespoke = RatesStreamBuilder.CreateIRS (
-			dtStart, dtStart.addTenorAndAdjust (strTenor, "USD"),
+			dtStart, dtStart.addTenorAndAdjust (strTenor, strCurrency),
 			0.,
-			"USD",
-			"USD-LIBOR-6M",
-			"USD");
+			strCurrency,
+			strCurrency + "-LIBOR-6M",
+			strCurrency
+		);
 
-		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (irsBespoke.maturity(), "Rate");
+		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (
+			irsBespoke.maturity(),
+			strManifestMeasure
+		);
 
 		System.out.println (strTenor + " => " + wjDFQuoteBespokeMat.displayString());
 	}
@@ -129,11 +135,12 @@ public class DiscountCurveQuoteSensitivity {
 	private static final void Forward6MRateJack (
 		final JulianDate dtStart,
 		final String strStartTenor,
+		final String strManifestMeasure,
 		final DiscountCurve dc)
 	{
 		JulianDate dtBegin = dtStart.addTenorAndAdjust (strStartTenor, "USD");
 
-		WengertJacobian wjForwardRate = dc.jackDForwardDManifestMeasure (dtBegin, "6M", "Rate", 0.5);
+		WengertJacobian wjForwardRate = dc.jackDForwardDManifestMeasure (dtBegin, "6M", strManifestMeasure, 0.5);
 
 		System.out.println ("[" + dtBegin + " | 6M] => " + wjForwardRate.displayString());
 	}
@@ -465,17 +472,17 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		TenorJack (dtToday, "30Y", dc);
+		TenorJack (dtToday, "30Y", "USD", "Rate", dc);
 
-		TenorJack (dtToday, "32Y", dc);
+		TenorJack (dtToday, "32Y", "USD", "Rate", dc);
 
-		TenorJack (dtToday, "34Y", dc);
+		TenorJack (dtToday, "34Y", "USD", "Rate", dc);
 
-		TenorJack (dtToday, "36Y", dc);
+		TenorJack (dtToday, "36Y", "USD", "Rate", dc);
 
-		TenorJack (dtToday, "38Y", dc);
+		TenorJack (dtToday, "38Y", "USD", "Rate", dc);
 
-		TenorJack (dtToday, "40Y", dc);
+		TenorJack (dtToday, "40Y", "USD", "Rate", dc);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -483,17 +490,17 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		Forward6MRateJack (dtToday, "1D", dc);
+		Forward6MRateJack (dtToday, "1D", "Rate", dc);
 
-		Forward6MRateJack (dtToday, "3M", dc);
+		Forward6MRateJack (dtToday, "3M", "Rate", dc);
 
-		Forward6MRateJack (dtToday, "6M", dc);
+		Forward6MRateJack (dtToday, "6M", "Rate", dc);
 
-		Forward6MRateJack (dtToday, "1Y", dc);
+		Forward6MRateJack (dtToday, "1Y", "Rate", dc);
 
-		Forward6MRateJack (dtToday, "2Y", dc);
+		Forward6MRateJack (dtToday, "2Y", "Rate", dc);
 
-		Forward6MRateJack (dtToday, "5Y", dc);
+		Forward6MRateJack (dtToday, "5Y", "Rate", dc);
 	}
 
 	public static final void main (

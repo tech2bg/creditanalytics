@@ -47,6 +47,34 @@ public class OvernightFRIBuilder {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.FloatingRateIndex>();
 
 	static {
+		org.drip.product.params.FloatingRateIndex friCAD = org.drip.product.params.FloatingRateIndex.Create
+			("CAD-OIS-ON");
+
+		_mapOvernightFRI.put ("CAD-OIS-ON", friCAD);
+
+		_mapJurisdictionFRI.put ("CAD", friCAD);
+
+		org.drip.product.params.FloatingRateIndex friCHF = org.drip.product.params.FloatingRateIndex.Create
+			("CHF-OIS-ON");
+
+		_mapOvernightFRI.put ("CHF-OIS-ON", friCHF);
+
+		_mapJurisdictionFRI.put ("CHF", friCHF);
+
+		org.drip.product.params.FloatingRateIndex friCZK = org.drip.product.params.FloatingRateIndex.Create
+			("CZK-OIS-ON");
+
+		_mapOvernightFRI.put ("CZK-OIS-ON", friCZK);
+
+		_mapJurisdictionFRI.put ("CZK", friCZK);
+
+		org.drip.product.params.FloatingRateIndex friDKK = org.drip.product.params.FloatingRateIndex.Create
+			("DKK-OIS-ON");
+
+		_mapOvernightFRI.put ("DKK-OIS-ON", friDKK);
+
+		_mapJurisdictionFRI.put ("DKK", friDKK);
+
 		org.drip.product.params.FloatingRateIndex friEUR = org.drip.product.params.FloatingRateIndex.Create
 			("EUR-EONIA-ON");
 
@@ -67,6 +95,27 @@ public class OvernightFRIBuilder {
 		_mapOvernightFRI.put ("JPY-OIS-ON", friJPY);
 
 		_mapJurisdictionFRI.put ("JPY", friJPY);
+
+		org.drip.product.params.FloatingRateIndex friNOK = org.drip.product.params.FloatingRateIndex.Create
+			("NOK-OIS-ON");
+
+		_mapOvernightFRI.put ("NOK-OIS-ON", friNOK);
+
+		_mapJurisdictionFRI.put ("NOK", friNOK);
+
+		org.drip.product.params.FloatingRateIndex friPLN = org.drip.product.params.FloatingRateIndex.Create
+			("PLN-OIS-ON");
+
+		_mapOvernightFRI.put ("PLN-OIS-ON", friPLN);
+
+		_mapJurisdictionFRI.put ("PLN", friPLN);
+
+		org.drip.product.params.FloatingRateIndex friSEK = org.drip.product.params.FloatingRateIndex.Create
+			("SEK-OIS-ON");
+
+		_mapOvernightFRI.put ("SEK-OIS-ON", friSEK);
+
+		_mapJurisdictionFRI.put ("SEK", friSEK);
 
 		org.drip.product.params.FloatingRateIndex friUSD = org.drip.product.params.FloatingRateIndex.Create
 			("USD-OIS-ON");

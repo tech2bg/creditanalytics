@@ -38,22 +38,31 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * This Sample illustrates the Construction and Usage of the EURIBOR 6M Forward Curve Using Cubic KLK
- * 	Hyperbolic Tension B-Spline.
+ * This Sample illustrates the Construction and Usage of the IBOR 12M Forward Curve Using Vanilla Cubic
+ * 	KLK Hyperbolic Tension B-Splines.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EURIBOR6MCubicKLKHyperbolic {
-	public static final ForwardCurve Make6MForward (
-		final JulianDate dtValue,
-		final String strCurrency,
-		final String strTenor)
+public class IBOR12MCubicKLKHyperbolic {
+	public static final void main (
+		final String[] astrArgs)
 		throws Exception
 	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
+		CreditAnalytics.Init ("");
+
+		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
+
+		String strTenor = "12M";
+		String strCurrency = "EUR";
+
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		DiscountCurve dcEONIA = EONIA.MakeDC (
+		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
 			strCurrency,
 			false);
@@ -70,124 +79,108 @@ public class EURIBOR6MCubicKLKHyperbolic {
 		 */
 
 		double[] adblDepositQuote = new double[] {
-			0.003565,	// 1D
-			0.003858,	// 1W
-			0.003840,	// 2W
-			0.003922,	// 3W
-			0.003869,	// 1M
-			0.003698,	// 2M
-			0.003527,	// 3M
-			0.003342,	// 4M
-			0.003225	// 5M
+			0.006537,
+			0.006187,
+			0.005772,
+			0.005563,
+			0.005400
 		};
 
 		String[] astrDepositTenor = new String[] {
-			"1D",
-			"1W",
-			"2W",
-			"3W",
-			"1M",
-			"2M",
-			"3M",
-			"4M",
-			"5M"
-		};
-
-		/*
-		 * Construct the Array of FRAs and their Quotes from the given set of parameters
-		 */
-
-		double[] adblFRAQuote = new double[] {
-			0.003120,	//  0D
-			0.002930,	//  1M
-			0.002720,	//  2M
-			0.002600,	//  3M
-			0.002560,	//  4M
-			0.002520,	//  5M
-			0.002480,	//  6M
-			0.002540,	//  7M
-			0.002610,	//  8M
-			0.002670,	//  9M
-			0.002790,	// 10M
-			0.002910,	// 11M
-			0.003030,	// 12M
-			0.003180,	// 13M
-			0.003350,	// 14M
-			0.003520,	// 15M
-			0.003710,	// 16M
-			0.003890,	// 17M
-			0.004090	// 18M
-		};
-
-		String[] astrFRATenor = new String[] {
-			 "0D",
 			 "1M",
-			 "2M",
 			 "3M",
-			 "4M",
-			 "5M",
 			 "6M",
-			 "7M",
-			 "8M",
 			 "9M",
-			"10M",
-			"11M",
-			"12M",
-			"13M",
-			"14M",
-			"15M",
-			"16M",
-			"17M",
-			"18M"
+			"12M"
 		};
 
 		/*
 		 * Construct the Array of Fix-Float Component and their Quotes from the given set of parameters
 		 */
 
-		double[] adblFixFloatQuote = new double[] {
-			0.004240,	//  3Y
-			0.005760,	//  4Y			
-			0.007620,	//  5Y
-			0.009540,	//  6Y
-			0.011350,	//  7Y
-			0.013030,	//  8Y
-			0.014520,	//  9Y
-			0.015840,	// 10Y
-			0.018090,	// 12Y
-			0.020370,	// 15Y
-			0.021870,	// 20Y
-			0.022340,	// 25Y
-			0.022560,	// 30Y
-			0.022950,	// 35Y
-			0.023480,	// 40Y
-			0.024210,	// 50Y
-			0.024630	// 60Y
+		double[] adblFRAQuote = new double[] {
+			0.004974,
+			0.004783,
+			0.004822,
+			0.005070,
+			0.005481,
+			0.006025
 		};
 
-		String[] astrFixFloatTenor = new String[] {
-			 "3Y",
-			 "4Y",
-			 "5Y",
-			 "6Y",
-			 "7Y",
-			 "8Y",
-			 "9Y",
-			"10Y",
-			"12Y",
-			"15Y",
-			"20Y",
-			"25Y",
-			"30Y",
+		String[] astrFRATenor = new String[] {
+			 "3M",
+			 "6M",
+			 "9M",
+			"12M",
+			"15M",
+			"18M",
+		};
+
+		/*
+		 * Construct the Array of Float-Float Component and their Quotes from the given set of parameters
+		 */
+
+		double[] adblFloatFloatQuote = new double[] {
+			-0.002070,	//  3Y
+			-0.001640,	//  4Y
+			-0.001510,	//  5Y
+			-0.001390,	//  6Y
+			-0.001300,	//  7Y
+			-0.001230,	//  8Y
+			-0.001180,	//  9Y
+			-0.001130,	// 10Y
+			-0.001090,	// 11Y
+			-0.001060,	// 12Y
+			-0.000930,	// 15Y
+			-0.000800,	// 20Y
+			-0.000720,	// 25Y
+			-0.000660	// 30Y
+		};
+
+		String[] astrFloatFloatTenor = new String[] {
+			  "3Y",
+			  "4Y",
+			  "5Y",
+			  "6Y",
+			  "7Y",
+			  "8Y",
+			  "9Y",
+			 "10Y",
+			 "11Y",
+			 "12Y",
+			 "15Y",
+			 "20Y",
+			 "25Y",
+			 "30Y"
+		};
+
+		/*
+		 * Construct the Array of Terminal Synthetic Float-Float Components and their Quotes from the given set of parameters
+		 */
+
+		String[] astrSyntheticFloatFloatTenor = new String[] {
 			"35Y",
 			"40Y",
 			"50Y",
 			"60Y"
 		};
 
-		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
+		double[] adblSyntheticFloatFloatQuote = new double[] {
+			-0.000660,
+			-0.000660,
+			-0.000660,
+			-0.000660
+		};
+
+		ForwardCurve fc6M = IBOR6MCubicPolyVanilla.Make6MForward (
+			dtValue,
+			strCurrency,
+			"6M",
+			true);
+
+		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
 			dcEONIA,
-			null,
+			fc6M,
 			fri,
 			scbcCubicKLKHyperbolic,
 			astrDepositTenor,
@@ -196,36 +189,23 @@ public class EURIBOR6MCubicKLKHyperbolic {
 			astrFRATenor,
 			adblFRAQuote,
 			"ParForwardRate",
-			astrFixFloatTenor,
-			adblFixFloatQuote,
-			"DerivedParBasisSpread",
 			null,
 			null,
-			"DerivedParBasisSpread",
-			null,
-			null,
-			"DerivedParBasisSpread",
-			"---- EURIBOR 6M CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
+			"ReferenceParBasisSpread",
+			astrFloatFloatTenor,
+			adblFloatFloatQuote,
+			"ReferenceParBasisSpread",
+			astrSyntheticFloatFloatTenor,
+			adblSyntheticFloatFloatQuote,
+			"ReferenceParBasisSpread",
+			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
 			true);
 
-		IBOR.ForwardJack (
-			dtValue,
-			"---- EURIBOR 6M CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
-			fc);
-
-		return fc;
-	}
-
-	public static final void main (
-		final String[] astrArgs)
-		throws Exception
-	{
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
-
-		CreditAnalytics.Init ("");
-
-		Make6MForward (JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11), "EUR", "6M");
+			IBOR.ForwardJack (
+				dtValue,
+				"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
+				fc,
+				"DerivedParBasisSpread"
+			);
 	}
 }

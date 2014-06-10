@@ -68,12 +68,12 @@ public class FRAMkt {
 
 		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
-		DiscountCurve dcEONIA = EONIA.MakeDC (
+		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtToday,
 			strCurrency,
 			false);
 
-		ForwardCurve fcEURIBOR6M = EURIBOR6MQuarticPolyVanilla.Make6MForward (
+		ForwardCurve fcEURIBOR6M = IBOR6MQuarticPolyVanilla.Make6MForward (
 			dtToday,
 			strCurrency,
 			strTenor);

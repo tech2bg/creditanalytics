@@ -29,16 +29,16 @@ package org.drip.product.fx;
  */
 
 /**
- * CrossCurrencyBasisSwap contains the implementation of the dual currency cross swaps. It is composed of two
- * 	different Rates Components - one each for each currency.
+ * CrossCurrencyComponentPair contains the implementation of the dual cross currency components. It is
+ *  componsed of two different Rates Components - one each for each currency.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CrossCurrencySwapPair extends org.drip.product.definition.BasketProduct {
+public class CrossCurrencyComponentPair extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
-	private org.drip.product.rates.FloatFloatComponent _ffcDerived = null;
-	private org.drip.product.rates.FloatFloatComponent _ffcReference = null;
+	private org.drip.product.definition.RatesComponent _rcDerived = null;
+	private org.drip.product.definition.RatesComponent _rcReference = null;
 
 	protected int measureAggregationType (
 		final java.lang.String strMeasureName)
@@ -47,46 +47,46 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 	}
 
 	/**
-	 * CrossCurrencyBasisSwap constructor
+	 * CrossCurrencyComponentPair constructor
 	 * 
 	 * @param strName The CrossCurrencyBasisSwap Instance Name
-	 * @param ffcReference The Reference Swap
-	 * @param ffcDerived The Derived Swap
+	 * @param rcReference The Reference Component
+	 * @param rcDerived The Derived Component
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public CrossCurrencySwapPair (
+	public CrossCurrencyComponentPair (
 		final java.lang.String strName,
-		final org.drip.product.rates.FloatFloatComponent ffcReference,
-		final org.drip.product.rates.FloatFloatComponent ffcDerived)
+		final org.drip.product.definition.RatesComponent rcReference,
+		final org.drip.product.definition.RatesComponent rcDerived)
 		throws java.lang.Exception
 	{
-		if (null == (_strName = strName) || _strName.isEmpty() || null == (_ffcDerived = ffcDerived) || null
-			== (_ffcReference = ffcReference))
-			throw new java.lang.Exception ("CrossCurrencyBasisSwap ctr: Invalid Inputs!");
+		if (null == (_strName = strName) || _strName.isEmpty() || null == (_rcDerived = rcDerived) || null ==
+			(_rcReference = rcReference))
+			throw new java.lang.Exception ("CrossCurrencyComponentPair ctr: Invalid Inputs!");
 	}
 
 	/**
-	 * Retrieve the Reference Swap
+	 * Retrieve the Reference Component
 	 * 
-	 * @return The Reference Swap
+	 * @return The Reference Component
 	 */
 
-	public org.drip.product.rates.FloatFloatComponent getReferenceSwap()
+	public org.drip.product.definition.RatesComponent referenceComponent()
 	{
-		return _ffcReference;
+		return _rcReference;
 	}
 
 	/**
-	 * Retrieve the Derived Swap
+	 * Retrieve the Derived Component
 	 * 
-	 * @return The Derived Swap
+	 * @return The Derived Component
 	 */
 
-	public org.drip.product.rates.FloatFloatComponent getDerivedSwap()
+	public org.drip.product.definition.RatesComponent derivedComponent()
 	{
-		return _ffcDerived;
+		return _rcDerived;
 	}
 
 	@Override public java.lang.String getName()
@@ -98,9 +98,9 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 	{
 		java.util.Set<java.lang.String> setstrCurrency = new java.util.TreeSet<java.lang.String>();
 
-		setstrCurrency.addAll (_ffcReference.cashflowCurrencySet());
+		setstrCurrency.addAll (_rcReference.cashflowCurrencySet());
 
-		setstrCurrency.addAll (_ffcDerived.cashflowCurrencySet());
+		setstrCurrency.addAll (_rcDerived.cashflowCurrencySet());
 
 		return setstrCurrency;
 	}
@@ -109,9 +109,9 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 	{
 		java.util.Set<java.lang.String> setstrCredit = new java.util.TreeSet<java.lang.String>();
 
-		setstrCredit.add (_ffcReference.creditCurveName());
+		setstrCredit.add (_rcReference.creditCurveName());
 
-		setstrCredit.add (_ffcDerived.creditCurveName());
+		setstrCredit.add (_rcDerived.creditCurveName());
 
 		return setstrCredit;
 	}
@@ -127,17 +127,29 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOutput = super.value
 			(valParams, pricerParams, bmp, quotingParams);
 
-		double dblDerivedParBasisSpread = mapOutput.get (_ffcDerived.componentName() +
-			"[DerivedParBasisSpread]");
+		if (null == mapOutput) return mapOutput;
 
-		double dblDerivedCleanDV01 = mapOutput.get (_ffcDerived.componentName() + "[DerivedCleanDV01]");
-
-		double dblReferencePV = mapOutput.get (_ffcReference.componentName() + "[PV]");
+		java.lang.String strRefCompName = _rcDerived.componentName();
 
 		double dblFX = 1.;
+		java.lang.String strDerivedCleanDV01 = strRefCompName + "[DerivedCleanDV01]";
+		java.lang.String strDerivedParBasisSpread = strRefCompName + "[DerivedParBasisSpread]";
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (_ffcDerived.couponCurrency()[0] +
-			"/" + _ffcReference.couponCurrency()[0]);
+		if (!mapOutput.containsKey (strDerivedCleanDV01) || !mapOutput.containsKey
+			(strDerivedParBasisSpread)) {
+			mapOutput.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
+
+			return mapOutput;
+		}
+
+		double dblDerivedCleanDV01 = mapOutput.get (strDerivedCleanDV01);
+
+		double dblDerivedParBasisSpread = mapOutput.get (strDerivedParBasisSpread);
+
+		double dblReferencePV = mapOutput.get (_rcReference.componentName() + "[PV]");
+
+		org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (_rcDerived.couponCurrency()[0] +
+			"/" + _rcReference.couponCurrency()[0]);
 
 		if (null != auFX) {
 			try {
@@ -159,7 +171,7 @@ public class CrossCurrencySwapPair extends org.drip.product.definition.BasketPro
 
 	@Override public org.drip.product.definition.FixedIncomeComponent[] getComponents()
 	{
-		return new org.drip.product.definition.FixedIncomeComponent[] {_ffcReference, _ffcDerived};
+		return new org.drip.product.definition.FixedIncomeComponent[] {_rcReference, _rcDerived};
 	}
 
 	@Override public byte[] serialize()

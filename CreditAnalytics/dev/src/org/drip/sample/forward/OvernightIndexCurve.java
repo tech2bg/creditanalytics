@@ -44,12 +44,12 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * EONIA illustrates the Construction and Usage of the EONIA Discount Curve.
+ * OvernightIndexCurve illustrates the Construction and Usage of the Overnight Index Discount Curve.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EONIA {
+public class OvernightIndexCurve {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters

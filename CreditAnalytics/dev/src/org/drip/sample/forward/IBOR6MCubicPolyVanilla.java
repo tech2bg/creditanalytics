@@ -6,7 +6,7 @@ import org.drip.analytics.rates.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.spline.basis.ExponentialTensionSetParams;
+import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
 
@@ -38,38 +38,30 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * This Sample illustrates the Construction and Usage of the EURIBOR 3M Forward Curve Using Cubic KLK
- * 	Hyperbolic Tension B-Spline.
+ * This Sample illustrates the Construction and Usage of the IBOR 6M Forward Curve Using Vanilla Cubic
+ * 	Polynomial.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EURIBOR3MCubicKLKHyperbolic {
-	public static final void main (
-		final String[] astrArgs)
+public class IBOR6MCubicPolyVanilla {
+	public static final ForwardCurve Make6MForward (
+		final JulianDate dtValue,
+		final String strCurrency,
+		final String strTenor,
+		final boolean bPrintMetric)
 		throws Exception
 	{
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
-
-		CreditAnalytics.Init ("");
-
-		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
-
-		String strTenor = "3M";
-		String strCurrency = "EUR";
-
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		DiscountCurve dcEONIA = EONIA.MakeDC (
+		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
 			strCurrency,
 			false);
 
-		SegmentCustomBuilderControl scbcKLKHyperbolic = new SegmentCustomBuilderControl (
-			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
-			new ExponentialTensionSetParams (1.),
+		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 			null);
@@ -79,17 +71,27 @@ public class EURIBOR3MCubicKLKHyperbolic {
 		 */
 
 		double[] adblDepositQuote = new double[] {
-			0.001865,
-			0.001969,
-			0.001951,
-			0.001874
+			0.003565,	// 1D
+			0.003858,	// 1W
+			0.003840,	// 2W
+			0.003922,	// 3W
+			0.003869,	// 1M
+			0.003698,	// 2M
+			0.003527,	// 3M
+			0.003342,	// 4M
+			0.003225	// 5M
 		};
 
 		String[] astrDepositTenor = new String[] {
+			"1D",
+			"1W",
 			"2W",
 			"3W",
 			"1M",
-			"2M"
+			"2M",
+			"3M",
+			"4M",
+			"5M"
 		};
 
 		/*
@@ -97,27 +99,47 @@ public class EURIBOR3MCubicKLKHyperbolic {
 		 */
 
 		double[] adblFRAQuote = new double[] {
-			0.001790,
-			0.001775,
-			0.001274,
-			0.001222,
-			0.001269,
-			0.001565,
-			0.001961,
-			0.002556,
-			0.003101
+			0.003120,	//  0D
+			0.002930,	//  1M
+			0.002720,	//  2M
+			0.002600,	//  3M
+			0.002560,	//  4M
+			0.002520,	//  5M
+			0.002480,	//  6M
+			0.002540,	//  7M
+			0.002610,	//  8M
+			0.002670,	//  9M
+			0.002790,	// 10M
+			0.002910,	// 11M
+			0.003030,	// 12M
+			0.003180,	// 13M
+			0.003350,	// 14M
+			0.003520,	// 15M
+			0.003710,	// 16M
+			0.003890,	// 17M
+			0.004090	// 18M
 		};
 
 		String[] astrFRATenor = new String[] {
 			 "0D",
 			 "1M",
+			 "2M",
 			 "3M",
+			 "4M",
+			 "5M",
 			 "6M",
+			 "7M",
+			 "8M",
 			 "9M",
+			"10M",
+			"11M",
 			"12M",
+			"13M",
+			"14M",
 			"15M",
-			"18M",
-			"21M"
+			"16M",
+			"17M",
+			"18M"
 		};
 
 		/*
@@ -125,19 +147,23 @@ public class EURIBOR3MCubicKLKHyperbolic {
 		 */
 
 		double[] adblFixFloatQuote = new double[] {
-			0.002850,	//  3Y
-			0.004370,	//  4Y
-			0.006230,	//  5Y
-			0.008170,	//  6Y
-			0.010000,	//  7Y
-			0.011710,	//  8Y
-			0.013240,	//  9Y
-			0.014590,	// 10Y
-			0.016920,	// 12Y
-			0.019330,	// 15Y
-			0.020990,	// 20Y
-			0.021560,	// 25Y
-			0.021860 	// 30Y
+			0.004240,	//  3Y
+			0.005760,	//  4Y			
+			0.007620,	//  5Y
+			0.009540,	//  6Y
+			0.011350,	//  7Y
+			0.013030,	//  8Y
+			0.014520,	//  9Y
+			0.015840,	// 10Y
+			0.018090,	// 12Y
+			0.020370,	// 15Y
+			0.021870,	// 20Y
+			0.022340,	// 25Y
+			0.022560,	// 30Y
+			0.022950,	// 35Y
+			0.023480,	// 40Y
+			0.024210,	// 50Y
+			0.024630	// 60Y
 		};
 
 		String[] astrFixFloatTenor = new String[] {
@@ -153,38 +179,18 @@ public class EURIBOR3MCubicKLKHyperbolic {
 			"15Y",
 			"20Y",
 			"25Y",
-			"30Y"
-		};
-
-		/*
-		 * Construct the Array of Terminal Synthetic Float-Float Components and their Quotes from the given set of parameters
-		 */
-
-		String[] astrSyntheticFloatFloatTenor = new String[] {
+			"30Y",
 			"35Y",
 			"40Y",
 			"50Y",
 			"60Y"
 		};
 
-		double[] adblSyntheticFloatFloatQuote = new double[] {
-			0.00065,
-			0.00060,
-			0.00054,
-			0.00050
-		};
-
-		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
-			dtValue,
-			strCurrency,
-			"6M",
-			true);
-
-		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
 			dcEONIA,
-			fc6M,
+			null,
 			fri,
-			scbcKLKHyperbolic,
+			scbcCubic,
 			astrDepositTenor,
 			adblDepositQuote,
 			"ForwardRate",
@@ -197,15 +203,38 @@ public class EURIBOR3MCubicKLKHyperbolic {
 			null,
 			null,
 			"DerivedParBasisSpread",
-			astrSyntheticFloatFloatTenor,
-			adblSyntheticFloatFloatQuote,
+			null,
+			null,
 			"DerivedParBasisSpread",
-			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
-			true);
+			"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
+			bPrintMetric);
 
-		IBOR.ForwardJack (
-			dtValue,
-			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
-			fc);
+		if (bPrintMetric)
+			IBOR.ForwardJack (
+				dtValue,
+				"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
+				fc,
+				"DerivedParBasisSpread"
+			);
+
+		return fc;
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
+		CreditAnalytics.Init ("");
+
+		Make6MForward (
+			JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11),
+			"EUR",
+			"6M",
+			true
+		);
 	}
 }

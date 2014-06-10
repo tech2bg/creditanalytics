@@ -1,5 +1,5 @@
 
-package org.drip.sample.fx;
+package org.drip.sample.xccy;
 
 import java.util.*;
 
@@ -10,12 +10,14 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.definition.*;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.fx.CrossCurrencySwapPair;
+import org.drip.product.creator.RatesStreamBuilder;
+import org.drip.product.definition.RatesComponent;
+import org.drip.product.fx.CrossCurrencyComponentPair;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
-import org.drip.sample.forward.IBOR;
 import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
@@ -48,12 +50,12 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * CCBSForwardCurve demonstrates the setup and construction of the Forward Curve from the CCBS Quotes.
+ * CCBSDiscountCurve demonstrates the setup and construction of the Forward Curve from the CCBS Quotes.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CCBSForwardCurve {
+public class CCBSDiscountCurve {
 
 	/*
 	 * Construct an array of float-float swaps from the corresponding reference (6M) and the derived legs.
@@ -61,7 +63,7 @@ public class CCBSForwardCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FloatFloatComponent[] MakexM6MBasisSwap (
+	private static final RatesComponent[] MakexM6MBasisSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrTenor,
@@ -105,7 +107,28 @@ public class CCBSForwardCurve {
 		return aFFC;
 	}
 
-	private static final CrossCurrencySwapPair[] MakeCCSP (
+	/*
+	 * Construct the Array of Swap Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final RatesComponent[] MakeIRS (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String[] astrTenor)
+		throws Exception
+	{
+		RatesComponent[] aCalibComp = new RatesComponent[astrTenor.length];
+
+		for (int i = 0; i < astrTenor.length; ++i)
+			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
+				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency), 0., strCurrency, strCurrency + "-LIBOR-3M", strCurrency);
+
+		return aCalibComp;
+	}
+
+	private static final CrossCurrencyComponentPair[] MakeCCSP (
 		final JulianDate dtValue,
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
@@ -113,52 +136,82 @@ public class CCBSForwardCurve {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		FloatFloatComponent[] aFFCReference = MakexM6MBasisSwap (
+		RatesComponent[] aFFCReference = MakexM6MBasisSwap (
 			dtValue,
 			strReferenceCurrency,
 			astrTenor,
 			3);
 
-		FloatFloatComponent[] aFFCDerived = MakexM6MBasisSwap (
+		RatesComponent[] aIRS = MakeIRS (
 			dtValue,
 			strDerivedCurrency,
-			astrTenor,
-			3);
+			astrTenor);
 
-		CrossCurrencySwapPair[] aCCSP = new CrossCurrencySwapPair[astrTenor.length];
+		CrossCurrencyComponentPair[] aCCSP = new CrossCurrencyComponentPair[astrTenor.length];
 
 		for (int i = 0; i < aCCSP.length; ++i)
-			aCCSP[i] = new CrossCurrencySwapPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aFFCDerived[i]);
+			aCCSP[i] = new CrossCurrencyComponentPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aIRS[i]);
 
 		return aCCSP;
 	}
 
-	public static final void MakeForwardCurve (
+	private static final void TenorJack (
+		final JulianDate dtStart,
+		final String strTenor,
+		final String strManifestMeasure,
+		final DiscountCurve dc)
+	{
+		String strCurrency = dc.currency();
+
+		RatesComponent irsBespoke = RatesStreamBuilder.CreateIRS (
+			dtStart, dtStart.addTenorAndAdjust (strTenor, strCurrency),
+			0.,
+			strCurrency,
+			strCurrency + "-LIBOR-6M",
+			strCurrency
+		);
+
+		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (
+			irsBespoke.maturity(),
+			strManifestMeasure
+		);
+
+		System.out.println ("\t" + strTenor + " => " + wjDFQuoteBespokeMat.displayString());
+	}
+
+	public static final void MakeDiscountCurve (
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
 		final JulianDate dtValue,
 		final DiscountCurve dcReference,
 		final ForwardCurve fc6MReference,
 		final ForwardCurve fc3MReference,
-		final DiscountCurve dcDerived,
-		final ForwardCurve fc6MDerived,
 		final double dblRefDerFX,
 		final SegmentCustomBuilderControl scbc,
 		final String[] astrTenor,
-		final double[] adblCrossCurrencyBasis)
+		final double[] adblCrossCurrencyBasis,
+		final double[] adblSwapRate)
 		throws Exception
 	{
-		List<CaseInsensitiveTreeMap<Double>> lsMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
+		List<CaseInsensitiveTreeMap<Double>> lsCCBSMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
+
+		List<CaseInsensitiveTreeMap<Double>> lsIRSMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
 
 		for (int i = 0; i < astrTenor.length; ++i) {
-			CaseInsensitiveTreeMap<Double> mapManifestQuote = new CaseInsensitiveTreeMap<Double>();
+			CaseInsensitiveTreeMap<Double> mapIRSManifestQuote = new CaseInsensitiveTreeMap<Double>();
 
-			mapManifestQuote.put ("DerivedParBasisSpread", adblCrossCurrencyBasis[i]);
+			mapIRSManifestQuote.put ("Rate", adblSwapRate[i]);
 
-			lsMapManifestQuote.add (mapManifestQuote);
+			lsIRSMapManifestQuote.add (mapIRSManifestQuote);
+
+			CaseInsensitiveTreeMap<Double> mapCCBSManifestQuote = new CaseInsensitiveTreeMap<Double>();
+
+			mapCCBSManifestQuote.put ("DerivedParBasisSpread", adblCrossCurrencyBasis[i]);
+
+			lsCCBSMapManifestQuote.add (mapCCBSManifestQuote);
 		}
 
-		CrossCurrencySwapPair[] aCCSP = MakeCCSP (
+		CrossCurrencyComponentPair[] aCCSP = MakeCCSP (
 			dtValue,
 			strReferenceCurrency,
 			strDerivedCurrency,
@@ -169,13 +222,9 @@ public class CCBSForwardCurve {
 
 		bmp.addDiscountCurve (strReferenceCurrency, dcReference);
 
-		bmp.addDiscountCurve (strDerivedCurrency, dcDerived);
-
 		bmp.addForwardCurve (fc3MReference.index().fullyQualifiedName(), fc3MReference);
 
 		bmp.addForwardCurve (fc6MReference.index().fullyQualifiedName(), fc6MReference);
-
-		bmp.addForwardCurve (fc6MDerived.index().fullyQualifiedName(), fc6MDerived);
 
 		bmp.setFXCurve (strDerivedCurrency + "/" + strReferenceCurrency, new FlatUnivariate (1. / dblRefDerFX));
 
@@ -190,52 +239,61 @@ public class CCBSForwardCurve {
 			null,
 			null);
 
-		StretchRepresentationSpec srsFloatFloat = StretchRepresentationSpec.FromCCBS (
-			"FLOATFLOAT",
-			ForwardCurve.LATENT_STATE_FORWARD,
-			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+		StretchRepresentationSpec srsIRS = StretchRepresentationSpec.DiscountFromCCBS (
+			"FIXFLOAT",
+			DiscountCurve.LATENT_STATE_DISCOUNT,
+			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aCCSP,
 			valParams,
 			bmp,
-			lsMapManifestQuote);
+			lsCCBSMapManifestQuote,
+			lsIRSMapManifestQuote
+		);
 
-		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
+		DiscountCurve dcDerived = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
-			new StretchRepresentationSpec[] {srsFloatFloat},
-			FloatingRateIndex.Create (strDerivedCurrency + "-LIBOR-3M"),
+			new StretchRepresentationSpec[] {srsIRS},
 			valParams,
 			null,
-			ComponentMarketParamsBuilder.CreateComponentMarketParams (dcDerived, fc6MDerived, null, null, null, null, null),
 			null,
-			dcDerived.forward (dtValue.getJulian(), dtValue.addTenor ("3M").getJulian()));
+			null,
+			1.
+		);
 
-		ComponentMarketParams cmpDerived = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcDerived, fc3MDerived, null, null, null, null, null);
-
-		cmpDerived.setForwardCurve (fc6MDerived);
-
-		bmp.addForwardCurve (fc3MDerived.index().fullyQualifiedName(), fc3MDerived);
+		bmp.addDiscountCurve (strDerivedCurrency, dcDerived);
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t     CCBS INSTRUMENTS QUOTE RECOVERY");
+		System.out.println ("\t     IRS INSTRUMENTS QUOTE RECOVERY FROM CCBS INPUTS");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCCSP.length; ++i) {
-			FloatFloatComponent ffc = aCCSP[i].getDerivedSwap();
+			IRSComponent irs = (IRSComponent) aCCSP[i].derivedComponent();
 
 			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
 
-			System.out.println ("\t[" + ffc.effective() + " - " + ffc.maturity() + "] = " +
-				FormatUtil.FormatDouble (mapOP.get ("DerivedParCurrencyBasis"), 1, 3, 1.) +
-					" | " + FormatUtil.FormatDouble (adblCrossCurrencyBasis[i], 1, 3, 10000.) + " | " +
-						FormatUtil.FormatDouble (fc3MDerived.forward (ffc.maturity()), 1, 4, 100.) + "%");
+			double dblCalibSwapRate = mapOP.get (irs.componentName() + "[CalibSwapRate]");
+
+			System.out.println ("\t[" + irs.effective() + " - " + irs.maturity() + "] = " +
+				FormatUtil.FormatDouble (dblCalibSwapRate, 1, 3, 100.) +
+					" | " + FormatUtil.FormatDouble (adblSwapRate[i], 1, 3, 100.) + " | " +
+						FormatUtil.FormatDouble (adblSwapRate[i] - dblCalibSwapRate, 2, 0, 10000.) + " | " +
+							FormatUtil.FormatDouble (dcDerived.df (irs.maturity()), 1, 4, 1.));
 		}
 
-		IBOR.ForwardJack (
-			dtValue,
-			"---- CCBS QUOTE FORWARD CURVE SENSITIVITY ---",
-			fc3MDerived);
+		System.out.println ("\t----------------------------------------------------------------------");
+
+		System.out.println ("\t     IRS INSTRUMENTS QUOTE RECOVERY FROM CCBS INPUTS TENOR JACOBIAN");
+
+		System.out.println ("\t----------------------------------------------------------------------");
+
+		for (int i = 0; i < aCCSP.length; ++i)
+			TenorJack (
+				dtValue,
+				astrTenor[i],
+				"Rate",
+				dcDerived
+			);
 	}
 }

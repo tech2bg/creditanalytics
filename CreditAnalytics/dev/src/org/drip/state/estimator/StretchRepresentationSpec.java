@@ -103,7 +103,8 @@ public class StretchRepresentationSpec {
 	}
 
 	/**
-	 * Construct an instance of StretchRepresentationSpec from the specified Inputs
+	 * Construct an instance of StretchRepresentationSpec for the Construction of the Forward Curve from the
+	 * 	specified Inputs
 	 * 
 	 * @param strName Stretch Name
 	 * @param strLatentStateID Latest State ID
@@ -112,19 +113,21 @@ public class StretchRepresentationSpec {
 	 * @param valParams The Valuation Parameters
 	 * @param bmp The Basket Market Parameters to imply the Market Quote Measure
 	 * @param lsMapManifestQuoteIn Map of Calibration Measure/Quote Combination
+	 * @param bOnDerivedSwap TRUE => Indicates that the basis is specified on the Derived Float-Float Swap
 	 * 
 	 * return Instance of StretchRepresentationSpec
 	 */
 
-	public static final StretchRepresentationSpec FromCCBS (
+	public static final StretchRepresentationSpec ForwardFromCCBS (
 		final java.lang.String strName,
 		final java.lang.String strLatentStateID,
 		final java.lang.String strLatentStateQuantificationMetric,
-		final org.drip.product.fx.CrossCurrencySwapPair[] aCCSP,
+		final org.drip.product.fx.CrossCurrencyComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.definition.BasketMarketParams bmp,
 		final java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			lsMapManifestQuoteIn)
+			lsMapManifestQuoteIn,
+		final boolean bOnDerivedSwap)
 	{
 		if (null == aCCSP || null == bmp) return null;
 
@@ -136,45 +139,52 @@ public class StretchRepresentationSpec {
 			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumCCSP];
 
 		java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			lsMapManifestQuote = null != lsMapManifestQuoteIn ? lsMapManifestQuoteIn : new
+			lsMapManifestQuote = null != lsMapManifestQuoteIn && bOnDerivedSwap ? lsMapManifestQuoteIn : new
 				java.util.ArrayList<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 		for (int i = 0; i < iNumCCSP; ++i) {
 			if (null == aCCSP[i]) return null;
 
-			aCalibComp[i] = aCCSP[i].getDerivedSwap();
+			double dblFX = java.lang.Double.NaN;
+
+			aCalibComp[i] = aCCSP[i].derivedComponent();
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
 				(valParams, null, bmp, null);
 
-			java.lang.String strCompCalibMeasure = aCCSP[i].getReferenceSwap().componentName() + "[PV]";
+			java.lang.String strCompCalibPVMeasure = aCCSP[i].referenceComponent().componentName() + "[PV]";
 
-			if (null == mapOP || !mapOP.containsKey (strCompCalibMeasure)) return null;
+			java.lang.String strCompCalibDerivedCleanDV01Measure =
+				aCCSP[i].referenceComponent().componentName() + "[DerivedCleanDV01]";
 
-			java.lang.String strFXCode = aCCSP[i].getDerivedSwap().couponCurrency()[0] + "/" +
-				aCCSP[i].getReferenceSwap().couponCurrency()[0]; 
+			if (null == mapOP || !mapOP.containsKey (strCompCalibPVMeasure) || !mapOP.containsKey
+				(strCompCalibDerivedCleanDV01Measure))
+				return null;
+
+			java.lang.String strFXCode = aCCSP[i].derivedComponent().couponCurrency()[0] + "/" +
+				aCCSP[i].referenceComponent().couponCurrency()[0]; 
 
 			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (strFXCode);
 
 			if (null == auFX) return null;
 
-			double dblFX = java.lang.Double.NaN;
-
 			try {
-				dblFX = auFX.evaluate (aCCSP[i].getDerivedSwap().effective().getJulian());
+				dblFX = auFX.evaluate (aCCSP[i].derivedComponent().effective().getJulian());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
 				return null;
 			}
 
-			double dblReferencePVInDerUnits = mapOP.get (strCompCalibMeasure) * dblFX;
-
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = null ==
 				lsMapManifestQuote || iNumCCSP != lsMapManifestQuote.size() ? null : lsMapManifestQuote.get
 					(i);
 
-			if (null == mapManifestQuote) {
+			double dblReferencePVInDerUnits = (mapOP.get (strCompCalibPVMeasure) + (bOnDerivedSwap || null ==
+				mapManifestQuote ? 0. : mapOP.get (strCompCalibDerivedCleanDV01Measure) *
+					mapManifestQuote.get ("DerivedParBasisSpread"))) * dblFX;
+
+			if (null == mapManifestQuote || !bOnDerivedSwap) {
 				(mapManifestQuote = new
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>()).put ("PV",
 						dblReferencePVInDerUnits);
@@ -187,6 +197,106 @@ public class StretchRepresentationSpec {
 		try {
 			return new StretchRepresentationSpec (strName, strLatentStateID,
 				strLatentStateQuantificationMetric, aCalibComp, lsMapManifestQuote, null);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct an instance of StretchRepresentationSpec for the Construction of the Discount Curve from the
+	 * 	specified Inputs
+	 * 
+	 * @param strName Stretch Name
+	 * @param strLatentStateID Latest State ID
+	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
+	 * @param aCCSP Array of Calibration Cross Currency Swap Pair Instances
+	 * @param valParams The Valuation Parameters
+	 * @param bmp The Basket Market Parameters to imply the Market Quote Measure
+	 * @param lsCCBSMapManifestQuote Map of the CCBS Calibration Measure/Quote Combination
+	 * @param lsIRSMapManifestQuote Map of the Fixed-Float Calibration Measure/Quote Combination
+	 * 
+	 * return Instance of StretchRepresentationSpec
+	 */
+
+	public static final StretchRepresentationSpec DiscountFromCCBS (
+		final java.lang.String strName,
+		final java.lang.String strLatentStateID,
+		final java.lang.String strLatentStateQuantificationMetric,
+		final org.drip.product.fx.CrossCurrencyComponentPair[] aCCSP,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.definition.BasketMarketParams bmp,
+		final java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			lsCCBSMapManifestQuote,
+		final java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			lsIRSMapManifestQuote)
+	{
+		if (null == aCCSP || null == bmp || null == lsCCBSMapManifestQuote || null == lsIRSMapManifestQuote)
+			return null;
+
+		int iNumCCSP = aCCSP.length;
+
+		if (0 == iNumCCSP || iNumCCSP != lsCCBSMapManifestQuote.size() || iNumCCSP !=
+			lsIRSMapManifestQuote.size())
+			return null;
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aDerivedComp = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumCCSP];
+
+		for (int i = 0; i < iNumCCSP; ++i) {
+			if (null == aCCSP[i]) return null;
+
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCBSManifestQuote =
+				lsCCBSMapManifestQuote.get (i);
+
+			if (null == mapCCBSManifestQuote) return null;
+
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRSManifestQuote =
+				lsIRSMapManifestQuote.get (i);
+
+			if (null == mapIRSManifestQuote) return null;
+
+			aDerivedComp[i] = aCCSP[i].derivedComponent();
+
+			org.drip.product.definition.CalibratableFixedIncomeComponent refComp =
+				aCCSP[i].referenceComponent();
+
+			java.lang.String strRefCompName = refComp.componentName();
+
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
+				(valParams, null, bmp, null);
+
+			java.lang.String strCompCalibPVMeasure = strRefCompName + "[Upfront]";
+			java.lang.String strCompCalibDerivedCleanDV01Measure = strRefCompName + "[DerivedCleanDV01]";
+
+			if (null == mapOP || !mapOP.containsKey (strCompCalibPVMeasure) || !mapOP.containsKey
+				(strCompCalibDerivedCleanDV01Measure))
+				return null;
+
+			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve
+				(aDerivedComp[i].couponCurrency()[0] + "/" + refComp.couponCurrency()[0]);
+
+			if (null == auFX) return null;
+
+			double dblFX = java.lang.Double.NaN;
+
+			try {
+				dblFX = auFX.evaluate (aDerivedComp[i].effective().getJulian());
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			mapIRSManifestQuote.put ("Upfront", (mapOP.get (strCompCalibPVMeasure) + mapOP.get
+				(strCompCalibDerivedCleanDV01Measure) * mapCCBSManifestQuote.get ("DerivedParBasisSpread")) *
+					dblFX);
+		}
+
+		try {
+			return new StretchRepresentationSpec (strName, strLatentStateID,
+				strLatentStateQuantificationMetric, aDerivedComp, lsIRSMapManifestQuote, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

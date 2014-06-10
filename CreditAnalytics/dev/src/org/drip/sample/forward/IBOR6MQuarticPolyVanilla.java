@@ -38,13 +38,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * This Sample illustrates the Construction and Usage of the EURIBOR 6M Forward Curve Using Vanilla Quartic
+ * This Sample illustrates the Construction and Usage of the IBOR 6M Forward Curve Using Vanilla Quartic
  * 	Polynomial Spline.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EURIBOR6MQuarticPolyVanilla {
+public class IBOR6MQuarticPolyVanilla {
 	public static final ForwardCurve Make6MForward (
 		final JulianDate dtValue,
 		final String strCurrency,
@@ -53,7 +53,7 @@ public class EURIBOR6MQuarticPolyVanilla {
 	{
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		DiscountCurve dcEONIA = EONIA.MakeDC (
+		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
 			strCurrency,
 			false);
@@ -185,7 +185,7 @@ public class EURIBOR6MQuarticPolyVanilla {
 			"60Y"
 		};
 
-		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
 			dcEONIA,
 			null,
 			fri,
@@ -211,7 +211,9 @@ public class EURIBOR6MQuarticPolyVanilla {
 		IBOR.ForwardJack (
 			dtValue,
 			"---- EURIBOR 6M VANILLA QUARTIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
-			fc);
+			fc,
+			"DerivedParBasisSpread"
+		);
 
 		return fc;
 	}

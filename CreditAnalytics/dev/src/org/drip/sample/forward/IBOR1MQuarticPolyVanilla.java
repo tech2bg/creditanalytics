@@ -38,13 +38,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * This Sample illustrates the Construction and Usage of the EURIBOR 1M Forward Curve Using Vanilla Quartic
+ * This Sample illustrates the Construction and Usage of the IBOR 1M Forward Curve Using Vanilla Quartic
  * 	Polynomial.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EURIBOR1MQuarticPolyVanilla {
+public class IBOR1MQuarticPolyVanilla {
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -62,7 +62,7 @@ public class EURIBOR1MQuarticPolyVanilla {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		DiscountCurve dcEONIA = EONIA.MakeDC (
+		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
 			strCurrency,
 			false);
@@ -182,13 +182,13 @@ public class EURIBOR1MQuarticPolyVanilla {
 			0.001630
 		};
 
-		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
+		ForwardCurve fc6M = IBOR6MCubicPolyVanilla.Make6MForward (
 			dtValue,
 			strCurrency,
 			"6M",
 			true);
 
-		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
@@ -214,6 +214,8 @@ public class EURIBOR1MQuarticPolyVanilla {
 		IBOR.ForwardJack (
 			dtValue,
 			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
-			fc);
+			fc,
+			"DerivedParBasisSpread"
+		);
 	}
 }

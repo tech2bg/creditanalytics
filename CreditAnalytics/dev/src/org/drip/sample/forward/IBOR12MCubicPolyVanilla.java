@@ -38,13 +38,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * This Sample illustrates the Construction and Usage of the EURIBOR 12M Forward Curve Using Vanilla Quartic
+ * This Sample illustrates the Construction and Usage of the IBOR 12M Forward Curve Using Vanilla Cubic
  * 	Polynomial.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EURIBOR12MQuarticPolyVanilla {
+public class IBOR12MCubicPolyVanilla {
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -62,14 +62,14 @@ public class EURIBOR12MQuarticPolyVanilla {
 
 		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		DiscountCurve dcEONIA = EONIA.MakeDC (
+		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
 			strCurrency,
 			false);
 
-		SegmentCustomBuilderControl scbcQuartic = new SegmentCustomBuilderControl (
+		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialFunctionSetParams (5),
+			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 			null);
@@ -172,17 +172,17 @@ public class EURIBOR12MQuarticPolyVanilla {
 			0.000660
 		};
 
-		ForwardCurve fc6M = EURIBOR6MCubicPolyVanilla.Make6MForward (
+		ForwardCurve fc6M = IBOR6MCubicPolyVanilla.Make6MForward (
 			dtValue,
 			strCurrency,
 			"6M",
 			true);
 
-		ForwardCurve fc = IBOR.CustomEURIBORBuilderSample (
+		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
-			scbcQuartic,
+			scbcCubic,
 			astrDepositTenor,
 			adblDepositQuote,
 			"ForwardRate",
@@ -198,12 +198,14 @@ public class EURIBOR12MQuarticPolyVanilla {
 			astrSyntheticFloatFloatTenor,
 			adblSyntheticFloatFloatQuote,
 			"ReferenceParBasisSpread",
-			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---",
+			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
 			true);
 
 		IBOR.ForwardJack (
 			dtValue,
-			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
-			fc);
+			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
+			fc,
+			"DerivedParBasisSpread"
+		);
 	}
 }
