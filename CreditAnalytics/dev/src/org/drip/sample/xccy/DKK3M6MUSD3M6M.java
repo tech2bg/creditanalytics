@@ -46,7 +46,7 @@ import org.drip.spline.stretch.*;
  */
 
 public class DKK3M6MUSD3M6M {
-	private static final double _dblFXDKKUSD = 0.1832;
+	private static final double _dblFXDKKUSD = 0.1816;
 
 	private static final int[] s_aiUSDOISDepositMaturityDays = new int[] {
 		1,
@@ -691,7 +691,7 @@ public class DKK3M6MUSD3M6M {
 			"---- DKK LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
 			false);
 
-		CCBSForwardCurve.MakeForwardCurve (
+		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
 			strReferenceCurrency,
 			strDerivedCurrency,
 			dtValue,
@@ -707,7 +707,7 @@ public class DKK3M6MUSD3M6M {
 			true
 		);
 
-		CCBSForwardCurve.MakeForwardCurve (
+		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
 			strReferenceCurrency,
 			strDerivedCurrency,
 			dtValue,
@@ -734,7 +734,23 @@ public class DKK3M6MUSD3M6M {
 			scbcCubic,
 			s_astrCCBSTenor,
 			s_adblCCBSQuote,
-			s_adblIRSQuote
+			s_adblIRSQuote,
+			true
+		);
+
+		CCBSDiscountCurve.MakeDiscountCurve (
+			strReferenceCurrency,
+			strDerivedCurrency,
+			dtValue,
+			dcReference,
+			fc6MReference,
+			fc3MReference,
+			_dblFXDKKUSD,
+			scbcCubic,
+			s_astrCCBSTenor,
+			s_adblCCBSQuote,
+			s_adblIRSQuote,
+			false
 		);
 	}
 }

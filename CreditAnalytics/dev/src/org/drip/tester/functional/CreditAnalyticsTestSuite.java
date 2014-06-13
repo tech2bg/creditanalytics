@@ -3058,10 +3058,9 @@ public class CreditAnalyticsTestSuite {
 			org.drip.service.env.StandardCDXManager.GetCDXSeriesMap ("ITRAXX.ENERGY");
 
 		if (s_bBasketCDS) {
-			System.out.println (bpCDX.getName() + ": " + bpCDX.getEffectiveDate() + "=>" +
-				bpCDX.maturity());
+			System.out.println (bpCDX.name() + ": " + bpCDX.effective() + "=>" + bpCDX.maturity());
 
-			System.out.println (bpCDXOTR.getName() + ": " + bpCDXOTR.getEffectiveDate() + "=>" +
+			System.out.println (bpCDXOTR.name() + ": " + bpCDXOTR.effective() + "=>" +
 				bpCDXOTR.maturity());
 		}
 
@@ -3078,10 +3077,10 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		if (s_bOnTheRun) {
-			System.out.println (bpPresetOTR.getName() + ": " + bpPresetOTR.getEffectiveDate() + "=>" +
+			System.out.println (bpPresetOTR.name() + ": " + bpPresetOTR.effective() + "=>" +
 				bpPresetOTR.maturity());
 
-			System.out.println (bpPreLoadedOTR.getName() + ": " + bpPreLoadedOTR.getEffectiveDate() + "=>" +
+			System.out.println (bpPreLoadedOTR.name() + ": " + bpPreLoadedOTR.effective() + "=>" +
 				bpPreLoadedOTR.maturity());
 		}
 

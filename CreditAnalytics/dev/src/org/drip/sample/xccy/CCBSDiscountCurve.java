@@ -63,7 +63,7 @@ public class CCBSDiscountCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final RatesComponent[] MakexM6MBasisSwap (
+	private static final FloatFloatComponent[] MakexM6MBasisSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrTenor,
@@ -113,17 +113,23 @@ public class CCBSDiscountCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final RatesComponent[] MakeIRS (
+	private static final IRSComponent[] MakeIRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrTenor)
 		throws Exception
 	{
-		RatesComponent[] aCalibComp = new RatesComponent[astrTenor.length];
+		IRSComponent[] aCalibComp = new IRSComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency), 0., strCurrency, strCurrency + "-LIBOR-3M", strCurrency);
+			aCalibComp[i] = (IRSComponent) RatesStreamBuilder.CreateIRS (
+				dtEffective,
+				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency),
+				0.,
+				strCurrency,
+				strCurrency + "-LIBOR-3M",
+				strCurrency
+			);
 
 		return aCalibComp;
 	}
@@ -136,13 +142,13 @@ public class CCBSDiscountCurve {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		RatesComponent[] aFFCReference = MakexM6MBasisSwap (
+		FloatFloatComponent[] aFFCReference = MakexM6MBasisSwap (
 			dtValue,
 			strReferenceCurrency,
 			astrTenor,
 			3);
 
-		RatesComponent[] aIRS = MakeIRS (
+		IRSComponent[] aIRS = MakeIRS (
 			dtValue,
 			strDerivedCurrency,
 			astrTenor);
@@ -190,7 +196,8 @@ public class CCBSDiscountCurve {
 		final SegmentCustomBuilderControl scbc,
 		final String[] astrTenor,
 		final double[] adblCrossCurrencyBasis,
-		final double[] adblSwapRate)
+		final double[] adblSwapRate,
+		final boolean bBasisOnDerivedLeg)
 		throws Exception
 	{
 		List<CaseInsensitiveTreeMap<Double>> lsCCBSMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
@@ -239,15 +246,16 @@ public class CCBSDiscountCurve {
 			null,
 			null);
 
-		StretchRepresentationSpec srsIRS = StretchRepresentationSpec.DiscountFromCCBS (
+		StretchRepresentationSpec srsIRS = CCBSStretchRepresentationBuilder.DiscountCurveSRS (
 			"FIXFLOAT",
 			DiscountCurve.LATENT_STATE_DISCOUNT,
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aCCSP,
 			valParams,
 			bmp,
-			lsCCBSMapManifestQuote,
-			lsIRSMapManifestQuote
+			adblCrossCurrencyBasis,
+			adblSwapRate,
+			bBasisOnDerivedLeg
 		);
 
 		DiscountCurve dcDerived = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
@@ -264,27 +272,33 @@ public class CCBSDiscountCurve {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		System.out.println ("\t     IRS INSTRUMENTS QUOTE RECOVERY FROM CCBS INPUTS");
+		if (bBasisOnDerivedLeg)
+			System.out.println ("\t     IRS INSTRUMENTS QUOTE REVISION FROM CCBS DERIVED BASIS INPUTS");
+		else
+			System.out.println ("\t     IRS INSTRUMENTS QUOTE REVISION FROM CCBS REFERENCE BASIS INPUTS");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCCSP.length; ++i) {
-			IRSComponent irs = (IRSComponent) aCCSP[i].derivedComponent();
+			RatesComponent rcDerived = aCCSP[i].derivedComponent();
 
 			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
 
-			double dblCalibSwapRate = mapOP.get (irs.componentName() + "[CalibSwapRate]");
+			double dblCalibSwapRate = mapOP.get (rcDerived.componentName() + "[CalibSwapRate]");
 
-			System.out.println ("\t[" + irs.effective() + " - " + irs.maturity() + "] = " +
+			System.out.println ("\t[" + rcDerived.effective() + " - " + rcDerived.maturity() + "] = " +
 				FormatUtil.FormatDouble (dblCalibSwapRate, 1, 3, 100.) +
-					" | " + FormatUtil.FormatDouble (adblSwapRate[i], 1, 3, 100.) + " | " +
+					"% | " + FormatUtil.FormatDouble (adblSwapRate[i], 1, 3, 100.) + "% | " +
 						FormatUtil.FormatDouble (adblSwapRate[i] - dblCalibSwapRate, 2, 0, 10000.) + " | " +
-							FormatUtil.FormatDouble (dcDerived.df (irs.maturity()), 1, 4, 1.));
+							FormatUtil.FormatDouble (dcDerived.df (rcDerived.maturity()), 1, 4, 1.));
 		}
 
 		System.out.println ("\t----------------------------------------------------------------------");
 
-		System.out.println ("\t     IRS INSTRUMENTS QUOTE RECOVERY FROM CCBS INPUTS TENOR JACOBIAN");
+		if (bBasisOnDerivedLeg)
+			System.out.println ("\t     CCBS DERIVED BASIS TENOR JACOBIAN");
+		else
+			System.out.println ("\t     CCBS REFERENCE BASIS TENOR JACOBIAN");
 
 		System.out.println ("\t----------------------------------------------------------------------");
 

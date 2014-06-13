@@ -493,6 +493,60 @@ public class AnalyticsHelper {
 	}
 
 	/**
+	 * Retrieve the Number of Years from the Tenor
+	 * 
+	 * @param strTenor The Specified Tenor
+	 * 
+	 * @return The Number of Years
+	 */
+
+	public static final int TenorToYears (
+		final java.lang.String strTenor)
+		throws java.lang.Exception
+	{
+		if (null == strTenor || strTenor.isEmpty())
+			throw new java.lang.Exception ("AnalyticsHelper::TenorToYears => Invalid Inputs");
+
+		char chTenor = strTenor.charAt (strTenor.length() - 1);
+
+		int iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -
+			1)).doubleValue();
+
+		if ('y' == chTenor || 'Y' == chTenor) return iTimeUnit * 12;
+
+		throw new java.lang.Exception ("AnalyticsHelper::TenorToYears => Invalid tenor format " + strTenor);
+	}
+
+	/**
+	 * Retrieve the Number of Months from the Tenor
+	 * 
+	 * @param strTenor The Specified Tenor
+	 * 
+	 * @return The Number of Months
+	 */
+
+	public static final int TenorToMonths (
+		final java.lang.String strTenor)
+		throws java.lang.Exception
+	{
+		if (null == strTenor || strTenor.isEmpty())
+			throw new java.lang.Exception ("AnalyticsHelper::TenorToMonths => Invalid Inputs");
+
+		char chTenor = strTenor.charAt (strTenor.length() - 1);
+
+		int iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -
+			1)).doubleValue();
+
+		if ('l' == chTenor || 'L' == chTenor) return iTimeUnit;
+
+		if ('m' == chTenor || 'M' == chTenor) return iTimeUnit;
+
+		if ('y' == chTenor || 'Y' == chTenor) return iTimeUnit * 12;
+
+		throw new java.lang.Exception ("AnalyticsHelper::TenorToMonths => Invalid tenor format " + strTenor);
+	}
+
+	/**
 	 * Retrieve the Number of Days from the Tenor
 	 * 
 	 * @param strTenor The Specified Tenor
@@ -520,7 +574,7 @@ public class AnalyticsHelper {
 
 		if ('m' == chTenor || 'M' == chTenor) return iTimeUnit * 30;
 
-		if ('y' == chTenor || 'Y' == chTenor) return (int) (365.25 * iTimeUnit );
+		if ('y' == chTenor || 'Y' == chTenor) return (int) (365.25 * iTimeUnit);
 
 		throw new java.lang.Exception ("AnalyticsHelper::TenorToDays => Unknown tenor format " + strTenor);
 	}

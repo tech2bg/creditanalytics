@@ -118,9 +118,9 @@ public class StandardCDXAPI {
 
 		Map<JulianDate, Integer> mapCDXSeries = StandardCDXManager.GetCDXSeriesMap ("ITRAXX.ENERGY");
 
-		System.out.println (bpCDX.getName() + ": " + bpCDX.getEffectiveDate() + "=>" + bpCDX.maturity());
+		System.out.println (bpCDX.name() + ": " + bpCDX.effective() + "=>" + bpCDX.maturity());
 
-		System.out.println (bpCDXOTR.getName() + ": " + bpCDXOTR.getEffectiveDate() + "=>" + bpCDXOTR.maturity());
+		System.out.println (bpCDXOTR.name() + ": " + bpCDXOTR.effective() + "=>" + bpCDXOTR.maturity());
 
 		int i = 0;
 
@@ -130,9 +130,9 @@ public class StandardCDXAPI {
 		for (Map.Entry<String, String> meCDXDescr : mapCDXDescr.entrySet())
 			System.out.println ("[" + meCDXDescr.getKey() + "]: " + meCDXDescr.getValue());
 
-		System.out.println (bpPresetOTR.getName() + ": " + bpPresetOTR.getEffectiveDate() + "=>" + bpPresetOTR.maturity());
+		System.out.println (bpPresetOTR.name() + ": " + bpPresetOTR.effective() + "=>" + bpPresetOTR.maturity());
 
-		System.out.println (bpPreLoadedOTR.getName() + ": " + bpPreLoadedOTR.getEffectiveDate() + "=>" + bpPreLoadedOTR.maturity());
+		System.out.println (bpPreLoadedOTR.name() + ": " + bpPreLoadedOTR.effective() + "=>" + bpPreLoadedOTR.maturity());
 
 		for (Map.Entry<JulianDate, Integer> me : mapCDXSeries.entrySet())
 			System.out.println ("ITRAXX.ENERGY[" + me.getValue() + "]: " + me.getKey());

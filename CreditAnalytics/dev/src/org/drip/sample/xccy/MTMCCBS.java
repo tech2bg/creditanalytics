@@ -3,11 +3,11 @@ package org.drip.sample.xccy;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.definition.BasketMarketParams;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.definition.*;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.CrossCurrencyComponentPair;
+import org.drip.product.fx.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.service.api.CreditAnalytics;
@@ -41,13 +41,13 @@ import org.drip.state.creator.DiscountCurveBuilder;
  */
 
 /**
- * CCBS demonstrates the construction, the usage, and the eventual valuation of the Cross Currency Basis
- * 	Swap.
+ * MTMCCBS demonstrates the construction, the usage, and the eventual valuation of the Mark-to-market Cross
+ *  Currency Basis Swap.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CCBS {
+public class MTMCCBS {
 	private static final FloatFloatComponent MakexM6MBasisSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
@@ -113,9 +113,6 @@ public class CCBS {
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
-		ComponentMarketParams cmpUSD = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null);
-
 		FloatFloatComponent ffcReferenceUSD = MakexM6MBasisSwap (
 			dtToday,
 			"USD",
@@ -123,8 +120,6 @@ public class CCBS {
 			3);
 
 		ffcReferenceUSD.setPrimaryCode ("USD_6M::3M::2Y");
-
-		System.out.println (ffcReferenceUSD.value (valParams, null, cmpUSD, null));
 
 		DiscountCurve dcJPYCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
@@ -138,9 +133,6 @@ public class CCBS {
 			dblJPY3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
-		ComponentMarketParams cmpJPY = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null);
-
 		FloatFloatComponent ffcDerivedJPY = MakexM6MBasisSwap (
 			dtToday,
 			"JPY",
@@ -149,9 +141,7 @@ public class CCBS {
 
 		ffcDerivedJPY.setPrimaryCode ("JPY_6M::3M::2Y");
 
-		System.out.println (ffcDerivedJPY.value (valParams, null, cmpJPY, null));
-
-		CrossCurrencyComponentPair ccbsUSDJPY = new CrossCurrencyComponentPair (
+		CrossCurrencyComponentPair ccbsUSDJPY = new MTMCrossCurrencyPair (
 			"USDJPY_CCBS",
 			ffcReferenceUSD,
 			ffcDerivedJPY);
@@ -166,6 +156,10 @@ public class CCBS {
 
 		bmp.addForwardCurve (FloatingRateIndex.Create ("JPY", "LIBOR", "3M").fullyQualifiedName(), fc3MJPY);
 
-		System.out.println (ccbsUSDJPY.value (valParams, null, bmp, null));
+		CaseInsensitiveTreeMap<Double> mapMTMOutput = ccbsUSDJPY.value (valParams, null, bmp, null);
+
+		System.out.println ("Base PV : " + mapMTMOutput.get (ccbsUSDJPY.referenceComponent().componentName() + "[PV]"));
+
+		System.out.println ("MTM PV  : " + mapMTMOutput.get ("MTMPV"));
 	}
 }

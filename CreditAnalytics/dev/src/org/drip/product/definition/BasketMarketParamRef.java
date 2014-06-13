@@ -54,7 +54,7 @@ public interface BasketMarketParamRef {
 	 * @return The set of the component Forward curve names
 	 */
 
-	public abstract java.util.Set<java.lang.String> getComponentForwardCurveNames();
+	public abstract java.util.Set<java.lang.String> forwardCurveNames();
 
 	/**
 	 * Retrieve the set of the component credit curve names
@@ -62,12 +62,13 @@ public interface BasketMarketParamRef {
 	 * @return The set of the component credit curve names
 	 */
 
-	public abstract java.util.Set<java.lang.String> getComponentCreditCurveNames();
+	public abstract java.util.Set<java.lang.String> creditCurveNames();
 
 	/**
-	 * Retrieve the set of the component Treasury curve names
+	 * Retrieve the set of the component Govvie/Treasury curve names
 	 * 
-	 * @return The set of the component Treasury curve names
+	 * @return The set of the component Govvie/Treasury curve names
 	 */
 
-	public abstract java.util.Set<java.lang.String> getComponentTreasuryCurveNames();}
+	public abstract java.util.Set<java.lang.String> govvieCurveNames();
+}

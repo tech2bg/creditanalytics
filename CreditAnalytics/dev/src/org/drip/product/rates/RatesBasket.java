@@ -220,12 +220,12 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		}
 	}
 
-	@Override public java.lang.String getName()
+	@Override public java.lang.String name()
 	{
 		return _strName;
 	}
 
-	@Override public org.drip.product.definition.FixedIncomeComponent[] getComponents()
+	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
 		int iNumFixedComp = (null == _aCompFixedStream ? 0 : _aCompFixedStream.length);
 		int iNumFloatComp = (null == _aCompFloatStream ? 0 : _aCompFloatStream.length);

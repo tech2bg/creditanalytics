@@ -30,7 +30,7 @@ package org.drip.product.fx;
 
 /**
  * CrossCurrencyComponentPair contains the implementation of the dual cross currency components. It is
- *  componsed of two different Rates Components - one each for each currency.
+ *  composed of two different Rates Components - one each for each currency.
  * 
  * @author Lakshmi Krishnamurthy
  */
@@ -89,7 +89,18 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 		return _rcDerived;
 	}
 
-	@Override public java.lang.String getName()
+	/**
+	 * Retrieve the FX Code
+	 * 
+	 * @return The FX Code
+	 */
+
+	public java.lang.String fxCode()
+	{
+		return _rcReference.couponCurrency()[0] + "/" + _rcDerived.couponCurrency()[0];
+	}
+
+	@Override public java.lang.String name()
 	{
 		return _strName;
 	}
@@ -105,15 +116,9 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 		return setstrCurrency;
 	}
 
-	@Override public java.util.Set<java.lang.String> getComponentCreditCurveNames()
+	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
-		java.util.Set<java.lang.String> setstrCredit = new java.util.TreeSet<java.lang.String>();
-
-		setstrCredit.add (_rcReference.creditCurveName());
-
-		setstrCredit.add (_rcDerived.creditCurveName());
-
-		return setstrCredit;
+		return new org.drip.product.definition.FixedIncomeComponent[] {_rcReference, _rcDerived};
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -127,51 +132,72 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOutput = super.value
 			(valParams, pricerParams, bmp, quotingParams);
 
-		if (null == mapOutput) return mapOutput;
+		if (null == mapOutput) return null;
 
-		java.lang.String strRefCompName = _rcDerived.componentName();
+		org.drip.product.definition.RatesComponent rcDerived = derivedComponent();
+
+		org.drip.product.definition.RatesComponent rcReference = referenceComponent();
+
+		java.lang.String strRefCompName = rcReference.componentName();
+
+		java.lang.String strDerivedCompName = rcDerived.componentName();
 
 		double dblFX = 1.;
-		java.lang.String strDerivedCleanDV01 = strRefCompName + "[DerivedCleanDV01]";
-		java.lang.String strDerivedParBasisSpread = strRefCompName + "[DerivedParBasisSpread]";
+		java.lang.String strReferenceCompPV = strRefCompName + "[PV]";
+		java.lang.String strDerivedCompPV = strDerivedCompName + "[PV]";
+		java.lang.String strReferenceCompReferenceDV01 = strRefCompName + "[ReferenceCleanDV01]";
+		java.lang.String strReferenceCompDerivedDV01 = strRefCompName + "[DerivedCleanDV01]";
+		java.lang.String strDerivedCompReferenceDV01 = strDerivedCompName + "[ReferenceCleanDV01]";
+		java.lang.String strDerivedCompDerivedDV01 = strDerivedCompName + "[DerivedCleanDV01]";
 
-		if (!mapOutput.containsKey (strDerivedCleanDV01) || !mapOutput.containsKey
-			(strDerivedParBasisSpread)) {
+		if (!mapOutput.containsKey (strDerivedCompPV) || !mapOutput.containsKey (strReferenceCompPV) ||
+			!mapOutput.containsKey (strReferenceCompReferenceDV01) || !mapOutput.containsKey
+				(strReferenceCompDerivedDV01) || !mapOutput.containsKey (strDerivedCompReferenceDV01) ||
+					!mapOutput.containsKey (strDerivedCompDerivedDV01)) {
 			mapOutput.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 			return mapOutput;
 		}
 
-		double dblDerivedCleanDV01 = mapOutput.get (strDerivedCleanDV01);
+		double dblDerivedCompPV = mapOutput.get (strDerivedCompPV);
 
-		double dblDerivedParBasisSpread = mapOutput.get (strDerivedParBasisSpread);
+		double dblReferenceCompPV = mapOutput.get (strReferenceCompPV);
 
-		double dblReferencePV = mapOutput.get (_rcReference.componentName() + "[PV]");
+		double dblReferenceCompDerivedDV01 = mapOutput.get (strReferenceCompDerivedDV01);
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (_rcDerived.couponCurrency()[0] +
-			"/" + _rcReference.couponCurrency()[0]);
+		double dblReferenceCompReferenceDV01 = mapOutput.get (strReferenceCompReferenceDV01);
+
+		double dblDerivedCompDerivedDV01 = mapOutput.get (strDerivedCompDerivedDV01);
+
+		double dblDerivedCompReferenceDV01 = mapOutput.get (strDerivedCompReferenceDV01);
+
+		org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (fxCode());
 
 		if (null != auFX) {
 			try {
-				dblFX = auFX.evaluate (getEffectiveDate().getJulian());
+				dblFX = auFX.evaluate (effective().getJulian());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
-				return null;
+				dblFX = 1.;
 			}
 		}
 
-		mapOutput.put ("DerivedParCurrencyBasis", dblDerivedParBasisSpread + (dblFX * dblReferencePV /
-			dblDerivedCleanDV01));
+		mapOutput.put ("ReferenceCompReferenceBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
+			(dblFX * dblReferenceCompReferenceDV01));
+
+		mapOutput.put ("ReferenceCompDerivedBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
+			(dblFX * dblReferenceCompDerivedDV01));
+
+		mapOutput.put ("DerivedCompReferenceBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
+			dblDerivedCompReferenceDV01);
+
+		mapOutput.put ("DerivedCompDerivedBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
+			dblDerivedCompDerivedDV01);
 
 		mapOutput.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 		return mapOutput;
-	}
-
-	@Override public org.drip.product.definition.FixedIncomeComponent[] getComponents()
-	{
-		return new org.drip.product.definition.FixedIncomeComponent[] {_rcReference, _rcDerived};
 	}
 
 	@Override public byte[] serialize()

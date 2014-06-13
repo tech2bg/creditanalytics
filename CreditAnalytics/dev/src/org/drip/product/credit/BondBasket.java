@@ -749,12 +749,12 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			_adblNormWeights[i] = adblWeights[i] / dblCumulativeWeight;
 	}
 
-	@Override public java.lang.String getName()
+	@Override public java.lang.String name()
 	{
 		return _strName;
 	}
 
-	@Override public org.drip.product.definition.FixedIncomeComponent[] getComponents()
+	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
 		return _aBond;
 	}

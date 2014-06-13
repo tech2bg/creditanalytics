@@ -46,7 +46,7 @@ import org.drip.spline.stretch.*;
  */
 
 public class CAD3M6MUSD3M6M {
-	private static final double _dblFXCADUSD = 0.92;
+	private static final double _dblFXCADUSD = 0.9168;
 
 	private static final int[] s_aiUSDOISDepositMaturityDays = new int[] {
 		1,
@@ -691,7 +691,7 @@ public class CAD3M6MUSD3M6M {
 			"---- CAD LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
 			false);
 
-		CCBSForwardCurve.MakeForwardCurve (
+		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
 			strReferenceCurrency,
 			strDerivedCurrency,
 			dtValue,
@@ -707,7 +707,7 @@ public class CAD3M6MUSD3M6M {
 			true
 		);
 
-		CCBSForwardCurve.MakeForwardCurve (
+		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
 			strReferenceCurrency,
 			strDerivedCurrency,
 			dtValue,
@@ -734,7 +734,23 @@ public class CAD3M6MUSD3M6M {
 			scbcCubic,
 			s_astrCCBSTenor,
 			s_adblCCBSQuote,
-			s_adblIRSQuote
+			s_adblIRSQuote,
+			true
+		);
+
+		CCBSDiscountCurve.MakeDiscountCurve (
+			strReferenceCurrency,
+			strDerivedCurrency,
+			dtValue,
+			dcReference,
+			fc6MReference,
+			fc3MReference,
+			_dblFXCADUSD,
+			scbcCubic,
+			s_astrCCBSTenor,
+			s_adblCCBSQuote,
+			s_adblIRSQuote,
+			false
 		);
 	}
 }

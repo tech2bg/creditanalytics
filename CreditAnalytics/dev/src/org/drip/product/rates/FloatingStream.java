@@ -412,7 +412,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. ==
 						_dblNotional || null == (_lsCouponPeriod = lsCouponPeriod) || 0 ==
 							_lsCouponPeriod.size())
-			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params! " + _fri);
+			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params! " + _lsCouponPeriod);
 
 		_bIsReference = bIsReference;
 
@@ -1198,120 +1198,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	/* @Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
-	{
-		if (null == valParams || null == lsmm || null == mktParams || !(lsmm instanceof
-			org.drip.analytics.rates.RatesLSMM))
-			return null;
-
-		double dblValueDate = valParams.valueDate();
-
-		if (dblValueDate >= maturity().getJulian()) return null;
-
-		java.lang.String strQuantificationMetric = lsmm.quantificationMetric();
-
-		if (null == strQuantificationMetric) return null;
-
-		if (!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
-			(strQuantificationMetric) &&
-				!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-					(strQuantificationMetric))
-			return null;
-
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
-
-		if (null == dc) return null;
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
-			org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-		double dblCleanCV100 = 0.;
-		boolean bFirstPeriod = true;
-		double dblDerivedParBasisSpread = 0.;
-
-		java.lang.String[] astrManifestMeasure = lsmm.manifestMeasures();
-
-		boolean bSwapRate = org.drip.quant.common.StringUtil.MatchInStringArray ("SwapRate",
-			astrManifestMeasure, false);
-
-		boolean bDerivedParBasisSpread = org.drip.quant.common.StringUtil.MatchInStringArray
-			("DerivedParBasisSpread", astrManifestMeasure, false);
-
-		boolean bReferenceParBasisSpread = org.drip.quant.common.StringUtil.MatchInStringArray
-			("ReferenceParBasisSpread", astrManifestMeasure, false);
-
-		try {
-			if (bDerivedParBasisSpread)
-				dblDerivedParBasisSpread = lsmm.measureQuoteValue ("DerivedParBasisSpread");
-
-			for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
-				if (null == period) continue;
-
-				double dblPayDate = period.getPayDate();
-
-				if (dblValueDate > dblPayDate) {
-					bFirstPeriod = false;
-					continue;
-				}
-
-				double dblPeriodDCF = period.getCouponDCF();
-
-				if (bFirstPeriod) {
-					bFirstPeriod = false;
-
-					if (dblValueDate > period.getStartDate())
-						dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
-				}
-
-				double dblPeriodCV100 = dblPeriodDCF * dc.df (dblPayDate) * notional (dblPayDate);
-
-				dblCleanCV100 += dblPeriodCV100;
-				double dblNotionalPeriodCV100 = dblPeriodCV100 * _dblNotional;
-
-				if (!_bIsReference) {
-					if (!prwc.addPredictorResponseWeight (dblPayDate, dblNotionalPeriodCV100)) return null;
-
-					if (bDerivedParBasisSpread && !prwc.addDResponseWeightDManifestMeasure
-						("DerivedParBasisSpread", dblPayDate, dblNotionalPeriodCV100))
-						return null;
-
-					if (bReferenceParBasisSpread && !prwc.addDResponseWeightDManifestMeasure
-						("ReferenceParBasisSpread", dblPayDate, dblNotionalPeriodCV100))
-						return null;
-				}
-
-				if (bSwapRate && !prwc.addDResponseWeightDManifestMeasure ("SwapRate", dblPayDate,
-					dblNotionalPeriodCV100))
-					return null;
-			}
-
-			double dblNotionalCleanCV100 = dblCleanCV100 * _dblNotional;
-
-			if (!_bIsReference) {
-				if (!prwc.updateValue (-1. * dblNotionalCleanCV100 * dblDerivedParBasisSpread)) return null;
-
-				if (bDerivedParBasisSpread && !prwc.updateDValueDManifestMeasure ("DerivedParBasisSpread",
-					-1. * dblNotionalCleanCV100))
-					return null;
-			} else {
-				if (bReferenceParBasisSpread && !prwc.updateDValueDManifestMeasure
-					("ReferenceParBasisSpread", dblNotionalCleanCV100))
-					return null;
-			}
-
-			return prwc;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	} */
-
 	@Override public java.lang.String getFieldDelimiter()
 	{
 		return "!";
@@ -1411,5 +1297,27 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	public org.drip.product.params.FloatingRateIndex fri()
 	{
 		return _fri;
+	}
+
+	/**
+	 * Retrieve the Stream Spread
+	 *  
+	 * @return The Spread
+	 */
+
+	public double spread()
+	{
+		return _dblSpread;
+	}
+
+	/**
+	 * Is this a Reference Stream?
+	 *  
+	 * @return TRUE => This is a Reference Stream
+	 */
+
+	public boolean reference()
+	{
+		return _bIsReference;
 	}
 }

@@ -1,8 +1,6 @@
 
 package org.drip.sample.xccy;
 
-import java.util.*;
-
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.*;
@@ -10,7 +8,8 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.definition.*;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.fx.CrossCurrencyComponentPair;
+import org.drip.product.definition.RatesComponent;
+import org.drip.product.fx.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
@@ -133,7 +132,7 @@ public class CCBSForwardCurve {
 		return aCCSP;
 	}
 
-	public static final void MakeForwardCurve (
+	public static final void ForwardCurveReferenceComponentBasis (
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
 		final JulianDate dtValue,
@@ -146,19 +145,9 @@ public class CCBSForwardCurve {
 		final SegmentCustomBuilderControl scbc,
 		final String[] astrTenor,
 		final double[] adblCrossCurrencyBasis,
-		final boolean bOnDerived)
+		final boolean bBasisOnDerivedLeg)
 		throws Exception
 	{
-		List<CaseInsensitiveTreeMap<Double>> lsMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
-
-		for (int i = 0; i < astrTenor.length; ++i) {
-			CaseInsensitiveTreeMap<Double> mapManifestQuote = new CaseInsensitiveTreeMap<Double>();
-
-			mapManifestQuote.put ("DerivedParBasisSpread", adblCrossCurrencyBasis[i]);
-
-			lsMapManifestQuote.add (mapManifestQuote);
-		}
-
 		CrossCurrencyComponentPair[] aCCSP = MakeCCSP (
 			dtValue,
 			strReferenceCurrency,
@@ -178,9 +167,9 @@ public class CCBSForwardCurve {
 
 		bmp.addForwardCurve (fc6MDerived.index().fullyQualifiedName(), fc6MDerived);
 
-		bmp.setFXCurve (strDerivedCurrency + "/" + strReferenceCurrency, new FlatUnivariate (1. / dblRefDerFX));
+		bmp.setFXCurve (strDerivedCurrency + "/" + strReferenceCurrency, new FlatUnivariate (dblRefDerFX));
 
-		bmp.setFXCurve (strReferenceCurrency + "/" + strDerivedCurrency, new FlatUnivariate (dblRefDerFX));
+		bmp.setFXCurve (strReferenceCurrency + "/" + strDerivedCurrency, new FlatUnivariate (1. / dblRefDerFX));
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
@@ -191,15 +180,15 @@ public class CCBSForwardCurve {
 			null,
 			null);
 
-		StretchRepresentationSpec srsFloatFloat = StretchRepresentationSpec.ForwardFromCCBS (
+		StretchRepresentationSpec srsFloatFloat = CCBSStretchRepresentationBuilder.ForwardCurveSRS (
 			"FLOATFLOAT",
 			ForwardCurve.LATENT_STATE_FORWARD,
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aCCSP,
 			valParams,
 			bmp,
-			lsMapManifestQuote,
-			bOnDerived);
+			adblCrossCurrencyBasis,
+			bBasisOnDerivedLeg);
 
 		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			lcc,
@@ -220,30 +209,29 @@ public class CCBSForwardCurve {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		if (bOnDerived)
-			System.out.println ("\t     CCBS INSTRUMENTS BASIS QUOTE FROM DERIVED BASIS");
+		if (bBasisOnDerivedLeg)
+			System.out.println ("\t     RECOVERY OF THE CCBS REFERENCE COMPONENT DERIVED BASIS");
 		else
-			System.out.println ("\t     CCBS INSTRUMENTS BASIS QUOTE FROM REFERENCE BASIS");
+			System.out.println ("\t     RECOVERY OF THE CCBS REFERENCE COMPONENT REFERENCE BASIS");
 
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCCSP.length; ++i) {
-			FloatFloatComponent ffc = (FloatFloatComponent) aCCSP[i].derivedComponent();
+			RatesComponent rc = aCCSP[i].derivedComponent();
 
 			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
 
-			System.out.println ("\t[" + ffc.effective() + " - " + ffc.maturity() + "] = " +
-				FormatUtil.FormatDouble (mapOP.get ("DerivedParCurrencyBasis"), 1, 3, 1.) +
+			System.out.println ("\t[" + rc.effective() + " - " + rc.maturity() + "] = " +
+				FormatUtil.FormatDouble (mapOP.get (bBasisOnDerivedLeg ? "ReferenceCompDerivedBasis" : "ReferenceCompReferenceBasis"), 1, 3, 1.) +
 					" | " + FormatUtil.FormatDouble (adblCrossCurrencyBasis[i], 1, 3, 10000.) + " | " +
-						FormatUtil.FormatDouble (fc3MDerived.forward (ffc.maturity()), 1, 4, 100.) + "%");
+						FormatUtil.FormatDouble (fc3MDerived.forward (rc.maturity()), 1, 4, 100.) + "%");
 		}
 
-		if (bOnDerived)
-			IBOR.ForwardJack (
-				dtValue,
-				"---- CCBS DERIVED QUOTE FORWARD CURVE SENSITIVITY ---",
-				fc3MDerived,
-				"DerivedParBasisSpread"
-			);
+		IBOR.ForwardJack (
+			dtValue,
+			"---- CCBS DERIVED QUOTE FORWARD CURVE SENSITIVITY ---",
+			fc3MDerived,
+			"PV"
+		);
 	}
 }
