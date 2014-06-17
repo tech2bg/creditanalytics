@@ -124,13 +124,13 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("CurrencyPair de-serializer: Empty state");
 
 		java.lang.String strSerializedCurrencyPair = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCurrencyPair || strSerializedCurrencyPair.isEmpty())
 			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCurrencyPair,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("CurrencyPair de-serializer: Invalid reqd field set");
@@ -207,6 +207,17 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Get the inverse currency pair code
+	 * 
+	 * @return The Inverse Currency pair code
+	 */
+
+	public java.lang.String inverseCode()
+	{
+		return _strDenomCcy + "/" + _strNumCcy;
+	}
+
+	/**
 	 * Get the PIP Factor
 	 * 
 	 * @return PIP Factor
@@ -217,12 +228,12 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 		return _dblPIPFactor;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return ":";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "{";
 	}
@@ -231,13 +242,13 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strNumCcy);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strNumCcy);
 
-		sb.append (getFieldDelimiter() + _strDenomCcy + getFieldDelimiter() + _strQuoteCcy);
+		sb.append (fieldDelimiter() + _strDenomCcy + fieldDelimiter() + _strQuoteCcy);
 
-		sb.append (getFieldDelimiter() + _dblPIPFactor);
+		sb.append (fieldDelimiter() + _dblPIPFactor);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

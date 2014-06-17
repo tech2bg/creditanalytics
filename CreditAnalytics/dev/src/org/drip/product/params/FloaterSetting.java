@@ -109,13 +109,13 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Empty state");
 
 		java.lang.String strSerializedFloaterSetting = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFloaterSetting || strSerializedFloaterSetting.isEmpty())
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloaterSetting,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Invalid reqd field set");
@@ -161,16 +161,16 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + new java.lang.String
-			(_fri.serialize()) + getFieldDelimiter() + _dblFloatSpread + getFieldDelimiter() +
-				_dblCurrentCoupon + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + new java.lang.String
+			(_fri.serialize()) + fieldDelimiter() + _dblFloatSpread + fieldDelimiter() + _dblCurrentCoupon +
+				fieldDelimiter());
 
 		if (null == _strFloatDayCount || _strFloatDayCount.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strFloatDayCount + getFieldDelimiter());
+			sb.append (_strFloatDayCount + fieldDelimiter());
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

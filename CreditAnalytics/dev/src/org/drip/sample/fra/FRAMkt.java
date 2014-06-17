@@ -97,37 +97,37 @@ public class FRAMkt {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			fri.fullyQualifiedName(),
 			dtForward,
 			new FlatUnivariate (dblEURIBOR6MVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			dcEONIA.name() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEONIAVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			fri.fullyQualifiedName() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEURIBOR6MVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			dcEONIA.name() + "::" + fri.fullyQualifiedName() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)

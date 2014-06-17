@@ -132,12 +132,12 @@ public class CashflowPeriodCurveFactors extends Period {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("CashflowPeriodCurveFactors de-serializer: Empty state");
 
-		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strCP || strCP.isEmpty())
 			throw new java.lang.Exception ("CashflowPeriodCurveFactors de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, fieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
 			throw new java.lang.Exception
@@ -284,12 +284,12 @@ public class CashflowPeriodCurveFactors extends Period {
 		return _dblEndSurvival;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "^";
 	}
@@ -298,12 +298,12 @@ public class CashflowPeriodCurveFactors extends Period {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (new java.lang.String (super.serialize()) + getFieldDelimiter() + _dblFullCouponRate +
-			getFieldDelimiter() + _dblStartNotional + getFieldDelimiter() + _dblEndNotional +
-				getFieldDelimiter() + _dblStartSurvival + getFieldDelimiter() + _dblEndSurvival +
-					getFieldDelimiter() + _dblStartDF + getFieldDelimiter() + _dblEndDF + getFieldDelimiter()
-						+ _dblSpread + getFieldDelimiter() + _dblIndexRate);
+		sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _dblFullCouponRate +
+			fieldDelimiter() + _dblStartNotional + fieldDelimiter() + _dblEndNotional + fieldDelimiter() +
+				_dblStartSurvival + fieldDelimiter() + _dblEndSurvival + fieldDelimiter() + _dblStartDF +
+					fieldDelimiter() + _dblEndDF + fieldDelimiter() + _dblSpread + fieldDelimiter() +
+						_dblIndexRate);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 }

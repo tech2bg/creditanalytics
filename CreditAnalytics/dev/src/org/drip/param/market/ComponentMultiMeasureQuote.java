@@ -76,13 +76,13 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 			throw new java.lang.Exception ("ComponentMultiMeasureQuote de-serializer: Empty state");
 
 		java.lang.String strSerializedComponentQuote = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedComponentQuote || strSerializedComponentQuote.isEmpty())
 			throw new java.lang.Exception ("ComponentMultiMeasureQuote de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedComponentQuote,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception
@@ -110,14 +110,14 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() || null == astrKVPair[1] || astrKVPair[1].isEmpty() ||
@@ -195,12 +195,12 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		return true;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "&";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "@";
 	}
@@ -209,17 +209,17 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _mktQuote)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_mktQuote.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_mktQuote.serialize()) + fieldDelimiter());
 
 		if (null == _strMarketQuoteField || _strMarketQuoteField.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strMarketQuoteField + getFieldDelimiter());
+			sb.append (_strMarketQuoteField + fieldDelimiter());
 
 		if (null == _mapQuotes || 0 == _mapQuotes.size())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -235,9 +235,9 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbQMap.append (getCollectionRecordDelimiter());
+					sbQMap.append (collectionRecordDelimiter());
 
-				sbQMap.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
+				sbQMap.append (me.getKey() + collectionKeyValueDelimiter() + new java.lang.String
 					(me.getValue().serialize()));
 			}
 
@@ -247,7 +247,7 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 				sb.append (sbQMap.toString());
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

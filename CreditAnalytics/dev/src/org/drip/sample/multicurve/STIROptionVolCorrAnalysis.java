@@ -471,19 +471,19 @@ public class STIROptionVolCorrAnalysis {
 
 		String strComponentName = stir.componentName();
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			strComponentName + "SwapRateVolatility",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateVolatility)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			strComponentName + "SwapRateExchangeVolatility",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateExchangeVolatility)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			strComponentName + "SwapRateToSwapRateExchangeCorrelation",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateToSwapRateExchangeCorrelation)

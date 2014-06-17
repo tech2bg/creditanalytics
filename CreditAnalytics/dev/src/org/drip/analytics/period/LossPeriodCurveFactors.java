@@ -192,12 +192,12 @@ public class LossPeriodCurveFactors extends Period {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serializer: Empty state");
 
-		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strCP || strCP.isEmpty())
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serialize: Invalid number of fields");
@@ -304,12 +304,12 @@ public class LossPeriodCurveFactors extends Period {
 		return _dblDCF;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "^";
 	}
@@ -318,10 +318,10 @@ public class LossPeriodCurveFactors extends Period {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (new java.lang.String (super.serialize()) + getFieldDelimiter() + _dblStartSurvival +
-			getFieldDelimiter() + _dblEndSurvival + getFieldDelimiter() + _dblEffectiveNotional +
-				getFieldDelimiter() + _dblEffectiveRecovery + getFieldDelimiter() + _dblEffectiveDF);
+		sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _dblStartSurvival +
+			fieldDelimiter() + _dblEndSurvival + fieldDelimiter() + _dblEffectiveNotional + fieldDelimiter()
+				+ _dblEffectiveRecovery + fieldDelimiter() + _dblEffectiveDF);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 }

@@ -450,13 +450,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			throw new java.lang.Exception ("CDSComponent de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditDefaultSwap = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCreditDefaultSwap || strSerializedCreditDefaultSwap.isEmpty())
 			throw new java.lang.Exception ("CDSComponent de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditDefaultSwap,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 13 > astrField.length)
 			throw new java.lang.Exception ("CDSComponent de-serializer: Invalid reqd field set");
@@ -546,7 +546,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_lsCouponPeriod = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[12],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -703,6 +703,11 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	@Override public java.lang.String creditCurveName()
 	{
 		return _crValParams._strCC;
+	}
+
+	@Override public java.lang.String[] currencyPairCode()
+	{
+		return null;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -1297,12 +1302,12 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return scop._dblCalibResult;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "!";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "&";
 	}
@@ -1311,44 +1316,44 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
-		sb.append (_dblNotional + getFieldDelimiter());
+		sb.append (_dblNotional + fieldDelimiter());
 
 		if (null == _strCouponCurrency || _strCouponCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCouponCurrency + getFieldDelimiter());
+			sb.append (_strCouponCurrency + fieldDelimiter());
 
 		if (null == _strCode || _strCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCode + getFieldDelimiter());
+			sb.append (_strCode + fieldDelimiter());
 
-		sb.append (_bApplyAccEOMAdj + getFieldDelimiter());
+		sb.append (_bApplyAccEOMAdj + fieldDelimiter());
 
-		sb.append (_bApplyCpnEOMAdj + getFieldDelimiter());
+		sb.append (_bApplyCpnEOMAdj + fieldDelimiter());
 
-		sb.append (_dblCoupon + getFieldDelimiter());
+		sb.append (_dblCoupon + fieldDelimiter());
 
-		sb.append (_dblMaturity + getFieldDelimiter());
+		sb.append (_dblMaturity + fieldDelimiter());
 
-		sb.append (_dblEffective + getFieldDelimiter());
+		sb.append (_dblEffective + fieldDelimiter());
 
 		if (null == _notlSchedule)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_notlSchedule.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_notlSchedule.serialize()) + fieldDelimiter());
 
 		if (null == _crValParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_crValParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_crValParams.serialize()) + fieldDelimiter());
 
 		if (null == _settleParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_settleParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_settleParams.serialize()) + fieldDelimiter());
 
 		if (null == _lsCouponPeriod)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -1363,7 +1368,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbPeriods.append (getCollectionRecordDelimiter());
+					sbPeriods.append (collectionRecordDelimiter());
 
 				sbPeriods.append (new java.lang.String (p.serialize()));
 			}
@@ -1374,7 +1379,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				sb.append (sbPeriods.toString());
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

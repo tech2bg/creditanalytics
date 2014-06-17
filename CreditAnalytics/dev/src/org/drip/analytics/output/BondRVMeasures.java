@@ -161,13 +161,13 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("BondRVMeasures de-serializer: Empty state");
 
 		java.lang.String strSerializedBondRVMeasures = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBondRVMeasures || strSerializedBondRVMeasures.isEmpty())
 			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBondRVMeasures,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 17 > astrField.length)
 			throw new java.lang.Exception ("BondRVMeasures de-serializer: Invalid reqd field set");
@@ -389,12 +389,12 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		return mapRVMeasures;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "@";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "!";
 	}
@@ -403,22 +403,21 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _dblPrice +
-			getFieldDelimiter() + _dblZSpread + getFieldDelimiter() + _dblGSpread + getFieldDelimiter() +
-				_dblISpread + getFieldDelimiter() + _dblOASpread + getFieldDelimiter() + _dblTSYSpread +
-					getFieldDelimiter() + _dblDiscountMargin + getFieldDelimiter() + _dblAssetSwapSpread +
-						getFieldDelimiter() + _dblCreditBasis + getFieldDelimiter() + _dblPECS +
-							getFieldDelimiter() + _dblYield01 + getFieldDelimiter() + _dblMacaulayDuration +
-								getFieldDelimiter() + _dblModifiedDuration + getFieldDelimiter() +
-									_dblConvexity + getFieldDelimiter() + _dblBondBasis +
-										getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblPrice +
+			fieldDelimiter() + _dblZSpread + fieldDelimiter() + _dblGSpread + fieldDelimiter() + _dblISpread
+				+ fieldDelimiter() + _dblOASpread + fieldDelimiter() + _dblTSYSpread + fieldDelimiter() +
+					_dblDiscountMargin + fieldDelimiter() + _dblAssetSwapSpread + fieldDelimiter() +
+						_dblCreditBasis + fieldDelimiter() + _dblPECS + fieldDelimiter() + _dblYield01 +
+							fieldDelimiter() + _dblMacaulayDuration + fieldDelimiter() + _dblModifiedDuration
+								+ fieldDelimiter() + _dblConvexity + fieldDelimiter() + _dblBondBasis +
+									fieldDelimiter());
 
 		if (null == _wi)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else
 			sb.append (new java.lang.String (_wi.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

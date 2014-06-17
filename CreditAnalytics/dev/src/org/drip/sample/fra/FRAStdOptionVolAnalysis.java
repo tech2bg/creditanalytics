@@ -449,19 +449,19 @@ public class FRAStdOptionVolAnalysis {
 
 		JulianDate dtForward = fra.effective();
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			fri.fullyQualifiedName(),
 			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)

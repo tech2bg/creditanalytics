@@ -82,13 +82,13 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("CashSettleParams de-serializer: Empty state");
 
 		java.lang.String strSerializedCashSettleParams = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCashSettleParams || strSerializedCashSettleParams.isEmpty())
 			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCashSettleParams,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("CashSettleParams de-serializer: Invalid reqd field set");
@@ -167,12 +167,12 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		return org.drip.analytics.daycount.Convention.Adjust (dblValue + _iLag, _strCalendar, _iAdjustMode);
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "~";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "`";
 	}
@@ -181,15 +181,14 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iLag +
-			getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iLag + fieldDelimiter());
 
 		if (null == _strCalendar || _strCalendar.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCalendar + getFieldDelimiter());
+			sb.append (_strCalendar + fieldDelimiter());
 
-		return sb.append (_iAdjustMode + getObjectTrailer()).toString().getBytes();
+		return sb.append (_iAdjustMode + objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

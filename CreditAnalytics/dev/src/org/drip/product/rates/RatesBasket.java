@@ -163,13 +163,13 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			throw new java.lang.Exception ("RatesBasket de-serializer: Empty state");
 
 		java.lang.String strSerializedRatesBasket = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedRatesBasket || strSerializedRatesBasket.isEmpty())
 			throw new java.lang.Exception ("RatesBasket de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedRatesBasket,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("RatesBasket de-serializer: Invalid reqd field set");
@@ -182,7 +182,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			_strName = astrField[1];
 
 		java.lang.String[] astrCompFixedStream = org.drip.quant.common.StringUtil.Split (astrField[2],
-			getCollectionRecordDelimiter());
+			collectionRecordDelimiter());
 
 		if (null == astrCompFixedStream || 0 == astrCompFixedStream.length)
 			throw new java.lang.Exception
@@ -201,7 +201,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		}
 
 		java.lang.String[] astrCompFloatStream = org.drip.quant.common.StringUtil.Split (astrField[3],
-			getCollectionRecordDelimiter());
+			collectionRecordDelimiter());
 
 		if (null == astrCompFloatStream || 0 == astrCompFloatStream.length)
 			throw new java.lang.Exception
@@ -242,6 +242,11 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		return aComp;
 	}
 
+	@Override public java.lang.String[] fxCurve()
+	{
+		return null;
+	}
+
 	/**
 	 * Retrieve the array of the fixed stream components
 	 * 
@@ -264,17 +269,17 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		return _aCompFloatStream;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getCollectionRecordDelimiter()
+	@Override public java.lang.String collectionRecordDelimiter()
 	{
 		return "@";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return ":";
 	}
@@ -283,15 +288,15 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _strName || _strName.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strName + getFieldDelimiter());
+			sb.append (_strName + fieldDelimiter());
 
 		if (null == _aCompFixedStream || 0 == _aCompFixedStream.length)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -303,19 +308,19 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbFixStream.append (getCollectionRecordDelimiter());
+					sbFixStream.append (collectionRecordDelimiter());
 
 				sbFixStream.append (new java.lang.String (fixStream.serialize()));
 			}
 
 			if (sbFixStream.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbFixStream.toString() + getFieldDelimiter());
+				sb.append (sbFixStream.toString() + fieldDelimiter());
 		}
 
 		if (null == _aCompFloatStream || 0 == _aCompFloatStream.length)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -327,18 +332,18 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbFloatStream.append (getCollectionRecordDelimiter());
+					sbFloatStream.append (collectionRecordDelimiter());
 
 				sbFloatStream.append (new java.lang.String (floatStream.serialize()));
 			}
 
 			if (sbFloatStream.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbFloatStream.toString() + getFieldDelimiter());
+				sb.append (sbFloatStream.toString() + fieldDelimiter());
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

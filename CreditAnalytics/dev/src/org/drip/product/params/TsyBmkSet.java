@@ -79,13 +79,13 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("TsyBmkSet de-serializer: Empty state");
 
 		java.lang.String strSerializedTsyBmkSet = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedTsyBmkSet || strSerializedTsyBmkSet.isEmpty())
 			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedTsyBmkSet,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("TsyBmkSet de-serializer: Invalid reqd field set");
@@ -107,7 +107,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 			_astrSecBmk = null;
 		else {
 			_astrSecBmk = org.drip.quant.common.StringUtil.Split (astrField[2],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null == _astrSecBmk || 0 == _astrSecBmk.length) {
 				for (int i = 0; i < _astrSecBmk.length; ++i) {
@@ -140,17 +140,17 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 		return _astrSecBmk;
 	}
 
-	@Override public java.lang.String getCollectionRecordDelimiter()
+	@Override public java.lang.String collectionRecordDelimiter()
 	{
 		return "!";
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "~";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "`";
 	}
@@ -159,8 +159,8 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strBmkPrimary +
-			getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strBmkPrimary +
+			fieldDelimiter());
 
 		if (null == _astrSecBmk || 0 == _astrSecBmk.length)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -173,7 +173,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbSB.append (getCollectionRecordDelimiter());
+					sbSB.append (collectionRecordDelimiter());
 
 				if (null != _astrSecBmk[i] && !_astrSecBmk[i].isEmpty())
 					sbSB.append (_astrSecBmk[i]);
@@ -187,7 +187,7 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

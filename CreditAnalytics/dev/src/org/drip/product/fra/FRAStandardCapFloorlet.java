@@ -99,8 +99,8 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		java.lang.String strFRI = _fra.forwardCurveName()[0];
 
-		org.drip.quant.function1D.AbstractUnivariate auFRAVolSurface = mktParams.volSurface (strFRI,
-			exercise());
+		org.drip.quant.function1D.AbstractUnivariate auFRAVolSurface = mktParams.customMetricVolSurface
+			(strFRI, exercise());
 
 		if (null == auFRAVolSurface) return null;
 

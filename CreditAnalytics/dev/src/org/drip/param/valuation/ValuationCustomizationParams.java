@@ -73,14 +73,14 @@ public class ValuationCustomizationParams extends org.drip.service.stream.Serial
 			throw new java.lang.Exception ("ValuationCustomizationParams de-serializer: Empty state");
 
 		java.lang.String strSerializedQuotingParams = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedQuotingParams || strSerializedQuotingParams.isEmpty())
 			throw new java.lang.Exception
 				("ValuationCustomizationParams de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedQuotingParams,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)
 			throw new java.lang.Exception
@@ -264,12 +264,12 @@ public class ValuationCustomizationParams extends org.drip.service.stream.Serial
 		return _setSwitchableCollateralBasket;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "~";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "`";
 	}
@@ -278,28 +278,28 @@ public class ValuationCustomizationParams extends org.drip.service.stream.Serial
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _strYieldDC || _strYieldDC.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strYieldDC + getFieldDelimiter());
+			sb.append (_strYieldDC + fieldDelimiter());
 
-		sb.append (_iYieldFrequency + getFieldDelimiter() + _bSpreadQuoted + getFieldDelimiter());
+		sb.append (_iYieldFrequency + fieldDelimiter() + _bSpreadQuoted + fieldDelimiter());
 
 		if (null == _strYieldCalendar || _strYieldCalendar.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strYieldCalendar + getFieldDelimiter());
+			sb.append (_strYieldCalendar + fieldDelimiter());
 
-		sb.append (_bYieldApplyEOMAdj + getFieldDelimiter());
+		sb.append (_bYieldApplyEOMAdj + fieldDelimiter());
 
 		if (null == _aapYield)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_aapYield.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_aapYield.serialize()) + fieldDelimiter());
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

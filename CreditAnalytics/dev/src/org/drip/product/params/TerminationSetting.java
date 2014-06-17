@@ -99,14 +99,14 @@ public class TerminationSetting extends org.drip.service.stream.Serializer imple
 			throw new java.lang.Exception ("TerminationSetting de-serializer: Empty state");
 
 		java.lang.String strSerializedTerminationSetting = strRawString.substring (0,
-			strRawString.indexOf (getObjectTrailer()));
+			strRawString.indexOf (objectTrailer()));
 
 		if (null == strSerializedTerminationSetting ||
 			strSerializedTerminationSetting.isEmpty())
 			throw new java.lang.Exception ("TerminationSetting de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedTerminationSetting, getFieldDelimiter());
+			(strSerializedTerminationSetting, fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception
@@ -148,10 +148,10 @@ public class TerminationSetting extends org.drip.service.stream.Serializer imple
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _bIsPerpetual +
-			getFieldDelimiter() + _bIsDefaulted + getFieldDelimiter() + _bHasBeenExercised);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _bIsPerpetual +
+			fieldDelimiter() + _bIsDefaulted + fieldDelimiter() + _bHasBeenExercised);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

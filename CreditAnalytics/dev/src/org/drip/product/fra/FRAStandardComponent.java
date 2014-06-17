@@ -113,13 +113,13 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Empty state");
 
 		java.lang.String strSerializedFRAComponent = strFRAComponent.substring (0, strFRAComponent.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFRAComponent || strSerializedFRAComponent.isEmpty())
 			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFRAComponent,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 9 > astrField.length)
 			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Invalid reqd field set");
@@ -272,6 +272,11 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public java.lang.String creditCurveName()
 	{
 		return "";
+	}
+
+	@Override public java.lang.String[] currencyPairCode()
+	{
+		return null;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -517,29 +522,29 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
-		sb.append (_dblNotional + getFieldDelimiter());
+		sb.append (_dblNotional + fieldDelimiter());
 
-		sb.append (_strCurrency + getFieldDelimiter());
+		sb.append (_strCurrency + fieldDelimiter());
 
-		sb.append (_strCode + getFieldDelimiter());
+		sb.append (_strCode + fieldDelimiter());
 
-		sb.append (_strCalendar + getFieldDelimiter());
+		sb.append (_strCalendar + fieldDelimiter());
 
-		sb.append (_dblEffectiveDate + getFieldDelimiter());
+		sb.append (_dblEffectiveDate + fieldDelimiter());
 
 		if (null == _fri)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_fri.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_fri.serialize()) + fieldDelimiter());
 
 		if (null == _settleParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_settleParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_settleParams.serialize()) + fieldDelimiter());
 
-		return sb.append (_dblStrike + getObjectTrailer()).toString().getBytes();
+		return sb.append (_dblStrike + objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

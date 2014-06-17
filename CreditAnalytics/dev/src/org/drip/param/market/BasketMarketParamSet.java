@@ -49,12 +49,26 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		_mapCC = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
+
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
-		_mapAUFX = null;
+		_mapAUFX = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 		_mapCQComp = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUFundingVolatity = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUForwardVolatity = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCollateralVolatity = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	/**
 	 * Construct the BasketMarketParamSet object from the map of discount curve, the map of forward curve,
@@ -120,13 +134,13 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			throw new java.lang.Exception ("BasketMarketParamSet de-serializer: Empty state");
 
 		java.lang.String strSerializedBasketMarketParams = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBasketMarketParams || strSerializedBasketMarketParams.isEmpty())
 			throw new java.lang.Exception ("BasketMarketParamSet de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedBasketMarketParams, getFieldDelimiter());
+			(strSerializedBasketMarketParams, fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("BasketMarketParamSet de-serializer: Invalid reqd field set");
@@ -139,7 +153,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[1],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -148,7 +162,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 						continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -179,7 +193,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[2],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -188,7 +202,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 						continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -220,7 +234,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -229,7 +243,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 						continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -257,14 +271,14 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[4],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 					
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -275,7 +289,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 						continue;
 
 					java.lang.String[] astrKeySet = org.drip.quant.common.StringUtil.Split (astrKVPair[0],
-						getCollectionMultiLevelKeyDelimiter());
+						collectionMultiLevelKeyDelimiter());
 
 					if (null == astrKeySet || 2 != astrKeySet.length || null == astrKeySet[0] ||
 						astrKeySet[0].isEmpty() ||
@@ -309,7 +323,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[5],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -318,7 +332,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 						continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -439,9 +453,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	@Override public org.drip.quant.function1D.AbstractUnivariate fxCurve (
 		final java.lang.String strFXCode)
 	{
-		if (null == strFXCode || strFXCode.isEmpty() || null == _mapAUFX || !_mapAUFX.containsKey
-			(strFXCode))
-			return null;
+		if (null == strFXCode || strFXCode.isEmpty() || !_mapAUFX.containsKey (strFXCode)) return null;
 
 		return _mapAUFX.get (strFXCode);
 	}
@@ -451,10 +463,6 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 		final org.drip.quant.function1D.AbstractUnivariate auFX)
 	{
 		if (null == strFXCode || strFXCode.isEmpty() || null == auFX) return false;
-
-		if (null == _mapAUFX)
-			_mapAUFX = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 		_mapAUFX.put (strFXCode, auFX);
 
@@ -477,7 +485,16 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			for (java.lang.String strCurrency : astrCurrency) {
 				if (null == strCurrency || strCurrency.isEmpty()) continue;
 
-				cmp.setFundingCurve (_mapDC.get (strCurrency));
+				if (_mapDC.containsKey (strCurrency) && !cmp.setFundingCurve (_mapDC.get (strCurrency)))
+					return null;
+
+				if (_mapAUFundingVolatity.containsKey (strCurrency) && !cmp.setFundingCurveVolSurface
+					(strCurrency, _mapAUFundingVolatity.get (strCurrency)))
+					return null;
+
+				if (_mapAUCollateralVolatity.containsKey (strCurrency) && !cmp.setCollateralCurveVolSurface
+					(strCurrency, _mapAUCollateralVolatity.get (strCurrency)))
+					return null;
 			}
 		}
 
@@ -487,43 +504,48 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 			for (java.lang.String strForwardCurve : astrForwardCurve) {
 				if (null == strForwardCurve || strForwardCurve.isEmpty()) continue;
 
-				cmp.setForwardCurve (_mapFC.get (strForwardCurve));
+				if (_mapFC.containsKey (strForwardCurve) && !cmp.setForwardCurve (_mapFC.get
+					(strForwardCurve)))
+					return null;
+
+				if (_mapAUForwardVolatity.containsKey (strForwardCurve) && !cmp.setFundingCurveVolSurface
+					(strForwardCurve, _mapAUForwardVolatity.get (strForwardCurve)))
+					return null;
 			}
 		}
 
-		java.util.Set<java.lang.String> setCcy = compRef.cashflowCurrencySet();
+		java.lang.String[] astrCurrencyPairCode = compRef.currencyPairCode();
 
-		if (null != setCcy && null != _mapAUFX && 0 != _mapAUFX.size()) {
-			for (java.lang.String strCcyOut : setCcy) {
-				for (java.lang.String strCcyIn : setCcy) {
-					java.lang.String strFXCode = strCcyOut + "/" + strCcyIn;
+		if (null != astrCurrencyPairCode && 0 != astrCurrencyPairCode.length && null != _mapAUFX && 0 !=
+			_mapAUFX.size()) {
+			for (java.lang.String strCurrencyPairCode : astrCurrencyPairCode) {
+				org.drip.quant.function1D.AbstractUnivariate auFX = _mapAUFX.get (strCurrencyPairCode);
 
-					org.drip.quant.function1D.AbstractUnivariate auFX = _mapAUFX.get (strFXCode);
-
-					if (null != auFX && !cmp.setFXCurve (strFXCode, auFX)) return null;
-				}
+				if (null != auFX && !cmp.setFXCurve (org.drip.product.params.CurrencyPair.FromCode
+					(strCurrencyPairCode), auFX))
+					return null;
 			}
 		}
 
 		return cmp;
 	}
 
-	@Override public java.lang.String getCollectionKeyValueDelimiter()
+	@Override public java.lang.String collectionKeyValueDelimiter()
 	{
 		return "]";
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "[";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "~";
 	}
 
-	@Override public java.lang.String getCollectionRecordDelimiter()
+	@Override public java.lang.String collectionRecordDelimiter()
 	{
 		return "`";
 	}
@@ -532,10 +554,10 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (VERSION + getFieldDelimiter());
+		sb.append (VERSION + fieldDelimiter());
 
 		if (null == _mapCC || null == _mapCC.entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -548,20 +570,20 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbMapCC.append (getCollectionRecordDelimiter());
+					sbMapCC.append (collectionRecordDelimiter());
 
-				sbMapCC.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
+				sbMapCC.append (me.getKey() + collectionKeyValueDelimiter() + new java.lang.String
 					(me.getValue().serialize()));
 			}
 
 			if (sbMapCC.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbMapCC.toString() + getFieldDelimiter());
+				sb.append (sbMapCC.toString() + fieldDelimiter());
 		}
 
 		if (null == _mapDC || null == _mapDC.entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -574,20 +596,20 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbMapDC.append (getCollectionRecordDelimiter());
+					sbMapDC.append (collectionRecordDelimiter());
 
-				sbMapDC.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
+				sbMapDC.append (me.getKey() + collectionKeyValueDelimiter() + new java.lang.String
 					(me.getValue().serialize()));
 			}
 
 			if (sbMapDC.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbMapDC.toString() + getFieldDelimiter());
+				sb.append (sbMapDC.toString() + fieldDelimiter());
 		}
 
 		if (null == _mapFC || null == _mapFC.entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -600,20 +622,20 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbMapFC.append (getCollectionRecordDelimiter());
+					sbMapFC.append (collectionRecordDelimiter());
 
-				sbMapFC.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
+				sbMapFC.append (me.getKey() + collectionKeyValueDelimiter() + new java.lang.String
 					(me.getValue().serialize()));
 			}
 
 			if (sbMapFC.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbMapFC.toString() + getFieldDelimiter());
+				sb.append (sbMapFC.toString() + fieldDelimiter());
 		}
 
 		if (null == _mmFixings || null == _mmFixings.entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -632,17 +654,17 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 					if (bFirstEntry)
 						bFirstEntry = false;
 					else
-						sb.append (getCollectionRecordDelimiter());
+						sb.append (collectionRecordDelimiter());
 
-					sbFixings.append (meOut.getKey().getJulian() + getCollectionMultiLevelKeyDelimiter() +
-						meIn.getKey() + getCollectionKeyValueDelimiter() + meIn.getValue());
+					sbFixings.append (meOut.getKey().getJulian() + collectionMultiLevelKeyDelimiter() +
+						meIn.getKey() + collectionKeyValueDelimiter() + meIn.getValue());
 				}
 			}
 
 			if (sbFixings.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbFixings.toString() + getFieldDelimiter());
+				sb.append (sbFixings.toString() + fieldDelimiter());
 		}
 
 		if (null == _mapCQComp || null == _mapCQComp.entrySet())
@@ -659,9 +681,9 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbMapCQComp.append (getCollectionRecordDelimiter());
+					sbMapCQComp.append (collectionRecordDelimiter());
 
-				sbMapCQComp.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
+				sbMapCQComp.append (me.getKey() + collectionKeyValueDelimiter() + new java.lang.String
 					(me.getValue().serialize()));
 			}
 
@@ -671,7 +693,7 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 				sb.append (sbMapCQComp.toString());
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

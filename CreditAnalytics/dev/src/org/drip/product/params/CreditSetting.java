@@ -118,14 +118,14 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("CreditSetting de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditSetting = strRawString.substring (0,
-			strRawString.indexOf (getObjectTrailer()));
+			strRawString.indexOf (objectTrailer()));
 
 		if (null == strSerializedCreditSetting ||
 			strSerializedCreditSetting.isEmpty())
 			throw new java.lang.Exception ("CreditSetting de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditSetting,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("CreditSetting de-serializer: Invalid reqd field set");
@@ -181,16 +181,16 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 		if (null == _strCC || _strCC.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() +
-				org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() +
+				org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strCC +
-				getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strCC +
+				fieldDelimiter());
 
-		sb.append (_iDefPayLag + getFieldDelimiter() + _dblRecovery + getFieldDelimiter() + _bUseCurveRec +
-			getFieldDelimiter() + _bAccrOnDefault);
+		sb.append (_iDefPayLag + fieldDelimiter() + _dblRecovery + fieldDelimiter() + _bUseCurveRec +
+			fieldDelimiter() + _bAccrOnDefault);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

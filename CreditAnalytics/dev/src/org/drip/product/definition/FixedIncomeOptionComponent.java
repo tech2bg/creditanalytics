@@ -188,6 +188,11 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.creditCurveName();
 	}
 
+	@Override public java.lang.String[] currencyPairCode()
+	{
+		return _comp.currencyPairCode();
+	}
+
 	/**
 	 * Generate a full list of the component measures for the full input set of market parameters
 	 * 

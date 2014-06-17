@@ -98,7 +98,7 @@ public class ForeignCollateralDomesticForex {
 
 		cmp.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
 
-		cmp.setFXCurve (cp.getCode(), auFX);
+		cmp.setFXCurve (cp, auFX);
 
 		ForeignCollateralizedDomesticForward fcff = new ForeignCollateralizedDomesticForward (
 			cp,

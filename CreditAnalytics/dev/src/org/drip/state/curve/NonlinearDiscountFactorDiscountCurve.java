@@ -193,14 +193,14 @@ public class NonlinearDiscountFactorDiscountCurve extends
 				("NonlinearDiscountFactorDiscountCurve de-serializer: Empty state");
 
 		java.lang.String strSerializedPolynomialSplineDF = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedPolynomialSplineDF || strSerializedPolynomialSplineDF.isEmpty())
 			throw new java.lang.Exception
 				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedPolynomialSplineDF, getFieldDelimiter());
+			(strSerializedPolynomialSplineDF, fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception
@@ -231,8 +231,8 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			throw new java.lang.Exception
 				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot decode state");
 
-		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate, astrField[3],
-			getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
+		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate,
+			astrField[3], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
 			throw new java.lang.Exception
 				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot decode state");
 
@@ -535,7 +535,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

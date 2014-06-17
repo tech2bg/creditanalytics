@@ -142,13 +142,13 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 			throw new java.lang.Exception ("FloatingRateIndex de-serializer: Empty state");
 
 		java.lang.String strSerializedFloatingRateIndex = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFloatingRateIndex || strSerializedFloatingRateIndex.isEmpty())
 			throw new java.lang.Exception ("FloatingRateIndex de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloatingRateIndex,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("FloatingRateIndex de-serializer: Invalid reqd field set");
@@ -235,12 +235,12 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 				!_strFullyQualifiedName.isEmpty();
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return ",";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "'";
 	}
@@ -249,11 +249,11 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strCurrency +
-			getFieldDelimiter() + _strIndex + getFieldDelimiter() + _strTenor + getFieldDelimiter() +
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strCurrency +
+			fieldDelimiter() + _strIndex + fieldDelimiter() + _strTenor + fieldDelimiter() +
 				_strFullyQualifiedName);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

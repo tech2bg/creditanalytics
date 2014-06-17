@@ -63,7 +63,7 @@ public abstract class Serializer {
 	 * @return Collection Multi-level Key Delimiter String
 	 */
 
-	public java.lang.String getCollectionMultiLevelKeyDelimiter()
+	public java.lang.String collectionMultiLevelKeyDelimiter()
 	{
 		return COLLECTION_MULTI_LEVEL_KEY_DELIMITER;
 	}
@@ -74,7 +74,7 @@ public abstract class Serializer {
 	 * @return Collection Key Value Delimiter String
 	 */
 
-	public java.lang.String getCollectionKeyValueDelimiter()
+	public java.lang.String collectionKeyValueDelimiter()
 	{
 		return COLLECTION_KEY_VALUE_DELIMITER;
 	}
@@ -85,7 +85,7 @@ public abstract class Serializer {
 	 * @return Collection Record Delimiter String
 	 */
 
-	public java.lang.String getCollectionRecordDelimiter()
+	public java.lang.String collectionRecordDelimiter()
 	{
 		return COLLECTION_RECORD_DELIMITER;
 	}
@@ -96,7 +96,7 @@ public abstract class Serializer {
 	 * @return Field Delimiter String
 	 */
 
-	public java.lang.String getFieldDelimiter()
+	public java.lang.String fieldDelimiter()
 	{
 		return FIELD_DELIMITER;
 	}
@@ -107,7 +107,7 @@ public abstract class Serializer {
 	 * @return Object Trailer String
 	 */
 
-	public java.lang.String getObjectTrailer()
+	public java.lang.String objectTrailer()
 	{
 		return OBJECT_TRAILER;
 	}

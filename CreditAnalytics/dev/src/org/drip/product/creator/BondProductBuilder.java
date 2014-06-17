@@ -595,13 +595,13 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("BondProductBuilder de-serializer: Empty state");
 
 		java.lang.String strSerializedBondProductBuilder = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBondProductBuilder || strSerializedBondProductBuilder.isEmpty())
 			throw new java.lang.Exception ("BondProductBuilder de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedBondProductBuilder, getFieldDelimiter());
+			(strSerializedBondProductBuilder, fieldDelimiter());
 
 		if (null == astrField || 32 > astrField.length)
 			throw new java.lang.Exception ("BondProductBuilder de-serializer: Invalid reqd field set");
@@ -1879,133 +1879,133 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _strISIN || _strISIN.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strISIN + getFieldDelimiter());
+			sb.append (_strISIN + fieldDelimiter());
 
 		if (null == _strCUSIP || _strCUSIP.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCUSIP + getFieldDelimiter());
+			sb.append (_strCUSIP + fieldDelimiter());
 
 		if (null == _strTicker || _strTicker.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strTicker + getFieldDelimiter());
+			sb.append (_strTicker + fieldDelimiter());
 
-		sb.append (_dblCoupon + getFieldDelimiter());
+		sb.append (_dblCoupon + fieldDelimiter());
 
 		if (null == _dtMaturity)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtMaturity.getJulian() + getFieldDelimiter());
+			sb.append (_dtMaturity.getJulian() + fieldDelimiter());
 
-		sb.append (_iCouponFreq + getFieldDelimiter());
+		sb.append (_iCouponFreq + fieldDelimiter());
 
 		if (null == _strCouponType || _strCouponType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCouponType + getFieldDelimiter());
+			sb.append (_strCouponType + fieldDelimiter());
 
 		if (null == _strMaturityType || _strMaturityType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strMaturityType + getFieldDelimiter());
+			sb.append (_strMaturityType + fieldDelimiter());
 
 		if (null == _strCalculationType || _strCalculationType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCalculationType + getFieldDelimiter());
+			sb.append (_strCalculationType + fieldDelimiter());
 
 		if (null == _strDayCountCode || _strDayCountCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strDayCountCode + getFieldDelimiter());
+			sb.append (_strDayCountCode + fieldDelimiter());
 
-		sb.append (_dblRedemptionValue + getFieldDelimiter());
+		sb.append (_dblRedemptionValue + fieldDelimiter());
 
 		if (null == _dtAnnounce)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtAnnounce.getJulian() + getFieldDelimiter());
+			sb.append (_dtAnnounce.getJulian() + fieldDelimiter());
 
 		if (null == _dtFirstSettle)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFirstSettle.getJulian() + getFieldDelimiter());
+			sb.append (_dtFirstSettle.getJulian() + fieldDelimiter());
 
 		if (null == _dtFirstCoupon)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFirstCoupon.getJulian() + getFieldDelimiter());
+			sb.append (_dtFirstCoupon.getJulian() + fieldDelimiter());
 
 		if (null == _dtInterestAccrualStart)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtInterestAccrualStart.getJulian() + getFieldDelimiter());
+			sb.append (_dtInterestAccrualStart.getJulian() + fieldDelimiter());
 
 		if (null == _dtIssue)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtIssue.getJulian() + getFieldDelimiter());
+			sb.append (_dtIssue.getJulian() + fieldDelimiter());
 
-		sb.append (_bIsCallable + getFieldDelimiter());
+		sb.append (_bIsCallable + fieldDelimiter());
 
-		sb.append (_bIsPutable + getFieldDelimiter());
+		sb.append (_bIsPutable + fieldDelimiter());
 
-		sb.append (_bIsSinkable + getFieldDelimiter());
+		sb.append (_bIsSinkable + fieldDelimiter());
 
 		if (null == _strRedemptionCurrency || _strRedemptionCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strRedemptionCurrency + getFieldDelimiter());
+			sb.append (_strRedemptionCurrency + fieldDelimiter());
 
 		if (null == _strCouponCurrency || _strCouponCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCouponCurrency + getFieldDelimiter());
+			sb.append (_strCouponCurrency + fieldDelimiter());
 
 		if (null == _strTradeCurrency || _strTradeCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strTradeCurrency + getFieldDelimiter());
+			sb.append (_strTradeCurrency + fieldDelimiter());
 
-		sb.append (_bHasBeenCalled + getFieldDelimiter());
+		sb.append (_bHasBeenCalled + fieldDelimiter());
 
 		if (null == _strFloatCouponConvention || _strFloatCouponConvention.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strFloatCouponConvention + getFieldDelimiter());
+			sb.append (_strFloatCouponConvention + fieldDelimiter());
 
-		sb.append (_dblCurrentCoupon + getFieldDelimiter());
+		sb.append (_dblCurrentCoupon + fieldDelimiter());
 
-		sb.append (_bIsFloater + getFieldDelimiter());
+		sb.append (_bIsFloater + fieldDelimiter());
 
 		if (null == _dtFinalMaturity)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFinalMaturity.getJulian() + getFieldDelimiter());
+			sb.append (_dtFinalMaturity.getJulian() + fieldDelimiter());
 
-		sb.append (_bIsPerpetual + getFieldDelimiter());
+		sb.append (_bIsPerpetual + fieldDelimiter());
 
-		sb.append (_bIsDefaulted + getFieldDelimiter());
+		sb.append (_bIsDefaulted + fieldDelimiter());
 
-		sb.append (_dblFloatSpread + getFieldDelimiter());
+		sb.append (_dblFloatSpread + fieldDelimiter());
 
 		if (null == _strRateIndex || _strRateIndex.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strRateIndex + getFieldDelimiter());
+			sb.append (_strRateIndex + fieldDelimiter());
 
 		if (null == _strIssuerSPN || _strIssuerSPN.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else
 			sb.append (_strIssuerSPN);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

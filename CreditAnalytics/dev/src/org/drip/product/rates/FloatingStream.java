@@ -443,13 +443,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			throw new java.lang.Exception ("FloatingStream de-serializer: Empty state");
 
 		java.lang.String strSerializedFloatingStream = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFloatingStream || strSerializedFloatingStream.isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloatingStream,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 12 > astrField.length)
 			throw new java.lang.Exception ("FloatingStream de-serializer: Invalid reqd field set");
@@ -527,7 +527,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			_lsCouponPeriod = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[10],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -669,6 +669,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	@Override public java.lang.String creditCurveName()
 	{
 		return "";
+	}
+
+	@Override public java.lang.String[] currencyPairCode()
+	{
+		return null;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -1198,12 +1203,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "!";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "&";
 	}
@@ -1212,40 +1217,40 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
-		sb.append (_dblNotional + getFieldDelimiter());
+		sb.append (_dblNotional + fieldDelimiter());
 
-		sb.append (_dblSpread + getFieldDelimiter());
+		sb.append (_dblSpread + fieldDelimiter());
 
 		if (null == _strCurrency || _strCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCurrency + getFieldDelimiter());
+			sb.append (_strCurrency + fieldDelimiter());
 
 		if (null == _strCode || _strCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCode + getFieldDelimiter());
+			sb.append (_strCode + fieldDelimiter());
 
-		sb.append (_dblMaturity + getFieldDelimiter());
+		sb.append (_dblMaturity + fieldDelimiter());
 
-		sb.append (_dblEffective + getFieldDelimiter());
+		sb.append (_dblEffective + fieldDelimiter());
 
 		if (null == _fri)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_fri.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_fri.serialize()) + fieldDelimiter());
 
 		if (null == _notlSchedule)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_notlSchedule.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_notlSchedule.serialize()) + fieldDelimiter());
 
 		if (null == _settleParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_settleParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_settleParams.serialize()) + fieldDelimiter());
 
 		if (null == _lsCouponPeriod)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -1260,7 +1265,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbPeriods.append (getCollectionRecordDelimiter());
+					sbPeriods.append (collectionRecordDelimiter());
 
 				sbPeriods.append (new java.lang.String (p.serialize()));
 			}
@@ -1271,9 +1276,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				sb.append (sbPeriods.toString());
 		}
 
-		sb.append (getFieldDelimiter() + _bIsReference);
+		sb.append (fieldDelimiter() + _bIsReference);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

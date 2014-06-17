@@ -284,13 +284,13 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("EmbeddedOptionSchedule de-serializer: Empty state");
 
 		java.lang.String strSerializedEmbeddedOptionSchedule = strRawString.substring (0,
-			strRawString.indexOf (getObjectTrailer()));
+			strRawString.indexOf (objectTrailer()));
 
 		if (null == strSerializedEmbeddedOptionSchedule || strSerializedEmbeddedOptionSchedule.isEmpty())
 			throw new java.lang.Exception ("EmbeddedOptionSchedule de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedEmbeddedOptionSchedule, getFieldDelimiter());
+			(strSerializedEmbeddedOptionSchedule, fieldDelimiter());
 
 		if (null == astrField || 8 > astrField.length)
 			throw new java.lang.Exception ("EmbeddedOptionSchedule de-serializer: Invalid reqd field set");
@@ -349,7 +349,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 		java.util.List<java.lang.Double> lsdblFactor = new java.util.ArrayList<java.lang.Double>();
 
 		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblFactor,
-			astrField[7], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
+			astrField[7], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
 			throw new java.lang.Exception
 				("EmbeddedOptionSchedule de-serializer: Cannot decode hazard state");
 
@@ -441,15 +441,14 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iNoticePeriod +
-			getFieldDelimiter() + _bIsPut + getFieldDelimiter() + _bFixToFloatOnExercise +
-				getFieldDelimiter() + _dblFixToFloatSpread + getFieldDelimiter() + _dblFixToFloatExerciseDate
-					+ getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iNoticePeriod +
+			fieldDelimiter() + _bIsPut + fieldDelimiter() + _bFixToFloatOnExercise + fieldDelimiter() +
+				_dblFixToFloatSpread + fieldDelimiter() + _dblFixToFloatExerciseDate + fieldDelimiter());
 
 		if (null == _strFloatIndex || _strFloatIndex.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strFloatIndex + getFieldDelimiter());
+			sb.append (_strFloatIndex + fieldDelimiter());
 
 		if (null == _adblDate || 0 == _adblDate.length || null == _adblFactor || 0 == _adblFactor.length)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -457,9 +456,9 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 			java.lang.StringBuffer sbEOS = new java.lang.StringBuffer();
 
 			for (int i = 0; i < _adblDate.length; ++i) {
-				if (0 != i) sbEOS.append (getCollectionRecordDelimiter());
+				if (0 != i) sbEOS.append (collectionRecordDelimiter());
 
-				sbEOS.append (_adblDate[i] + getCollectionKeyValueDelimiter() + _adblFactor[i]);
+				sbEOS.append (_adblDate[i] + collectionKeyValueDelimiter() + _adblFactor[i]);
 			}
 
 			if (sbEOS.toString().isEmpty())
@@ -468,7 +467,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 				sb.append (sbEOS.toString());
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

@@ -105,6 +105,16 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 		return _strName;
 	}
 
+	@Override public java.lang.String[] fxCurve()
+	{
+		java.lang.String strReferenceCurrency = _rcReference.couponCurrency()[0];
+
+		java.lang.String strDerivedCurrency = _rcDerived.couponCurrency()[0];
+
+		return new java.lang.String[] {strReferenceCurrency + "/" + strDerivedCurrency, strDerivedCurrency +
+			"/" + strReferenceCurrency};
+	}
+
 	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
 		java.util.Set<java.lang.String> setstrCurrency = new java.util.TreeSet<java.lang.String>();

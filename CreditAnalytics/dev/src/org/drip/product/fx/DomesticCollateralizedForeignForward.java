@@ -123,7 +123,7 @@ public class DomesticCollateralizedForeignForward {
 
 		if (dblValueDate > _dblMaturity) return null;
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve (_ccyPair.getCode());
+		org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve (_ccyPair);
 
 		if (null == auFX) return null;
 

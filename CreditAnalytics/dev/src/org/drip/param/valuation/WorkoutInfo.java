@@ -110,13 +110,13 @@ public class WorkoutInfo extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("WorkoutInfo de-serializer: Empty state");
 
 		java.lang.String strSerializedWorkoutInfo = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedWorkoutInfo || strSerializedWorkoutInfo.isEmpty())
 			throw new java.lang.Exception ("WorkoutInfo de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedWorkoutInfo,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("WorkoutInfo de-serializer: Invalid reqd field set");
@@ -196,10 +196,10 @@ public class WorkoutInfo extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (VERSION + getFieldDelimiter() + _dblDate + getFieldDelimiter() + _dblYield +
-			getFieldDelimiter() + _dblExerciseFactor + getFieldDelimiter() + _iWOType);
+		sb.append (VERSION + fieldDelimiter() + _dblDate + fieldDelimiter() + _dblYield + fieldDelimiter() +
+			_dblExerciseFactor + fieldDelimiter() + _iWOType);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

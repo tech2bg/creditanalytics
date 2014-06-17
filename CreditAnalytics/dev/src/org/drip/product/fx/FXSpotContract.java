@@ -85,13 +85,13 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 			throw new java.lang.Exception ("FXSpotContract de-serializer: Empty state");
 
 		java.lang.String strSerializedFXSpot = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFXSpot || strSerializedFXSpot.isEmpty())
 			throw new java.lang.Exception ("FXSpotContract de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFXSpot,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("FXSpotContract de-serializer: Invalid reqd field set");
@@ -125,10 +125,10 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _dblSpotDate +
-			getFieldDelimiter() + new java.lang.String (_ccyPair.serialize()));
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblSpotDate +
+			fieldDelimiter() + new java.lang.String (_ccyPair.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

@@ -108,7 +108,7 @@ public class RatesSetting extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("RatesSetting de-serializer: Empty state");
 
 		java.lang.String strSerializedRatesSetting = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedRatesSetting ||
 			strSerializedRatesSetting.isEmpty())
@@ -116,7 +116,7 @@ public class RatesSetting extends org.drip.service.stream.Serializer implements
 				("RatesSetting de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedRatesSetting,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception
@@ -166,11 +166,11 @@ public class RatesSetting extends org.drip.service.stream.Serializer implements
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strTradeDiscountCurve
-			+ getFieldDelimiter() + _strCouponDiscountCurve + getFieldDelimiter() +
-				_strPrincipalDiscountCurve + getFieldDelimiter() + _strRedemptionDiscountCurve);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strTradeDiscountCurve +
+			fieldDelimiter() + _strCouponDiscountCurve + fieldDelimiter() + _strPrincipalDiscountCurve +
+				fieldDelimiter() + _strRedemptionDiscountCurve);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

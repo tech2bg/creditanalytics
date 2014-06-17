@@ -100,13 +100,13 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 			throw new java.lang.Exception ("FixFloatComponent de-serializer: Empty state");
 
 		java.lang.String strSerializedFixedFloatComponent = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFixedFloatComponent || strSerializedFixedFloatComponent.isEmpty())
 			throw new java.lang.Exception ("FixFloatComponent de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedFixedFloatComponent, getFieldDelimiter());
+			(strSerializedFixedFloatComponent, fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("FixFloatComponent de-serializer: Invalid reqd field set");
@@ -246,6 +246,11 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override public java.lang.String creditCurveName()
 	{
 		return "";
+	}
+
+	@Override public java.lang.String[] currencyPairCode()
+	{
+		return null;
 	}
 
 	/**
@@ -590,12 +595,12 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		return null;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "{";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "^";
 	}
@@ -604,19 +609,19 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _fixReference)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_fixReference.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_fixReference.serialize()) + fieldDelimiter());
 
 		if (null == _floatDerived)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (new java.lang.String (_floatDerived.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

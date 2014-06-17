@@ -495,19 +495,19 @@ public class STIROption {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			stir.componentName() + "SwapRateVolatility",
 			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			stir.componentName() + "SwapRateExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			stir.componentName() + "SwapRateToSwapRateExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)

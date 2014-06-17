@@ -110,12 +110,12 @@ public class Static extends Base {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("Static de-serializer: Empty state");
 
-		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strFH || strFH.isEmpty())
 			throw new java.lang.Exception ("Static de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, fieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
 			throw new java.lang.Exception ("Static de-serialize: Invalid number of fields");
@@ -134,12 +134,12 @@ public class Static extends Base {
 		return _dblDate;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "^";
 	}
@@ -148,9 +148,9 @@ public class Static extends Base {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (new java.lang.String (super.serialize()) + getFieldDelimiter() + _dblDate);
+		sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _dblDate);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

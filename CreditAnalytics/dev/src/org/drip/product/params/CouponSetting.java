@@ -117,13 +117,13 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("CouponSetting de-serializer: Empty state");
 
 		java.lang.String strSerializedCouponSetting = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCouponSetting || strSerializedCouponSetting.isEmpty())
 			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCouponSetting,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("CouponSetting de-serializer: Invalid reqd field set");
@@ -202,23 +202,23 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _fsCoupon)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_fsCoupon.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_fsCoupon.serialize()) + fieldDelimiter());
 
-		sb.append (_dblCoupon + getFieldDelimiter());
+		sb.append (_dblCoupon + fieldDelimiter());
 
 		if (null == _strCouponType || _strCouponType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCouponType + getFieldDelimiter());
+			sb.append (_strCouponType + fieldDelimiter());
 
-		sb.append (_dblCouponCeiling + getFieldDelimiter() + _dblCouponFloor);
+		sb.append (_dblCouponCeiling + fieldDelimiter() + _dblCouponFloor);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

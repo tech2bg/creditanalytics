@@ -118,13 +118,13 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Empty state");
 
-		java.lang.String strFXBasis = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strFXBasis = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strFXBasis || strFXBasis.isEmpty())
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFXBasis,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Invalid reqd field set");
@@ -155,7 +155,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
 
 		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
-			astrField[4], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
+			astrField[4], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
 			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
 
 		if (0 == lsdblDate.size() || 0 == lsdblBasis.size() || lsdblDate.size() != lsdblBasis.size())
@@ -426,19 +426,18 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _dblSpotDate +
-			getFieldDelimiter() + _dblFXSpot + getFieldDelimiter() + _bIsFXBasisBootstrapped +
-				getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblSpotDate +
+			fieldDelimiter() + _dblFXSpot + fieldDelimiter() + _bIsFXBasisBootstrapped + fieldDelimiter());
 
 		for (int i = 0; i < _adblDate.length; ++i) {
-			if (0 != i) sb.append (getCollectionRecordDelimiter());
+			if (0 != i) sb.append (collectionRecordDelimiter());
 
-			sb.append (_adblDate[i] + getCollectionKeyValueDelimiter() + _adblFXBasis[i]);
+			sb.append (_adblDate[i] + collectionKeyValueDelimiter() + _adblFXBasis[i]);
 		}
 
-		sb.append (getFieldDelimiter() + new java.lang.String (_cp.serialize()));
+		sb.append (fieldDelimiter() + new java.lang.String (_cp.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

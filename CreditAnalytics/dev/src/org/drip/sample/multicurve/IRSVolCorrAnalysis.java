@@ -470,19 +470,19 @@ public class IRSVolCorrAnalysis {
 		for (org.drip.analytics.period.CashflowPeriod period : irs.getFixedStream().cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.getStartDate());
 
-			cmp.setVolSurface (
+			cmp.setCustomMetricVolSurface (
 				fri.fullyQualifiedName(),
 				dtFRADate,
 				new FlatUnivariate (dblFRIVol)
 			);
 
-			cmp.setVolSurface (
+			cmp.setCustomMetricVolSurface (
 				"ForwardToDomesticExchangeVolatility",
 				dtFRADate,
 				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 			);
 
-			cmp.setVolSurface (
+			cmp.setCustomMetricVolSurface (
 				"FRIForwardToDomesticExchangeCorrelation",
 				dtFRADate,
 				new FlatUnivariate (dblFRIQuantoExchangeCorr)

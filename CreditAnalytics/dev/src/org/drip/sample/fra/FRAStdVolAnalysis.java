@@ -444,19 +444,19 @@ public class FRAStdVolAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			fri.fullyQualifiedName(),
 			fra.effective(),
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			fra.effective(),
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setVolSurface (
+		cmp.setCustomMetricVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			fra.effective(),
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)

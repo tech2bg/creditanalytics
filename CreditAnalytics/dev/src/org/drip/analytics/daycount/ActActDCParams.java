@@ -64,12 +64,12 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("ActActDCParams de-serializer: Empty state");
 
-		java.lang.String strAAP = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strAAP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strAAP || strAAP.isEmpty())
 			throw new java.lang.Exception ("ActActDCParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strAAP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strAAP, fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("ActActDCParams de-serialize: Invalid number of fields");
@@ -155,10 +155,10 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iFreq +
-			getFieldDelimiter() + _dblStart + getFieldDelimiter() + _dblEnd);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iFreq + fieldDelimiter()
+			+ _dblStart + fieldDelimiter() + _dblEnd);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

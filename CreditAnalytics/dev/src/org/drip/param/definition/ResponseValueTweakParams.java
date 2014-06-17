@@ -107,13 +107,13 @@ public class ResponseValueTweakParams extends org.drip.service.stream.Serializer
 			throw new java.lang.Exception ("ResponseValueTweakParams de-serializer: Empty state");
 
 		java.lang.String strSerializedNodeTweakParams = strRawString.substring (0, strRawString.indexOf
-			(super.getObjectTrailer()));
+			(super.objectTrailer()));
 
 		if (null == strSerializedNodeTweakParams || strSerializedNodeTweakParams.isEmpty())
 			throw new java.lang.Exception ("ResponseValueTweakParams de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNodeTweakParams,
-			super.getFieldDelimiter());
+			super.fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("ResponseValueTweakParams de-serializer: Invalid reqd field set");
@@ -146,10 +146,10 @@ public class ResponseValueTweakParams extends org.drip.service.stream.Serializer
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (VERSION + super.getFieldDelimiter() + _iTweakNode +  super.getFieldDelimiter() +
-			_dblTweakAmount +  super.getFieldDelimiter() + _bIsTweakProportional);
+		sb.append (VERSION + super.fieldDelimiter() + _iTweakNode +  super.fieldDelimiter() + _dblTweakAmount
+			+  super.fieldDelimiter() + _bIsTweakProportional);
 
-		return sb.append (super.getObjectTrailer()).toString().getBytes();
+		return sb.append (super.objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

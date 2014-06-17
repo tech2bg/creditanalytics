@@ -99,20 +99,20 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("CurrencySet de-serializer: Empty state");
 
 		java.lang.String strSerializedCurrencySet = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCurrencySet || strSerializedCurrencySet.isEmpty())
 			throw new java.lang.Exception ("CurrencySet de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCurrencySet,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("CurrencySet de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
-		java.lang.String strCollectionRecordDelimiter = getCollectionRecordDelimiter();
+		java.lang.String strCollectionRecordDelimiter = collectionRecordDelimiter();
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
@@ -175,7 +175,7 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		java.lang.String strCollectionRecordDelimiter = getCollectionRecordDelimiter();
+		java.lang.String strCollectionRecordDelimiter = collectionRecordDelimiter();
 
 		java.lang.String strCouponCurrencyArray = org.drip.quant.common.StringUtil.StringArrayToString
 			(_astrCouponCurrency, strCollectionRecordDelimiter,
@@ -191,10 +191,10 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 		strPrincipalCurrencyArray = null == strPrincipalCurrencyArray || strPrincipalCurrencyArray.isEmpty()
 			? org.drip.service.stream.Serializer.NULL_SER_STRING : strPrincipalCurrencyArray;
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + strCouponCurrencyArray
-			+ getFieldDelimiter() + strPrincipalCurrencyArray);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + strCouponCurrencyArray +
+			fieldDelimiter() + strPrincipalCurrencyArray);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

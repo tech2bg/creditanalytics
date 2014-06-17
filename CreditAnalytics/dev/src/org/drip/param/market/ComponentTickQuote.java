@@ -100,13 +100,13 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Empty state");
 
 		java.lang.String strSerializedComponentTickQuote = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedComponentTickQuote || strSerializedComponentTickQuote.isEmpty())
 			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedComponentTickQuote, getFieldDelimiter());
+			(strSerializedComponentTickQuote, fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Invalid reqd field set");
@@ -139,17 +139,17 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 			_bIsMark = new java.lang.Boolean (astrField[5]);
 	}
 
-	@Override public java.lang.String getCollectionKeyValueDelimiter()
+	@Override public java.lang.String collectionKeyValueDelimiter()
 	{
 		return "]";
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "[";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "~";
 	}
@@ -213,20 +213,20 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strProductID +
-			getFieldDelimiter() + new java.lang.String (_cq.serialize()) + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strProductID +
+			fieldDelimiter() + new java.lang.String (_cq.serialize()) + fieldDelimiter());
 
 		if (null == _strSource)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strSource + getFieldDelimiter());
+			sb.append (_strSource + fieldDelimiter());
 
 		if (null == _strCounterParty)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCounterParty + getFieldDelimiter());
+			sb.append (_strCounterParty + fieldDelimiter());
 
-		return sb.append (_bIsMark + getFieldDelimiter()).append (getObjectTrailer()).toString().getBytes();
+		return sb.append (_bIsMark + fieldDelimiter()).append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

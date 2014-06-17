@@ -96,12 +96,12 @@ public class Variable extends Base {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("Variable de-serializer: Empty state");
 
-		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strFH || strFH.isEmpty())
 			throw new java.lang.Exception ("Variable de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("Variable de-serialize: Invalid number of fields");
@@ -165,12 +165,12 @@ public class Variable extends Base {
 		return dblDate;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "^";
 	}
@@ -180,15 +180,15 @@ public class Variable extends Base {
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 		if (null != _wkend)
-			sb.append (new java.lang.String (super.serialize()) + getFieldDelimiter() + _iMonth +
-				getFieldDelimiter() + _iWeekDay + getFieldDelimiter() + _iWeekInMonth + getFieldDelimiter() +
-					_bFromFront + getFieldDelimiter() + _wkend.serialize());
+			sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _iMonth +
+				fieldDelimiter() + _iWeekDay + fieldDelimiter() + _iWeekInMonth + fieldDelimiter() +
+					_bFromFront + fieldDelimiter() + _wkend.serialize());
 		else
-			sb.append (new java.lang.String (super.serialize()) + getFieldDelimiter() + _iMonth +
-				getFieldDelimiter() + _iWeekDay + getFieldDelimiter() + _iWeekInMonth + getFieldDelimiter() +
-					_bFromFront + getFieldDelimiter() + org.drip.service.stream.Serializer.NULL_SER_STRING);
+			sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _iMonth +
+				fieldDelimiter() + _iWeekDay + fieldDelimiter() + _iWeekInMonth + fieldDelimiter() +
+					_bFromFront + fieldDelimiter() + org.drip.service.stream.Serializer.NULL_SER_STRING);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

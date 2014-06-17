@@ -127,13 +127,13 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 			throw new java.lang.Exception ("NotionalSetting de-serializer: Empty state");
 
 		java.lang.String strSerializedNotionalSetting = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedNotionalSetting || strSerializedNotionalSetting.isEmpty())
 			throw new java.lang.Exception ("NotionalSetting de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNotionalSetting,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("NotionalSetting de-serializer: Invalid reqd field set");
@@ -178,17 +178,16 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 		if (null == _fsPrincipalOutstanding)
-			sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() +
-				org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter() + _dblNotional +
-					getFieldDelimiter() + _bPriceOffOriginalNotional + getFieldDelimiter() +
+			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() +
+				org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter() + _dblNotional +
+					fieldDelimiter() + _bPriceOffOriginalNotional + fieldDelimiter() +
 						_iPeriodAmortizationMode);
 		else
-			sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + new
-				java.lang.String (_fsPrincipalOutstanding.serialize()) + getFieldDelimiter() + _dblNotional +
-					getFieldDelimiter() + _bPriceOffOriginalNotional + getFieldDelimiter() +
-						_iPeriodAmortizationMode);
+			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + new java.lang.String
+				(_fsPrincipalOutstanding.serialize()) + fieldDelimiter() + _dblNotional + fieldDelimiter() +
+					_bPriceOffOriginalNotional + fieldDelimiter() + _iPeriodAmortizationMode);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public boolean validate()

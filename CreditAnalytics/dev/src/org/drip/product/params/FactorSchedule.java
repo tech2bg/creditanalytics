@@ -192,13 +192,13 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("FactorSchedule de-serializer: Empty state");
 
 		java.lang.String strSerializedFactorSchedule = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFactorSchedule || strSerializedFactorSchedule.isEmpty())
 			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFactorSchedule,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
 			throw new java.lang.Exception ("FactorSchedule de-serializer: Invalid reqd field set");
@@ -214,7 +214,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		java.util.List<java.lang.Double> lsdblFactor = new java.util.ArrayList<java.lang.Double>();
 
 		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblFactor,
-			astrField[1], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
+			astrField[1], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
 			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot decode hazard state");
 
 		if (0 == lsdblDate.size() || 0 == lsdblFactor.size() || lsdblDate.size() != lsdblFactor.size())
@@ -340,12 +340,12 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		return _adblFactor;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "`";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "~";
 	}
@@ -354,19 +354,19 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _adblDate || 0 == _adblDate.length || null == _adblFactor || 0 == _adblFactor.length)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else {
 			for (int i = 0; i < _adblDate.length; ++i) {
-				if (0 != i) sb.append (getCollectionRecordDelimiter());
+				if (0 != i) sb.append (collectionRecordDelimiter());
 
-				sb.append (_adblDate[i] + getCollectionKeyValueDelimiter() + _adblFactor[i]);
+				sb.append (_adblDate[i] + collectionKeyValueDelimiter() + _adblFactor[i]);
 			}
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

@@ -147,13 +147,13 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			throw new java.lang.Exception ("ForwardHazardCreditCurve de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditCurve = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCreditCurve || strSerializedCreditCurve.isEmpty())
 			throw new java.lang.Exception ("ForwardHazardCreditCurve de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditCurve,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("ForwardHazardCreditCurve de-serializer: Invalid reqd field set");
@@ -184,7 +184,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 				("ForwardHazardCreditCurve de-serializer: Cannot decode hazard state");
 
 		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblHazardDate, lsdblHazardRate,
-			astrField[3], getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
+			astrField[3], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
 			throw new java.lang.Exception
 				("ForwardHazardCreditCurve de-serializer: Cannot decode hazard state");
 
@@ -213,8 +213,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 				("ForwardHazardCreditCurve de-serializer: Cannot decode recovery state");
 
 		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblRecoveryDate,
-			lsdblRecoveryRate, astrField[4], getCollectionRecordDelimiter(),
-				getCollectionKeyValueDelimiter()))
+			lsdblRecoveryRate, astrField[4], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
 			throw new java.lang.Exception
 				("ForwardHazardCreditCurve de-serializer: Cannot decode recovery state");
 
@@ -607,26 +606,26 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		if (null == strNameSer || strNameSer.isEmpty())
 			strNameSer = org.drip.service.stream.Serializer.NULL_SER_STRING;
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + strNameSer +
-			getFieldDelimiter() + _dblEpochDate + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + strNameSer +
+			fieldDelimiter() + _dblEpochDate + fieldDelimiter());
 
 		for (int i = 0; i < _adblHazardDate.length; ++i) {
-			if (0 != i) sb.append (getCollectionRecordDelimiter());
+			if (0 != i) sb.append (collectionRecordDelimiter());
 
-			sb.append (_adblHazardDate[i] + getCollectionKeyValueDelimiter() + _adblHazardRate[i]);
+			sb.append (_adblHazardDate[i] + collectionKeyValueDelimiter() + _adblHazardRate[i]);
 		}
 
-		sb.append (getFieldDelimiter());
+		sb.append (fieldDelimiter());
 
 		for (int i = 0; i < _adblRecoveryDate.length; ++i) {
-			if (0 != i) sb.append (getCollectionRecordDelimiter());
+			if (0 != i) sb.append (collectionRecordDelimiter());
 
-			sb.append (_adblRecoveryDate[i] + getCollectionKeyValueDelimiter() + _adblRecoveryRate[i]);
+			sb.append (_adblRecoveryDate[i] + collectionKeyValueDelimiter() + _adblRecoveryRate[i]);
 		}
 
-		sb.append (getFieldDelimiter() + _dblSpecificDefaultDate);
+		sb.append (fieldDelimiter() + _dblSpecificDefaultDate);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

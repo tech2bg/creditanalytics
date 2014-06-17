@@ -281,13 +281,13 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			throw new java.lang.Exception ("CDSBasket de-serializer: Empty state");
 
 		java.lang.String strSerializedBasketDefaultSwap = strRawString.substring (0,
-			strRawString.indexOf (getObjectTrailer()));
+			strRawString.indexOf (objectTrailer()));
 
 		if (null == strSerializedBasketDefaultSwap || strSerializedBasketDefaultSwap.isEmpty())
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketDefaultSwap,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
 			throw new java.lang.Exception ("CDSBasket de-serializer: Invalid reqd field set");
@@ -331,7 +331,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component array");
 
 		java.lang.String[] astrCDS = org.drip.quant.common.StringUtil.Split (astrField[6],
-			getCollectionRecordDelimiter());
+			collectionRecordDelimiter());
 
 		if (null == astrCDS || 0 == astrCDS.length)
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component array");
@@ -361,7 +361,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			_lPeriods = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[8],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -382,7 +382,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component weights");
 
 		java.lang.String[] astrWeights = org.drip.quant.common.StringUtil.Split (astrField[9],
-			getCollectionRecordDelimiter());
+			collectionRecordDelimiter());
 
 		if (null == astrWeights || 0 == astrWeights.length)
 			throw new java.lang.Exception ("CDSBasket de-serializer: Cannot locate component weights");
@@ -404,22 +404,27 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
+	@Override public java.lang.String[] fxCurve()
+	{
+		return null;
+	}
+
 	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
 		return _aComp;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getCollectionRecordDelimiter()
+	@Override public java.lang.String collectionRecordDelimiter()
 	{
 		return "@";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return ":";
 	}
@@ -428,18 +433,18 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _dblCoupon +
-			getFieldDelimiter() + _dblNotional + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblCoupon +
+			fieldDelimiter() + _dblNotional + fieldDelimiter());
 
 		if (null == _strName || _strName.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strName + getFieldDelimiter());
+			sb.append (_strName + fieldDelimiter());
 
-		sb.append (_dblMaturity + getFieldDelimiter() + _dblEffective + getFieldDelimiter());
+		sb.append (_dblMaturity + fieldDelimiter() + _dblEffective + fieldDelimiter());
 
 		if (null == _aComp || 0 == _aComp.length)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -455,24 +460,24 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbCDS.append (getCollectionRecordDelimiter());
+					sbCDS.append (collectionRecordDelimiter());
 
 				sbCDS.append (new java.lang.String (cds.serialize()));
 			}
 
 			if (sbCDS.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbCDS.toString() + getFieldDelimiter());
+				sb.append (sbCDS.toString() + fieldDelimiter());
 		}
 
 		if (null == _notlSchedule)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_notlSchedule.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_notlSchedule.serialize()) + fieldDelimiter());
 
 		if (null == _lPeriods)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -484,15 +489,15 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbPeriods.append (getCollectionRecordDelimiter());
+					sbPeriods.append (collectionRecordDelimiter());
 
 				sbPeriods.append (new java.lang.String (p.serialize()));
 			}
 
 			if (sbPeriods.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbPeriods.toString() + getFieldDelimiter());
+				sb.append (sbPeriods.toString() + fieldDelimiter());
 		}
 
 		if (null == _adblWeight || 0 == _adblWeight.length)
@@ -506,7 +511,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbWeights.append (getCollectionRecordDelimiter());
+					sbWeights.append (collectionRecordDelimiter());
 
 				sbWeights.append (dblWeight);
 			}
@@ -517,7 +522,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 				sb.append (sbWeights.toString());
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

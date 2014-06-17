@@ -101,13 +101,13 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Empty state");
 
 		java.lang.String strSerializedInterestRateSwap = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedInterestRateSwap || strSerializedInterestRateSwap.isEmpty())
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedInterestRateSwap,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Invalid reqd field set");
@@ -245,6 +245,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override public java.lang.String creditCurveName()
 	{
 		return "";
+	}
+
+	@Override public java.lang.String[] currencyPairCode()
+	{
+		return null;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -725,12 +730,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return prwc.updateValue (dblUpfront) ? prwc : null;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "{";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "^";
 	}
@@ -739,19 +744,19 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _fixStream)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_fixStream.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_fixStream.serialize()) + fieldDelimiter());
 
 		if (null == _floatStream)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (new java.lang.String (_floatStream.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

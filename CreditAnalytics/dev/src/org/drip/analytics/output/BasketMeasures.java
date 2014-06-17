@@ -210,13 +210,13 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("BasketMeasures de-serializer: Empty state");
 
 		java.lang.String strSerializedBasketOutput = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBasketOutput || strSerializedBasketOutput.isEmpty())
 			throw new java.lang.Exception ("BasketMeasures de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketOutput,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 20 > astrField.length)
 			throw new java.lang.Exception ("BasketMeasures de-serializer: Invalid reqd field set");
@@ -233,265 +233,265 @@ public class BasketMeasures extends org.drip.service.stream.Serializer {
 			_mBase = null;
 		else
 			_mBase = org.drip.quant.common.CollectionUtil.FlatStringTo2DSDMap (astrField[2],
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionKeyValueDelimiter(), collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[3] || astrField[3].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[3]))
 			_mFlatRRDelta = null;
 		else
 			_mFlatRRDelta = org.drip.quant.common.CollectionUtil.FlatStringTo2DSDMap (astrField[3],
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionKeyValueDelimiter(), collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[4] || astrField[4].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[4]))
 			_mFlatRRGamma = null;
 		else
 			_mFlatRRGamma = org.drip.quant.common.CollectionUtil.FlatStringTo2DSDMap (astrField[4],
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionKeyValueDelimiter(), collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[5] || astrField[5].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[5]))
 			_mFlatIRDelta = null;
 		else
 			_mFlatIRDelta = org.drip.quant.common.CollectionUtil.FlatStringTo2DSDMap (astrField[5],
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionKeyValueDelimiter(), collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[6] || astrField[6].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[6]))
 			_mFlatIRGamma = null;
 		else
 			_mFlatIRGamma = org.drip.quant.common.CollectionUtil.FlatStringTo2DSDMap (astrField[6],
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionKeyValueDelimiter(), collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[7] || astrField[7].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[7]))
 			_mFlatCreditDelta = null;
 		else
 			_mFlatCreditDelta = org.drip.quant.common.CollectionUtil.FlatStringTo2DSDMap (astrField[7],
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionKeyValueDelimiter(), collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[8] || astrField[8].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[8]))
 			_mFlatCreditGamma = null;
 		else
 			_mFlatCreditGamma = org.drip.quant.common.CollectionUtil.FlatStringTo2DSDMap (astrField[8],
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionKeyValueDelimiter(), collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[9] || astrField[9].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[9]))
 			_mmIRDelta = null;
 		else
 			_mmIRDelta = org.drip.quant.common.CollectionUtil.FlatStringTo3DSDMap (astrField[9],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[10] || astrField[10].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[10]))
 			_mmIRGamma = null;
 		else
 			_mmIRGamma = org.drip.quant.common.CollectionUtil.FlatStringTo3DSDMap (astrField[10],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[11] || astrField[11].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[11]))
 			_mmCreditDelta = null;
 		else
 			_mmCreditDelta = org.drip.quant.common.CollectionUtil.FlatStringTo3DSDMap (astrField[11],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[12] || astrField[12].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[12]))
 			_mmCreditGamma = null;
 		else
 			_mmCreditGamma = org.drip.quant.common.CollectionUtil.FlatStringTo3DSDMap (astrField[12],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[13] || astrField[13].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[13]))
 			_mmRRDelta = null;
 		else
 			_mmRRDelta = org.drip.quant.common.CollectionUtil.FlatStringTo3DSDMap (astrField[13],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[14] || astrField[14].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[14]))
 			_mmRRGamma = null;
 		else
 			_mmRRGamma = org.drip.quant.common.CollectionUtil.FlatStringTo3DSDMap (astrField[14],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[15] || astrField[15].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[15]))
 			_mmmIRTenorDelta = null;
 		else
 			_mmmIRTenorDelta = org.drip.quant.common.CollectionUtil.FlatStringTo4DSDMap (astrField[15],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[16] || astrField[16].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[16]))
 			_mmmIRTenorGamma = null;
 		else
 			_mmmIRTenorGamma = org.drip.quant.common.CollectionUtil.FlatStringTo4DSDMap (astrField[16],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[17] || astrField[17].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[17]))
 			_mmmCreditTenorDelta = null;
 		else
 			_mmmCreditTenorDelta = org.drip.quant.common.CollectionUtil.FlatStringTo4DSDMap (astrField[17],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[18] || astrField[18].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[18]))
 			_mmmCreditTenorGamma = null;
 		else
 			_mmmCreditTenorGamma = org.drip.quant.common.CollectionUtil.FlatStringTo4DSDMap (astrField[18],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 
 		if (null == astrField[19] || astrField[19].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[19]))
 			_mmCustom = null;
 		else
 			_mmCustom = org.drip.quant.common.CollectionUtil.FlatStringTo3DSDMap (astrField[19],
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter(), true, NULL_SER_STRING);
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter(), true, NULL_SER_STRING);
 	}
 
 	@Override public byte[] serialize()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (VERSION + getFieldDelimiter() + _dblCalcTime + getFieldDelimiter());
+		sb.append (VERSION + fieldDelimiter() + _dblCalcTime + fieldDelimiter());
 
 		if (null == _mBase || 0 == _mBase.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.TwoDSDMapToFlatString (_mBase,
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionKeyValueDelimiter(), collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mFlatRRDelta || 0 == _mFlatRRDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.TwoDSDMapToFlatString (_mFlatRRDelta,
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionKeyValueDelimiter(), collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mFlatRRGamma || 0 == _mFlatRRGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.TwoDSDMapToFlatString (_mFlatRRGamma,
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionKeyValueDelimiter(), collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mFlatIRDelta || 0 == _mFlatIRDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.TwoDSDMapToFlatString (_mFlatIRDelta,
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionKeyValueDelimiter(), collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mFlatIRGamma || 0 == _mFlatIRGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.TwoDSDMapToFlatString (_mFlatIRGamma,
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionKeyValueDelimiter(), collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mFlatCreditDelta || 0 == _mFlatCreditDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.TwoDSDMapToFlatString (_mFlatCreditDelta,
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionKeyValueDelimiter(), collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mFlatCreditGamma || 0 == _mFlatCreditGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.TwoDSDMapToFlatString (_mFlatCreditGamma,
-				getCollectionKeyValueDelimiter(), getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionKeyValueDelimiter(), collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmIRDelta || 0 == _mmIRDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.ThreeDSDMapToFlatString (_mmIRDelta,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmIRGamma || 0 == _mmIRGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.ThreeDSDMapToFlatString (_mmIRGamma,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmCreditDelta || 0 == _mmCreditDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.ThreeDSDMapToFlatString (_mmCreditDelta,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmCreditGamma || 0 == _mmCreditGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.ThreeDSDMapToFlatString (_mmCreditGamma,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmRRDelta || 0 == _mmRRDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.ThreeDSDMapToFlatString (_mmRRDelta,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmRRGamma || 0 == _mmRRGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.ThreeDSDMapToFlatString (_mmRRGamma,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmmIRTenorDelta || 0 == _mmmIRTenorDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.FourDSDMapToFlatString (_mmmIRTenorDelta,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmmIRTenorGamma || 0 == _mmmIRTenorGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.FourDSDMapToFlatString (_mmmIRTenorGamma,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmmCreditTenorDelta || 0 == _mmmCreditTenorDelta.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.FourDSDMapToFlatString (_mmmCreditTenorDelta,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmmCreditTenorGamma || 0 == _mmmCreditTenorGamma.size())
-			sb.append (NULL_SER_STRING + getFieldDelimiter());
+			sb.append (NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.FourDSDMapToFlatString (_mmmCreditTenorGamma,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()) + getFieldDelimiter());
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()) + fieldDelimiter());
 
 		if (null == _mmCustom || 0 == _mmCustom.size())
 			sb.append (NULL_SER_STRING);
 		else
 			sb.append (org.drip.quant.common.CollectionUtil.ThreeDSDMapToFlatString (_mmCustom,
-				getCollectionMultiLevelKeyDelimiter(), getCollectionKeyValueDelimiter(),
-					getCollectionRecordDelimiter()));
+				collectionMultiLevelKeyDelimiter(), collectionKeyValueDelimiter(),
+					collectionRecordDelimiter()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

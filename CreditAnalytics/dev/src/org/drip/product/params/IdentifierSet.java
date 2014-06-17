@@ -106,13 +106,13 @@ public class IdentifierSet extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("IdentifierSet de-serializer: Empty state");
 
 		java.lang.String strSerializedIdentifierSet = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedIdentifierSet || strSerializedIdentifierSet.isEmpty())
 			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedIdentifierSet,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("IdentifierSet de-serializer: Invalid reqd field set");
@@ -163,11 +163,10 @@ public class IdentifierSet extends org.drip.service.stream.Serializer implements
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strISIN +
-			getFieldDelimiter() + _strCUSIP + getFieldDelimiter() + _strID + getFieldDelimiter() +
-				_strTicker);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strISIN +
+			fieldDelimiter() + _strCUSIP + fieldDelimiter() + _strID + fieldDelimiter() + _strTicker);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

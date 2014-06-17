@@ -89,13 +89,13 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 			throw new java.lang.Exception ("YieldInterpreter de-serializer: Empty state");
 
 		java.lang.String strSerializedYieldInterpreter = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedYieldInterpreter || strSerializedYieldInterpreter.isEmpty())
 			throw new java.lang.Exception ("YieldInterpreter de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedYieldInterpreter,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("YieldInterpreter de-serializer: Invalid reqd field set");
@@ -190,12 +190,12 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 		return _strCalendar;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "~";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "`";
 	}
@@ -204,28 +204,28 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _strDC || _strDC.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strDC + getFieldDelimiter());
+			sb.append (_strDC + fieldDelimiter());
 
-		sb.append (_iFreq + getFieldDelimiter());
+		sb.append (_iFreq + fieldDelimiter());
 
 		if (null == _strCalendar || _strCalendar.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCalendar + getFieldDelimiter());
+			sb.append (_strCalendar + fieldDelimiter());
 
-		sb.append (_bApplyEOMAdj + getFieldDelimiter());
+		sb.append (_bApplyEOMAdj + fieldDelimiter());
 
 		if (null == _aap)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_aap.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_aap.serialize()) + fieldDelimiter());
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

@@ -73,13 +73,13 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("CreditAnalyticsRequest de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditAnalyticsRequest = strRawString.substring (0,
-			strRawString.indexOf (getObjectTrailer()));
+			strRawString.indexOf (objectTrailer()));
 
 		if (null == strSerializedCreditAnalyticsRequest || strSerializedCreditAnalyticsRequest.isEmpty())
 			throw new java.lang.Exception ("CreditAnalyticsRequest de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedCreditAnalyticsRequest, getFieldDelimiter());
+			(strSerializedCreditAnalyticsRequest, fieldDelimiter());
 
 		if (null == astrField || 8 > astrField.length)
 			throw new java.lang.Exception ("CreditAnalyticsRequest de-serializer: Invalid reqd field set");
@@ -252,12 +252,12 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		return _quotingParams;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "(";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return ")";
 	}
@@ -266,38 +266,38 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
-		sb.append (_strID + getFieldDelimiter());
+		sb.append (_strID + fieldDelimiter());
 
 		if (null == _comp)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_comp.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_comp.serialize()) + fieldDelimiter());
 
 		if (null == _valParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_valParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_valParams.serialize()) + fieldDelimiter());
 
 		if (null == _pricerParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_pricerParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_pricerParams.serialize()) + fieldDelimiter());
 
 		if (null == _cmp)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_cmp.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_cmp.serialize()) + fieldDelimiter());
 
 		if (null == _quotingParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_quotingParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_quotingParams.serialize()) + fieldDelimiter());
 
 		sb.append (_strTime);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

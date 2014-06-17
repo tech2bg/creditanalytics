@@ -146,13 +146,13 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("PricerParams de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditCurve = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCreditCurve || strSerializedCreditCurve.isEmpty())
 			throw new java.lang.Exception ("PricerParams de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditCurve,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("PricerParams de-serializer: Invalid reqd field set");
@@ -188,12 +188,12 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 		_iDiscretizationScheme = new java.lang.Integer (astrField[4]);
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "!";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "&";
 	}
@@ -202,17 +202,17 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iUnitSize +
-			getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iUnitSize +
+			fieldDelimiter());
 
 		if (null == _calibParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_calibParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_calibParams.serialize()) + fieldDelimiter());
 
-		sb.append (_bSurvToPayDate + getFieldDelimiter() + _iDiscretizationScheme + getFieldDelimiter());
+		sb.append (_bSurvToPayDate + fieldDelimiter() + _iDiscretizationScheme + fieldDelimiter());
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

@@ -74,13 +74,13 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("Base de-serializer: Empty state");
 
 		java.lang.String strHoliday = strRawString.substring (0, strRawString.indexOf
-			(super.getObjectTrailer()));
+			(super.objectTrailer()));
 
 		if (null == strHoliday || strHoliday.isEmpty())
 			throw new java.lang.Exception ("Base de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strHoliday,
-			super.getFieldDelimiter());
+			super.fieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
 			throw new java.lang.Exception ("Base de-serialize: Invalid number of fields");
@@ -156,8 +156,8 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + super.getFieldDelimiter() + _strDescription);
+		sb.append (org.drip.service.stream.Serializer.VERSION + super.fieldDelimiter() + _strDescription);
 
-		return sb.append (super.getObjectTrailer()).toString().getBytes();
+		return sb.append (super.objectTrailer()).toString().getBytes();
 	}
 }

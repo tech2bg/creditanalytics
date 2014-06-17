@@ -96,13 +96,13 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 			throw new java.lang.Exception ("FXForwardContract de-serializer: Empty state");
 
 		java.lang.String strSerializedFXForward = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedFXForward || strSerializedFXForward.isEmpty())
 			throw new java.lang.Exception ("FXForwardContract de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFXForward,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("FXForwardContract de-serializer: Invalid reqd field set");
@@ -404,11 +404,11 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _strCode +
-			getFieldDelimiter() + _dblEffective + getFieldDelimiter() + _dblMaturity + getFieldDelimiter() +
-				new java.lang.String (_ccyPair.serialize()));
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strCode +
+			fieldDelimiter() + _dblEffective + fieldDelimiter() + _dblMaturity + fieldDelimiter() + new
+				java.lang.String (_ccyPair.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

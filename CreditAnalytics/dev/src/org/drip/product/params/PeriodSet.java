@@ -136,13 +136,13 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("PeriodSet de-serializer: Empty state");
 
 		java.lang.String strSerializedPeriodSet = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedPeriodSet || strSerializedPeriodSet.isEmpty())
 			throw new java.lang.Exception ("PeriodSet de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedPeriodSet,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 10 > astrField.length)
 			throw new java.lang.Exception ("PeriodSet de-serializer: Invalid reqd field set");
@@ -213,7 +213,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 			_lsCouponPeriod = null;
 		else {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[9],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -327,12 +327,12 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		return null;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "[";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "{";
 	}
@@ -341,17 +341,17 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iFreq +
-			getFieldDelimiter() + _bApplyCpnEOMAdj + getFieldDelimiter() + _strCouponDC + getFieldDelimiter()
-				+ _strAccrualDC + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iFreq + fieldDelimiter()
+			+ _bApplyCpnEOMAdj + fieldDelimiter() + _strCouponDC + fieldDelimiter() + _strAccrualDC +
+				fieldDelimiter());
 
 		if (null == _strMaturityType || _strMaturityType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strMaturityType + getFieldDelimiter());
+			sb.append (_strMaturityType + fieldDelimiter());
 
-		sb.append (_dblMaturity + getFieldDelimiter() + _dblEffective + getFieldDelimiter() +
-			_dblFinalMaturity + getFieldDelimiter());
+		sb.append (_dblMaturity + fieldDelimiter() + _dblEffective + fieldDelimiter() + _dblFinalMaturity +
+			fieldDelimiter());
 
 		if (null == _lsCouponPeriod)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -366,7 +366,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbPeriods.append (getCollectionRecordDelimiter());
+					sbPeriods.append (collectionRecordDelimiter());
 
 				sbPeriods.append (new java.lang.String (p.serialize()));
 			}
@@ -377,7 +377,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 				sb.append (sbPeriods.toString());
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

@@ -88,13 +88,13 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("ExerciseInfo de-serializer: Empty state");
 
 		java.lang.String strSerializedNextExerciseInfo = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedNextExerciseInfo || strSerializedNextExerciseInfo.isEmpty())
 			throw new java.lang.Exception ("ExerciseInfo de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNextExerciseInfo,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("ExerciseInfo de-serializer: Invalid reqd field set");
@@ -157,10 +157,10 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (VERSION + getFieldDelimiter() + _dblDate + getFieldDelimiter() + _dblExerciseFactor +
-			getFieldDelimiter() + _iWOType);
+		sb.append (VERSION + fieldDelimiter() + _dblDate + fieldDelimiter() + _dblExerciseFactor +
+			fieldDelimiter() + _iWOType);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

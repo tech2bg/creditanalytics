@@ -44,20 +44,74 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	private org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 	private org.drip.analytics.rates.DiscountCurve _dcFunding = null;
 	private org.drip.param.definition.ComponentQuote _compQuote = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
-		_mapAUFX = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 		_mTSYQuotes = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUFX = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
 		_mapForward = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>();
 
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCollateralVolatity = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUForwardVolatity = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUFundingVolatity = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCollateralCollateralCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCollateralCustomMetricCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCollateralForwardCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCollateralFundingCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCustomMetricCustomMetricCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCustomMetricForwardCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUCustomMetricFundingCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUForwardForwardCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUForwardFundingCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapAUFundingFundingCorrelation = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
 	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.quant.function1D.AbstractUnivariate>> _mapLatentStateForwardVolatility = new
+			org.drip.quant.function1D.AbstractUnivariate>> _mapCustomMetricVolatility = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.quant.function1D.AbstractUnivariate>>();
 
@@ -96,13 +150,13 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 			throw new java.lang.Exception ("ComponentMarketParamSet de-serializer: Empty state");
 
 		java.lang.String strSerializedComponentMarketParams = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedComponentMarketParams || strSerializedComponentMarketParams.isEmpty())
 			throw new java.lang.Exception ("ComponentMarketParamSet de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedComponentMarketParams, getFieldDelimiter());
+			(strSerializedComponentMarketParams, fieldDelimiter());
 
 		if (null == astrField || 8 > astrField.length)
 			throw new java.lang.Exception ("ComponentMarketParamSet de-serializer: Invalid reqd field set");
@@ -151,14 +205,14 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[6],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 					
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -169,7 +223,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 						continue;
 
 					java.lang.String[] astrKeySet = org.drip.quant.common.StringUtil.Split (astrKVPair[0],
-						getCollectionMultiLevelKeyDelimiter());
+						collectionMultiLevelKeyDelimiter());
 
 					if (null == astrKeySet || 2 != astrKeySet.length || null == astrKeySet[0] ||
 						astrKeySet[0].isEmpty() ||
@@ -203,7 +257,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[7],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
@@ -212,7 +266,7 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 						continue;
 
 					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						getCollectionKeyValueDelimiter());
+						collectionKeyValueDelimiter());
 				
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -233,17 +287,17 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		}
 	}
 
-	@Override public java.lang.String getCollectionKeyValueDelimiter()
+	@Override public java.lang.String collectionKeyValueDelimiter()
 	{
 		return "]";
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "[";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "~";
 	}
@@ -418,31 +472,53 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		return true;
 	}
 
-	@Override public org.drip.quant.function1D.AbstractUnivariate volSurface (
-		final java.lang.String strLatentState,
+	@Override public org.drip.quant.function1D.AbstractUnivariate collateralCurveVolSurface (
+		final java.lang.String strCurrency)
+	{
+		if (null == strCurrency || strCurrency.isEmpty() || !_mapAUCollateralVolatity.containsKey
+			(strCurrency))
+			return null;
+
+		return _mapAUCollateralVolatity.get (strCurrency);
+	}
+
+	@Override public boolean setCollateralCurveVolSurface (
+		final java.lang.String strCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
+	{
+		if (null == strCurrency || strCurrency.isEmpty() || null == auVolatility) return false;
+
+		_mapAUCollateralVolatity.put (strCurrency, auVolatility);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate customMetricVolSurface (
+		final java.lang.String strCustomMetric,
 		final org.drip.analytics.date.JulianDate dtForward)
 	{
-		if (null == strLatentState || !_mapLatentStateForwardVolatility.containsKey (strLatentState))
+		if (null == strCustomMetric || !_mapCustomMetricVolatility.containsKey (strCustomMetric))
 			return null;
 
 		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
-			mapForwardVolatility = _mapLatentStateForwardVolatility.get (strLatentState);
+			mapForwardVolatility = _mapCustomMetricVolatility.get (strCustomMetric);
 
 		if (null == mapForwardVolatility || !mapForwardVolatility.containsKey (dtForward)) return null;
 
 		return mapForwardVolatility.get (dtForward);
 	}
 
-	@Override public boolean setVolSurface (
-		final java.lang.String strLatentState,
+	@Override public boolean setCustomMetricVolSurface (
+		final java.lang.String strCustomMetric,
 		final org.drip.analytics.date.JulianDate dtForward,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == strLatentState || strLatentState.isEmpty() || null == dtForward || null == auVolatility)
+		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == dtForward || null ==
+			auVolatility)
 			return false;
 
 		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
-			mapForwardVolatility = _mapLatentStateForwardVolatility.get (strLatentState);
+			mapForwardVolatility = _mapCustomMetricVolatility.get (strCustomMetric);
 
 		if (null == mapForwardVolatility) {
 			mapForwardVolatility = new java.util.HashMap<org.drip.analytics.date.JulianDate,
@@ -450,34 +526,376 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 
 			mapForwardVolatility.put (dtForward, auVolatility);
 
-			_mapLatentStateForwardVolatility.put (strLatentState, mapForwardVolatility);
+			_mapCustomMetricVolatility.put (strCustomMetric, mapForwardVolatility);
 		} else
 			mapForwardVolatility.put (dtForward, auVolatility);
 
 		return true;
 	}
 
-	@Override public org.drip.quant.function1D.AbstractUnivariate fxCurve (
-		final java.lang.String strFXCode)
+	@Override public org.drip.quant.function1D.AbstractUnivariate forwardCurveVolSurface (
+		final org.drip.product.params.FloatingRateIndex fri)
 	{
-		if (null == strFXCode || strFXCode.isEmpty() || null == _mapAUFX || !_mapAUFX.containsKey
-			(strFXCode))
+		if (null == fri) return null;
+
+		java.lang.String strFRI = fri.fullyQualifiedName();
+
+		return _mapAUForwardVolatity.containsKey (strFRI) ? _mapAUCollateralVolatity.get (strFRI) : null;
+	}
+
+	@Override public boolean setForwardCurveVolSurface (
+		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
+	{
+		if (null == fri || null == auVolatility) return false;
+
+		_mapAUCollateralVolatity.put (fri.fullyQualifiedName(), auVolatility);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate fundingCurveVolSurface (
+		final java.lang.String strCurrency)
+	{
+		if (null == strCurrency || strCurrency.isEmpty() || !_mapAUFundingVolatity.containsKey (strCurrency))
 			return null;
 
-		return _mapAUFX.get (strFXCode);
+		return _mapAUFundingVolatity.get (strCurrency);
+	}
+
+	@Override public boolean setFundingCurveVolSurface (
+		final java.lang.String strCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
+	{
+		if (null == strCurrency || strCurrency.isEmpty() || null == auVolatility) return false;
+
+		_mapAUFundingVolatity.put (strCurrency, auVolatility);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate collateralCollateralCorrSurface (
+		final java.lang.String strCurrency1,
+		final java.lang.String strCurrency2)
+	{
+		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty())
+			return null;
+
+		java.lang.String strCode = strCurrency1 + "@#" + strCurrency2;
+
+		if (!_mapAUCollateralCollateralCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUCollateralCollateralCorrelation.get (strCode);
+	}
+
+	@Override public boolean setCollateralCollateralCorrSurface (
+		final java.lang.String strCurrency1,
+		final java.lang.String strCurrency2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty()
+			|| null == auCorrelation)
+			return false;
+
+		_mapAUCollateralFundingCorrelation.put (strCurrency1 + "@#" + strCurrency2, auCorrelation);
+
+		_mapAUCollateralFundingCorrelation.put (strCurrency2 + "@#" + strCurrency1, auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate customMetricCustomMetricCorrSurface (
+		final java.lang.String strCustomMetric1,
+		final java.lang.String strCustomMetric2)
+	{
+		if (null == strCustomMetric1 || strCustomMetric1.isEmpty() || null == strCustomMetric2 ||
+			strCustomMetric2.isEmpty())
+			return null;
+
+		java.lang.String strCode = strCustomMetric1 + "@#" + strCustomMetric2;
+
+		if (!_mapAUCustomMetricCustomMetricCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUCustomMetricCustomMetricCorrelation.get (strCode);
+	}
+
+	@Override public boolean setCustomMetricCustomMetricCorrSurface (
+		final java.lang.String strCustomMetric1,
+		final java.lang.String strCustomMetric2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCustomMetric1 || strCustomMetric1.isEmpty() || null == strCustomMetric2 ||
+			strCustomMetric2.isEmpty() || null == auCorrelation)
+			return false;
+
+		_mapAUCustomMetricCustomMetricCorrelation.put (strCustomMetric1 + "@#" + strCustomMetric2,
+			auCorrelation);
+
+		_mapAUCustomMetricCustomMetricCorrelation.put (strCustomMetric2 + "@#" + strCustomMetric1,
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate forwardForwardCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri1,
+		final org.drip.product.params.FloatingRateIndex fri2)
+	{
+		if (null == fri1 || null == fri2) return null;
+
+		java.lang.String strCode = fri1.fullyQualifiedName() + "@#" + fri2.fullyQualifiedName();
+
+		if (!_mapAUForwardForwardCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUForwardForwardCorrelation.get (strCode);
+	}
+
+	@Override public boolean setForwardForwardCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri1,
+		final org.drip.product.params.FloatingRateIndex fri2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == fri1 || null == fri2 || null == auCorrelation) return false;
+
+		_mapAUForwardForwardCorrelation.put (fri1.fullyQualifiedName() + "@#" + fri2.fullyQualifiedName(),
+			auCorrelation);
+
+		_mapAUForwardForwardCorrelation.put (fri2.fullyQualifiedName() + "@#" + fri1.fullyQualifiedName(),
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate fundingFundingCorrSurface (
+		final java.lang.String strCurrency1,
+		final java.lang.String strCurrency2)
+	{
+		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty())
+			return null;
+
+		java.lang.String strCode = strCurrency1 + "@#" + strCurrency2;
+
+		if (!_mapAUFundingFundingCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUFundingFundingCorrelation.get (strCode);
+	}
+
+	@Override public boolean setFundingFundingCorrSurface (
+		final java.lang.String strCurrency1,
+		final java.lang.String strCurrency2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty()
+			|| null == auCorrelation)
+			return false;
+
+		_mapAUFundingFundingCorrelation.put (strCurrency1 + "@#" + strCurrency2, auCorrelation);
+
+		_mapAUFundingFundingCorrelation.put (strCurrency2 + "@#" + strCurrency1, auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate collateralCustomMetricCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final java.lang.String strCustomMetric)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strCustomMetric ||
+			strCustomMetric.isEmpty())
+			return null;
+
+		java.lang.String strCode = strCollateralCurrency + "@#" + strCustomMetric;
+
+		if (!_mapAUCollateralCustomMetricCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUCollateralCustomMetricCorrelation.get (strCode);
+	}
+
+	@Override public boolean setCollateralCustomMetricCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final java.lang.String strCustomMetric,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strCustomMetric ||
+			strCustomMetric.isEmpty())
+			return false;
+
+		_mapAUCollateralCustomMetricCorrelation.put (strCollateralCurrency + "@#" + strCustomMetric,
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate collateralForwardCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.product.params.FloatingRateIndex fri)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fri) return null;
+
+		java.lang.String strCollateralForwardCorrelationCode = strCollateralCurrency + "@#" +
+			fri.fullyQualifiedName();
+
+		if (!_mapAUCollateralForwardCorrelation.containsKey (strCollateralForwardCorrelationCode))
+			return null;
+
+		return _mapAUCollateralForwardCorrelation.get (strCollateralForwardCorrelationCode);
+	}
+
+	@Override public boolean setCollateralForwardCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fri || null ==
+			auCorrelation)
+			return false;
+
+		_mapAUCollateralFundingCorrelation.put (strCollateralCurrency + "@#" + fri.fullyQualifiedName(),
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate collateralFundingCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final java.lang.String strFundingCurrency)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strFundingCurrency ||
+			strFundingCurrency.isEmpty())
+			return null;
+
+		java.lang.String strCode = strCollateralCurrency + "@#" + strFundingCurrency;
+
+		if (!_mapAUCollateralFundingCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUCollateralFundingCorrelation.get (strCode);
+	}
+
+	@Override public boolean setCollateralFundingCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final java.lang.String strFundingCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strFundingCurrency ||
+			strFundingCurrency.isEmpty() || null == auCorrelation)
+			return false;
+
+		_mapAUCollateralFundingCorrelation.put (strCollateralCurrency + "@#" + strFundingCurrency,
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate customMetricForwardCorrSurface (
+		final java.lang.String strCustomMetric,
+		final org.drip.product.params.FloatingRateIndex fri)
+	{
+		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == fri) return null;
+
+		if (!_mapAUCustomMetricForwardCorrelation.containsKey (strCustomMetric + "@#" +
+			fri.fullyQualifiedName()))
+			return null;
+
+		return _mapAUCustomMetricForwardCorrelation.get (strCustomMetric + "@#" + fri.fullyQualifiedName());
+	}
+
+	@Override public boolean setCustomMetricForwardCorrSurface (
+		final java.lang.String strCustomMetric,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == fri || null == auCorrelation)
+			return false;
+
+		_mapAUCustomMetricForwardCorrelation.put (strCustomMetric + "@#" + fri.fullyQualifiedName(),
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate customMetricFundingCorrSurface (
+		final java.lang.String strCustomMetric,
+		final java.lang.String strFundingCurrency)
+	{
+		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == strFundingCurrency ||
+			strFundingCurrency.isEmpty())
+			return null;
+
+		java.lang.String strCode = strCustomMetric + "@#" + strFundingCurrency;
+
+		if (!_mapAUCustomMetricFundingCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUCustomMetricFundingCorrelation.get (strCode);
+	}
+
+	@Override public boolean setCustomMetricFundingCorrSurface (
+		final java.lang.String strCustomMetric,
+		final java.lang.String strFundingCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == strFundingCurrency ||
+			strFundingCurrency.isEmpty())
+			return false;
+
+		_mapAUCustomMetricFundingCorrelation.put (strCustomMetric + "@#" + strFundingCurrency,
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate forwardFundingCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri,
+		final java.lang.String strFundingCurrency)
+	{
+		if (null == fri || null == strFundingCurrency || strFundingCurrency.isEmpty()) return null;
+
+		java.lang.String strCode = fri.fullyQualifiedName() + "@#" + strFundingCurrency;
+
+		if (!_mapAUForwardFundingCorrelation.containsKey (strCode)) return null;
+
+		return _mapAUForwardFundingCorrelation.get (strCode);
+	}
+
+	@Override public boolean setForwardFundingCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri,
+		final java.lang.String strFundingCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == fri || null == strFundingCurrency || strFundingCurrency.isEmpty() || null ==
+			auCorrelation)
+			return false;
+
+		_mapAUForwardFundingCorrelation.put (fri.fullyQualifiedName() + "@#" + strFundingCurrency,
+			auCorrelation);
+
+		return true;
+	}
+
+	@Override public org.drip.quant.function1D.AbstractUnivariate fxCurve (
+		final org.drip.product.params.CurrencyPair cp)
+	{
+		if (null == cp) return null;
+
+		java.lang.String strFXCode = cp.getCode();
+
+		return _mapAUFX.containsKey (strFXCode) ? _mapAUFX.get (strFXCode) : null;
 	}
 
 	@Override public boolean setFXCurve (
-		final java.lang.String strFXCode,
+		final org.drip.product.params.CurrencyPair cp,
 		final org.drip.quant.function1D.AbstractUnivariate auFX)
 	{
-		if (null == strFXCode || strFXCode.isEmpty() || null == auFX) return false;
+		if (null == cp || null == auFX) return false;
 
-		if (null == _mapAUFX)
-			_mapAUFX = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+		_mapAUFX.put (cp.getCode(), auFX);
 
-		_mapAUFX.put (strFXCode, auFX);
+		try {
+			_mapAUFX.put (cp.inverseCode(), new org.drip.quant.function1D.UnivariateReciprocal (auFX));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return false;
+		}
 
 		return true;
 	}
@@ -486,32 +904,32 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _cc)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_cc.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_cc.serialize()) + fieldDelimiter());
 
 		if (null == _dcFunding)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_dcFunding.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_dcFunding.serialize()) + fieldDelimiter());
 
-		sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 
 		if (null == _dcTSY)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_dcTSY.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_dcTSY.serialize()) + fieldDelimiter());
 
 		if (null == _compQuote)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_compQuote.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_compQuote.serialize()) + fieldDelimiter());
 
 		if (null == _mmFixings || null == _mmFixings.entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -530,17 +948,17 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 					if (bFirstEntry)
 						bFirstEntry = false;
 					else
-						sb.append (getCollectionRecordDelimiter());
+						sb.append (collectionRecordDelimiter());
 
-					sbFixings.append (meOut.getKey().getJulian() + getCollectionMultiLevelKeyDelimiter() +
-						meIn.getKey() + getCollectionKeyValueDelimiter() + meIn.getValue());
+					sbFixings.append (meOut.getKey().getJulian() + collectionMultiLevelKeyDelimiter() +
+						meIn.getKey() + collectionKeyValueDelimiter() + meIn.getValue());
 				}
 			}
 
 			if (sbFixings.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbFixings.toString() + getFieldDelimiter());
+				sb.append (sbFixings.toString() + fieldDelimiter());
 		}
 
 		if (null == _mTSYQuotes || 0 == _mTSYQuotes.size())
@@ -557,16 +975,16 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbMapTSYQuotes.append (getCollectionRecordDelimiter());
+					sbMapTSYQuotes.append (collectionRecordDelimiter());
 
-				sbMapTSYQuotes.append (me.getKey() + getCollectionKeyValueDelimiter() + new java.lang.String
+				sbMapTSYQuotes.append (me.getKey() + collectionKeyValueDelimiter() + new java.lang.String
 					(me.getValue().serialize()));
 			}
 
 			if (!sbMapTSYQuotes.toString().isEmpty()) sb.append (sbMapTSYQuotes);
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
@@ -624,8 +1042,8 @@ public class ComponentMarketParamSet extends org.drip.param.definition.Component
 		cq.setMarketQuote ("SpreadToTsyBmk", new org.drip.param.market.MultiSidedQuote ("MID", 210.,
 			100000.));
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
-			= new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mapTSYQuotes = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cq);

@@ -71,4 +71,12 @@ public interface BasketMarketParamRef {
 	 */
 
 	public abstract java.util.Set<java.lang.String> govvieCurveNames();
+
+	/**
+	 * Get the Array of FX Curves
+	 * 
+	 * @return The Array of FX Curves
+	 */
+
+	public abstract java.lang.String[] fxCurve();
 }

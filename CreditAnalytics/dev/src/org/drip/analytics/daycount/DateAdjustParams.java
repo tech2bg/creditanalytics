@@ -78,12 +78,12 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("DateAdjustParams de-serializer: Empty state");
 
-		java.lang.String strDAP = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strDAP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strDAP || strDAP.isEmpty())
 			throw new java.lang.Exception ("DateAdjustParams de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strDAP, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strDAP, fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("DateAdjustParams de-serialize: Invalid number of fields");
@@ -142,12 +142,12 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 		return org.drip.analytics.daycount.Convention.RollDate (dblDate, _iRollMode, _strCalendar);
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "!";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "@";
 	}
@@ -156,10 +156,10 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iRollMode +
-			getFieldDelimiter() + _strCalendar);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iRollMode +
+			fieldDelimiter() + _strCalendar);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

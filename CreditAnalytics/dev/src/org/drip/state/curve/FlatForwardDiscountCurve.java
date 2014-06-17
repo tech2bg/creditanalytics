@@ -180,14 +180,14 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Empty state");
 
 		java.lang.String strSerializedConstantForwardDiscountCurve = strRawString.substring (0,
-			strRawString.indexOf (getObjectTrailer()));
+			strRawString.indexOf (objectTrailer()));
 
 		if (null == strSerializedConstantForwardDiscountCurve ||
 			strSerializedConstantForwardDiscountCurve.isEmpty())
 			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedConstantForwardDiscountCurve, getFieldDelimiter());
+			(strSerializedConstantForwardDiscountCurve, fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Invalid reqd field set");
@@ -216,7 +216,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot decode state");
 
 		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate, astrField[3],
-			getCollectionRecordDelimiter(), getCollectionKeyValueDelimiter()))
+			collectionRecordDelimiter(), collectionKeyValueDelimiter()))
 			throw new java.lang.Exception ("FlatForwardDiscountCurve de-serializer: Cannot decode state");
 
 		if (0 == lsdblDate.size() || 0 == lsdblRate.size() || lsdblDate.size() != lsdblRate.size())
@@ -504,20 +504,20 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _dblEpochDate +
-			getFieldDelimiter() + _strCurrency + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblEpochDate +
+			fieldDelimiter() + _strCurrency + fieldDelimiter());
 
 		if (null == _adblRate || 0 == _adblRate.length)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else {
 			for (int i = 0; i < _adblRate.length; ++i) {
-				if (0 != i) sb.append (getCollectionRecordDelimiter());
+				if (0 != i) sb.append (collectionRecordDelimiter());
 
-				sb.append (_adblDate[i] + getCollectionKeyValueDelimiter() + _adblRate[i]);
+				sb.append (_adblDate[i] + collectionKeyValueDelimiter() + _adblRate[i]);
 			}
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

@@ -119,13 +119,13 @@ public class CDXIdentifier extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("CDXIdentifier de-serializer: Empty state");
 
 		java.lang.String strSerializedCDXIdentifier = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCDXIdentifier || strSerializedCDXIdentifier.isEmpty())
 			throw new java.lang.Exception ("CDXIdentifier de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCDXIdentifier,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("CDXIdentifier de-serializer: Invalid reqd field set");
@@ -172,11 +172,10 @@ public class CDXIdentifier extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _iSeries +
-			getFieldDelimiter() + _iVersion + getFieldDelimiter() + _strIndex + getFieldDelimiter() +
-				_strTenor);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iSeries +
+			fieldDelimiter() + _iVersion + fieldDelimiter() + _strIndex + fieldDelimiter() + _strTenor);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

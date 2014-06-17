@@ -124,13 +124,13 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 			throw new java.lang.Exception ("QuoteConvention de-serializer: Empty state");
 
 		java.lang.String strSerializedMarketConvention = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedMarketConvention || strSerializedMarketConvention.isEmpty())
 			throw new java.lang.Exception ("QuoteConvention de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedMarketConvention,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("QuoteConvention de-serializer: Invalid reqd field set");
@@ -199,28 +199,28 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
-		sb.append (_dblFirstSettle + getFieldDelimiter());
+		sb.append (_dblFirstSettle + fieldDelimiter());
 
 		if (null == _strCalculationType || _strCalculationType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strCalculationType + getFieldDelimiter());
+			sb.append (_strCalculationType + fieldDelimiter());
 
-		sb.append (_dblRedemptionValue + getFieldDelimiter());
+		sb.append (_dblRedemptionValue + fieldDelimiter());
 
 		if (null == _quotingParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_quotingParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_quotingParams.serialize()) + fieldDelimiter());
 
 		if (null == _settleParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else
 			sb.append (new java.lang.String (_settleParams.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

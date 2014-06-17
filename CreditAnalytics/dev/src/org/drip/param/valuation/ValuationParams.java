@@ -133,13 +133,13 @@ public class ValuationParams extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("ValuationParams de-serializer: Empty state");
 
 		java.lang.String strSerializedValuationParams = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedValuationParams || strSerializedValuationParams.isEmpty())
 			throw new java.lang.Exception ("ValuationParams de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedValuationParams,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception ("ValuationParams de-serializer: Invalid reqd field set");
@@ -230,10 +230,10 @@ public class ValuationParams extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (VERSION + getFieldDelimiter() + _dblValue + getFieldDelimiter() + _dblCashPay +
-			getFieldDelimiter() + _strCalendar);
+		sb.append (VERSION + fieldDelimiter() + _dblValue + fieldDelimiter() + _dblCashPay + fieldDelimiter()
+			+ _strCalendar);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

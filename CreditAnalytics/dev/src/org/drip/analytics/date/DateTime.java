@@ -102,13 +102,13 @@ public class DateTime extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("DateTime de-serializer: Empty state");
 
 		java.lang.String strSerializedDateTime = strRawString.substring (0, strRawString.indexOf
-			(super.getObjectTrailer()));
+			(super.objectTrailer()));
 
 		if (null == strSerializedDateTime || strSerializedDateTime.isEmpty())
 			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedDateTime,
-			super.getFieldDelimiter());
+			super.fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("DateTime de-serializer: Invalid reqd field set");
@@ -154,10 +154,10 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + super.getFieldDelimiter() + _lTime +
-			super.getFieldDelimiter() + _dblDate);
+		sb.append (org.drip.service.stream.Serializer.VERSION + super.fieldDelimiter() + _lTime +
+			super.fieldDelimiter() + _dblDate);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

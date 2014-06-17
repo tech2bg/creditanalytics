@@ -103,13 +103,13 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Empty state");
 
 		java.lang.String strSerializedQuotedSpreadInterpreter = strRawString.substring (0,
-			strRawString.indexOf (getObjectTrailer()));
+			strRawString.indexOf (objectTrailer()));
 
 		if (null == strSerializedQuotedSpreadInterpreter || strSerializedQuotedSpreadInterpreter.isEmpty())
 			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedQuotedSpreadInterpreter, getFieldDelimiter());
+			(strSerializedQuotedSpreadInterpreter, fieldDelimiter());
 
 		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Invalid reqd field set");
@@ -132,12 +132,12 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 		_dblCouponStrike = new java.lang.Double (astrField[2]);
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "~";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "`";
 	}
@@ -168,13 +168,13 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
-		sb.append (_strCDSContractType + getFieldDelimiter());
+		sb.append (_strCDSContractType + fieldDelimiter());
 
-		sb.append (_dblCouponStrike + getFieldDelimiter());
+		sb.append (_dblCouponStrike + fieldDelimiter());
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

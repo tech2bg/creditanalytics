@@ -79,13 +79,13 @@ public class Weekend extends org.drip.service.stream.Serializer {
 		if (null == strRawString || strRawString.isEmpty())
 			throw new java.lang.Exception ("Weekend de-serializer: Empty state");
 
-		java.lang.String strWH = strRawString.substring (0, strRawString.indexOf (getObjectTrailer()));
+		java.lang.String strWH = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strWH || strWH.isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (strWH))
 			throw new java.lang.Exception ("Weekend de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strWH, getFieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strWH, fieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
 			throw new java.lang.Exception ("Weekend de-serialize: Invalid number of fields");
@@ -96,7 +96,7 @@ public class Weekend extends org.drip.service.stream.Serializer {
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]) ||
 			!org.drip.quant.common.StringUtil.IntegerListFromString (lsi, astrField[1],
-				getCollectionRecordDelimiter()))
+				collectionRecordDelimiter()))
 			throw new java.lang.Exception ("Weekend de-serializer: Cannot decode state");
 
 		_aiDay = new int[lsi.size()];
@@ -194,15 +194,15 @@ public class Weekend extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		for (int i = 0; i < _aiDay.length; ++i) {
-			if (0 != i) sb.append (getCollectionRecordDelimiter());
+			if (0 != i) sb.append (collectionRecordDelimiter());
 
 			sb.append (_aiDay[i]);
 		}
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

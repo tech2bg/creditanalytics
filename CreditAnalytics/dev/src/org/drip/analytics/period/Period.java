@@ -107,13 +107,13 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 			throw new java.lang.Exception ("Period de-serializer: Empty state");
 
 		java.lang.String strPeriod = strRawString.substring (0, strRawString.indexOf
-			(super.getObjectTrailer()));
+			(super.objectTrailer()));
 
 		if (null == strPeriod || strPeriod.isEmpty())
 			throw new java.lang.Exception ("Period de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod,
-			super.getFieldDelimiter());
+			super.fieldDelimiter());
 
 		if (null == astrField || 7 > astrField.length)
 			throw new java.lang.Exception ("Period de-serialize: Invalid number of fields");
@@ -307,12 +307,12 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 		return true;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "!";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "@";
 	}
@@ -321,12 +321,12 @@ public class Period extends org.drip.service.stream.Serializer implements java.l
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + super.getFieldDelimiter() + _dblStart +
-			super.getFieldDelimiter() + _dblEnd + super.getFieldDelimiter() + _dblAccrualStart +
-				super.getFieldDelimiter() + _dblAccrualEnd + super.getFieldDelimiter() + _dblPay +
-					super.getFieldDelimiter() + _dblDCF);
+		sb.append (org.drip.service.stream.Serializer.VERSION + super.fieldDelimiter() + _dblStart +
+			super.fieldDelimiter() + _dblEnd + super.fieldDelimiter() + _dblAccrualStart +
+				super.fieldDelimiter() + _dblAccrualEnd + super.fieldDelimiter() + _dblPay +
+					super.fieldDelimiter() + _dblDCF);
 
-		return sb.append (super.getObjectTrailer()).toString().getBytes();
+		return sb.append (super.objectTrailer()).toString().getBytes();
 	}
 
 	@Override public int hashCode()

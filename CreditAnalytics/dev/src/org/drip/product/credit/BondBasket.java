@@ -633,13 +633,13 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			throw new java.lang.Exception ("BondBasket de-serializer: Empty state");
 
 		java.lang.String strSerializedBasketBond = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBasketBond || strSerializedBasketBond.isEmpty())
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketBond,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
 			throw new java.lang.Exception ("BondBasket de-serializer: Invalid reqd field set");
@@ -663,7 +663,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
 
 		java.lang.String[] astrBondRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
-			getCollectionRecordDelimiter());
+			collectionRecordDelimiter());
 
 		if (null == astrBondRecord || 0 == astrBondRecord.length)
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
@@ -683,7 +683,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
 
 		java.lang.String[] astrWeightRecord = org.drip.quant.common.StringUtil.Split (astrField[4],
-			getCollectionRecordDelimiter());
+			collectionRecordDelimiter());
 
 		if (null == astrWeightRecord || 0 == astrWeightRecord.length)
 			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
@@ -754,22 +754,27 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
+	@Override public java.lang.String[] fxCurve()
+	{
+		return null;
+	}
+
 	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
 		return _aBond;
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getCollectionRecordDelimiter()
+	@Override public java.lang.String collectionRecordDelimiter()
 	{
 		return "(";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return ")";
 	}
@@ -778,16 +783,16 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter() + _dblNotional +
-			getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblNotional +
+			fieldDelimiter());
 
 		if (null == _strName || _strName.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_strName + getFieldDelimiter());
+			sb.append (_strName + fieldDelimiter());
 
 		if (null == _aBond || 0 == _aBond.length)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -797,19 +802,19 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbBond.append (getCollectionRecordDelimiter());
+					sbBond.append (collectionRecordDelimiter());
 
 				sbBond.append (new java.lang.String (bond.serialize()));
 			}
 
 			if (sbBond.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbBond.toString() + getFieldDelimiter());
+				sb.append (sbBond.toString() + fieldDelimiter());
 		}
 
 		if (null == _adblNormWeights || 0 == _adblNormWeights.length)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -819,15 +824,15 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 				if (bFirstEntry)
 					bFirstEntry = false;
 				else
-					sbNormWeights.append (getCollectionRecordDelimiter());
+					sbNormWeights.append (collectionRecordDelimiter());
 
 				sbNormWeights.append (dblNormWeights);
 			}
 
 			if (sbNormWeights.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbNormWeights.toString() + getFieldDelimiter());
+				sb.append (sbNormWeights.toString() + fieldDelimiter());
 		}
 
 		if (null == _dtEffective)
@@ -835,7 +840,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		else
 			sb.append (_dtEffective.getJulian());
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

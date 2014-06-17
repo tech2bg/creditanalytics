@@ -823,13 +823,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("Bond de-serializer: Empty state");
 
 		java.lang.String strSerializedBond = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBond || strSerializedBond.isEmpty())
 			throw new java.lang.Exception ("Bond de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBond,
-			getFieldDelimiter());
+			fieldDelimiter());
 
 		if (null == astrField || 15 > astrField.length)
 			throw new java.lang.Exception ("Bond de-serializer: Invalid reqd field set");
@@ -873,14 +873,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[5],
-				getCollectionRecordDelimiter());
+				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
 				for (int i = 0; i < astrRecord.length; ++i) {
 					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
 
-					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split
-						(astrRecord[i], getCollectionKeyValueDelimiter());
+					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
+						collectionKeyValueDelimiter());
 					
 					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
 						astrKVPair[0].isEmpty() ||
@@ -891,7 +891,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 						continue;
 
 					java.lang.String[] astrKeySet = org.drip.quant.common.StringUtil.Split
-						(astrKVPair[0], getCollectionMultiLevelKeyDelimiter());
+						(astrKVPair[0], collectionMultiLevelKeyDelimiter());
 
 					if (null == astrKeySet || 2 != astrKeySet.length || null == astrKeySet[0] ||
 						astrKeySet[0].isEmpty() ||
@@ -1380,6 +1380,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == _crValParams) return "";
 
 		return _crValParams._strCC;
+	}
+
+	@Override public java.lang.String[] currencyPairCode()
+	{
+		return null;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -12806,12 +12811,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					period.getAccrualDCF (period.getAccrualEndDate()));
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "@";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return ":";
 	}
@@ -12820,30 +12825,30 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _tsyBmkSet)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_tsyBmkSet.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_tsyBmkSet.serialize()) + fieldDelimiter());
 
 		if (null == _cpnParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_cpnParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_cpnParams.serialize()) + fieldDelimiter());
 
 		if (null == _notlParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_notlParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_notlParams.serialize()) + fieldDelimiter());
 
 		if (null == _fltParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_fltParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_fltParams.serialize()) + fieldDelimiter());
 
 		if (null == fixings() || null == fixings().entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else {
 			boolean bFirstEntry = true;
 
@@ -12862,65 +12867,65 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					if (bFirstEntry)
 						bFirstEntry = false;
 					else
-						sb.append (getCollectionRecordDelimiter());
+						sb.append (collectionRecordDelimiter());
 
-					sbFixings.append (meOut.getKey().getJulian() + getCollectionMultiLevelKeyDelimiter() +
-						meIn.getKey() + getCollectionKeyValueDelimiter() + meIn.getValue());
+					sbFixings.append (meOut.getKey().getJulian() + collectionMultiLevelKeyDelimiter() +
+						meIn.getKey() + collectionKeyValueDelimiter() + meIn.getValue());
 				}
 			}
 
 			if (sbFixings.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 			else
-				sb.append (sbFixings.toString() + getFieldDelimiter());
+				sb.append (sbFixings.toString() + fieldDelimiter());
 		}
 
 		if (null == _ccyParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_ccyParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_ccyParams.serialize()) + fieldDelimiter());
 
 		if (null == _idParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_idParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_idParams.serialize()) + fieldDelimiter());
 
 		if (null == _mktConv)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_mktConv.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_mktConv.serialize()) + fieldDelimiter());
 
 		if (null == _irValParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_irValParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_irValParams.serialize()) + fieldDelimiter());
 
 		if (null == _crValParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_crValParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_crValParams.serialize()) + fieldDelimiter());
 
 		if (null == _cfteParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_cfteParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_cfteParams.serialize()) + fieldDelimiter());
 
 		if (null == _periodParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_periodParams.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_periodParams.serialize()) + fieldDelimiter());
 
 		if (null == _eosPut)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_eosPut.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_eosPut.serialize()) + fieldDelimiter());
 
 		if (null == _eosCall)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else
 			sb.append (new java.lang.String (_eosCall.serialize()));
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (

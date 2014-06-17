@@ -144,13 +144,13 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 			throw new java.lang.Exception ("CreditManifestMeasureTweak de-serializer: Empty state");
 
 		java.lang.String strSerializedCreditNodeTweakParams = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedCreditNodeTweakParams || strSerializedCreditNodeTweakParams.isEmpty())
 			throw new java.lang.Exception ("CreditManifestMeasureTweak de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedCreditNodeTweakParams, getFieldDelimiter());
+			(strSerializedCreditNodeTweakParams, fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
 			throw new java.lang.Exception
@@ -180,12 +180,12 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 		_bSingleNodeCalib = new java.lang.Boolean (astrField[3]);
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "#";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "@";
 	}
@@ -194,9 +194,9 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (new java.lang.String (super.serialize()) + getFieldDelimiter() + _strTweakParamType +
-			getFieldDelimiter() + _strTweakMeasureType + getFieldDelimiter() + _bSingleNodeCalib);
+		sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _strTweakParamType +
+			fieldDelimiter() + _strTweakMeasureType + fieldDelimiter() + _bSingleNodeCalib);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 }

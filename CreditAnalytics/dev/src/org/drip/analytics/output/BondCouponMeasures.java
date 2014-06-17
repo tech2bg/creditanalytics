@@ -112,13 +112,13 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Empty state");
 
 		java.lang.String strSerializedBondCouponMeasures = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBondCouponMeasures || strSerializedBondCouponMeasures.isEmpty())
 			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedBondCouponMeasures, getFieldDelimiter());
+			(strSerializedBondCouponMeasures, fieldDelimiter());
 
 		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Invalid reqd field set");
@@ -215,10 +215,10 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (VERSION + getFieldDelimiter() + _dblDV01 + getFieldDelimiter() + _dblIndexCouponPV +
-			getFieldDelimiter() + _dblCouponPV + getFieldDelimiter() + _dblPV);
+		sb.append (VERSION + fieldDelimiter() + _dblDV01 + fieldDelimiter() + _dblIndexCouponPV +
+			fieldDelimiter() + _dblCouponPV + fieldDelimiter() + _dblPV);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	/**

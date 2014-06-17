@@ -87,4 +87,12 @@ public interface ComponentMarketParamRef {
 	 */
 
 	public abstract java.lang.String creditCurveName();
+
+	/**
+	 * Get the Array of the Currency Pair Codes
+	 * 
+	 * @return The Array of the Currency Pair Codes
+	 */
+
+	public abstract java.lang.String[] currencyPairCode();
 }

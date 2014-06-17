@@ -240,13 +240,13 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("BondWorkoutMeasures de-serializer: Empty state");
 
 		java.lang.String strSerializedBondWorkoutMeasures = strRawString.substring (0, strRawString.indexOf
-			(getObjectTrailer()));
+			(objectTrailer()));
 
 		if (null == strSerializedBondWorkoutMeasures || strSerializedBondWorkoutMeasures.isEmpty())
 			throw new java.lang.Exception ("BondWorkoutMeasures de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedBondWorkoutMeasures, getFieldDelimiter());
+			(strSerializedBondWorkoutMeasures, fieldDelimiter());
 
 		if (null == astrField || 17 > astrField.length)
 			throw new java.lang.Exception ("BondWorkoutMeasures de-serializer: Invalid reqd field set");
@@ -364,12 +364,12 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 		_dblLossOnInstantaneousDefault = new java.lang.Double (astrField[16]);
 	}
 
-	@Override public java.lang.String getFieldDelimiter()
+	@Override public java.lang.String fieldDelimiter()
 	{
 		return "@";
 	}
 
-	@Override public java.lang.String getObjectTrailer()
+	@Override public java.lang.String objectTrailer()
 	{
 		return "!";
 	}
@@ -378,37 +378,36 @@ public class BondWorkoutMeasures extends org.drip.service.stream.Serializer {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (org.drip.service.stream.Serializer.VERSION + getFieldDelimiter());
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
 		if (null == _bcmCreditRiskyClean)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_bcmCreditRiskyClean.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_bcmCreditRiskyClean.serialize()) + fieldDelimiter());
 
 		if (null == _bcmCreditRiskyDirty)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_bcmCreditRiskyDirty.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_bcmCreditRiskyDirty.serialize()) + fieldDelimiter());
 
 		if (null == _bcmCreditRisklessClean)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_bcmCreditRisklessClean.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_bcmCreditRisklessClean.serialize()) + fieldDelimiter());
 
 		if (null == _bcmCreditRisklessDirty)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + getFieldDelimiter());
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_bcmCreditRisklessDirty.serialize()) + getFieldDelimiter());
+			sb.append (new java.lang.String (_bcmCreditRisklessDirty.serialize()) + fieldDelimiter());
 
-		sb.append (_dblCreditRiskyParPV + getFieldDelimiter() + _dblCreditRisklessParPV + getFieldDelimiter()
-			+ _dblCreditRiskyPrincipalPV + getFieldDelimiter() + _dblCreditRisklessPrincipalPV +
-				getFieldDelimiter() + _dblRecoveryPV + getFieldDelimiter() + _dblExpectedRecovery +
-					getFieldDelimiter() + _dblAccrued01 + getFieldDelimiter() + _dblFirstCouponRate +
-						getFieldDelimiter() + _dblFirstIndexRate + getFieldDelimiter() + _dblDefaultExposure
-							+ getFieldDelimiter() + _dblDefaultExposureNoRec + getFieldDelimiter() +
-								_dblLossOnInstantaneousDefault);
+		sb.append (_dblCreditRiskyParPV + fieldDelimiter() + _dblCreditRisklessParPV + fieldDelimiter() +
+			_dblCreditRiskyPrincipalPV + fieldDelimiter() + _dblCreditRisklessPrincipalPV + fieldDelimiter()
+				+ _dblRecoveryPV + fieldDelimiter() + _dblExpectedRecovery + fieldDelimiter() + _dblAccrued01
+					+ fieldDelimiter() + _dblFirstCouponRate + fieldDelimiter() + _dblFirstIndexRate +
+						fieldDelimiter() + _dblDefaultExposure + fieldDelimiter() + _dblDefaultExposureNoRec
+							+ fieldDelimiter() + _dblLossOnInstantaneousDefault);
 
-		return sb.append (getObjectTrailer()).toString().getBytes();
+		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
 	/**
