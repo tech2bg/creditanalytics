@@ -280,7 +280,7 @@ public class YAS {
 
 		bond.setEmbeddedCallSchedule (eos);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null,
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null, 
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		System.out.println ("\n---- Valuation Details ----");

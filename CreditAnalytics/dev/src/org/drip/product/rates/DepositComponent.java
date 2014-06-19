@@ -353,7 +353,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 			}
 		}
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve (couponCurrency()[0]);
 
 		if (null == dc) {
 			mapResult.put ("calctime", (System.nanoTime() - lStart) * 1.e-09);
@@ -412,9 +412,11 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
-			mktParams.fundingCurve())
-			return null;
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		try {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
@@ -422,9 +424,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 			if (null == mapMeasures) return null;
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
-
-			org.drip.quant.calculus.WengertJacobian wjDFDF = dc.jackDDFDManifestMeasure (_dblMaturity,
+			org.drip.quant.calculus.WengertJacobian wjDFDF = dcFunding.jackDDFDManifestMeasure (_dblMaturity,
 				"Rate");
 
 			if (null == wjDFDF) return null;
@@ -453,16 +453,17 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure || null
-			== mktParams || null == mktParams.fundingCurve())
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
 			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure)) {
 			try {
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
-
-				org.drip.quant.calculus.WengertJacobian wjDF = dc.jackDDFDManifestMeasure (_dblMaturity,
-					"Rate");
+				org.drip.quant.calculus.WengertJacobian wjDF = dcFunding.jackDDFDManifestMeasure
+					(_dblMaturity, "Rate");
 
 				if (null == wjDF) return null;
 
@@ -471,7 +472,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 				for (int k = 0; k < wjDF.numParameters(); ++k) {
 					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, k, -365.25 / (_dblMaturity -
-						_dblEffective) / dc.df (_dblMaturity) * wjDF.getFirstDerivative (0, k)))
+						_dblEffective) / dcFunding.df (_dblMaturity) * wjDF.getFirstDerivative (0, k)))
 						return null;
 				}
 

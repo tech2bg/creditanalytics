@@ -114,7 +114,7 @@ public class CCBS {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
 		ComponentMarketParams cmpUSD = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null);
+			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null, null);
 
 		FloatFloatComponent ffcReferenceUSD = MakexM6MBasisSwap (
 			dtToday,
@@ -139,7 +139,7 @@ public class CCBS {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
 		ComponentMarketParams cmpJPY = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null);
+			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null, null);
 
 		FloatFloatComponent ffcDerivedJPY = MakexM6MBasisSwap (
 			dtToday,

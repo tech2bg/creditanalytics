@@ -1560,8 +1560,8 @@ public class CreditAnalyticsTestSuite {
 
 			org.drip.param.definition.ComponentMarketParams cmp =
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-					cc, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (aBond[i],
-						org.drip.analytics.date.JulianDate.Today(), 0.04));
+					cc, null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
+						(aBond[i], org.drip.analytics.date.JulianDate.Today(), 0.04));
 
 			if (s_bCustomBondAnalDisplay) {
 				try {
@@ -2730,7 +2730,7 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.param.definition.ComponentMarketParams cmp =
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
+				cc, null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
 					org.drip.analytics.date.JulianDate.Today(), 0.04));
 
 		org.drip.param.valuation.ValuationParams valParams =
@@ -2794,7 +2794,7 @@ public class CreditAnalyticsTestSuite {
 				System.out.println (cds.primaryCode() + " => " + cds.measureValue (valParams,
 					org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-							null, null, ccCalib, null, null,
+							null, null, ccCalib, null, null, null,
 								org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
 									org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
 										"FairPremium"));
@@ -2802,7 +2802,7 @@ public class CreditAnalyticsTestSuite {
 				System.out.println (bond.primaryCode() + " => " + bond.calcPriceFromCreditBasis
 					(valParams,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-							null, null, ccCalib, null, null,
+							null, null, ccCalib, null, null, null,
 								org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
 									org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
 										bond.maturity().getJulian(), 1., 0.));
@@ -2917,7 +2917,7 @@ public class CreditAnalyticsTestSuite {
 			adblNodes[i] = org.drip.analytics.date.JulianDate.Today().addYears (i + 1).getJulian();
 
 			if (s_bFXFwd)
-				System.out.println ("Input " + cp.getCode() + "[" + (i + 1) + "] = " +
+				System.out.println ("Input " + cp.code() + "[" + (i + 1) + "] = " +
 					org.drip.quant.common.FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
 		}
 
@@ -2985,15 +2985,15 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		if (s_bFXFwd) {
-			System.out.println (cp.getCode() + "[1Y]= " + dblFXFwd);
+			System.out.println (cp.code() + "[1Y]= " + dblFXFwd);
 
-			System.out.println (cp.getCode() + "[1Y](pip)= " + org.drip.quant.common.FormatUtil.FormatDouble
+			System.out.println (cp.code() + "[1Y](pip)= " + org.drip.quant.common.FormatUtil.FormatDouble
 				(dblFXFwdPIP, 1, 3, 100.));
 
-			System.out.println ("EUR Basis bp for " + cp.getCode() + "[1Y] = " + dblFXFwdMarket + ": " +
+			System.out.println ("EUR Basis bp for " + cp.code() + "[1Y] = " + dblFXFwdMarket + ": " +
 				org.drip.quant.common.FormatUtil.FormatDouble (dblDCEURBasis, 1, 3, 100.));
 
-			System.out.println ("USD Basis bp for " + cp.getCode() + "[1Y] = " + dblFXFwdMarket + ": " +
+			System.out.println ("USD Basis bp for " + cp.code() + "[1Y] = " + dblFXFwdMarket + ": " +
 				org.drip.quant.common.FormatUtil.FormatDouble (dblDCUSDBasis, 1, 3, 100.));
 
 			for (int i = 0; i < adblFullUSDBasis.length; ++i) {
@@ -3005,22 +3005,22 @@ public class CreditAnalyticsTestSuite {
 			}
 
 			for (int i = 0; i < adblBootstrappedUSDBasis.length; ++i) {
-				System.out.println ("Bootstrapped USDBasis from FX fwd for " + cp.getCode() + "[" + (i + 1) +
+				System.out.println ("Bootstrapped USDBasis from FX fwd for " + cp.code() + "[" + (i + 1) +
 					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblBootstrappedUSDBasis[i], 1, 3,
 						100.));
 
-				System.out.println ("Bootstrapped EURBasis from FX fwd for " + cp.getCode() + "[" + (i + 1) +
+				System.out.println ("Bootstrapped EURBasis from FX fwd for " + cp.code() + "[" + (i + 1) +
 					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblBootstrappedEURBasis[i], 1, 3,
 						100.));
 			}
 
 			for (int i = 0; i < adblFXFwdFromUSDBasis.length; ++i)
-				System.out.println ("FX Fwd from Bootstrapped USD Basis: " + cp.getCode() + "[" + (i + 1) +
+				System.out.println ("FX Fwd from Bootstrapped USD Basis: " + cp.code() + "[" + (i + 1) +
 					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblFXFwdFromUSDBasis[i], 1, 3,
 						100.));
 
 			for (int i = 0; i < adblFXFwdFromEURBasis.length; ++i)
-				System.out.println ("FX Fwd from Bootstrapped EUR Basis: " + cp.getCode() + "[" + (i + 1) +
+				System.out.println ("FX Fwd from Bootstrapped EUR Basis: " + cp.code() + "[" + (i + 1) +
 					"Y]=" + org.drip.quant.common.FormatUtil.FormatDouble (adblFXFwdFromEURBasis[i], 1, 3,
 						100.));
 		}

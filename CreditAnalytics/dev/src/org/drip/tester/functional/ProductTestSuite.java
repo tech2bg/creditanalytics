@@ -467,7 +467,7 @@ public class ProductTestSuite {
 		mpc.addScenDC ("USDTSY", irscUSDTSY);
 
 		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.getScenCMP (aCompCalib[0],
-			"Base").fundingCurve();
+			"Base").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
 			System.out.println ("Base TSY DC build: " + (null == dcBaseTSY ? "Failure" : "Success"));
@@ -492,7 +492,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_TSY_UP01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
-				"FlatIRBumpUp").fundingCurve();
+				"FlatIRBumpUp").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Up TSY DC build: " + (null == dcBumpUp ? "Failure" : "Success"));
@@ -518,7 +518,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_TSY_DN01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
-				"FlatIRBumpDn").fundingCurve();
+				"FlatIRBumpDn").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Dn TSY DC build: " + (null == dcBumpDn ? "Failure" : "Success"));
@@ -547,7 +547,8 @@ public class ProductTestSuite {
 			else if (TD_BRIEF == iTestDetail)
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
 					me : mapCMPDCUp.entrySet())
-					System.out.println (me.getKey() + me.getValue().fundingCurve().toString());
+					System.out.println (me.getKey() + me.getValue().fundingCurve
+						(aCompCalib[0].couponCurrency()[0]).toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
 					me : mapCMPDCUp.entrySet()) {
@@ -558,8 +559,8 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-										(me.getValue().fundingCurve(), null, null, null, null, null,
-											mpc.getFixings()), null, astrCalibMeasure[i]));
+							(me.getValue().fundingCurve (aCompCalib[i].couponCurrency()[0]), null, null,
+								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -585,8 +586,8 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-										(me.getValue().fundingCurve(), null, null, null, null, null,
-											mpc.getFixings()), null, astrCalibMeasure[i]));
+							(me.getValue().fundingCurve ( (aCompCalib[i].couponCurrency()[0])), null, null,
+								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -739,7 +740,7 @@ public class ProductTestSuite {
 		addTSYToMPC (mpc);
 
 		org.drip.analytics.rates.DiscountCurve dcBase = mpc.getScenCMP (aCompCalib[0],
-			"Base").fundingCurve();
+			"Base").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
 			System.out.println ("Base DC build: " + (null == dcBase ? "Failure" : "Success"));
@@ -760,7 +761,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
-				"FlatIRBumpUp").fundingCurve();
+				"FlatIRBumpUp").fundingCurve ( (aCompCalib[0].couponCurrency()[0]));
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Up DC build: " + (null == dcBumpUp ? "Failure" : "Success"));
@@ -785,7 +786,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
-				"FlatIRBumpDn").fundingCurve();
+				"FlatIRBumpDn").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Dn DC build: " + (null == dcBumpDn ? "Failure" : "Success"));
@@ -814,7 +815,8 @@ public class ProductTestSuite {
 			else if (TD_BRIEF == iTestDetail)
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
 					me : mapCMPDCUp.entrySet())
-					System.out.println (me.getKey() + me.getValue().fundingCurve().toString());
+					System.out.println (me.getKey() + me.getValue().fundingCurve
+						(aCompCalib[0].couponCurrency()[0]).toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
 					me : mapCMPDCUp.entrySet()) {
@@ -825,8 +827,8 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(me.getValue().fundingCurve(), null, null, null, null, null,
-								mpc.getFixings()), null, astrCalibMeasure[i]));
+							(me.getValue().fundingCurve (aCompCalib[0].couponCurrency()[0]), null, null,
+								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -852,8 +854,8 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(me.getValue().fundingCurve(), null, null, null, null, null,
-								mpc.getFixings()), null, astrCalibMeasure[i]));
+							(me.getValue().fundingCurve (aCompCalib[0].couponCurrency()[0]), null, null,
+								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -901,7 +903,7 @@ public class ProductTestSuite {
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
 
 		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenCMP (aCDSBRA[0],
-			"Base").fundingCurve();
+			"Base").fundingCurve (aCDSBRA[0].couponCurrency()[0]);
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
 			(dt, dt, "USD");
@@ -926,8 +928,8 @@ public class ProductTestSuite {
 
 		mpc.addScenCC ("BRA", ccscBRA);
 
-		org.drip.analytics.definition.CreditCurve ccBase = mpc.getScenCMP (aCDSBRA[0],
-			"Base").creditCurve();
+		org.drip.analytics.definition.CreditCurve ccBase = mpc.getScenCMP (aCDSBRA[0], "Base").creditCurve
+			(aCDSBRA[0].creditCurveName());
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
 			System.out.println ("Base CC build: " + (null == ccBase ? "Failure" : "Success"));
@@ -938,12 +940,12 @@ public class ProductTestSuite {
 				System.out.println ("Base Fair premium = " + aCDSBRA[i].measureValue (valParams,
 					pricerParams,
 						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-							null, null, ccBase, null, null, null), null, "FairPremium"));
+							null, null, ccBase, null, null, null, null), null, "FairPremium"));
 		}
 
 		if (0 != (TM_CC_UP01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccBumpUp = mpc.getScenCMP (aCDSBRA[0],
-				"FlatCreditBumpUp").creditCurve();
+				"FlatCreditBumpUp").creditCurve (aCDSBRA[0].creditCurveName());
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC Up01 build: " + (null == ccBumpUp ? "Failure" : "Success"));
@@ -954,13 +956,13 @@ public class ProductTestSuite {
 					System.out.println ("Up01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dc, null, null, ccBumpUp, null, null, null), null, "FairPremium"));
+								(dc, null, null, ccBumpUp, null, null, null, null), null, "FairPremium"));
 			}
 		}
 
 		if (0 != (TM_CC_DN01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccBumpDn = mpc.getScenCMP (aCDSBRA[0],
-				"FlatCreditBumpDn").creditCurve();
+				"FlatCreditBumpDn").creditCurve (aCDSBRA[0].creditCurveName());
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC Dn01 build: " + (null == ccBumpDn ? "Failure" : "Success"));
@@ -971,13 +973,13 @@ public class ProductTestSuite {
 					System.out.println ("Dn01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dc, null, null, ccBumpDn, null, null, null), null, "FairPremium"));
+								(dc, null, null, ccBumpDn, null, null, null, null), null, "FairPremium"));
 			}
 		}
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccRecoveryUp = mpc.getScenCMP (aCDSBRA[0],
-				"RRBumpUp").creditCurve();
+				"RRBumpUp").creditCurve (aCDSBRA[0].creditCurveName());
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC RR Up01 build: " + (null == ccRecoveryUp ? "Failure" : "Success"));
@@ -988,13 +990,13 @@ public class ProductTestSuite {
 					System.out.println ("RR Up01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dc, null, null, ccRecoveryUp, null, null, null), null, "FairPremium"));
+								(dc, null, null, ccRecoveryUp, null, null, null, null), null, "FairPremium"));
 			}
 		}
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccRecoveryDn = mpc.getScenCMP (aCDSBRA[0],
-				"RRBumpDn").creditCurve();
+				"RRBumpDn").creditCurve (aCDSBRA[0].creditCurveName());
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC RR Dn01 build: " + (null == ccRecoveryDn ? "Failure" : "Success"));
@@ -1005,7 +1007,8 @@ public class ProductTestSuite {
 					System.out.println ("RR Dn01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dc, null, null, ccRecoveryDn, null, null, null), null, "FairPremium"));
+								(dc, null, null, ccRecoveryDn, null, null, null, null), null,
+									"FairPremium"));
 			}
 		}
 

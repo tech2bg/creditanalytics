@@ -378,6 +378,7 @@ public class BondAnalyticsAPI {
 				dcTSY,	// TSY Discount Curve (Includes Optional EDSF if available, or BILLS etc)
 				cc,		// Credit Curve
 				null,	// TSY quotes
+				null,	// BOND ID
 				null,	// Bond market quote
 				AnalyticsHelper.CreateFixingsObject (aBond[i], JulianDate.Today(), 0.04)	// Fixings
 			);
@@ -394,7 +395,8 @@ public class BondAnalyticsAPI {
 
 			cquote.addQuote ("Yield", q, true);
 
-			cmp.setComponentQuote (cquote);
+			for (Bond bond : aBond)
+				cmp.setComponentQuote (bond.componentName(), cquote);
 
 			aBond[i].value (valParams, null, cmp, null);
 
@@ -491,7 +493,7 @@ public class BondAnalyticsAPI {
 		 * Component Market Parameters Container
 		 */
 
-		ComponentMarketParams cmp =  ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, cc, null, null, null);
+		ComponentMarketParams cmp =  ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, cc, null, null, null, null);
 
 		/*
 		 * Valuation Parameters
@@ -557,7 +559,7 @@ public class BondAnalyticsAPI {
 		 * Calibrated Component Market Parameters Container
 		 */
 
-		ComponentMarketParams cmpCalib = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, ccCalib, null, null, null);
+		ComponentMarketParams cmpCalib = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, ccCalib, null, null, null, null);
 
 		/*
 		 * Verify the CDS fair premium using the calibrated credit curve

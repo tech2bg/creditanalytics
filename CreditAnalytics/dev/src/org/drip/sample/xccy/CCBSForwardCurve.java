@@ -196,12 +196,12 @@ public class CCBSForwardCurve {
 			FloatingRateIndex.Create (strDerivedCurrency + "-LIBOR-3M"),
 			valParams,
 			null,
-			ComponentMarketParamsBuilder.CreateComponentMarketParams (dcDerived, fc6MDerived, null, null, null, null, null),
+			ComponentMarketParamsBuilder.CreateComponentMarketParams (dcDerived, fc6MDerived, null, null, null, null, null, null),
 			null,
 			dcDerived.forward (dtValue.getJulian(), dtValue.addTenor ("3M").getJulian()));
 
 		ComponentMarketParams cmpDerived = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcDerived, fc3MDerived, null, null, null, null, null);
+			(dcDerived, fc3MDerived, null, null, null, null, null, null);
 
 		cmpDerived.setForwardCurve (fc6MDerived);
 

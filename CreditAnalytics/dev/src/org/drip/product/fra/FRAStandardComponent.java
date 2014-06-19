@@ -326,6 +326,10 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	{
 		if (null == valParams || null == mktParams) return null;
 
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
+
 		long lStart = System.nanoTime();
 
 		double dblParForward = java.lang.Double.NaN;
@@ -335,10 +339,6 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		if (dblValueDate > _dblEffectiveDate) return null;
 
 		double dblMaturity = _dtMaturity.getJulian();
-
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
-
-		if (null == dc) return null;
 
 		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.forwardCurve (_fri);
 
@@ -366,20 +366,24 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 			} else
 				dblParForward = fc.forward (dblMaturity);
 
-			double dblMultiplicativeQuantoAdjustment =
-				org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (mktParams, strFRI,
-					"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
-						dblValueDate, _dblEffectiveDate);
+			org.drip.analytics.date.JulianDate dtEffective = effective();
+
+			double dblMultiplicativeQuantoAdjustment = java.lang.Math.exp (-1. *
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+					(mktParams.forwardCurveVolSurface (_fri), mktParams.customMetricVolSurface
+						("ForwardToDomesticExchangeVolatility", dtEffective),
+							mktParams.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
+								dtEffective), dblValueDate, _dblEffectiveDate));
 
 			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffectiveDate,
 				dblMaturity, _strDayCount, false, dblMaturity, null, _strCalendar);
 
 			double dblQuantoAdjustedParForward = dblParForward * dblMultiplicativeQuantoAdjustment;
 
-			double dblPV = dc.df (dblMaturity) / dc.df (dblCashSettle) * _dblNotional *
+			double dblPV = dcFunding.df (dblMaturity) / dcFunding.df (dblCashSettle) * _dblNotional *
 				(dblQuantoAdjustedParForward - _dblStrike);
 
-			double dblDCParForward = dc.libor (_dblEffectiveDate, dblMaturity);
+			double dblDCParForward = dcFunding.libor (_dblEffectiveDate, dblMaturity);
 
 			mapResult.put ("additivequantoadjustment", dblQuantoAdjustedParForward - dblParForward);
 
@@ -464,7 +468,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.fundingCurve())
+		if (null == valParams || null == mktParams || null == mktParams.fundingCurve (couponCurrency()[0]))
 			return null;
 
 		return null;
@@ -478,7 +482,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == strManifestMeasure || null == mktParams || null ==
-			mktParams.fundingCurve())
+			mktParams.fundingCurve (couponCurrency()[0]))
 			return null;
 
 		return null;

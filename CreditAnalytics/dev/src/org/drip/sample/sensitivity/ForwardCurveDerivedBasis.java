@@ -386,7 +386,7 @@ public class ForwardCurveDerivedBasis {
 		 */
 
 		ComponentMarketParams cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fcxMQuartic, null, null, null, null, null);
+			(dc, fcxMQuartic, null, null, null, null, null, null);
 
 		int i = 0;
 		int iFreq = 12 / iTenorInMonths;

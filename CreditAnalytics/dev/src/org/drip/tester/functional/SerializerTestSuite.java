@@ -756,7 +756,7 @@ public class SerializerTestSuite {
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
 		byte[] abCMP = org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-			dcTSY, cc, cq, mapTSYQuotes, mmFixings).serialize();
+			dcTSY, cc, "TSY2ON", cq, mapTSYQuotes, mmFixings).serialize();
 
 		Verify (abCMP, org.drip.param.creator.ComponentMarketParamsBuilder.FromByteArray (abCMP),
 			"ComponentMarketParams");

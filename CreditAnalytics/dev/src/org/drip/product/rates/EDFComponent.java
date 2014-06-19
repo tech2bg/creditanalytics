@@ -389,9 +389,9 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams || valParams.valueDate() >= _dblMaturity) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
 
-		if (null == dc) return null;
+		if (null == dcFunding) return null;
 
 		long lStart = System.nanoTime();
 
@@ -402,10 +402,10 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
 				_settleParams.cashSettleDate (valParams.valueDate());
 
-			double dblUnadjustedAnnuity = dc.df (_dblMaturity) / dc.df (_dblEffective) / dc.df
-				(dblCashSettle);
+			double dblUnadjustedAnnuity = dcFunding.df (_dblMaturity) / dcFunding.df (_dblEffective) /
+				dcFunding.df (dblCashSettle);
 
-			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dc.df (dblCashSettle);
+			double dblAdjustedAnnuity = dblUnadjustedAnnuity / dcFunding.df (dblCashSettle);
 
 			mapResult.put ("PV", dblAdjustedAnnuity * _dblNotional * 0.01 * notional (_dblEffective,
 				_dblMaturity));
@@ -445,9 +445,12 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == mktParams
-			|| null == mktParams.fundingCurve())
+		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == mktParams)
 			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		try {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
@@ -455,16 +458,14 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			if (null == mapMeasures) return null;
 
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+			double dblDFEffective = dcFunding.df (_dblEffective);
 
-			double dblDFEffective = dc.df (_dblEffective);
+			double dblDFMaturity = dcFunding.df (maturity().getJulian());
 
-			double dblDFMaturity = dc.df (maturity().getJulian());
-
-			org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDManifestMeasure
+			org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
 				(_dblEffective, "Rate");
 
-			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDManifestMeasure
+			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
 				(maturity().getJulian(), "Rate");
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
@@ -502,21 +503,23 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
-			strManifestMeasure || null == mktParams || null == mktParams.fundingCurve())
+			strManifestMeasure || strManifestMeasure.isEmpty() || null == mktParams)
 			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure)) {
 			try {
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+				double dblDFEffective = dcFunding.df (_dblEffective);
 
-				double dblDFEffective = dc.df (_dblEffective);
+				double dblDFMaturity = dcFunding.df (maturity().getJulian());
 
-				double dblDFMaturity = dc.df (maturity().getJulian());
-
-				org.drip.quant.calculus.WengertJacobian wjDFEffective = dc.jackDDFDManifestMeasure
+				org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
 					(_dblEffective, "Rate");
 
-				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dc.jackDDFDManifestMeasure
+				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
 					(maturity().getJulian(), "Rate");
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;

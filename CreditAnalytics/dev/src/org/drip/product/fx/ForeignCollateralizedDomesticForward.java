@@ -127,7 +127,7 @@ public class ForeignCollateralizedDomesticForward {
 
 		if (null == auFX) return null;
 
-		java.lang.String strForeignCurrency = _ccyPair.getNumCcy();
+		java.lang.String strForeignCurrency = _ccyPair.numCcy();
 
 		org.drip.analytics.rates.DiscountCurve dcForeignCollateral =
 			mktParams.payCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency);
@@ -135,7 +135,7 @@ public class ForeignCollateralizedDomesticForward {
 		if (null == dcForeignCollateral) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcDomesticCurrencyForeignCollateral =
-			mktParams.payCurrencyCollateralCurrencyCurve (_ccyPair.getDenomCcy(), strForeignCurrency);
+			mktParams.payCurrencyCollateralCurrencyCurve (_ccyPair.denomCcy(), strForeignCurrency);
 
 		if (null == dcDomesticCurrencyForeignCollateral) return null;
 

@@ -445,9 +445,8 @@ public class FRAStdCapFloor {
 		for (org.drip.analytics.period.CashflowPeriod period : floatstream.cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.getStartDate());
 
-			cmp.setCustomMetricVolSurface (
-				fri.fullyQualifiedName(),
-				dtFRADate,
+			cmp.setForwardCurveVolSurface (
+				fri,
 				new FlatUnivariate (dblFRIVol)
 			);
 
@@ -517,7 +516,7 @@ public class FRAStdCapFloor {
 			strCurrency);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		double dblSigmaFwd = 0.50;
 		double dblSigmaFwd2DomX = 0.50;

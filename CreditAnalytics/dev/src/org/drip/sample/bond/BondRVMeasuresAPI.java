@@ -331,7 +331,7 @@ public class BondRVMeasuresAPI {
 				null,		// Principal Schedule
 				null);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null,
+		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);

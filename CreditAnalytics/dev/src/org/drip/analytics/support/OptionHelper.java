@@ -158,6 +158,32 @@ public class OptionHelper {
 	}
 
 	/**
+	 * Compute the Integrated Surface Variance given the corresponding volatility and the date spans
+	 * 
+	 * @param auVolSurface The Volatility Surface
+	 * @param dblStartDate Evolution Start Date
+	 * @param dblEndDate Evolution End Date
+	 * 
+	 * @return The Integrated Volatility Surface
+	 * 
+	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 */
+
+	public static final double IntegratedSurfaceVariance (
+		final org.drip.quant.function1D.AbstractUnivariate auVolSurface,
+		final double dblStartDate,
+		final double dblEndDate)
+		throws java.lang.Exception
+	{
+		if (null == auVolSurface || !org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblEndDate < dblStartDate)
+			throw new java.lang.Exception ("OptionHelper::IntegratedSurfaceVariance => Invalid Inputs");
+
+		return null != auVolSurface ? new PeriodVariance (auVolSurface).integrate (dblStartDate, dblEndDate)
+			/ 365.25 : 0.;
+	}
+
+	/**
 	 * Compute the Integrated Cross Volatility Quanto Product given the corresponding volatility and the
 	 * 	correlation surfaces, and the date spans
 	 * 
@@ -336,12 +362,20 @@ public class OptionHelper {
 				strDiscountForwardCorrTS.isEmpty() || dblEndDate == dblStartDate)
 			return 0.;
 
-		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
+		/* org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
 
 		return IntegratedFRACrossVolConvexityExponent (mktParams.customMetricVolSurface (strDiscountVolTS,
 			dtEnd), mktParams.customMetricVolSurface (strForwardVolTS, dtEnd),
 				mktParams.customMetricVolSurface (strDiscountForwardCorrTS, dtEnd),
 					dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
-						dblEndDate);
+						dblEndDate); */
+
+		org.drip.product.params.FloatingRateIndex fri = org.drip.product.params.FloatingRateIndex.Create
+			(strForwardVolTS);
+
+		return IntegratedFRACrossVolConvexityExponent (mktParams.fundingCurveVolSurface (strDiscountVolTS),
+			mktParams.forwardCurveVolSurface (fri), mktParams.forwardFundingCorrSurface (fri,
+				strDiscountVolTS), dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler,
+					dblStartDate, dblEndDate);
 	}
 }

@@ -345,7 +345,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.param.definition.ComponentMarketParams cmp =
 			org.drip.param.creator.ComponentMarketParamsBuilder.Create (this, null, null, null, null, null,
-				mmFixings);
+				null, mmFixings);
 
 		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
@@ -524,7 +524,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.param.definition.ComponentMarketParams mktParams =
 			org.drip.param.creator.ComponentMarketParamsBuilder.Create (this, null, null, null, null, null,
-				null == _ccis ? null : _ccis.getFixing());
+				null, null == _ccis ? null : _ccis.getFixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
 			org.drip.quant.calculus.WengertJacobian wjCompDDirtyPVDManifestMeasure =

@@ -475,13 +475,12 @@ public class FRAStd {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setCustomMetricVolSurface (
-			fri.fullyQualifiedName(),
-			dtForward,
+		cmp.setForwardCurveVolSurface (
+			fri,
 			new FlatUnivariate (dblFRIVol)
 		);
 

@@ -108,7 +108,7 @@ public class NonlinearCurveCalibrator {
 
 			return _dblCalibValue - _comp.measureValue (_valParams, _pricerParams,
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (_dc, _dcTSY,
-					_cc, null, null, _mmFixings), _quotingParams, _strMeasure);
+					_cc, null, null, null, _mmFixings), _quotingParams, _strMeasure);
 		}
 
 		@Override public double integrate (
@@ -328,7 +328,7 @@ public class NonlinearCurveCalibrator {
 					org.drip.param.pricer.PricerParams (1, new org.drip.param.definition.CalibrationParams
 						(strMeasure, 0, null), true, 0),
 							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dc, dcTSY, null, null, null, mmFixings), quotingParams, strMeasure);
+								(dc, dcTSY, null, null, null, null, mmFixings), quotingParams, strMeasure);
 			}
 
 			@Override public double integrate (

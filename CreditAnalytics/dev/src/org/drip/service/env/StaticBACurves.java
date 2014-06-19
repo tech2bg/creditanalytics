@@ -651,8 +651,8 @@ public class StaticBACurves {
 		try {
 			if (!(ccsc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDS)).cookScenarioCC
 				(strCC, new org.drip.param.valuation.ValuationParams (dt, dt, strIR), mpc.getScenCMP
-					(aCDS[0], "Base").fundingCurve(), null, adblQuotes, dblRecovery, astrCalibMeasure, null,
-						null, false, 63)) {
+					(aCDS[0], "Base").fundingCurve (aCDS[0].couponCurrency()[0]), null, adblQuotes,
+						dblRecovery, astrCalibMeasure, null, null, false, 63)) {
 				System.out.println ("CC[" + strCC + "] failed to cook");
 
 				return false;

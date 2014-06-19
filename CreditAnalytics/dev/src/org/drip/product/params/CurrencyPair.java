@@ -168,7 +168,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	 * @return Numerator currency
 	 */
 
-	public java.lang.String getNumCcy()
+	public java.lang.String numCcy()
 	{
 		return _strNumCcy;
 	}
@@ -179,7 +179,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	 * @return Denominator currency
 	 */
 
-	public java.lang.String getDenomCcy()
+	public java.lang.String denomCcy()
 	{
 		return _strDenomCcy;
 	}
@@ -190,7 +190,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	 * @return Quote currency
 	 */
 
-	public java.lang.String getQuoteCcy()
+	public java.lang.String quoteCcy()
 	{
 		return _strQuoteCcy;
 	}
@@ -201,7 +201,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	 * @return Currency pair code
 	 */
 
-	public java.lang.String getCode()
+	public java.lang.String code()
 	{
 		return _strNumCcy + "/" + _strDenomCcy;
 	}
@@ -223,7 +223,7 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	 * @return PIP Factor
 	 */
 
-	public double getPIPFactor()
+	public double pipFactor()
 	{
 		return _dblPIPFactor;
 	}
@@ -275,12 +275,12 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 
 		System.out.println ("Input: " + new java.lang.String (abCP));
 
-		System.out.println ("QuoteCcy: " + cp.getQuoteCcy());
+		System.out.println ("QuoteCcy: " + cp.quoteCcy());
 
 		CurrencyPair cpDeser = new CurrencyPair (abCP);
 
 		System.out.println ("Output: " + new java.lang.String (cpDeser.serialize()));
 
-		System.out.println ("QuoteCcy: " + cpDeser.getQuoteCcy());
+		System.out.println ("QuoteCcy: " + cpDeser.quoteCcy());
 	}
 }

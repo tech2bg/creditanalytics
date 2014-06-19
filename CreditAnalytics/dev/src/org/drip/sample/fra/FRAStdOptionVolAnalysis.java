@@ -449,9 +449,8 @@ public class FRAStdOptionVolAnalysis {
 
 		JulianDate dtForward = fra.effective();
 
-		cmp.setCustomMetricVolSurface (
-			fri.fullyQualifiedName(),
-			dtForward,
+		cmp.setForwardCurveVolSurface (
+			fri,
 			new FlatUnivariate (dblFRIVol)
 		);
 
@@ -512,10 +511,10 @@ public class FRAStdOptionVolAnalysis {
 			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblATMFRA, 1, 4, 100.) + "% | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 0, 10000.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 0, 10000.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMFloorletPrice, 1, 0, 10000.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotFloorletPrice, 1, 0, 10000.));
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 2, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 2, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMFloorletPrice, 1, 2, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotFloorletPrice, 1, 2, 10000.));
 	}
 
 	public static final void main (
@@ -556,7 +555,7 @@ public class FRAStdOptionVolAnalysis {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

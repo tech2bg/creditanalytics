@@ -444,9 +444,8 @@ public class FRAStdVolAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		cmp.setCustomMetricVolSurface (
-			fri.fullyQualifiedName(),
-			fra.effective(),
+		cmp.setForwardCurveVolSurface (
+			fri,
 			new FlatUnivariate (dblFRIVol)
 		);
 
@@ -510,7 +509,7 @@ public class FRAStdVolAnalysis {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

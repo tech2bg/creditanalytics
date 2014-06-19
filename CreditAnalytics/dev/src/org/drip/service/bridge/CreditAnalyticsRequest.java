@@ -447,7 +447,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		return bond;
 	}
 
-	private static org.drip.param.definition.ComponentMarketParams MakeCMP()
+	private static org.drip.param.definition.ComponentMarketParams MakeCMP (
+		final org.drip.product.definition.FixedIncomeComponent fic)
 		throws java.lang.Exception
 	{
 		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
@@ -509,8 +510,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100.,
 			java.lang.Double.NaN), true);
 
-		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc, cqBond,
-			mapTSYQuotes, mmFixings);
+		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc,
+			fic.componentName(), cqBond, mapTSYQuotes, mmFixings);
 	}
 
 	public static final void main (
@@ -532,7 +533,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), 0.04, 1.,
 					org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1);
 
-		org.drip.param.definition.ComponentMarketParams cmp = MakeCMP();
+		org.drip.param.definition.ComponentMarketParams cmp = MakeCMP (bond);
 
 		org.drip.param.valuation.ValuationCustomizationParams quotingParams = new
 			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "USD", false,

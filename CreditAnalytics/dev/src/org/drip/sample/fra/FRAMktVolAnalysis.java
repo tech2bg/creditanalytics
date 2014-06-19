@@ -136,13 +136,12 @@ public class FRAMktVolAnalysis {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcEONIA, fcEURIBOR6M, null, null, null, null, null);
+			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strCurrency);
 
-		cmp.setCustomMetricVolSurface (
-			fri.fullyQualifiedName(),
-			dtForward,
+		cmp.setForwardCurveVolSurface (
+			fri,
 			auEURIBOR6MVolTS
 		);
 
@@ -158,21 +157,14 @@ public class FRAMktVolAnalysis {
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
-		cmp.setCustomMetricVolSurface (
-			dcEONIA.name() + "_VOL_TS",
-			dtForward,
+		cmp.setFundingCurveVolSurface (
+			strCurrency,
 			auEONIAVolTS
 		);
 
-		cmp.setCustomMetricVolSurface (
-			fri.fullyQualifiedName() + "_VOL_TS",
-			dtForward,
-			auEURIBOR6MVolTS
-		);
-
-		cmp.setCustomMetricVolSurface (
-			dcEONIA.name() + "::" + fri.fullyQualifiedName() + "_VOL_TS",
-			dtForward,
+		cmp.setForwardFundingCorrSurface (
+			fri,
+			strCurrency,
 			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
 		);
 

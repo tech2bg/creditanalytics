@@ -89,20 +89,17 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams) return null;
+		if (null == valParams || null == mktParams) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		double dblValueDate = valParams.valueDate();
 
 		if (dblValueDate >= exercise().getJulian()) return null;
 
 		long lStart = System.nanoTime();
-
-		java.lang.String strFRI = _fra.forwardCurveName()[0];
-
-		org.drip.quant.function1D.AbstractUnivariate auFRAVolSurface = mktParams.customMetricVolSurface
-			(strFRI, exercise());
-
-		if (null == auFRAVolSurface) return null;
 
 		double dblExerciseDate = exercise().getJulian();
 
@@ -117,16 +114,24 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblATMManifestMeasure)) return null;
 
+		org.drip.quant.function1D.AbstractUnivariate auForwardVolSurface = mktParams.forwardCurveVolSurface
+			(_fra.fri());
+
+		if (null == auForwardVolSurface) return null;
+
 		try {
-			double dblIntegratedQuantoDrift =
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (mktParams, strFRI,
-					"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
-						dblValueDate, dblExerciseDate);
+			org.drip.analytics.date.JulianDate dtEffective = exercise();
+
+			double dblIntegratedQuantoDrift = java.lang.Math.exp (-1. *
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (auForwardVolSurface,
+					mktParams.customMetricVolSurface ("ForwardToDomesticExchangeVolatility", dtEffective),
+						mktParams.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
+							dtEffective), dblValueDate, dblExerciseDate));
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedQuantoDrift)) return null;
 
 			double dblIntegratedSurfaceVariance =
-				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (mktParams, strFRI,
+				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (auForwardVolSurface,
 					dblValueDate, dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedSurfaceVariance)) return null;
@@ -169,7 +174,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-			double dblSpotPrice = dblForwardPrice * mktParams.fundingCurve().df (dblExerciseDate);
+			double dblSpotPrice = dblForwardPrice * dcFunding.df (dblExerciseDate);
 
 			mapResult.put ("ATMFRA", dblATMManifestMeasure);
 

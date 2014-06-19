@@ -84,9 +84,9 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
 
-		if (null == dc) return null;
+		if (null == dcFunding) return null;
 
 		org.drip.analytics.date.JulianDate dtMaturity = maturity();
 
@@ -123,7 +123,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (fri.tenor()).getJulian(),
 					dayCount(), false, dblMaturity, null, calendar());
 
-			double dblParDCForward = dc.libor (dblEffectiveDate, dblMaturity);
+			double dblParDCForward = dcFunding.libor (dblEffectiveDate, dblMaturity);
 
 			double dblShiftedLogNormalScaler = dblForwardDCF * dblParStandardFRA;
 			dblShiftedLogNormalScaler = dblShiftedLogNormalScaler / (1. + dblShiftedLogNormalScaler);
@@ -131,11 +131,16 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 			double dblForwardPrice = dblForwardDCF * (dblParStandardFRA - strike()) / (1. + dblForwardDCF *
 				dblParStandardFRA);
 
+			/* double dblShiftedLogNormalConvexityAdjustmentExponent =
+				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (mktParams,
+					dcFunding.name() + "_VOL_TS", fri.fullyQualifiedName() + "_VOL_TS", dcFunding.name() +
+						"::" + fri.fullyQualifiedName() + "_VOL_TS", dblShiftedLogNormalScaler,
+							dblShiftedLogNormalScaler, dblValueDate, dblEffectiveDate); */
+
 			double dblShiftedLogNormalConvexityAdjustmentExponent =
 				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (mktParams,
-					dc.name() + "_VOL_TS", fri.fullyQualifiedName() + "_VOL_TS", dc.name() + "::" +
-						fri.fullyQualifiedName() + "_VOL_TS", dblShiftedLogNormalScaler,
-							dblShiftedLogNormalScaler, dblValueDate, dblEffectiveDate);
+					dcFunding.name(), fri.fullyQualifiedName(), "ab", dblShiftedLogNormalScaler,
+						dblShiftedLogNormalScaler, dblValueDate, dblEffectiveDate);
 
 			double dblShiftedLogNormalParMarketFRA = ((dblForwardDCF * dblParStandardFRA + 1.) *
 				java.lang.Math.exp (dblShiftedLogNormalConvexityAdjustmentExponent) - 1.) / dblForwardDCF;

@@ -43,46 +43,8 @@ package org.drip.param.definition;
 public abstract class ComponentMarketParams extends org.drip.service.stream.Serializer {
 
 	/**
-	 * Retrieve the Component Credit Curve
-	 * 
-	 * @return Component Credit Curve
-	 */
-
-	public abstract org.drip.analytics.definition.CreditCurve creditCurve();
-
-	/**
-	 * (Re)-set the Component Credit Curve
-	 * 
-	 * @param cc Component Credit Curve
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setCreditCurve (
-		final org.drip.analytics.definition.CreditCurve cc);
-
-	/**
-	 * Retrieve the Component's Funding Curve
-	 * 
-	 * @return Component's Funding Curve
-	 */
-
-	public abstract org.drip.analytics.rates.DiscountCurve fundingCurve();
-
-	/**
-	 * (Re)-set the Component's Funding Curve
-	 * 
-	 * @param dcFunding Component's Funding Curve
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setFundingCurve (
-		final org.drip.analytics.rates.DiscountCurve dcFunding);
-
-	/**
 	 * Retrieve the Discount Curve associated with the Pay Cash-flow Collateralized using a different
-	 * 	Collateral Currency Numeraire 
+	 * 	Collateral Currency Numeraire
 	 * 
 	 * @param strPayCurrency The Pay Currency
 	 * @param strCollateralCurrency The Collateral Currency
@@ -124,6 +86,28 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final java.lang.String strPayCurrency);
 
 	/**
+	 * Retrieve the Component Credit Curve
+	 * 
+	 * @param strCreditCurveName Name of the Credit Curve
+	 * 
+	 * @return Component Credit Curve
+	 */
+
+	public abstract org.drip.analytics.definition.CreditCurve creditCurve (
+		final java.lang.String strCreditCurveName);
+
+	/**
+	 * (Re)-set the Component Credit Curve
+	 * 
+	 * @param cc Component Credit Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditCurve (
+		final org.drip.analytics.definition.CreditCurve cc);
+
+	/**
 	 * (Re)-set the Component Forward Curve
 	 * 
 	 * @param fc Component Forward Curve
@@ -146,85 +130,70 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.product.params.FloatingRateIndex fri);
 
 	/**
-	 * Retrieve the Component Government Funding Curve
+	 * Retrieve the Component's Funding Curve Corresponding to the specified Currency
 	 * 
-	 * @return Component Government Funding Curve
+	 * @param strCurrency The Currency
+	 * 
+	 * @return Component's Funding Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve govvieFundingCurve();
+	public abstract org.drip.analytics.rates.DiscountCurve fundingCurve (
+		final java.lang.String strCurrency);
+
+	/**
+	 * (Re)-set the Component's Funding Curve
+	 * 
+	 * @param dcFunding Component's Funding Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFundingCurve (
+		final org.drip.analytics.rates.DiscountCurve dcFunding);
+
+	/**
+	 * Retrieve the Component's FX Curve for the specified currency Pair
+	 * 
+	 * @param cp The Currency Pair
+	 * 
+	 * @return Component's FX Curve
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate fxCurve (
+		final org.drip.product.params.CurrencyPair cp);
+
+	/**
+	 * (Re)-set the Component's FX Curve for the specified Currency Pair
+	 * 
+	 * @param cp The Currency Pair
+	 * @param auFX The FX Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFXCurve (
+		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.quant.function1D.AbstractUnivariate auFX);
+
+	/**
+	 * Retrieve the Component Government Curve for the specified Currency
+	 * 
+	 * @return Component Government Curve for the specified Currency
+	 */
+
+	public abstract org.drip.analytics.rates.DiscountCurve govvieCurve (
+		final java.lang.String strCurrency);
 
 	/**
 	 * (Re)-set the Component Government Discount Curve
 	 * 
-	 * @param dcTSY Component Government Discount Curve
+	 * @param dcGovvie Component Government Discount Curve
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setGovvieFundingCurve (
-		final org.drip.analytics.rates.DiscountCurve dcTSY);
-
-	/**
-	 * Retrieve the Component Quote
-	 * 
-	 * @return Component Quote
-	 */
-
-	public abstract org.drip.param.definition.ComponentQuote componentQuote();
-
-	/**
-	 * (Re)-set the Component Quote
-	 * 
-	 * @param compQuote Component Quote
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setComponentQuote (
-		final org.drip.param.definition.ComponentQuote compQuote);
-
-	/**
-	 * Retrieve the TSY Benchmark Quotes
-	 * 
-	 * @return TSY Benchmark Quotes
-	 */
-
-	public abstract
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
-			benchmarkTSYQuotes();
-
-	/**
-	 * (Re)-set the Benchmark TSY Quotes
-	 * 
-	 * @param mapBenchmarkTSYQuotes The Benchmark TSY Quotes
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setBenchmarkTSYQuotes (
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
-			mapBenchmarkTSYQuotes);
-
-	/**
-	 * Retrieve the Fixings
-	 * 
-	 * @return The Fixings Object
-	 */
-
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixings();
-
-	/**
-	 * (Re)-set the Fixings
-	 * 
-	 * @param mmFixings Fixings
-	 * 
-	 * @return TRUE => Successfully set
-	 */
-
-	public abstract boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings);
+	public abstract boolean setGovvieCurve (
+		final org.drip.analytics.rates.DiscountCurve dcGovvie);
 
 	/**
 	 * Retrieve the Volatility Surface for the specified Collateral Curve
@@ -240,7 +209,7 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	/**
 	 * (Re)-set the Volatility Surface for the specified Collateral Curve
 	 * 
-	 * @param strCurrency The Funding Currency
+	 * @param strCurrency The Collateral Currency
 	 * @param auVolatility The Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -248,6 +217,58 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 
 	public abstract boolean setCollateralCurveVolSurface (
 		final java.lang.String strCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
+
+	/**
+	 * Retrieve the Volatility Surface for the specified Credit Curve
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * 
+	 * @return The Volatility Surface for the specified Credit Curve
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate creditCurveVolSurface (
+		final java.lang.String strCreditCurveName);
+
+	/**
+	 * (Re)-set the Volatility Surface for the specified Credit Curve
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param auVolatility The Volatility Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditCurveVolSurface (
+		final java.lang.String strCreditCurveName,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
+
+	/**
+	 * Retrieve the Custom Metric Volatility Surface for the given Forward Date
+	 * 
+	 * @param strCustomMetric The Custom Metric Name
+	 * @param dtForward The Forward Date 
+	 * 
+	 * @return The Latent State Volatility Surface
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate customMetricVolSurface (
+		final java.lang.String strCustomMetric,
+		final org.drip.analytics.date.JulianDate dtForward);
+
+	/**
+	 * (Re)-set the Custom Metric Volatility Surface for the given Forward Date
+	 * 
+	 * @param strCustomMetric The Custom Metric Name
+	 * @param dtForward The Forward Date 
+	 * @param auVolatility The Custom Metric Volatility Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCustomMetricVolSurface (
+		final java.lang.String strCustomMetric,
+		final org.drip.analytics.date.JulianDate dtForward,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
 
 	/**
@@ -299,31 +320,51 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
 
 	/**
-	 * Retrieve the Custom Metric Volatility Surface for the given Forward Date
+	 * Retrieve the FX Volatility Surface for the specified Currency Pair
 	 * 
-	 * @param strCustomMetric The Custom Metric Name
-	 * @param dtForward The Forward Date 
+	 * @param cp The Currency Pair
 	 * 
-	 * @return The Latent State Volatility Surface
+	 * @return The FX Volatility Surface for the Currency Pair
 	 */
 
-	public abstract org.drip.quant.function1D.AbstractUnivariate customMetricVolSurface (
-		final java.lang.String strCustomMetric,
-		final org.drip.analytics.date.JulianDate dtForward);
+	public abstract org.drip.quant.function1D.AbstractUnivariate fxCurveVolSurface (
+		final org.drip.product.params.CurrencyPair cp);
 
 	/**
-	 * (Re)-set the Custom Metric Volatility Surface for the given Forward Date
+	 * (Re)-set the FX Volatility Surface for the specified Currency Pair
 	 * 
-	 * @param strCustomMetric The Custom Metric Name
-	 * @param dtForward The Forward Date 
-	 * @param auVolatility The Custom Metric Volatility Surface
+	 * @param cp The Currency Pair
+	 * @param auVolatility The Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setCustomMetricVolSurface (
-		final java.lang.String strCustomMetric,
-		final org.drip.analytics.date.JulianDate dtForward,
+	public abstract boolean setFXCurveVolSurface (
+		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
+
+	/**
+	 * Retrieve the Volatility Surface for the specified Govvie Curve
+	 * 
+	 * @param strCurrency The Govvie Currency
+	 * 
+	 * @return The Volatility Surface for the Govvie Curve
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate govvieCurveVolSurface (
+		final java.lang.String strCurrency);
+
+	/**
+	 * (Re)-set the Volatility Surface for the specified Govvie Curve
+	 * 
+	 * @param strCurrency The Govvie Currency
+	 * @param auVolatility The Volatility Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setGovvieCurveVolSurface (
+		final java.lang.String strCurrency,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility);
 
 	/**
@@ -352,6 +393,34 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	public abstract boolean setCollateralCollateralCorrSurface (
 		final java.lang.String strCurrency1,
 		final java.lang.String strCurrency2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Credit Pair
+	 * 
+	 * @param strCreditCurveName1 Credit Curve Name #1
+	 * @param strCreditCurveName2 Credit Curve Name #2
+	 * 
+	 * @return The Correlation Surface for the specified Credit Pair
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate creditCreditCorrSurface (
+		final java.lang.String strCreditCurveName1,
+		final java.lang.String strCreditCurveName2);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Credit Pair
+	 * 
+	 * @param strCreditCurveName1 Credit Curve Name #1
+	 * @param strCreditCurveName2 Credit Curve Name #2
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditCreditCorrSurface (
+		final java.lang.String strCreditCurveName1,
+		final java.lang.String strCreditCurveName2,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
 
 	/**
@@ -439,31 +508,87 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Collateral Currency and the FRI
+	 * Retrieve the FX Correlation Surface for the specified Currency Pair Set
 	 * 
-	 * @param strCollateralCurrency The Collateral Currency
-	 * @param fri The Floating Rate Index
+	 * @param cp1 Currency Pair #1
+	 * @param cp2 Currency Pair #2
 	 * 
-	 * @return The Correlation Surface for the specified Collateral Currency and the FRI
+	 * @return The FX Correlation Surface for the specified Currency Pair Set
 	 */
 
-	public abstract org.drip.quant.function1D.AbstractUnivariate collateralForwardCorrSurface (
-		final java.lang.String strCollateralCurrency,
-		final org.drip.product.params.FloatingRateIndex fri);
+	public abstract org.drip.quant.function1D.AbstractUnivariate fxFXCorrSurface (
+		final org.drip.product.params.CurrencyPair cp1,
+		final org.drip.product.params.CurrencyPair cp2);
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Collateral Currency and the FRI
+	 * (Re)-set the FX Correlation Surface for the specified Funding Currency Pair Set
 	 * 
-	 * @param strCollateralCurrency The Collateral Currency
-	 * @param fri The Floating Rate Index
+	 * @param cp1 Currency Pair #1
+	 * @param cp2 Currency Pair #2
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setCollateralForwardCorrSurface (
+	public abstract boolean setFXFXCorrSurface (
+		final org.drip.product.params.CurrencyPair cp1,
+		final org.drip.product.params.CurrencyPair cp2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Govvie Currency Pair
+	 * 
+	 * @param strCurrency1 Govvie Currency #1
+	 * @param strCurrency2 Govvie Currency #2
+	 * 
+	 * @return The Correlation Surface for the specified Govvie Currency Pair
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate govvieGovvieCorrSurface (
+		final java.lang.String strCurrency1,
+		final java.lang.String strCurrency2);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Govvie Currency Pair
+	 * 
+	 * @param strCurrency1 Govvie Currency #1
+	 * @param strCurrency2 Govvie Currency #2
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setGovvieGovvieCorrSurface (
+		final java.lang.String strCurrency1,
+		final java.lang.String strCurrency2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Collateral Currency and Credit
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param strCreditCurveName The Credit Curve Name
+	 * 
+	 * @return The Correlation Surface for the specified Collateral Currency and Credit
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate collateralCreditCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final java.lang.String strCreditCurveName);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Collateral Currency and Credit
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCollateralCreditCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final java.lang.String strCreditCurveName,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
 
 	/**
@@ -495,6 +620,34 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
 
 	/**
+	 * Retrieve the Correlation Surface for the specified Collateral Currency and the FRI
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param fri The Floating Rate Index
+	 * 
+	 * @return The Correlation Surface for the specified Collateral Currency and the FRI
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate collateralForwardCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.product.params.FloatingRateIndex fri);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Collateral Currency and the FRI
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param fri The Floating Rate Index
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCollateralForwardCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
 	 * Retrieve the Correlation Surface for the specified Collateral and the Funding Currencies
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
@@ -520,6 +673,202 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 	public abstract boolean setCollateralFundingCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final java.lang.String strFundingCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Collateral and Currency Pair FX Combination
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param cp The Currency Pair
+	 * 
+	 * @return The Correlation Surface for the specified Collateral and Currency Pair FX Combination
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate collateralFXCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.product.params.CurrencyPair cp);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Collateral and Currency Pair FX Combination
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param cp The Currency Pair
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCollateralFXCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Collateral and Govvie Currencies
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param strGovvieCurrency The Govvie Currency
+	 * 
+	 * @return The Correlation Surface for the specified Collateral and Govvie Curves
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate collateralGovvieCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final java.lang.String strGovvieCurrency);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Collateral and Govvie Currencies
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param strGovvieCurrency The Govvie Currency
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCollateralGovvieCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final java.lang.String strGovvieCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Credit and the Custom Metric
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param strCustomMetric The Custom Metric
+	 * 
+	 * @return The Correlation Surface for the specified Credit and the Custom Metric
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate creditCustomMetricCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final java.lang.String strCustomMetric);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Credit and the Custom Metric
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param strCustomMetric The Custom Metric
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditCustomMetricCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final java.lang.String strCustomMetric,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Credit and the FRI
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param fri The FRI
+	 * 
+	 * @return The Correlation Surface for the specified Credit and the FRI
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate creditForwardCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final org.drip.product.params.FloatingRateIndex fri);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Credit and the FRI
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param fri The FRI
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditForwardCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Credit and the Funding Currency
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param strFundingCurrency The Funding Currency
+	 * 
+	 * @return The Correlation Surface for the specified Credit and the Funding Currency
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate creditFundingCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final java.lang.String strFundingCurrency);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Credit and the Funding Currency
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param strFundingCurrency The Funding Currency
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditFundingCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final java.lang.String strFundingCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Credit and the Currency Pair FX
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param cp The Currency Pair
+	 * 
+	 * @return The Correlation Surface for the specified Credit and the Currency Pair FX
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate creditFXCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final org.drip.product.params.CurrencyPair cp);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Credit and the Currency Pair FX
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param cp The Currency Pair
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditFXCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Credit and the Govvie Currencies
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param strGovvieCurrency The Govvie Currency
+	 * 
+	 * @return The Correlation Surface for the specified Credit and the Govvie Currencies
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate creditGovvieCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final java.lang.String strGovvieCurrency);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Credit and the Govvie Currencies
+	 * 
+	 * @param strCreditCurveName The Credit Curve Name
+	 * @param strGovvieCurrency The Govvie Currency
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCreditGovvieCorrSurface (
+		final java.lang.String strCreditCurveName,
+		final java.lang.String strGovvieCurrency,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
 
 	/**
@@ -579,6 +928,62 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
 
 	/**
+	 * Retrieve the Correlation Surface for the specified Custom Metric and the Currency Pair FX
+	 * 
+	 * @param strCustomMetric The Custom Metric
+	 * @param cp The Currency Pair
+	 * 
+	 * @return The Correlation Surface for the specified Custom Metric and the Currency Pair FX
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate customMetricFXCorrSurface (
+		final java.lang.String strCustomMetric,
+		final org.drip.product.params.CurrencyPair cp);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Custom Metric and the Currency Pair FX
+	 * 
+	 * @param strCustomMetric The Custom Metric
+	 * @param cp The Currency Pair
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCustomMetricFXCorrSurface (
+		final java.lang.String strCustomMetric,
+		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Custom Metric and the Govvie Currency
+	 * 
+	 * @param strCustomMetric The Custom Metric
+	 * @param strGovvieCurrency The Govvie Currency
+	 * 
+	 * @return The Correlation Surface for the specified Custom Metric and the Govvie Currency
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate customMetricGovvieCorrSurface (
+		final java.lang.String strCustomMetric,
+		final java.lang.String strGovvieCurrency);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Custom Metric and the Govvie Currency
+	 * 
+	 * @param strCustomMetric The Custom Metric
+	 * @param strGovvieCurrency The Govvie Currency
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setCustomMetricGovvieCorrSurface (
+		final java.lang.String strCustomMetric,
+		final java.lang.String strGovvieCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
 	 * Retrieve the Correlation Surface for the specified FRI and the Funding Currency
 	 * 
 	 * @param fri The FRI
@@ -607,26 +1012,209 @@ public abstract class ComponentMarketParams extends org.drip.service.stream.Seri
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
 
 	/**
-	 * Retrieve the Component's FX Curve for the specified currency Pair
+	 * Retrieve the Correlation Surface for the specified FRI and the FX Currency Pair
 	 * 
-	 * @param cp The Currency Pair
+	 * @param fri The FRI
+	 * @param cp The FX Currency Pair
 	 * 
-	 * @return Component's FX Curve
+	 * @return The Correlation Surface for the specified FRI and the FX Currency Pair
 	 */
 
-	public abstract org.drip.quant.function1D.AbstractUnivariate fxCurve (
+	public abstract org.drip.quant.function1D.AbstractUnivariate forwardFXCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.product.params.CurrencyPair cp);
 
 	/**
-	 * (Re)-set the Component's FX Curve for the specified Currency Pair
+	 * (Re)-set the Correlation Surface for the specified FRI and the FX Currency Pair
 	 * 
-	 * @param cp The Currency Pair
-	 * @param auFX The FX Curve
+	 * @param fri The FRI
+	 * @param cp The FX Currency Pair
+	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
-	public abstract boolean setFXCurve (
+	public abstract boolean setForwardFXCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.product.params.CurrencyPair cp,
-		final org.drip.quant.function1D.AbstractUnivariate auFX);
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified FRI and the Govvie Currency
+	 * 
+	 * @param fri The FRI
+	 * @param strGovvieCurrency The Govvie Currency
+	 * 
+	 * @return The Correlation Surface for the specified FRI and the Govvie Currency
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate forwardGovvieCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri,
+		final java.lang.String strGovvieCurrency);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified FRI and the Govvie Currency
+	 * 
+	 * @param fri The FRI
+	 * @param strGovvieCurrency The Govvie Currency
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setForwardGovvieCorrSurface (
+		final org.drip.product.params.FloatingRateIndex fri,
+		final java.lang.String strGovvieCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Funding Currency and the FX Currency Pair
+	 * 
+	 * @param strFundingCurrency The Funding Currency
+	 * @param cp The FX Currency Pair
+	 * 
+	 * @return The Correlation Surface for the specified Funding Currency and the FX Currency Pair
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate fundingFXCorrSurface (
+		final java.lang.String strFundingCurrency,
+		final org.drip.product.params.CurrencyPair cp);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Funding Currency and the FX Currency Pair
+	 * 
+	 * @param strFundingCurrency The Funding Currency
+	 * @param cp The FX Currency Pair
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFundingFXCorrSurface (
+		final java.lang.String strFundingCurrency,
+		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Funding and the Govvie Currencies
+	 * 
+	 * @param strFundingCurrency The Funding Currency
+	 * @param strGovvieCurrency The Govvie Currency
+	 * 
+	 * @return The Correlation Surface for the specified Funding and the Govvie Currencies
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate fundingGovvieCorrSurface (
+		final java.lang.String strFundingCurrency,
+		final java.lang.String strGovvieCurrency);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Funding and the Govvie Currencies
+	 * 
+	 * @param strFundingCurrency The Funding Currency
+	 * @param strGovvieCurrency The Govvie Currency
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFundingGovvieCorrSurface (
+		final java.lang.String strFundingCurrency,
+		final java.lang.String strGovvieCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Correlation Surface for the specified FX Currency Pair and the Govvie Currency
+	 * 
+	 * @param cp The Currency Pair
+	 * @param strGovvieCurrency The Govvie Currency
+	 * 
+	 * @return The Correlation Surface for the specified FX Currency Pair and the Govvie Currency
+	 */
+
+	public abstract org.drip.quant.function1D.AbstractUnivariate fundingGovvieCorrSurface (
+		final org.drip.product.params.CurrencyPair cp,
+		final java.lang.String strGovvieCurrency);
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified FX Currency Pair and the Govvie Currency
+	 * 
+	 * @param cp The Currency Pair
+	 * @param strGovvieCurrency The Govvie Currency
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFundingGovvieCorrSurface (
+		final org.drip.product.params.CurrencyPair cp,
+		final java.lang.String strGovvieCurrency,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation);
+
+	/**
+	 * Retrieve the Component Quote
+	 * 
+	 * @param strComponentCode Component Code
+	 * 
+	 * @return Component Quote
+	 */
+
+	public abstract org.drip.param.definition.ComponentQuote componentQuote (
+		final java.lang.String strComponentCode);
+
+	/**
+	 * (Re)-set the Component Quote
+	 * 
+	 * @param strComponentCode Component Code
+	 * @param compQuote Component Quote
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setComponentQuote (
+		final java.lang.String strComponentCode,
+		final org.drip.param.definition.ComponentQuote compQuote);
+
+	/**
+	 * Retrieve the Full Set of Quotes
+	 * 
+	 * @return The Full Set of Quotes
+	 */
+
+	public abstract
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			componentQuoteMap();
+
+	/**
+	 * (Re)-set the Benchmark TSY Quotes
+	 * 
+	 * @param mapComponentQuote Map of Component Quotes
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setComponentQuoteMap (
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+			mapComponentQuote);
+
+	/**
+	 * Retrieve the Fixings
+	 * 
+	 * @return The Fixings Object
+	 */
+
+	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixings();
+
+	/**
+	 * (Re)-set the Fixings
+	 * 
+	 * @param mmFixings Fixings
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public abstract boolean setFixings (
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings);
 }

@@ -570,7 +570,7 @@ public class STIROptionVolCorrAnalysis {
 		STIRFutureComponent stir = CreateSTIR (dtForward, "5Y", fri, 0.05, strCurrency);
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null);
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

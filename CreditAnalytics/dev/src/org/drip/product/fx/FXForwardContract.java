@@ -207,7 +207,7 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 
 		if (!bFwdAsPIP) return dblFXFwd;
 		
-		return (dblFXFwd - dblFXSpot) * _ccyPair.getPIPFactor();
+		return (dblFXFwd - dblFXSpot) * _ccyPair.pipFactor();
 	}
 
 	@Override public double calcDCBasis (

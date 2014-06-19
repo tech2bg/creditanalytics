@@ -68,7 +68,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 		double dblFXFwd = _adblFXFwd[iNode];
 
-		if (_abIsPIP[iNode]) dblFXFwd = _dblFXSpot + (_adblFXFwd[iNode] / _cp.getPIPFactor());
+		if (_abIsPIP[iNode]) dblFXFwd = _dblFXSpot + (_adblFXFwd[iNode] / _cp.pipFactor());
 
 		org.drip.product.definition.FXForward fxfwd =
 			org.drip.product.creator.FXForwardBuilder.CreateFXForward (_cp, new
@@ -245,7 +245,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 
 	@Override public java.lang.String currency()
 	{
-		return _cp.getDenomCcy();
+		return _cp.denomCcy();
 	}
 
 	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
@@ -429,7 +429,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append ("FXFWDBASIS[" + _cp.getCode() + "]=");
+		sb.append ("FXFWDBASIS[" + _cp.code() + "]=");
 
 		for (int i = 0; i < _adblDate.length; ++i) {
 			if (0 != i) sb.append (";");

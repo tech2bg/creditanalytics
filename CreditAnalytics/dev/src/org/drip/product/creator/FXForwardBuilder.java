@@ -61,7 +61,7 @@ public class FXForwardBuilder {
 			org.drip.product.definition.FXForward fxfwd = new org.drip.product.fx.FXForwardContract (ccyPair,
 				dtEffective, dtMaturity);
 
-			fxfwd.setPrimaryCode ("FXFWD." + dtMaturity + "." + ccyPair.getCode());
+			fxfwd.setPrimaryCode ("FXFWD." + dtMaturity + "." + ccyPair.code());
 
 			return fxfwd;
 		} catch (java.lang.Exception e) {
@@ -92,7 +92,7 @@ public class FXForwardBuilder {
 			org.drip.product.definition.FXForward fxfwd = new org.drip.product.fx.FXForwardContract (ccyPair,
 				dtEffective, dtEffective.addTenor (strTenor));
 
-			fxfwd.setPrimaryCode ("FXFWD." + strTenor + "." + ccyPair.getCode());
+			fxfwd.setPrimaryCode ("FXFWD." + strTenor + "." + ccyPair.code());
 
 			return fxfwd;
 		} catch (java.lang.Exception e) {

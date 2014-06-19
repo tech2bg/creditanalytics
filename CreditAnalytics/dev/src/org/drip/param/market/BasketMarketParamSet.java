@@ -474,10 +474,12 @@ public class BasketMarketParamSet extends org.drip.param.definition.BasketMarket
 	{
 		if (null == compRef) return null;
 
+		java.lang.String strComponentName = compRef.componentName();
+
 		org.drip.param.definition.ComponentMarketParams cmp =
 			org.drip.param.creator.ComponentMarketParamsBuilder.Create (null, null, _mapDC.get
-				(compRef.couponCurrency()[0]), _mapCC.get (compRef.creditCurveName()), _mapCQComp.get
-					(compRef.componentName()), _mapCQComp, _mmFixings);
+				(compRef.couponCurrency()[0]), _mapCC.get (compRef.creditCurveName()), strComponentName,
+					_mapCQComp.get (strComponentName), _mapCQComp, _mmFixings);
 
 		java.lang.String[] astrCurrency = compRef.couponCurrency();
 

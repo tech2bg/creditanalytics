@@ -93,13 +93,18 @@ public class FRAMkt {
 			"Act/360");
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dcEONIA, fcEURIBOR6M, null, null, null, null, null);
+			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setCustomMetricVolSurface (
+		/* cmp.setCustomMetricVolSurface (
 			fri.fullyQualifiedName(),
 			dtForward,
+			new FlatUnivariate (dblEURIBOR6MVol)
+		); */
+
+		cmp.setForwardCurveVolSurface (
+			fri,
 			new FlatUnivariate (dblEURIBOR6MVol)
 		);
 
@@ -115,13 +120,18 @@ public class FRAMkt {
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		/* cmp.setCustomMetricVolSurface (
 			dcEONIA.name() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEONIAVol)
+		); */
+
+		cmp.setFundingCurveVolSurface (
+			strCurrency,
+			new FlatUnivariate (dblEONIAVol)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		/* cmp.setCustomMetricVolSurface (
 			fri.fullyQualifiedName() + "_VOL_TS",
 			dtForward,
 			new FlatUnivariate (dblEURIBOR6MVol)
@@ -130,6 +140,12 @@ public class FRAMkt {
 		cmp.setCustomMetricVolSurface (
 			dcEONIA.name() + "::" + fri.fullyQualifiedName() + "_VOL_TS",
 			dtForward,
+			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
+		); */
+
+		cmp.setForwardFundingCorrSurface (
+			fri,
+			strCurrency,
 			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
 		);
 

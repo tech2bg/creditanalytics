@@ -385,7 +385,7 @@ public class IBOR {
 		 */
 
 		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fcReference, null, null, null, null, null);
+			(dc, fcReference, null, null, null, null, null, null);
 
 		/*
 		 * Construct the Shape Preserving Forward Curve by applying the linear curve calibrator to the array

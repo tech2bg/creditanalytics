@@ -110,8 +110,7 @@ public class FXAPI {
 
 			adblNodes[i] = JulianDate.Today().addYears (i + 1).getJulian();
 
-			System.out.println (cp.getCode() + "[" + (i + 1) + "]=" +
-				FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
+			System.out.println (cp.code() + "[" + (i + 1) + "]=" + FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
 		}
 
 		ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "USD",
@@ -129,7 +128,7 @@ public class FXAPI {
 
 		double dblFXFwd = fxfwd.implyFXForward (valParams, dcEUR, dcUSD, 1.4, false);
 
-		System.out.println (cp.getCode() + "[1Y]= " + dblFXFwd);
+		System.out.println (cp.code() + "[1Y]= " + dblFXFwd);
 
 		/*
 		 * Calculate the FX forward PIP
@@ -137,8 +136,7 @@ public class FXAPI {
 
 		double dblFXFwdPIP = fxfwd.implyFXForward (valParams, dcEUR, dcUSD, 1.4, true);
 
-		System.out.println (cp.getCode() + "[1Y](pip)= " + FormatUtil.FormatDouble
-			(dblFXFwdPIP, 1, 3, 100.));
+		System.out.println (cp.code() + "[1Y](pip)= " + FormatUtil.FormatDouble (dblFXFwdPIP, 1, 3, 100.));
 
 		/*
 		 * Calculate the DC Basis on the EUR curve
@@ -146,7 +144,7 @@ public class FXAPI {
 
 		double dblDCEURBasis = fxfwd.calcDCBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, false);
 
-		System.out.println ("EUR Basis bp for " + cp.getCode() + "[1Y] = " + dblFXFwdMarket + ": " +
+		System.out.println ("EUR Basis bp for " + cp.code() + "[1Y] = " + dblFXFwdMarket + ": " +
 			FormatUtil.FormatDouble (dblDCEURBasis, 1, 3, 100.));
 
 		/*
@@ -155,7 +153,7 @@ public class FXAPI {
 
 		double dblDCUSDBasis = fxfwd.calcDCBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, true);
 
-		System.out.println ("USD Basis bp for " + cp.getCode() + "[1Y] = " + dblFXFwdMarket + ": " +
+		System.out.println ("USD Basis bp for " + cp.code() + "[1Y] = " + dblFXFwdMarket + ": " +
 			FormatUtil.FormatDouble (dblDCUSDBasis, 1, 3, 100.));
 
 		/*
@@ -192,7 +190,7 @@ public class FXAPI {
 		double[] adblBootstrappedUSDBasis = fxCurve.bootstrapBasis (valParams, dcEUR, dcUSD, true);
 
 		for (int i = 0; i < adblBootstrappedUSDBasis.length; ++i)
-			System.out.println ("Bootstrapped USDBasis from FX fwd for " + cp.getCode() + "[" + (i + 1) + "Y]=" +
+			System.out.println ("Bootstrapped USDBasis from FX fwd for " + cp.code() + "[" + (i + 1) + "Y]=" +
 				FormatUtil.FormatDouble (adblBootstrappedUSDBasis[i], 1, 3, 100.));
 
 		/*
@@ -202,7 +200,7 @@ public class FXAPI {
 		double[] adblBootstrappedEURBasis = fxCurve.bootstrapBasis (valParams, dcEUR, dcUSD, false);
 
 		for (int i = 0; i < adblBootstrappedEURBasis.length; ++i)
-			System.out.println ("Bootstrapped EURBasis from FX fwd for " + cp.getCode() + "[" + (i + 1) + "Y]=" +
+			System.out.println ("Bootstrapped EURBasis from FX fwd for " + cp.code() + "[" + (i + 1) + "Y]=" +
 				FormatUtil.FormatDouble (adblBootstrappedEURBasis[i], 1, 3, 100.));
 
 		/*
@@ -219,7 +217,7 @@ public class FXAPI {
 		double[] adblFXFwdFromUSDBasis = fxUSDBasisCurve.fxForward (valParams, dcEUR, dcUSD, true, false);
 
 		for (int i = 0; i < adblFXFwdFromUSDBasis.length; ++i)
-			System.out.println ("FX Fwd from Bootstrapped USD Basis: " + cp.getCode() + "[" + (i + 1) + "Y]=" +
+			System.out.println ("FX Fwd from Bootstrapped USD Basis: " + cp.code() + "[" + (i + 1) + "Y]=" +
 				FormatUtil.FormatDouble (adblFXFwdFromUSDBasis[i], 1, 3, 100.));
 
 		/*
@@ -236,7 +234,7 @@ public class FXAPI {
 		double[] adblFXFwdFromEURBasis = fxEURBasisCurve.fxForward (valParams, dcEUR, dcUSD, false, false);
 
 		for (int i = 0; i < adblFXFwdFromEURBasis.length; ++i)
-			System.out.println ("FX Fwd from Bootstrapped EUR Basis: " + cp.getCode() + "[" + (i + 1) + "Y]=" +
+			System.out.println ("FX Fwd from Bootstrapped EUR Basis: " + cp.code() + "[" + (i + 1) + "Y]=" +
 				FormatUtil.FormatDouble (adblFXFwdFromEURBasis[i], 1, 3, 100.));
 	}
 

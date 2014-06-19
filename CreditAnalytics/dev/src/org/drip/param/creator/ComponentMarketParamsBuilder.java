@@ -48,6 +48,7 @@ public class ComponentMarketParamsBuilder {
 	 * @param fc Forward Curve
 	 * @param dcTSY Treasury Discount Curve
 	 * @param cc Credit Curve
+	 * @param strComponentCode Component Code
 	 * @param compQuote Component quote
 	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
 	 * @param mmFixings Double map of date/rate index and fixings
@@ -60,6 +61,7 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.ForwardCurve fc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.CreditCurve cc,
+		final java.lang.String strComponentCode,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 			mTSYQuotes,
@@ -71,15 +73,17 @@ public class ComponentMarketParamsBuilder {
 
 		if (null != cc && !cmp.setCreditCurve (cc)) return null;
 
-		if (null != dcTSY && !cmp.setGovvieFundingCurve (dcTSY)) return null;
+		if (null != dcTSY && !cmp.setGovvieCurve (dcTSY)) return null;
 
-		if (null != compQuote && !cmp.setComponentQuote (compQuote)) return null;
+		if (null != compQuote && null != strComponentCode && !strComponentCode.isEmpty() &&
+			!cmp.setComponentQuote (strComponentCode, compQuote))
+			return null;
 
 		if (null != dcFunding && !cmp.setFundingCurve (dcFunding)) return null;
 
 		if (null != mmFixings && !cmp.setFixings (mmFixings)) return null;
 
-		if (null != mTSYQuotes && !cmp.setBenchmarkTSYQuotes (mTSYQuotes)) return null;
+		if (null != mTSYQuotes && !cmp.setComponentQuoteMap (mTSYQuotes)) return null;
 
 		if (null != fc && !cmp.setForwardCurve (fc)) return null;
 
@@ -97,7 +101,7 @@ public class ComponentMarketParamsBuilder {
 	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
 		final org.drip.analytics.rates.DiscountCurve dc)
 	{
-		return Create (dc, null, null, null, null, null, null);
+		return Create (dc, null, null, null, "", null, null, null);
 	}
 
 	/**
@@ -113,7 +117,7 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.ForwardCurve fc)
 	{
-		return Create (dc, fc, null, null, null, null, null);
+		return Create (dc, fc, null, null, "", null, null, null);
 	}
 
 	/**
@@ -129,7 +133,7 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY)
 	{
-		return Create (dc, null, dcTSY, null, null, null, null);
+		return Create (dc, null, dcTSY, null, "", null, null, null);
 	}
 
 	/**
@@ -145,7 +149,7 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc)
 	{
-		return Create (dc, null, null, cc, null, null, null);
+		return Create (dc, null, null, cc, "", null, null, null);
 	}
 
 	/**
@@ -156,6 +160,7 @@ public class ComponentMarketParamsBuilder {
 	 * @param dc Rates Discount Curve
 	 * @param dcTSY Treasury Discount Curve
 	 * @param cc Credit Curve
+	 * @param strComponentCode Component Code
 	 * @param compQuote Component quote
 	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
 	 * @param mmFixings Double map of date/rate index and fixings
@@ -167,13 +172,14 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.CreditCurve cc,
+		final java.lang.String strComponentCode,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 			mTSYQuotes,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
-		return Create (dc, null, dcTSY, cc, compQuote, mTSYQuotes, mmFixings);
+		return Create (dc, null, dcTSY, cc, strComponentCode, compQuote, mTSYQuotes, mmFixings);
 	}
 
 	/**
@@ -185,6 +191,7 @@ public class ComponentMarketParamsBuilder {
 	 * @param fc Forward Curve
 	 * @param dcTSY Treasury Discount Curve
 	 * @param cc Credit Curve
+	 * @param strComponentCode Component Code
 	 * @param compQuote Component quote
 	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
 	 * @param mmFixings Double map of date/rate index and fixings
@@ -197,13 +204,14 @@ public class ComponentMarketParamsBuilder {
 		final org.drip.analytics.rates.ForwardCurve fc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.CreditCurve cc,
+		final java.lang.String strComponentCode,
 		final org.drip.param.definition.ComponentQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
 			mTSYQuotes,
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
-		return Create (dc, fc, dcTSY, cc, compQuote, mTSYQuotes, mmFixings);
+		return Create (dc, fc, dcTSY, cc, strComponentCode, compQuote, mTSYQuotes, mmFixings);
 	}
 
 	/**

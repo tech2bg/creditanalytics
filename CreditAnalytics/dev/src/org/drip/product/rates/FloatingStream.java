@@ -644,21 +644,22 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		} catch (java.lang.Exception e) {
 		}
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
 
-		if (null == dc) throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
+		if (null == dcFunding)
+			throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
 
 		double dblStartDate = currentPeriod.getStartDate();
 
 		double dblEndDate = currentPeriod.getEndDate();
 
-		double dblEpochDate = dc.epoch().getJulian();
+		double dblEpochDate = dcFunding.epoch().getJulian();
 
 		if (dblEpochDate > dblStartDate)
 			dblEndDate = new org.drip.analytics.date.JulianDate (dblStartDate = dblEpochDate).addTenor
 				(_fri.tenor()).getJulian();
 
-		return dc.libor (dblStartDate, dblEndDate, currentPeriod.getCouponDCF()) + _dblSpread;
+		return dcFunding.libor (dblStartDate, dblEndDate, currentPeriod.getCouponDCF()) + _dblSpread;
 	}
 
 	@Override public java.lang.String[] forwardCurveName()
@@ -727,9 +728,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
 
-		if (null == dc) return null;
+		if (null == dcFunding) return null;
 
 		long lStart = System.nanoTime();
 
@@ -774,12 +775,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 								"FRIForwardToDomesticExchangeCorrelation", valParams.valueDate(),
 									period.getStartDate());
 
-					dblFloatingRate = (null == fc ? dc.libor (period.getStartDate(), period.getPayDate(),
-						period.getCouponDCF()) : fc.forward (period.getPayDate())) * dblPeriodQuantoAdjust;
+					dblFloatingRate = (null == fc ? dcFunding.libor (period.getStartDate(),
+						period.getPayDate(), period.getCouponDCF()) : fc.forward (period.getPayDate())) *
+							dblPeriodQuantoAdjust;
 				}
 
-				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * notional
-					(period.getAccrualStartDate(), period.getEndDate());
+				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dcFunding.df (dblPeriodPayDate) *
+					notional (period.getAccrualStartDate(), period.getEndDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -806,7 +808,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams.valueDate());
 
-			dblCashPayDF = dc.df (dblCashSettle);
+			dblCashPayDF = dcFunding.df (dblCashSettle);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -932,14 +934,14 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
-			mktParams.fundingCurve())
-			return null;
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		try {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
-
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
@@ -947,7 +949,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				if (p.getStartDate() < valParams.valueDate()) continue;
 
 				org.drip.quant.calculus.WengertJacobian wjDForwardDManifestMeasure =
-					dc.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
+					dcFunding.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
 						p.getCouponDCF());
 
 				if (null == wjDForwardDManifestMeasure) continue;
@@ -956,16 +958,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 				if (0 == iNumQuote) continue;
 
-				org.drip.quant.calculus.WengertJacobian wjDPayDFDManifestMeasure = dc.jackDDFDManifestMeasure
-					(dblPeriodPayDate, "Rate");
+				org.drip.quant.calculus.WengertJacobian wjDPayDFDManifestMeasure =
+					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 				if (null == wjDPayDFDManifestMeasure || iNumQuote !=
 					wjDPayDFDManifestMeasure.numParameters())
 					continue;
 
-				double dblForward = dc.libor (p.getStartDate(), p.getEndDate());
+				double dblForward = dcFunding.libor (p.getStartDate(), p.getEndDate());
 
-				double dblPayDF = dc.df (dblPeriodPayDate);
+				double dblPayDF = dcFunding.df (dblPeriodPayDate);
 
 				if (null == jackDDirtyPVDManifestMeasure)
 					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
@@ -1001,9 +1003,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure || null
-			== mktParams || null == mktParams.fundingCurve())
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
 			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
 		{
@@ -1019,25 +1024,23 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
-
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dc.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
+						dcFunding.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
 							p.getCouponDCF());
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
-						(dblPeriodPayDate, "Rate");
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
+						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dcFunding.libor (p.getStartDate(), p.getEndDate());
 
-					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
+					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
@@ -1076,11 +1079,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= maturity().getJulian()) return null;
+		if (dblValueDate >= maturity().getJulian() || null == mktParams) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
 
-		if (null == dc) return null;
+		if (null == dcFunding) return null;
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
@@ -1122,7 +1125,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 						dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
 				}
 
-				double dblPeriodCV100 = dblPeriodDCF * dc.df (dblPayDate) * notional (dblPayDate);
+				double dblPeriodCV100 = dblPeriodDCF * dcFunding.df (dblPayDate) * notional (dblPayDate);
 
 				dblCleanCV100 += dblPeriodCV100;
 				double dblNotionalPeriodCV100 = dblPeriodCV100 * _dblNotional;

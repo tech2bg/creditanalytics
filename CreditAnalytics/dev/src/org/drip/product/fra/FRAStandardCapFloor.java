@@ -73,9 +73,9 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 		for (org.drip.analytics.period.CashflowPeriod period : fs.cashFlowPeriod()) {
 			double dblFRAStartDate = period.getStartDate();
 
-			org.drip.product.fra.FRAStandardComponent fra = new org.drip.product.fra.FRAStandardComponent (dblNotional,
-				strIR, strFRACodePrefix + new org.drip.analytics.date.JulianDate (dblFRAStartDate),
-					strCalendar, dblFRAStartDate, fri, dblStrike, strDayCount);
+			org.drip.product.fra.FRAStandardComponent fra = new org.drip.product.fra.FRAStandardComponent
+				(dblNotional, strIR, strFRACodePrefix + new org.drip.analytics.date.JulianDate
+					(dblFRAStartDate), strCalendar, dblFRAStartDate, fri, dblStrike, strDayCount);
 
 			_lsFRACapFloorlet.add (new org.drip.product.fra.FRAStandardCapFloorlet (fra, strManifestMeasure,
 				bIsCap, dblStrike, dblNotional, strDayCount, strCalendar));

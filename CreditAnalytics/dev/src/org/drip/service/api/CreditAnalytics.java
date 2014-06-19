@@ -1124,7 +1124,7 @@ public class CreditAnalytics {
 		return cds.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD, null,
-					null, ccEOD, null, null, null), null);
+					null, ccEOD, null, null, null, null), null);
 	}
 
 	/**
@@ -1915,7 +1915,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcTSYSpreadFromPriceToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
-				null, null, null), quotingParams, dblPrice);
+				null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -1950,7 +1950,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcTSYSpreadFromPrice (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), quotingParams, dblPrice);
+				null, null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2011,7 +2011,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcGSpreadFromPriceToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), quotingParams, dblPrice);
+				null, null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2046,7 +2046,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcGSpreadFromPrice (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), quotingParams, dblPrice);
+				null, null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2106,7 +2106,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcCreditBasisFromPriceToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null), quotingParams, dblPrice);
+				cc, null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2141,7 +2141,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcCreditBasisFromPrice (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null), quotingParams, dblPrice);
+				cc, null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2202,7 +2202,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcPECSFromPriceToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null), quotingParams, dblPrice);
+				cc, null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2237,7 +2237,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcPECSFromPrice (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null), quotingParams, dblPrice);
+				cc, null, null, null, null), quotingParams, dblPrice);
 	}
 
 	/**
@@ -2298,7 +2298,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcPriceFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2357,7 +2357,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcYieldFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), null, dblTSYSpread);
+				null, null, null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2416,7 +2416,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcZSpreadFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2477,7 +2477,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcOASFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2536,7 +2536,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcISpreadFromTSYSpreadToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-				null, null, null, null), null, dblTSYSpread);
+				null, null, null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2596,7 +2596,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcDiscountMarginFromTSYSpreadToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
-				null, null, null), null, dblTSYSpread);
+				null, null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2655,7 +2655,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcGSpreadFromTSYSpreadToOptimalExercise (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
-				null, null, null), null, dblTSYSpread);
+				null, null, null, null), null, dblTSYSpread);
 	}
 
 	/**
@@ -2716,7 +2716,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcCreditBasisFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, cc,
-				null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2780,7 +2780,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcCreditBasisFromTSYSpread (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, cc,
-				null, null, null), quotingParams, dblTSYSpread);
+				null, null, null, null), quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -3073,7 +3073,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcGSpreadFromYield (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null,
-				null, null, null), null, dblYield);
+				null, null, null, null), null, dblYield);
 	}
 
 	/**
@@ -3134,7 +3134,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcCreditBasisFromYield (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null), quotingParams, dblYield);
+				cc, null, null, null, null), quotingParams, dblYield);
 	}
 
 	/**
@@ -3195,7 +3195,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcPECSFromYield (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null), quotingParams, dblYield);
+				cc, null, null, null, null), quotingParams, dblYield);
 	}
 
 	/**
@@ -3254,7 +3254,7 @@ public class CreditAnalytics {
 
 		return GetBond (strBondId).calcPriceFromCreditBasis (valParams,
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null), quotingParams, 0.);
+				cc, null, null, null, null), quotingParams, 0.);
 	}
 
 	/**
@@ -3527,7 +3527,7 @@ public class CreditAnalytics {
 
 		return bond.calcCreditBasisFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, null, ccEOD, null, null, null), null, dblPrice);
+				(dcEOD, null, null, ccEOD, null, null, null, null), null, dblPrice);
 	}
 
 	/**
@@ -3568,7 +3568,7 @@ public class CreditAnalytics {
 
 		return bond.calcPECSFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				null, null, ccEOD, null, null, null), null, dblPrice);
+				null, null, ccEOD, null, null, null, null), null, dblPrice);
 	}
 
 	/**
@@ -3647,7 +3647,7 @@ public class CreditAnalytics {
 
 		return bond.calcGSpreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				dcTSY, null, null, null, null), null, dblPrice);
+				dcTSY, null, null, null, null, null), null, dblPrice);
 	}
 
 	/**
@@ -3799,8 +3799,8 @@ public class CreditAnalytics {
 
 		return bond.calcTSYSpreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-					strIR), null), null, dblPrice);
+				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null, dblPrice);
 	}
 
 	/**
@@ -4147,7 +4147,7 @@ public class CreditAnalytics {
 
 		return bond.calcCreditBasisFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, null, ccEOD, null, null, null), null, dblYield);
+				(dcEOD, null, null, ccEOD, null, null, null, null), null, dblYield);
 	}
 
 	/**
@@ -4188,7 +4188,7 @@ public class CreditAnalytics {
 
 		return bond.calcPECSFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				null, null, ccEOD, null, null, null), null, dblYield);
+				null, null, ccEOD, null, null, null, null), null, dblYield);
 	}
 
 	/**
@@ -4267,7 +4267,7 @@ public class CreditAnalytics {
 
 		return bond.calcGSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				dcTSY, null, null, null, null), null, dblYield);
+				dcTSY, null, null, null, null, null), null, dblYield);
 	}
 
 	/**
@@ -4455,8 +4455,8 @@ public class CreditAnalytics {
 
 		return bond.calcTSYSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-					strIR), null), null, dblYield);
+				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null, dblYield);
 	}
 
 	/**
@@ -4744,8 +4744,8 @@ public class CreditAnalytics {
 
 		return bond.calcConvexityFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-					strIR), null), null, dblTSYSpread);
+				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -4793,7 +4793,7 @@ public class CreditAnalytics {
 
 		return bond.calcCreditBasisFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, ccEOD, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+				(dcEOD, null, dcTSY, ccEOD, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
 					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
@@ -4842,7 +4842,7 @@ public class CreditAnalytics {
 
 		return bond.calcPECSFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, ccEOD, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+				(dcEOD, null, dcTSY, ccEOD, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
 					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
@@ -4885,8 +4885,8 @@ public class CreditAnalytics {
 
 		return bond.calcDurationFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-					strIR), null), null, dblTSYSpread);
+				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -4931,8 +4931,8 @@ public class CreditAnalytics {
 		return bond.calcGSpreadFromTSYSpreadToOptimalExercise
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
-						null), null, dblTSYSpread);
+					dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+						strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -4977,8 +4977,8 @@ public class CreditAnalytics {
 		return bond.calcISpreadFromTSYSpreadToOptimalExercise
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD, null,
-					dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
-						null), null, dblTSYSpread);
+					dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+						strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -5023,8 +5023,8 @@ public class CreditAnalytics {
 		return bond.calcDiscountMarginFromTSYSpreadToOptimalExercise
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD, null,
-					dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
-						null), null, dblTSYSpread);
+					dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+						strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -5068,8 +5068,8 @@ public class CreditAnalytics {
 
 		return bond.calcOASFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
 			strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-				null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
-					null), null, dblTSYSpread);
+				null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
+					strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -5111,8 +5111,8 @@ public class CreditAnalytics {
 
 		return bond.calcPriceFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-					strIR), null), null, dblTSYSpread);
+				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -5154,8 +5154,8 @@ public class CreditAnalytics {
 
 		return bond.calcYieldFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-					strIR), null), null, dblTSYSpread);
+				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -5199,8 +5199,8 @@ public class CreditAnalytics {
 
 		return bond.calcZSpreadFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
 			(dtEOD, strIR), org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcEOD, null, dcTSY, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-					strIR), null), null, dblTSYSpread);
+				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null, dblTSYSpread);
 	}
 
 	/**
@@ -5458,8 +5458,8 @@ public class CreditAnalytics {
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
-						null), null);
+					dcTSY, ccEOD, bond.componentName(), cq, org.drip.service.env.EODCurves.GetTSYQuotes
+						(s_stmt, dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5537,8 +5537,8 @@ public class CreditAnalytics {
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
-						null), null);
+					dcTSY, ccEOD, bond.componentName(), cq, org.drip.service.env.EODCurves.GetTSYQuotes
+						(s_stmt, dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5616,8 +5616,8 @@ public class CreditAnalytics {
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, ccEOD, cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR),
-						null), null);
+					dcTSY, ccEOD, bond.componentName(), cq, org.drip.service.env.EODCurves.GetTSYQuotes
+						(s_stmt, dtEOD, strIR), null), null);
 	}
 
 	/**

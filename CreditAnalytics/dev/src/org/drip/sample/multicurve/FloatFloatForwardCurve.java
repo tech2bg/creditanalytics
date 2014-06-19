@@ -359,7 +359,7 @@ public class FloatFloatForwardCurve {
 		 */
 
 		ComponentMarketParams cmpCubicFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fcxMCubic, null, null, null, null, null);
+			(dc, fcxMCubic, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -386,7 +386,7 @@ public class FloatFloatForwardCurve {
 		 */
 
 		ComponentMarketParams cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fcxMQuartic, null, null, null, null, null);
+			(dc, fcxMQuartic, null, null, null,  null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Hyperbolic Tension Based Basis Spline.
@@ -413,7 +413,7 @@ public class FloatFloatForwardCurve {
 		 */
 
 		ComponentMarketParams cmpKLKHyperFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, fcxMKLKHyper, null, null, null, null, null);
+			(dc, fcxMKLKHyper, null, null, null, null, null, null);
 
 		int i = 0;
 		int iFreq = 12 / iTenorInMonths;

@@ -390,7 +390,10 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+				org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve
+					(couponCurrency()[0]);
+
+				if (null == dcFunding) return null;
 
 				mapResult.put ("Price", dblCleanPrice);
 
@@ -398,11 +401,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblStartDate = effective().getJulian();
 
-				mapResult.put ("CalibSwapRatePV", (dc.df (dblStartDate > dblValueDate ? dblStartDate :
-					dblValueDate) - dc.df (maturity())));
+				mapResult.put ("CalibSwapRatePV", (dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
+					dblValueDate) - dcFunding.df (maturity())));
 
-				mapResult.put ("CalibSwapRate", (dc.df (dblStartDate > dblValueDate ? dblStartDate :
-					dblValueDate) - dc.df (maturity())) / dblFixedCleanDV01 * notional (dblValueDate)
+				mapResult.put ("CalibSwapRate", (dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
+					dblValueDate) - dcFunding.df (maturity())) / dblFixedCleanDV01 * notional (dblValueDate)
 						* 0.0001);
 			}
 		} catch (java.lang.Exception e) {
@@ -541,7 +544,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
-			strManifestMeasure || null == mktParams || null == mktParams.fundingCurve())
+			strManifestMeasure || null == mktParams)
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
@@ -558,7 +561,10 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+				org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve
+					(couponCurrency()[0]);
+
+				if (null == dcFunding) return null;
 
 				for (org.drip.analytics.period.Period p : cashFlowPeriod()) {
 					double dblPeriodPayDate = p.getPayDate();
@@ -566,17 +572,17 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dc.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
+						dcFunding.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
 							p.getCouponDCF());
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
-						(dblPeriodPayDate, "Rate");
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
+						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dcFunding.libor (p.getStartDate(), p.getEndDate());
 
-					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
+					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,

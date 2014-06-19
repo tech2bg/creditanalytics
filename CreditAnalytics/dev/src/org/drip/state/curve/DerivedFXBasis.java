@@ -201,7 +201,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 	@Override public java.lang.String currency()
 	{
-		return _cp.getDenomCcy();
+		return _cp.denomCcy();
 	}
 
 	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
@@ -324,7 +324,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append ("FXFWDBASIS[" + _cp.getCode() + "]=");
+		sb.append ("FXFWDBASIS[" + _cp.code() + "]=");
 
 		for (int i = 0; i < _adblDate.length; ++i) {
 			if (0 != i) sb.append (";");

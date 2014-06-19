@@ -599,9 +599,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == mktParams) return null;
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
 
-		if (null == dc) return null;
+		if (null == dcFunding) return null;
 
 		long lStart = System.nanoTime();
 
@@ -625,8 +625,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 							(period.getAccrualStartDate(), valParams.valueDate());
 				}
 
-				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dc.df (dblPeriodPayDate) * notional
-					(period.getAccrualStartDate(), period.getEndDate());
+				dblDirtyPeriodDV01 = 0.0001 * period.getCouponDCF() * dcFunding.df (dblPeriodPayDate) *
+					notional (period.getAccrualStartDate(), period.getEndDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -643,7 +643,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 			if (null != _settleParams) dblCashSettle = _settleParams.cashSettleDate (valParams.valueDate());
 
-			dblCashPayDF = dc.df (dblCashSettle);
+			dblCashPayDF = dcFunding.df (dblCashSettle);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -744,22 +744,22 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.definition.ComponentMarketParams mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams || null ==
-			mktParams.fundingCurve())
-			return null;
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		try {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
-
-			org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.getPayDate();
 
 				if (p.getStartDate() < valParams.valueDate()) continue;
 
-				org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure = dc.jackDDFDManifestMeasure
-					(dblPeriodPayDate, "Rate");
+				org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure =
+					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 				if (null == jackDDFDManifestMeasure) continue;
 
@@ -799,8 +799,12 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure || null
-			== mktParams || null == mktParams.fundingCurve())
+			== mktParams)
 			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+
+		if (null == dcFunding) return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
 		{
@@ -816,25 +820,23 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve();
-
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.getPayDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dc.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
+						dcFunding.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
 							p.getCouponDCF());
 
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dc.jackDDFDManifestMeasure
-						(dblPeriodPayDate, "Rate");
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
+						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dc.libor (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dcFunding.libor (p.getStartDate(), p.getEndDate());
 
-					double dblPeriodPayDF = dc.df (dblPeriodPayDate);
+					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
 
 					if (null == wjSwapRateDFMicroJack)
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,

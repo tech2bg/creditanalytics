@@ -355,6 +355,7 @@ public class CreditAnalyticsProxy {
 	}
 
 	private static org.drip.param.definition.ComponentMarketParams MakeCMP (
+		final org.drip.product.definition.FixedIncomeComponent fic,
 		final org.drip.analytics.date.JulianDate dtStart,
 		final double dblDownShift)
 	{
@@ -418,8 +419,8 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc, cqBond,
-			mapTSYQuotes, mmFixings);
+		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc,
+			fic.componentName(), cqBond, mapTSYQuotes, mmFixings);
 	}
 
 	private static final org.drip.service.bridge.CreditAnalyticsRequest CreateRequest (
@@ -450,7 +451,7 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		org.drip.param.definition.ComponentMarketParams cmp = MakeCMP (dtStart, (1. +
+		org.drip.param.definition.ComponentMarketParams cmp = MakeCMP (bond, dtStart, (1. +
 			PRICE_DOWNSHIFT_AMPLITUDE * (new java.util.Random().nextDouble() - 0.5)) * iTenorInYears *
 				PRICE_DOWNSHIFT_RATE);
 

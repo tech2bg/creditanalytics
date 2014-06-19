@@ -556,7 +556,7 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 			cc = _mapCCSC.get (comp.creditCurveName()).getCCBumpDn();
 
 		return org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
-			dcTSY, cc, _mapCQComp.get (comp.componentName()), _mapCQTSY, _mmFixings);
+			dcTSY, cc, comp.componentName(), _mapCQComp.get (comp.componentName()), _mapCQTSY, _mmFixings);
 	}
 
 	@Override public
@@ -565,7 +565,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp)
 	{
-		if (null == comp || null == comp.couponCurrency()[0] || null == _mapIRCSC.get (comp.couponCurrency()[0]))
+		if (null == comp || null == comp.couponCurrency()[0] || null == _mapIRCSC.get
+			(comp.couponCurrency()[0]))
 			return null;
 
 		if (bBumpUp && (null == _mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpUp() || null ==
@@ -604,8 +605,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meDC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(meDC.getValue(), fc, dcTSY, cc, _mapCQComp.get (comp.componentName()), _mapCQTSY,
-							_mmFixings));
+						(meDC.getValue(), fc, dcTSY, cc, comp.componentName(), _mapCQComp.get
+							(comp.componentName()), _mapCQTSY, _mmFixings));
 			}
 		} else {
 			if (null == _mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpDn() || null == _mapIRCSC.get
@@ -618,8 +619,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meDC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(meDC.getValue(), fc, dcTSY, cc, _mapCQComp.get (comp.componentName()), _mapCQTSY,
-							_mmFixings));
+						(meDC.getValue(), fc, dcTSY, cc, comp.componentName(), _mapCQComp.get
+							(comp.componentName()), _mapCQTSY, _mmFixings));
 			}
 		}
 
@@ -672,8 +673,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meFC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-						meFC.getValue(), dcTSY, cc, _mapCQComp.get (comp.componentName()), _mapCQTSY,
-							_mmFixings));
+						meFC.getValue(), dcTSY, cc, comp.componentName(), _mapCQComp.get
+							(comp.componentName()), _mapCQTSY, _mmFixings));
 			}
 		} else {
 			if (null == _mapSFC.get (comp.forwardCurveName()).getTenorFCBumpDn() || null == _mapSFC.get
@@ -686,8 +687,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meFC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-						meFC.getValue(), dcTSY, cc, _mapCQComp.get (comp.componentName()), _mapCQTSY,
-							_mmFixings));
+						meFC.getValue(), dcTSY, cc, comp.componentName(), _mapCQComp.get
+							(comp.componentName()), _mapCQTSY, _mmFixings));
 			}
 		}
 
@@ -739,8 +740,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meCC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
-						dcTSY, meCC.getValue(), _mapCQComp.get (comp.componentName()), _mapCQTSY,
-							_mmFixings));
+						dcTSY, meCC.getValue(), comp.componentName(), _mapCQComp.get (comp.componentName()),
+							_mapCQTSY, _mmFixings));
 			}
 		} else {
 			if (null == _mapCCSC.get (comp.creditCurveName()).getTenorCCBumpDn() || null == _mapCCSC.get
@@ -753,8 +754,8 @@ public class MarketParamsContainer extends org.drip.param.definition.MarketParam
 
 				mapCMP.put (meCC.getKey(),
 					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, fc,
-						dcTSY, meCC.getValue(), _mapCQComp.get (comp.componentName()), _mapCQTSY,
-							_mmFixings));
+						dcTSY, meCC.getValue(), comp.componentName(), _mapCQComp.get (comp.componentName()),
+							_mapCQTSY, _mmFixings));
 			}
 		}
 
