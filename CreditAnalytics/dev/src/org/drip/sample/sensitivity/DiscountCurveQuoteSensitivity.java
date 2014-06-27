@@ -103,8 +103,18 @@ public class DiscountCurveQuoteSensitivity {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], "USD"), 0., "USD", "USD-LIBOR-6M", "USD");
+			aCalibComp[i] = RatesStreamBuilder.CreateIRS (
+				dtEffective,
+				astrTenor[i],
+				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				"USD",
+				"USD"
+			);
 
 		return aCalibComp;
 	}
@@ -117,10 +127,15 @@ public class DiscountCurveQuoteSensitivity {
 		final DiscountCurve dc)
 	{
 		RatesComponent irsBespoke = RatesStreamBuilder.CreateIRS (
-			dtStart, dtStart.addTenorAndAdjust (strTenor, strCurrency),
+			dtStart,
+			strTenor,
 			0.,
+			2,
+			"30/360",
+			0.,
+			2,
+			"30/360",
 			strCurrency,
-			strCurrency + "-LIBOR-6M",
 			strCurrency
 		);
 
@@ -138,7 +153,7 @@ public class DiscountCurveQuoteSensitivity {
 		final String strManifestMeasure,
 		final DiscountCurve dc)
 	{
-		JulianDate dtBegin = dtStart.addTenorAndAdjust (strStartTenor, "USD");
+		JulianDate dtBegin = dtStart.addTenor (strStartTenor);
 
 		WengertJacobian wjForwardRate = dc.jackDForwardDManifestMeasure (dtBegin, "6M", strManifestMeasure, 0.5);
 
@@ -174,7 +189,7 @@ public class DiscountCurveQuoteSensitivity {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		/*
 		 * Construct the Array of DEPOSIT Instruments and their Quotes from the given set of parameters
@@ -452,10 +467,15 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		RatesComponent irs35Y = RatesStreamBuilder.CreateIRS (
-			dtToday, dtToday.addTenorAndAdjust ("35Y", "USD"),
+			dtToday,
+			"35Y",
 			0.,
+			2,
+			"30/360",
+			0.,
+			2,
+			"30/360",
 			"USD",
-			"USD-LIBOR-6M",
 			"USD");
 
 		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDManifestMeasure (

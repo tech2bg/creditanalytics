@@ -5,8 +5,11 @@ package org.drip.sample.rates;
  * Credit Analytics Imports
  */
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 
@@ -15,17 +18,12 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
  */
 
 import org.drip.param.creator.*;
-import org.drip.param.definition.BasketMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-
-/*
- * Credit Analytics API Imports
- */
-
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 
@@ -87,7 +85,6 @@ public class MultiLegSwapAPI {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -114,9 +111,18 @@ public class MultiLegSwapAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
-				0., strCurrency, strIndex, strCurrency);
+				0.,
+				2,
+				"Act/360",
+				0.,
+				2,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 		}
 
 		/*
@@ -143,16 +149,65 @@ public class MultiLegSwapAPI {
 
 		FixedStream[] aFixedStream = new FixedStream[3];
 
-		org.drip.analytics.daycount.DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, "XYZ");
+		List<CashflowPeriod> lsFixedPeriods3Y = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			"3Y",
+			null,
+			2,
+			"Act/360",
+			false,
+			false,
+			"USD",
+			"USD"
+		);
 
-		aFixedStream[0] = new FixedStream (dtEffective.getJulian(), dtEffective.addTenor ("3Y").getJulian(),
-			0.03, 2, "Act/360", "30/360", false, null, null, dap, dap, dap, dap, null, null, 100., "USD", "USD");
+		aFixedStream[0] = new FixedStream (
+			"USD",
+			0.03,
+			1.,
+			null,
+			lsFixedPeriods3Y
+		);
 
-		aFixedStream[1] = new FixedStream (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(),
-			0.05, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null, null, 100., "USD", "USD");
+		List<CashflowPeriod> lsFixedPeriods5Y = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			"5Y",
+			null,
+			2,
+			"Act/360",
+			false,
+			false,
+			"USD",
+			"USD"
+		);
 
-		aFixedStream[2] = new FixedStream (dtEffective.getJulian(), dtEffective.addTenor ("7Y").getJulian(),
-			0.07, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null, null, 100., "USD", "USD");
+		aFixedStream[1] = new FixedStream (
+			"USD",
+			0.05,
+			1.,
+			null,
+			lsFixedPeriods5Y
+		);
+
+		List<CashflowPeriod> lsFixedPeriods7Y = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			"7Y",
+			null,
+			2,
+			"Act/360",
+			false,
+			false,
+			"USD",
+			"USD"
+		);
+
+		aFixedStream[2] = new FixedStream (
+			"USD",
+			0.07,
+			1.,
+			null,
+			lsFixedPeriods7Y
+		);
 
 		/*
 		 * Create a sequence of Float Streams
@@ -160,17 +215,71 @@ public class MultiLegSwapAPI {
 
 		FloatingStream[] aFloatStream = new FloatingStream[3];
 
-		aFloatStream[0] = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("3Y").getJulian(),
-			0.03, true, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", false, "Act/360", false, false, null, null,
-				dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
+		List<CashflowPeriod> lsFloatPeriods3Y = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			"3Y",
+			null,
+			4,
+			"Act/360",
+			false,
+			false,
+			"USD",
+			"USD"
+		);
 
-		aFloatStream[1] = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("5Y").getJulian(),
-			0.05, true, FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", false, "Act/360", false, false, null, null,
-				dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
+		aFloatStream[0] = new FloatingStream (
+			"USD",
+			0.03,
+			-1.,
+			null,
+			lsFloatPeriods3Y,
+			FloatingRateIndex.Create ("ABC-RI-3M"),
+			false
+		);
 
-		aFloatStream[2] = FloatingStream.Create (dtEffective.getJulian(), dtEffective.addTenor ("7Y").getJulian(),
-			0.07, true, FloatingRateIndex.Create ("ABC-RI-12M"), 1, "Act/360", false, "Act/360", false, false, null, null,
-				dap, dap, dap, dap, null, null, null, -100., "USD", "USD");
+		List<CashflowPeriod> lsFloatPeriods5Y = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			"5Y",
+			null,
+			4,
+			"Act/360",
+			false,
+			false,
+			"USD",
+			"USD"
+		);
+
+		aFloatStream[1] = new FloatingStream (
+			"USD",
+			0.05,
+			-1.,
+			null,
+			lsFloatPeriods5Y,
+			FloatingRateIndex.Create ("ABC-RI-3M"),
+			false
+		);
+
+		List<CashflowPeriod> lsFloatPeriods7Y = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			"7Y",
+			null,
+			4,
+			"Act/360",
+			false,
+			false,
+			"USD",
+			"USD"
+		);
+
+		aFloatStream[2] = new FloatingStream (
+			"USD",
+			0.07,
+			-1.,
+			null,
+			lsFloatPeriods7Y,
+			FloatingRateIndex.Create ("ABC-RI-3M"),
+			false
+		);
 
 		/*
 		 * Create a Rates Basket instance containing the fixed and floating streams
@@ -211,9 +320,9 @@ public class MultiLegSwapAPI {
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);
 
-		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
+		MarketParamSet bmp = new MarketParamSet();
 
-		bmp.addDiscountCurve ("USD", dc);
+		bmp.setFundingCurve (dc);
 
 		/*
 		 * Create the Rates Basket from the streams

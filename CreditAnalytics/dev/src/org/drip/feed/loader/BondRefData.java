@@ -205,7 +205,7 @@ class BondRefData {
 
 	private static final org.drip.product.creator.BondProductBuilder MakeBPB (
 		final java.lang.String[] astrFODATA,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		if (null == astrFODATA || 88 != astrFODATA.length || null == mpc) return null;
 
@@ -313,7 +313,7 @@ class BondRefData {
 	private static final void UploadBondFromFODATA (
 		final java.lang.String strFODATAFile,
 		final java.sql.Statement stmt,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 		throws java.lang.Exception
 	{
 		int iNumBonds = 0;
@@ -389,7 +389,7 @@ class BondRefData {
 	{
 		org.drip.analytics.support.AnalyticsHelper.Init();
 
-		org.drip.param.definition.MarketParams mpc =
+		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();
 
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv

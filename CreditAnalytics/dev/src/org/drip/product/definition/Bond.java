@@ -52,7 +52,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract org.drip.param.valuation.WorkoutInfo calcExerciseYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice);
 
@@ -68,7 +68,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double[] getSecTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams);
+		final org.drip.param.market.MarketParamSet mktParams);
 
 	/**
 	 * Retrieve the effective treasury benchmark yield from the valuation, the component market parameters,
@@ -86,7 +86,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double getEffectiveTsyBmkYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -123,7 +123,7 @@ public abstract class Bond extends CreditComponent {
 		getLossFlowFromPrice (
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.param.pricer.PricerParams pricerParams,
-			final org.drip.param.definition.ComponentMarketParams mktParams,
+			final org.drip.param.market.MarketParamSet mktParams,
 			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 			final double dblPrice);
 
@@ -404,7 +404,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPreviousCouponRate (
 		final org.drip.analytics.date.JulianDate dt,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception;
 
 	/**
@@ -466,7 +466,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCurrentCouponRate (
 		final org.drip.analytics.date.JulianDate dt,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception;
 
 	/**
@@ -482,7 +482,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcNextCouponRate (
 		final org.drip.analytics.date.JulianDate dt,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception;
 
 	/**
@@ -498,7 +498,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcAccrued (
 		final double dblDate,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception;
 
 	/**
@@ -519,7 +519,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromBumpedZC (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final int iZeroCurveBaseDC,
 		final double dblWorkoutDate,
@@ -543,7 +543,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromBumpedDC (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblDCBump)
@@ -566,7 +566,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromBumpedCC (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblCreditBasis,
@@ -590,7 +590,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -612,7 +612,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -632,7 +632,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -654,7 +654,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -676,7 +676,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -696,7 +696,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -718,7 +718,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -740,7 +740,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -760,7 +760,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -782,7 +782,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -804,7 +804,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -824,7 +824,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -846,7 +846,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -868,7 +868,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -888,7 +888,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -910,7 +910,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -932,7 +932,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -952,7 +952,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -974,7 +974,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -996,7 +996,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -1016,7 +1016,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -1038,7 +1038,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1060,7 +1060,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -1080,7 +1080,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -1102,7 +1102,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1124,7 +1124,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -1144,7 +1144,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -1166,7 +1166,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1188,7 +1188,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -1208,7 +1208,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -1230,7 +1230,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1252,7 +1252,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -1272,7 +1272,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -1294,7 +1294,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1316,7 +1316,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -1336,7 +1336,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcASWFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -1358,7 +1358,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1380,7 +1380,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -1400,7 +1400,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -1422,7 +1422,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1444,7 +1444,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -1464,7 +1464,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -1486,7 +1486,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1508,7 +1508,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -1528,7 +1528,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -1550,7 +1550,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1572,7 +1572,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -1592,7 +1592,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -1614,7 +1614,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1636,7 +1636,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -1656,7 +1656,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -1678,7 +1678,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1700,7 +1700,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -1720,7 +1720,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -1742,7 +1742,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1764,7 +1764,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -1784,7 +1784,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -1806,7 +1806,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1828,7 +1828,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -1848,7 +1848,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -1870,7 +1870,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1892,7 +1892,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -1912,7 +1912,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -1934,7 +1934,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -1956,7 +1956,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -1976,7 +1976,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -1998,7 +1998,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2020,7 +2020,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -2040,7 +2040,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -2062,7 +2062,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2084,7 +2084,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -2104,7 +2104,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcBondBasisFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -2126,7 +2126,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2148,7 +2148,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -2168,7 +2168,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -2190,7 +2190,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2212,7 +2212,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -2232,7 +2232,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -2254,7 +2254,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2276,7 +2276,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -2296,7 +2296,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -2318,7 +2318,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2340,7 +2340,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -2360,7 +2360,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -2382,7 +2382,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2404,7 +2404,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -2424,7 +2424,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -2446,7 +2446,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2468,7 +2468,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -2488,7 +2488,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -2510,7 +2510,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2532,7 +2532,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -2552,7 +2552,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -2574,7 +2574,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2596,7 +2596,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -2616,7 +2616,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -2638,7 +2638,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2660,7 +2660,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -2680,7 +2680,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -2702,7 +2702,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2724,7 +2724,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -2744,7 +2744,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -2766,7 +2766,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2788,7 +2788,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -2808,7 +2808,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -2830,7 +2830,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2852,7 +2852,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -2872,7 +2872,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -2894,7 +2894,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2916,7 +2916,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -2936,7 +2936,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcConvexityFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -2958,7 +2958,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -2980,7 +2980,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -3000,7 +3000,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -3022,7 +3022,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3044,7 +3044,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -3064,7 +3064,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -3086,7 +3086,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3108,7 +3108,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -3128,7 +3128,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -3150,7 +3150,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3172,7 +3172,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -3192,7 +3192,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -3214,7 +3214,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3236,7 +3236,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -3256,7 +3256,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -3278,7 +3278,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3300,7 +3300,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -3320,7 +3320,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -3342,7 +3342,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3364,7 +3364,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -3384,7 +3384,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -3406,7 +3406,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3428,7 +3428,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -3448,7 +3448,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -3470,7 +3470,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3492,7 +3492,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -3512,7 +3512,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -3534,7 +3534,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3556,7 +3556,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -3576,7 +3576,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -3598,7 +3598,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3620,7 +3620,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -3640,7 +3640,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -3662,7 +3662,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3684,7 +3684,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -3704,7 +3704,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcCreditBasisFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -3726,7 +3726,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3748,7 +3748,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -3768,7 +3768,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -3790,7 +3790,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3812,7 +3812,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -3832,7 +3832,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -3854,7 +3854,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3876,7 +3876,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -3896,7 +3896,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -3918,7 +3918,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -3940,7 +3940,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -3960,7 +3960,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -3982,7 +3982,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4004,7 +4004,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -4024,7 +4024,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -4046,7 +4046,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4068,7 +4068,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -4088,7 +4088,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -4110,7 +4110,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4132,7 +4132,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -4152,7 +4152,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -4174,7 +4174,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4196,7 +4196,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -4216,7 +4216,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -4238,7 +4238,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4260,7 +4260,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -4280,7 +4280,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -4302,7 +4302,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4324,7 +4324,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -4344,7 +4344,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -4366,7 +4366,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4388,7 +4388,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -4408,7 +4408,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -4430,7 +4430,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4452,7 +4452,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -4472,7 +4472,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDiscountMarginFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -4494,7 +4494,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4516,7 +4516,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -4536,7 +4536,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -4558,7 +4558,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4580,7 +4580,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -4600,7 +4600,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -4622,7 +4622,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4644,7 +4644,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -4664,7 +4664,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -4686,7 +4686,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4708,7 +4708,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -4728,7 +4728,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -4750,7 +4750,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4772,7 +4772,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -4792,7 +4792,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -4814,7 +4814,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4836,7 +4836,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -4856,7 +4856,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -4878,7 +4878,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4900,7 +4900,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -4920,7 +4920,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -4942,7 +4942,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -4964,7 +4964,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -4984,7 +4984,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -5006,7 +5006,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5028,7 +5028,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -5048,7 +5048,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -5070,7 +5070,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5092,7 +5092,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -5112,7 +5112,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -5134,7 +5134,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5156,7 +5156,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -5176,7 +5176,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -5198,7 +5198,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5220,7 +5220,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -5240,7 +5240,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -5262,7 +5262,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5284,7 +5284,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -5304,7 +5304,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcDurationFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -5326,7 +5326,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5348,7 +5348,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -5368,7 +5368,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -5390,7 +5390,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5412,7 +5412,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -5432,7 +5432,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -5454,7 +5454,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5476,7 +5476,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -5496,7 +5496,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -5518,7 +5518,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5540,7 +5540,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -5560,7 +5560,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -5582,7 +5582,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5604,7 +5604,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -5624,7 +5624,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -5646,7 +5646,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5668,7 +5668,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -5688,7 +5688,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -5710,7 +5710,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5732,7 +5732,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -5752,7 +5752,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -5774,7 +5774,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5796,7 +5796,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -5816,7 +5816,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -5838,7 +5838,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5860,7 +5860,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -5880,7 +5880,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -5902,7 +5902,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5924,7 +5924,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -5944,7 +5944,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -5966,7 +5966,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -5988,7 +5988,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -6008,7 +6008,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -6030,7 +6030,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6052,7 +6052,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -6072,7 +6072,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcGSpreadFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -6094,7 +6094,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6116,7 +6116,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -6136,7 +6136,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -6158,7 +6158,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6180,7 +6180,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -6200,7 +6200,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -6222,7 +6222,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6244,7 +6244,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -6264,7 +6264,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -6286,7 +6286,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6308,7 +6308,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -6328,7 +6328,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -6350,7 +6350,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6372,7 +6372,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -6392,7 +6392,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -6414,7 +6414,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6436,7 +6436,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -6456,7 +6456,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -6478,7 +6478,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6500,7 +6500,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -6520,7 +6520,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -6542,7 +6542,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6564,7 +6564,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -6584,7 +6584,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -6606,7 +6606,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6628,7 +6628,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -6648,7 +6648,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -6670,7 +6670,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6692,7 +6692,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -6712,7 +6712,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -6734,7 +6734,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6756,7 +6756,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -6776,7 +6776,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -6798,7 +6798,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6820,7 +6820,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -6840,7 +6840,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcISpreadFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -6862,7 +6862,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6884,7 +6884,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -6904,7 +6904,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -6926,7 +6926,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -6948,7 +6948,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -6968,7 +6968,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -6990,7 +6990,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7012,7 +7012,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -7032,7 +7032,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -7054,7 +7054,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7076,7 +7076,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -7096,7 +7096,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -7118,7 +7118,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7140,7 +7140,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -7160,7 +7160,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -7182,7 +7182,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7204,7 +7204,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -7224,7 +7224,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -7246,7 +7246,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7268,7 +7268,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -7288,7 +7288,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -7310,7 +7310,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7332,7 +7332,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -7352,7 +7352,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -7374,7 +7374,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7396,7 +7396,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -7416,7 +7416,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -7438,7 +7438,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7460,7 +7460,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -7480,7 +7480,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -7502,7 +7502,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7524,7 +7524,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -7544,7 +7544,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -7566,7 +7566,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7588,7 +7588,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -7608,7 +7608,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -7630,7 +7630,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7652,7 +7652,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -7672,7 +7672,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcMacaulayDurationFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -7694,7 +7694,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7716,7 +7716,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -7736,7 +7736,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -7758,7 +7758,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7780,7 +7780,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -7800,7 +7800,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -7822,7 +7822,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7844,7 +7844,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -7864,7 +7864,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -7886,7 +7886,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7908,7 +7908,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -7928,7 +7928,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -7950,7 +7950,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -7972,7 +7972,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -7992,7 +7992,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -8014,7 +8014,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8036,7 +8036,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -8056,7 +8056,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -8078,7 +8078,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8100,7 +8100,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -8120,7 +8120,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -8142,7 +8142,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8164,7 +8164,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -8184,7 +8184,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -8206,7 +8206,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8228,7 +8228,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -8248,7 +8248,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -8270,7 +8270,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8292,7 +8292,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -8312,7 +8312,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -8334,7 +8334,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8356,7 +8356,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -8376,7 +8376,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -8398,7 +8398,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8420,7 +8420,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -8440,7 +8440,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -8462,7 +8462,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8484,7 +8484,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -8504,7 +8504,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcModifiedDurationFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -8526,7 +8526,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8548,7 +8548,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -8568,7 +8568,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -8590,7 +8590,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8612,7 +8612,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -8632,7 +8632,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -8654,7 +8654,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8676,7 +8676,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -8696,7 +8696,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -8718,7 +8718,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8740,7 +8740,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -8760,7 +8760,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -8782,7 +8782,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8804,7 +8804,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -8824,7 +8824,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -8846,7 +8846,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8868,7 +8868,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -8888,7 +8888,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -8910,7 +8910,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8932,7 +8932,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -8952,7 +8952,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -8974,7 +8974,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -8996,7 +8996,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -9016,7 +9016,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -9038,7 +9038,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9060,7 +9060,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -9080,7 +9080,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -9102,7 +9102,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9124,7 +9124,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -9144,7 +9144,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -9166,7 +9166,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9188,7 +9188,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -9208,7 +9208,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -9230,7 +9230,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9252,7 +9252,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -9272,7 +9272,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcOASFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -9294,7 +9294,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9316,7 +9316,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -9336,7 +9336,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -9358,7 +9358,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9380,7 +9380,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -9400,7 +9400,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -9422,7 +9422,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9444,7 +9444,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -9464,7 +9464,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -9486,7 +9486,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9508,7 +9508,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -9528,7 +9528,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -9550,7 +9550,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9572,7 +9572,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -9592,7 +9592,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -9614,7 +9614,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9636,7 +9636,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -9656,7 +9656,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -9678,7 +9678,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9700,7 +9700,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -9720,7 +9720,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -9742,7 +9742,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9764,7 +9764,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -9784,7 +9784,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -9806,7 +9806,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9828,7 +9828,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -9848,7 +9848,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -9870,7 +9870,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9892,7 +9892,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -9912,7 +9912,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -9934,7 +9934,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -9956,7 +9956,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -9976,7 +9976,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -9998,7 +9998,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10020,7 +10020,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -10040,7 +10040,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPECSFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -10062,7 +10062,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10084,7 +10084,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -10104,7 +10104,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -10126,7 +10126,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10148,7 +10148,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -10168,7 +10168,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -10190,7 +10190,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10212,7 +10212,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -10232,7 +10232,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -10254,7 +10254,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10276,7 +10276,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -10296,7 +10296,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -10318,7 +10318,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10340,7 +10340,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -10360,7 +10360,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -10382,7 +10382,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10404,7 +10404,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -10424,7 +10424,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -10446,7 +10446,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10468,7 +10468,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -10488,7 +10488,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -10510,7 +10510,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10532,7 +10532,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -10552,7 +10552,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -10574,7 +10574,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10596,7 +10596,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -10616,7 +10616,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -10638,7 +10638,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10660,7 +10660,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -10680,7 +10680,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -10702,7 +10702,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10724,7 +10724,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -10744,7 +10744,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -10766,7 +10766,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10788,7 +10788,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -10808,7 +10808,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcPriceFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -10830,7 +10830,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10852,7 +10852,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -10872,7 +10872,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -10894,7 +10894,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10916,7 +10916,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -10936,7 +10936,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -10958,7 +10958,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -10980,7 +10980,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -11000,7 +11000,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -11022,7 +11022,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11044,7 +11044,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -11064,7 +11064,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -11086,7 +11086,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11108,7 +11108,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -11128,7 +11128,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -11150,7 +11150,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11172,7 +11172,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -11192,7 +11192,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -11214,7 +11214,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11236,7 +11236,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -11256,7 +11256,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -11278,7 +11278,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11300,7 +11300,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -11320,7 +11320,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -11342,7 +11342,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11364,7 +11364,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -11384,7 +11384,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -11406,7 +11406,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11428,7 +11428,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -11448,7 +11448,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -11470,7 +11470,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11492,7 +11492,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -11512,7 +11512,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -11534,7 +11534,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11556,7 +11556,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -11576,7 +11576,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcTSYSpreadFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -11598,7 +11598,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11620,7 +11620,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -11640,7 +11640,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -11662,7 +11662,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11684,7 +11684,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -11704,7 +11704,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -11726,7 +11726,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11748,7 +11748,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -11768,7 +11768,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -11790,7 +11790,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11812,7 +11812,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -11832,7 +11832,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -11854,7 +11854,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11876,7 +11876,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -11896,7 +11896,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -11918,7 +11918,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -11940,7 +11940,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -11960,7 +11960,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -11982,7 +11982,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12004,7 +12004,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -12024,7 +12024,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -12046,7 +12046,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12068,7 +12068,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -12088,7 +12088,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -12110,7 +12110,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12132,7 +12132,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -12152,7 +12152,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -12174,7 +12174,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12196,7 +12196,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -12216,7 +12216,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -12238,7 +12238,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12260,7 +12260,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -12280,7 +12280,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -12302,7 +12302,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12324,7 +12324,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -12344,7 +12344,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -12366,7 +12366,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12388,7 +12388,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -12408,7 +12408,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -12430,7 +12430,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12452,7 +12452,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -12472,7 +12472,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -12494,7 +12494,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12516,7 +12516,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -12536,7 +12536,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -12558,7 +12558,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12580,7 +12580,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -12600,7 +12600,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -12622,7 +12622,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12644,7 +12644,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -12664,7 +12664,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -12686,7 +12686,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12708,7 +12708,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -12728,7 +12728,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -12750,7 +12750,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12772,7 +12772,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -12792,7 +12792,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -12814,7 +12814,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12836,7 +12836,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -12856,7 +12856,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -12878,7 +12878,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12900,7 +12900,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -12920,7 +12920,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -12942,7 +12942,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -12964,7 +12964,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -12984,7 +12984,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -13006,7 +13006,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13028,7 +13028,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -13048,7 +13048,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -13070,7 +13070,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13092,7 +13092,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -13112,7 +13112,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -13134,7 +13134,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13156,7 +13156,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -13176,7 +13176,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYield01FromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -13198,7 +13198,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13220,7 +13220,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -13240,7 +13240,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -13262,7 +13262,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13284,7 +13284,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -13304,7 +13304,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -13326,7 +13326,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13348,7 +13348,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -13368,7 +13368,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -13390,7 +13390,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13412,7 +13412,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -13432,7 +13432,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -13454,7 +13454,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13476,7 +13476,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -13496,7 +13496,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -13518,7 +13518,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13540,7 +13540,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -13560,7 +13560,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -13582,7 +13582,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13604,7 +13604,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -13624,7 +13624,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -13646,7 +13646,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13668,7 +13668,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -13688,7 +13688,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -13710,7 +13710,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13732,7 +13732,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -13752,7 +13752,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -13774,7 +13774,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13796,7 +13796,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -13816,7 +13816,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -13838,7 +13838,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13860,7 +13860,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -13880,7 +13880,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -13902,7 +13902,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13924,7 +13924,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -13944,7 +13944,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcYieldSpreadFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblZSpread)
 		throws java.lang.Exception;
@@ -13966,7 +13966,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -13988,7 +13988,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -14008,7 +14008,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblASW)
 		throws java.lang.Exception;
@@ -14030,7 +14030,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14052,7 +14052,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -14072,7 +14072,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblBondBasis)
 		throws java.lang.Exception;
@@ -14094,7 +14094,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14116,7 +14116,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -14136,7 +14136,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
@@ -14158,7 +14158,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14180,7 +14180,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -14200,7 +14200,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
@@ -14222,7 +14222,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14244,7 +14244,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -14264,7 +14264,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblGSpread)
 		throws java.lang.Exception;
@@ -14286,7 +14286,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14308,7 +14308,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -14328,7 +14328,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblISpread)
 		throws java.lang.Exception;
@@ -14350,7 +14350,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14372,7 +14372,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -14392,7 +14392,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblOAS)
 		throws java.lang.Exception;
@@ -14414,7 +14414,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14436,7 +14436,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -14456,7 +14456,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPrice)
 		throws java.lang.Exception;
@@ -14478,7 +14478,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14500,7 +14500,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -14520,7 +14520,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblPECS)
 		throws java.lang.Exception;
@@ -14542,7 +14542,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14564,7 +14564,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -14584,7 +14584,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
@@ -14606,7 +14606,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14628,7 +14628,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -14648,7 +14648,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYield)
 		throws java.lang.Exception;
@@ -14670,7 +14670,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -14692,7 +14692,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -14712,7 +14712,7 @@ public abstract class Bond extends CreditComponent {
 
 	public abstract double calcZSpreadFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
@@ -14733,7 +14733,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract org.drip.analytics.output.BondRVMeasures standardMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.valuation.WorkoutInfo wi,
 		final double dblPrice);

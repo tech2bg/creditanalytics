@@ -63,7 +63,7 @@ public class SmoothingCCIS extends org.drip.analytics.definition.ShapePreserving
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
-		final org.drip.param.definition.ComponentMarketParams cmp)
+		final org.drip.param.market.MarketParamSet cmp)
 		throws java.lang.Exception
 	{
 		super (lccShapePreserving, aRBS, valParam, pricerParam, quotingParam, cmp);

@@ -127,7 +127,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 						try {
 							aCompCalib[i] = org.drip.product.creator.RatesStreamBuilder.CreateIRS
 								(dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i]),
-									0., "USD", "USD-LIBOR-6M", "USD");
+									0., 2, "Act/360", 0., 2, "Act/360", "USD", "USD");
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 
@@ -172,8 +172,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 				@Override public boolean postRegression (
 					final org.drip.regression.core.RegressionRunDetail rnvd) {
 					for (int i = 0; i < aCompCalib.length; ++i) {
-						if (!rnvd.set ("PVDFMicroJack_" + aCompCalib[i].componentName(),
-							aWJComp[i].displayString()))
+						if (!rnvd.set ("PVDFMicroJack_" + aCompCalib[i].name(), aWJComp[i].displayString()))
 							return false;
 					}
 

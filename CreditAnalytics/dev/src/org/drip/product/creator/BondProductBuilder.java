@@ -269,7 +269,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 	public static final BondProductBuilder CreateFromResultSet (
 		final java.sql.ResultSet rs,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		try {
 			BondProductBuilder bpb = new BondProductBuilder();
@@ -445,7 +445,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 	public static final BondProductBuilder CreateFromJSONMap (
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapJSON,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		/* if (null == mapJSON || 0 == mapJSON.size() || !mapJSON.containsKey ("isin") || !mapJSON.containsKey
 			("cusip") || !mapJSON.containsKey ("ticker") || !mapJSON.containsKey ("coupon") ||
@@ -1473,7 +1473,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	 */
 
 	public boolean setFloatSpread (
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon)) {
 			System.out.println ("Curr cpn for ISIN " + _strISIN + " is NaN!");
@@ -1547,7 +1547,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	 */
 
 	public boolean validate (
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		if (null == _strISIN || _strISIN.isEmpty() || null == _strCUSIP || _strCUSIP.isEmpty()) {
 			if (m_bDisplayWarnings)
@@ -1854,7 +1854,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 				java.lang.Double.NaN : _dtFinalMaturity.getJulian(), null == _dtFirstCoupon ?
 					java.lang.Double.NaN : _dtFirstCoupon.getJulian(), _dtInterestAccrualStart.getJulian(),
 						_iCouponFreq, _strDayCountCode, _strDayCountCode, null, null, null, null, null, null,
-							null, null, _strMaturityType, false, _strCouponCurrency);
+							null, null, _strMaturityType, false, _strCouponCurrency, _strCouponCurrency);
 
 		return periodParams.validate() ? periodParams : null;
 	}

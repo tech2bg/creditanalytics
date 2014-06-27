@@ -62,7 +62,7 @@ public class ScenarioDiscountCurveBuilder {
 
 	private static final CompQuote[] CompQuote (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final java.lang.String strCurrency,
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtInitialMaturity,
@@ -79,8 +79,8 @@ public class ScenarioDiscountCurveBuilder {
 
 		while (dtMaturity.getJulian() <= dtTerminalMaturity.getJulian()) {
 			org.drip.product.definition.CalibratableFixedIncomeComponent comp = bIsIRS ?
-				org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective, dtMaturity, 0.,
-					strCurrency, strCurrency + "-LIBOR-3M", strCurrency) :
+				org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective, dtMaturity, 0., 2,
+					"Act/360", 0., 4, "Act/360", strCurrency, strCurrency) :
 						org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective, dtMaturity, null,
 							strCurrency);
 
@@ -195,7 +195,7 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final double dblEpochResponse)
 	{
@@ -239,7 +239,7 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam)
 	{
 		if (null == dcShapePreserver) return null;
@@ -339,7 +339,7 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam)
 	{
 		if (null == dcShapePreserver) return null;
@@ -448,7 +448,7 @@ public class ScenarioDiscountCurveBuilder {
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final java.lang.String strBasisType,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
@@ -695,7 +695,7 @@ public class ScenarioDiscountCurveBuilder {
 
 		if (null == dcShapePreserver || (null != tldf && !dcShapePreserver.setTurns (tldf))) return null;
 
-		org.drip.param.definition.ComponentMarketParams cmp =
+		org.drip.param.market.MarketParamSet cmp =
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
 				(dcShapePreserver, null, null, null, null, null, null);
 

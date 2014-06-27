@@ -54,7 +54,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -143,7 +143,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		return _strCode;
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
 		return "IBS=" + maturity();
 	}
@@ -232,7 +232,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception
 	{
 		return _fixReference.coupon (dblValue, mktParams);
@@ -243,9 +243,9 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		return _floatDerived.forwardCurveName();
 	}
 
-	@Override public java.lang.String creditCurveName()
+	@Override public java.lang.String[] creditCurveName()
 	{
-		return "";
+		return null;
 	}
 
 	@Override public java.lang.String[] currencyPairCode()
@@ -325,7 +325,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
@@ -521,7 +521,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -531,7 +531,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -540,7 +540,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
@@ -585,9 +585,9 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 
 			if (org.drip.quant.common.StringUtil.MatchInStringArray ("SwapRate", astrManifestMeasure, false))
 				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanDV01") ||
-					!prwc.updateValue (-1. * mapReferenceValue.get ("CleanDV01") * 10000. *
-						lsmm.measureQuoteValue ("SwapRate")) || !prwc.updateDValueDManifestMeasure
-							("SwapRate", -10000. * mapReferenceValue.get ("CleanDV01")) ? null : prwc;
+					!prwc.updateValue (-10000. * mapReferenceValue.get ("CleanDV01") * lsmm.measureQuoteValue
+						("SwapRate")) || !prwc.updateDValueDManifestMeasure ("SwapRate", -10000. *
+							mapReferenceValue.get ("CleanDV01")) ? null : prwc;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

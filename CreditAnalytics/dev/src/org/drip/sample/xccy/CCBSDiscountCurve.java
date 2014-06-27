@@ -4,16 +4,16 @@ package org.drip.sample.xccy;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.definition.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.RatesComponent;
 import org.drip.product.fx.CrossCurrencyComponentPair;
-import org.drip.product.params.FloatingRateIndex;
+import org.drip.product.params.*;
 import org.drip.product.rates.*;
 import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
@@ -70,30 +70,61 @@ public class CCBSDiscountCurve {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
 			/*
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsReference = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				false
+			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, 1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				12 / iTenorInMonths,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsDerived = new FloatingStream (
+				strCurrency,
+				0.,
+				1.,
+				null,
+				lsDerivedFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				false
+			);
 
 			/*
 			 * The float-float swap instance
@@ -124,10 +155,14 @@ public class CCBSDiscountCurve {
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCalibComp[i] = (IRSComponent) RatesStreamBuilder.CreateIRS (
 				dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency),
+				astrTenor[i],
 				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
 				strCurrency,
-				strCurrency + "-LIBOR-3M",
 				strCurrency
 			);
 
@@ -170,10 +205,15 @@ public class CCBSDiscountCurve {
 		String strCurrency = dc.currency();
 
 		RatesComponent irsBespoke = RatesStreamBuilder.CreateIRS (
-			dtStart, dtStart.addTenorAndAdjust (strTenor, strCurrency),
+			dtStart,
+			strTenor,
 			0.,
+			2,
+			"Act/360",
+			0.,
+			4,
+			"Act/360",
 			strCurrency,
-			strCurrency + "-LIBOR-6M",
 			strCurrency
 		);
 
@@ -225,17 +265,17 @@ public class CCBSDiscountCurve {
 			astrTenor,
 			3);
 
-		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
+		MarketParamSet bmp = new MarketParamSet();
 
-		bmp.addDiscountCurve (strReferenceCurrency, dcReference);
+		bmp.setFundingCurve (dcReference);
 
-		bmp.addForwardCurve (fc3MReference.index().fullyQualifiedName(), fc3MReference);
+		bmp.setForwardCurve (fc3MReference);
 
-		bmp.addForwardCurve (fc6MReference.index().fullyQualifiedName(), fc6MReference);
+		bmp.setForwardCurve (fc6MReference);
 
-		bmp.setFXCurve (strDerivedCurrency + "/" + strReferenceCurrency, new FlatUnivariate (1. / dblRefDerFX));
+		bmp.setFXCurve (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency), new FlatUnivariate (1. / dblRefDerFX));
 
-		bmp.setFXCurve (strReferenceCurrency + "/" + strDerivedCurrency, new FlatUnivariate (dblRefDerFX));
+		bmp.setFXCurve (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency), new FlatUnivariate (dblRefDerFX));
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
@@ -268,7 +308,7 @@ public class CCBSDiscountCurve {
 			1.
 		);
 
-		bmp.addDiscountCurve (strDerivedCurrency, dcDerived);
+		bmp.setFundingCurve (dcDerived);
 
 		System.out.println ("\t----------------------------------------------------------------");
 
@@ -284,7 +324,7 @@ public class CCBSDiscountCurve {
 
 			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
 
-			double dblCalibSwapRate = mapOP.get (rcDerived.componentName() + "[CalibSwapRate]");
+			double dblCalibSwapRate = mapOP.get (rcDerived.name() + "[CalibSwapRate]");
 
 			System.out.println ("\t[" + rcDerived.effective() + " - " + rcDerived.maturity() + "] = " +
 				FormatUtil.FormatDouble (dblCalibSwapRate, 1, 3, 100.) +

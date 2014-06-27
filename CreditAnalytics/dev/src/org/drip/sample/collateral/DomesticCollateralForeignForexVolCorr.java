@@ -5,7 +5,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.DomesticCollateralizedForeignForward;
 import org.drip.product.params.CurrencyPair;
@@ -88,7 +88,7 @@ public class DomesticCollateralForeignForexVolCorr {
 			new FlatUnivariate (0.),
 			new FlatUnivariate (0.));
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(null, null, null, null, null, null, null);
 
 		cmp.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strDomesticCurrency, dcCcyForeignCollatDomestic);

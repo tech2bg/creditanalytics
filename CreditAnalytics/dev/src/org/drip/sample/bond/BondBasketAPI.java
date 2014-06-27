@@ -9,7 +9,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.definition.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
@@ -90,7 +90,6 @@ public class BondBasketAPI {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -116,9 +115,18 @@ public class BondBasketAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
-				0., strCurrency, strIndex, strCurrency);
+				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 		}
 
 		/*
@@ -144,7 +152,8 @@ public class BondBasketAPI {
 	{
 		return BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				strName,					// Name
-				"USDTSY",					// Fictitious Treasury Curve Name
+				"USD",					// Fictitious Treasury Curve Name
+                "",                         // Credit Curve - Empty for now
 				dblCoupon,					// Bond Coupon
 				2, 							// Frequency
 				"Act/Act",					// Day Count
@@ -192,7 +201,7 @@ public class BondBasketAPI {
 			astrCalibMeasure[i] = "Yield";
 
 		return ScenarioDiscountCurveBuilder.NonlinearBuild (dt,
-			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
+			"USD", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aTSYBond,
 			adblTSYYield,
@@ -295,6 +304,7 @@ public class BondBasketAPI {
 		BondComponent bond1 = BondBuilder.CreateSimpleFixed (
                 "TEST1",                                               // Name
                 "USD",                                  // Currency
+                "",                                  	// Credit Curve - Empty for now
                 0.09,                                      // Bond Coupon
                 2,                                                            // Frequency
                 "30/360",                             // Day Count
@@ -306,6 +316,7 @@ public class BondBasketAPI {
 		BondComponent bond2 = BondBuilder.CreateSimpleFixed (    // Simple Fixed Rate Bond
                 "TEST2",                                               // Name
                 "USD",                                  // Currency
+                "",                                  	// Credit Curve - Empty for now
                 0.09,                                      // Bond Coupon
                 2,                                                            // Frequency
                 "30/360",                             // Day Count
@@ -317,6 +328,7 @@ public class BondBasketAPI {
 		BondComponent bond3 = BondBuilder.CreateSimpleFixed (    // Simple Fixed Rate Bond
                 "TEST3",                                               // Name
                 "USD",                                  // Currency
+                "",                                  	// Credit Curve - Empty for now
                 0.09,                                      // Bond Coupon
                 2,                                                            // Frequency
                 "30/360",                             // Day Count
@@ -328,7 +340,8 @@ public class BondBasketAPI {
 		BondComponent bond4 = BondBuilder.CreateSimpleFloater ( // Simple Floating Rate Bond
 				"FLOATER1",		// Name
 				"USD",			// Currency
-				"USD-LIBOR-6M",		// Rate Index
+				"USD-LIBOR-6M",	// Rate Index
+                "",            	// Credit Curve - Empty for now
 				0.01,			// Floating Spread
 				2,				// Coupon Frequency
 				"30/360",		// Day Count
@@ -356,11 +369,11 @@ public class BondBasketAPI {
 		 * Create the basket market parameters and add the named discount curve and the treasury curves to it.
 		 */
 
-		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
+		MarketParamSet bmp = new MarketParamSet();
 
-		bmp.addDiscountCurve ("USD", dc);
+		bmp.setFundingCurve (dc);
 
-		bmp.addDiscountCurve ("USDTSY", dcTSY);
+		bmp.setFundingCurve (dcTSY);
 
 		/*
 		 * Construct the Valuation and the Pricing Parameters

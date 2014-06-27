@@ -242,11 +242,6 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		return aComp;
 	}
 
-	@Override public java.lang.String[] fxCurve()
-	{
-		return null;
-	}
-
 	/**
 	 * Retrieve the array of the fixed stream components
 	 * 
@@ -372,35 +367,32 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
-		aFixedStream[0] = new org.drip.product.rates.FixedStream (dtEffective.getJulian(),
-			dtEffective.addTenor ("3Y").getJulian(), 0.03, 2, "Act/360", "30/360", false, null, null, dap,
-				dap, dap, dap, null, null, 100., "ABC", "DEF");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod3Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(), "3Y",
+				dap, 2, "30/360", false, true, "DEF", "ABC");
 
-		aFixedStream[1] = new org.drip.product.rates.FixedStream (dtEffective.getJulian(),
-			dtEffective.addTenor ("5Y").getJulian(), 0.05, 2, "30/360", "30/360", false, null, null, dap,
-				dap, dap, dap, null, null, 100., "GHI", "JKL");
+		aFixedStream[0] = new org.drip.product.rates.FixedStream ("ABC", 0.03, 100., null, lsCouponPeriod3Y);
 
-		aFixedStream[2] = new org.drip.product.rates.FixedStream (dtEffective.getJulian(),
-			dtEffective.addTenor ("7Y").getJulian(), 0.07, 2, "30/360", "30/360", false, null, null, dap,
-				dap, dap, dap, null, null, 100., "MNO", "PQR");
+		aFloatStream[0] = new org.drip.product.rates.FloatingStream ("ABC", 0., 100., null, lsCouponPeriod3Y,
+			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
-		aFloatStream[0] = org.drip.product.rates.FloatingStream.Create (dtEffective.getJulian(),
-			dtEffective.addTenor ("3Y").getJulian(), 0.03, true,
-				org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", false,
-					"Act/360", false, false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
-						"DEF");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod5Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(), "5Y",
+				dap, 2, "30/360", false, true, "JKL", "GHI");
 
-		aFloatStream[1] = org.drip.product.rates.FloatingStream.Create (dtEffective.getJulian(),
-			dtEffective.addTenor ("5Y").getJulian(), 0.05, true,
-				org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), 4, "Act/360", false,
-					"Act/360", false, false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
-						"DEF");
+		aFixedStream[1] = new org.drip.product.rates.FixedStream ("GHI", 0.05, 100., null, lsCouponPeriod5Y);
 
-		aFloatStream[2] = org.drip.product.rates.FloatingStream.Create (dtEffective.getJulian(),
-			dtEffective.addTenor ("7Y").getJulian(), 0.07, true,
-				org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), 1, "Act/360", false,
-					"Act/360", false, false, null, null, dap, dap, dap, dap, null, null, null, -100., "ABC",
-						"DEF");
+		aFloatStream[1] = new org.drip.product.rates.FloatingStream ("ABC", 0., 100., null, lsCouponPeriod5Y,
+			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod7Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(), "7Y",
+				dap, 2, "30/360", false, true, "PQR", "MNO");
+
+		aFixedStream[2] = new org.drip.product.rates.FixedStream ("MNO", 0.05, 100., null, lsCouponPeriod7Y);
+
+		aFloatStream[2] = new org.drip.product.rates.FloatingStream ("ABC", 0., 100., null, lsCouponPeriod7Y,
+			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		RatesBasket rb = new RatesBasket ("SAMRB", aFixedStream, aFloatStream);
 

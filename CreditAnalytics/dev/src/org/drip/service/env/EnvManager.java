@@ -75,11 +75,11 @@ public class EnvManager {
 	 * @return The MarkertParamsContainer
 	 */
 
-	public static final org.drip.param.definition.MarketParams PopulateMPC (
+	public static final org.drip.param.definition.ScenarioMarketParams PopulateMPC (
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dt)
 	{
-		org.drip.param.definition.MarketParams mpc =
+		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();
 
 		if (!RatesManager.LoadFullIRCurves (mpc, stmt, dt)) return null;

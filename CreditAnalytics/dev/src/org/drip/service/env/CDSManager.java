@@ -90,7 +90,7 @@ public class CDSManager {
 
 	public static final boolean SaveSPNEOD (
 		final java.sql.Statement stmt,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.lang.String strSPN,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency)
@@ -152,7 +152,7 @@ public class CDSManager {
 							null, cc, null, null, null, null), null);
 
 			if (null == mapCalc) {
-				System.out.println ("CDS Calc for " + strSPN + " and " + aCDS[1].componentName() + "failed");
+				System.out.println ("CDS Calc for " + strSPN + " and " + aCDS[1].name() + "failed");
 
 				continue;
 			}
@@ -331,7 +331,7 @@ public class CDSManager {
 	 */
 
 	public static final boolean SaveCREOD (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency)
@@ -362,7 +362,7 @@ public class CDSManager {
 	 */
 
 	public static final boolean SaveSPNCalibMeasures (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final java.lang.String strSPN,
 		final org.drip.analytics.date.JulianDate dtEOD)
@@ -397,7 +397,7 @@ public class CDSManager {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.MarketParams mpc =
+		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();
 
 		if (!RatesManager.LoadFullIRCurves (mpc, stmt, dtEOD)) return false;
@@ -477,7 +477,7 @@ public class CDSManager {
 	 */
 
 	public static final boolean LoadFullCreditCurves (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD)
 	{

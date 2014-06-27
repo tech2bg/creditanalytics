@@ -4,11 +4,11 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -103,18 +103,48 @@ public class FedFundOvernightCompounding {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			OvernightFundFloatingStream floatStream = OvernightFundFloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-					"Act/360", dap, dap, null, -1., strCurrency, strCurrency, false);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
+				dtEffective.getJulian(),
+				dtMaturity.getJulian(),
+				null,
+				null,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			OvernightFundFloatingStream floatStream = new OvernightFundFloatingStream (
+				strCurrency,
+				adblCoupon[i],
+				-1.,
+				null,
+				lsFloatPeriods,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
@@ -267,7 +297,7 @@ public class FedFundOvernightCompounding {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		String strCurrency = "USD";
 
@@ -275,25 +305,57 @@ public class FedFundOvernightCompounding {
 			dtToday,
 			strCurrency);
 
-		JulianDate dtCustomOISStart = dtToday.subtractTenorAndAdjust ("2M", "USD");
+		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 
-		JulianDate dtCustomOISMaturity = dtToday.addTenorAndAdjust ("4M", "USD");
-
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
+		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
 		FloatingRateIndex fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		OvernightIndexFloatingStream floatStream = OvernightIndexFloatingStream.Create (dtCustomOISStart.getJulian(),
-			dtCustomOISMaturity.getJulian(), 0., false, fri, 4, "Act/360", false, "Act/360", false, false, null,
-				dap, dap, dap, dap, dap, dap, null, null, -1., strCurrency, strCurrency);
+		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtCustomOISStart.getJulian(),
+			"4M",
+			null,
+			4,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
 
-		FixedStream fixStream = new FixedStream (dtCustomOISStart.getJulian(), dtCustomOISMaturity.getJulian(),
-			0.0, 2, "Act/360", "Act/360", false, null, null, null, null, null, null, null, null, 1.,
-				strCurrency, strCurrency);
+		OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+			strCurrency,
+			0.,
+			-1.,
+			null,
+			lsFloatPeriods,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			false
+		);
+
+		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtCustomOISStart.getJulian(),
+			"4M",
+			null,
+			2,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
+
+		FixedStream fixStream = new FixedStream (
+			strCurrency,
+			0.,
+			1.,
+			null,
+			lsFixedPeriods
+		);
 
 		IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
 			dc,
 			null,
 			null,

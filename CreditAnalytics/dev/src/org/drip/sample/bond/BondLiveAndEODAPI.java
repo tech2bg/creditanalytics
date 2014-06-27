@@ -7,10 +7,6 @@ package org.drip.sample.bond;
 
 import java.util.*;
 
-/*
- * Credit Product Analytics API
- */
-
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
@@ -18,15 +14,10 @@ import org.drip.analytics.output.ExerciseInfo;
 import org.drip.analytics.period.*;
 import org.drip.analytics.rates.ExplicitBootDiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.definition.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Product Analytics API
- */
-
 import org.drip.param.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
@@ -164,7 +155,7 @@ public class BondLiveAndEODAPI {
 
 		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02, 0.4);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+		MarketParamSet cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
 
 		List<String> lsstrISIN = CreditAnalytics.GetISINsForTicker (strTicker);
 
@@ -295,7 +286,7 @@ public class BondLiveAndEODAPI {
 
 		PricerParams pricerParams = PricerParams.MakeStdPricerParams();
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+		MarketParamSet cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
 
 		WorkoutInfo wi = CreditAnalytics.BondWorkoutInfoFromPrice (strISIN, dtToday, dc, 1.);
 

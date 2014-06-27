@@ -9,11 +9,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics imports
- */
-
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
@@ -76,7 +71,8 @@ public class TreasuryCurveAPI {
 	{
 		return BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				strName,					// Name
-				"USDTSY",					// Fictitious Treasury Curve Name
+				"USD",						// Fictitious Treasury Curve Name
+				"",							// Empty Credit Curve
 				dblCoupon,					// Bond Coupon
 				2, 							// Frequency
 				"Act/Act",					// Day Count
@@ -125,7 +121,7 @@ public class TreasuryCurveAPI {
 			astrCalibMeasure[i] = "Yield";
 
 		return ScenarioDiscountCurveBuilder.NonlinearBuild (dt,
-			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
+			"USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aTSYBond,
 			adblCalibYield,
@@ -155,7 +151,7 @@ public class TreasuryCurveAPI {
 				1.,
 				0.);
 
-			System.out.println ("\tPrice[" + aTSYBond[i].componentName() + "]: " +
+			System.out.println ("\tPrice[" + aTSYBond[i].name() + "]: " +
 				FormatUtil.FormatDouble (dblPrice, 2, 3, 100.));
 
 			double dblYield = aTSYBond[i].calcYieldFromPrice (
@@ -164,7 +160,7 @@ public class TreasuryCurveAPI {
 				null,
 				dblPrice);
 
-			System.out.println ("\tYield[" + aTSYBond[i].componentName() + "]: " +
+			System.out.println ("\tYield[" + aTSYBond[i].name() + "]: " +
 				FormatUtil.FormatDouble (dblYield, 1, 3, 100.));
 		}
 
@@ -265,7 +261,8 @@ public class TreasuryCurveAPI {
 
 		Bond bondOffTheRun = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				"USD" + iOffTheRunMaturityYears + "YOFF",
-				"USD" + iOffTheRunMaturityYears + "TSY",
+				"USD",
+				"",
 				0.0375,
 				2,
 				"Act/Act",

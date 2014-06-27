@@ -10,15 +10,10 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.period.*;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.param.definition.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API import
- */
-
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
@@ -210,7 +205,7 @@ public class CreditAnalyticsAPI {
 		 * Component Market Parameters built from the Discount and the Credit Curves
 		 */
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+		MarketParamSet cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
 
 		/*
 		 * Create an SNAC CDS

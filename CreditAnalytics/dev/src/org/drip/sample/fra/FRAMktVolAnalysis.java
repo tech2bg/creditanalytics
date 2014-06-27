@@ -6,7 +6,7 @@ import java.util.Map;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.ComponentMarketParamsBuilder;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.fra.FRAMarketComponent;
 import org.drip.product.params.FloatingRateIndex;
@@ -135,7 +135,7 @@ public class FRAMktVolAnalysis {
 			0.006,
 			"Act/360");
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strCurrency);
@@ -189,7 +189,7 @@ public class FRAMktVolAnalysis {
 		String strTenor = "6M";
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtToday,

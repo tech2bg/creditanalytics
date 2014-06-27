@@ -329,7 +329,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.product.definition.RatesComponent irs =
 			org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtStart, new
-				org.drip.analytics.date.JulianDate (dblDate), 0., strCurrency, strIndex, strCurrency);
+				org.drip.analytics.date.JulianDate (dblDate), 0., 2, "Act/360", 0., 4, "Act/360", currency(),
+					currency());
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
@@ -343,9 +344,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		mmFixings.put (dtStart, mIndexFixings);
 
-		org.drip.param.definition.ComponentMarketParams cmp =
-			org.drip.param.creator.ComponentMarketParamsBuilder.Create (this, null, null, null, null, null,
-				null, mmFixings);
+		org.drip.param.market.MarketParamSet cmp = org.drip.param.creator.ComponentMarketParamsBuilder.Create
+			(this, null, null, null, null, null, null, mmFixings);
 
 		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
 			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
@@ -407,7 +407,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
 
 		if (null == regime)
-			throw new java.lang.Exception ("DiscountCurve.estimateMeasure => Cannot create Interp Stretch");
+			throw new java.lang.Exception
+				("DiscountCurve.estimateManifestMeasure => Cannot create Interp Stretch");
 
 		return regime.responseValue (dblDate);
 	}
@@ -522,7 +523,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		org.drip.param.valuation.ValuationParams valParams =
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
-		org.drip.param.definition.ComponentMarketParams mktParams =
+		org.drip.param.market.MarketParamSet mktParams =
 			org.drip.param.creator.ComponentMarketParamsBuilder.Create (this, null, null, null, null, null,
 				null, null == _ccis ? null : _ccis.getFixing());
 

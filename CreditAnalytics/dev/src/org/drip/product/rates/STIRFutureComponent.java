@@ -64,7 +64,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 		super (fixStream, floatStream);
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
 		return "STIR=" + getFloatStream().fri() + " | " + effective();
 	}
@@ -72,7 +72,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
@@ -81,7 +81,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 		double dblEffectiveDate = effective().getJulian();
 
-		java.lang.String strComponentName = componentName();
+		java.lang.String strComponentName = name();
 
 		if (dblValueDate >= dblEffectiveDate) return null;
 

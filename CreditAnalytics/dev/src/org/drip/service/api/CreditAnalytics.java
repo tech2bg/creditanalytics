@@ -1109,9 +1109,12 @@ public class CreditAnalytics {
 	{
 		if (null == cds || null == dtEOD) return null;
 
-		java.lang.String strIR = "";
+		java.lang.String strIR = cds.couponCurrency()[0];
 
-		java.lang.String strCC = cds.creditCurveName();
+		java.lang.String[] astrCreditCurveName = cds.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty()) return null;
 
@@ -3516,7 +3519,10 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getCouponCurrency();
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -3557,7 +3563,10 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getCouponCurrency();
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4136,7 +4145,10 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getCouponCurrency();
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4177,7 +4189,10 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getCouponCurrency();
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4776,7 +4791,10 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getCouponCurrency();
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -4825,7 +4843,10 @@ public class CreditAnalytics {
 
 		java.lang.String strIR = bond.getCouponCurrency();
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		if (null == strIR || strIR.isEmpty() || null == strCC || strCC.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR or Credit Curve for bond with ID " + strBondId);
@@ -5444,7 +5465,10 @@ public class CreditAnalytics {
 			return null;
 		}
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		java.lang.String strTSY = bond.couponCurrency()[0];
 
@@ -5458,8 +5482,8 @@ public class CreditAnalytics {
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, ccEOD, bond.componentName(), cq, org.drip.service.env.EODCurves.GetTSYQuotes
-						(s_stmt, dtEOD, strIR), null), null);
+					dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+						dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5523,7 +5547,10 @@ public class CreditAnalytics {
 			return null;
 		}
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		java.lang.String strTSY = bond.couponCurrency()[0];
 
@@ -5537,8 +5564,8 @@ public class CreditAnalytics {
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, ccEOD, bond.componentName(), cq, org.drip.service.env.EODCurves.GetTSYQuotes
-						(s_stmt, dtEOD, strIR), null), null);
+					dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+						dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5602,7 +5629,10 @@ public class CreditAnalytics {
 			return null;
 		}
 
-		java.lang.String strCC = bond.creditCurveName();
+		java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+		java.lang.String strCC = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+			astrCreditCurveName[0];
 
 		java.lang.String strTSY = bond.couponCurrency()[0];
 
@@ -5616,8 +5646,8 @@ public class CreditAnalytics {
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dcEOD,
-					dcTSY, ccEOD, bond.componentName(), cq, org.drip.service.env.EODCurves.GetTSYQuotes
-						(s_stmt, dtEOD, strIR), null), null);
+					dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+						dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5807,7 +5837,12 @@ public class CreditAnalytics {
 
 		if ("CouponType".equalsIgnoreCase (strField)) return bond.getCouponType();
 
-		if ("CreditCurve".equalsIgnoreCase (strField)) return bond.creditCurveName();
+		if ("CreditCurve".equalsIgnoreCase (strField)) {
+			java.lang.String[] astrCreditCurveName = bond.creditCurveName();
+
+			return null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
+				astrCreditCurveName[0];
+		}
 
 		if ("CUSIP".equalsIgnoreCase (strField)) return bond.getCUSIP();
 

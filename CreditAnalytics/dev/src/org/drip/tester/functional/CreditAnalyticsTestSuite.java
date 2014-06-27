@@ -238,13 +238,13 @@ public class CreditAnalyticsTestSuite {
 		org.drip.product.params.EmbeddedOptionSchedule eosCall = null;
 
 		if (org.drip.product.creator.BondBuilder.BOND_TYPE_SIMPLE_FLOATER == iBondType)
-			bond = org.drip.product.creator.BondBuilder.CreateSimpleFloater (strName, "USD", "DRIPRI", 0.01,
-				2, "30/360", org.drip.analytics.date.JulianDate.CreateFromYMD (2012, 3, 21),
+			bond = org.drip.product.creator.BondBuilder.CreateSimpleFloater (strName, "USD", "DRIPRI", "",
+				0.01, 2, "30/360", org.drip.analytics.date.JulianDate.CreateFromYMD (2012, 3, 21),
 					org.drip.analytics.date.JulianDate.CreateFromYMD (2023, 9, 20), MakeFSPrincipal(),
 						MakeFSCoupon());
 		else if (org.drip.product.creator.BondBuilder.BOND_TYPE_SIMPLE_FIXED == iBondType)
-			bond = org.drip.product.creator.BondBuilder.CreateSimpleFixed (strName, "USD", 0.05, 2, "30/360",
-				org.drip.analytics.date.JulianDate.CreateFromYMD (2012, 3, 21),
+			bond = org.drip.product.creator.BondBuilder.CreateSimpleFixed (strName, "USD", "", 0.05, 2,
+				"30/360", org.drip.analytics.date.JulianDate.CreateFromYMD (2012, 3, 21),
 					org.drip.analytics.date.JulianDate.CreateFromYMD (2023, 9, 20), MakeFSPrincipal(),
 						MakeFSCoupon());
 		else if (org.drip.product.creator.BondBuilder.BOND_TYPE_SIMPLE_FROM_CF == iBondType) {
@@ -264,7 +264,7 @@ public class CreditAnalyticsTestSuite {
 				adblPrincipalAmount[i] = 1.0;
 			}
 
-			bond = org.drip.product.creator.BondBuilder.CreateBondFromCF (strName, dtEffective, "USD",
+			bond = org.drip.product.creator.BondBuilder.CreateBondFromCF (strName, dtEffective, "USD", "",
 				"30/360", 2, adt, adblCouponAmount, adblPrincipalAmount, false);
 		}
 
@@ -1558,7 +1558,7 @@ public class CreditAnalyticsTestSuite {
 				}
 			}
 
-			org.drip.param.definition.ComponentMarketParams cmp =
+			org.drip.param.market.MarketParamSet cmp =
 				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
 					cc, null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
 						(aBond[i], org.drip.analytics.date.JulianDate.Today(), 0.04));
@@ -2725,10 +2725,10 @@ public class CreditAnalyticsTestSuite {
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", "USD", 0.01, 0.4);
 
 		org.drip.product.credit.BondComponent bond = org.drip.product.creator.BondBuilder.CreateSimpleFixed
-			("CCCalibBond", "DKK", 0.05, 2, "30/360", org.drip.analytics.date.JulianDate.CreateFromYMD (2008,
-				9, 21), org.drip.analytics.date.JulianDate.CreateFromYMD (2023, 9, 20), null, null);
+			("CCCalibBond", "DKK", "CC", 0.05, 2, "30/360", org.drip.analytics.date.JulianDate.CreateFromYMD
+				(2008, 9, 21), org.drip.analytics.date.JulianDate.CreateFromYMD (2023, 9, 20), null, null);
 
-		org.drip.param.definition.ComponentMarketParams cmp =
+		org.drip.param.market.MarketParamSet cmp =
 			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
 				cc, null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
 					org.drip.analytics.date.JulianDate.Today(), 0.04));
@@ -2824,11 +2824,10 @@ public class CreditAnalyticsTestSuite {
 			("SLMA_ETF", new java.lang.String[] {"US78490FVJ55", "US78490FWD76", "US78490FVL02",
 				"US78442FAZ18", "US78490FTL30"}, new double[] {1., 2., 3., 4., 5.}, dtToday, 100.);
 
-		org.drip.param.definition.BasketMarketParams bmp =
-			org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams();
+		org.drip.param.market.MarketParamSet bmp = new org.drip.param.market.MarketParamSet();
 
-		bmp.addDiscountCurve ("USD", org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday,
-			"USD", null, 0.04));
+		bmp.setFundingCurve (org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
+			null, 0.04));
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = null;
 

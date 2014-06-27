@@ -67,7 +67,7 @@ public class ScenarioForwardCurveBuilder {
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final double dblEpochResponse)
 	{
@@ -111,7 +111,7 @@ public class ScenarioForwardCurveBuilder {
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final java.lang.String strBasisType,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,

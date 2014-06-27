@@ -1,11 +1,13 @@
 
 package org.drip.sample.forward;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.DepositBuilder;
 import org.drip.product.definition.*;
@@ -73,7 +75,7 @@ public class IBOR {
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
 			aDeposit[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
-				dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency),
+				dtEffective.addTenor (astrMaturityTenor[i]),
 				fri,
 				strCurrency);
 
@@ -105,7 +107,7 @@ public class IBOR {
 				strCurrency,
 				"FRA::" + strCurrency,
 				strCurrency,
-				dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency).getJulian(),
+				dtEffective.addTenor (astrMaturityTenor[i]).getJulian(),
 				fri,
 				adblFRAStrike[i],
 				"Act/365");
@@ -130,30 +132,61 @@ public class IBOR {
 
 		String strCurrency = fri.currency();
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		FixFloatComponent[] aFFC = new FixFloatComponent[astrMaturityTenor.length];
 
 		int iForwardTenorFreq = new Integer (fri.tenor().split ("M")[0]);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency);
 
 			/*
 			 * The Fixed Leg
 			 */
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, -1.,
-					strCurrency, strCurrency);
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrMaturityTenor[i],
+				null,
+				4,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
-				false, fri, 12 / iForwardTenorFreq, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap,
-					dap, dap, null, null, 1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrMaturityTenor[i],
+				null,
+				12 / iForwardTenorFreq,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsDerived = new FloatingStream (
+				strCurrency,
+				adblCoupon[i],
+				-1.,
+				null,
+				lsFloatPeriods,
+				fri,
+				false
+			);
 
 			/*
 			 * The fix-float swap instance
@@ -181,30 +214,63 @@ public class IBOR {
 
 		String strCurrency = fri.currency();
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
 		int iForwardTenorFreq = new Integer (fri.tenor().split ("M")[0]);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency);
 
 			/*
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(), dtMaturity.getJulian(),
-				0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"), 2, "Act/360", false, "Act/360",
-					false, false, null, dap, dap, dap, dap, dap, dap, null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrMaturityTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsReference = new FloatingStream (
+				strCurrency,
+				0.,
+				1.,
+				null,
+				lsReferenceFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				false
+			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(), dtMaturity.getJulian(),
-				0., false, fri, 12 / iForwardTenorFreq, "Act/360", false, "Act/360", false, false, null, dap, dap,
-					dap, dap, dap, dap, null, null, 1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrMaturityTenor[i],
+				null,
+				12 / iForwardTenorFreq,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsDerived = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsDerivedFloatPeriods,
+				fri,
+				false
+			);
 
 			/*
 			 * The float-float swap instance
@@ -384,7 +450,7 @@ public class IBOR {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, fcReference, null, null, null, null, null, null);
 
 		/*
@@ -458,7 +524,7 @@ public class IBOR {
 
 				for (int i = 0; i < aFixFloat.length; ++i)
 					System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, cmp, null, "ParSwapRate"), 1, 2, 0.01) +
+						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, cmp, null, strFixFloatCalibMeasure), 1, 2, -0.01) +
 							"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
 			}

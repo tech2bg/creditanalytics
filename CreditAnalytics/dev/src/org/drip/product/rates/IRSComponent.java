@@ -56,7 +56,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -142,7 +142,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
 		return "IRS=" + maturity();
 	}
@@ -231,7 +231,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception
 	{
 		return _fixStream.coupon (dblValue, mktParams);
@@ -242,9 +242,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _floatStream.forwardCurveName();
 	}
 
-	@Override public java.lang.String creditCurveName()
+	@Override public java.lang.String[] creditCurveName()
 	{
-		return "";
+		return null;
 	}
 
 	@Override public java.lang.String[] currencyPairCode()
@@ -300,7 +300,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
@@ -485,7 +485,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
@@ -540,7 +540,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
@@ -687,7 +687,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
@@ -805,17 +805,20 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	{
 		org.drip.analytics.date.JulianDate dtEffective = org.drip.analytics.date.JulianDate.Today();
 
-		org.drip.analytics.date.JulianDate dtMaturity = dtEffective.addTenor ("4Y");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(), "4Y",
+				null, 2, "30/360", false, true, "JPY", "JPY");
 
-		org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
-			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.05, 2, "30/360", "30/360", false, null, null,
-				null, null, null, null, null, null, 100., "JPY", "JPY");
+		org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream ("JPY", 0.05,
+			7., null, lsFixedCouponPeriod);
 
-		org.drip.product.rates.FloatingStream floatStream = org.drip.product.rates.FloatingStream.Create
-			(dtEffective.getJulian(), dtMaturity.getJulian(), 0.01, true,
-				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-3M"), 4, "Act/360", false,
-					"Act/360", false, false, null, null, null, null, null, null, null, null, null, -100.,
-						"JPY", "JPY");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(), "4Y",
+				null, 4, "Act/360", false, true, "JPY", "JPY");
+
+		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream ("JPY",
+			0.01, -7., null, lsFloatCouponPeriod, org.drip.product.params.FloatingRateIndex.Create
+				("JPY-LIBOR-3M"), false);
 
 		IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream, floatStream);
 

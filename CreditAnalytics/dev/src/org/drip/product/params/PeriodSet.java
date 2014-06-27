@@ -406,7 +406,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		while (0 != i--) {
 			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 				dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360",
-					true, dblStart + 1825, "GBP"));
+					true, dblStart + 1825, "GBP", "GBP"));
 
 			dblStart += 180.;
 		}

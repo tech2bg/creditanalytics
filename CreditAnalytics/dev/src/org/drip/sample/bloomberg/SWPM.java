@@ -4,17 +4,14 @@ package org.drip.sample.bloomberg;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
 import org.drip.analytics.period.Period;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
-import org.drip.product.params.FloatingRateIndex;
-import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 
@@ -100,22 +97,21 @@ public class SWPM {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-3M"),
-					3, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
-
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
-
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
+			org.drip.product.rates.IRSComponent irs = RatesStreamBuilder.CreateIRS (
+				dtEffective,
+				astrTenor[i],
+				adblCoupon[i],
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -226,25 +222,18 @@ public class SWPM {
 		 * Build the Fixed Receive Stream
 		 */
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, "USD");
-
-		FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-			dblCoupon, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, dap, null, dblNotional, "USD", "USD");
-
-		/*
-		 * Build the Floating Pay Stream
-		 */
-
-		FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., true, org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), 4,
-				"Act/360", false, "Act/360", false, false, null, null,
-					dap, dap, dap, dap, dap, null, null, -dblNotional, "USD", "USD");
-
-		/*
-		 * Build the Swap from the fixed and the floating streams
-		 */
-
-		IRSComponent swap = new IRSComponent (fixStream, floatStream);
+		org.drip.product.rates.IRSComponent swap = RatesStreamBuilder.CreateIRS (
+			dtEffective,
+			"5Y",
+			0.,
+			2,
+			"Act/360",
+			0.,
+			4,
+			"Act/360",
+			"USD",
+			"USD"
+		);
 
 		System.out.println ("\n---- Swap Details ----\n");
 
@@ -264,7 +253,7 @@ public class SWPM {
 
 		mmFixings.put (dtEffective, mapIndexFixing);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
 
 		/*
 		 * Set up the valuation parameters
@@ -284,11 +273,11 @@ public class SWPM {
 
 		System.out.println ("\n---- Swap Output Measures ----\n");
 
-		System.out.println ("Mkt Val      : " + FormatUtil.FormatDouble (dblBasePV, 0, 0, 1.));
+		System.out.println ("Mkt Val      : " + FormatUtil.FormatDouble (dblBasePV, 0, 0, dblNotional));
 
 		System.out.println ("Par Cpn      : " + FormatUtil.FormatDouble (mapSwapCalc.get ("FairPremium"), 1, 5, 100.));
 
-		System.out.println ("Fixed DV01   : " + FormatUtil.FormatDouble (dblBaseFixedDV01, 0, 0, 1.));
+		System.out.println ("Fixed DV01   : " + FormatUtil.FormatDouble (dblBaseFixedDV01, 0, 0, dblNotional));
 
 		/*
 		 * Set up the fixings bumped market parameters - these use base discount curve and the bumped fixing
@@ -298,7 +287,7 @@ public class SWPM {
 
 		mmFixings.put (dtEffective, mapIndexFixing);
 
-		ComponentMarketParams cmpFixingsBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
+		MarketParamSet cmpFixingsBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
 
 		/*
 		 * Generate the fixing bumped scenario measures for the swap
@@ -308,9 +297,9 @@ public class SWPM {
 
 		double dblFixingsDV01 = mapSwapFixingsBumpedCalc.get ("PV") - dblBasePV;
 
-		System.out.println ("Fixings DV01 : " + FormatUtil.FormatDouble (dblFixingsDV01, 0, 0, 1.));
+		System.out.println ("Fixings DV01 : " + FormatUtil.FormatDouble (dblFixingsDV01, 0, 0, dblNotional));
 
-		System.out.println ("Total DV01   : " + FormatUtil.FormatDouble (dblBaseFixedDV01 + dblFixingsDV01, 0, 0, 1.));
+		System.out.println ("Total DV01   : " + FormatUtil.FormatDouble (dblBaseFixedDV01 + dblFixingsDV01, 0, 0, dblNotional));
 
 		/*
 		 * Set up the rate flat bumped market parameters - these use the bumped base discount curve and the base fixing
@@ -322,7 +311,7 @@ public class SWPM {
 
 		mmFixings.put (dtEffective, mapIndexFixing);
 
-		ComponentMarketParams cmpRateBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcBumped, null, null, null, null, null, mmFixings);
+		MarketParamSet cmpRateBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcBumped, null, null, null, null, null, mmFixings);
 
 		/*
 		 * Generate the rate flat bumped scenario measures for the swap
@@ -330,7 +319,7 @@ public class SWPM {
 
 		CaseInsensitiveTreeMap<Double> mapSwapRateBumpedCalc = swap.value (valParams, null, cmpRateBumped, null);
 
-		System.out.println ("PV01         : " + FormatUtil.FormatDouble (mapSwapRateBumpedCalc.get ("PV") - dblBasePV, 0, 0, 1.));
+		System.out.println ("PV01         : " + FormatUtil.FormatDouble (mapSwapRateBumpedCalc.get ("PV") - dblBasePV, 0, 0, dblNotional));
 
 		/*
 		 * Generate the Swap's fixed cash flows
@@ -338,7 +327,7 @@ public class SWPM {
 
 		System.out.println ("\n---- Fixed Cashflow ----\n");
 
-		for (Period p : fixStream.cashFlowPeriod())
+		for (Period p : swap.getFixedStream().cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
@@ -354,7 +343,7 @@ public class SWPM {
 
 		System.out.println ("\n---- Floating Cashflow ----\n");
 
-		for (Period p : floatStream.cashFlowPeriod())
+		for (Period p : swap.getFloatStream().cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +

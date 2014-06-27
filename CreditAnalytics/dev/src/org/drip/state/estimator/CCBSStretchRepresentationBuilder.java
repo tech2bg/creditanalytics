@@ -59,7 +59,7 @@ public class CCBSStretchRepresentationBuilder {
 		final java.lang.String strLatentStateQuantificationMetric,
 		final org.drip.product.fx.CrossCurrencyComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.BasketMarketParams bmp,
+		final org.drip.param.market.MarketParamSet bmp,
 		final double[] adblReferenceComponentBasis,
 		final boolean bBasisOnDerivedLeg)
 	{
@@ -86,7 +86,7 @@ public class CCBSStretchRepresentationBuilder {
 
 			org.drip.product.definition.RatesComponent rcReference = aCCSP[i].referenceComponent();
 
-			java.lang.String strReferenceComponentName = rcReference.componentName();
+			java.lang.String strReferenceComponentName = rcReference.name();
 
 			double dblFX = java.lang.Double.NaN;
 			java.lang.String strReferenceComponentPV = strReferenceComponentName + "[PV]";
@@ -100,7 +100,8 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (aCCSP[i].fxCode());
+			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve
+				(org.drip.product.params.CurrencyPair.FromCode (aCCSP[i].fxCode()));
 
 			if (null == auFX) return null;
 
@@ -155,7 +156,7 @@ public class CCBSStretchRepresentationBuilder {
 		final java.lang.String strLatentStateQuantificationMetric,
 		final org.drip.product.fx.CrossCurrencyComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.BasketMarketParams bmp,
+		final org.drip.param.market.MarketParamSet bmp,
 		final double[] adblReferenceComponentBasis,
 		final double[] adblSwapRate,
 		final boolean bBasisOnDerivedLeg)
@@ -186,7 +187,7 @@ public class CCBSStretchRepresentationBuilder {
 
 			org.drip.product.definition.RatesComponent rcReference = aCCSP[i].referenceComponent();
 
-			java.lang.String strReferenceComponentName = rcReference.componentName();
+			java.lang.String strReferenceComponentName = rcReference.name();
 
 			double dblFX = java.lang.Double.NaN;
 			java.lang.String strReferenceComponentPV = strReferenceComponentName + "[PV]";
@@ -200,7 +201,8 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (aCCSP[i].fxCode());
+			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve
+				(org.drip.product.params.CurrencyPair.FromCode (aCCSP[i].fxCode()));
 
 			if (null == auFX) return null;
 

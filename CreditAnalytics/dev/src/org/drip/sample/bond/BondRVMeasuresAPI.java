@@ -13,11 +13,6 @@ import org.drip.param.definition.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API imports
- */
-
 import org.drip.analytics.output.BondRVMeasures;
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
@@ -85,7 +80,6 @@ public class BondRVMeasuresAPI {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -111,9 +105,18 @@ public class BondRVMeasuresAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
-				0., strCurrency, strIndex, strCurrency);
+				adblCompCalibValue[i + astrCashTenor.length],
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 		}
 
 		/*
@@ -139,7 +142,8 @@ public class BondRVMeasuresAPI {
 	{
 		return BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				strName,					// Name
-				"USDTSY",					// Fictitious Treasury Curve Name
+				"USD",						// Fictitious Treasury Curve Name
+                "",                         // Credit Curve - Empty for now
 				dblCoupon,					// Bond Coupon
 				2, 							// Frequency
 				"Act/Act",					// Day Count
@@ -187,7 +191,7 @@ public class BondRVMeasuresAPI {
 			astrCalibMeasure[i] = "Yield";
 
 		return ScenarioDiscountCurveBuilder.NonlinearBuild (dt,
-			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
+			"USD", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aTSYBond,
 			adblTSYYield,
@@ -323,6 +327,7 @@ public class BondRVMeasuresAPI {
 		BondComponent bond = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				"TEST",			// Name
 				"USD",			// Currency
+				"",				// Credit Curve - Empty for now
 				0.0875,			// Bond Coupon
 				2, 				// Frequency
 				"30/360",		// Day Count
@@ -331,7 +336,7 @@ public class BondRVMeasuresAPI {
 				null,		// Principal Schedule
 				null);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null,
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);

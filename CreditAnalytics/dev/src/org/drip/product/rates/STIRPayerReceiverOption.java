@@ -86,7 +86,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams) return null;
@@ -97,7 +97,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		long lStart = System.nanoTime();
 
-		java.lang.String strComponentName = componentName();
+		java.lang.String strComponentName = name();
 
 		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface =
 			mktParams.customMetricVolSurface (strComponentName + "SwapRateVolatility", exercise());

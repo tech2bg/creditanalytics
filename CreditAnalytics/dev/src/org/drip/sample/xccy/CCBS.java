@@ -1,11 +1,15 @@
 
 package org.drip.sample.xccy;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.daycount.DateAdjustParams;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.definition.BasketMarketParams;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.CrossCurrencyComponentPair;
 import org.drip.product.params.FloatingRateIndex;
@@ -55,25 +59,59 @@ public class CCBS {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
+		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
 
-		/*
-		 * The Reference 6M Leg
-		 */
+			/*
+			 * The Reference 6M Leg
+			 */
 
-		FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-				2, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null,
-					null, null, -1., strCurrency, strCurrency);
+		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			strTenor,
+			dap,
+			2,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
+
+		FloatingStream fsReference = new FloatingStream (
+			strCurrency,
+			0.,
+			-1.,
+			null,
+			lsFloatPeriods,
+			FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+			false
+		);
 
 		/*
 		 * The Derived Leg
 		 */
 
-		FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-				12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null,
-					null, null, 1., strCurrency, strCurrency);
+		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			strTenor,
+			dap,
+			12 / iTenorInMonths,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
+
+		FloatingStream fsDerived = new FloatingStream (
+			strCurrency,
+			0.,
+			1.,
+			null,
+			lsDerivedFloatPeriods,
+			FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			false
+		);
 
 		/*
 		 * The float-float swap instance
@@ -113,7 +151,7 @@ public class CCBS {
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
-		ComponentMarketParams cmpUSD = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmpUSD = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null, null);
 
 		FloatFloatComponent ffcReferenceUSD = MakexM6MBasisSwap (
@@ -138,7 +176,7 @@ public class CCBS {
 			dblJPY3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
-		ComponentMarketParams cmpJPY = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmpJPY = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null, null);
 
 		FloatFloatComponent ffcDerivedJPY = MakexM6MBasisSwap (
@@ -156,15 +194,15 @@ public class CCBS {
 			ffcReferenceUSD,
 			ffcDerivedJPY);
 
-		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
+		MarketParamSet bmp = new MarketParamSet();
 
-		bmp.addDiscountCurve ("USD", dcUSDCollatDomestic);
+		bmp.setFundingCurve (dcUSDCollatDomestic);
 
-		bmp.addDiscountCurve ("JPY", dcJPYCollatDomestic);
+		bmp.setFundingCurve (dcJPYCollatDomestic);
 
-		bmp.addForwardCurve (FloatingRateIndex.Create ("USD", "LIBOR", "3M").fullyQualifiedName(), fc3MUSD);
+		bmp.setForwardCurve (fc3MUSD);
 
-		bmp.addForwardCurve (FloatingRateIndex.Create ("JPY", "LIBOR", "3M").fullyQualifiedName(), fc3MJPY);
+		bmp.setForwardCurve (fc3MJPY);
 
 		System.out.println (ccbsUSDJPY.value (valParams, null, bmp, null));
 	}

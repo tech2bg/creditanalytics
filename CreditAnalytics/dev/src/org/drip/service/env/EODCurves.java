@@ -62,16 +62,16 @@ public class EODCurves {
 
 		try {
 			if (bTSY)
-				return org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective.addDays (2), strTenor,
-					strCurrency, "TSY");
+				return org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective.addDays (2),
+					strTenor, strCurrency, "TSY");
 
 			if ("M".equalsIgnoreCase (strInstrCode))
-				return org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective.addDays (2), strTenor,
-					strCurrency);
+				return org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective.addDays (2),
+					strTenor, strCurrency);
 
 			if ("S".equalsIgnoreCase (strInstrCode))
-				return org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective.addDays (2), strTenor, 0.,
-					strCurrency, strCurrency + "-LIBOR-6M", strCurrency);
+				return org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective.addDays (2),
+					strTenor, 0., 2, "Act/360", 0., 4, "Act/360", strCurrency, strCurrency);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -158,7 +158,7 @@ public class EODCurves {
 	}
 
 	private static final boolean AddTSYQuoteToMPC (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.lang.String strTsyBmk,
 		final double dblTSYQuote)
 	{
@@ -404,7 +404,7 @@ public class EODCurves {
 	 */
 
 	public static final boolean AddTSYQuotesToMPC (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency)
@@ -1157,7 +1157,7 @@ public class EODCurves {
 	 */
 
 	public static final boolean LoadEODIRToMPC (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency,
@@ -1199,7 +1199,7 @@ public class EODCurves {
 	 */
 
 	public static final boolean LoadEODIROfCodeToMPC (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency,
@@ -1250,7 +1250,7 @@ public class EODCurves {
 	 */
 
 	public static final boolean BuildTSYEODCurve (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency)
@@ -1273,7 +1273,7 @@ public class EODCurves {
 	 */
 
 	public static final boolean BuildIREODCurve (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency)
@@ -1323,7 +1323,7 @@ public class EODCurves {
 	 */
 
 	public static boolean BuildCREOD (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strSPN,

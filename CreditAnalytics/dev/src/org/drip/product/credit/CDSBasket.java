@@ -404,11 +404,6 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public java.lang.String[] fxCurve()
-	{
-		return null;
-	}
-
 	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
 		return _aComp;

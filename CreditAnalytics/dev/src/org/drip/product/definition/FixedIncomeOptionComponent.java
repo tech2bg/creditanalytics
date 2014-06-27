@@ -42,7 +42,7 @@ package org.drip.product.definition;
  */
 
 public abstract class FixedIncomeOptionComponent implements
-	org.drip.product.definition.ComponentMarketParamRef {
+	org.drip.product.definition.MarketParamRef {
 	private java.lang.String _strCalendar = "";
 	private java.lang.String _strDayCount = "";
 	private double _dblStrike = java.lang.Double.NaN;
@@ -173,9 +173,9 @@ public abstract class FixedIncomeOptionComponent implements
 		return _strCalendar;
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
-		return _comp.componentName();
+		return _comp.name();
 	}
 
 	@Override public java.lang.String[] forwardCurveName()
@@ -183,7 +183,7 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.forwardCurveName();
 	}
 
-	@Override public java.lang.String creditCurveName()
+	@Override public java.lang.String[] creditCurveName()
 	{
 		return _comp.creditCurveName();
 	}
@@ -207,7 +207,7 @@ public abstract class FixedIncomeOptionComponent implements
 	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
@@ -235,7 +235,7 @@ public abstract class FixedIncomeOptionComponent implements
 	public double calcMeasureValue (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final java.lang.String strMeasure)
 		throws java.lang.Exception

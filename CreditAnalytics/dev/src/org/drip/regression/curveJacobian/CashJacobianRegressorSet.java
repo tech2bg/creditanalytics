@@ -137,8 +137,7 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					for (int i = 0; i < aCompCalib.length; ++i) {
-						if (!rnvd.set ("PVDFMicroJack_" + aCompCalib[i].componentName(),
-							aWJComp[i].displayString()))
+						if (!rnvd.set ("PVDFMicroJack_" + aCompCalib[i].name(), aWJComp[i].displayString()))
 							return false;
 					}
 

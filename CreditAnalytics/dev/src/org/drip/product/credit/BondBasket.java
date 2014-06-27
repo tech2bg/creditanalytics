@@ -754,11 +754,6 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public java.lang.String[] fxCurve()
-	{
-		return null;
-	}
-
 	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
 		return _aBond;
@@ -905,7 +900,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
-				null, null, null, null, null, null, null, "IGNORE", false, "USD");
+				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD");
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");

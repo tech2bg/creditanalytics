@@ -1,11 +1,14 @@
 
 package org.drip.sample.xccy;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.definition.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.*;
 import org.drip.product.params.FloatingRateIndex;
@@ -55,25 +58,57 @@ public class MTMCCBS {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
-
 		/*
 		 * The Reference 6M Leg
 		 */
 
-		FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-				2, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null,
-					null, null, -1., strCurrency, strCurrency);
+		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			strTenor,
+			null,
+			2,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
+
+		FloatingStream fsReference = new FloatingStream (
+			strCurrency,
+			0.,
+			-1.,
+			null,
+			lsFloatPeriods,
+			FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+			false
+		);
 
 		/*
 		 * The Derived Leg
 		 */
 
-		FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
-			dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-				12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null,
-					null, null, 1., strCurrency, strCurrency);
+		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			strTenor,
+			null,
+			12 / iTenorInMonths,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
+
+		FloatingStream fsDerived = new FloatingStream (
+			strCurrency,
+			0.,
+			1.,
+			null,
+			lsDerivedFloatPeriods,
+			FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			false
+		);
 
 		/*
 		 * The float-float swap instance
@@ -146,19 +181,19 @@ public class MTMCCBS {
 			ffcReferenceUSD,
 			ffcDerivedJPY);
 
-		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
+		MarketParamSet bmp = new MarketParamSet();
 
-		bmp.addDiscountCurve ("USD", dcUSDCollatDomestic);
+		bmp.setFundingCurve (dcUSDCollatDomestic);
 
-		bmp.addDiscountCurve ("JPY", dcJPYCollatDomestic);
+		bmp.setFundingCurve (dcJPYCollatDomestic);
 
-		bmp.addForwardCurve (FloatingRateIndex.Create ("USD", "LIBOR", "3M").fullyQualifiedName(), fc3MUSD);
+		bmp.setForwardCurve (fc3MUSD);
 
-		bmp.addForwardCurve (FloatingRateIndex.Create ("JPY", "LIBOR", "3M").fullyQualifiedName(), fc3MJPY);
+		bmp.setForwardCurve (fc3MJPY);
 
 		CaseInsensitiveTreeMap<Double> mapMTMOutput = ccbsUSDJPY.value (valParams, null, bmp, null);
 
-		System.out.println ("Base PV : " + mapMTMOutput.get (ccbsUSDJPY.referenceComponent().componentName() + "[PV]"));
+		System.out.println ("Base PV : " + mapMTMOutput.get (ccbsUSDJPY.referenceComponent().name() + "[PV]"));
 
 		System.out.println ("MTM PV  : " + mapMTMOutput.get ("MTMPV"));
 	}

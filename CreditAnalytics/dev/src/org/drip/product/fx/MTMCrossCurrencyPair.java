@@ -50,6 +50,8 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 
 		java.lang.String strCurrency = fs.couponCurrency()[0];
 
+		double dblInitialNotional = fs.initialNotional();
+
 		int iNumPeriods = lsCouponFlow.size();
 
 		boolean bIsReference = fs.reference();
@@ -58,8 +60,8 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 
 		int iCFPIndex = 0;
 		int iNumPeriodsAccumulated = 0;
-		double dblNotional = bIsReference ? -1. : 1.;
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
+		double dblNotional = bIsReference ? -1. * dblInitialNotional : dblInitialNotional;
 		org.drip.product.rates.FloatingStream[] aFS = new org.drip.product.rates.FloatingStream[iNumForward];
 
 		java.util.List<java.util.List<org.drip.analytics.period.CashflowPeriod>> lslsCouponPeriod = new
@@ -79,9 +81,8 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.rates.FloatingStream (lsCouponPeriod.get
-					(0).getStartDate(), lsCouponPeriod.get (lsCouponPeriod.size() - 1).getEndDate(),
-						dblSpread, bIsReference, fri, null, dblNotional, strCurrency, lsCouponPeriod);
+				aFS[iCFPIndex++] = new org.drip.product.rates.FloatingStream (strCurrency, dblSpread,
+					dblNotional, null, lsCouponPeriod, fri, bIsReference);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -149,8 +150,8 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 		for (int i = 0; i < iNumForward; ++i) {
 			try {
 				(aFFP[i] = new org.drip.product.rates.FloatFloatComponent (aFSReferenceForward[i],
-					aFSDerivedForward[i])).setPrimaryCode (fsReference.componentName() + "::" +
-						fsDerived.componentName() + "_" + i);
+					aFSDerivedForward[i])).setPrimaryCode (fsReference.name() + "::" + fsDerived.name() + "_"
+						+ i);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -187,7 +188,7 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.BasketMarketParams bmp,
+		final org.drip.param.market.MarketParamSet bmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOutput = super.value
@@ -198,22 +199,22 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 		double dblMTMPV = 0.;
 		double dblMTMCorrectionAdjust = 1.;
 
-		java.lang.String strFXCode = fxCode();
+		double dblValueDate = valParams.valueDate();
+
+		org.drip.product.params.CurrencyPair cp = org.drip.product.params.CurrencyPair.FromCode (fxCode());
 
 		for (int i = 0; i < _aFFPForward.length; ++i) {
-			org.drip.param.definition.ComponentMarketParams cmp = bmp.getComponentMarketParams
-				(_aFFPForward[i]);
-
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFwdOutput =
-				_aFFPForward[i].value (valParams, pricerParams, cmp, quotingParams);
+				_aFFPForward[i].value (valParams, pricerParams, bmp, quotingParams);
 
 			java.lang.String strCurrency = _aFFPForward[i].couponCurrency()[0];
 
 			try {
 				dblMTMCorrectionAdjust = java.lang.Math.exp
-					(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (cmp, strCurrency +
-						"_VOLATILITY", strFXCode + "_VOLATILITY", strCurrency + "_" + strFXCode +
-							"_CORRELATION", valParams.valueDate(), _aFFPForward[i].maturity().getJulian()));
+					(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+						(bmp.fundingCurveVolSurface (strCurrency), bmp.fxCurveVolSurface (cp),
+							bmp.fundingFXCorrSurface (strCurrency, cp), dblValueDate,
+								_aFFPForward[i].maturity().getJulian()));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

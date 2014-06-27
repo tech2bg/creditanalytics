@@ -4,11 +4,11 @@ package org.drip.sample.multicurve;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -100,19 +100,50 @@ public class FixFloatForwardCurve {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				4,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			FloatingStream floatStream = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-3M"),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
@@ -202,29 +233,59 @@ public class FixFloatForwardCurve {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		FixFloatComponent[] aFFC = new FixFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
 			/*
 			 * The Fixed Leg
 			 */
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, -1.,
-					strCurrency, strCurrency);
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, 1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				12 / iTenorInMonths,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsDerived = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsDerivedFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				false
+			);
 
 			/*
 			 * The fix-float swap instance
@@ -285,7 +346,7 @@ public class FixFloatForwardCurve {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
 
 		Map<String, ForwardCurve> mapForward = new HashMap<String, ForwardCurve>();
 
@@ -313,7 +374,7 @@ public class FixFloatForwardCurve {
 		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmpCubicFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmpCubicFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, fcxMCubic, null, null, null, null, null, null);
 
 		/*
@@ -340,7 +401,7 @@ public class FixFloatForwardCurve {
 		 * Set the discount curve + quartic polynomial forward curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, fcxMQuartic, null, null, null, null, null, null);
 
 		/*
@@ -367,7 +428,7 @@ public class FixFloatForwardCurve {
 		 * Set the discount curve + hyperbolic tension forward curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmpKLKHyperFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmpKLKHyperFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, fcxMKLKHyper, null, null, null, null, null, null);
 
 		int i = 0;
@@ -478,7 +539,7 @@ public class FixFloatForwardCurve {
 
 		String strCurrency = "USD";
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes

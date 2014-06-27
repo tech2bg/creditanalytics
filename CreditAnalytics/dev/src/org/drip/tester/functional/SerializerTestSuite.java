@@ -264,7 +264,7 @@ public class SerializerTestSuite {
 
 		byte[] abCouponPeriod = new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 			dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360", true,
-				dblStart + 1825, "GBP").serialize();
+				dblStart + 1825, "GBP", "GBP").serialize();
 
 		Verify (abCouponPeriod, new org.drip.analytics.period.CashflowPeriod (abCouponPeriod),
 			"CouponPeriod");
@@ -290,8 +290,8 @@ public class SerializerTestSuite {
 
 		Verify (abEDF, org.drip.product.creator.EDFutureBuilder.FromByteArray (abEDF), "EDFuture");
 
-		byte[] abIRS = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtToday, "4Y", 0.03, "JPY",
-			"JPY-LIBOR-3M", "JPY").serialize();
+		byte[] abIRS = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtToday, "4Y", 0.03, 2,
+			"Act/360", 0., 4, "Act/360", "JPY", "JPY").serialize();
 
 		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
 			"InterestRateSwap");
@@ -309,32 +309,44 @@ public class SerializerTestSuite {
 		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
-		aFixedStream[0] = new org.drip.product.rates.FixedStream (dtToday.getJulian(), dtToday.addTenor
-			("3Y").getJulian(), 0.03, 2, "Act/360", "30/360", false, null, null, dap, dap, dap, dap, null,
-				null, 100., "ABC", "DEF");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod3Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "3Y", dap,
+				2, "Act/360", false, false, "ABC", "DEF");
 
-		aFixedStream[1] = new org.drip.product.rates.FixedStream (dtToday.getJulian(), dtToday.addTenor
-			("5Y").getJulian(), 0.05, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null,
-				null, 100., "GHI", "JKL");
+		aFixedStream[0] = new org.drip.product.rates.FixedStream ("DEF", 0.03, 1., null, lsFixedPeriod3Y);
 
-		aFixedStream[2] = new org.drip.product.rates.FixedStream (dtToday.getJulian(), dtToday.addTenor
-			("7Y").getJulian(), 0.07, 2, "30/360", "30/360", false, null, null, dap, dap, dap, dap, null,
-				null, 100., "MNO", "PQR");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod5Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "5Y", dap,
+				2, "Act/360", false, false, "GHI", "JKL");
 
-		aFloatStream[0] = org.drip.product.rates.FloatingStream.Create (dtToday.getJulian(), dtToday.addTenor
-			("3Y").getJulian(), 0.03, true, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"),
-				4, "Act/360", false, "Act/360", false, false, null, null, dap, dap, dap, dap, null, null,
-					null, -100., "ABC", "DEF");
+		aFixedStream[1] = new org.drip.product.rates.FixedStream ("JKL", 0.05, 1., null, lsFixedPeriod5Y);
 
-		aFloatStream[1] = org.drip.product.rates.FloatingStream.Create (dtToday.getJulian(), dtToday.addTenor
-			("5Y").getJulian(), 0.05, true, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"),
-				4, "Act/360", false, "Act/360", false, false, null, null, dap, dap, dap, dap, null, null,
-					null, -100., "ABC", "DEF");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod7Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "7Y", dap,
+				2, "Act/360", false, false, "MNO", "PQR");
 
-		aFloatStream[2] = org.drip.product.rates.FloatingStream.Create (dtToday.getJulian(), dtToday.addTenor
-			("7Y").getJulian(), 0.07, true, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-12M"),
-				1, "Act/360", false, "Act/360", false, false, null, null, dap, dap, dap, dap, null, null,
-					null, -100., "ABC", "DEF");
+		aFixedStream[2] = new org.drip.product.rates.FixedStream ("PQR", 0.07, 1., null, lsFixedPeriod7Y);
+
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod3Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "3Y", dap,
+				4, "Act/360", false, false, "ABC", "DEF");
+
+		aFloatStream[0] = new org.drip.product.rates.FloatingStream ("DEF", 0.03, -1., null, lsFloatPeriod3Y,
+			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod5Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "5Y", dap,
+				4, "Act/360", false, false, "ABC", "DEF");
+
+		aFloatStream[1] = new org.drip.product.rates.FloatingStream ("DEF", 0.05, -1., null, lsFloatPeriod5Y,
+			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod7Y =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "7Y", dap,
+				4, "Act/360", false, false, "ABC", "DEF");
+
+		aFloatStream[2] = new org.drip.product.rates.FloatingStream ("DEF", 0.07, -1., null, lsFloatPeriod7Y,
+			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
 			aFloatStream).serialize();
@@ -548,7 +560,7 @@ public class SerializerTestSuite {
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
-				null, null, null, null, null, null, null, "IGNORE", false, "USD");
+				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD");
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");
@@ -773,12 +785,6 @@ public class SerializerTestSuite {
 
 		mapCC.put ("ABCSOV", cc);
 
-		byte[] abBMP = org.drip.param.creator.BasketMarketParamsBuilder.CreateBasketMarketParams (mapDC,
-			null, mapCC, mapTSYQuotes, mmFixings).serialize();
-
-		Verify (abBMP, org.drip.param.creator.BasketMarketParamsBuilder.FromByteArray (abBMP),
-			"BasketMarketParams");
-
 		byte[] abNTP = new org.drip.param.definition.ResponseValueTweakParams
 			(org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK, false,
 				0.1).serialize();
@@ -800,7 +806,7 @@ public class SerializerTestSuite {
 		while (0 != i--) {
 			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
 				dblStart, dblStart + 180, dblStart + 180, dblStart, 2, 0.5, "30/360", false, "30/360",
-					false, java.lang.Double.NaN, "ZAR"));
+					false, java.lang.Double.NaN, "ZAR", "ZAR"));
 
 			dblStart += 180.;
 		}

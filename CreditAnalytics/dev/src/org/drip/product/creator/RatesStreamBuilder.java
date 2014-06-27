@@ -47,10 +47,48 @@ public class RatesStreamBuilder {
 	 * Create a Fixed Stream instance from effective/maturity dates, coupon, and IR curve name
 	 * 
 	 * @param dtEffective JulianDate effective
-	 * @param dtMaturity JulianDate maturity
-	 * @param dblCoupon Double coupon
-	 * @param strIR IR curve name
-	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * @param strMaturityTenor Maturity Tenor
+	 * @param dblCoupon coupon
+	 * @param iFreq Coupon Frequency
+	 * @param strDayCount Day Count Convention
+	 * @param strCalendar Holiday Calendar for coupon accrual
+	 * @param strCurrency Currency
+	 * 
+	 * @return The Fixed Stream Instance
+	 */
+
+	public static final org.drip.product.rates.FixedStream CreateFixedStream (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String strMaturityTenor,
+		final double dblCoupon,
+		final int iFreq,
+		final java.lang.String strDayCount,
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency)
+	{
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(),
+				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
+
+		try {
+			return new org.drip.product.rates.FixedStream (strCurrency, dblCoupon, 1., null, lsCouponPeriod);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create a Fixed Stream instance from effective/maturity dates, coupon, and IR curve name
+	 * 
+	 * @param dtEffective Effective Date
+	 * @param dtMaturity Maturity Date
+	 * @param dblCoupon coupon
+	 * @param iFreq Coupon Frequency
+	 * @param strDayCount Day Count Convention
+	 * @param strCalendar Holiday Calendar for coupon accrual
+	 * @param strCurrency Currency
 	 * 
 	 * @return The Fixed Stream Instance
 	 */
@@ -59,17 +97,19 @@ public class RatesStreamBuilder {
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final double dblCoupon,
-		final java.lang.String strIR,
-		final java.lang.String strCalendar)
+		final int iFreq,
+		final java.lang.String strDayCount,
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency)
 	{
-		try {
-			org.drip.analytics.daycount.DateAdjustParams dap = new
-				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
-					strCalendar);
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.getJulian(),
+				dtMaturity.getJulian(), null, iFreq, strDayCount, false,
+					org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT, true, strCalendar,
+						strCurrency);
 
-			return new org.drip.product.rates.FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				dblCoupon, 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strIR, strCalendar);
+		try {
+			return new org.drip.product.rates.FixedStream (strCurrency, dblCoupon, 1., null, lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -78,38 +118,38 @@ public class RatesStreamBuilder {
 	}
 
 	/**
-	 * Create a Floating Stream instance from effective/maturity dates, coupon, IR curve name, and floater
-	 *  index
+	 * Create a IBOR based Floating Stream instance from effective/maturity dates, coupon, and IR curve name
 	 * 
 	 * @param dtEffective JulianDate effective
-	 * @param dtMaturity JulianDate maturity
-	 * @param dblCoupon Double coupon
-	 * @param strIR IR curve name
-	 * @param strFloatingRateIndex Floater Index
-	 * @param strCalendar Optional Holiday Calendar for coupon accrual
-	 * @param bIsReference Flag indicating whether the Stream corresponds to a Reference Leg
+	 * @param strMaturityTenor Maturity Tenor
+	 * @param dblSpread Spread
+	 * @param iFreq Coupon Frequency
+	 * @param strDayCount Day Count Convention
+	 * @param strCalendar Holiday Calendar for coupon accrual
+	 * @param strCurrency Currency
+	 * @param bIsReference TRUE => Corresponds to the Reference Leg
 	 * 
-	 * @return The Floating Stream Instance
+	 * @return The Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.rates.FloatingStream CreateFloatingStream (
+	public static final org.drip.product.rates.FloatingStream CreateIBORFloatingStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
-		final org.drip.analytics.date.JulianDate dtMaturity,
-		final double dblCoupon,
-		final java.lang.String strIR,
-		final java.lang.String strFloatingRateIndex,
+		final java.lang.String strMaturityTenor,
+		final double dblSpread,
+		final int iFreq,
+		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
+		final java.lang.String strCurrency,
 		final boolean bIsReference)
 	{
-		try {
-			org.drip.analytics.daycount.DateAdjustParams dap = new
-				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
-					strCalendar);
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(),
+				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
 
-			return org.drip.product.rates.FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., bIsReference, org.drip.product.params.FloatingRateIndex.Create
-					(strFloatingRateIndex), 4, "Act/360", false, "Act/360", false, false, null, dap, dap,
-						dap, dap, dap, dap, null, null, -1., strIR, strCalendar);
+		try {
+			return new org.drip.product.rates.FloatingStream (strCurrency, dblSpread, -1., null,
+				lsCouponPeriod, org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR", (12 /
+					iFreq) + "M"), bIsReference);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -118,42 +158,40 @@ public class RatesStreamBuilder {
 	}
 
 	/**
-	 * Create an IRS product from effective/maturity dates, coupon, and IR curve name/rate index
+	 * Create a IBOR based Floating Stream instance from effective/maturity dates, coupon, and IR curve name
 	 * 
 	 * @param dtEffective JulianDate effective
-	 * @param dtMaturity JulianDate maturity
-	 * @param dblCoupon Double coupon
-	 * @param strIR IR curve name
-	 * @param strFloatingRateIndex Floater Index
-	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * @param dtMaturity Maturity Date
+	 * @param dblSpread Spread
+	 * @param iFreq Coupon Frequency
+	 * @param strDayCount Day Count Convention
+	 * @param strCalendar Holiday Calendar for coupon accrual
+	 * @param strCurrency Currency
+	 * @param bIsReference TRUE => Corresponds to the Reference Leg
 	 * 
-	 * @return IRS product
+	 * @return The Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateIRS (
+	public static final org.drip.product.rates.FloatingStream CreateIBORFloatingStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final double dblCoupon,
-		final java.lang.String strIR,
-		final java.lang.String strFloatingRateIndex,
-		final java.lang.String strCalendar)
+		final double dblSpread,
+		final int iFreq,
+		final java.lang.String strDayCount,
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency,
+		final boolean bIsReference)
 	{
-		if (null == dtEffective || null == dtMaturity || null == strIR || strIR.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return null;
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.getJulian(),
+				dtMaturity.getJulian(), null, iFreq, strDayCount, false,
+					org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT, true, strCalendar,
+						strCurrency);
 
 		try {
-			org.drip.product.rates.FixedStream fixStream = CreateFixedStream (dtEffective, dtMaturity,
-				dblCoupon, strIR, strCalendar);
-
-			org.drip.product.rates.FloatingStream floatStream = CreateFloatingStream (dtEffective,
-				dtMaturity, dblCoupon, strIR, strFloatingRateIndex, strCalendar, true);
-
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
-
-			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strIR);
-
-			return irs;
+			return new org.drip.product.rates.FloatingStream (strCurrency, dblSpread, -1., null,
+				lsCouponPeriod, org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR", (12 /
+					iFreq) + "M"), bIsReference);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -165,37 +203,91 @@ public class RatesStreamBuilder {
 	 * Create an IRS product from effective date, tenor, coupon, and IR curve name/rate index
 	 * 
 	 * @param dtEffective JulianDate effective
-	 * @param strTenor String tenor
-	 * @param dblCoupon Double coupon
-	 * @param strIR IR curve name
-	 * @param strFloatingRateIndex Floater Index
+	 * @param strMaturityTenor Maturity Tenor
+	 * @param dblFixedCoupon Fixed Leg Coupon
+	 * @param iFixedFreq Fixed Leg Frequency
+	 * @param strFixedDC Fixed Leg Day Count Convention
+	 * @param dblFloatSpread Floating Leg Spread
+	 * @param iFloatFreq Floating Leg Frequency
+	 * @param strFloatDC Floating Leg Day Count Convention
 	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * @param strCurrency Currency
 	 * 
-	 * @return IRS product
+	 * @return IRS product Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateIRS (
+	public static final org.drip.product.rates.IRSComponent CreateIRS (
 		final org.drip.analytics.date.JulianDate dtEffective,
-		final java.lang.String strTenor,
-		final double dblCoupon,
-		final java.lang.String strIR,
-		final java.lang.String strFloatingRateIndex,
-		final java.lang.String strCalendar)
+		final java.lang.String strMaturityTenor,
+		final double dblFixedCoupon,
+		final int iFixedFreq,
+		final java.lang.String strFixedDC,
+		final double dblFloatSpread,
+		final int iFloatFreq,
+		final java.lang.String strFloatDC,
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency)
 	{
-		if (null == dtEffective || null == strTenor || strTenor.isEmpty() || null == strIR || strIR.isEmpty()
-			|| !org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return null;
-
 		try {
-			org.drip.product.rates.FixedStream fixStream = CreateFixedStream (dtEffective,
-				dtEffective.addTenor (strTenor), dblCoupon, strIR, strCalendar);
+			org.drip.product.rates.FixedStream fixStream = CreateFixedStream (dtEffective, strMaturityTenor,
+				dblFixedCoupon, iFixedFreq, strFixedDC, strCalendar, strCurrency);
 
-			org.drip.product.rates.FloatingStream floatStream = CreateFloatingStream (dtEffective,
-				dtEffective.addTenor (strTenor), dblCoupon, strIR, strFloatingRateIndex, strCalendar, true);
+			org.drip.product.rates.FloatingStream floatStream = CreateIBORFloatingStream (dtEffective,
+				strMaturityTenor, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
 
-			irs.setPrimaryCode ("IRS." + strTenor + "." + strIR);
+			irs.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
+
+			return irs;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create an IRS product from effective date, maturity date, coupon, and IR curve name/rate index
+	 * 
+	 * @param dtEffective JulianDate effective
+	 * @param dtMaturity Maturity Date
+	 * @param dblFixedCoupon Fixed Leg Coupon
+	 * @param iFixedFreq Fixed Leg Frequency
+	 * @param strFixedDC Fixed Leg Day Count Convention
+	 * @param dblFloatSpread Floating Leg Spread
+	 * @param iFloatFreq Floating Leg Frequency
+	 * @param strFloatDC Floating Leg Day Count Convention
+	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * @param strCurrency Currency
+	 * 
+	 * @return IRS product Instance
+	 */
+
+	public static final org.drip.product.rates.IRSComponent CreateIRS (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.analytics.date.JulianDate dtMaturity,
+		final double dblFixedCoupon,
+		final int iFixedFreq,
+		final java.lang.String strFixedDC,
+		final double dblFloatSpread,
+		final int iFloatFreq,
+		final java.lang.String strFloatDC,
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency)
+	{
+		try {
+			org.drip.product.rates.FixedStream fixStream = CreateFixedStream (dtEffective, dtMaturity,
+				dblFixedCoupon, iFixedFreq, strFixedDC, strCalendar, strCurrency);
+
+			org.drip.product.rates.FloatingStream floatStream = CreateIBORFloatingStream (dtEffective,
+				dtMaturity, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
+
+			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+				floatStream);
+
+			irs.setPrimaryCode ("IRS." + dtMaturity + "." + strCurrency);
 
 			return irs;
 		} catch (java.lang.Exception e) {

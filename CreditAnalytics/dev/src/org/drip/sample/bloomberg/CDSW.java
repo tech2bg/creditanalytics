@@ -11,14 +11,10 @@ import org.drip.analytics.period.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API imports
- */
-
 import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
@@ -84,7 +80,6 @@ public class CDSW {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -110,9 +105,18 @@ public class CDSW {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
-				0., strCurrency, strIndex, strCurrency);
+				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 		}
 
 		/*
@@ -242,7 +246,7 @@ public class CDSW {
 		 * Build the Base Credit Curve
 		 */
 
-		CreditCurve cc = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, "FairPremium", dc, dblRecovery, "CORP", 0.01, 0.);
+		CreditCurve cc = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, "FairPremium", dc, dblRecovery, "MS", 0.01, 0.);
 
 		/*
 		 * Display Survival Probability to the instrument maturities
@@ -276,10 +280,12 @@ public class CDSW {
 		 * Generate the base CDS Measures
 		 */
 
+		MarketParamSet mp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+
 		CaseInsensitiveTreeMap<Double> mapBaseMeasures = cds.value (
 			valParams,
 			pricerParams,
-			ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
+			mp,
 			null);
 
 		double dblAccrued = mapBaseMeasures.get ("Accrued") * 100. * dblNotional;
@@ -306,7 +312,7 @@ public class CDSW {
 		 * Build the Bumped 01 Credit Curve
 		 */
 
-		CreditCurve cc01Bump = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, "FairPremium", dc, dblRecovery, "CORP", 0.01, 1.);
+		CreditCurve cc01Bump = CreateCreditCurveFromCDS (dtValue, adblCDSParSpread, astrCDSTenor, "FairPremium", dc, dblRecovery, "MS", 0.01, 1.);
 
 		/*
 		 * Generate the 1 bp flat Credit Curve bumped  Measures
@@ -366,7 +372,7 @@ public class CDSW {
 		CaseInsensitiveTreeMap<Double> mapQSMeasures = cds.valueFromQuotedSpread (
 			valParams,
 			pricerParams,
-			ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
+			mp,
 			null,
 			0.05,
 			208.);

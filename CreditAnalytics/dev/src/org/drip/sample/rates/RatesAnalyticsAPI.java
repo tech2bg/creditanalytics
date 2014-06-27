@@ -250,9 +250,18 @@ public class RatesAnalyticsAPI {
 			astrCalibMeasure[i + 15] = "Rate";
 			adblRate[i + 15] = 0.01;
 
-			aCompCalib[i + 15] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + 15] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblMaturity[i + 15]),
-				0., "USD", "USD-LIBOR-6M", "USD");
+				0.,
+				2,
+				"30/360",
+				0.,
+				4,
+				"Act/360",
+				"USD",
+				"USD"
+			);
 		}
 
 		/*
@@ -286,7 +295,7 @@ public class RatesAnalyticsAPI {
 				ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
 				null);
 
-			System.out.println ("PV/DF Micro Jack[" + aCompCalib[i].componentName() + "]=" +
+			System.out.println ("PV/DF Micro Jack[" + aCompCalib[i].name() + "]=" +
 				(null == wjComp ? null : wjComp.displayString()));
 		}
 	}
@@ -503,7 +512,18 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = RatesStreamBuilder.CreateIRS (dtIRSEffective, new JulianDate (adblMaturity[i]), 0., "USD", "USD-LIBOR-6M", "USD");
+			aCompCalib[i] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
+				new JulianDate (adblMaturity[i]),
+				0.,
+				2,
+				"30/360",
+				0.,
+				4,
+				"Act/360",
+				"USD",
+				"USD"
+			);
 		}
 
 		/*

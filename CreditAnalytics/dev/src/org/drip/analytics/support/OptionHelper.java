@@ -136,7 +136,7 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedSurfaceVariance (
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final java.lang.String strVolSurface,
 		final double dblStartDate,
 		final double dblEndDate)
@@ -270,7 +270,7 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedCrossVolQuanto (
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final java.lang.String strVolSurface1,
 		final java.lang.String strVolSurface2,
 		final java.lang.String strCorrSurface,
@@ -311,7 +311,7 @@ public class OptionHelper {
 	 */
 
 	public static final double MultiplicativeCrossVolQuanto (
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final java.lang.String strVolSurface1,
 		final java.lang.String strVolSurface2,
 		final java.lang.String strCorrSurface,
@@ -342,7 +342,7 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedFRACrossVolConvexityAdjuster (
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final java.lang.String strDiscountVolTS,
 		final java.lang.String strForwardVolTS,
 		final java.lang.String strDiscountForwardCorrTS,

@@ -123,7 +123,7 @@ public class RatesManager {
 	 */
 
 	public static final boolean LoadFullIRCurves (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD)
 	{
@@ -206,7 +206,7 @@ public class RatesManager {
 	{
 		org.drip.analytics.support.AnalyticsHelper.Init();
 
-		org.drip.param.definition.MarketParams mpc =
+		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();
 
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv

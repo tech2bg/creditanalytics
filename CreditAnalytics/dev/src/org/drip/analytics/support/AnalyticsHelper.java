@@ -920,10 +920,10 @@ public class AnalyticsHelper {
 			final org.drip.param.pricer.PricerParams pricerParams,
 			final org.drip.analytics.period.Period period,
 			final double dblWorkoutDate,
-			final org.drip.param.definition.ComponentMarketParams mktParams)
+			final org.drip.param.market.MarketParamSet mktParams)
 	{
 		if (null == comp || null == valParams || null == period || null == pricerParams || null == mktParams
-			|| null == mktParams.creditCurve (comp.creditCurveName()) ||
+			|| null == mktParams.creditCurve (comp.creditCurveName()[0]) ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) || period.getStartDate() >
 					dblWorkoutDate)
 			return null;
@@ -940,17 +940,17 @@ public class AnalyticsHelper {
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP ==
 			pricerParams._iDiscretizationScheme)
 			return GenerateDayStepLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams._iUnitSize, dc, mktParams.creditCurve (comp.creditCurveName()));
+				pricerParams._iUnitSize, dc, mktParams.creditCurve (comp.creditCurveName()[0]));
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_PERIOD_STEP ==
 			pricerParams._iDiscretizationScheme)
 			return GeneratePeriodUnitLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams._iUnitSize, dc, mktParams.creditCurve (comp.creditCurveName()));
+				pricerParams._iUnitSize, dc, mktParams.creditCurve (comp.creditCurveName()[0]));
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON ==
 			pricerParams._iDiscretizationScheme)
 			return GenerateWholeLossPeriods (comp, valParams, period, dblPeriodEndDate, dc,
-				mktParams.creditCurve (comp.creditCurveName()));
+				mktParams.creditCurve (comp.creditCurveName()[0]));
 
 		return null;
 	}

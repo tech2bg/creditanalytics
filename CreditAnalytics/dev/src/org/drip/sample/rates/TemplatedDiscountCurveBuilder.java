@@ -109,8 +109,18 @@ public class TemplatedDiscountCurveBuilder {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], "USD"), 0., "USD", "USD-LIBOR-6M", "USD");
+			aCalibComp[i] = RatesStreamBuilder.CreateIRS (
+				dtEffective,
+				astrTenor[i],
+				0.,
+				2,
+				"Act/360",
+				0.,
+				2,
+				"Act/360",
+				"USD",
+				"USD"
+			);
 
 		return aCalibComp;
 	}
@@ -167,7 +177,7 @@ public class TemplatedDiscountCurveBuilder {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 

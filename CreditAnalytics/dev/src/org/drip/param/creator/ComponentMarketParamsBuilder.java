@@ -56,7 +56,7 @@ public class ComponentMarketParamsBuilder {
 	 * @return Instance of ComponentMarketParams
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams Create (
+	public static final org.drip.param.market.MarketParamSet Create (
 		final org.drip.analytics.rates.DiscountCurve dcFunding,
 		final org.drip.analytics.rates.ForwardCurve fc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
@@ -68,22 +68,22 @@ public class ComponentMarketParamsBuilder {
 		final java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
 	{
-		org.drip.param.market.ComponentMarketParamSet cmp = new
-			org.drip.param.market.ComponentMarketParamSet();
+		org.drip.param.market.MarketParamSet cmp = new
+			org.drip.param.market.MarketParamSet();
 
 		if (null != cc && !cmp.setCreditCurve (cc)) return null;
 
 		if (null != dcTSY && !cmp.setGovvieCurve (dcTSY)) return null;
 
-		if (null != compQuote && null != strComponentCode && !strComponentCode.isEmpty() &&
-			!cmp.setComponentQuote (strComponentCode, compQuote))
-			return null;
+		if (null != mmFixings && !cmp.setFixings (mmFixings)) return null;
 
 		if (null != dcFunding && !cmp.setFundingCurve (dcFunding)) return null;
 
-		if (null != mmFixings && !cmp.setFixings (mmFixings)) return null;
-
 		if (null != mTSYQuotes && !cmp.setComponentQuoteMap (mTSYQuotes)) return null;
+
+		if (null != compQuote && null != strComponentCode && !strComponentCode.isEmpty() &&
+			!cmp.setComponentQuote (strComponentCode, compQuote))
+			return null;
 
 		if (null != fc && !cmp.setForwardCurve (fc)) return null;
 
@@ -98,7 +98,7 @@ public class ComponentMarketParamsBuilder {
 	 * @return CMP Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
+	public static final org.drip.param.market.MarketParamSet MakeDiscountCMP (
 		final org.drip.analytics.rates.DiscountCurve dc)
 	{
 		return Create (dc, null, null, null, "", null, null, null);
@@ -113,7 +113,7 @@ public class ComponentMarketParamsBuilder {
 	 * @return CMP Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams MakeFloaterDiscountCMP (
+	public static final org.drip.param.market.MarketParamSet MakeFloaterDiscountCMP (
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.ForwardCurve fc)
 	{
@@ -129,7 +129,7 @@ public class ComponentMarketParamsBuilder {
 	 * @return The CMP Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams MakeDiscountCMP (
+	public static final org.drip.param.market.MarketParamSet MakeDiscountCMP (
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY)
 	{
@@ -145,7 +145,7 @@ public class ComponentMarketParamsBuilder {
 	 * @return The CMP Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams MakeCreditCMP (
+	public static final org.drip.param.market.MarketParamSet MakeCreditCMP (
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc)
 	{
@@ -168,7 +168,7 @@ public class ComponentMarketParamsBuilder {
 	 * @return The CMP Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
+	public static final org.drip.param.market.MarketParamSet CreateComponentMarketParams (
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final org.drip.analytics.definition.CreditCurve cc,
@@ -199,7 +199,7 @@ public class ComponentMarketParamsBuilder {
 	 * @return Instance of ComponentMarketParams
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams CreateComponentMarketParams (
+	public static final org.drip.param.market.MarketParamSet CreateComponentMarketParams (
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.ForwardCurve fc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
@@ -222,13 +222,13 @@ public class ComponentMarketParamsBuilder {
 	 * @return Component Market Parameter Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentMarketParams FromByteArray (
+	public static final org.drip.param.market.MarketParamSet FromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.param.market.ComponentMarketParamSet (ab);
+			return new org.drip.param.market.MarketParamSet (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -55,7 +55,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -144,7 +144,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		return _strCode;
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
 		return _strCode;
 	}
@@ -233,7 +233,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception
 	{
 		return _floatReference.coupon (dblValue, mktParams);
@@ -245,9 +245,9 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 			_floatDerived.forwardCurveName()[0]};
 	}
 
-	@Override public java.lang.String creditCurveName()
+	@Override public java.lang.String[] creditCurveName()
 	{
-		return "";
+		return null;
 	}
 
 	@Override public java.lang.String[] currencyPairCode()
@@ -327,7 +327,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp)
 	{
 		long lStart = System.nanoTime();
@@ -521,7 +521,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -531,7 +531,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -540,7 +540,7 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{

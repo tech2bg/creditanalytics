@@ -1,12 +1,17 @@
 
 package org.drip.sample.rates;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
+import org.drip.product.params.FloatingRateIndex;
+import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
@@ -101,9 +106,58 @@ public class CustomDiscountCurveBuilder {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = RatesStreamBuilder.CreateIRS (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], "USD"), 0., "USD", "USD-LIBOR-3M", "USD");
+		for (int i = 0; i < astrTenor.length; ++i) {
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
+
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				"USD",
+				"USD"
+			);
+
+			FloatingStream floatStream = new FloatingStream (
+				"USD",
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				FloatingRateIndex.Create ("USD-LIBOR-6M"),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				"USD",
+				"USD"
+			);
+
+			FixedStream fixStream = new FixedStream (
+				"USD",
+				0.,
+				1.,
+				null,
+				lsFixedPeriods
+			);
+
+			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+				floatStream);
+
+			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + ".USD");
+
+			aCalibComp[i] = irs;
+		}
 
 		return aCalibComp;
 	}
@@ -135,7 +189,7 @@ public class CustomDiscountCurveBuilder {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "USD");
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		/*
 		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters

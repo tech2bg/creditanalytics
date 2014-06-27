@@ -37,98 +37,11 @@ package org.drip.product.ois;
 
 public class OvernightIndexFloatingStream extends org.drip.product.rates.FloatingStream {
 
-	/**
-	 * Create an Instance of OvernightIndexFloatingStream
-	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
-	 * @param dblSpread Spread
-	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
-	 * @param fri Floating Rate Index
-	 * @param iFreq Frequency
-	 * @param strCouponDC Coupon Day Count
-	 * @param bApplyCpnEOMAdj TRUE => Apply the Coupon EOM Adjustment
-	 * @param strAccrualDC Accrual Day Count
-	 * @param bApplyAccEOMAdj TRUE => Apply the Accrual EOM Adjustment
-	 * @param bFullFirstPeriod TRUE => Generate full first-stub
-	 * @param dapEffective Effective DAP
-	 * @param dapMaturity Maturity DAP
-	 * @param dapPeriodStart Period Start DAP
-	 * @param dapPeriodEnd Period End DAP
-	 * @param dapAccrualStart Accrual Start DAP
-	 * @param dapAccrualEnd Accrual End DAP
-	 * @param dapPay Pay DAP
-	 * @param dapReset Reset DAP
-	 * @param notlSchedule Notional Schedule
-	 * @param dblNotional Initial Notional Amount
-	 * @param strIR IR Curve
-	 * @param strCalendar Calendar
-	 * 
-	 * return Instance of OvernightIndexFloatingStream
-	 */
-
-	public static OvernightIndexFloatingStream Create (
-		final double dblEffective,
-		final double dblMaturity,
-		final double dblSpread,
-		final boolean bIsReference,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final int iFreq,
-		final java.lang.String strCouponDC,
-		final boolean bApplyCpnEOMAdj,
-		final java.lang.String strAccrualDC,
-		final boolean bApplyAccEOMAdj,
-		final boolean bFullFirstPeriod,
-		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
-		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapPay,
-		final org.drip.analytics.daycount.DateAdjustParams dapReset,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final double dblNotional,
-		final java.lang.String strIR,
-		final java.lang.String strCalendar)
-	{
-		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
-				dblEffective, 		// Effective
-				dblMaturity, 		// Maturity
-				dapEffective, 		// Effective DAP
-				dapMaturity, 		// Maturity DAP
-				dapPeriodStart, 	// Period Start DAP
-				dapPeriodEnd, 		// Period End DAP
-				dapAccrualStart, 	// Accrual Start DAP
-				dapAccrualEnd, 		// Accrual End DAP
-				dapPay, 			// Pay DAP
-				dapReset, 			// Reset DAP
-				iFreq, 				// Coupon Freq
-				strCouponDC, 		// Coupon Day Count
-				bApplyCpnEOMAdj,
-				strAccrualDC, 		// Accrual Day Count
-				bApplyAccEOMAdj,
-				bFullFirstPeriod,	// Full First Coupon Period?
-				false, 				// Merge the first 2 Periods - create a long stub?
-				false,
-				strCalendar);
-
-		try {
-			return new OvernightIndexFloatingStream (dblEffective, dblMaturity, dblSpread, bIsReference, fri,
-				notlSchedule, dblNotional, strIR, lsCouponPeriod);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	@Override protected double getFixing (
 		final double dblValueDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception
 	{
 		try {
@@ -191,32 +104,27 @@ public class OvernightIndexFloatingStream extends org.drip.product.rates.Floatin
 	/**
 	 * OvernightIndexFloatingStream constructor
 	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
+	 * @param strCurrency Cash Flow Currency
 	 * @param dblSpread Spread
-	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
-	 * @param fri Floating Rate Index
-	 * @param notlSchedule Notional Schedule
 	 * @param dblNotional Initial Notional Amount
-	 * @param strIR IR Curve
+	 * @param notlSchedule Notional Schedule
 	 * @param lsCouponPeriod List of the Coupon Periods
+	 * @param fri Floating Rate Index
+	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
 	public OvernightIndexFloatingStream (
-		final double dblEffective,
-		final double dblMaturity,
+		final java.lang.String strCurrency,
 		final double dblSpread,
-		final boolean bIsReference,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.product.params.FactorSchedule notlSchedule,
 		final double dblNotional,
-		final java.lang.String strIR,
-		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod)
+		final org.drip.product.params.FactorSchedule notlSchedule,
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final boolean bIsReference)
 		throws java.lang.Exception
 	{
-		super (dblEffective, dblMaturity, dblSpread, bIsReference, fri, notlSchedule, dblNotional, strIR,
-			lsCouponPeriod);
+		super (strCurrency, dblSpread, dblNotional, notlSchedule, lsCouponPeriod, fri, bIsReference);
 	}
 }

@@ -51,7 +51,7 @@ public class BondTestSuite {
 	 */
 
 	public static final void RunFullBondTests (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final double dblBidPrice,
 		final double dblAskPrice)
@@ -78,7 +78,7 @@ public class BondTestSuite {
 	 */
 
 	public static final void RunFullMarketBondTests (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
@@ -126,7 +126,7 @@ public class BondTestSuite {
 
 		System.out.println ("Time: " + (new java.util.Date()).toString());
 
-		org.drip.param.definition.MarketParams mpc = org.drip.service.env.EnvManager.PopulateMPC (stmt,
+		org.drip.param.definition.ScenarioMarketParams mpc = org.drip.service.env.EnvManager.PopulateMPC (stmt,
 			dt);
 
 		if ("-eodbondsetmeasures".equalsIgnoreCase (astrArgs[0])) {

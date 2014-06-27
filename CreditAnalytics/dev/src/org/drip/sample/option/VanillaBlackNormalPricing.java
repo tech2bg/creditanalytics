@@ -1,10 +1,10 @@
 
 package org.drip.sample.option;
 
-import java.util.Map;
+import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
@@ -99,19 +99,50 @@ public class VanillaBlackNormalPricing {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			FloatingStream floatStream = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);

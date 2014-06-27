@@ -105,7 +105,7 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 		return _strName;
 	}
 
-	@Override public java.lang.String[] fxCurve()
+	@Override public java.lang.String[] currencyPairCode()
 	{
 		java.lang.String strReferenceCurrency = _rcReference.couponCurrency()[0];
 
@@ -134,7 +134,7 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.BasketMarketParams bmp,
+		final org.drip.param.market.MarketParamSet bmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
@@ -148,9 +148,9 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 
 		org.drip.product.definition.RatesComponent rcReference = referenceComponent();
 
-		java.lang.String strRefCompName = rcReference.componentName();
+		java.lang.String strRefCompName = rcReference.name();
 
-		java.lang.String strDerivedCompName = rcDerived.componentName();
+		java.lang.String strDerivedCompName = rcDerived.name();
 
 		double dblFX = 1.;
 		java.lang.String strReferenceCompPV = strRefCompName + "[PV]";
@@ -181,7 +181,8 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 
 		double dblDerivedCompReferenceDV01 = mapOutput.get (strDerivedCompReferenceDV01);
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve (fxCode());
+		org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve
+			(org.drip.product.params.CurrencyPair.FromCode (fxCode()));
 
 		if (null != auFX) {
 			try {

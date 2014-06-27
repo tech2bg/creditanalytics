@@ -38,83 +38,30 @@ package org.drip.product.ois;
 public class OvernightFundFloatingStream extends org.drip.product.rates.FloatingStream {
 
 	/**
-	 * Create an Instance of OvernightFundFloatingStream
-	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
-	 * @param dblSpread Spread
-	 * @param fri Floating Rate Index
-	 * @param strDC Accrual/Coupon Day Count
-	 * @param dapReset Reset DAP
-	 * @param dapPay Pay DAP
-	 * @param notlSchedule Notional Schedule
-	 * @param dblNotional Initial Notional Amount
-	 * @param strIR IR Curve
-	 * @param strCalendar Calendar
-	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
-	 * 
-	 * @return Instance of OvernightFundFloatingStream
-	 */
-
-	public static final OvernightFundFloatingStream Create (
-		final double dblEffective,
-		final double dblMaturity,
-		final double dblSpread,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final java.lang.String strDC,
-		final org.drip.analytics.daycount.DateAdjustParams dapReset,
-		final org.drip.analytics.daycount.DateAdjustParams dapPay,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final double dblNotional,
-		final java.lang.String strIR,
-		final java.lang.String strCalendar,
-		final boolean bIsReference)
-		throws java.lang.Exception
-	{
-		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GenerateDailyPeriod (dblEffective, dblMaturity,
-				dapReset, dapPay, strDC, strCalendar);
-
-		try {
-			return new OvernightFundFloatingStream (dblEffective, dblMaturity, dblSpread, bIsReference, fri,
-				notlSchedule, dblNotional, strIR, lsCouponPeriod);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
 	 * OvernightFundFloatingStream constructor
 	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
+	 * @param strCurrency Cash Flow Currency
 	 * @param dblSpread Spread
-	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
-	 * @param fri Floating Rate Index
-	 * @param notlSchedule Notional Schedule
 	 * @param dblNotional Initial Notional Amount
-	 * @param strIR IR Curve
+	 * @param notlSchedule Notional Schedule
 	 * @param lsCouponPeriod List of the Coupon Periods
+	 * @param fri Floating Rate Index
+	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
 	public OvernightFundFloatingStream (
-		final double dblEffective,
-		final double dblMaturity,
+		final java.lang.String strCurrency,
 		final double dblSpread,
-		final boolean bIsReference,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.product.params.FactorSchedule notlSchedule,
 		final double dblNotional,
-		final java.lang.String strIR,
-		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod)
+		final org.drip.product.params.FactorSchedule notlSchedule,
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
+		final org.drip.product.params.FloatingRateIndex fri,
+		final boolean bIsReference)
 		throws java.lang.Exception
 	{
-		super (dblEffective, dblMaturity, dblSpread, bIsReference, fri, notlSchedule, dblNotional, strIR,
-			lsCouponPeriod);
+		super (strCurrency, dblSpread, dblNotional, notlSchedule, lsCouponPeriod, fri, bIsReference);
 	}
 
 	/**
@@ -132,7 +79,7 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 		super (ab);
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
 		return "OvernightFundFloatingStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}
@@ -155,11 +102,14 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 	{
 		org.drip.service.api.CreditAnalytics.Init ("");
 
-		OvernightFundFloatingStream fs = org.drip.product.ois.OvernightFundFloatingStream.Create
-			(org.drip.analytics.date.JulianDate.Today().getJulian(),
-				org.drip.analytics.date.JulianDate.Today().addTenor ("1Y").getJulian(), 0.03,
-					org.drip.product.params.FloatingRateIndex.Create ("JPY-OIS-ON"), "30/360", null, null,
-						null, 1., "JPY", "JPY", false);
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsOISFloatCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GenerateDailyPeriod
+				(org.drip.analytics.date.JulianDate.Today().getJulian(),
+					org.drip.analytics.date.JulianDate.Today().addTenor ("1Y").getJulian(), null, null,
+						"30/360", "JPY", "JPY");
+
+		OvernightFundFloatingStream fs = new OvernightFundFloatingStream ("JPY", 0.03, -1., null,
+			lsOISFloatCouponPeriod, org.drip.product.params.FloatingRateIndex.Create ("JPY-OIS-ON"), false);
 
 		System.out.println ("\tEffective: " + new org.drip.analytics.date.JulianDate (fs._dblEffective) +
 			"=>" + new org.drip.analytics.date.JulianDate (fs._dblMaturity));

@@ -6,7 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.fra.FRAMarketComponent;
 import org.drip.product.params.FloatingRateIndex;
@@ -66,7 +66,7 @@ public class FRAMkt {
 		double dblEONIAVol = 0.37;
 		double dblEONIAEURIBOR6MCorrelation = 0.8;
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtToday,
@@ -92,16 +92,10 @@ public class FRAMkt {
 			0.006,
 			"Act/360");
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
-
-		/* cmp.setCustomMetricVolSurface (
-			fri.fullyQualifiedName(),
-			dtForward,
-			new FlatUnivariate (dblEURIBOR6MVol)
-		); */
 
 		cmp.setForwardCurveVolSurface (
 			fri,
@@ -120,28 +114,10 @@ public class FRAMkt {
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
-		/* cmp.setCustomMetricVolSurface (
-			dcEONIA.name() + "_VOL_TS",
-			dtForward,
-			new FlatUnivariate (dblEONIAVol)
-		); */
-
 		cmp.setFundingCurveVolSurface (
 			strCurrency,
 			new FlatUnivariate (dblEONIAVol)
 		);
-
-		/* cmp.setCustomMetricVolSurface (
-			fri.fullyQualifiedName() + "_VOL_TS",
-			dtForward,
-			new FlatUnivariate (dblEURIBOR6MVol)
-		);
-
-		cmp.setCustomMetricVolSurface (
-			dcEONIA.name() + "::" + fri.fullyQualifiedName() + "_VOL_TS",
-			dtForward,
-			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
-		); */
 
 		cmp.setForwardFundingCorrSurface (
 			fri,

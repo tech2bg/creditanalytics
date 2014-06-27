@@ -115,7 +115,7 @@ public class StaticBACurves {
 			periodParams = new org.drip.product.params.PeriodGenerator (dt.addYears
 				(iNumYears).getJulian(), dt.getJulian(), java.lang.Double.NaN, dt.getJulian(),
 					dt.getJulian(), 2, "30/360", "30/360", null, null, null, null, null, null, null, null,
-						"", false, strCurrency);
+						"", false, strCurrency, strCurrency);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -146,7 +146,7 @@ public class StaticBACurves {
 	 */
 
 	public static final boolean AddTSYToMPC (
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		if (null == mpc) return false;
 
@@ -231,7 +231,7 @@ public class StaticBACurves {
 	 */
 
 	public static final boolean BuildTSYCurve (
-		org.drip.param.definition.MarketParams mpc,
+		org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strCurrency)
 	{
@@ -311,7 +311,7 @@ public class StaticBACurves {
 	 */
 
 	public static final boolean BuildEDSFCurve (
-		org.drip.param.definition.MarketParams mpc,
+		org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strCurrency)
 	{
@@ -384,7 +384,7 @@ public class StaticBACurves {
 	 */
 
 	public static boolean setDC (
-		org.drip.param.definition.MarketParams mpc,
+		org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strCurrency)
 	{
@@ -544,9 +544,9 @@ public class StaticBACurves {
 			astrCalibMeasure[i + 15] = "Rate";
 
 			try {
-				if (null == (aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt.addDays
-					(2), new org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., strCurrency,
-						strCurrency + "-LIBOR-6M", strCurrency)))
+				if (null == (aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS
+					(dt.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., 2,
+						"Act/360", 0., 4, "Act/360", strCurrency, strCurrency)))
 					return false;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -611,7 +611,7 @@ public class StaticBACurves {
 	 */
 
 	public static boolean setCC (
-		org.drip.param.definition.MarketParams mpc,
+		org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strCC,
 		final java.lang.String strIR,

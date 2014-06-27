@@ -65,30 +65,184 @@ public class CreditAnalyticsStub {
 				(org.drip.analytics.date.JulianDate.Today().getJulian());
 	}
 
-	private static final org.drip.param.definition.ComponentMarketParams GetCMP (
+	private static final org.drip.param.market.MarketParamSet GetCMP (
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.service.bridge.CreditAnalyticsRequest cre,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		return (null != cre && null != cre.getCMP()) ? cre.getCMP() : mpc.getScenCMP (comp, "Base");
 	}
 
 	private static final org.drip.param.definition.Quote GetQuote (
 		final org.drip.product.credit.BondComponent bond,
-		final org.drip.param.definition.ComponentMarketParams cmp,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.lang.String strMeasure)
 	{
 		org.drip.param.definition.ComponentQuote cq = (null != cmp && null != cmp.componentQuote
-			(bond.componentName())) ? cmp.componentQuote (bond.componentName()) : mpc.getCompQuote
+			(bond.name())) ? cmp.componentQuote (bond.name()) : mpc.getCompQuote
 				(bond.getIdentifierSet()._strID);
 
 		return null == cq ? null : cq.getQuote (strMeasure);
 	}
 
+	private static org.drip.analytics.rates.DiscountCurve MakeDC (
+		final org.drip.analytics.date.JulianDate dtStart)
+	{
+		int NUM_DC_INSTR = 30;
+		double adblDate[] = new double[NUM_DC_INSTR];
+		double adblRate[] = new double[NUM_DC_INSTR];
+		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
+		java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
+		org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = new
+			org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
+
+		adblDate[0] = dtStart.addDays (3).getJulian(); // ON
+
+		adblDate[1] = dtStart.addDays (4).getJulian(); // 1D (TN)
+
+		adblDate[2] = dtStart.addDays (9).getJulian(); // 1W
+
+		adblDate[3] = dtStart.addDays (16).getJulian(); // 2W
+
+		adblDate[4] = dtStart.addDays (32).getJulian(); // 1M
+
+		adblDate[5] = dtStart.addDays (62).getJulian(); // 2M
+
+		adblDate[6] = dtStart.addDays (92).getJulian(); // 3M
+
+		adblCompCalibValue[0] = .0013;
+		adblCompCalibValue[1] = .0017;
+		adblCompCalibValue[2] = .0017;
+		adblCompCalibValue[3] = .0018;
+		adblCompCalibValue[4] = .0020;
+		adblCompCalibValue[5] = .0023;
+		adblCompCalibValue[6] = .0026;
+
+		for (int i = 0; i < 7; ++i) {
+			adblRate[i] = 0.01;
+			astrCalibMeasure[i] = "Rate";
+
+			try {
+				System.out.println ("Instr[" + i + "]: " + dtStart.addDays (2) + " => " + new
+					org.drip.analytics.date.JulianDate (adblDate[i]));
+
+				aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtStart.addDays (2), new
+					org.drip.analytics.date.JulianDate (adblDate[i]), null, "USD");
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		org.drip.analytics.date.JulianDate dtEDFStart = dtStart;
+		adblCompCalibValue[7] = .0027;
+		adblCompCalibValue[8] = .0032;
+		adblCompCalibValue[9] = .0041;
+		adblCompCalibValue[10] = .0054;
+		adblCompCalibValue[11] = .0077;
+		adblCompCalibValue[12] = .0104;
+		adblCompCalibValue[13] = .0134;
+		adblCompCalibValue[14] = .0160;
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
+			org.drip.product.creator.EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
+
+		for (int i = 0; i < 8; ++i) {
+			aCompCalib[i + 7] = aEDF[i];
+			astrCalibMeasure[i + 7] = "Rate";
+			adblRate[i + 7] = 0.01;
+
+			adblDate[i + 7] = dtEDFStart.addDays ((i + 1) * 91).getJulian();
+		}
+
+		adblDate[15] = dtStart.addDays ((int)(365.25 * 4 + 2)).getJulian(); // 4Y
+
+		adblDate[16] = dtStart.addDays ((int)(365.25 * 5 + 2)).getJulian(); // 5Y
+
+		adblDate[17] = dtStart.addDays ((int)(365.25 * 6 + 2)).getJulian(); // 6Y
+
+		adblDate[18] = dtStart.addDays ((int)(365.25 * 7 + 2)).getJulian(); // 7Y
+
+		adblDate[19] = dtStart.addDays ((int)(365.25 * 8 + 2)).getJulian(); // 8Y
+
+		adblDate[20] = dtStart.addDays ((int)(365.25 * 9 + 2)).getJulian(); // 9Y
+
+		adblDate[21] = dtStart.addDays ((int)(365.25 * 10 + 2)).getJulian(); // 10Y
+
+		adblDate[22] = dtStart.addDays ((int)(365.25 * 11 + 2)).getJulian(); // 11Y
+
+		adblDate[23] = dtStart.addDays ((int)(365.25 * 12 + 2)).getJulian(); // 12Y
+
+		adblDate[24] = dtStart.addDays ((int)(365.25 * 15 + 2)).getJulian(); // 15Y
+
+		adblDate[25] = dtStart.addDays ((int)(365.25 * 20 + 2)).getJulian(); // 20Y
+
+		adblDate[26] = dtStart.addDays ((int)(365.25 * 25 + 2)).getJulian(); // 25Y
+
+		adblDate[27] = dtStart.addDays ((int)(365.25 * 30 + 2)).getJulian(); // 30Y
+
+		adblDate[28] = dtStart.addDays ((int)(365.25 * 40 + 2)).getJulian(); // 40Y
+
+		adblDate[29] = dtStart.addDays ((int)(365.25 * 50 + 2)).getJulian(); // 50Y
+
+		adblCompCalibValue[15] = .0166;
+		adblCompCalibValue[16] = .0206;
+		adblCompCalibValue[17] = .0241;
+		adblCompCalibValue[18] = .0269;
+		adblCompCalibValue[19] = .0292;
+		adblCompCalibValue[20] = .0311;
+		adblCompCalibValue[21] = .0326;
+		adblCompCalibValue[22] = .0340;
+		adblCompCalibValue[23] = .0351;
+		adblCompCalibValue[24] = .0375;
+		adblCompCalibValue[25] = .0393;
+		adblCompCalibValue[26] = .0402;
+		adblCompCalibValue[27] = .0407;
+		adblCompCalibValue[28] = .0409;
+		adblCompCalibValue[29] = .0409;
+
+		for (int i = 0; i < 15; ++i) {
+			astrCalibMeasure[i + 15] = "Rate";
+			adblRate[i + 15] = 0.01;
+
+			try {
+				aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (
+					dtStart.addDays (2),
+					new org.drip.analytics.date.JulianDate (adblDate[i + 15]),
+					0.,
+					2,
+					"Act/360",
+					0.,
+					4,
+					"Act/360",
+					"USD",
+					"USD"
+				);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+
+		mIndexFixings.put ("USD-LIBOR-3M", 0.0042);
+
+		java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
+				java.util.HashMap<org.drip.analytics.date.JulianDate,
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+
+		mmFixings.put (dtStart.addDays (2), mIndexFixings);
+
+		return org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
+			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
+				adblCompCalibValue, astrCalibMeasure, mmFixings);
+	}
+
 	private static final org.drip.analytics.output.BondRVMeasures ProcessRequest (
 		final org.drip.service.bridge.CreditAnalyticsRequest cre,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		if (null == cre) return null;
 
@@ -99,9 +253,21 @@ public class CreditAnalyticsStub {
 
 		org.drip.param.valuation.ValuationParams valParams = GetValuationParams (cre);
 
-		org.drip.param.definition.ComponentMarketParams cmp = GetCMP (bond, cre, mpc);
+		org.drip.param.market.MarketParamSet cmp = GetCMP (bond, cre, mpc);
 
 		if (null == cmp) return null;
+
+		if (null == cmp.fundingCurve (bond.couponCurrency()[0])) {
+			try {
+				if (!cmp.setFundingCurve (MakeDC (new org.drip.analytics.date.JulianDate
+					(valParams.valueDate()))))
+					return null;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
 
 		org.drip.param.definition.Quote qPrice = GetQuote (bond, cmp, mpc, "Price");
 
@@ -119,7 +285,7 @@ public class CreditAnalyticsStub {
 
 	private static final boolean run (
 		final java.net.ServerSocket sockAS,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 		throws java.lang.Exception
 	{
 		java.net.Socket sockAC = sockAS.accept();
@@ -196,7 +362,7 @@ public class CreditAnalyticsStub {
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv
 			("c:\\DRIP\\CreditAnalytics\\Config.xml");
 
-		org.drip.param.definition.MarketParams mpc = org.drip.service.env.EnvManager.PopulateMPC (stmt,
+		org.drip.param.definition.ScenarioMarketParams mpc = org.drip.service.env.EnvManager.PopulateMPC (stmt,
 			org.drip.analytics.date.JulianDate.Today());
 
 		java.net.ServerSocket sockAS = org.drip.param.config.ConfigLoader.InitAnalServer

@@ -49,7 +49,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	private org.drip.product.definition.FixedIncomeComponent _comp = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
-	private org.drip.param.definition.ComponentMarketParams _cmp = null;
+	private org.drip.param.market.MarketParamSet _cmp = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 
 	/**
@@ -126,7 +126,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			_cmp = null;
 		else
-			_cmp = new org.drip.param.market.ComponentMarketParamSet (astrField[5].getBytes());
+			_cmp = new org.drip.param.market.MarketParamSet (astrField[5].getBytes());
 
 		if (null == astrField[6] || astrField[6].isEmpty())
 			throw new java.lang.Exception
@@ -159,7 +159,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
@@ -236,7 +236,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	 * @return The Component Market Parameters
 	 */
 
-	public org.drip.param.definition.ComponentMarketParams getCMP()
+	public org.drip.param.market.MarketParamSet getCMP()
 	{
 		return _cmp;
 	}
@@ -357,7 +357,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		org.drip.product.params.PeriodGenerator bpgp = new
 			org.drip.product.params.PeriodGenerator (dblStart + 3653., dblStart, dblStart + 3653.,
 				dblStart + 182., dblStart, 2, "30/360", "30/360", null, null, null, null, null, null, null,
-					null, "IGNORE", false, "USD");
+					null, "IGNORE", false, "USD", "USD");
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");
@@ -447,7 +447,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		return bond;
 	}
 
-	private static org.drip.param.definition.ComponentMarketParams MakeCMP (
+	private static org.drip.param.market.MarketParamSet MakeCMP (
 		final org.drip.product.definition.FixedIncomeComponent fic)
 		throws java.lang.Exception
 	{
@@ -510,8 +510,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100.,
 			java.lang.Double.NaN), true);
 
-		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc,
-			fic.componentName(), cqBond, mapTSYQuotes, mmFixings);
+		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
+			cqBond, mapTSYQuotes, mmFixings);
 	}
 
 	public static final void main (
@@ -533,7 +533,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), 0.04, 1.,
 					org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1);
 
-		org.drip.param.definition.ComponentMarketParams cmp = MakeCMP (bond);
+		org.drip.param.market.MarketParamSet cmp = MakeCMP (bond);
 
 		org.drip.param.valuation.ValuationCustomizationParams quotingParams = new
 			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "USD", false,

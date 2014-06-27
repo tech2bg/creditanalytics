@@ -46,6 +46,7 @@ public class PeriodGenerator extends PeriodSet {
 
 	private boolean _bApplyAccEOMAdj = false;
 	private java.lang.String _strCalendar = "";
+	private java.lang.String _strCurrency = "";
 	private boolean _bPeriodsFromForward = false;
 	private double _dblFirstCouponDate = java.lang.Double.NaN;
 	private double _dblInterestAccrualStart = java.lang.Double.NaN;
@@ -81,6 +82,7 @@ public class PeriodGenerator extends PeriodSet {
 	 * @param strMaturityType Maturity Type
 	 * @param bPeriodsFromForward Generate Periods forward (True) or Backward (False)
 	 * @param strCalendar Optional Holiday Calendar for accrual calculations
+	 * @param strCurrency Coupon Currency
 	 */
 
 	public PeriodGenerator (
@@ -102,7 +104,8 @@ public class PeriodGenerator extends PeriodSet {
 		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
 		final java.lang.String strMaturityType,
 		final boolean bPeriodsFromForward,
-		final java.lang.String strCalendar)
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency)
 	{
 		super (dblEffective, strCouponDC, iFreq, null);
 
@@ -111,6 +114,7 @@ public class PeriodGenerator extends PeriodSet {
 		_dapMaturity = dapMaturity;
 		_dblMaturity = dblMaturity;
 		_strCalendar = strCalendar;
+		_strCurrency = strCurrency;
 		_strAccrualDC = strAccrualDC;
 		_dapEffective = dapEffective;
 		_dapPeriodEnd = dapPeriodEnd;
@@ -174,7 +178,7 @@ public class PeriodGenerator extends PeriodSet {
 
 		if (0 == _iFreq) {
 			if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod
-				(_dblEffective, _dblMaturity, _strCouponDC, _strCalendar)))
+				(_dblEffective, _dblMaturity, _strCouponDC, _strCalendar, _strCurrency)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
@@ -194,8 +198,10 @@ public class PeriodGenerator extends PeriodSet {
 						_bApplyCpnEOMAdj,
 						_strAccrualDC, // Accrual Day Count
 						_bApplyAccEOMAdj,
+						org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT,
 						true,
-						_strCalendar))
+						_strCalendar,
+						_strCurrency))
 						|| 0 == _lsCouponPeriod.size())
 						return false;
 			} else {
@@ -215,10 +221,10 @@ public class PeriodGenerator extends PeriodSet {
 					_bApplyCpnEOMAdj,
 					_strAccrualDC, // Accrual Day Count
 					_bApplyAccEOMAdj,
-					false, // Full First Coupon Period?
-					true, // Merge the first 2 Periods - create a long stub?
+					org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT,
 					true,
-					_strCalendar))
+					_strCalendar,
+					_strCurrency))
 					|| 0 == _lsCouponPeriod.size())
 					return false;
 			}
@@ -242,15 +248,13 @@ public class PeriodGenerator extends PeriodSet {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.support.Logger.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
-
-		org.drip.analytics.daycount.Convention.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
+		org.drip.service.api.CreditAnalytics.Init ("");
 
 		double dblEffective = org.drip.analytics.date.JulianDate.Today().getJulian();
 
 		PeriodGenerator bpp = new PeriodGenerator (dblEffective + 3653., dblEffective, dblEffective + 3653.,
 			dblEffective + 182., dblEffective, 2, "30/360", "30/360", null, null, null, null, null, null,
-				null, null, "IGNORE", false, "USD");
+				null, null, "IGNORE", false, "USD", "USD");
 
 		if (!bpp.validate()) {
 			System.out.println ("Cannot validate BPP!");

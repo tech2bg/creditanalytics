@@ -53,7 +53,7 @@ public abstract class CurveSpanConstructionInput implements
 	private org.drip.param.pricer.PricerParams _pricerParam = null;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
-	private org.drip.param.definition.ComponentMarketParams _cmp = null;
+	private org.drip.param.market.MarketParamSet _cmp = null;
 	private org.drip.state.estimator.StretchRepresentationSpec[] _aSRS = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
@@ -78,7 +78,7 @@ public abstract class CurveSpanConstructionInput implements
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
-		final org.drip.param.definition.ComponentMarketParams cmp)
+		final org.drip.param.market.MarketParamSet cmp)
 		throws java.lang.Exception
 	{
 		if (null == (_aSRS = aSRS) || 0 == _aSRS.length || null == (_valParam = valParam))
@@ -217,7 +217,7 @@ public abstract class CurveSpanConstructionInput implements
 	 * @return The Component Market Parameters
 	 */
 
-	public org.drip.param.definition.ComponentMarketParams getCMP()
+	public org.drip.param.market.MarketParamSet getCMP()
 	{
 		return _cmp;
 	}

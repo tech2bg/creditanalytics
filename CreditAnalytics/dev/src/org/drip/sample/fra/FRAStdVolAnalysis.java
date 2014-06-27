@@ -4,10 +4,10 @@ package org.drip.sample.fra;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -99,19 +99,50 @@ public class FRAStdVolAnalysis {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				4,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			FloatingStream floatStream = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-3M"),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
@@ -207,30 +238,61 @@ public class FRAStdVolAnalysis {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
 			/*
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsReference = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsReferenceFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				false
+			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, 1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				12 / iTenorInMonths,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsDerived = new FloatingStream (
+				strCurrency,
+				0.,
+				1.,
+				null,
+				lsDerivedFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				false
+			);
 
 			/*
 			 * The float-float swap instance
@@ -271,7 +333,7 @@ public class FRAStdVolAnalysis {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -298,7 +360,7 @@ public class FRAStdVolAnalysis {
 		final DiscountCurve dc)
 		throws Exception
 	{
-		Map<String, ForwardCurve> mapFC = new HashMap<String, ForwardCurve> ();
+		Map<String, ForwardCurve> mapFC = new HashMap<String, ForwardCurve>();
 
 		/*
 		 * Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
@@ -437,7 +499,7 @@ public class FRAStdVolAnalysis {
 	private static final void RunWithVolCorrSurface (
 		final FRAStandardComponent fra,
 		final ValuationParams valParams,
-		final ComponentMarketParams cmp,
+		final MarketParamSet cmp,
 		final FloatingRateIndex fri,
 		final double dblFRIVol,
 		final double dblMultiplicativeQuantoExchangeVol,
@@ -486,7 +548,7 @@ public class FRAStdVolAnalysis {
 		String strTenor = "3M";
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -508,7 +570,7 @@ public class FRAStdVolAnalysis {
 			0.006,
 			"Act/360");
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);

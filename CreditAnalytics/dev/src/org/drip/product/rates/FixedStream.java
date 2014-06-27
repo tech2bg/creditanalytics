@@ -49,8 +49,6 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	private double _dblNotional = 1.;
 	private double _dblCoupon = 0.0001;
 	private java.lang.String _strCode = "";
-	private boolean _bApplyAccEOMAdj = false;
-	private boolean _bApplyCpnEOMAdj = false;
 	private java.lang.String _strCurrency = "";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
@@ -61,7 +59,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -70,270 +68,39 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	/**
 	 * Full-featured instantiation of the Fixed Stream instance
 	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
-	 * @param dblCoupon Fixed Coupon
-	 * @param iFreq Frequency of the Fixed Coupon Stream
-	 * @param strCouponDC Fixed Coupon Day Count
-	 * @param strAccrualDC Fixed Coupon Accrual Day Count
-	 * @param bFullStub TRUE => Front Stub is full
-	 * @param dapEffective => Effective Date DAP
-	 * @param dapMaturity => Maturity Date DAP
-	 * @param dapPeriodStart => Period Start Date DAP
-	 * @param dapPeriodEnd => Period End Date DAP
-	 * @param dapAccrualStart => Accrual Start Date DAP
-	 * @param dapAccrualEnd => Accrual End Date DAP
-	 * @param dapPay => Pay Date DAP
-	 * @param notlSchedule => Notional Schedule
-	 * @param dblNotional => Notional Amount
 	 * @param strCurrency => Pay Currency
-	 * @param strCalendar => Calendar
+	 * @param dblCoupon Fixed Coupon
+	 * @param dblNotional => Notional Amount
+	 * @param notlSchedule => Notional Schedule
+	 * @param lsCouponPeriod => List of the Coupon Periods
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public FixedStream (
-		final double dblEffective,
-		final double dblMaturity,
-		final double dblCoupon,
-		final int iFreq,
-		final java.lang.String strCouponDC,
-		final java.lang.String strAccrualDC,
-		final boolean bFullStub,
-		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
-		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapPay,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final double dblNotional,
 		final java.lang.String strCurrency,
-		final java.lang.String strCalendar)
-		throws java.lang.Exception
-	{
-		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = dblMaturity) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. ==
-						_dblNotional)
-			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
-
-		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
-
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
-			dblEffective, // Effective
-			dblMaturity, // Maturity
-			dapEffective, // Effective DAP
-			dapMaturity, // Maturity DAP
-			dapPeriodStart, // Period Start DAP
-			dapPeriodEnd, // Period End DAP
-			dapAccrualStart, // Accrual Start DAP
-			dapAccrualEnd, // Accrual End DAP
-			dapPay, // Pay DAP
-			null, // Reset DAP
-			iFreq, // Coupon Freq
-			strCouponDC, // Coupon Day Count
-			_bApplyCpnEOMAdj,
-			strAccrualDC, // Accrual Day Count
-			_bApplyAccEOMAdj,
-			bFullStub, // Full First Coupon Period?
-			false, // Merge the first 2 Periods - create a long stub?
-			false,
-			strCalendar)) || 0 == _lsCouponPeriod.size())
-			throw new java.lang.Exception ("FixedStream ctr: Cannot generate Period Schedule");
-
-		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
-	}
-
-	/**
-	 * Full-featured instantiation of the Fixed Stream instance
-	 * 
-	 * @param dblEffective Effective Date
-	 * @param strMaturityTenor Maturity Tenor
-	 * @param dblCoupon Fixed Coupon
-	 * @param iFreq Frequency of the Fixed Coupon Stream
-	 * @param strCouponDC Fixed Coupon Day Count
-	 * @param strAccrualDC Fixed Coupon Accrual Day Count
-	 * @param bFullStub TRUE => Front Stub is full
-	 * @param dapEffective => Effective Date DAP
-	 * @param dapMaturity => Maturity Date DAP
-	 * @param dapPeriodStart => Period Start Date DAP
-	 * @param dapPeriodEnd => Period End Date DAP
-	 * @param dapAccrualStart => Accrual Start Date DAP
-	 * @param dapAccrualEnd => Accrual End Date DAP
-	 * @param dapPay => Pay Date DAP
-	 * @param notlSchedule => Notional Schedule
-	 * @param dblNotional => Notional Amount
-	 * @param strCurrency => Pay Currency
-	 * @param strCalendar => Calendar
-	 * 
-	 * @throws java.lang.Exception Thrown if the inputs are invalid
-	 */
-
-	public FixedStream (
-		final double dblEffective,
-		final java.lang.String strMaturityTenor,
 		final double dblCoupon,
-		final int iFreq,
-		final java.lang.String strCouponDC,
-		final boolean bApplyCpnEOMAdj,
-		final java.lang.String strAccrualDC,
-		final boolean bApplyAccEOMAdj,
-		final boolean bFullStub,
-		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
-		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapPeriodEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
-		final org.drip.analytics.daycount.DateAdjustParams dapPay,
-		final org.drip.product.params.FactorSchedule notlSchedule,
 		final double dblNotional,
-		final java.lang.String strCurrency,
-		final java.lang.String strCalendar)
+		final org.drip.product.params.FactorSchedule notlSchedule,
+		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod)
 		throws java.lang.Exception
 	{
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional)
+				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional
+					|| null == (_lsCouponPeriod = lsCouponPeriod))
 			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
+
+		int iNumCouponPeriod = _lsCouponPeriod.size();
+
+		if (0 == iNumCouponPeriod) throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
 
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriods (
-			dblEffective, 			// Effective
-			strMaturityTenor, 		// Maturity Tenor
-			dapEffective, 			// Effective DAP
-			dapMaturity, 			// Maturity DAP
-			dapPeriodStart, 		// Period Start DAP
-			dapPeriodEnd, 			// Period End DAP
-			dapAccrualStart, 		// Accrual Start DAP
-			dapAccrualEnd, 			// Accrual End DAP
-			dapPay, 				// Pay DAP
-			null, 					// Reset DAP
-			iFreq, 					// Coupon Freq
-			strCouponDC, 			// Coupon Day Count
-			_bApplyCpnEOMAdj = bApplyCpnEOMAdj,
-			strAccrualDC, 			// Accrual Day Count
-			_bApplyAccEOMAdj = bApplyAccEOMAdj,
-			false,
-			strCalendar)) || 0 == _lsCouponPeriod.size())
-			throw new java.lang.Exception ("FixedStream ctr: Cannot generate Period Schedule");
-
 		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
 
-		_dblMaturity = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).getEndDate();
-	}
-
-	/**
-	 * Full-featured instantiation of the Fixed Stream instance
-	 * 
-	 * @param dblEffective Effective Date
-	 * @param strMaturityTenor Maturity Tenor
-	 * @param dblCoupon Fixed Coupon
-	 * @param iFreq Frequency of the Fixed Coupon Stream
-	 * @param strCouponDC Fixed Coupon Day Count
-	 * @param strAccrualDC Fixed Coupon Accrual Day Count
-	 * @param bFullStub TRUE => Front Stub is full
-	 * @param dap => DAP
-	 * @param notlSchedule => Notional Schedule
-	 * @param dblNotional => Notional Amount
-	 * @param strCurrency => Pay Currency
-	 * @param strCalendar => Calendar
-	 * 
-	 * @throws java.lang.Exception Thrown if the inputs are invalid
-	 */
-
-	public FixedStream (
-		final double dblEffective,
-		final java.lang.String strMaturityTenor,
-		final double dblCoupon,
-		final int iFreq,
-		final java.lang.String strCouponDC,
-		final boolean bApplyCpnEOMAdj,
-		final java.lang.String strAccrualDC,
-		final boolean bApplyAccEOMAdj,
-		final boolean bFullStub,
-		final org.drip.analytics.daycount.DateAdjustParams dap,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final double dblNotional,
-		final java.lang.String strCurrency,
-		final java.lang.String strCalendar)
-		throws java.lang.Exception
-	{
-		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional)
-			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
-
-		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
-
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriods (
-			dblEffective, 			// Effective
-			strMaturityTenor, 		// Maturity Tenor
-			dap,
-			iFreq, 					// Coupon Freq
-			strCouponDC, 			// Coupon Day Count
-			_bApplyCpnEOMAdj = bApplyCpnEOMAdj,
-			strAccrualDC, 			// Accrual Day Count
-			_bApplyAccEOMAdj = bApplyAccEOMAdj,
-			false,
-			strCalendar)) || 0 == _lsCouponPeriod.size())
-			throw new java.lang.Exception ("FixedStream ctr: Cannot generate Period Schedule");
-
-		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
-
-		_dblMaturity = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).getEndDate();
-	}
-
-	/**
-	 * Full-featured instantiation of the Fixed Stream instance
-	 * 
-	 * @param dblEffective Effective Date
-	 * @param dblMaturity Maturity Date
-	 * @param dblCoupon Fixed Coupon
-	 * @param strCouponDC Fixed Coupon Day Count
-	 * @param dap => DAP
-	 * @param notlSchedule => Notional Schedule
-	 * @param dblNotional => Notional Amount
-	 * @param strCurrency => Pay Currency
-	 * @param strCalendar => Calendar
-	 * 
-	 * @throws java.lang.Exception Thrown if the inputs are invalid
-	 */
-
-	public FixedStream (
-		final double dblEffective,
-		final double dblMaturity,
-		final double dblCoupon,
-		final java.lang.String strCouponDC,
-		final org.drip.analytics.daycount.DateAdjustParams dap,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final double dblNotional,
-		final java.lang.String strCurrency,
-		final java.lang.String strCalendar)
-		throws java.lang.Exception
-	{
-		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon = dblCoupon) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional)
-			throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
-
-		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
-
-		if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod
-			(dblEffective, dblMaturity, strCouponDC, strCalendar)) || 0 == _lsCouponPeriod.size())
-			throw new java.lang.Exception ("FixedStream ctr: Cannot generate Period Schedule");
-
-		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
-
-		_dblMaturity = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).getEndDate();
+		_dblMaturity = _lsCouponPeriod.get (iNumCouponPeriod - 1).getEndDate();
 	}
 
 	/**
@@ -365,7 +132,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFixedStream,
 			fieldDelimiter());
 
-		if (null == astrField || 12 > astrField.length)
+		if (null == astrField || 10 > astrField.length)
 			throw new java.lang.Exception ("FixedStream de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -400,51 +167,39 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate Apply Acc EOM Adj");
+			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate maturity date");
 
-		_bApplyAccEOMAdj = new java.lang.Boolean (astrField[5]);
+		_dblMaturity = new java.lang.Double (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate Apply Cpn EOM Adj");
-
-		_bApplyCpnEOMAdj = new java.lang.Boolean (astrField[6]);
-
-		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
-			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate maturity date");
-
-		_dblMaturity = new java.lang.Double (astrField[7]);
-
-		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate effective date");
 
-		_dblEffective = new java.lang.Double (astrField[8]);
+		_dblEffective = new java.lang.Double (astrField[6]);
 
-		if (null == astrField[9] || astrField[9].isEmpty())
+		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate notional schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			_notlSchedule = null;
 		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[9].getBytes());
+			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[7].getBytes());
 
-		if (null == astrField[10] || astrField[11].isEmpty())
+		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate cash settle params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[10]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_settleParams = null;
 		else
-			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[10].getBytes());
+			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[8].getBytes());
 
-		if (null == astrField[11] || astrField[11].isEmpty())
+		if (null == astrField[9] || astrField[9].isEmpty())
 			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate the periods");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
 			_lsCouponPeriod = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[11],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[9],
 				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -474,7 +229,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
 		return "FixedStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}
@@ -527,7 +282,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception
 	{
 		return _dblCoupon;
@@ -538,9 +293,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.lang.String creditCurveName()
+	@Override public java.lang.String[] creditCurveName()
 	{
-		return "";
+		return null;
 	}
 
 	@Override public java.lang.String[] currencyPairCode()
@@ -594,7 +349,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == mktParams) return null;
@@ -741,7 +496,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
@@ -795,7 +550,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure || null
@@ -869,7 +624,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
@@ -905,10 +660,6 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (_strCode + fieldDelimiter());
-
-		sb.append (_bApplyAccEOMAdj + fieldDelimiter());
-
-		sb.append (_bApplyCpnEOMAdj + fieldDelimiter());
 
 		sb.append (_dblMaturity + fieldDelimiter());
 
@@ -967,11 +718,15 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
+		org.drip.service.api.CreditAnalytics.Init ("");
+
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
-		FixedStream fs = new org.drip.product.rates.FixedStream (dtToday.getJulian(), dtToday.addTenor
-			("4Y").getJulian(), 0.03, 2, "30/360", "30/360", false, null, null, null, null, null, null, null,
-				null, 100., "JPY", "JPY");
+		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "4Y", null,
+				2, "30/360", false, true, "JPY", "JPY");
+
+		FixedStream fs = new org.drip.product.rates.FixedStream ("JPY", 0.03, 100., null, lsCouponPeriod);
 
 		byte[] abFS = fs.serialize();
 

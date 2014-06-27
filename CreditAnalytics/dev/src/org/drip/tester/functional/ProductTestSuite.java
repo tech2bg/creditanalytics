@@ -187,7 +187,7 @@ public class ProductTestSuite {
 			org.drip.product.params.PeriodGenerator (dtMaturity.getJulian(),
 				dtEffective.getJulian(), java.lang.Double.NaN, java.lang.Double.NaN, java.lang.Double.NaN, 2,
 					"30/360", "30/360", null, null, null, null, null, null, null, null, "", false,
-						strCurrency);
+						strCurrency, strCurrency);
 
 		if (!periodParams.validate()) {
 			System.out.println ("Period Gen params for " + strName + " could not be validated!");
@@ -305,7 +305,7 @@ public class ProductTestSuite {
 		org.drip.product.params.PeriodGenerator periodParams = new
 			org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).getJulian(),
 				dt.getJulian(), java.lang.Double.NaN, dt.getJulian(), dt.getJulian(), 2, "30/360", "30/360",
-					null, null, null, null, null, null, null, null, "", false, "USD");
+					null, null, null, null, null, null, null, null, "", false, "USD", "USD");
 
 		if (!periodParams.validate()) {
 			System.out.println ("Period Gen params for " + strName + " could not be validated!");
@@ -331,7 +331,7 @@ public class ProductTestSuite {
 	}
 
 	private static final boolean addTSYToMPC (
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		try {
 			org.drip.param.definition.ComponentQuote cq2YON =
@@ -416,7 +416,7 @@ public class ProductTestSuite {
 
 	private static final void BuildTSYCurve (
 		final org.drip.analytics.date.JulianDate dt,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final int iTestMode,
 		final int iTestDetail)
 		throws java.lang.Exception
@@ -538,19 +538,19 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_TENOR_UP01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapCMPDCUp = mpc.getIRTenorCMP (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Up TSY build: " + (null == mapCMPDCUp ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail)
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCUp.entrySet())
 					System.out.println (me.getKey() + me.getValue().fundingCurve
 						(aCompCalib[0].couponCurrency()[0]).toString());
 			else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCUp.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor TSY Bump Up\n--------\n");
 
@@ -566,18 +566,18 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_TENOR_DN01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapCMPDCDn = mpc.getIRTenorCMP (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Dn TSY build: " + (null == mapCMPDCDn ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCDn.entrySet())
 					System.out.println (me.getKey() + me.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCDn.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor TSY Bump Dn\n--------\n");
 
@@ -594,7 +594,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testDC (
-		org.drip.param.definition.MarketParams mpc,
+		org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -718,8 +718,18 @@ public class ProductTestSuite {
 			adblRate[i + 15] = 0.05;
 			astrCalibMeasure[i + 15] = "Rate";
 
-			aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt.addDays (2), new
-				org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., "USD", "USD-LIBOR-6M", "USD");
+			aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (
+				dt.addDays (2),
+				new org.drip.analytics.date.JulianDate (adblDate[i + 15]),
+				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				"USD",
+				"USD"
+			);
 		}
 
 		mpc.addFixings (dt.addDays (2), "USD-LIBOR-6M", 0.0042);
@@ -806,19 +816,19 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapCMPDCUp = mpc.getIRTenorCMP (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Up DC build: " + (null == mapCMPDCUp ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail)
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCUp.entrySet())
 					System.out.println (me.getKey() + me.getValue().fundingCurve
 						(aCompCalib[0].couponCurrency()[0]).toString());
 			else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCUp.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor IR Bump Up\n--------\n");
 
@@ -834,18 +844,18 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapCMPDCDn = mpc.getIRTenorCMP (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Dn DC build: " + (null == mapCMPDCDn ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCDn.entrySet())
 					System.out.println (me.getKey() + me.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPDCDn.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor IR Bump Dn\n--------\n");
 
@@ -864,7 +874,7 @@ public class ProductTestSuite {
 	}
 
 	public static void testCC (
-		org.drip.param.definition.MarketParams mpc,
+		org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -929,7 +939,7 @@ public class ProductTestSuite {
 		mpc.addScenCC ("BRA", ccscBRA);
 
 		org.drip.analytics.definition.CreditCurve ccBase = mpc.getScenCMP (aCDSBRA[0], "Base").creditCurve
-			(aCDSBRA[0].creditCurveName());
+			(aCDSBRA[0].creditCurveName()[0]);
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
 			System.out.println ("Base CC build: " + (null == ccBase ? "Failure" : "Success"));
@@ -945,7 +955,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_UP01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccBumpUp = mpc.getScenCMP (aCDSBRA[0],
-				"FlatCreditBumpUp").creditCurve (aCDSBRA[0].creditCurveName());
+				"FlatCreditBumpUp").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC Up01 build: " + (null == ccBumpUp ? "Failure" : "Success"));
@@ -962,7 +972,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_DN01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccBumpDn = mpc.getScenCMP (aCDSBRA[0],
-				"FlatCreditBumpDn").creditCurve (aCDSBRA[0].creditCurveName());
+				"FlatCreditBumpDn").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC Dn01 build: " + (null == ccBumpDn ? "Failure" : "Success"));
@@ -979,7 +989,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccRecoveryUp = mpc.getScenCMP (aCDSBRA[0],
-				"RRBumpUp").creditCurve (aCDSBRA[0].creditCurveName());
+				"RRBumpUp").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC RR Up01 build: " + (null == ccRecoveryUp ? "Failure" : "Success"));
@@ -996,7 +1006,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
 			org.drip.analytics.definition.CreditCurve ccRecoveryDn = mpc.getScenCMP (aCDSBRA[0],
-				"RRBumpDn").creditCurve (aCDSBRA[0].creditCurveName());
+				"RRBumpDn").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("CC RR Dn01 build: " + (null == ccRecoveryDn ? "Failure" : "Success"));
@@ -1013,18 +1023,18 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_CC_TENOR_UP01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapCMPCCUp = mpc.getCreditTenorCMP (aCDSBRA[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Up CC build: " + (null == mapCMPCCUp ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPCCUp.entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPCCUp.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor CC Bump Up\n--------\n");
 
@@ -1038,18 +1048,18 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_CC_TENOR_DN01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapCMPCCDn = mpc.getCreditTenorCMP (aCDSBRA[0], false);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Dn CC build: " + (null == mapCMPCCDn ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPCCDn.entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					me : mapCMPCCDn.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor CC Bump Dn\n--------\n");
 
@@ -1064,7 +1074,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testCash (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -1162,7 +1172,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testEDF (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -1261,14 +1271,15 @@ public class ProductTestSuite {
 	}
 
 	private static void testIRS (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.RatesComponent irs = org.drip.product.creator.RatesStreamBuilder.CreateIRS
-			(dt.addDays (2), dt.addDays ((int)(365.25 * 9 + 2)), 0.04, "USD","USD-LIBOR-6M", "USD");
+		org.drip.product.definition.RatesComponent irs =
+			org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt.addDays (2), dt.addDays ((int)(365.25 *
+				9 + 2)), 0.04, 2, "Act/360", 0., 4, "Act/360", "USD", "USD");
 
 		org.drip.analytics.output.ComponentMeasures irsOut = irs.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
@@ -1358,7 +1369,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testIRComponent (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail,
@@ -1375,7 +1386,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testCDS (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -1579,7 +1590,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testFixedCouponBond (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -1811,7 +1822,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testCreditComponent (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail,
@@ -1826,7 +1837,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testBasketDefaultSwap (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -2197,7 +2208,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testBasketBond (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail)
@@ -2245,7 +2256,7 @@ public class ProductTestSuite {
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
-				null, null, null, null, null, null, null, "IGNORE", false, "USD");
+				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD");
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");
@@ -2713,7 +2724,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testCreditBasketProduct (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail,
@@ -2726,7 +2737,7 @@ public class ProductTestSuite {
 	}
 
 	private static void testBondBasketProduct (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final int iTestMode,
 		final int iTestDetail,
@@ -2748,7 +2759,7 @@ public class ProductTestSuite {
 	{
 		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.Today();
 
-		org.drip.param.definition.MarketParams mpc =
+		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();
 
 		for (int i = 0; i < iNumSimulations; ++i) {

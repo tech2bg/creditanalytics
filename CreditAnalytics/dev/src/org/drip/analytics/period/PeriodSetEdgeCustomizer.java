@@ -1,5 +1,5 @@
 
-package org.drip.param.creator;
+package org.drip.analytics.period;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -7,8 +7,6 @@ package org.drip.param.creator;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -31,28 +29,14 @@ package org.drip.param.creator;
  */
 
 /**
- * MarketParamsBuilder implements the functionality for constructing, de-serializing, and building the Market
- *  Universe Curves Container.
- * 
+ * PeriodSetEdgeCustomizer holds the Period-Set Head and Tail Customization Parameters.
+ *
  * @author Lakshmi Krishnamurthy
  */
 
-public class MarketParamsBuilder {
-
-	/**
-	 * Create MarketParams from the array of calibration instruments
-	 * 
-	 * @return MarketParams object
-	 */
-
-	public static final org.drip.param.definition.ScenarioMarketParams CreateMarketParams()
-	{
-		try {
-			return new org.drip.param.market.ScenarioMarketParamsContainer();
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
+public class PeriodSetEdgeCustomizer {
+	public static final int NO_ADJUSTMENT = 0;
+	public static final int FULL_FRONT_PERIOD = 1;
+	public static final int LONG_FRONT_STUB = 2;
+	public static final int LONG_BACK_STUB = 4;
 }

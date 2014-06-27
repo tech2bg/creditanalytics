@@ -328,7 +328,7 @@ public class BondManager {
 			(final java.lang.String strBondDescription,
 			final org.drip.product.definition.Bond bond,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.param.definition.MarketParams mpc,
+			final org.drip.param.definition.ScenarioMarketParams mpc,
 			final double dblBidPrice,
 			final double dblAskPrice)
 	{
@@ -336,7 +336,7 @@ public class BondManager {
 			|| null == mpc || java.lang.Double.isNaN (dblBidPrice) || java.lang.Double.isNaN (dblAskPrice))
 			return null;
 
-		org.drip.param.definition.ComponentMarketParams mktParams = mpc.getScenCMP (bond, "Base");
+		org.drip.param.market.MarketParamSet mktParams = mpc.getScenCMP (bond, "Base");
 
 		if (null == mktParams) return null;
 
@@ -376,7 +376,7 @@ public class BondManager {
 	public static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures>
 		CalcBondAnalyticsFromPrice (
 			final java.lang.String strCUSIPIn,
-			final org.drip.param.definition.MarketParams mpc,
+			final org.drip.param.definition.ScenarioMarketParams mpc,
 			final org.drip.analytics.date.JulianDate dt,
 			final double dblBidPrice,
 			final double dblAskPrice)
@@ -428,7 +428,7 @@ public class BondManager {
 	 * Calculate the full set of bond measures for all available bonds given the same bid and ask prices.
 	 *  Depending upon the setting, may also generate the runs.
 	 * 
-	 * @param mpc org.drip.param.definition.MarketParams containing the curves
+	 * @param mpc org.drip.param.market.MarketParamSet containing the curves
 	 * @param dt Valuation date
 	 * @param dblBidPrice Bid Price
 	 * @param dblAskPrice Ask Price
@@ -437,7 +437,7 @@ public class BondManager {
 	 */
 
 	public static int CalcFullBondAnalytics (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final double dblBidPrice,
 		final double dblAskPrice)
@@ -497,7 +497,7 @@ public class BondManager {
 	/**
 	 * Calculate the complete set of bond measures for all the bonds from their closing bid/ask prices.
 	 * 
-	 * @param mpc org.drip.param.definition.MarketParams containing the curves
+	 * @param mpc org.drip.param.market.MarketParamSet containing the curves
 	 * @param dt Valuation Date
 	 * 
 	 * @return Number of bonds successfully processed (excludes matured bonds and bonds for which closing
@@ -505,7 +505,7 @@ public class BondManager {
 	 */
 
 	public static int FullBondMarketAnalytics (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		if (null == mpc || null == dt) {
@@ -639,14 +639,14 @@ public class BondManager {
 	 * Build a bond from the input result set
 	 * 
 	 * @param rs ResultSet containing the list of queried bonds
-	 * @param mpc org.drip.param.definition.MarketParams containing the closing curves
+	 * @param mpc org.drip.param.market.MarketParamSet containing the closing curves
 	 * 
 	 * @return Bond object
 	 */
 
 	public static final org.drip.product.credit.BondComponent BuildBondFromResultSet (
 		final java.sql.ResultSet rs,
-		final org.drip.param.definition.MarketParams mpc)
+		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		if (null == rs) return null;
 
@@ -729,7 +729,7 @@ public class BondManager {
 	/**
 	 * Load the bond object using its ID
 	 * 
-	 * @param mpc org.drip.param.definition.MarketParams containing the closing curves
+	 * @param mpc org.drip.param.market.MarketParamSet containing the closing curves
 	 * @param stmt SQL Statement object representing the query
 	 * @param strBondId ISIN/CUSIP/other identifiable bond IDs
 	 * @param dblScheduleStart Schedule start date - needed for bonds with embedded American options, so that
@@ -739,7 +739,7 @@ public class BondManager {
 	 */
 
 	public static final org.drip.product.definition.Bond LoadFromBondId (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final java.lang.String strBondId,
 		final double dblScheduleStart)
@@ -930,7 +930,7 @@ public class BondManager {
 	 */
 
 	public static final int CommitBondsToMem (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt)
 	{
 		if (null == mpc || null == stmt) return 0;
@@ -1001,7 +1001,7 @@ public class BondManager {
 
 	public static final boolean CalcMeasuresForTicker (
 		final java.lang.String strTicker,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt,
 		final double dblBidPrice,
 		final double dblAskPrice)
@@ -1048,7 +1048,7 @@ public class BondManager {
 
 	public static final boolean CalcMarketMeasuresForTicker (
 		final java.lang.String strTicker,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.analytics.date.JulianDate dt)
 	{
 		if (null == strTicker || strTicker.isEmpty() || null == mpc || null == dt) {
@@ -1100,7 +1100,7 @@ public class BondManager {
 	 * @param stmt SQL Statement object representing the executable query
 	 * @param bond Input bond
 	 * @param valParams ValuationParams containing the EOD
-	 * @param mpc org.drip.param.definition.MarketParams containing the EOD curves
+	 * @param mpc org.drip.param.market.MarketParamSet containing the EOD curves
 	 * @param dblPrice Double price
 	 * 
 	 * @return Success (true), failure (false)
@@ -1110,7 +1110,7 @@ public class BondManager {
 		final java.sql.Statement stmt,
 		final org.drip.product.definition.Bond bond,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final double dblPrice)
 	{
 		if (null == stmt || null == bond || null == valParams || null == mpc || java.lang.Double.isNaN
@@ -1138,7 +1138,7 @@ public class BondManager {
 			stmt.executeQuery ("delete from BondHist where CUSIP = '" + bond.getCUSIP() + "' and EOD = '" +
 				strOracleEOD + "'");
 		} catch (java.lang.Exception e) {
-			System.out.println (e.getMessage() + "; " + bond.componentName() + " for price=" + dblPrice);
+			System.out.println (e.getMessage() + "; " + bond.name() + " for price=" + dblPrice);
 
 			e.printStackTrace();
 
@@ -1154,7 +1154,7 @@ public class BondManager {
 		try {
 			wi = bond.calcExerciseYieldFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null, dblPrice);
 		} catch (java.lang.Exception e) {
-			System.out.println (e.getMessage() + "; " + bond.componentName() + " for price=" + dblPrice);
+			System.out.println (e.getMessage() + "; " + bond.name() + " for price=" + dblPrice);
 
 			e.printStackTrace();
 
@@ -1188,7 +1188,7 @@ public class BondManager {
 				sbSQLInsertBondClose.append ("'" + (new org.drip.analytics.date.JulianDate
 					(wi.date()).toOracleDate()) + "', ");
 		} catch (java.lang.Exception e) {
-			System.out.println (e.getMessage() + "; " + bond.componentName() + " for price=" + dblPrice);
+			System.out.println (e.getMessage() + "; " + bond.name() + " for price=" + dblPrice);
 
 			return false;
 		}
@@ -1252,7 +1252,7 @@ public class BondManager {
 			return 0;
 		}
 
-		org.drip.param.definition.MarketParams mpc =
+		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();
 
 		RatesManager.LoadFullIRCurves (mpc, stmt, dtEOD);
@@ -1266,7 +1266,7 @@ public class BondManager {
 			if (bond.maturity().getJulian() > dtEOD.getJulian()) {
 				if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
 					(bond.getCUSIP())) {
-					if (s_bBlog) System.out.println ("No price entry found for " + bond.componentName());
+					if (s_bBlog) System.out.println ("No price entry found for " + bond.name());
 
 					++iNumMarksUnavailable;
 					continue;
@@ -1314,7 +1314,7 @@ public class BondManager {
 	 */
 
 	public static final boolean CalcAndLoadBondClosingMeasures (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEODStart,
 		final org.drip.analytics.date.JulianDate dtEODFinish)
@@ -1363,7 +1363,7 @@ public class BondManager {
 	 */
 
 	public static final boolean GenerateBondCreatorFile (
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.sql.Statement stmt)
 	{
 		if (null == mpc || null == stmt) {
@@ -1628,7 +1628,7 @@ public class BondManager {
 
 			bw.write ("org.drip.analytics.support.CaseInsensitiveMap<org.drip.product.credit.Bond> CreateBondSetStatic\n");
 
-			bw.write ("\t\t(final org.drip.param.definition.MarketParams mpc) {\n");
+			bw.write ("\t\t(final org.drip.param.market.MarketParamSet mpc) {\n");
 
 			bw.write ("\t\torg.drip.analytics.support.CaseInsensitiveMap<org.drip.product.credit.Bond> mapBondCache = ");
 
@@ -1687,7 +1687,7 @@ public class BondManager {
 	public static final void main (
 		final java.lang.String[] astrArgs)
 	{
-		org.drip.param.definition.MarketParams mpc =
+		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();
 
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv

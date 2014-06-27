@@ -12,15 +12,11 @@ import org.drip.analytics.period.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
 import org.drip.param.definition.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.params.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API imports
- */
-
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
@@ -93,7 +89,6 @@ public class BondAnalyticsAPI {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -119,9 +114,18 @@ public class BondAnalyticsAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
-				0., strCurrency, strIndex, strCurrency);
+				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 		}
 
 		/*
@@ -203,6 +207,7 @@ public class BondAnalyticsAPI {
 
 	private static final Bond CreateCustomBond (
 		final String strName,
+		final String strCreditCurve,
 		final int iBondType)
 		throws Exception
 	{
@@ -215,6 +220,7 @@ public class BondAnalyticsAPI {
 				strName,		// Name
 				"USD",			// Currency
 				"USD-LIBOR-6M", // Rate Index
+				strCreditCurve, // Credit Curve
 				0.01,			// Floating Spread
 				2,				// Coupon Frequency
 				"30/360",		// Day Count
@@ -226,6 +232,7 @@ public class BondAnalyticsAPI {
 			bond = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				strName,		// Name
 				"USD",			// Currency
+				strCreditCurve, // Credit Curve
 				0.05,			// Bond Coupon
 				2,				// Coupon Frequency
 				"30/360",		// Day Count
@@ -252,6 +259,7 @@ public class BondAnalyticsAPI {
 				strName,				// Name
 				dtEffective,			// Effective
 				"USD",					// Currency
+				strCreditCurve, 		// Credit Curve
 				"30/360",				// Day Count
 				2,						// Frequency
 				adt,					// Array of dates
@@ -310,27 +318,40 @@ public class BondAnalyticsAPI {
 		throws Exception
 	{
 		Bond[] aBond = new Bond[3];
+		String strCreditCurve = "CC";
 
 		/*
 		 * Creates a simple fixed coupon bond and adds it to the FI cache as a named object
 		 */
 
 		if (null == (aBond[0] = CreditAnalytics.GetBond ("CustomFixed")))
-			CreditAnalytics.PutBond ("CustomFixed", aBond[0] = CreateCustomBond ("CustomFixed", BondBuilder.BOND_TYPE_SIMPLE_FIXED));
+			CreditAnalytics.PutBond ("CustomFixed", aBond[0] = CreateCustomBond (
+				"CustomFixed",
+				strCreditCurve,
+				BondBuilder.BOND_TYPE_SIMPLE_FIXED)
+			);
 
 		/*
 		 * Creates a simple floater and adds it to the FI cache as a named object
 		 */
 
 		if (null == (aBond[1] = CreditAnalytics.GetBond ("CustomFRN")))
-			CreditAnalytics.PutBond ("CustomFRN", aBond[1] = CreateCustomBond ("CustomFRN", BondBuilder.BOND_TYPE_SIMPLE_FLOATER));
+			CreditAnalytics.PutBond ("CustomFRN", aBond[1] = CreateCustomBond (
+				"CustomFRN",
+				strCreditCurve,
+				BondBuilder.BOND_TYPE_SIMPLE_FLOATER)
+			);
 
 		/*
 		 * Creates a custom bond from arbitrary cash flows and adds it to the FI cache as a named object
 		 */
 
 		if (null == (aBond[2] = CreditAnalytics.GetBond ("CustomBondFromCF")))
-			CreditAnalytics.PutBond ("CustomBondFromCF", aBond[2] = CreateCustomBond ("CustomBondFromCF", BondBuilder.BOND_TYPE_SIMPLE_FROM_CF));
+			CreditAnalytics.PutBond ("CustomBondFromCF", aBond[2] = CreateCustomBond (
+				"CustomBondFromCF",
+				strCreditCurve,
+				BondBuilder.BOND_TYPE_SIMPLE_FROM_CF)
+			);
 
 		/*
 		 * Base Discount Curve
@@ -348,7 +369,7 @@ public class BondAnalyticsAPI {
 		 * Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), "CC", "USD", 0.01, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), strCreditCurve, "USD", 0.01, 0.4);
 
 		for (int i = 0; i < aBond.length; ++i) {
 			System.out.println ("\nAcc Start     Acc End     Pay Date      Cpn DCF       Pay01       Surv01");
@@ -373,7 +394,7 @@ public class BondAnalyticsAPI {
 			 * Create the bond's component market parameters from the market inputs
 			 */
 
-			ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
+			MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
 				dc,		// Discount curve
 				dcTSY,	// TSY Discount Curve (Includes Optional EDSF if available, or BILLS etc)
 				cc,		// Credit Curve
@@ -396,11 +417,11 @@ public class BondAnalyticsAPI {
 			cquote.addQuote ("Yield", q, true);
 
 			for (Bond bond : aBond)
-				cmp.setComponentQuote (bond.componentName(), cquote);
+				cmp.setComponentQuote (bond.name(), cquote);
 
 			aBond[i].value (valParams, null, cmp, null);
 
-			System.out.println ("\n" + aBond[i].componentName() + " Valuation OP: " + aBond[i].value (valParams, null, cmp, null));
+			System.out.println ("\n" + aBond[i].name() + " Valuation OP: " + aBond[i].value (valParams, null, cmp, null));
 
 			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
 				(valParams, cmp, null, 0.03), 1, 3, 100.));
@@ -474,7 +495,7 @@ public class BondAnalyticsAPI {
 		 * Bond calibration instrument
 		 */
 
-		Bond bond = BondBuilder.CreateSimpleFixed ("CCCalibBond", "DKK", 0.05, 2, "30/360",
+		Bond bond = BondBuilder.CreateSimpleFixed ("CCCalibBond", "DKK", "CC", 0.05, 2, "30/360",
 			JulianDate.CreateFromYMD (2008, 9, 21), JulianDate.CreateFromYMD (2023, 9, 20), null, null);
 
 		/*
@@ -493,7 +514,7 @@ public class BondAnalyticsAPI {
 		 * Component Market Parameters Container
 		 */
 
-		ComponentMarketParams cmp =  ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, cc, null, null, null, null);
+		MarketParamSet cmp =  ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, cc, null, null, null, null);
 
 		/*
 		 * Valuation Parameters
@@ -559,7 +580,7 @@ public class BondAnalyticsAPI {
 		 * Calibrated Component Market Parameters Container
 		 */
 
-		ComponentMarketParams cmpCalib = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, ccCalib, null, null, null, null);
+		MarketParamSet cmpCalib = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, ccCalib, null, null, null, null);
 
 		/*
 		 * Verify the CDS fair premium using the calibrated credit curve

@@ -4,10 +4,10 @@ package org.drip.sample.multicurve;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.definition.ComponentMarketParams;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -98,19 +98,50 @@ public class STIROption {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				4,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "30/360", "30/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			FloatingStream floatStream = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
@@ -206,30 +237,61 @@ public class STIROption {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
 			/*
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., true, FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-					2, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, -1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsReference = new FloatingStream (
+				strCurrency,
+				0.,
+				-1.,
+				null,
+				lsReferenceFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				false
+			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = FloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., false, FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					12 / iTenorInMonths, "Act/360", false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap,
-						null, null, 1., strCurrency, strCurrency);
+			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				12 / iTenorInMonths,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream fsDerived = new FloatingStream (
+				strCurrency,
+				0.,
+				1.,
+				null,
+				lsDerivedFloatPeriods,
+				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				false
+			);
 
 			/*
 			 * The float-float swap instance
@@ -270,7 +332,7 @@ public class STIROption {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -441,14 +503,49 @@ public class STIROption {
 		final String strCurrency)
 		throws Exception
 	{
-		JulianDate dtMaturity = dtEffective.addTenorAndAdjust (strTenor, strCurrency);
+		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
 
-		FloatingStream floatStream = FloatingStream.Create (dtEffective.getJulian(), dtMaturity.getJulian(), 0.,
-			true, fri, 2, "Act/360", false, "Act/360", false, false, null, null, null, null, null, null, null, null, null,
-				-1., strCurrency, strCurrency);
+		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			strTenor,
+			null,
+			4,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
 
-		FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 2,
-			"30/360", "30/360", false, null, null, null, null, null, null, null, null, 1., strCurrency, strCurrency);
+		FloatingStream floatStream = new FloatingStream (
+			strCurrency,
+			0.,
+			-1.,
+			null,
+			lsFloatPeriods,
+			fri,
+			false
+		);
+
+		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			dtEffective.getJulian(),
+			strTenor,
+			null,
+			2,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency
+		);
+
+		FixedStream fixStream = new FixedStream (
+			strCurrency,
+			dblCoupon,
+			1.,
+			null,
+			lsFixedPeriods
+		);
 
 		STIRFutureComponent stir = new STIRFutureComponent (fixStream, floatStream);
 
@@ -474,7 +571,7 @@ public class STIROption {
 		double dblMultiplicativeQuantoExchangeVol = 0.1;
 		double dblFRIQuantoExchangeCorr = 0.2;
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -490,25 +587,25 @@ public class STIROption {
 
 		STIRFutureComponent stir = CreateSTIR (dtForward, "5Y", fri, 0.05, strCurrency);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
 		cmp.setCustomMetricVolSurface (
-			stir.componentName() + "SwapRateVolatility",
+			stir.name() + "SwapRateVolatility",
 			dtForward,
 			new FlatUnivariate (dblFRIVol)
 		);
 
 		cmp.setCustomMetricVolSurface (
-			stir.componentName() + "SwapRateExchangeVolatility",
+			stir.name() + "SwapRateExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
 		cmp.setCustomMetricVolSurface (
-			stir.componentName() + "SwapRateToSwapRateExchangeCorrelation",
+			stir.name() + "SwapRateToSwapRateExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);

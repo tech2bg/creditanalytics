@@ -45,7 +45,7 @@ package org.drip.product.definition;
  */
 
 public abstract class FixedIncomeComponent extends org.drip.service.stream.Serializer implements
-	org.drip.product.definition.ComponentMarketParamRef {
+	org.drip.product.definition.MarketParamRef {
 	protected double getMeasure (
 		final java.lang.String strMeasure,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)
@@ -151,7 +151,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 
 	public abstract double coupon (
 		final double dblValue,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception;
 
 	/**
@@ -208,7 +208,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
@@ -255,7 +255,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	public double measureValue (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
@@ -278,7 +278,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	public org.drip.analytics.output.ComponentMeasures measures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == mpc || null == mpc.getScenCMP (this, "Base")) return null;
@@ -398,11 +398,11 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 			compOp._mmTenorCreditDelta = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapCCTenorUpCMP = mpc.getCreditTenorCMP (this, true);
 
 			if (null != mapCCTenorUpCMP && null != mapCCTenorUpCMP.entrySet()) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					meTenorUpMP : mapCCTenorUpCMP.entrySet()) {
 					if (null == meTenorUpMP || null == meTenorUpMP.getValue()) continue;
 
@@ -428,13 +428,12 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 					compOp._mmTenorCreditGamma = new
 						org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 						mapCCTenorDnCMP = mpc.getCreditTenorCMP (this, false);
 
 					if (null != mapCCTenorDnCMP && null != mapCCTenorDnCMP.entrySet()) {
-						for (java.util.Map.Entry<java.lang.String,
-							org.drip.param.definition.ComponentMarketParams> meTenorDnMP :
-								mapCCTenorDnCMP.entrySet()) {
+						for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
+							meTenorDnMP : mapCCTenorDnCMP.entrySet()) {
 							if (null == meTenorDnMP || null == meTenorDnMP.getValue()) continue;
 
 							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCTenorDn =
@@ -464,11 +463,11 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 			compOp._mmTenorIRDelta = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 				mapIRTenorUpCMP = mpc.getIRTenorCMP (this, true);
 
 			if (null != mapIRTenorUpCMP && null != mapIRTenorUpCMP.entrySet()) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentMarketParams>
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
 					meTenorUpMP : mapIRTenorUpCMP.entrySet()) {
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCTenorUp = value
 						(valParams, pricerParams, meTenorUpMP.getValue(), quotingParams);
@@ -493,13 +492,12 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 				compOp._mmTenorIRGamma = new
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentMarketParams>
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
 					mapIRTenorDnCMP = mpc.getIRTenorCMP (this, false);
 
 				if (null != mapIRTenorDnCMP & null != mapIRTenorDnCMP.entrySet()) {
-					for (java.util.Map.Entry<java.lang.String,
-						org.drip.param.definition.ComponentMarketParams> meTenorDnMP :
-							mapIRTenorDnCMP.entrySet()) {
+					for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
+						meTenorDnMP : mapIRTenorDnCMP.entrySet()) {
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCCTenorDn = value
 							(valParams, pricerParams, meTenorDnMP.getValue(), quotingParams);
 
@@ -545,7 +543,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> customScenarioMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.MarketParams mpc,
+		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.lang.String strCustomScenName,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseOP)
@@ -555,7 +553,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 			return null;
 
 		if (null == mapBaseOP) {
-			org.drip.param.definition.ComponentMarketParams cmpBase = mpc.getScenCMP (this, "Base");
+			org.drip.param.market.MarketParamSet cmpBase = mpc.getScenCMP (this, "Base");
 
 			if (null == cmpBase) return null;
 

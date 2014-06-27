@@ -10,17 +10,12 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.definition.*;
+import org.drip.param.market.MarketParamSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.credit.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API Imports
- */
-
 import org.drip.param.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
@@ -90,7 +85,6 @@ public class CDSBasketAPI {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -116,9 +110,18 @@ public class CDSBasketAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
-				0., strCurrency, strIndex, strCurrency);
+				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 		}
 
 		/*
@@ -219,21 +222,21 @@ public class CDSBasketAPI {
 		 * Create the basket market parameters and add the named discount curve and the credit curves to it.
 		 */
 
-		BasketMarketParams bmp = BasketMarketParamsBuilder.CreateBasketMarketParams();
+		MarketParamSet bmp =  new MarketParamSet();
 
-		bmp.addDiscountCurve ("USD", dc);
+		bmp.setFundingCurve (dc);
 
-		bmp.addCreditCurve ("CHN", ccCHN);
+		bmp.setCreditCurve (ccCHN);
 
-		bmp.addCreditCurve ("IND", ccIND);
+		bmp.setCreditCurve (ccIND);
 
-		bmp.addCreditCurve ("BRA", ccBRA);
+		bmp.setCreditCurve (ccBRA);
 
-		bmp.addCreditCurve ("RUS", ccRUS);
+		bmp.setCreditCurve (ccRUS);
 
-		bmp.addCreditCurve ("KOR", ccKOR);
+		bmp.setCreditCurve (ccKOR);
 
-		bmp.addCreditCurve ("TUR", ccTUR);
+		bmp.setCreditCurve (ccTUR);
 
 		/*
 		 * Create the CDS basket from the component CDS and their weights

@@ -163,9 +163,18 @@ public class CreditAnalyticsProxy {
 			adblRate[i + 15] = 0.01;
 
 			try {
-				aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtStart.addDays
-					(2), new org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., "USD",
-						"USD-LIBOR-3M", "USD");
+				aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (
+					dtStart.addDays (2),
+					new org.drip.analytics.date.JulianDate (adblDate[i + 15]),
+					0.,
+					2,
+					"Act/360",
+					0.,
+					4,
+					"Act/360",
+					"USD",
+					"USD"
+				);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -354,7 +363,7 @@ public class CreditAnalyticsProxy {
 						bpb.getNotionalParams());
 	}
 
-	private static org.drip.param.definition.ComponentMarketParams MakeCMP (
+	private static org.drip.param.market.MarketParamSet MakeCMP (
 		final org.drip.product.definition.FixedIncomeComponent fic,
 		final org.drip.analytics.date.JulianDate dtStart,
 		final double dblDownShift)
@@ -419,8 +428,8 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc,
-			fic.componentName(), cqBond, mapTSYQuotes, mmFixings);
+		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
+			cqBond, mapTSYQuotes, mmFixings);
 	}
 
 	private static final org.drip.service.bridge.CreditAnalyticsRequest CreateRequest (
@@ -451,7 +460,7 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		org.drip.param.definition.ComponentMarketParams cmp = MakeCMP (bond, dtStart, (1. +
+		org.drip.param.market.MarketParamSet cmp = MakeCMP (bond, dtStart, (1. +
 			PRICE_DOWNSHIFT_AMPLITUDE * (new java.util.Random().nextDouble() - 0.5)) * iTenorInYears *
 				PRICE_DOWNSHIFT_RATE);
 
@@ -477,7 +486,7 @@ public class CreditAnalyticsProxy {
 		if (null == rv) return false;
 
 		System.out.println (strPrefix + "ASW: " + org.drip.quant.common.FormatUtil.FormatDouble
-			(rv._dblAssetSwapSpread, 0, 0, 1.));
+			(rv._dblAssetSwapSpread, 0, 0, 10000.));
 
 		System.out.println (strPrefix + "Bond Basis: " + org.drip.quant.common.FormatUtil.FormatDouble
 			(rv._dblBondBasis, 0, 0, 10000.));
@@ -603,6 +612,8 @@ public class CreditAnalyticsProxy {
 				creStatus.getRequestID() + " @ " + creStatus.getTimeSnap());
 
 			byte[] abResponse = (byte[]) in.readObject();
+
+			System.out.println ("Reading response: " + abResponse);
 
 			if (null == abResponse || 0 == abResponse.length) return false;
 

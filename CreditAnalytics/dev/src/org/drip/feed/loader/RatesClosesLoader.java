@@ -357,17 +357,23 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
-				(dtEffective.getJulian(), strMaturityTenor, dblCoupon, _mapFixedFrequency.get (strCurrency),
-					strFixedDC, bApplyEOMAdjustmentFixed, strFixedDC, bApplyEOMAdjustmentFixed, false, dap,
-						null, 1., strCurrency, strCurrency);
+			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
+				org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(),
+					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
+						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency);
 
-			org.drip.product.rates.FloatingStream floatStream = org.drip.product.rates.FloatingStream.Create
-				(dtEffective.getJulian(), strMaturityTenor, 0., false,
+			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
+				(strCurrency, dblCoupon, 1., null, lsFixedCouponPeriod);
+
+			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
+				org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(),
+					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
+						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency);
+
+			org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
+				(strCurrency, 0., -1., null, lsFloatingCouponPeriod,
 					org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR",
-						_mapFloatingTenor.get (strCurrency)), _mapFloatingFrequency.get (strCurrency),
-							strFloatingDC, bApplyEOMAdjustmentFloating, strFloatingDC,
-								bApplyEOMAdjustmentFloating, dap, null, -1., strCurrency, strCurrency);
+						_mapFloatingTenor.get (strCurrency)), false);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);
@@ -409,20 +415,22 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
+			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
+				org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(),
+					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
+						strCurrency, strCurrency);
+
 			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
-				(dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, strFixedDC, dap, null, 1.,
-					strCurrency, strCurrency);
+				(strCurrency, dblCoupon, 1., null, lsFixedCouponPeriod);
 
-			org.drip.product.rates.FloatingStream floatStream =
-				org.drip.product.rates.FloatingStream.CreateSinglePeriod (dtEffective.getJulian(),
-					dtMaturity.getJulian(), 0., false, org.drip.product.params.FloatingRateIndex.Create
-						(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), strFloatingDC, dap,
-							null, -1., strCurrency, strCurrency);
+			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
+				org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (dtEffective.getJulian(),
+					dtMaturity.getJulian(), strFloatingDC, strCurrency, strCurrency);
 
-			/* org.drip.product.ois.OvernightIndexFloatingStream diStream =
-				org.drip.product.ois.OvernightIndexFloatingStream.CreateSinglePeriod (dtEffective.getJulian(),
-					dtMaturity.getJulian(), 0., false, org.drip.product.params.FloatingRateIndex.Create
-						(strCurrency, "DI", "ON"), strFloatingDC, dap, null, -1., strCurrency, strCurrency); */
+			org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
+				(strCurrency, 0., -1., null, lsFloatingCouponPeriod,
+					org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR",
+						_mapFloatingTenor.get (strCurrency)), false);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
 				floatStream);

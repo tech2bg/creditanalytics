@@ -100,7 +100,7 @@ public class ShapePreservingDFZeroSmooth {
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCash[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"),
+				dtEffective.addTenor (astrTenor[i]),
 				null,
 				"MXN");
 
@@ -123,10 +123,14 @@ public class ShapePreservingDFZeroSmooth {
 		for (int i = 0; i < astrTenor.length; ++i)
 			aSwap[i] = RatesStreamBuilder.CreateIRS (
 				dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], "MXN"),
+				astrTenor[i],
 				0.,
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
 				"MXN",
-				"MXN-LIBOR-6M",
 				"MXN");
 
 		return aSwap;
@@ -180,7 +184,7 @@ public class ShapePreservingDFZeroSmooth {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", "MXN");
+		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
 
 		/*
 		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters

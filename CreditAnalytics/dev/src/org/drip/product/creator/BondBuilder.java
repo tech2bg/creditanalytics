@@ -131,6 +131,7 @@ public class BondBuilder {
 	 * 
 	 * @param strName Bond Name
 	 * @param strCurrency Bond Currency
+	 * @param strCreditCurveName Credit Curve Name
 	 * @param dblCoupon Bond Fixed Coupon
 	 * @param iFreq Coupon Frequency
 	 * @param strDayCount Bond Coupon Day count convention
@@ -145,6 +146,7 @@ public class BondBuilder {
 	public static final org.drip.product.credit.BondComponent CreateSimpleFixed (
 		final java.lang.String strName,
 		final java.lang.String strCurrency,
+		final java.lang.String strCreditCurveName,
 		final double dblCoupon,
 		final int iFreq,
 		final java.lang.String strDayCount,
@@ -158,14 +160,14 @@ public class BondBuilder {
 			return null;
 
 		return BondBuilder.CreateBondFromParams (null, new org.drip.product.params.IdentifierSet (strName,
-			strName, strName, strCurrency + "TSY"), new org.drip.product.params.CouponSetting (fsCoupon, "",
-				dblCoupon, java.lang.Double.NaN, java.lang.Double.NaN),
-					org.drip.product.params.CurrencySet.Create (strCurrency + "TSY"), null, new
-						org.drip.product.params.QuoteConvention (null, "", dtEffective.getJulian(), 100., 0,
-							strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
+			strName, strName, strName), new org.drip.product.params.CouponSetting (fsCoupon, "", dblCoupon,
+				java.lang.Double.NaN, java.lang.Double.NaN), org.drip.product.params.CurrencySet.Create
+					(strCurrency), null, new org.drip.product.params.QuoteConvention (null, "",
+						dtEffective.getJulian(), 100., 0, strCurrency,
+							org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 								org.drip.product.params.RatesSetting (strCurrency, strCurrency, strCurrency,
 									strCurrency), new org.drip.product.params.CreditSetting (30,
-										java.lang.Double.NaN, true, "", true), new
+										java.lang.Double.NaN, true, strCreditCurveName, true), new
 											org.drip.product.params.TerminationSetting (false,
 												false, false), new org.drip.product.params.PeriodGenerator
 													(dtMaturity.getJulian(), dtEffective.getJulian(),
@@ -173,7 +175,7 @@ public class BondBuilder {
 															dtEffective.getJulian(), iFreq, strDayCount,
 																strDayCount, null, null, null, null, null,
 																	null, null, null, "", false,
-																		strCurrency), new
+																		strCurrency, strCurrency), new
 																			org.drip.product.params.NotionalSetting
 			(fsPrincipalOutstanding, 100., org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START,
 				false));
@@ -185,6 +187,7 @@ public class BondBuilder {
 	 * @param strName Bond Name
 	 * @param strCurrency Bond Currency
 	 * @param strRateIndex Floating Rate Index
+	 * @param strCreditCurveName Credit Curve Name
 	 * @param dblSpread Bond Floater Spread
 	 * @param iFreq Coupon Frequency
 	 * @param strDayCount Coupon Day Count Convention
@@ -200,6 +203,7 @@ public class BondBuilder {
 		final java.lang.String strName,
 		final java.lang.String strCurrency,
 		final java.lang.String strRateIndex,
+		final java.lang.String strCreditCurveName,
 		final double dblSpread,
 		final int iFreq,
 		final java.lang.String strDayCount,
@@ -213,9 +217,9 @@ public class BondBuilder {
 			return null;
 
 		return BondBuilder.CreateBondFromParams (null, new org.drip.product.params.IdentifierSet (strName,
-			strName, strName, strCurrency + "TSY"), new org.drip.product.params.CouponSetting (fsCoupon, "",
+			strName, strName, strCurrency), new org.drip.product.params.CouponSetting (fsCoupon, "",
 				dblSpread, java.lang.Double.NaN, java.lang.Double.NaN),
-					org.drip.product.params.CurrencySet.Create (strCurrency + "TSY"), new
+					org.drip.product.params.CurrencySet.Create (strCurrency), new
 						org.drip.product.params.FloaterSetting (strRateIndex, "", dblSpread,
 							java.lang.Double.NaN), new org.drip.product.params.QuoteConvention (null, "",
 								dtEffective.getJulian(), 100., 0, strCurrency,
@@ -223,9 +227,9 @@ public class BondBuilder {
 										org.drip.product.params.RatesSetting (strCurrency, strCurrency,
 											strCurrency, strCurrency), new
 												org.drip.product.params.CreditSetting (30,
-													java.lang.Double.NaN, true, "", true), new
-														org.drip.product.params.TerminationSetting (false,
-															false, false), new
+													java.lang.Double.NaN, true, strCreditCurveName, true),
+														new org.drip.product.params.TerminationSetting
+															(false, false, false), new
 																org.drip.product.params.PeriodGenerator
 																	(dtMaturity.getJulian(),
 																		dtEffective.getJulian(),
@@ -238,9 +242,9 @@ public class BondBuilder {
 																									null,
 																										null,
 																											null,
-			null, null, null, "", false, strCurrency), new org.drip.product.params.NotionalSetting
-				(fsPrincipalOutstanding, 100., org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START,
-					false));
+			null, null, null, "", false, strCurrency, strCurrency), new
+				org.drip.product.params.NotionalSetting (fsPrincipalOutstanding, 100.,
+					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
 	}
 
 	/**
@@ -249,6 +253,7 @@ public class BondBuilder {
 	 * @param strName Bond Name
 	 * @param dtEffective Effective Date
 	 * @param strCurrency Bond Currency
+	 * @param strCreditCurveName Credit Curve Name
 	 * @param strDC Coupon Day Count Convention
 	 * @param iFreq Coupon Frequency
 	 * @param adt Array of dates
@@ -263,6 +268,7 @@ public class BondBuilder {
 		final java.lang.String strName,
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strCurrency,
+		final java.lang.String strCreditCurveName,
 		final java.lang.String strDC,
 		final int iFreq,
 		final org.drip.analytics.date.JulianDate[] adt,
@@ -326,7 +332,7 @@ public class BondBuilder {
 			try {
 				lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblPeriodStart, adblDate[i],
 					dblPeriodStart, adblDate[i], adblDate[i], dblPeriodStart, iFreq, 1. / iFreq, "30/360",
-						false, "30/360", false, java.lang.Double.NaN, ""));
+						false, "30/360", false, java.lang.Double.NaN, "", strCurrency));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -346,15 +352,15 @@ public class BondBuilder {
 		}
 
 		return BondBuilder.CreateBondFromParams (null, new org.drip.product.params.IdentifierSet (strName,
-			strName, strName, strCurrency + "TSY"), new org.drip.product.params.CouponSetting
+			strName, strName, strCurrency), new org.drip.product.params.CouponSetting
 				(org.drip.product.params.FactorSchedule.CreateFromDateFactorArray (adblDate,
 					adblCouponFactor), "", 1., java.lang.Double.NaN, java.lang.Double.NaN),
-						org.drip.product.params.CurrencySet.Create (strCurrency + "TSY"), null, new
+						org.drip.product.params.CurrencySet.Create (strCurrency), null, new
 							org.drip.product.params.QuoteConvention (null, "", dtEffective.getJulian(), 100.,
 								0, strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 									org.drip.product.params.RatesSetting (strCurrency, strCurrency,
 										strCurrency, strCurrency), new org.drip.product.params.CreditSetting
-											(30, java.lang.Double.NaN, true, "", true), new
+											(30, java.lang.Double.NaN, true, strCreditCurveName, true), new
 												org.drip.product.params.TerminationSetting (false, false,
 													false), bfpgp, new
 														org.drip.product.params.NotionalSetting

@@ -32,51 +32,67 @@ package org.drip.product.definition;
  */
 
 /**
- * BasketMarketParamRef interface provides stubs for component's IR and credit curves that constitute the
- *  basket.
+ * MarketParamRef interface provides stubs for component name, IR curve, forward curve, credit curve, TSY
+ * 	curve, and needed to value the component.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface BasketMarketParamRef {
+public interface MarketParamRef {
 
 	/**
-	 * Retrieve the set of the component IR curve names
+	 * Get the component name
 	 * 
-	 * @return The set of the component IR curve names
+	 * @return The component name
+	 */
+
+	public abstract java.lang.String name();
+
+	/**
+	 * Get the Cash Flow Currency Set
+	 * 
+	 * @return The Cash Flow Currency Set
 	 */
 
 	public abstract java.util.Set<java.lang.String> cashflowCurrencySet();
 
 	/**
-	 * Retrieve the set of the component Forward curve names
+	 * Get the Coupon Currency
 	 * 
-	 * @return The set of the component Forward curve names
+	 * @return The Coupon Currency
 	 */
 
-	public abstract java.util.Set<java.lang.String> forwardCurveNames();
+	public abstract java.lang.String[] couponCurrency();
 
 	/**
-	 * Retrieve the set of the component credit curve names
+	 * Get the Principal Currency
 	 * 
-	 * @return The set of the component credit curve names
+	 * @return The Principal Currency
 	 */
 
-	public abstract java.util.Set<java.lang.String> creditCurveNames();
+	public abstract java.lang.String[] principalCurrency();
 
 	/**
-	 * Retrieve the set of the component Govvie/Treasury curve names
+	 * Get the Array of Forward Curve Names
 	 * 
-	 * @return The set of the component Govvie/Treasury curve names
+	 * @return Array of the Forward Curve Names
 	 */
 
-	public abstract java.util.Set<java.lang.String> govvieCurveNames();
+	public abstract java.lang.String[] forwardCurveName();
 
 	/**
-	 * Get the Array of FX Curves
+	 * Get the credit curve name
 	 * 
-	 * @return The Array of FX Curves
+	 * @return The credit curve name
 	 */
 
-	public abstract java.lang.String[] fxCurve();
+	public abstract java.lang.String[] creditCurveName();
+
+	/**
+	 * Get the Array of the Currency Pair Codes
+	 * 
+	 * @return The Array of the Currency Pair Codes
+	 */
+
+	public abstract java.lang.String[] currencyPairCode();
 }

@@ -47,7 +47,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfr = null;
-	private org.drip.param.definition.ComponentMarketParams _cmp = null;
+	private org.drip.param.market.MarketParamSet _cmp = null;
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
@@ -83,7 +83,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.state.estimator.StretchRepresentationSpec srs,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
 		final org.drip.spline.grid.Span span,
@@ -302,7 +302,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.state.estimator.StretchRepresentationSpec srs,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams cmp,
+		final org.drip.param.market.MarketParamSet cmp,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
 		final org.drip.spline.grid.Span span,

@@ -113,8 +113,12 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 
 				@Override public boolean execRegression()
 				{
-					return null != (_cc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
-						("CORP", _dtStart, _aCDS, _dc, _adblQuotes, _astrCalibMeasure, 0.4, false));
+					_cc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
+						("CORP", _dtStart, _aCDS, _dc, _adblQuotes, _astrCalibMeasure, 0.4, false);
+
+					System.out.println ("\t\t_aCDS = " + _aCDS.length);
+
+					return null != _cc;
 				}
 			});
 

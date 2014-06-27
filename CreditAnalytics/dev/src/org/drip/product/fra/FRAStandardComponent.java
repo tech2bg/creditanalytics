@@ -49,7 +49,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -199,7 +199,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String componentName()
+	@Override public java.lang.String name()
 	{
 		return "FRA=" + _fri.fullyQualifiedName();
 	}
@@ -258,7 +258,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.definition.ComponentMarketParams mktParams)
+		final org.drip.param.market.MarketParamSet mktParams)
 		throws java.lang.Exception
 	{
 		return 0.;
@@ -269,9 +269,9 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return new java.lang.String[] {_fri.fullyQualifiedName()};
 	}
 
-	@Override public java.lang.String creditCurveName()
+	@Override public java.lang.String[] creditCurveName()
 	{
-		return "";
+		return null;
 	}
 
 	@Override public java.lang.String[] currencyPairCode()
@@ -305,7 +305,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		try {
 			return org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).getJulian(),
-					_strDayCount, _strCalendar);
+					_strDayCount, _strCalendar, _strCurrency);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -321,7 +321,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == mktParams) return null;
@@ -465,7 +465,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == mktParams || null == mktParams.fundingCurve (couponCurrency()[0]))
@@ -478,7 +478,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || null == strManifestMeasure || null == mktParams || null ==
@@ -491,7 +491,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.definition.ComponentMarketParams mktParams,
+		final org.drip.param.market.MarketParamSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{

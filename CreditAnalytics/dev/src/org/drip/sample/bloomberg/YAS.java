@@ -83,7 +83,6 @@ public class YAS {
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
-		String strIndex = strCurrency + "-LIBOR-3M";
 
 		// Cash Calibration
 
@@ -110,9 +109,18 @@ public class YAS {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (dtIRSEffective,
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
-				0., strCurrency, strIndex, strCurrency);
+				adblCompCalibValue[i + astrCashTenor.length],
+				2,
+				"Act/360",
+				0.,
+				4,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 		}
 
 		/*
@@ -138,7 +146,8 @@ public class YAS {
 	{
 		return BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				strName,					// Name
-				"USDTSY",					// Fictitious Treasury Curve Name
+				"USD",						// Fictitious Treasury Curve Name
+				"",						 	// Empty Credit Curve
 				dblCoupon,					// Bond Coupon
 				2, 							// Frequency
 				"Act/Act",					// Day Count
@@ -186,7 +195,7 @@ public class YAS {
 			astrCalibMeasure[i] = "Yield";
 
 		return ScenarioDiscountCurveBuilder.NonlinearBuild (dt,
-			"USDTSY", // Fake curve name to indicate it is a USD TSY curve, not the usual USD curve
+			"USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 			aTSYBond,
 			adblTSYYield,
@@ -258,6 +267,7 @@ public class YAS {
 		BondComponent bond = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
 				"TEST",			// Name
 				"USD",			// Currency
+				"",				// Empty Credit Curve
 				0.054,			// Bond Coupon
 				2, 				// Frequency
 				"30/360",		// Day Count
@@ -280,7 +290,7 @@ public class YAS {
 
 		bond.setEmbeddedCallSchedule (eos);
 
-		ComponentMarketParams cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null, 
+		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null, 
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		System.out.println ("\n---- Valuation Details ----");

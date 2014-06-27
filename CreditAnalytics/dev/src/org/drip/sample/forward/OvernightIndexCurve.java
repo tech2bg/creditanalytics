@@ -1,8 +1,10 @@
 
 package org.drip.sample.forward;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.*;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
@@ -90,19 +92,50 @@ public class OvernightIndexCurve {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			OvernightIndexFloatingStream floatStream = OvernightIndexFloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., false, OvernightFRIBuilder.JurisdictionFRI (strCurrency), 4, "Act/360",
-					false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap, null, null, -1., strCurrency,
-						strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+				strCurrency,
+				adblCoupon[i],
+				-1.,
+				null,
+				lsFloatPeriods,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
@@ -129,18 +162,48 @@ public class OvernightIndexCurve {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			OvernightFundFloatingStream floatStream = OvernightFundFloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-					"Act/360", dap, dap, null, -1., strCurrency, strCurrency, false);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
+				dtEffective.getJulian(),
+				dtMaturity.getJulian(),
+				null,
+				null,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			OvernightFundFloatingStream floatStream = new OvernightFundFloatingStream (
+				strCurrency,
+				adblCoupon[i],
+				-1.,
+				null,
+				lsFloatPeriods,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
@@ -168,21 +231,52 @@ public class OvernightIndexCurve {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrStartTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrStartTenor.length; ++i) {
-			JulianDate dtEffective = dtSpot.addTenorAndAdjust (astrStartTenor[i], strCurrency);
+			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			OvernightIndexFloatingStream floatStream = OvernightIndexFloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., false, OvernightFRIBuilder.JurisdictionFRI (strCurrency), 4, "Act/360",
-					false, "Act/360", false, false, null, dap, dap, dap, dap, dap, dap, null, null, -1., strCurrency,
-						strCurrency);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+				strCurrency,
+				adblCoupon[i],
+				-1.,
+				null,
+				lsFloatPeriods,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
@@ -210,20 +304,50 @@ public class OvernightIndexCurve {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrStartTenor.length];
 
-		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
-
 		for (int i = 0; i < astrStartTenor.length; ++i) {
-			JulianDate dtEffective = dtSpot.addTenorAndAdjust (astrStartTenor[i], strCurrency);
+			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
+			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			OvernightFundFloatingStream floatStream = OvernightFundFloatingStream.Create (dtEffective.getJulian(),
-				dtMaturity.getJulian(), 0., OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-					"Act/360", dap, dap, null, -1., strCurrency, strCurrency, false);
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
+				dtEffective.getJulian(),
+				dtMaturity.getJulian(),
+				null,
+				null,
+				"Act/360",
+				strCurrency,
+				strCurrency
+			);
 
-			FixedStream fixStream = new FixedStream (dtEffective.getJulian(), dtMaturity.getJulian(),
-				adblCoupon[i], 2, "Act/360", "Act/360", false, null, dap, dap, dap, dap, dap, null, null, 1.,
-					strCurrency, strCurrency);
+			OvernightFundFloatingStream floatStream = new OvernightFundFloatingStream (
+				strCurrency,
+				adblCoupon[i],
+				-1.,
+				null,
+				lsFloatPeriods,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.getJulian(),
+				astrTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
