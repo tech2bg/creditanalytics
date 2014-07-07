@@ -188,11 +188,11 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet bmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOutput = super.value
-			(valParams, pricerParams, bmp, quotingParams);
+			(valParams, pricerParams, csqs, quotingParams);
 
 		if (null == mapOutput) return null;
 
@@ -205,15 +205,15 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 
 		for (int i = 0; i < _aFFPForward.length; ++i) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFwdOutput =
-				_aFFPForward[i].value (valParams, pricerParams, bmp, quotingParams);
+				_aFFPForward[i].value (valParams, pricerParams, csqs, quotingParams);
 
 			java.lang.String strCurrency = _aFFPForward[i].couponCurrency()[0];
 
 			try {
 				dblMTMCorrectionAdjust = java.lang.Math.exp
 					(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-						(bmp.fundingCurveVolSurface (strCurrency), bmp.fxCurveVolSurface (cp),
-							bmp.fundingFXCorrSurface (strCurrency, cp), dblValueDate,
+						(csqs.fundingCurveVolSurface (strCurrency), csqs.fxCurveVolSurface (cp),
+							csqs.fundingFXCorrSurface (strCurrency, cp), dblValueDate,
 								_aFFPForward[i].maturity().getJulian()));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -222,7 +222,19 @@ public class MTMCrossCurrencyPair extends org.drip.product.fx.CrossCurrencyCompo
 			}
 
 			dblMTMPV += mapFwdOutput.get ("PV") * dblMTMCorrectionAdjust;
+
+			mapOutput.put ("MTMAdditiveAdjustment_" + i, (dblMTMCorrectionAdjust - 1.));
+
+			mapOutput.put ("MTMMultiplicativeAdjustment_" + i, dblMTMCorrectionAdjust);
 		}
+
+		double dblBasePV = mapOutput.get (referenceComponent().name() + "[PV]");
+
+		double dblMultiplicativeAdjustment = dblMTMPV / dblBasePV;
+
+		mapOutput.put ("MTMAdditiveAdjustment", (dblMultiplicativeAdjustment - 1.));
+
+		mapOutput.put ("MTMMultiplicativeAdjustment", dblMultiplicativeAdjustment);
 
 		mapOutput.put ("MTMPV", dblMTMPV);
 

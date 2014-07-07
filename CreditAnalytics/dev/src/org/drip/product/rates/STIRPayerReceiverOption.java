@@ -86,7 +86,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams) return null;
@@ -100,14 +100,14 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 		java.lang.String strComponentName = name();
 
 		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface =
-			mktParams.customMetricVolSurface (strComponentName + "SwapRateVolatility", exercise());
+			csqs.customMetricVolSurface (strComponentName + "SwapRateVolatility", exercise());
 
 		if (null == auSTIRSwapRateVolSurface) return null;
 
 		double dblExerciseDate = exercise().getJulian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapSTIROutput = _stir.value
-			(valParams, pricerParams, mktParams, quotingParams);
+			(valParams, pricerParams, csqs, quotingParams);
 
 		java.lang.String strManifestMeasure = manifestMeasure();
 
@@ -121,7 +121,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		try {
 			double dblSTIRIntegratedQuantoDrift =
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (mktParams,
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs,
 					strComponentName + "SwapRateVolatility", strComponentName + "SwapRateExchangeVolatility",
 						strComponentName + "SwapRateToSwapRateExchangeCorrelation", dblValueDate,
 							dblExerciseDate);
@@ -129,7 +129,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedQuantoDrift)) return null;
 
 			double dblSTIRIntegratedSurfaceVariance =
-				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (mktParams,
+				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (csqs,
 					strComponentName + "SwapRateVolatility", dblValueDate, dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedSurfaceVariance)) return null;

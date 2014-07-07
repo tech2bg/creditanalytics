@@ -45,7 +45,7 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
-	 * @param mktParams Component Market Params
+	 * @param csqs Component Market Params
 	 * 
 	 * @return List of ProductCouponPeriodCurveMeasures
 	 */
@@ -53,14 +53,14 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	public abstract java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> getCouponFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams);
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
 
 	/**
 	 * Generate the loss flow for the credit component based on the pricer parameters
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
-	 * @param mktParams ComponentMarketParams
+	 * @param csqs ComponentMarketParams
 	 * 
 	 * @return List of ProductLossPeriodCurveMeasures
 	 */
@@ -68,7 +68,7 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	public abstract java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> getLossFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams);
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
 
 	/**
 	 * Get the recovery of the credit component for the given date

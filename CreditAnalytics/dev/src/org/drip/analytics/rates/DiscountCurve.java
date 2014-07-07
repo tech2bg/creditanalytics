@@ -344,11 +344,12 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		mmFixings.put (dtStart, mIndexFixings);
 
-		org.drip.param.market.MarketParamSet cmp = org.drip.param.creator.ComponentMarketParamsBuilder.Create
-			(this, null, null, null, null, null, null, mmFixings);
+		org.drip.param.market.CurveSurfaceQuoteSet csqs =
+			org.drip.param.creator.MarketParamsBuilder.Create (this, null, null, null, null, null,
+				null, mmFixings);
 
 		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
-			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, cmp, null, "FixedDV01");
+			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, csqs, null, "FixedDV01");
 	}
 
 	@Override public double estimateManifestMeasure (
@@ -523,13 +524,13 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		org.drip.param.valuation.ValuationParams valParams =
 			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
 
-		org.drip.param.market.MarketParamSet mktParams =
-			org.drip.param.creator.ComponentMarketParamsBuilder.Create (this, null, null, null, null, null,
+		org.drip.param.market.CurveSurfaceQuoteSet csqs =
+			org.drip.param.creator.MarketParamsBuilder.Create (this, null, null, null, null, null,
 				null, null == _ccis ? null : _ccis.getFixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
 			org.drip.quant.calculus.WengertJacobian wjCompDDirtyPVDManifestMeasure =
-				aCalibComp[i].jackDDirtyPVDManifestMeasure (valParams, null, mktParams, null);
+				aCalibComp[i].jackDDirtyPVDManifestMeasure (valParams, null, csqs, null);
 
 			if (null == wjCompDDirtyPVDManifestMeasure) return null;
 

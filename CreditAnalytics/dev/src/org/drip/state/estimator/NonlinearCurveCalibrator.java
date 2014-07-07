@@ -107,8 +107,8 @@ public class NonlinearCurveCalibrator {
 				throw new java.lang.Exception ("Cannot set CC = " + dblRate + " for node #" + _iInstr);
 
 			return _dblCalibValue - _comp.measureValue (_valParams, _pricerParams,
-				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (_dc, _dcTSY,
-					_cc, null, null, null, _mmFixings), _quotingParams, _strMeasure);
+				org.drip.param.creator.MarketParamsBuilder.Create (_dc, _dcTSY, _cc, null, null,
+					null, _mmFixings), _quotingParams, _strMeasure);
 		}
 
 		@Override public double integrate (
@@ -324,11 +324,10 @@ public class NonlinearCurveCalibrator {
 						("NonlinearCurveCalibrator::calibrateIRNode => Cannot set Value = " + dblValue +
 							" for node " + iInstr);
 
-				return dblCalibValue - comp.measureValue (valParams, new
-					org.drip.param.pricer.PricerParams (1, new org.drip.param.definition.CalibrationParams
-						(strMeasure, 0, null), true, 0),
-							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dc, dcTSY, null, null, null, null, mmFixings), quotingParams, strMeasure);
+				return dblCalibValue - comp.measureValue (valParams, new org.drip.param.pricer.PricerParams
+					(1, new org.drip.param.definition.CalibrationParams (strMeasure, 0, null), true, 0),
+						org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null, null,
+							null, null, mmFixings), quotingParams, strMeasure);
 			}
 
 			@Override public double integrate (

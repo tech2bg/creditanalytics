@@ -32,14 +32,14 @@ package org.drip.param.definition;
  */
 
 /**
- * ComponentQuote abstract class holds the different types of quotes for a given component. It contains a
- *  single market field/quote pair, but multiple alternate named quotes (to accommodate quotes on different
+ * ProductQuote abstract class holds the different types of quotes for a given product. It contains a single
+ *  market field/quote pair, but multiple alternate named quotes (to accommodate quotes on different
  *  measures for the component). 
- *   
+ *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class ComponentQuote extends org.drip.service.stream.Serializer {
+public abstract class ProductQuote extends org.drip.service.stream.Serializer {
 
 	/**
 	 * Add a regular or a market quote for the component
@@ -81,7 +81,7 @@ public abstract class ComponentQuote extends org.drip.service.stream.Serializer 
 	 * @return Quote object
 	 */
 
-	public abstract org.drip.param.definition.Quote getQuote (
+	public abstract org.drip.param.definition.Quote quote (
 		final java.lang.String strQuoteField);
 
 	/**
@@ -90,7 +90,7 @@ public abstract class ComponentQuote extends org.drip.service.stream.Serializer 
 	 * @return Quote object
 	 */
 
-	public abstract org.drip.param.definition.Quote getMarketQuote();
+	public abstract org.drip.param.definition.Quote marketQuote();
 
 	/**
 	 * Retrieve the market quote field
@@ -98,7 +98,7 @@ public abstract class ComponentQuote extends org.drip.service.stream.Serializer 
 	 * @return Field name
 	 */
 
-	public abstract java.lang.String getMarketQuoteField();
+	public abstract java.lang.String marketQuoteField();
 
 	/**
 	 * Remove the named Quote

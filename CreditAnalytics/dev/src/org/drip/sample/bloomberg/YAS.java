@@ -209,15 +209,15 @@ public class YAS {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CaseInsensitiveTreeMap<ComponentQuote> MakeTSYQuotes (
+	private static final CaseInsensitiveTreeMap<ProductQuote> MakeTSYQuotes (
 		final String[] astrTSYTenor,
 		final double[] adblTSYYield)
 		throws Exception
 	{
-		CaseInsensitiveTreeMap<ComponentQuote> mTSYQuotes = new CaseInsensitiveTreeMap<ComponentQuote>();
+		CaseInsensitiveTreeMap<ProductQuote> mTSYQuotes = new CaseInsensitiveTreeMap<ProductQuote>();
 
 		for (int i = 0; i < astrTSYTenor.length; ++i) {
-			ComponentMultiMeasureQuote cmmq = new ComponentMultiMeasureQuote();
+			ProductMultiMeasureQuote cmmq = new ProductMultiMeasureQuote();
 
 			cmmq.addQuote ("Yield", new MultiSidedQuote ("mid", adblTSYYield[i], Double.NaN), true);
 
@@ -290,7 +290,7 @@ public class YAS {
 
 		bond.setEmbeddedCallSchedule (eos);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null, 
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, dcTSY, null, null, null, 
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		System.out.println ("\n---- Valuation Details ----");
@@ -305,29 +305,29 @@ public class YAS {
 
 		double dblPrice = 0.97828;
 
-		double dblAccrued = bond.calcAccrued (valParams.valueDate(), cmp);
+		double dblAccrued = bond.calcAccrued (valParams.valueDate(), mktParams);
 
-		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
+		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
-		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblGSpread = bond.calcGSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblGSpread = bond.calcGSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblISpread = bond.calcISpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblISpread = bond.calcISpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblZSpread = bond.calcZSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblZSpread = bond.calcZSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblASW = bond.calcASWFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblASW = bond.calcASWFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblOAS = bond.calcOASFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblOAS = bond.calcOASFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblModDur = bond.calcModifiedDurationFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblModDur = bond.calcModifiedDurationFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblMacDur = bond.calcMacaulayDurationFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblMacDur = bond.calcMacaulayDurationFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblYield01 = bond.calcYield01FromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblYield01 = bond.calcYield01FromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblConvexity = bond.calcConvexityFromPrice (valParams, cmp, null, wi.date(), wi.factor(), dblPrice);
+		double dblConvexity = bond.calcConvexityFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		System.out.println ("Price          : " + FormatUtil.FormatDouble (dblPrice, 1, 3, 100.));
 

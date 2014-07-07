@@ -47,7 +47,7 @@ public class ShapePreservingCCIS extends org.drip.analytics.definition.CurveSpan
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
 	 * @param quotingParam Quoting Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
@@ -58,10 +58,10 @@ public class ShapePreservingCCIS extends org.drip.analytics.definition.CurveSpan
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
-		final org.drip.param.market.MarketParamSet cmp)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		super (aSRS, valParam, pricerParam, quotingParam, cmp);
+		super (aSRS, valParam, pricerParam, quotingParam, csqs);
 
 		if (null == (_lccShapePreserving = lccShapePreserving))
 			throw new java.lang.Exception ("ShapePreservingCCIS ctr: Invalid Inputs");

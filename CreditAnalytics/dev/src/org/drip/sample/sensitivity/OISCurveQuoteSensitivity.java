@@ -771,7 +771,7 @@ public class OISCurveQuoteSensitivity {
 		for (int i = 0; i < aDepositComp.length; ++i)
 			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
 		/*
@@ -788,7 +788,7 @@ public class OISCurveQuoteSensitivity {
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
 			System.out.println ("\t[" + aShortEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
 
 		/*
@@ -805,7 +805,7 @@ public class OISCurveQuoteSensitivity {
 		for (int i = 0; i < aOISFutureComp.length; ++i)
 			System.out.println ("\t[" + aOISFutureComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
 
 		/*
@@ -822,7 +822,7 @@ public class OISCurveQuoteSensitivity {
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
 			System.out.println ("\t[" + aLongEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.));
 
 		/*
@@ -914,7 +914,7 @@ public class OISCurveQuoteSensitivity {
 		WengertJacobian wjOISBespokeQuoteJack = ois35Y.jackDDirtyPVDManifestMeasure (
 			valParams,
 			null,
-			ComponentMarketParamsBuilder.Create (dc, null, null, null, null, null, null, null),
+			MarketParamsBuilder.Create (dc, null, null, null, null, null, null, null),
 			null);
 
 		System.out.println (wjOISBespokeQuoteJack.displayString());

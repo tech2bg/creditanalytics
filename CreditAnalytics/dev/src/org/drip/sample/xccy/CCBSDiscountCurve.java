@@ -8,7 +8,7 @@ import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.RatesComponent;
@@ -265,17 +265,17 @@ public class CCBSDiscountCurve {
 			astrTenor,
 			3);
 
-		MarketParamSet bmp = new MarketParamSet();
+		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
-		bmp.setFundingCurve (dcReference);
+		mktParams.setFundingCurve (dcReference);
 
-		bmp.setForwardCurve (fc3MReference);
+		mktParams.setForwardCurve (fc3MReference);
 
-		bmp.setForwardCurve (fc6MReference);
+		mktParams.setForwardCurve (fc6MReference);
 
-		bmp.setFXCurve (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency), new FlatUnivariate (1. / dblRefDerFX));
+		mktParams.setFXCurve (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency), new FlatUnivariate (1. / dblRefDerFX));
 
-		bmp.setFXCurve (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency), new FlatUnivariate (dblRefDerFX));
+		mktParams.setFXCurve (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency), new FlatUnivariate (dblRefDerFX));
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
@@ -292,7 +292,7 @@ public class CCBSDiscountCurve {
 			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aCCSP,
 			valParams,
-			bmp,
+			mktParams,
 			adblCrossCurrencyBasis,
 			adblSwapRate,
 			bBasisOnDerivedLeg
@@ -308,7 +308,7 @@ public class CCBSDiscountCurve {
 			1.
 		);
 
-		bmp.setFundingCurve (dcDerived);
+		mktParams.setFundingCurve (dcDerived);
 
 		System.out.println ("\t----------------------------------------------------------------");
 
@@ -322,7 +322,7 @@ public class CCBSDiscountCurve {
 		for (int i = 0; i < aCCSP.length; ++i) {
 			RatesComponent rcDerived = aCCSP[i].derivedComponent();
 
-			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
+			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, mktParams, null);
 
 			double dblCalibSwapRate = mapOP.get (rcDerived.name() + "[CalibSwapRate]");
 

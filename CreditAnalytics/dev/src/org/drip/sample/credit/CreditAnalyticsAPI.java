@@ -10,7 +10,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.period.*;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
@@ -174,7 +174,7 @@ public class CreditAnalyticsAPI {
 
 		for (int i = 0; i < aCDS.length; ++i)
 			System.out.println ("\t" + astrCalibMeasure[i] + "[" + i + "] = " + aCDS[i].measureValue
-				(valParams, pricerParams, ComponentMarketParamsBuilder.CreateComponentMarketParams
+				(valParams, pricerParams, MarketParamsBuilder.Create
 					(dc, null, null, cc, null, null, null, null), null, astrCalibMeasure[i]));
 	}
 
@@ -205,7 +205,7 @@ public class CreditAnalyticsAPI {
 		 * Component Market Parameters built from the Discount and the Credit Curves
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Credit (dc, cc);
 
 		/*
 		 * Create an SNAC CDS
@@ -233,7 +233,7 @@ public class CreditAnalyticsAPI {
 		 * CDS Coupon Cash Flow
 		 */
 
-		for (CashflowPeriodCurveFactors p : cds.getCouponFlow (valParams, pricerParams, cmp))
+		for (CashflowPeriodCurveFactors p : cds.getCouponFlow (valParams, pricerParams, mktParams))
 			System.out.println (
 				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
@@ -253,7 +253,7 @@ public class CreditAnalyticsAPI {
 		 * CDS Loss Cash Flow
 		 */
 
-		for (LossPeriodCurveFactors dp : cds.getLossFlow (valParams, pricerParams, cmp))
+		for (LossPeriodCurveFactors dp : cds.getLossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
 				JulianDate.fromJulian (dp.getStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (dp.getEndDate()) + FIELD_SEPARATOR +

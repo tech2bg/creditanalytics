@@ -50,7 +50,7 @@ public class SmoothingCCIS extends org.drip.analytics.definition.ShapePreserving
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
 	 * @param quotingParam Quoting Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
@@ -63,10 +63,10 @@ public class SmoothingCCIS extends org.drip.analytics.definition.ShapePreserving
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
-		final org.drip.param.market.MarketParamSet cmp)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		super (lccShapePreserving, aRBS, valParam, pricerParam, quotingParam, cmp);
+		super (lccShapePreserving, aRBS, valParam, pricerParam, quotingParam, csqs);
 
 		if (null == (_dcShapePreserver = dcShapePreserver) || null == (_scsp = scsp))
 			throw new java.lang.Exception ("SmoothingCCIS ctr: Invalid Inputs");

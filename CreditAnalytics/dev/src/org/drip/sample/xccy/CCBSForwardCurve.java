@@ -8,7 +8,7 @@ import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.definition.RatesComponent;
 import org.drip.product.fx.*;
@@ -188,21 +188,21 @@ public class CCBSForwardCurve {
 			astrTenor,
 			3);
 
-		MarketParamSet bmp = new MarketParamSet();
+		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
-		bmp.setFundingCurve (dcReference);
+		mktParams.setFundingCurve (dcReference);
 
-		bmp.setFundingCurve (dcDerived);
+		mktParams.setFundingCurve (dcDerived);
 
-		bmp.setForwardCurve (fc3MReference);
+		mktParams.setForwardCurve (fc3MReference);
 
-		bmp.setForwardCurve (fc6MReference);
+		mktParams.setForwardCurve (fc6MReference);
 
-		bmp.setForwardCurve (fc6MDerived);
+		mktParams.setForwardCurve (fc6MDerived);
 
-		bmp.setFXCurve (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency), new FlatUnivariate (dblRefDerFX));
+		mktParams.setFXCurve (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency), new FlatUnivariate (dblRefDerFX));
 
-		bmp.setFXCurve (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency), new FlatUnivariate (1. / dblRefDerFX));
+		mktParams.setFXCurve (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency), new FlatUnivariate (1. / dblRefDerFX));
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
@@ -219,7 +219,7 @@ public class CCBSForwardCurve {
 			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aCCSP,
 			valParams,
-			bmp,
+			mktParams,
 			adblCrossCurrencyBasis,
 			bBasisOnDerivedLeg);
 
@@ -229,16 +229,16 @@ public class CCBSForwardCurve {
 			FloatingRateIndex.Create (strDerivedCurrency + "-LIBOR-3M"),
 			valParams,
 			null,
-			ComponentMarketParamsBuilder.CreateComponentMarketParams (dcDerived, fc6MDerived, null, null, null, null, null, null),
+			MarketParamsBuilder.Create (dcDerived, fc6MDerived, null, null, null, null, null, null),
 			null,
 			dcDerived.forward (dtValue.getJulian(), dtValue.addTenor ("3M").getJulian()));
 
-		MarketParamSet cmpDerived = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParamsDerived = MarketParamsBuilder.Create
 			(dcDerived, fc3MDerived, null, null, null, null, null, null);
 
-		cmpDerived.setForwardCurve (fc6MDerived);
+		mktParamsDerived.setForwardCurve (fc6MDerived);
 
-		bmp.setForwardCurve (fc3MDerived);
+		mktParams.setForwardCurve (fc3MDerived);
 
 		System.out.println ("\t----------------------------------------------------------------");
 
@@ -252,7 +252,7 @@ public class CCBSForwardCurve {
 		for (int i = 0; i < aCCSP.length; ++i) {
 			RatesComponent rc = aCCSP[i].derivedComponent();
 
-			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, bmp, null);
+			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, mktParams, null);
 
 			System.out.println ("\t[" + rc.effective() + " - " + rc.maturity() + "] = " +
 				FormatUtil.FormatDouble (mapOP.get (bBasisOnDerivedLeg ? "ReferenceCompDerivedBasis" : "ReferenceCompReferenceBasis"), 1, 3, 1.) +

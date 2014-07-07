@@ -30,32 +30,32 @@ package org.drip.param.market;
  */
 
 /**
- * ComponentTickQuote holds the tick related component parameters - it contains the product ID, the quote
+ * ProductTickQuote holds the tick related product parameters - it contains the product ID, the quote
  *  composite, the source, the counter party, and whether the quote can be treated as a mark.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComponentTickQuote extends org.drip.service.stream.Serializer {
+public class ProductTickQuote extends org.drip.service.stream.Serializer {
 	private boolean _bIsMark = false;
 	private java.lang.String _strSource = "";
 	private java.lang.String _strProductID = "";
 	private java.lang.String _strCounterParty = "";
-	private org.drip.param.definition.ComponentQuote _cq = null;
+	private org.drip.param.definition.ProductQuote _pq = null;
 
 	/**
-	 * Empty ComponentTickQuote constructor
+	 * Empty ProductTickQuote constructor
 	 */
 
-	public ComponentTickQuote()
+	public ProductTickQuote()
 	{
 	}
 
 	/**
-	 * ComponentTickQuote constructor
+	 * ProductTickQuote constructor
 	 * 
 	 * @param strProductID Product ID
-	 * @param cq Product Quote
+	 * @param pq Product Quote
 	 * @param strCounterParty Counter Party
 	 * @param strSource Quote Source
 	 * @param bIsMark TRUE => This Quote may be treated as a Mark
@@ -63,16 +63,16 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public ComponentTickQuote (
+	public ProductTickQuote (
 		final java.lang.String strProductID,
-		final org.drip.param.definition.ComponentQuote cq,
+		final org.drip.param.definition.ProductQuote pq,
 		final java.lang.String strCounterParty,
 		final java.lang.String strSource,
 		final boolean bIsMark)
 		throws java.lang.Exception
 	{
-		if (null == (_strProductID = strProductID) || _strProductID.isEmpty() || null == (_cq = cq))
-			throw new java.lang.Exception ("ComponentTickQuote ctr: Invalid Inputs");
+		if (null == (_strProductID = strProductID) || _strProductID.isEmpty() || null == (_pq = pq))
+			throw new java.lang.Exception ("ProductTickQuote ctr: Invalid Inputs");
 
 		_bIsMark = bIsMark;
 		_strSource = strSource;
@@ -80,51 +80,50 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * ComponentQuote de-serialization from input byte array
+	 * ProductTickQuote de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if ComponentQuote cannot be properly de-serialized
+	 * @throws java.lang.Exception Thrown if ProductTickQuote cannot be properly de-serialized
 	 */
 
-	public ComponentTickQuote (
+	public ProductTickQuote (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Invalid input Byte array");
+			throw new java.lang.Exception ("ProductTickQuote de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Empty state");
+			throw new java.lang.Exception ("ProductTickQuote de-serializer: Empty state");
 
-		java.lang.String strSerializedComponentTickQuote = strRawString.substring (0, strRawString.indexOf
+		java.lang.String strSerializedProductTickQuote = strRawString.substring (0, strRawString.indexOf
 			(objectTrailer()));
 
-		if (null == strSerializedComponentTickQuote || strSerializedComponentTickQuote.isEmpty())
-			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Cannot locate state");
+		if (null == strSerializedProductTickQuote || strSerializedProductTickQuote.isEmpty())
+			throw new java.lang.Exception ("ProductTickQuote de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedComponentTickQuote, fieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedProductTickQuote,
+			fieldDelimiter());
 
 		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("ProductTickQuote de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("ComponentTickQuote de-serializer: Cannot locate Product ID");
+			throw new java.lang.Exception ("ProductTickQuote de-serializer: Cannot locate Product ID");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_strProductID = astrField[1];
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception
-				("ComponentTickQuote de-serializer: Cannot locate Component Quote");
+			throw new java.lang.Exception ("ProductTickQuote de-serializer: Cannot locate Component Quote");
 
-		_cq = new org.drip.param.market.ComponentMultiMeasureQuote (astrField[2].getBytes());
+		_pq = new org.drip.param.market.ProductMultiMeasureQuote (astrField[2].getBytes());
 
 		if (null != astrField[3] && !org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
 			(astrField[3]))
@@ -160,20 +159,20 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 	 * @return Product ID
 	 */
 
-	public java.lang.String getProductID()
+	public java.lang.String productID()
 	{
 		return _strProductID;
 	}
 
 	/**
-	 * Retrieve the Component Quote
+	 * Retrieve the Product Quote
 	 * 
-	 * @return Component Quote
+	 * @return Product Quote
 	 */
 
-	public org.drip.param.definition.ComponentQuote getComponentQuote()
+	public org.drip.param.definition.ProductQuote productQuote()
 	{
-		return _cq;
+		return _pq;
 	}
 
 	/**
@@ -182,7 +181,7 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 	 * @return Quote Source
 	 */
 
-	public java.lang.String getSource()
+	public java.lang.String source()
 	{
 		return _strSource;
 	}
@@ -193,7 +192,7 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 	 * @return Counter Party
 	 */
 
-	public java.lang.String getCounterParty()
+	public java.lang.String counterParty()
 	{
 		return _strCounterParty;
 	}
@@ -214,7 +213,7 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strProductID +
-			fieldDelimiter() + new java.lang.String (_cq.serialize()) + fieldDelimiter());
+			fieldDelimiter() + new java.lang.String (_pq.serialize()) + fieldDelimiter());
 
 		if (null == _strSource)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
@@ -233,7 +232,7 @@ public class ComponentTickQuote extends org.drip.service.stream.Serializer {
 		final byte[] ab)
 	{
 		try {
-			return new ComponentTickQuote (ab);
+			return new ProductTickQuote (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

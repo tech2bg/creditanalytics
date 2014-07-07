@@ -8,7 +8,7 @@ import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -269,19 +269,24 @@ public class FedFundOvernightCompounding {
 	{
 		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mapFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
 
+		double dblAccount = 1.;
 		JulianDate dt = dtStart;
 
-		while (dt.getJulian() <= dtEnd.getJulian()) {
+		while (dt.getJulian() < dtValue.getJulian()) {
 			CaseInsensitiveTreeMap<Double> mapFixing = new CaseInsensitiveTreeMap<Double>();
 
 			mapFixing.put (fri.fullyQualifiedName(), dblFlatFixing);
 
 			mapFixings.put (dt, mapFixing);
 
+			dblAccount *= (1. + (dblFlatFixing / 360.));
+
 			dt = dt.addDays (1);
 		}
 
-		System.out.println ("\tManual Calc Float Accrued: " +
+		System.out.println ("\tManual Calc Float Accrued (Geometric Compounding): " + (dblAccount - 1.) * dblNotional);
+
+		System.out.println ("\tManual Calc Float Accrued (Arithmetic Compounding): " +
 			((dtValue.getJulian() - dtStart.getJulian()) * dblNotional * dblFlatFixing / 360.));
 
 		return mapFixings;
@@ -313,7 +318,7 @@ public class FedFundOvernightCompounding {
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 			dtCustomOISStart.getJulian(),
-			"4M",
+			"6M",
 			null,
 			4,
 			"Act/360",
@@ -355,7 +360,7 @@ public class FedFundOvernightCompounding {
 
 		IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dc,
 			null,
 			null,
@@ -374,9 +379,19 @@ public class FedFundOvernightCompounding {
 		Map<String, Double> mapOISOutput = ois.value (
 			new ValuationParams (dtToday, dtToday, strCurrency),
 			null,
-			cmp,
+			mktParams,
 			null);
 
-		System.out.println ("\tMachine Calc Float Accrued: " + mapOISOutput.get ("FloatAccrued"));
+		System.out.println ("\tMachine Calc Float Accrued (Geometric Compounding): " + mapOISOutput.get ("FloatAccrued"));
+
+		fri.setArithmeticCompounding (true);
+
+		mapOISOutput = ois.value (
+			new ValuationParams (dtToday, dtToday, strCurrency),
+			null,
+			mktParams,
+			null);
+
+		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISOutput.get ("FloatAccrued"));
 	}
 }

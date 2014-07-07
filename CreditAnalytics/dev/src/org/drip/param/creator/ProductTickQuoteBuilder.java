@@ -8,7 +8,6 @@ package org.drip.param.creator;
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -31,29 +30,23 @@ package org.drip.param.creator;
  */
 
 /**
- * ComponentQuoteBuilder contains the component quote builder object. It contains static functions that builds
- * 	component quotes from the quote inputs, as well as from byte streams.
+ * ProductTickQuoteBuilder implements the product tick quote builder object. It contains static functions
+ * 	that build the product quotes from the inputs, as well as from byte array.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComponentQuoteBuilder {
+public class ProductTickQuoteBuilder {
 
 	/**
-	 * Constructor: Constructs an Empty Component Quote instance.
+	 * Constructor: Constructs an Empty Product Quote instance.
 	 * 
-	 * @return ComponentQuote Instance
+	 * @return Product Tick Quote Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentQuote CreateComponentQuote()
+	public static final org.drip.param.market.ProductTickQuote CreateProductTickQuote()
 	{
-		try {
-			return new org.drip.param.market.ComponentMultiMeasureQuote();
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return new org.drip.param.market.ProductTickQuote();
 	}
 
 	/**
@@ -64,13 +57,13 @@ public class ComponentQuoteBuilder {
 	 * @return ComponentQuote Instance
 	 */
 
-	public static final org.drip.param.definition.ComponentQuote FromByteArray (
+	public static final org.drip.param.market.ProductTickQuote FromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.param.market.ComponentMultiMeasureQuote (ab);
+			return new org.drip.param.market.ProductTickQuote (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

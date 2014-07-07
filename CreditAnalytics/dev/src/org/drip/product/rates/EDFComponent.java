@@ -61,7 +61,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -310,7 +310,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
 		return 0.;
@@ -384,12 +384,12 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || valParams.valueDate() >= _dblMaturity) return null;
+		if (null == valParams || null == csqs || valParams.valueDate() >= _dblMaturity) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -442,19 +442,19 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == mktParams)
+		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == csqs)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
 		try {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
-				(valParams, pricerParams, mktParams, quotingParams);
+				(valParams, pricerParams, csqs, quotingParams);
 
 			if (null == mapMeasures) return null;
 
@@ -499,14 +499,14 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
-			strManifestMeasure || strManifestMeasure.isEmpty() || null == mktParams)
+			strManifestMeasure || strManifestMeasure.isEmpty() || null == csqs)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -550,7 +550,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{

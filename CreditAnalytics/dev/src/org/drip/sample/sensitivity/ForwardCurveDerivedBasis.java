@@ -8,7 +8,7 @@ import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -419,7 +419,7 @@ public class ForwardCurveDerivedBasis {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
 		Map<String, ForwardCurve> mapForward = new HashMap<String, ForwardCurve>();
 
@@ -432,7 +432,7 @@ public class ForwardCurveDerivedBasis {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
@@ -447,7 +447,7 @@ public class ForwardCurveDerivedBasis {
 		 * Set the discount curve + quartic polynomial forward curve based component market parameters.
 		 */
 
-		MarketParamSet cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParamsQuarticFwd = MarketParamsBuilder.Create
 			(dc, fcxMQuartic, null, null, null, null, null, null);
 
 		int i = 0;
@@ -470,7 +470,7 @@ public class ForwardCurveDerivedBasis {
 
 			FloatFloatComponent ffc = aFFC[i++];
 
-			CaseInsensitiveTreeMap<Double> mapQuarticValue = ffc.value (valParams, null, cmpQuarticFwd, null);
+			CaseInsensitiveTreeMap<Double> mapQuarticValue = ffc.value (valParams, null, mktParamsQuarticFwd, null);
 
 			System.out.println (" " + strMaturityTenor + " =>  " +
 				FormatUtil.FormatDouble (fcxMQuartic.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +

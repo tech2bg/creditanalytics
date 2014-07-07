@@ -1,11 +1,13 @@
 
-package org.drip.sample.xccy;
+package org.drip.sample.ccbs;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.sample.forward.*;
+import org.drip.sample.xccy.CCBSDiscountCurve;
+import org.drip.sample.xccy.CCBSForwardCurve;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
@@ -39,14 +41,14 @@ import org.drip.spline.stretch.*;
  */
 
 /**
- * NOK3M6MUSD3M6M demonstrates the setup and construction of the USD 3M Forward Curve from NOK3M6MUSD3M6M
- * 	CCBS, NOK 3M, NOK 6M, and USD 6M Quotes.
+ * SEK3M6MUSD3M6M demonstrates the setup and construction of the USD 3M Forward Curve from SEK3M6MUSD3M6M
+ * 	CCBS, SEK 3M, SEK 6M, and USD 6M Quotes.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class NOK3M6MUSD3M6M {
-	private static final double _dblFXNOKUSD = 0.1676;
+public class SEK3M6MUSD3M6M {
+	private static final double _dblFXSEKUSD = 0.1496;
 
 	private static final int[] s_aiUSDOISDepositMaturityDays = new int[] {
 		1,
@@ -140,33 +142,33 @@ public class NOK3M6MUSD3M6M {
 		0.02038     //  30Y
 	};
 
-	private static final int[] s_aiNOKOISDepositMaturityDays = new int[] {
+	private static final int[] s_aiSEKOISDepositMaturityDays = new int[] {
 		1,
 		2,
 		3
 	};
 
-	private static final double[] s_adblNOKOISDepositQuote = new double[] {
+	private static final double[] s_adblSEKOISDepositQuote = new double[] {
 		0.0004,	// 1D
 		0.0004,	// 2D
 		0.0004	// 3D
 	};
 
-	private static final String[] s_astrNOKShortEndOISMaturityTenor = new String[] {
+	private static final String[] s_astrSEKShortEndOISMaturityTenor = new String[] {
 		"1W",
 		"2W",
 		"3W",
 		"1M"
 	};
 
-	private static final double[] s_adblNOKShortEndOISQuote = new double[] {
+	private static final double[] s_adblSEKShortEndOISQuote = new double[] {
 		0.00070,    //   1W
 		0.00069,    //   2W
 		0.00078,    //   3W
 		0.00074     //   1M
 	};
 
-	private static final String[] s_astrNOKOISFutureTenor = new String[] {
+	private static final String[] s_astrSEKOISFutureTenor = new String[] {
 		"1M",
 		"1M",
 		"1M",
@@ -174,7 +176,7 @@ public class NOK3M6MUSD3M6M {
 		"1M"
 	};
 
-	private static final String[] s_astrNOKOISFutureMaturityTenor = new String[] {
+	private static final String[] s_astrSEKOISFutureMaturityTenor = new String[] {
 		"1M",
 		"2M",
 		"3M",
@@ -182,7 +184,7 @@ public class NOK3M6MUSD3M6M {
 		"5M"
 	};
 
-	private static final double[] s_adblNOKOISFutureQuote = new double[] {
+	private static final double[] s_adblSEKOISFutureQuote = new double[] {
 		 0.00046,    //   1M x 1M
 		 0.00016,    //   2M x 1M
 		-0.00007,    //   3M x 1M
@@ -190,7 +192,7 @@ public class NOK3M6MUSD3M6M {
 		-0.00014     //   5M x 1M
 	};
 
-	private static final String[] s_astrNOKLongEndOISMaturityTenor = new String[] {
+	private static final String[] s_astrSEKLongEndOISMaturityTenor = new String[] {
 		"15M",
 		"18M",
 		"21M",
@@ -211,7 +213,7 @@ public class NOK3M6MUSD3M6M {
 		"30Y"
 	};
 
-	private static final double[] s_adblNOKLongEndOISQuote = new double[] {
+	private static final double[] s_adblSEKLongEndOISQuote = new double[] {
 		0.00002,    //  15M
 		0.00008,    //  18M
 		0.00021,    //  21M
@@ -424,7 +426,7 @@ public class NOK3M6MUSD3M6M {
 		0.00050
 	};
 
-	private static final String[] s_astrNOK6MDepositTenor = new String[] {
+	private static final String[] s_astrSEK6MDepositTenor = new String[] {
 		"1D",
 		"1W",
 		"2W",
@@ -436,7 +438,7 @@ public class NOK3M6MUSD3M6M {
 		"5M"
 	};
 
-	private static final double[] s_adblNOK6MDepositQuote = new double[] {
+	private static final double[] s_adblSEK6MDepositQuote = new double[] {
 		0.003565,	// 1D
 		0.003858,	// 1W
 		0.003840,	// 2W
@@ -448,7 +450,7 @@ public class NOK3M6MUSD3M6M {
 		0.003225	// 5M
 	};
 
-	private static final String[] s_astrNOK6MFRATenor = new String[] {
+	private static final String[] s_astrSEK6MFRATenor = new String[] {
 		 "0D",
 		 "1M",
 		 "2M",
@@ -470,7 +472,7 @@ public class NOK3M6MUSD3M6M {
 		"18M"
 	};
 
-	private static final double[] s_adblNOK6MFRAQuote = new double[] {
+	private static final double[] s_adblSEK6MFRAQuote = new double[] {
 		0.003120,	//  0D
 		0.002930,	//  1M
 		0.002720,	//  2M
@@ -492,7 +494,7 @@ public class NOK3M6MUSD3M6M {
 		0.004090	// 18M
 	};
 
-	private static final String[] s_astrNOK6MFixFloatTenor = new String[] {
+	private static final String[] s_astrSEK6MFixFloatTenor = new String[] {
 		 "3Y",
 		 "4Y",
 		 "5Y",
@@ -512,7 +514,7 @@ public class NOK3M6MUSD3M6M {
 		"60Y"
 	};
 
-	private static final double[] s_adblNOK6MFixFloatQuote = new double[] {
+	private static final double[] s_adblSEK6MFixFloatQuote = new double[] {
 		0.004240,	//  3Y
 		0.005760,	//  4Y			
 		0.007620,	//  5Y
@@ -545,27 +547,27 @@ public class NOK3M6MUSD3M6M {
 	};
 
 	private static final double[] s_adblCCBSQuote = new double[] {
-		-0.000600, //  1Y
-		-0.000600, //  2Y
-		-0.000600, //  3Y
-		-0.000575, //  4Y
-		-0.000575, //  5Y
-		-0.000575, //  7Y
-		-0.000575, // 10Y
-		-0.000600, // 15Y
-		-0.000600  // 20Y
+		-0.000525, //  1Y
+		-0.000400, //  2Y
+		-0.000250, //  3Y
+		-0.000175, //  4Y
+		-0.000150, //  5Y
+		-0.000125, //  7Y
+		-0.000125, // 10Y
+		-0.000000, // 15Y
+		-0.000000  // 20Y
 	};
 
 	private static final double[] s_adblIRSQuote = new double[] {
-		0.0575, //  1Y
-		0.0575, //  2Y
-		0.0575, //  3Y
-		0.0575, //  4Y
-		0.0600, //  5Y
-		0.0600, //  7Y
-		0.0600, // 10Y
-		0.0600, // 15Y
-		0.0600  // 20Y
+		0.0100, //  1Y
+		0.0100, //  2Y
+		0.0125, //  3Y
+		0.0125, //  4Y
+		0.0150, //  5Y
+		0.0175, //  7Y
+		0.0250, // 10Y
+		0.0400, // 15Y
+		0.0525  // 20Y
 	};
 
 	public static final void main (
@@ -581,7 +583,7 @@ public class NOK3M6MUSD3M6M {
 		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
 
 		String strReferenceCurrency = "USD";
-		String strDerivedCurrency = "NOK";
+		String strDerivedCurrency = "SEK";
 
 		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
@@ -656,15 +658,15 @@ public class NOK3M6MUSD3M6M {
 			strDerivedCurrency,
 			false,
 			dtValue,
-			s_aiNOKOISDepositMaturityDays,
-			s_adblNOKOISDepositQuote,
-			s_astrNOKShortEndOISMaturityTenor,
-			s_adblNOKShortEndOISQuote,
-			s_astrNOKOISFutureTenor,
-			s_astrNOKOISFutureMaturityTenor,
-			s_adblNOKOISFutureQuote,
-			s_astrNOKLongEndOISMaturityTenor,
-			s_adblNOKLongEndOISQuote,
+			s_aiSEKOISDepositMaturityDays,
+			s_adblSEKOISDepositQuote,
+			s_astrSEKShortEndOISMaturityTenor,
+			s_adblSEKShortEndOISQuote,
+			s_astrSEKOISFutureTenor,
+			s_astrSEKOISFutureMaturityTenor,
+			s_adblSEKOISFutureQuote,
+			s_astrSEKLongEndOISMaturityTenor,
+			s_adblSEKLongEndOISQuote,
 			scbcCubic
 		);
 
@@ -673,14 +675,14 @@ public class NOK3M6MUSD3M6M {
 			null,
 			FloatingRateIndex.Create (strDerivedCurrency + "-LIBOR-6M"),
 			scbcCubic,
-			s_astrNOK6MDepositTenor,
-			s_adblNOK6MDepositQuote,
+			s_astrSEK6MDepositTenor,
+			s_adblSEK6MDepositQuote,
 			"ForwardRate",
-			s_astrNOK6MFRATenor,
-			s_adblNOK6MFRAQuote,
+			s_astrSEK6MFRATenor,
+			s_adblSEK6MFRAQuote,
 			"ParForwardRate",
-			s_astrNOK6MFixFloatTenor,
-			s_adblNOK6MFixFloatQuote,
+			s_astrSEK6MFixFloatTenor,
+			s_adblSEK6MFixFloatQuote,
 			"DerivedParBasisSpread",
 			null,
 			null,
@@ -688,7 +690,7 @@ public class NOK3M6MUSD3M6M {
 			null,
 			null,
 			"DerivedParBasisSpread",
-			"---- NOK LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
+			"---- SEK LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
 			false);
 
 		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
@@ -700,7 +702,7 @@ public class NOK3M6MUSD3M6M {
 			fc3MReference,
 			dcDerived,
 			fc6MDerived,
-			_dblFXNOKUSD,
+			_dblFXSEKUSD,
 			scbcCubic,
 			s_astrCCBSTenor,
 			s_adblCCBSQuote,
@@ -716,7 +718,7 @@ public class NOK3M6MUSD3M6M {
 			fc3MReference,
 			dcDerived,
 			fc6MDerived,
-			_dblFXNOKUSD,
+			_dblFXSEKUSD,
 			scbcCubic,
 			s_astrCCBSTenor,
 			s_adblCCBSQuote,
@@ -730,7 +732,7 @@ public class NOK3M6MUSD3M6M {
 			dcReference,
 			fc6MReference,
 			fc3MReference,
-			_dblFXNOKUSD,
+			_dblFXSEKUSD,
 			scbcCubic,
 			s_astrCCBSTenor,
 			s_adblCCBSQuote,
@@ -745,7 +747,7 @@ public class NOK3M6MUSD3M6M {
 			dcReference,
 			fc6MReference,
 			fc3MReference,
-			_dblFXNOKUSD,
+			_dblFXSEKUSD,
 			scbcCubic,
 			s_astrCCBSTenor,
 			s_adblCCBSQuote,

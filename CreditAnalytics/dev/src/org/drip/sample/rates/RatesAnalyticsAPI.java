@@ -279,7 +279,7 @@ public class RatesAnalyticsAPI {
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
 		/* for (int i = 0; i < 100; ++i) {
@@ -292,7 +292,7 @@ public class RatesAnalyticsAPI {
 			WengertJacobian wjComp = aCompCalib[i].jackDDirtyPVDManifestMeasure
 				(new ValuationParams (dtStart, dtStart, "USD"),
 				null,
-				ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+				MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 				null);
 
 			System.out.println ("PV/DF Micro Jack[" + aCompCalib[i].name() + "]=" +
@@ -374,7 +374,7 @@ public class RatesAnalyticsAPI {
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
 		org.drip.quant.calculus.WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
@@ -432,7 +432,7 @@ public class RatesAnalyticsAPI {
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
 		WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
@@ -541,7 +541,7 @@ public class RatesAnalyticsAPI {
 		for (int i = 0; i < aCompCalib.length; ++i)
 			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
 		/* WengertJacobian wjQuoteDF = dc.compQuoteDFJacobian (dtStart);

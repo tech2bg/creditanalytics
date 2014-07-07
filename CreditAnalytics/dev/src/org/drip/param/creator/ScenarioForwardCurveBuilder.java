@@ -54,7 +54,7 @@ public class ScenarioForwardCurveBuilder {
 	 * @param fri The Floating Rate Index
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * @param quotingParam Quoting Parameters
 	 * @param dblEpochResponse The Starting Response Value
 	 * 
@@ -67,7 +67,7 @@ public class ScenarioForwardCurveBuilder {
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final double dblEpochResponse)
 	{
@@ -75,10 +75,10 @@ public class ScenarioForwardCurveBuilder {
 
 		try {
 			org.drip.analytics.rates.ForwardCurve fc = new org.drip.state.curve.BasisSplineForwardRate (fri,
-				lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, cmp));
+				lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, csqs));
 
 			return fc.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
-				pricerParam, quotingParam, cmp)) ? fc : null;
+				pricerParam, quotingParam, csqs)) ? fc : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -94,7 +94,7 @@ public class ScenarioForwardCurveBuilder {
 	 * @param fri The Floating Rate Index
 	 * @param valParams Valuation Parameters
 	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * @param quotingParam Quoting Parameters
 	 * @param strBasisType The Basis Type
 	 * @param fsbp The Function Set Basis Parameters
@@ -111,7 +111,7 @@ public class ScenarioForwardCurveBuilder {
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final java.lang.String strBasisType,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
@@ -148,7 +148,7 @@ public class ScenarioForwardCurveBuilder {
 									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
 										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
-			return ShapePreservingForwardCurve (lcc, aSRS, fri, valParams, pricerParam, cmp, quotingParam,
+			return ShapePreservingForwardCurve (lcc, aSRS, fri, valParams, pricerParam, csqs, quotingParam,
 				dblEpochResponse);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

@@ -1058,7 +1058,7 @@ public class CreditAnalyticsTestSuite {
 			System.out.println ("---------      ---------    ---------    --------- --------- --------");
 
 			for (org.drip.analytics.period.CashflowPeriodCurveFactors p : cds.getCouponFlow (valParams,
-				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
+				pricerParams, org.drip.param.creator.MarketParamsBuilder.Credit
 					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.05),
 							org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
@@ -1099,7 +1099,7 @@ public class CreditAnalyticsTestSuite {
 					(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 						org.drip.analytics.daycount.Convention.DR_ACTUAL),
 							org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
-							org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)))
+								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)))
 				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.getStartDate()) +
 					"    " + org.drip.analytics.date.JulianDate.fromJulian (dp.getEndDate()) + "    " +
 						org.drip.analytics.date.JulianDate.fromJulian (dp.getPayDate()) + "    " +
@@ -1328,10 +1328,10 @@ public class CreditAnalyticsTestSuite {
 			System.out.println ("---------      ---------    ---------    --------- --------- --------");
 
 			for (org.drip.analytics.period.CashflowPeriodCurveFactors p : bond.getCouponFlow
-				(valParams, pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
+				(valParams, pricerParams, org.drip.param.creator.MarketParamsBuilder.Credit
 					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null,
-						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
-							(dtToday.getJulian(), "CC", "USD", 0.02, 0.4)))) {
+						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(),
+							"CC", "USD", 0.02, 0.4)))) {
 				try {
 					System.out.println (org.drip.analytics.date.JulianDate.fromJulian
 						(p.getAccrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
@@ -1363,7 +1363,7 @@ public class CreditAnalyticsTestSuite {
 	
 			for (org.drip.analytics.period.LossPeriodCurveFactors dp : bond.getLossFlow (valParams,
 				org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
-				org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)))
+					org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)))
 				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.getStartDate()) +
 					"    " + org.drip.analytics.date.JulianDate.fromJulian (dp.getEndDate()) + "    " +
 						org.drip.analytics.date.JulianDate.fromJulian (dp.getPayDate()) + "    " +
@@ -1384,8 +1384,8 @@ public class CreditAnalyticsTestSuite {
 				System.out.println (strISIN + "    " + bond.getTicker() + " " +
 					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 						(org.drip.analytics.date.JulianDate.Today().getJulian(),
-							org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)), 2,
-								3, 100.) + " " + bond.maturity());
+							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2, 3, 100.)
+								+ " " + bond.maturity());
 
 				System.out.println ("Work-out date From Price: " + new org.drip.analytics.date.JulianDate
 					(wi.date()));
@@ -1558,10 +1558,10 @@ public class CreditAnalyticsTestSuite {
 				}
 			}
 
-			org.drip.param.market.MarketParamSet cmp =
-				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY,
-					cc, null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
-						(aBond[i], org.drip.analytics.date.JulianDate.Today(), 0.04));
+			org.drip.param.market.CurveSurfaceQuoteSet mktParams =
+				org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, cc, null, null, null,
+					org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (aBond[i],
+						org.drip.analytics.date.JulianDate.Today(), 0.04));
 
 			if (s_bCustomBondAnalDisplay) {
 				try {
@@ -1569,8 +1569,8 @@ public class CreditAnalyticsTestSuite {
 						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.), 2, 3,
-										100.));
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, 0.),
+										2, 3, 100.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("CustomAPISample failed.");
@@ -1584,7 +1584,7 @@ public class CreditAnalyticsTestSuite {
 				org.drip.param.valuation.WorkoutInfo wi = aBond[i].calcExerciseYieldFromPrice
 					(org.drip.param.valuation.ValuationParams.CreateValParams
 						(org.drip.analytics.date.JulianDate.Today(), 0, "",
-							org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 1.);
+							org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, 1.);
 
 				System.out.println ("Workout Date: " + org.drip.analytics.date.JulianDate.fromJulian
 					(wi.date()));
@@ -1599,7 +1599,7 @@ public class CreditAnalyticsTestSuite {
 						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromPrice
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
 										wi.date(), wi.factor(), 1.), 2, 3, 100.));
 
 					try {
@@ -1608,7 +1608,7 @@ public class CreditAnalyticsTestSuite {
 								(aBond[i].calcZSpreadFromPrice
 									(org.drip.param.valuation.ValuationParams.CreateValParams
 										(org.drip.analytics.date.JulianDate.Today(), 0, "",
-											org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
+											org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
 												wi.date(), wi.factor(), 1.), 1, 3, 100.));
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
@@ -1618,7 +1618,7 @@ public class CreditAnalyticsTestSuite {
 							org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcTSYSpreadFromPrice
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, wi.date(),
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, wi.date(),
 										wi.factor(), 1.), 1, 3, 100.));
 
 					System.out.println ("Credit Basis From Price: " +
@@ -1626,7 +1626,7 @@ public class CreditAnalyticsTestSuite {
 							(aBond[i].calcCreditBasisFromPrice
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-										org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
+										org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
 											wi.date(), wi.factor(), 1.), 1, 3, 100.));
 
 					System.out.println ("PECS From Price: " +
@@ -1634,21 +1634,21 @@ public class CreditAnalyticsTestSuite {
 							(aBond[i].calcPECSFromPrice
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-										org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
+										org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
 											wi.date(), wi.factor(), 1.), 1, 3, 100.));
 
 					System.out.println ("Price From TSY Spread: " +
 						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromTSYSpread
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.0188), 2,
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, 0.0188), 2,
 										3, 100.));
 
 					System.out.println ("Yield From TSY Spread: " +
 						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromTSYSpread
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.0188), 2,
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, 0.0188), 2,
 										3, 100.));
 
 					System.out.println ("Credit Basis From TSY Spread: " +
@@ -1656,21 +1656,21 @@ public class CreditAnalyticsTestSuite {
 							(aBond[i].calcCreditBasisFromTSYSpread
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-										org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null,
+										org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
 											0.0188), 1, 3, 100.));
 
 					System.out.println ("PECS From TSY Spread: " +
 						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPECSFromTSYSpread
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, 0.0188),
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, 0.0188),
 										1, 3, 100.));
 
 					System.out.println ("Theoretical Price: " +
 						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcPriceFromCreditBasis
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), cmp, null, wi.date(),
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, wi.date(),
 										wi.factor(), 0.), 2, 3, 100.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
@@ -1763,9 +1763,9 @@ public class CreditAnalyticsTestSuite {
 						System.out.println (strISIN + "    " + bond.getTicker() + " " +
 							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 								(org.drip.analytics.date.JulianDate.Today().getJulian(),
-									org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc,
-										cc)), 2, 3, 100.) + " " + bond.maturity() + "    " +
-											(bond.isFloater() ? "FLOAT" : "FIXED") + "     " +
+									org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2,
+										3, 100.) + " " + bond.maturity() + "    " + (bond.isFloater() ?
+											"FLOAT" : "FIXED") + "     " + 
 												org.drip.quant.common.FormatUtil.FormatDouble
 													(dblYieldFromPrice, 2, 3, 100.) + "    " +
 														org.drip.quant.common.FormatUtil.FormatDouble
@@ -1802,8 +1802,8 @@ public class CreditAnalyticsTestSuite {
 					System.out.println (strISIN + "    " + bond.getTicker() + " " +
 						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 							(org.drip.analytics.date.JulianDate.Today().getJulian(),
-								org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc)),
-									2, 3, 100.) + " " + bond.maturity() + "    " +
+								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2, 3,
+									100.) + " " + bond.maturity() + "    " +
 										org.drip.quant.common.FormatUtil.FormatDouble
 											(dblOutstandingAmount, 10, 0, 1.));
 			} catch (java.lang.Exception e) {
@@ -2728,9 +2728,9 @@ public class CreditAnalyticsTestSuite {
 			("CCCalibBond", "DKK", "CC", 0.05, 2, "30/360", org.drip.analytics.date.JulianDate.CreateFromYMD
 				(2008, 9, 21), org.drip.analytics.date.JulianDate.CreateFromYMD (2023, 9, 20), null, null);
 
-		org.drip.param.market.MarketParamSet cmp =
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				cc, null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
+		org.drip.param.market.CurveSurfaceQuoteSet mktParams =
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, cc, null, null, null,
+				org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
 					org.drip.analytics.date.JulianDate.Today(), 0.04));
 
 		org.drip.param.valuation.ValuationParams valParams =
@@ -2738,7 +2738,7 @@ public class CreditAnalyticsTestSuite {
 				(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 					org.drip.analytics.daycount.Convention.DR_ACTUAL);
 		try {
-			dblCreditPrice = bond.calcPriceFromCreditBasis (valParams, cmp, null,
+			dblCreditPrice = bond.calcPriceFromCreditBasis (valParams, mktParams, null,
 				bond.maturity().getJulian(), 1., 0.);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
@@ -2793,19 +2793,16 @@ public class CreditAnalyticsTestSuite {
 			try {
 				System.out.println (cds.primaryCode() + " => " + cds.measureValue (valParams,
 					org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-							null, null, ccCalib, null, null, null,
-								org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
-									org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
-										"FairPremium"));
+						org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, ccCalib,
+							null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
+								(bond, org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
+									"FairPremium"));
 
-				System.out.println (bond.primaryCode() + " => " + bond.calcPriceFromCreditBasis
-					(valParams,
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-							null, null, ccCalib, null, null, null,
-								org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
-									org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
-										bond.maturity().getJulian(), 1., 0.));
+				System.out.println (bond.primaryCode() + " => " + bond.calcPriceFromCreditBasis (valParams,
+					org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, ccCalib,
+						null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
+							(bond, org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
+								bond.maturity().getJulian(), 1., 0.));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -2824,9 +2821,9 @@ public class CreditAnalyticsTestSuite {
 			("SLMA_ETF", new java.lang.String[] {"US78490FVJ55", "US78490FWD76", "US78490FVL02",
 				"US78442FAZ18", "US78490FTL30"}, new double[] {1., 2., 3., 4., 5.}, dtToday, 100.);
 
-		org.drip.param.market.MarketParamSet bmp = new org.drip.param.market.MarketParamSet();
+		org.drip.param.market.CurveSurfaceQuoteSet csqs = new org.drip.param.market.CurveSurfaceQuoteSet();
 
-		bmp.setFundingCurve (org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
+		csqs.setFundingCurve (org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD",
 			null, 0.04));
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = null;
@@ -2835,7 +2832,7 @@ public class CreditAnalyticsTestSuite {
 			mapResult = bb.value (org.drip.param.valuation.ValuationParams.CreateValParams (dtToday, 0,
 				"USD", org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 					org.drip.param.pricer.PricerParams (7, null, false,
-						org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON), bmp, null);
+						org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON), csqs, null);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
 				System.out.println ("BasketBondAPISample failed.");

@@ -14,7 +14,7 @@ import org.drip.analytics.output.ExerciseInfo;
 import org.drip.analytics.period.*;
 import org.drip.analytics.rates.ExplicitBootDiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
@@ -155,7 +155,7 @@ public class BondLiveAndEODAPI {
 
 		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02, 0.4);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Credit (dc, cc);
 
 		List<String> lsstrISIN = CreditAnalytics.GetISINsForTicker (strTicker);
 
@@ -191,7 +191,7 @@ public class BondLiveAndEODAPI {
 
 				System.out.println (strISIN + FIELD_SEPARATOR +
 					(bond.isFloater() ? "FLOAT   " : "FIXED   ") + bond.getTicker() + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (bond.coupon (dtToday.getJulian(), cmp), 2, 3, 100.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (bond.coupon (dtToday.getJulian(), mktParams), 2, 3, 100.) + FIELD_SEPARATOR +
 					bond.maturity() + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblYieldFromPrice, 2, 3, 100.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblZSpreadFromPrice, 1, 3, 100.) + FIELD_SEPARATOR +
@@ -286,7 +286,7 @@ public class BondLiveAndEODAPI {
 
 		PricerParams pricerParams = PricerParams.MakeStdPricerParams();
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Credit (dc, cc);
 
 		WorkoutInfo wi = CreditAnalytics.BondWorkoutInfoFromPrice (strISIN, dtToday, dc, 1.);
 
@@ -367,7 +367,7 @@ public class BondLiveAndEODAPI {
 		ExerciseInfo nei = CreditAnalytics.NextExerciseInfo (strISIN, dtToday);
 
 		System.out.println (strISIN + "    " + bond.getTicker() + " " + FormatUtil.FormatDouble (bond.coupon
-			(valParams.valueDate(), cmp), 2, 3, 100.) + " " + bond.maturity());
+			(valParams.valueDate(), mktParams), 2, 3, 100.) + " " + bond.maturity());
 
 		System.out.println ("Work-out date From Price: " + new JulianDate (wi.date()));
 
@@ -442,7 +442,7 @@ public class BondLiveAndEODAPI {
 
 			System.out.println ("---------      ---------    ---------   ------  ------   -------- --------- --------");
 
-			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, cmp))
+			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, mktParams))
 				System.out.println (
 					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
@@ -458,7 +458,7 @@ public class BondLiveAndEODAPI {
 
 			System.out.println ("---------      ---------    ---------  -------- --------- --------");
 
-			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, cmp))
+			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, mktParams))
 				System.out.println (
 					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
@@ -473,7 +473,7 @@ public class BondLiveAndEODAPI {
 
 		System.out.println ("----------     --------      --------      ---    ----     ---    -----    ---------  -------");
 
-		for (LossPeriodCurveFactors dp : bond.getLossFlow (valParams, pricerParams, cmp))
+		for (LossPeriodCurveFactors dp : bond.getLossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
 				JulianDate.fromJulian (dp.getStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (dp.getEndDate()) + FIELD_SEPARATOR +

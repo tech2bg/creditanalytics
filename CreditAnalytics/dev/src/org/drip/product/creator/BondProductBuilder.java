@@ -1481,8 +1481,8 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 			return false;
 		}
 
-		if (null == mpc || null == mpc.getIRSG() || null == mpc.getIRSG().get (_strCouponCurrency) ||
-			null == mpc.getIRSG().get (_strCouponCurrency).getDCBase()) {
+		if (null == mpc || null == mpc.irsg() || null == mpc.irsg().get (_strCouponCurrency) ||
+			null == mpc.irsg().get (_strCouponCurrency).getDCBase()) {
 			if (m_bBlog) System.out.println ("Bad mpc In for ISIN " + _strISIN);
 
 			return false;
@@ -1490,7 +1490,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 
 		try {
 			if (0. != _dblCurrentCoupon) {
-				org.drip.analytics.rates.DiscountCurve dcBase = mpc.getIRSG().get
+				org.drip.analytics.rates.DiscountCurve dcBase = mpc.irsg().get
 					(_strCouponCurrency).getDCBase();
 
 				_dblFloatSpread = _dblCurrentCoupon - 100. * dcBase.libor (dcBase.epoch().getJulian(),

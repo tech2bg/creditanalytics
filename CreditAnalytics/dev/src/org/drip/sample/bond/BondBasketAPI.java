@@ -9,7 +9,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
@@ -369,11 +369,11 @@ public class BondBasketAPI {
 		 * Create the basket market parameters and add the named discount curve and the treasury curves to it.
 		 */
 
-		MarketParamSet bmp = new MarketParamSet();
+		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
-		bmp.setFundingCurve (dc);
+		mktParams.setFundingCurve (dc);
 
-		bmp.setFundingCurve (dcTSY);
+		mktParams.setFundingCurve (dcTSY);
 
 		/*
 		 * Construct the Valuation and the Pricing Parameters
@@ -387,7 +387,7 @@ public class BondBasketAPI {
 		 * Generate the bond basket measures from the valuation, the pricer, and the market parameters
 		 */
 
-		CaseInsensitiveTreeMap<Double> mapResult = bb.value (valParams, pricerParams, bmp, null);
+		CaseInsensitiveTreeMap<Double> mapResult = bb.value (valParams, pricerParams, mktParams, null);
 
 		System.out.println ("Clean Price:      " + FormatUtil.FormatDouble (mapResult.get ("CleanPrice"), 0, 2, 100.));
 

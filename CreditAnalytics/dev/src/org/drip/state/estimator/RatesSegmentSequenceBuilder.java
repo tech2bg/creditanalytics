@@ -47,7 +47,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfr = null;
-	private org.drip.param.market.MarketParamSet _cmp = null;
+	private org.drip.param.market.CurveSurfaceQuoteSet _mktParams = null;
 	private org.drip.state.estimator.StretchRepresentationSpec _srs = null;
 	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
@@ -66,7 +66,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	 * @param srs Stretch Representation
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
-	 * @param cmp Component Market Parameter
+	 * @param mktParams Component Market Parameter
 	 * @param quotingParams Quoting Parameter
 	 * @param mssPrev The Previous Stretch Used to value cash flows that fall in those segments
 	 * @param span The Containing Span this Stretch will become a part of
@@ -83,7 +83,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.state.estimator.StretchRepresentationSpec srs,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
 		final org.drip.spline.grid.Span span,
@@ -106,7 +106,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		}
 
 		try {
-			return new RatesSegmentSequenceBuilder (dblEpochResponse, srs, valParams, pricerParams, cmp,
+			return new RatesSegmentSequenceBuilder (dblEpochResponse, srs, valParams, pricerParams, mktParams,
 				quotingParams, mssPrev, span, sbfr, mapPMSC, sbfrQuoteSensitivity, bs);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -285,7 +285,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 	 * @param srs Stretch Representation
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
-	 * @param cmp Component Market Parameter
+	 * @param mktParams Component Market Parameter
 	 * @param quotingParams Quoting Parameter
 	 * @param mssPrev The Previous Stretch Used to value cash flows that fall in those segments
 	 * @param span The Containing Span this Stretch will become a part of
@@ -302,7 +302,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		final org.drip.state.estimator.StretchRepresentationSpec srs,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.spline.stretch.MultiSegmentSequence mssPrev,
 		final org.drip.spline.grid.Span span,
@@ -318,7 +318,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			= srs) || null == (_valParams = valParams) || null == (_bs = bs) || null == (_mapPMSC = mapPMSC))
 			throw new java.lang.Exception ("RatesSegmentSequenceBuilder ctr: Invalid Inputs");
 
-		_cmp = cmp;
+		_mktParams = mktParams;
 		_sbfr = sbfr;
 		_span = span;
 		_pricerParams = pricerParams;
@@ -359,7 +359,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		if (null == aCS || 0 == aCS.length) return false;
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC (_valParams,
-			_pricerParams, _cmp, _quotingParams, _srs.getLSMM (0));
+			_pricerParams, _mktParams, _quotingParams, _srs.getLSMM (0));
 
 		double dblSegmentRight = aCS[0].right();
 
@@ -409,7 +409,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 			if (null == cc) return false;
 
 			org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC
-				(_valParams, _pricerParams, _cmp, _quotingParams, _srs.getLSMM (iSegment));
+				(_valParams, _pricerParams, _mktParams, _quotingParams, _srs.getLSMM (iSegment));
 
 			double dblSegmentRight = aCS[iSegment].right();
 

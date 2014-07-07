@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.DepositBuilder;
 import org.drip.product.definition.*;
@@ -450,7 +450,7 @@ public class IBOR {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, fcReference, null, null, null, null, null, null);
 
 		/*
@@ -464,7 +464,7 @@ public class IBOR {
 			fri,
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			null == adblDepositQuote || 0 == adblDepositQuote.length ? adblFRAQuote[0] : adblDepositQuote[0]);
 
@@ -472,7 +472,7 @@ public class IBOR {
 		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
 		 */
 
-		cmp.setForwardCurve (fcDerived);
+		mktParams.setForwardCurve (fcDerived);
 
 		if (bPrintMetric) {
 			/*
@@ -488,7 +488,7 @@ public class IBOR {
 
 				for (int i = 0; i < aDeposit.length; ++i)
 					System.out.println ("\t[" + aDeposit[i].effective() + " - " + aDeposit[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null, cmp, null, strDepositCalibMeasure), 1, 6, 1.) +
+						FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null, mktParams, null, strDepositCalibMeasure), 1, 6, 1.) +
 							" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.) + " | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].maturity()), 1, 4, 100.) + "%");
 			}
@@ -506,7 +506,7 @@ public class IBOR {
 
 				for (int i = 0; i < aFRA.length; ++i)
 					System.out.println ("\t[" + aFRA[i].effective() + " - " + aFRA[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aFRA[i].measureValue (valParams, null, cmp, null, strFRACalibMeasure), 1, 6, 1.) +
+						FormatUtil.FormatDouble (aFRA[i].measureValue (valParams, null, mktParams, null, strFRACalibMeasure), 1, 6, 1.) +
 							" | " + FormatUtil.FormatDouble (adblFRAQuote[i], 1, 6, 1.) + " | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].maturity()), 1, 4, 100.) + "%");
 			}
@@ -524,7 +524,7 @@ public class IBOR {
 
 				for (int i = 0; i < aFixFloat.length; ++i)
 					System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, cmp, null, strFixFloatCalibMeasure), 1, 2, -0.01) +
+						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, mktParams, null, strFixFloatCalibMeasure), 1, 2, -0.01) +
 							"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
 			}
@@ -542,7 +542,7 @@ public class IBOR {
 
 				for (int i = 0; i < aFloatFloat.length; ++i)
 					System.out.println ("\t[" + aFloatFloat[i].effective() + " - " + aFloatFloat[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aFloatFloat[i].measureValue (valParams, null, cmp, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
+						FormatUtil.FormatDouble (aFloatFloat[i].measureValue (valParams, null, mktParams, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
 							" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.) + " | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].maturity()), 1, 4, 100.) + "%");
 			}
@@ -560,7 +560,7 @@ public class IBOR {
 
 				for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
 					System.out.println ("\t[" + aSyntheticFloatFloat[i].effective() + " - " + aSyntheticFloatFloat[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aSyntheticFloatFloat[i].measureValue (valParams, null, cmp, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
+						FormatUtil.FormatDouble (aSyntheticFloatFloat[i].measureValue (valParams, null, mktParams, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
 							" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.) + " | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].maturity()), 1, 4, 100.) + "%");
 			}

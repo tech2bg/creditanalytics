@@ -96,10 +96,10 @@ public class CDSManager {
 		final java.lang.String strCurrency)
 	{
 		if (null == stmt || null == dtEOD || null == strSPN || strSPN.isEmpty() || null == mpc || null ==
-			mpc.getCCSG() || null == mpc.getCCSG().get (strSPN))
+			mpc.ccsg() || null == mpc.ccsg().get (strSPN))
 			return false;
 
-		org.drip.param.definition.ScenarioCreditCurve ccsg = mpc.getCCSG().get (strSPN);
+		org.drip.param.definition.ScenarioCreditCurve ccsg = mpc.ccsg().get (strSPN);
 
 		if (null == ccsg.getCCBase() || null == ccsg.getCCBase().calibComp()) return false;
 
@@ -146,10 +146,9 @@ public class CDSManager {
 
 		for (int i = 0; i < aCDS.length; ++i) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc = aCDS[1].value
-				(valParams, pricerParams,
-					org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(mpc.getScenCMP (aCDS[i], "Base").fundingCurve (aCDS[1].couponCurrency()[0]), null,
-							null, cc, null, null, null, null), null);
+				(valParams, pricerParams, org.drip.param.creator.MarketParamsBuilder.Create
+					(mpc.getScenMarketParams (aCDS[i], "Base").fundingCurve (aCDS[1].couponCurrency()[0]),
+						null, null, cc, null, null, null, null), null);
 
 			if (null == mapCalc) {
 				System.out.println ("CDS Calc for " + strSPN + " and " + aCDS[1].name() + "failed");
@@ -216,9 +215,9 @@ public class CDSManager {
 			if (s_bCalcFlatSpread) {
 				try {
 					dblFlatSpread100 = aCDS[i].calibFlatSpread (valParams, pricerParams,
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(mpc.getScenCMP (aCDS[i], "Base").fundingCurve (aCDS[i].couponCurrency()[0]),
-								null, null, cc, null, null, null, null), null);
+						org.drip.param.creator.MarketParamsBuilder.Create (mpc.getScenMarketParams (aCDS[i],
+							"Base").fundingCurve (aCDS[i].couponCurrency()[0]), null, null, cc, null, null,
+								null, null), null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +
 						e.getMessage());
@@ -268,9 +267,9 @@ public class CDSManager {
 			if (s_bCalcFlatSpread) {
 				try {
 					dblFlatSpread500 = aCDS[i].calibFlatSpread (valParams, pricerParams, 
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(mpc.getScenCMP (aCDS[i], "Base").fundingCurve (aCDS[i].couponCurrency()[0]),
-								null, null, cc, null, null, null, null), null);
+						org.drip.param.creator.MarketParamsBuilder.Create (mpc.getScenMarketParams (aCDS[i],
+							"Base").fundingCurve (aCDS[i].couponCurrency()[0]), null, null, cc, null, null,
+								null, null), null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +
 						e.getMessage());
@@ -336,12 +335,12 @@ public class CDSManager {
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency)
 	{
-		if (null == mpc || null == mpc.getCCSG() || null == mpc.getCCSG().entrySet()) return false;
+		if (null == mpc || null == mpc.ccsg() || null == mpc.ccsg().entrySet()) return false;
 
 		boolean bAllSPNSuccess = true;
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG
-			: mpc.getCCSG().entrySet()) {
+			: mpc.ccsg().entrySet()) {
 			if (null == meCCSG.getKey()) continue;
 
 			if (!SaveSPNEOD (stmt, mpc, meCCSG.getKey(), dtEOD, strCurrency)) bAllSPNSuccess = false;

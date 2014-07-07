@@ -32,14 +32,14 @@ package org.drip.param.market;
  */
 
 /**
- * ComponentMultiMeasureQuote holds the different types of quotes for a given component. It contains a single
+ * ProductMultiMeasureQuote holds the different types of quotes for a given component. It contains a single
  *  market field/quote pair, but multiple alternate named quotes (to accommodate quotes on different measures
  *   for the component). 
  *   
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComponentMultiMeasureQuote extends org.drip.param.definition.ComponentQuote {
+public class ProductMultiMeasureQuote extends org.drip.param.definition.ProductQuote {
 	private java.lang.String _strMarketQuoteField = "";
 	private org.drip.param.definition.Quote _mktQuote = null;
 
@@ -47,66 +47,65 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.Quote>();
 
 	/**
-	 * Constructs an empty component quote from the component
+	 * Construct an empty instance of ProductMultiMeasureQuote
 	 */
 
-	public ComponentMultiMeasureQuote()
+	public ProductMultiMeasureQuote()
 	{
 	}
 
 	/**
-	 * ComponentMultiMeasureQuote de-serialization from input byte array
+	 * ProductMultiMeasureQuote de-serialization from input byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
 	 * @throws java.lang.Exception Thrown if ComponentMultiMeasureQuote cannot be properly de-serialized
 	 */
 
-	public ComponentMultiMeasureQuote (
+	public ProductMultiMeasureQuote (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
-				("ComponentMultiMeasureQuote de-serializer: Invalid input Byte array");
+				("ProductMultiMeasureQuote de-serializer: Invalid input Byte array");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ComponentMultiMeasureQuote de-serializer: Empty state");
+			throw new java.lang.Exception ("ProductMultiMeasureQuote de-serializer: Empty state");
 
-		java.lang.String strSerializedComponentQuote = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
+		java.lang.String strSerializedProductMultiMeasureQuote = strRawString.substring (0,
+			strRawString.indexOf (objectTrailer()));
 
-		if (null == strSerializedComponentQuote || strSerializedComponentQuote.isEmpty())
-			throw new java.lang.Exception ("ComponentMultiMeasureQuote de-serializer: Cannot locate state");
+		if (null == strSerializedProductMultiMeasureQuote || strSerializedProductMultiMeasureQuote.isEmpty())
+			throw new java.lang.Exception ("ProductMultiMeasureQuote de-serializer: Cannot locate state");
 
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedComponentQuote,
-			fieldDelimiter());
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
+			(strSerializedProductMultiMeasureQuote, fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception
-				("ComponentMultiMeasureQuote de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("ProductMultiMeasureQuote de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMultiMeasureQuote de-serializer: Cannot locate market quote");
+				("ProductMultiMeasureQuote de-serializer: Cannot locate market quote");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_mktQuote = new MultiSidedQuote (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMultiMeasureQuote de-serializer: Cannot locate market quote field");
+				("ProductMultiMeasureQuote de-serializer: Cannot locate market quote field");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_strMarketQuoteField = astrField[2];
 
 		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception
-				("ComponentMultiMeasureQuote de-serializer: Cannot locate map of quotes");
+				("ProductMultiMeasureQuote de-serializer: Cannot locate map of quotes");
 
 		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
@@ -163,7 +162,7 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		return true;
 	}
 
-	@Override public org.drip.param.definition.Quote getQuote (
+	@Override public org.drip.param.definition.Quote quote (
 		final java.lang.String strQuoteField)
 	{
 		if (null == strQuoteField || strQuoteField.isEmpty()) return null;
@@ -171,12 +170,12 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		return _mapQuotes.get (strQuoteField);
 	}
 
-	@Override public org.drip.param.definition.Quote getMarketQuote()
+	@Override public org.drip.param.definition.Quote marketQuote()
 	{
 		return _mktQuote;
 	}
 
-	@Override public java.lang.String getMarketQuoteField()
+	@Override public java.lang.String marketQuoteField()
 	{
 		return _strMarketQuoteField;
 	}
@@ -254,7 +253,7 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		final byte[] ab)
 	{
 		try {
-			return new ComponentMultiMeasureQuote (ab);
+			return new ProductMultiMeasureQuote (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -266,7 +265,7 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		ComponentMultiMeasureQuote cq = new ComponentMultiMeasureQuote();
+		ProductMultiMeasureQuote cq = new ProductMultiMeasureQuote();
 
 		cq.addQuote ("Price", new MultiSidedQuote ("ASK", 103., 100000.), false);
 
@@ -276,7 +275,7 @@ public class ComponentMultiMeasureQuote extends org.drip.param.definition.Compon
 
 		System.out.println (new java.lang.String (abCQ));
 
-		ComponentMultiMeasureQuote cqDeser = (ComponentMultiMeasureQuote) cq.deserialize (abCQ);
+		ProductMultiMeasureQuote cqDeser = (ProductMultiMeasureQuote) cq.deserialize (abCQ);
 
 		System.out.println (new java.lang.String (cqDeser.serialize()));
 	}

@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -588,7 +588,7 @@ public class OISProduct {
 		for (int i = 0; i < aDepositComp.length; ++i)
 			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
 		/*
@@ -605,7 +605,7 @@ public class OISProduct {
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
 			System.out.println ("\t[" + aShortEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
 
 		/*
@@ -622,7 +622,7 @@ public class OISProduct {
 		for (int i = 0; i < aOISFutureComp.length; ++i)
 			System.out.println ("\t[" + aOISFutureComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
 
 		/*
@@ -639,7 +639,7 @@ public class OISProduct {
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
 			System.out.println ("\t[" + aLongEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.));
 
 		return dc;
@@ -717,9 +717,9 @@ public class OISProduct {
 
 		IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
-		MarketParamSet cmpIndex = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcIndex, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParamsIndex = MarketParamsBuilder.Create (dcIndex, null, null, null, null, null, null);
 
-		MarketParamSet cmpFund = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcFund, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParamsFund = MarketParamsBuilder.Create (dcFund, null, null, null, null, null, null);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -728,13 +728,13 @@ public class OISProduct {
 		Map<String, Double> mapOISOutputIndex = ois.value (
 			new ValuationParams (dtToday, dtToday, strCurrency),
 			null,
-			cmpIndex,
+			mktParamsIndex,
 			null);
 
 		Map<String, Double> mapOISOutputFund = ois.value (
 			new ValuationParams (dtToday, dtToday, strCurrency),
 			null,
-			cmpFund,
+			mktParamsFund,
 			null);
 
 		for (Map.Entry<String, Double> me : mapOISOutputIndex.entrySet()) {

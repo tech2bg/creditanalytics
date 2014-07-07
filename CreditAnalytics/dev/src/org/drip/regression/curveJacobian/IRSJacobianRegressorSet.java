@@ -156,8 +156,8 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 						try {
 							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDManifestMeasure (new
 								org.drip.param.valuation.ValuationParams (dtStart, dtStart, "USD"), null,
-									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-								(dcIRS, null, null, null, null, null, mmFixings), null)))
+									org.drip.param.creator.MarketParamsBuilder.Create (dcIRS, null,
+										null, null, null, null, mmFixings), null)))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();

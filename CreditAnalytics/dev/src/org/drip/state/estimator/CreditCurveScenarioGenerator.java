@@ -72,8 +72,8 @@ public class CreditCurveScenarioGenerator {
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapQSMeasures =
 			((org.drip.product.definition.CreditDefaultSwap) comp).valueFromQuotedSpread (valParams,
-				pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc),
-					null, 0.01, dblQuote);
+				pricerParams, org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc), null,
+					0.01, dblQuote);
 
 		return new TranslatedQuoteMeasure ("Upfront", null == mapQSMeasures ? null : mapQSMeasures.get
 			("Upfront"));

@@ -63,7 +63,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -73,17 +73,17 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final java.lang.String strMeasureSetPrefix,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == pricerParams || null == mktParams) return null;
+		if (null == valParams || null == pricerParams || null == csqs) return null;
 
 		java.lang.String[] astrCreditCurveName = creditCurveName();
 
 		org.drip.analytics.definition.CreditCurve cc = null == astrCreditCurveName || 0 ==
-			astrCreditCurveName.length ? null : mktParams.creditCurve (astrCreditCurveName[0]);
+			astrCreditCurveName.length ? null : csqs.creditCurve (astrCreditCurveName[0]);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == cc || null == dcFunding) return null;
 
@@ -122,7 +122,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 				java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
 					org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
-						pricerParams, period, period.getEndDate(), mktParams);
+						pricerParams, period, period.getEndDate(), csqs);
 
 				if (null == sLPSub || 0 == sLPSub.size()) continue;
 
@@ -242,13 +242,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.analytics.period.Period period,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
-				pricerParams, period, period.getEndDate(), mktParams);
+				pricerParams, period, period.getEndDate(), csqs);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == sLPSub || 0 == sLPSub.size() || null == dcFunding) return null;
 
@@ -287,13 +287,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.analytics.period.Period period,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
-				pricerParams, period, period.getEndDate(), mktParams);
+				pricerParams, period, period.getEndDate(), csqs);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == sLPSub || 0 == sLPSub.size() || null == dcFunding) return null;
 
@@ -671,7 +671,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
 		return _dblCoupon;
@@ -760,16 +760,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> getCouponFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		if (null == valParams || null == pricerParams || null == mktParams) return null;
+		if (null == valParams || null == pricerParams || null == csqs) return null;
 
 		java.lang.String[] astrCreditCurveName = creditCurveName();
 
 		org.drip.analytics.definition.CreditCurve cc = null == astrCreditCurveName || 0 ==
-			astrCreditCurveName.length ? null : mktParams.creditCurve (astrCreditCurveName[0]);
+			astrCreditCurveName.length ? null : csqs.creditCurve (astrCreditCurveName[0]);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == cc || null == dcFunding) return null;
 
@@ -798,7 +798,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 				cp = new org.drip.analytics.period.CashflowPeriodCurveFactors (fp.getStartDate(),
 					fp.getEndDate(), fp.getAccrualStartDate(), fp.getAccrualEndDate(), fp.getPayDate(),
-						fp.getCouponDCF(), coupon (valParams.valueDate(), mktParams), notional
+						fp.getCouponDCF(), coupon (valParams.valueDate(), csqs), notional
 							(fp.getStartDate()), notional (fp.getEndDate()), dblDFStart, dblDFEnd,
 								dblSurvProbStart, dblSurvProbEnd, java.lang.Double.NaN,
 									java.lang.Double.NaN);
@@ -818,7 +818,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	@Override public java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> getLossFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == valParams || null == pricerParams) return null;
 
@@ -830,7 +830,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
 				org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
-					pricerParams, period, period.getEndDate(), mktParams);
+					pricerParams, period, period.getEndDate(), csqs);
 
 			if (null != sLPSub) sLP.addAll (sLPSub);
 		}
@@ -841,18 +841,18 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFairMeasures = calcMeasureSet
-			("", valParams, pricerParams, mktParams, quotingParams);
+			("", valParams, pricerParams, csqs, quotingParams);
 
 		if (null == mapFairMeasures) return null;
 
 		org.drip.quant.common.CollectionUtil.MergeWithMain (mapFairMeasures,
 			org.drip.quant.common.CollectionUtil.PrefixKeys (mapFairMeasures, "Fair"));
 
-		org.drip.param.definition.ComponentQuote cq = mktParams.componentQuote (name());
+		org.drip.param.definition.ProductQuote cq = csqs.productQuote (name());
 
 		if ((null != pricerParams && null != pricerParams._calibParams) || null == mapFairMeasures || null ==
 			cq)
@@ -862,31 +862,30 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		double dblMarketMeasure = java.lang.Double.NaN;
 		org.drip.analytics.definition.CreditCurve ccMarket = null;
 
-		if (null != cq.getQuote ("Price"))
-			mapFairMeasures.put ("MarketInputType=Price", dblMarketMeasure = cq.getQuote ("Price").getQuote
+		if (null != cq.quote ("Price"))
+			mapFairMeasures.put ("MarketInputType=Price", dblMarketMeasure = cq.quote ("Price").getQuote
 				("mid"));
-		else if (null != cq.getQuote ("CleanPrice"))
-			mapFairMeasures.put ("MarketInputType=CleanPrice", dblMarketMeasure = cq.getQuote
+		else if (null != cq.quote ("CleanPrice"))
+			mapFairMeasures.put ("MarketInputType=CleanPrice", dblMarketMeasure = cq.quote
 				("CleanPrice").getQuote ("mid"));
-		else if (null != cq.getQuote ("Upfront"))
-			mapFairMeasures.put ("MarketInputType=Upfront", dblMarketMeasure = cq.getQuote
-				("Upfront").getQuote ("mid"));
-		else if (null != cq.getQuote ("FairPremium"))
-			mapFairMeasures.put ("MarketInputType=FairPremium", dblMarketMeasure = cq.getQuote
-				("FairPremium").getQuote ("mid"));
-		else if (null != cq.getQuote ("PV"))
-			mapFairMeasures.put ("MarketInputType=PV", dblMarketMeasure = cq.getQuote ("PV").getQuote
+		else if (null != cq.quote ("Upfront"))
+			mapFairMeasures.put ("MarketInputType=Upfront", dblMarketMeasure = cq.quote ("Upfront").getQuote
 				("mid"));
-		else if (null != cq.getQuote ("CleanPV"))
-			mapFairMeasures.put ("MarketInputType=CleanPV", dblMarketMeasure = cq.getQuote
-				("CleanPV").getQuote ("mid"));
+		else if (null != cq.quote ("FairPremium"))
+			mapFairMeasures.put ("MarketInputType=FairPremium", dblMarketMeasure = cq.quote
+				("FairPremium").getQuote ("mid"));
+		else if (null != cq.quote ("PV"))
+			mapFairMeasures.put ("MarketInputType=PV", dblMarketMeasure = cq.quote ("PV").getQuote ("mid"));
+		else if (null != cq.quote ("CleanPV"))
+			mapFairMeasures.put ("MarketInputType=CleanPV", dblMarketMeasure = cq.quote ("CleanPV").getQuote
+				("mid"));
 
 		try {
 			SpreadCalibOP scop = new SpreadCalibrator (this,
 				SpreadCalibrator.CALIBRATION_TYPE_NODE_PARALLEL_BUMP).calibrateHazardFromPrice (valParams,
 					new org.drip.param.pricer.PricerParams (7,
 						org.drip.param.definition.CalibrationParams.MakeStdCalibParams(), false,
-							org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP), mktParams,
+							org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP), csqs,
 								quotingParams, dblMarketMeasure);
 
 			if (null != scop) {
@@ -903,7 +902,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			java.lang.String[] astrCreditCurveName = creditCurveName();
 
 			org.drip.analytics.definition.CreditCurve cc = null == astrCreditCurveName || 0 ==
-				astrCreditCurveName.length ? null : mktParams.creditCurve (astrCreditCurveName[0]);
+				astrCreditCurveName.length ? null : csqs.creditCurve (astrCreditCurveName[0]);
 
 			try {
 				ccMarket = (org.drip.analytics.definition.CreditCurve) cc.customTweakManifestMeasure
@@ -918,15 +917,14 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = mapFairMeasures;
 
 		if (null != ccMarket) {
-			org.drip.param.market.MarketParamSet cmpMarket =
-				org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(mktParams.fundingCurve (couponCurrency()[0]), mktParams.govvieCurve (couponCurrency()[0]),
-					ccMarket, name(), mktParams.componentQuote (name()), mktParams.componentQuoteMap(),
-						mktParams.fixings());
+			org.drip.param.market.CurveSurfaceQuoteSet csqsMarket =
+				org.drip.param.creator.MarketParamsBuilder.Create (csqs.fundingCurve
+					(couponCurrency()[0]), csqs.govvieCurve (couponCurrency()[0]), ccMarket, name(),
+						csqs.productQuote (name()), csqs.quoteMap(), csqs.fixings());
 
-			if (null != cmpMarket) {
+			if (null != csqsMarket) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMarketMeasures =
-					calcMeasureSet ("", valParams, pricerParams, cmpMarket, quotingParams);
+					calcMeasureSet ("", valParams, pricerParams, csqsMarket, quotingParams);
 
 				if (null != mapMarketMeasures) {
 					org.drip.quant.common.CollectionUtil.MergeWithMain (mapMarketMeasures,
@@ -1053,7 +1051,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		valueFromQuotedSpread (
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.param.pricer.PricerParams pricerParams,
-			final org.drip.param.market.MarketParamSet mktParams,
+			final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 			final double dblFixCoupon,
 			final double dblQuotedSpread)
@@ -1071,11 +1069,11 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		java.lang.String[] astrCreditCurveName = creditCurveName();
 
-		if (null != mktParams) {
+		if (null != csqs) {
 			org.drip.product.definition.CalibratableFixedIncomeComponent[] aMktComp = null;
 
 			cc = null == astrCreditCurveName || 0 == astrCreditCurveName.length ? null :
-				mktParams.creditCurve (astrCreditCurveName[0]);
+				csqs.creditCurve (astrCreditCurveName[0]);
 
 			if (null != cc && null != (aMktComp = cc.calibComp())) {
 				int iNumComp = aMktComp.length;
@@ -1089,7 +1087,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 							org.drip.product.definition.CreditDefaultSwap) {
 							try {
 								adblRestorableCDSCoupon[i] = aComp[i].coupon (valParams.valueDate(),
-									mktParams);
+									csqs);
 
 								((org.drip.product.definition.CreditDefaultSwap) aComp[i]).resetCoupon
 									(dblFixCoupon);
@@ -1117,7 +1115,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		try {
 			if (null == (ccQS = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
 				(astrCreditCurveName[0], new org.drip.analytics.date.JulianDate (valParams.valueDate()),
-					aComp, mktParams.fundingCurve (couponCurrency()[0]), adblQS, astrCalibMeasure, null != cc
+					aComp, csqs.fundingCurve (couponCurrency()[0]), adblQS, astrCalibMeasure, null != cc
 						? cc.getRecovery (valParams.valueDate()) : 0.4, false)))
 				return null;
 		} catch (java.lang.Exception e) {
@@ -1127,8 +1125,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		}
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapPV = value (valParams,
-			pricerParams, org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
-				(mktParams.fundingCurve (couponCurrency()[0]), ccQS), quotingParams);
+			pricerParams, org.drip.param.creator.MarketParamsBuilder.Credit (csqs.fundingCurve
+				(couponCurrency()[0]), ccQS), quotingParams);
 
 		for (int i = 0; i < iNumCalibComp; ++i) {
 			try {
@@ -1147,22 +1145,22 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
 
 		java.lang.String[] astrCreditCurveName = creditCurveName();
 
 		org.drip.analytics.definition.CreditCurve cc = null == astrCreditCurveName || 0 ==
-			astrCreditCurveName.length ? null : mktParams.creditCurve (astrCreditCurveName[0]);
+			astrCreditCurveName.length ? null : csqs.creditCurve (astrCreditCurveName[0]);
 
-		org.drip.analytics.rates.DiscountCurve dc = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == cc || null == dc) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
-			pricerParams, mktParams, quotingParams);
+			pricerParams, csqs, quotingParams);
 
 		if (null == mapMeasures) return null;
 
@@ -1182,7 +1180,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					(dblPeriodPayDate, "Rate");
 
 				org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVMicroJack =
-					calcPeriodOnDefaultPVDFMicroJack (dblFairPremium, p, valParams, pricerParams, mktParams);
+					calcPeriodOnDefaultPVDFMicroJack (dblFairPremium, p, valParams, pricerParams, csqs);
 
 				if (null == wjPeriodPayDFDF | null == wjPeriodOnDefaultPVMicroJack) continue;
 
@@ -1214,26 +1212,26 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure || null
-			== mktParams)
+			== csqs)
 			return null;
 
 		java.lang.String[] astrCreditCurveName = creditCurveName();
 
 		org.drip.analytics.definition.CreditCurve cc = null == astrCreditCurveName || 0 ==
-			astrCreditCurveName.length ? null : mktParams.creditCurve (astrCreditCurveName[0]);
+			astrCreditCurveName.length ? null : csqs.creditCurve (astrCreditCurveName[0]);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == cc || null == dcFunding) return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "FairPremium".equalsIgnoreCase
 			(strManifestMeasure) || "ParSpread".equalsIgnoreCase (strManifestMeasure)) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
-				(valParams, pricerParams, mktParams, quotingParams);
+				(valParams, pricerParams, csqs, quotingParams);
 
 			if (null == mapMeasures) return null;
 
@@ -1252,7 +1250,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 						dcFunding.jackDDFDManifestMeasure (p.getEndDate(), "Rate");
 
 					PeriodLossMicroJack plmj = calcPeriodLossMicroJack (p, valParams, pricerParams,
-						mktParams);
+						csqs);
 
 					if (null == wjPeriodPayDFDF | null == plmj) continue;
 
@@ -1288,7 +1286,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
@@ -1300,7 +1298,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
-	 * @param mktParams ComponentMarketParams
+	 * @param csqs ComponentMarketParams
 	 * 
 	 * @return Calibrated flat spread
 	 * 
@@ -1310,13 +1308,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	public double calibFlatSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		SpreadCalibOP scop = new SpreadCalibrator (this,
 			SpreadCalibrator.CALIBRATION_TYPE_FLAT_CURVE_NODES).calibrateHazardFromPrice (valParams,
-				pricerParams, mktParams, quotingParams, measureValue (valParams, pricerParams, mktParams,
+				pricerParams, csqs, quotingParams, measureValue (valParams, pricerParams, csqs,
 					quotingParams, "Upfront"));
 
 		if (null == scop)
@@ -1484,7 +1482,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		 * 
 		 * @param valParams ValuationParams
 		 * @param pricerParams PricerParams
-		 * @param mktParams ComponentMarketParams
+		 * @param csqs ComponentMarketParams
 		 * @param dblPriceCalib Market price to be calibrated
 		 * @param quotingParams Quoting Parameters
 		 * 
@@ -1496,18 +1494,18 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		public SpreadCalibOP calibrateHazardFromPrice (
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.param.pricer.PricerParams pricerParams,
-			final org.drip.param.market.MarketParamSet mktParams,
+			final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 			final double dblPriceCalib)
 		{
-			if (null == valParams || null == pricerParams || null == mktParams ||
+			if (null == valParams || null == pricerParams || null == csqs ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblPriceCalib))
 				return null;
 
 			java.lang.String[] astrCreditCurveName = creditCurveName();
 
 			final org.drip.analytics.definition.CreditCurve ccOld = null == astrCreditCurveName || 0 ==
-				astrCreditCurveName.length ? null : mktParams.creditCurve (astrCreditCurveName[0]);
+				astrCreditCurveName.length ? null : csqs.creditCurve (astrCreditCurveName[0]);
 
 			org.drip.quant.function1D.AbstractUnivariate ofCDSPriceFromFlatSpread = new
 				org.drip.quant.function1D.AbstractUnivariate (null) {
@@ -1516,16 +1514,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					throws java.lang.Exception
 				{
 					if (CALIBRATION_TYPE_NODE_PARALLEL_BUMP != _iCalibType)
-						mktParams.setCreditCurve (ccOld.createFlatCurve (dblFlatSpread,
+						csqs.setCreditCurve (ccOld.createFlatCurve (dblFlatSpread,
 							CALIBRATION_TYPE_FLAT_CURVE_NODES == _iCalibType, java.lang.Double.NaN));
 					else
-						mktParams.setCreditCurve ((org.drip.analytics.definition.CreditCurve)
+						csqs.setCreditCurve ((org.drip.analytics.definition.CreditCurve)
 							ccOld.customTweakManifestMeasure ("FairPremium", new
 								org.drip.param.definition.ResponseValueTweakParams
 									(org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK,
 										false, dblFlatSpread)));
 
-					return _cds.measureValue (valParams, pricerParams, mktParams, quotingParams,
+					return _cds.measureValue (valParams, pricerParams, csqs, quotingParams,
 						"Upfront") - dblPriceCalib;
 				}
 
@@ -1543,7 +1541,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					org.drip.quant.solver1D.FixedPointFinderBrent (0., ofCDSPriceFromFlatSpread,
 						true).findRoot();
 
-				if (null == rfop || !rfop.containsRoot() && !mktParams.setCreditCurve (ccOld))
+				if (null == rfop || !rfop.containsRoot() && !csqs.setCreditCurve (ccOld))
 					return new SpreadCalibOP (rfop.getRoot(), ccOld);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

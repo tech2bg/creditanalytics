@@ -31,13 +31,156 @@ package org.drip.param.creator;
  */
 
 /**
- * MarketParamsBuilder implements the functionality for constructing, de-serializing, and building the Market
- *  Universe Curves Container.
+ * MarketParamsBuilder implements the various ways of constructing, de-serializing, and building the Market
+ *  Parameters.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
 public class MarketParamsBuilder {
+
+	/**
+	 * Create a Market Parameters instance with the funding discount curve, the forward discount curve, the
+	 *  treasury discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
+	 *  and the double map of date/rate index and fixings.
+	 * 
+	 * @param dcFunding Funding Discount Curve
+	 * @param fc Forward Curve
+	 * @param dcTSY Treasury Discount Curve
+	 * @param cc Credit Curve
+	 * @param strComponentCode Component Code
+	 * @param compQuote Component quote
+	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
+	 * @param mmFixings Double map of date/rate index and fixings
+	 * 
+	 * @return Market Parameters Instance
+	 */
+
+	public static final org.drip.param.market.CurveSurfaceQuoteSet Create (
+		final org.drip.analytics.rates.DiscountCurve dcFunding,
+		final org.drip.analytics.rates.ForwardCurve fc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.definition.CreditCurve cc,
+		final java.lang.String strComponentCode,
+		final org.drip.param.definition.ProductQuote compQuote,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
+			mTSYQuotes,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+	{
+		org.drip.param.market.CurveSurfaceQuoteSet csqs = new
+			org.drip.param.market.CurveSurfaceQuoteSet();
+
+		if (null != cc && !csqs.setCreditCurve (cc)) return null;
+
+		if (null != dcTSY && !csqs.setGovvieCurve (dcTSY)) return null;
+
+		if (null != mmFixings && !csqs.setFixings (mmFixings)) return null;
+
+		if (null != dcFunding && !csqs.setFundingCurve (dcFunding)) return null;
+
+		if (null != mTSYQuotes && !csqs.setQuoteMap (mTSYQuotes)) return null;
+
+		if (null != compQuote && null != strComponentCode && !strComponentCode.isEmpty() &&
+			!csqs.setProductQuote (strComponentCode, compQuote))
+			return null;
+
+		if (null != fc && !csqs.setForwardCurve (fc)) return null;
+
+		return csqs;
+	}
+
+	/**
+	 * Create a Market Parameters instance with the rates discount curve alone
+	 * 
+	 * @param dc Rates Discount Curve
+	 * 
+	 * @return Market Parameters instance
+	 */
+
+	public static final org.drip.param.market.CurveSurfaceQuoteSet Discount (
+		final org.drip.analytics.rates.DiscountCurve dc)
+	{
+		return Create (dc, null, null, null, "", null, null, null);
+	}
+
+	/**
+	 * Create a Market Parameters instance with the discount curve and the forward Curve
+	 * 
+	 * @param dc Discount Curve
+	 * @param fc Forward Curve
+	 * 
+	 * @return Market Parameters instance
+	 */
+
+	public static final org.drip.param.market.CurveSurfaceQuoteSet DiscountForward (
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.ForwardCurve fc)
+	{
+		return Create (dc, fc, null, null, "", null, null, null);
+	}
+
+	/**
+	 * Create a Market Parameters instance with the rates discount curve and the treasury discount curve alone
+	 * 
+	 * @param dc Rates Discount Curve
+	 * @param dcTSY Treasury Discount Curve
+	 * 
+	 * @return Market Parameters instance
+	 */
+
+	public static final org.drip.param.market.CurveSurfaceQuoteSet Govvie (
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY)
+	{
+		return Create (dc, null, dcTSY, null, "", null, null, null);
+	}
+
+	/**
+	 * Create a Market Parameters Instance with the discount curve and the credit curve
+	 * 
+	 * @param dc Discount Curve
+	 * @param cc Credit Curve
+	 * 
+	 * @return The Market Parameters Instance
+	 */
+
+	public static final org.drip.param.market.CurveSurfaceQuoteSet Credit (
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.definition.CreditCurve cc)
+	{
+		return Create (dc, null, null, cc, "", null, null, null);
+	}
+
+	/**
+	 * Create a Market Parameters Instance with the rates discount curve, the treasury discount curve, the
+	 *  credit curve, the component quote, the map of treasury benchmark quotes, and the double map of
+	 *  date/rate index and fixings
+	 * 
+	 * @param dc Rates Discount Curve
+	 * @param dcTSY Treasury Discount Curve
+	 * @param cc Credit Curve
+	 * @param strComponentCode Component Code
+	 * @param compQuote Component quote
+	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
+	 * @param mmFixings Double map of date/rate index and fixings
+	 * 
+	 * @return Market Parameters Instance
+	 */
+
+	public static final org.drip.param.market.CurveSurfaceQuoteSet Create (
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final org.drip.analytics.rates.DiscountCurve dcTSY,
+		final org.drip.analytics.definition.CreditCurve cc,
+		final java.lang.String strComponentCode,
+		final org.drip.param.definition.ProductQuote compQuote,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
+			mTSYQuotes,
+		final java.util.Map<org.drip.analytics.date.JulianDate,
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+	{
+		return Create (dc, null, dcTSY, cc, strComponentCode, compQuote, mTSYQuotes, mmFixings);
+	}
 
 	/**
 	 * Create MarketParams from the array of calibration instruments
@@ -49,6 +192,28 @@ public class MarketParamsBuilder {
 	{
 		try {
 			return new org.drip.param.market.ScenarioMarketParamsContainer();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create a Market Parameter Instance from the byte array
+	 * 
+	 * @param ab Byte Array
+	 * 
+	 * @return Market Parameter Instance
+	 */
+
+	public static final org.drip.param.market.CurveSurfaceQuoteSet FromByteArray (
+		final byte[] ab)
+	{
+		if (null == ab || 0 == ab.length) return null;
+
+		try {
+			return new org.drip.param.market.CurveSurfaceQuoteSet (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -54,7 +54,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -232,10 +232,10 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		return _fixReference.coupon (dblValue, mktParams);
+		return _fixReference.coupon (dblValue, csqs);
 	}
 
 	@Override public java.lang.String[] forwardCurveName()
@@ -325,16 +325,16 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixedReferenceStreamResult =
-			_fixReference.value (valParams, pricerParams, mktParams, quotingParams);
+			_fixReference.value (valParams, pricerParams, csqs, quotingParams);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatDerivedStreamResult =
-			_floatDerived.value (valParams, pricerParams, mktParams, quotingParams);
+			_floatDerived.value (valParams, pricerParams, csqs, quotingParams);
 
 		if (null == mapFixedReferenceStreamResult || 0 == mapFixedReferenceStreamResult.size() || null ==
 			mapFloatDerivedStreamResult || 0 == mapFloatDerivedStreamResult.size())
@@ -521,7 +521,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -531,7 +531,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -540,12 +540,12 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == lsmm || null ==
-			mktParams)
+			csqs)
 			return null;
 
 		java.lang.String strQuantificationMetric = lsmm.quantificationMetric();
@@ -561,12 +561,12 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		java.lang.String[] astrManifestMeasure = lsmm.manifestMeasures();
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRLC
-			(valParams, pricerParams, mktParams, quotingParams, lsmm);
+			(valParams, pricerParams, csqs, quotingParams, lsmm);
 
 		if (null == prwc) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapReferenceValue =
-			_fixReference.value (valParams, pricerParams, mktParams, quotingParams);
+			_fixReference.value (valParams, pricerParams, csqs, quotingParams);
 
 		if (org.drip.quant.common.StringUtil.MatchInStringArray ("DerivedParBasisSpread",
 			astrManifestMeasure, false))

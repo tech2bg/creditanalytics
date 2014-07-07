@@ -164,8 +164,8 @@ public class EODCurves {
 	{
 		if (null == mpc) return false;
 
-		org.drip.param.definition.ComponentQuote cqTSY =
-			org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+		org.drip.param.definition.ProductQuote cqTSY =
+			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 		try {
 			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote,
@@ -182,15 +182,15 @@ public class EODCurves {
 	}
 
 	private static final boolean AddTSYCQToMap (
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 			mapTSYCQ,
 		final java.lang.String strTsyBmk,
 		final double dblTSYQuote)
 	{
 		if (null == mapTSYCQ || java.lang.Double.isNaN (dblTSYQuote)) return false;
 
-		org.drip.param.definition.ComponentQuote cqTSY =
-			org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+		org.drip.param.definition.ProductQuote cqTSY =
+			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 		try {
 			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote,
@@ -525,7 +525,7 @@ public class EODCurves {
 	 */
 
 	public static final
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 			GetTSYQuotes (
 				final java.sql.Statement stmt,
 				final org.drip.analytics.date.JulianDate dtEOD,
@@ -550,8 +550,8 @@ public class EODCurves {
 
 		if (null == rsCurvePoints) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYCQ =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote> mapTSYCQ =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>();
 
 		try {
 			while (rsCurvePoints.next()) {
@@ -691,10 +691,10 @@ public class EODCurves {
 				}
 
 				if (s_bBlog) {
-					for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ComponentQuote>
+					for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ProductQuote>
 						meTSYCQ : mapTSYCQ.entrySet()) {
 						if (null != meTSYCQ)
-							System.out.println (meTSYCQ.getKey() + "=" + meTSYCQ.getValue().getQuote
+							System.out.println (meTSYCQ.getKey() + "=" + meTSYCQ.getValue().quote
 								("Yield").getQuote ("mid"));
 					}
 				}
@@ -1329,13 +1329,13 @@ public class EODCurves {
 		final java.lang.String strSPN,
 		final java.lang.String strCurrency)
 	{
-		if (null == mpc || null == mpc.getIRSG() || null == stmt || null == dtEOD || null == strCurrency ||
-			strCurrency.isEmpty() || null == strSPN || strSPN.isEmpty() || null == mpc.getIRSG().get
-				(strCurrency) || null == mpc.getIRSG().get (strCurrency).getDCBase())
+		if (null == mpc || null == mpc.irsg() || null == stmt || null == dtEOD || null == strCurrency ||
+			strCurrency.isEmpty() || null == strSPN || strSPN.isEmpty() || null == mpc.irsg().get
+				(strCurrency) || null == mpc.irsg().get (strCurrency).getDCBase())
 			return false;
 
 		org.drip.param.definition.ScenarioCreditCurve ccsg = BuildEODCreditCurve (stmt, dtEOD,
-			mpc.getIRSG().get (strCurrency).getDCBase(), strSPN, strCurrency);
+			mpc.irsg().get (strCurrency).getDCBase(), strSPN, strCurrency);
 
 		if (null == ccsg) return false;
 

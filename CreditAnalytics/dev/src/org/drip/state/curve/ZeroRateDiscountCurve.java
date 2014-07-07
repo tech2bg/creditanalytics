@@ -101,7 +101,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		try {
 			return new org.drip.state.curve.ZeroRateDiscountCurve (name(), collateralParams(),
 				(_rcci.lcc().calibrateSpan (aRBSBumped, dblLeftMostZero, _rcci.getValuationParameter(),
-					_rcci.getPricerParameter(), _rcci.getQuotingParameter(), _rcci.getCMP())));
+					_rcci.getPricerParameter(), _rcci.getQuotingParameter(), _rcci.marketParameters())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

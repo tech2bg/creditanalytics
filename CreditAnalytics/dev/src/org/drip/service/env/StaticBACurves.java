@@ -151,56 +151,56 @@ public class StaticBACurves {
 		if (null == mpc) return false;
 
 		try {
-			org.drip.param.definition.ComponentQuote cq2YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq2YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq2YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.02,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("2YON", cq2YON);
 
-			org.drip.param.definition.ComponentQuote cq3YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq3YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq3YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.025,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("3YON", cq3YON);
 
-			org.drip.param.definition.ComponentQuote cq5YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq5YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq5YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.03,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("5YON", cq5YON);
 
-			org.drip.param.definition.ComponentQuote cq7YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq7YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq7YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0325,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("7YON", cq7YON);
 
-			org.drip.param.definition.ComponentQuote cq10YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq10YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq10YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0375,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("10YON", cq10YON);
 
-			org.drip.param.definition.ComponentQuote cq30YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq30YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq30YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.04,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("30YON", cq30YON);
 
-			org.drip.param.definition.ComponentQuote cqBRA_5_00_21 =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cqBRA_5_00_21 =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			org.drip.param.definition.Quote qPxBRA_5_00_21 = org.drip.param.creator.QuoteBuilder.CreateQuote
 				("bid", 0.74, java.lang.Double.NaN);
@@ -650,7 +650,7 @@ public class StaticBACurves {
 
 		try {
 			if (!(ccsc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDS)).cookScenarioCC
-				(strCC, new org.drip.param.valuation.ValuationParams (dt, dt, strIR), mpc.getScenCMP
+				(strCC, new org.drip.param.valuation.ValuationParams (dt, dt, strIR), mpc.getScenMarketParams
 					(aCDS[0], "Base").fundingCurve (aCDS[0].couponCurrency()[0]), null, adblQuotes,
 						dblRecovery, astrCalibMeasure, null, null, false, 63)) {
 				System.out.println ("CC[" + strCC + "] failed to cook");

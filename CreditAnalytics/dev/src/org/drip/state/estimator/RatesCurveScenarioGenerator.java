@@ -158,8 +158,8 @@ public class RatesCurveScenarioGenerator {
 			for (int i = 0; i < adblQuotes.length; ++i) {
 				try {
 					System.out.println (i + "=" +_aCalibInst[i].measureValue (valParams, null,
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-							null, null, null, null, null, mmFixings), null, astrCalibMeasure[i]));
+						org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null,
+							null, null, mmFixings), null, astrCalibMeasure[i]));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}

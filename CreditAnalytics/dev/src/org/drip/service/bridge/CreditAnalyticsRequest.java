@@ -49,7 +49,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	private org.drip.product.definition.FixedIncomeComponent _comp = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
-	private org.drip.param.market.MarketParamSet _cmp = null;
+	private org.drip.param.market.CurveSurfaceQuoteSet _mktParams = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 
 	/**
@@ -124,9 +124,9 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 				("CreditAnalyticsRequest de-serializer: Cannot locate component market params");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			_cmp = null;
+			_mktParams = null;
 		else
-			_cmp = new org.drip.param.market.MarketParamSet (astrField[5].getBytes());
+			_mktParams = new org.drip.param.market.CurveSurfaceQuoteSet (astrField[5].getBytes());
 
 		if (null == astrField[6] || astrField[6].isEmpty())
 			throw new java.lang.Exception
@@ -149,7 +149,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	 * @param comp Component
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Price Parameters
-	 * @param cmp Component market Parameters
+	 * @param mktParams Component market Parameters
 	 * @param quotingParams Quoting Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are not valid
@@ -159,14 +159,14 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
 		if (null == (_comp = comp) || null == (_valParams = valParams))
 			throw new java.lang.Exception ("CreditAnalyticsRequest ctr: Invalid inputs");
 
-		_cmp = cmp;
+		_mktParams = mktParams;
 		_pricerParams = pricerParams;
 		_quotingParams = quotingParams;
 
@@ -236,9 +236,9 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 	 * @return The Component Market Parameters
 	 */
 
-	public org.drip.param.market.MarketParamSet getCMP()
+	public org.drip.param.market.CurveSurfaceQuoteSet csqs()
 	{
-		return _cmp;
+		return _mktParams;
 	}
 
 	/**
@@ -285,10 +285,10 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		else
 			sb.append (new java.lang.String (_pricerParams.serialize()) + fieldDelimiter());
 
-		if (null == _cmp)
+		if (null == _mktParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (new java.lang.String (_cmp.serialize()) + fieldDelimiter());
+			sb.append (new java.lang.String (_mktParams.serialize()) + fieldDelimiter());
 
 		if (null == _quotingParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
@@ -447,7 +447,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		return bond;
 	}
 
-	private static org.drip.param.market.MarketParamSet MakeCMP (
+	private static org.drip.param.market.CurveSurfaceQuoteSet MakeCSQS (
 		final org.drip.product.definition.FixedIncomeComponent fic)
 		throws java.lang.Exception
 	{
@@ -480,15 +480,15 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 				(org.drip.analytics.date.JulianDate.Today(), "ABCSOV", "USD", adblDate, adblHazardRate,
 						0.40);
 
-		org.drip.param.market.ComponentMultiMeasureQuote cqTSY2ON = new
-			org.drip.param.market.ComponentMultiMeasureQuote();
+		org.drip.param.market.ProductMultiMeasureQuote cqTSY2ON = new
+			org.drip.param.market.ProductMultiMeasureQuote();
 
 		cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.,
 			java.lang.Double.NaN), false);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 			mapTSYQuotes = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cqTSY2ON);
 
@@ -504,13 +504,13 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
-		org.drip.param.market.ComponentMultiMeasureQuote cqBond = new
-			org.drip.param.market.ComponentMultiMeasureQuote();
+		org.drip.param.market.ProductMultiMeasureQuote cqBond = new
+			org.drip.param.market.ProductMultiMeasureQuote();
 
 		cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100.,
 			java.lang.Double.NaN), true);
 
-		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
+		return org.drip.param.creator.MarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
 			cqBond, mapTSYQuotes, mmFixings);
 	}
 
@@ -533,13 +533,13 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 				(org.drip.analytics.date.JulianDate.Today().getJulian(), 0.04, 1.,
 					org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1);
 
-		org.drip.param.market.MarketParamSet cmp = MakeCMP (bond);
+		org.drip.param.market.CurveSurfaceQuoteSet mktParams = MakeCSQS (bond);
 
 		org.drip.param.valuation.ValuationCustomizationParams quotingParams = new
 			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "USD", false,
 				null, null);
 
-		CreditAnalyticsRequest cre = new CreditAnalyticsRequest (bond, valParams, pricerParams, cmp,
+		CreditAnalyticsRequest cre = new CreditAnalyticsRequest (bond, valParams, pricerParams, mktParams,
 			quotingParams);
 
 		byte[] abCRE = cre.serialize();

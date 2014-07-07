@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -333,7 +333,7 @@ public class FRAStdVolAnalysis {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -344,7 +344,7 @@ public class FRAStdVolAnalysis {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
@@ -499,31 +499,31 @@ public class FRAStdVolAnalysis {
 	private static final void RunWithVolCorrSurface (
 		final FRAStandardComponent fra,
 		final ValuationParams valParams,
-		final MarketParamSet cmp,
+		final CurveSurfaceQuoteSet mktParams,
 		final FloatingRateIndex fri,
 		final double dblFRIVol,
 		final double dblMultiplicativeQuantoExchangeVol,
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		cmp.setForwardCurveVolSurface (
+		mktParams.setForwardCurveVolSurface (
 			fri,
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			fra.effective(),
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			fra.effective(),
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
 
 		System.out.println ("\t[" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
@@ -570,8 +570,7 @@ public class FRAStdVolAnalysis {
 			0.006,
 			"Act/360");
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
@@ -599,7 +598,7 @@ public class FRAStdVolAnalysis {
 					RunWithVolCorrSurface (
 						fra,
 						valParams,
-						cmp,
+						mktParams,
 						fri,
 						dblSigmaFwd,
 						dblSigmaFwd2DomX,

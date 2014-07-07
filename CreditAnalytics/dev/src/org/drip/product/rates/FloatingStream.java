@@ -64,12 +64,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final double dblValueDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-				mktParams.fixings();
+				csqs.fixings();
 
 		if (null != mapFixings) {
 			double dblCurrentResetDate = currentPeriod.getResetDate();
@@ -93,7 +93,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -336,10 +336,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 	@Override public double coupon (
 		final double dblValueDate,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || null == mktParams)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || null == csqs)
 			throw new java.lang.Exception ("FloatingStream::coupon => Invalid Inputs");
 
 		org.drip.analytics.period.CashflowPeriod currentPeriod = null;
@@ -361,11 +361,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			throw new java.lang.Exception ("FloatingStream::coupon => Invalid Inputs");
 
 		try {
-			return getFixing (dblValueDate, _fri, currentPeriod, mktParams);
+			return getFixing (dblValueDate, _fri, currentPeriod, csqs);
 		} catch (java.lang.Exception e) {
 		}
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
@@ -444,12 +444,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams) return null;
+		if (null == valParams || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -466,7 +466,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		java.lang.String strFRI = _fri.fullyQualifiedName();
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.forwardCurve (_fri);
+		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblFloatingRate = 0.;
@@ -481,7 +481,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					bFirstPeriod = false;
 
 					dblResetRate = dblFloatingRate = null == fc ? coupon (valParams.valueDate(),
-						mktParams) : fc.forward (period.getPayDate());
+						csqs) : fc.forward (period.getPayDate());
 
 					dblFixing01 = period.getAccrualDCF (valParams.valueDate()) * 0.0001 * notional
 						(period.getAccrualStartDate(), valParams.valueDate());
@@ -491,7 +491,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					dblResetDate = period.getResetDate();
 				} else {
 					double dblPeriodQuantoAdjust =
-						org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (mktParams,
+						org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (csqs,
 							strFRI, "ForwardToDomesticExchangeVolatility",
 								"FRIForwardToDomesticExchangeCorrelation", valParams.valueDate(),
 									period.getStartDate());
@@ -652,12 +652,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == mktParams) return null;
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -721,20 +721,20 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
 		{
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
-				(valParams, pricerParams, mktParams, quotingParams);
+				(valParams, pricerParams, csqs, quotingParams);
 
 			if (null == mapMeasures) return null;
 
@@ -794,15 +794,15 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private org.drip.state.estimator.PredictorResponseWeightConstraint forwardLatentStatePRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= maturity().getJulian() || null == mktParams) return null;
+		if (dblValueDate >= maturity().getJulian() || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -900,7 +900,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private org.drip.state.estimator.PredictorResponseWeightConstraint discountLatentStatePRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
@@ -911,11 +911,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || null == lsmm || null == mktParams || !(lsmm instanceof
+		if (null == valParams || null == lsmm || null == csqs || !(lsmm instanceof
 			org.drip.analytics.rates.RatesLSMM))
 			return null;
 
@@ -925,11 +925,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
 			(strQuantificationMetric))
-			return discountLatentStatePRWC (valParams, pricerParams, mktParams, quotingParams, lsmm);
+			return discountLatentStatePRWC (valParams, pricerParams, csqs, quotingParams, lsmm);
 
 		if (org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
 			(strQuantificationMetric))
-			return forwardLatentStatePRWC (valParams, pricerParams, mktParams, quotingParams, lsmm);
+			return forwardLatentStatePRWC (valParams, pricerParams, csqs, quotingParams, lsmm);
 
 		return null;
 	}

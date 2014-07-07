@@ -334,56 +334,56 @@ public class ProductTestSuite {
 		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
 		try {
-			org.drip.param.definition.ComponentQuote cq2YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq2YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq2YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.02,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("2YON", cq2YON);
 
-			org.drip.param.definition.ComponentQuote cq3YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq3YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq3YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.025,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("3YON", cq3YON);
 
-			org.drip.param.definition.ComponentQuote cq5YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq5YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq5YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.03,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("5YON", cq5YON);
 
-			org.drip.param.definition.ComponentQuote cq7YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq7YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq7YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0325,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("7YON", cq7YON);
 
-			org.drip.param.definition.ComponentQuote cq10YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq10YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq10YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0375,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("10YON", cq10YON);
 
-			org.drip.param.definition.ComponentQuote cq30YON =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cq30YON =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			cq30YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.04,
 				java.lang.Double.NaN), true);
 
 			mpc.addTSYQuote ("30YON", cq30YON);
 
-			org.drip.param.definition.ComponentQuote cqBRA_5_00_21 =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cqBRA_5_00_21 =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			org.drip.param.definition.Quote qPxBRA_5_00_21 = org.drip.param.creator.QuoteBuilder.CreateQuote
 				("bid", 0.900, java.lang.Double.NaN);
@@ -396,8 +396,8 @@ public class ProductTestSuite {
 
 			mpc.addCompQuote ("BRA_5.00_21", cqBRA_5_00_21);
 
-			org.drip.param.definition.ComponentQuote cqTESTCDS =
-				org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+			org.drip.param.definition.ProductQuote cqTESTCDS =
+				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 			org.drip.param.definition.Quote qTESTCDS = org.drip.param.creator.QuoteBuilder.CreateQuote
 				("mid", 101., java.lang.Double.NaN);
@@ -466,7 +466,7 @@ public class ProductTestSuite {
 
 		mpc.addScenDC ("USDTSY", irscUSDTSY);
 
-		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.getScenCMP (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.getScenMarketParams (aCompCalib[0],
 			"Base").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -484,14 +484,13 @@ public class ProductTestSuite {
 
 				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
 					(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-						(dcBaseTSY, null, null, null, null, null,
-							mpc.getFixings()), null, astrCalibMeasure[i]));
+						org.drip.param.creator.MarketParamsBuilder.Create (dcBaseTSY, null, null,
+							null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 			}
 		}
 
 		if (0 != (TM_TSY_UP01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpUp").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -510,14 +509,14 @@ public class ProductTestSuite {
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
-								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+								org.drip.param.creator.MarketParamsBuilder.Create
 						(dcBumpUp, null, null, null, null, null, mpc.getFixings()), null,
 							astrCalibMeasure[i]));
 			}
 		}
 
 		if (0 != (TM_TSY_DN01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpDn").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -531,62 +530,62 @@ public class ProductTestSuite {
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
-								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+								org.drip.param.creator.MarketParamsBuilder.Create
 						(dcBumpDn, null, null, null, null, null, mpc.getFixings()), null,
 							astrCalibMeasure[i]));
 			}
 		}
 
 		if (0 != (TM_TSY_TENOR_UP01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
-				mapCMPDCUp = mpc.getIRTenorCMP (aCompCalib[0], true);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
+				mapCSQSDCUp = mpc.getIRTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Tenor Bump Up TSY build: " + (null == mapCMPDCUp ? "Failure" :
+				System.out.println ("Tenor Bump Up TSY build: " + (null == mapCSQSDCUp ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail)
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCUp.entrySet())
-					System.out.println (me.getKey() + me.getValue().fundingCurve
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSDCUp.entrySet())
+					System.out.println (meCSQS.getKey() + meCSQS.getValue().fundingCurve
 						(aCompCalib[0].couponCurrency()[0]).toString());
 			else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCUp.entrySet()) {
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSDCUp.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor TSY Bump Up\n--------\n");
 
 					for (int i = 0; i < aCompCalib.length; ++i)
-						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
+						System.out.println ("Tenor: " + meCSQS.getKey() + "; " + astrCalibMeasure[i] + "[" +
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(me.getValue().fundingCurve (aCompCalib[i].couponCurrency()[0]), null, null,
+									org.drip.param.creator.MarketParamsBuilder.Create
+							(meCSQS.getValue().fundingCurve (aCompCalib[i].couponCurrency()[0]), null, null,
 								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
 
 		if (0 != (TM_TSY_TENOR_DN01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
-				mapCMPDCDn = mpc.getIRTenorCMP (aCompCalib[0], true);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
+				mapCSQSDCDn = mpc.getIRTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Tenor Bump Dn TSY build: " + (null == mapCMPDCDn ? "Failure" :
+				System.out.println ("Tenor Bump Dn TSY build: " + (null == mapCSQSDCDn ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCDn.entrySet())
-					System.out.println (me.getKey() + me.getValue().toString());
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSDCDn.entrySet())
+					System.out.println (meCSQS.getKey() + meCSQS.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCDn.entrySet()) {
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSDCDn.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor TSY Bump Dn\n--------\n");
 
 					for (int i = 0; i < aCompCalib.length; ++i)
-						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
+						System.out.println ("Tenor: " + meCSQS.getKey() + "; " + astrCalibMeasure[i] + "[" +
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(me.getValue().fundingCurve ( (aCompCalib[i].couponCurrency()[0])), null, null,
+									org.drip.param.creator.MarketParamsBuilder.Create
+							(meCSQS.getValue().fundingCurve ( (aCompCalib[i].couponCurrency()[0])), null, null,
 								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
@@ -749,7 +748,7 @@ public class ProductTestSuite {
 
 		addTSYToMPC (mpc);
 
-		org.drip.analytics.rates.DiscountCurve dcBase = mpc.getScenCMP (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBase = mpc.getScenMarketParams (aCompCalib[0],
 			"Base").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -764,13 +763,13 @@ public class ProductTestSuite {
 			for (int i = 0; i < aCompCalib.length; ++i)
 				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
 					(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+						org.drip.param.creator.MarketParamsBuilder.Create
 						(dcBase, null, null, null, null, null,
 							mpc.getFixings()), null, astrCalibMeasure[i]));
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpUp").fundingCurve ( (aCompCalib[0].couponCurrency()[0]));
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -788,14 +787,14 @@ public class ProductTestSuite {
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
-								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+								org.drip.param.creator.MarketParamsBuilder.Create
 									(dcBumpUp, null, null, null, null, null, mpc.getFixings()), null,
 										astrCalibMeasure[i]));
 			}
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenCMP (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpDn").fundingCurve (aCompCalib[0].couponCurrency()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -809,62 +808,62 @@ public class ProductTestSuite {
 					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
 						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
 							"USD"), null,
-								org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+								org.drip.param.creator.MarketParamsBuilder.Create
 									(dcBumpDn, null, null, null, null, null, mpc.getFixings()), null,
 										astrCalibMeasure[i]));
 			}
 		}
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
-				mapCMPDCUp = mpc.getIRTenorCMP (aCompCalib[0], true);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
+				mapCSQSDCUp = mpc.getIRTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Tenor Bump Up DC build: " + (null == mapCMPDCUp ? "Failure" :
+				System.out.println ("Tenor Bump Up DC build: " + (null == mapCSQSDCUp ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail)
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCUp.entrySet())
-					System.out.println (me.getKey() + me.getValue().fundingCurve
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSCQ : mapCSQSDCUp.entrySet())
+					System.out.println (meCSCQ.getKey() + meCSCQ.getValue().fundingCurve
 						(aCompCalib[0].couponCurrency()[0]).toString());
 			else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCUp.entrySet()) {
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+				meCSCQ : mapCSQSDCUp.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor IR Bump Up\n--------\n");
 
 					for (int i = 0; i < aCompCalib.length; ++i)
-						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
+						System.out.println ("Tenor: " + meCSCQ.getKey() + "; " + astrCalibMeasure[i] + "[" +
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(me.getValue().fundingCurve (aCompCalib[0].couponCurrency()[0]), null, null,
+									org.drip.param.creator.MarketParamsBuilder.Create
+							(meCSCQ.getValue().fundingCurve (aCompCalib[0].couponCurrency()[0]), null, null,
 								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
-				mapCMPDCDn = mpc.getIRTenorCMP (aCompCalib[0], true);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
+				mapCSQSDCDn = mpc.getIRTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Tenor Bump Dn DC build: " + (null == mapCMPDCDn ? "Failure" :
+				System.out.println ("Tenor Bump Dn DC build: " + (null == mapCSQSDCDn ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCDn.entrySet())
-					System.out.println (me.getKey() + me.getValue().toString());
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSDCDn.entrySet())
+					System.out.println (meCSQS.getKey() + meCSQS.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPDCDn.entrySet()) {
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSDCDn.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor IR Bump Dn\n--------\n");
 
 					for (int i = 0; i < aCompCalib.length; ++i)
-						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
+						System.out.println ("Tenor: " + meCSQS.getKey() + "; " + astrCalibMeasure[i] + "[" +
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-									org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-							(me.getValue().fundingCurve (aCompCalib[0].couponCurrency()[0]), null, null,
+									org.drip.param.creator.MarketParamsBuilder.Create
+							(meCSQS.getValue().fundingCurve (aCompCalib[0].couponCurrency()[0]), null, null,
 								null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
 				}
 			}
@@ -912,7 +911,7 @@ public class ProductTestSuite {
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
 
-		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenCMP (aCDSBRA[0],
+		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenMarketParams (aCDSBRA[0],
 			"Base").fundingCurve (aCDSBRA[0].couponCurrency()[0]);
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
@@ -938,7 +937,7 @@ public class ProductTestSuite {
 
 		mpc.addScenCC ("BRA", ccscBRA);
 
-		org.drip.analytics.definition.CreditCurve ccBase = mpc.getScenCMP (aCDSBRA[0], "Base").creditCurve
+		org.drip.analytics.definition.CreditCurve ccBase = mpc.getScenMarketParams (aCDSBRA[0], "Base").creditCurve
 			(aCDSBRA[0].creditCurveName()[0]);
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -949,12 +948,12 @@ public class ProductTestSuite {
 			for (int i = 0; i < aCDSBRA.length; ++i)
 				System.out.println ("Base Fair premium = " + aCDSBRA[i].measureValue (valParams,
 					pricerParams,
-						org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
+						org.drip.param.creator.MarketParamsBuilder.Create (dc,
 							null, null, ccBase, null, null, null, null), null, "FairPremium"));
 		}
 
 		if (0 != (TM_CC_UP01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccBumpUp = mpc.getScenCMP (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccBumpUp = mpc.getScenMarketParams (aCDSBRA[0],
 				"FlatCreditBumpUp").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -965,13 +964,13 @@ public class ProductTestSuite {
 				for (int i = 0; i < aCDSBRA.length; ++i)
 					System.out.println ("Up01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
-							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+							org.drip.param.creator.MarketParamsBuilder.Create
 								(dc, null, null, ccBumpUp, null, null, null, null), null, "FairPremium"));
 			}
 		}
 
 		if (0 != (TM_CC_DN01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccBumpDn = mpc.getScenCMP (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccBumpDn = mpc.getScenMarketParams (aCDSBRA[0],
 				"FlatCreditBumpDn").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -982,13 +981,13 @@ public class ProductTestSuite {
 				for (int i = 0; i < aCDSBRA.length; ++i)
 					System.out.println ("Dn01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
-							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+							org.drip.param.creator.MarketParamsBuilder.Create
 								(dc, null, null, ccBumpDn, null, null, null, null), null, "FairPremium"));
 			}
 		}
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccRecoveryUp = mpc.getScenCMP (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccRecoveryUp = mpc.getScenMarketParams (aCDSBRA[0],
 				"RRBumpUp").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -999,13 +998,13 @@ public class ProductTestSuite {
 				for (int i = 0; i < aCDSBRA.length; ++i)
 					System.out.println ("RR Up01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
-							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+							org.drip.param.creator.MarketParamsBuilder.Create
 								(dc, null, null, ccRecoveryUp, null, null, null, null), null, "FairPremium"));
 			}
 		}
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccRecoveryDn = mpc.getScenCMP (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccRecoveryDn = mpc.getScenMarketParams (aCDSBRA[0],
 				"RRBumpDn").creditCurve (aCDSBRA[0].creditCurveName()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -1016,58 +1015,58 @@ public class ProductTestSuite {
 				for (int i = 0; i < aCDSBRA.length; ++i)
 					System.out.println ("RR Dn01 Fair premium = " + aCDSBRA[i].measureValue (valParams,
 						pricerParams,
-							org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
+							org.drip.param.creator.MarketParamsBuilder.Create
 								(dc, null, null, ccRecoveryDn, null, null, null, null), null,
 									"FairPremium"));
 			}
 		}
 
 		if (0 != (TM_CC_TENOR_UP01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
-				mapCMPCCUp = mpc.getCreditTenorCMP (aCDSBRA[0], true);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
+				mapCSQSCCUp = mpc.getCreditTenorMarketParams (aCDSBRA[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Tenor Bump Up CC build: " + (null == mapCMPCCUp ? "Failure" :
+				System.out.println ("Tenor Bump Up CC build: " + (null == mapCSQSCCUp ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPCCUp.entrySet())
-					System.out.println (me.getKey() + ": " + me.getValue().toString());
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSCCUp.entrySet())
+					System.out.println (meCSQS.getKey() + ": " + meCSQS.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPCCUp.entrySet()) {
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSCCUp.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor CC Bump Up\n--------\n");
 
 					for (int i = 0; i < aCDSBRA.length; ++i)
-						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
+						System.out.println ("Tenor: " + meCSQS.getKey() + "; " + astrCalibMeasure[i] + "[" +
 							aCDSBRA[i].primaryCode() + "] = " + aCDSBRA[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), pricerParams,
-									me.getValue(), null, astrCalibMeasure[i]));
+								meCSQS.getValue(), null, astrCalibMeasure[i]));
 				}
 			}
 		}
 
 		if (0 != (TM_CC_TENOR_DN01 & iTestMode)) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.MarketParamSet>
-				mapCMPCCDn = mpc.getCreditTenorCMP (aCDSBRA[0], false);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
+				mapCSQSCCDn = mpc.getCreditTenorMarketParams (aCDSBRA[0], false);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Tenor Bump Dn CC build: " + (null == mapCMPCCDn ? "Failure" :
+				System.out.println ("Tenor Bump Dn CC build: " + (null == mapCSQSCCDn ? "Failure" :
 					"Success"));
 			else if (TD_BRIEF == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPCCDn.entrySet())
-					System.out.println (me.getKey() + ": " + me.getValue().toString());
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSCCDn.entrySet())
+					System.out.println (meCSQS.getKey() + ": " + meCSQS.getValue().toString());
 			} else if (TD_DETAILED == iTestDetail) {
-				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.MarketParamSet>
-					me : mapCMPCCDn.entrySet()) {
+				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
+					meCSQS : mapCSQSCCDn.entrySet()) {
 					System.out.println ("\n\n------\nMeasures for Tenor CC Bump Dn\n--------\n");
 
 					for (int i = 0; i < aCDSBRA.length; ++i)
-						System.out.println ("Tenor: " + me.getKey() + "; " + astrCalibMeasure[i] + "[" +
+						System.out.println ("Tenor: " + meCSQS.getKey() + "; " + astrCalibMeasure[i] + "[" +
 							aCDSBRA[i].primaryCode() + "] = " + aCDSBRA[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), pricerParams,
-									me.getValue(), null, astrCalibMeasure[i]));
+									meCSQS.getValue(), null, astrCalibMeasure[i]));
 				}
 			}
 		}

@@ -69,7 +69,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
 	 * @param quotingParams Quoting Parameter
-	 * @param cmp Component Market Parameter
+	 * @param mktParams Component Market Parameter
 	 * 
 	 * @return Instance of the Discount Curve Span
 	 */
@@ -80,7 +80,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.param.market.MarketParamSet cmp)
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams)
 	{
 		if (null == aSRS || null == valParams) return null;
 
@@ -116,7 +116,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 						(adblPredictorOrdinate, aSCBC), aSCBC);
 
 				if (!cs.setup (org.drip.state.estimator.RatesSegmentSequenceBuilder.Create (dblEpochResponse,
-					srs, valParams, pricerParams, cmp, quotingParams, csPrev, oss, bestFitWeightedResponse(),
+					srs, valParams, pricerParams, mktParams, quotingParams, csPrev, oss, bestFitWeightedResponse(),
 						aSCBC[0].preceedingManifestSensitivityControl(),
 							bestFitWeightedResponseSensitivity(), calibrationBoundaryCondition()),
 								calibrationDetail())) {

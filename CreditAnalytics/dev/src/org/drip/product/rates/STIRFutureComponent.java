@@ -72,7 +72,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
@@ -86,7 +86,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 		if (dblValueDate >= dblEffectiveDate) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = super.value
-			(valParams, pricerParams, mktParams, quotingParams);
+			(valParams, pricerParams, csqs, quotingParams);
 
 		if (null == mapResult || 0 == mapResult.size()) return null;
 
@@ -94,7 +94,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 		try {
 			dblMultiplicativeSwapRateQuantoAdjustment =
-				org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (mktParams,
+				org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (csqs,
 					strComponentName + "SwapRateVolatility", strComponentName + "SwapRateExchangeVolatility",
 						strComponentName + "SwapRateToSwapRateExchangeCorrelation", dblValueDate,
 							dblEffectiveDate);

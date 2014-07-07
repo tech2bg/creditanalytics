@@ -125,7 +125,7 @@ public class OptionHelper {
 	/**
 	 * Compute the Integrated Surface Variance given the corresponding volatility and the date spans
 	 * 
-	 * @param mktParams The Market Parameters Container
+	 * @param mktParams Market Parameters
 	 * @param strVolSurface Name of the Volatility Surface
 	 * @param dblStartDate Evolution Start Date
 	 * @param dblEndDate Evolution End Date
@@ -136,7 +136,7 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedSurfaceVariance (
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final java.lang.String strVolSurface,
 		final double dblStartDate,
 		final double dblEndDate)
@@ -146,11 +146,10 @@ public class OptionHelper {
 			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblEndDate < dblStartDate)
 			throw new java.lang.Exception ("OptionHelper::IntegratedSurfaceVariance => Invalid Inputs");
 
-		if (null == mktParams || null == strVolSurface || strVolSurface.isEmpty() || dblEndDate ==
-			dblStartDate)
+		if (null == csqs || null == strVolSurface || strVolSurface.isEmpty() || dblEndDate == dblStartDate)
 			return 0.;
 
-		org.drip.quant.function1D.AbstractUnivariate auVolSurface = mktParams.customMetricVolSurface
+		org.drip.quant.function1D.AbstractUnivariate auVolSurface = csqs.customMetricVolSurface
 			(strVolSurface, new org.drip.analytics.date.JulianDate (dblEndDate));
 
 		return null != auVolSurface ? new PeriodVariance (auVolSurface).integrate (dblStartDate, dblEndDate)
@@ -257,7 +256,7 @@ public class OptionHelper {
 	 * Compute the Integrated Cross Volatility Quanto Product given the corresponding volatility and the
 	 * 	correlation surfaces, and the date spans
 	 * 
-	 * @param mktParams The Market Parameters Container
+	 * @param csqs Market Parameters
 	 * @param strVolSurface1 Name of the Volatility Surface #1
 	 * @param strVolSurface2 Name of the Volatility Surface #2
 	 * @param strCorrSurface Name of the Correlation Surface
@@ -270,7 +269,7 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedCrossVolQuanto (
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final java.lang.String strVolSurface1,
 		final java.lang.String strVolSurface2,
 		final java.lang.String strCorrSurface,
@@ -282,23 +281,23 @@ public class OptionHelper {
 			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblEndDate < dblStartDate)
 			throw new java.lang.Exception ("OptionHelper::IntegratedCrossVolQuanto => Invalid Inputs");
 
-		if (null == mktParams || null == strVolSurface1 || strVolSurface1.isEmpty() || null == strVolSurface2
-			|| strVolSurface2.isEmpty() || null == strCorrSurface || strCorrSurface.isEmpty() || dblEndDate
-				== dblStartDate)
+		if (null == csqs || null == strVolSurface1 || strVolSurface1.isEmpty() || null == strVolSurface2 ||
+			strVolSurface2.isEmpty() || null == strCorrSurface || strCorrSurface.isEmpty() || dblEndDate ==
+				dblStartDate)
 			return 0.;
 
 		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
 
-		return IntegratedCrossVolQuanto (mktParams.customMetricVolSurface (strVolSurface1, dtEnd),
-			mktParams.customMetricVolSurface (strVolSurface2, dtEnd), mktParams.customMetricVolSurface
-				(strCorrSurface, dtEnd), dblStartDate, dblEndDate);
+		return IntegratedCrossVolQuanto (csqs.customMetricVolSurface (strVolSurface1, dtEnd),
+			csqs.customMetricVolSurface (strVolSurface2, dtEnd), csqs.customMetricVolSurface (strCorrSurface,
+				dtEnd), dblStartDate, dblEndDate);
 	}
 
 	/**
 	 * Compute the Multiplicative Cross Volatility Quanto Product given the corresponding volatility and the
 	 * 	correlation surfaces, and the date spans
 	 * 
-	 * @param mktParams The Market Parameters Container
+	 * @param csqs Market Parameters
 	 * @param strVolSurface1 Name of the Volatility Surface #1
 	 * @param strVolSurface2 Name of the Volatility Surface #2
 	 * @param strCorrSurface Name of the Correlation Surface
@@ -311,7 +310,7 @@ public class OptionHelper {
 	 */
 
 	public static final double MultiplicativeCrossVolQuanto (
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final java.lang.String strVolSurface1,
 		final java.lang.String strVolSurface2,
 		final java.lang.String strCorrSurface,
@@ -319,7 +318,7 @@ public class OptionHelper {
 		final double dblEndDate)
 		throws java.lang.Exception
 	{
-		return java.lang.Math.exp (-1. * IntegratedCrossVolQuanto (mktParams, strVolSurface1, strVolSurface2,
+		return java.lang.Math.exp (-1. * IntegratedCrossVolQuanto (csqs, strVolSurface1, strVolSurface2,
 			strCorrSurface, dblStartDate, dblEndDate));
 	}
 
@@ -327,7 +326,7 @@ public class OptionHelper {
 	 * Compute the Integrated FRA Cross Volatility Convexity Adjuster given the corresponding volatility and
 	 * 	the correlation surfaces, and the date spans
 	 * 
-	 * @param mktParams The Market Parameters Container
+	 * @param csqs Market Parameters
 	 * @param strDiscountVolTS Name of the Discount Forward Rate Volatility Term Structure
 	 * @param strForwardVolTS Name of the Forward Rate Volatility Term Structure
 	 * @param strDiscountForwardCorrTS Name of the Discount-Forward Correlation Surface
@@ -342,7 +341,7 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedFRACrossVolConvexityAdjuster (
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final java.lang.String strDiscountVolTS,
 		final java.lang.String strForwardVolTS,
 		final java.lang.String strDiscountForwardCorrTS,
@@ -357,25 +356,17 @@ public class OptionHelper {
 			throw new java.lang.Exception
 				("OptionHelper::IntegratedFRACrossVolConvexityAdjuster => Invalid Inputs");
 
-		if (null == mktParams || null == strDiscountVolTS || strDiscountVolTS.isEmpty() || null ==
-			strForwardVolTS || strForwardVolTS.isEmpty() || null == strDiscountForwardCorrTS ||
+		if (null == csqs || null == strDiscountVolTS || strDiscountVolTS.isEmpty() || null == strForwardVolTS
+			|| strForwardVolTS.isEmpty() || null == strDiscountForwardCorrTS ||
 				strDiscountForwardCorrTS.isEmpty() || dblEndDate == dblStartDate)
 			return 0.;
-
-		/* org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
-
-		return IntegratedFRACrossVolConvexityExponent (mktParams.customMetricVolSurface (strDiscountVolTS,
-			dtEnd), mktParams.customMetricVolSurface (strForwardVolTS, dtEnd),
-				mktParams.customMetricVolSurface (strDiscountForwardCorrTS, dtEnd),
-					dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
-						dblEndDate); */
 
 		org.drip.product.params.FloatingRateIndex fri = org.drip.product.params.FloatingRateIndex.Create
 			(strForwardVolTS);
 
-		return IntegratedFRACrossVolConvexityExponent (mktParams.fundingCurveVolSurface (strDiscountVolTS),
-			mktParams.forwardCurveVolSurface (fri), mktParams.forwardFundingCorrSurface (fri,
-				strDiscountVolTS), dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler,
-					dblStartDate, dblEndDate);
+		return IntegratedFRACrossVolConvexityExponent (csqs.fundingCurveVolSurface (strDiscountVolTS),
+			csqs.forwardCurveVolSurface (fri), csqs.forwardFundingCorrSurface (fri, strDiscountVolTS),
+				dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
+					dblEndDate);
 	}
 }

@@ -65,25 +65,24 @@ public class CreditAnalyticsStub {
 				(org.drip.analytics.date.JulianDate.Today().getJulian());
 	}
 
-	private static final org.drip.param.market.MarketParamSet GetCMP (
+	private static final org.drip.param.market.CurveSurfaceQuoteSet csqs (
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final org.drip.service.bridge.CreditAnalyticsRequest cre,
 		final org.drip.param.definition.ScenarioMarketParams mpc)
 	{
-		return (null != cre && null != cre.getCMP()) ? cre.getCMP() : mpc.getScenCMP (comp, "Base");
+		return (null != cre && null != cre.csqs()) ? cre.csqs() : mpc.getScenMarketParams (comp, "Base");
 	}
 
 	private static final org.drip.param.definition.Quote GetQuote (
 		final org.drip.product.credit.BondComponent bond,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.lang.String strMeasure)
 	{
-		org.drip.param.definition.ComponentQuote cq = (null != cmp && null != cmp.componentQuote
-			(bond.name())) ? cmp.componentQuote (bond.name()) : mpc.getCompQuote
-				(bond.getIdentifierSet()._strID);
+		org.drip.param.definition.ProductQuote cq = (null != mktParams && null != mktParams.productQuote (bond.name())) ?
+			mktParams.productQuote (bond.name()) : mpc.getCompQuote (bond.getIdentifierSet()._strID);
 
-		return null == cq ? null : cq.getQuote (strMeasure);
+		return null == cq ? null : cq.quote (strMeasure);
 	}
 
 	private static org.drip.analytics.rates.DiscountCurve MakeDC (
@@ -253,13 +252,13 @@ public class CreditAnalyticsStub {
 
 		org.drip.param.valuation.ValuationParams valParams = GetValuationParams (cre);
 
-		org.drip.param.market.MarketParamSet cmp = GetCMP (bond, cre, mpc);
+		org.drip.param.market.CurveSurfaceQuoteSet mktParams = csqs (bond, cre, mpc);
 
-		if (null == cmp) return null;
+		if (null == mktParams) return null;
 
-		if (null == cmp.fundingCurve (bond.couponCurrency()[0])) {
+		if (null == mktParams.fundingCurve (bond.couponCurrency()[0])) {
 			try {
-				if (!cmp.setFundingCurve (MakeDC (new org.drip.analytics.date.JulianDate
+				if (!mktParams.setFundingCurve (MakeDC (new org.drip.analytics.date.JulianDate
 					(valParams.valueDate()))))
 					return null;
 			} catch (java.lang.Exception e) {
@@ -269,7 +268,7 @@ public class CreditAnalyticsStub {
 			}
 		}
 
-		org.drip.param.definition.Quote qPrice = GetQuote (bond, cmp, mpc, "Price");
+		org.drip.param.definition.Quote qPrice = GetQuote (bond, mktParams, mpc, "Price");
 
 		if (null == qPrice) return null;
 
@@ -277,10 +276,10 @@ public class CreditAnalyticsStub {
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblAskPrice)) return null;
 
-		org.drip.param.valuation.WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null,
+		org.drip.param.valuation.WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, mktParams, null,
 			dblAskPrice);
 
-		return null == wi ? null : bond.standardMeasures (valParams, null, cmp, null, wi, dblAskPrice);
+		return null == wi ? null : bond.standardMeasures (valParams, null, mktParams, null, wi, dblAskPrice);
 	}
 
 	private static final boolean run (

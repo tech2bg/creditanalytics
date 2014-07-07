@@ -69,10 +69,10 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams) return null;
+		if (null == valParams || null == csqs) return null;
 
 		long lStart = System.nanoTime();
 
@@ -84,7 +84,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -94,21 +94,21 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		org.drip.product.params.FloatingRateIndex fri = fri();
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.forwardCurve (fri);
+		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (fri);
 
 		if (null == fc || !fri.match (fc.index())) return null;
 
 		java.lang.String strFRI = fri.fullyQualifiedName();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = super.value
-			(valParams, pricerParams, mktParams, quotingParams);
+			(valParams, pricerParams, csqs, quotingParams);
 
 		if (null == mapResult || 0 == mapResult.size()) return null;
 
 		try {
 			java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-					mktParams.fixings();
+					csqs.fixings();
 
 			if (null != mapFixings && mapFixings.containsKey (dtMaturity)) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing =
@@ -131,14 +131,8 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 			double dblForwardPrice = dblForwardDCF * (dblParStandardFRA - strike()) / (1. + dblForwardDCF *
 				dblParStandardFRA);
 
-			/* double dblShiftedLogNormalConvexityAdjustmentExponent =
-				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (mktParams,
-					dcFunding.name() + "_VOL_TS", fri.fullyQualifiedName() + "_VOL_TS", dcFunding.name() +
-						"::" + fri.fullyQualifiedName() + "_VOL_TS", dblShiftedLogNormalScaler,
-							dblShiftedLogNormalScaler, dblValueDate, dblEffectiveDate); */
-
 			double dblShiftedLogNormalConvexityAdjustmentExponent =
-				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (mktParams,
+				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (csqs,
 					dcFunding.name(), fri.fullyQualifiedName(), "ab", dblShiftedLogNormalScaler,
 						dblShiftedLogNormalScaler, dblValueDate, dblEffectiveDate);
 

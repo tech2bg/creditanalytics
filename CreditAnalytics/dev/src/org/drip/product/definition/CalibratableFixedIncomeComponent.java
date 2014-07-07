@@ -44,7 +44,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	protected abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
@@ -93,7 +93,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
-	 * @param mktParams Component Market Parameters
+	 * @param csqs Component Market Parameters
 	 * @param quotingParams Component Quoting Parameters
 	 * 
 	 * @return The micro-Jacobian
@@ -102,7 +102,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	public abstract org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
@@ -111,7 +111,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param strMainfestMeasure Manifest Measure Name
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
-	 * @param mktParams Component Market Parameters
+	 * @param csqs Component Market Parameters
 	 * @param quotingParams Component Quoting Parameters
 	 * 
 	 * @return The micro-Jacobian
@@ -121,7 +121,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final java.lang.String strMainfestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
@@ -130,7 +130,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
-	 * @param mktParams Component Market Parameters
+	 * @param csqs Component Market Parameters
 	 * @param quotingParams Component Quoting Parameters
 	 * @param lsmm The Latent State Metric and the Component Measure
 	 * 
@@ -141,7 +141,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	public abstract org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm);
 

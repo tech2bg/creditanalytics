@@ -6,8 +6,8 @@ import java.util.Map;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.creator.ComponentMarketParamsBuilder;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.creator.MarketParamsBuilder;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.ForeignCollateralizedDomesticForward;
 import org.drip.product.params.CurrencyPair;
@@ -91,14 +91,13 @@ public class ForeignCollateralDomesticForex {
 			new FlatUnivariate (dblFXVolatility),
 			new FlatUnivariate (dblFXForeignRatesCorrelation));
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(null, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (null, null, null, null, null, null, null);
 
-		cmp.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
 
-		cmp.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
 
-		cmp.setFXCurve (cp, auFX);
+		mktParams.setFXCurve (cp, auFX);
 
 		ForeignCollateralizedDomesticForward fcff = new ForeignCollateralizedDomesticForward (
 			cp,
@@ -108,7 +107,7 @@ public class ForeignCollateralDomesticForex {
 		CaseInsensitiveTreeMap<Double> mapFCFF = fcff.value (
 			new ValuationParams (dtToday, dtToday, strDomesticCurrency),
 			null,
-			cmp,
+			mktParams,
 			null);
 
 		for (Map.Entry<String, Double> me : mapFCFF.entrySet())

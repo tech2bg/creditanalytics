@@ -56,7 +56,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -231,10 +231,10 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		return _fixStream.coupon (dblValue, mktParams);
+		return _fixStream.coupon (dblValue, csqs);
 	}
 
 	@Override public java.lang.String[] forwardCurveName()
@@ -300,16 +300,16 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixStreamResult =
-			_fixStream.value (valParams, pricerParams, mktParams, quotingParams);
+			_fixStream.value (valParams, pricerParams, csqs, quotingParams);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFloatStreamResult =
-			_floatStream.value (valParams, pricerParams, mktParams, quotingParams);
+			_floatStream.value (valParams, pricerParams, csqs, quotingParams);
 
 		if (null == mapFixStreamResult || 0 == mapFixStreamResult.size() || null == mapFloatStreamResult || 0
 			== mapFloatStreamResult.size())
@@ -390,7 +390,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
-				org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
 					(couponCurrency()[0]);
 
 				if (null == dcFunding) return null;
@@ -485,18 +485,18 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
-			pricerParams, mktParams, quotingParams);
+			pricerParams, csqs, quotingParams);
 
 		if (null == mapMeasures || !mapMeasures.containsKey ("SwapRate")) return null;
 
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
 		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFloating =
-			_floatStream.jackDDirtyPVDManifestMeasure (valParams, pricerParams, mktParams, quotingParams);
+			_floatStream.jackDDirtyPVDManifestMeasure (valParams, pricerParams, csqs, quotingParams);
 
 		if (null == jackDDirtyPVDManifestMeasureFloating) return null;
 
@@ -505,7 +505,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (0 == iNumQuote) return null;
 
 		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFixed =
-			_fixStream.jackDDirtyPVDManifestMeasure (valParams, pricerParams, mktParams, quotingParams);
+			_fixStream.jackDDirtyPVDManifestMeasure (valParams, pricerParams, csqs, quotingParams);
 
 		if (null == jackDDirtyPVDManifestMeasureFixed || iNumQuote !=
 			jackDDirtyPVDManifestMeasureFixed.numParameters())
@@ -540,17 +540,17 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
-			strManifestMeasure || null == mktParams)
+			strManifestMeasure || null == csqs)
 			return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
 		{
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
-				(valParams, pricerParams, mktParams, quotingParams);
+				(valParams, pricerParams, csqs, quotingParams);
 
 			if (null == mapMeasures) return null;
 
@@ -561,7 +561,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
 					(couponCurrency()[0]);
 
 				if (null == dcFunding) return null;
@@ -687,7 +687,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{

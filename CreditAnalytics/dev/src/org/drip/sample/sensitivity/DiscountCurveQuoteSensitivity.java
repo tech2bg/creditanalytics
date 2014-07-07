@@ -365,7 +365,7 @@ public class DiscountCurveQuoteSensitivity {
 		for (int i = 0; i < aDepositComp.length; ++i)
 			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aDepositComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
 		/*
@@ -382,7 +382,7 @@ public class DiscountCurveQuoteSensitivity {
 		for (int i = 0; i < aFutureComp.length; ++i)
 			System.out.println ("\t[" + aFutureComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aFutureComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblFutureQuote[i], 1, 6, 1.));
 
 		/*
@@ -399,7 +399,7 @@ public class DiscountCurveQuoteSensitivity {
 		for (int i = 0; i < aSwapComp.length; ++i)
 			System.out.println ("\t[" + aSwapComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aSwapComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
 
 		/*
@@ -481,7 +481,7 @@ public class DiscountCurveQuoteSensitivity {
 		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDManifestMeasure (
 			new ValuationParams (dtToday, dtToday, "USD"),
 			null,
-			ComponentMarketParamsBuilder.Create (dc, null, null, null, null, null, null, null),
+			MarketParamsBuilder.Create (dc, null, null, null, null, null, null, null),
 			null);
 
 		System.out.println (wjIRSBespokeQuoteJack.displayString());

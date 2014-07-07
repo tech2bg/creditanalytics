@@ -49,7 +49,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		return null;
@@ -258,7 +258,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 	@Override public double coupon (
 		final double dblValue,
-		final org.drip.param.market.MarketParamSet mktParams)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
 		return 0.;
@@ -321,12 +321,12 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams) return null;
+		if (null == valParams || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -340,7 +340,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 		double dblMaturity = _dtMaturity.getJulian();
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = mktParams.forwardCurve (_fri);
+		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
 
 		if (null == fc || !_fri.match (fc.index())) return null;
 
@@ -355,7 +355,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 			java.util.Map<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-					mktParams.fixings();
+					csqs.fixings();
 
 			if (null != mapFixings && mapFixings.containsKey (_dtMaturity)) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing =
@@ -370,9 +370,9 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 			double dblMultiplicativeQuantoAdjustment = java.lang.Math.exp (-1. *
 				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-					(mktParams.forwardCurveVolSurface (_fri), mktParams.customMetricVolSurface
+					(csqs.forwardCurveVolSurface (_fri), csqs.customMetricVolSurface
 						("ForwardToDomesticExchangeVolatility", dtEffective),
-							mktParams.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
+							csqs.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
 								dtEffective), dblValueDate, _dblEffectiveDate));
 
 			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffectiveDate,
@@ -465,10 +465,10 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams || null == mktParams.fundingCurve (couponCurrency()[0]))
+		if (null == valParams || null == csqs || null == csqs.fundingCurve (couponCurrency()[0]))
 			return null;
 
 		return null;
@@ -478,11 +478,11 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == strManifestMeasure || null == mktParams || null ==
-			mktParams.fundingCurve (couponCurrency()[0]))
+		if (null == valParams || null == strManifestMeasure || null == csqs || null ==
+			csqs.fundingCurve (couponCurrency()[0]))
 			return null;
 
 		return null;
@@ -491,7 +491,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{

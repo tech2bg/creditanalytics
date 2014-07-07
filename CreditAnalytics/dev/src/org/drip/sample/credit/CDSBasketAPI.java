@@ -10,7 +10,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
@@ -222,21 +222,21 @@ public class CDSBasketAPI {
 		 * Create the basket market parameters and add the named discount curve and the credit curves to it.
 		 */
 
-		MarketParamSet bmp =  new MarketParamSet();
+		CurveSurfaceQuoteSet mktParams =  new CurveSurfaceQuoteSet();
 
-		bmp.setFundingCurve (dc);
+		mktParams.setFundingCurve (dc);
 
-		bmp.setCreditCurve (ccCHN);
+		mktParams.setCreditCurve (ccCHN);
 
-		bmp.setCreditCurve (ccIND);
+		mktParams.setCreditCurve (ccIND);
 
-		bmp.setCreditCurve (ccBRA);
+		mktParams.setCreditCurve (ccBRA);
 
-		bmp.setCreditCurve (ccRUS);
+		mktParams.setCreditCurve (ccRUS);
 
-		bmp.setCreditCurve (ccKOR);
+		mktParams.setCreditCurve (ccKOR);
 
-		bmp.setCreditCurve (ccTUR);
+		mktParams.setCreditCurve (ccTUR);
 
 		/*
 		 * Create the CDS basket from the component CDS and their weights
@@ -271,7 +271,7 @@ public class CDSBasketAPI {
 		 * Generate the CDS basket measures from the valuation, the pricer, and the market parameters
 		 */
 
-		CaseInsensitiveTreeMap<Double> mapResult = bds.value (valParams, pricerParams, bmp, null);
+		CaseInsensitiveTreeMap<Double> mapResult = bds.value (valParams, pricerParams, mktParams, null);
 
 		System.out.println ("Accrued:      " + FormatUtil.FormatDouble (mapResult.get ("Accrued"), 0, 2, 100.));
 

@@ -11,7 +11,7 @@ import org.drip.analytics.period.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
@@ -280,12 +280,12 @@ public class CDSW {
 		 * Generate the base CDS Measures
 		 */
 
-		MarketParamSet mp = ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Credit (dc, cc);
 
 		CaseInsensitiveTreeMap<Double> mapBaseMeasures = cds.value (
 			valParams,
 			pricerParams,
-			mp,
+			mktParams,
 			null);
 
 		double dblAccrued = mapBaseMeasures.get ("Accrued") * 100. * dblNotional;
@@ -321,7 +321,7 @@ public class CDSW {
 		CaseInsensitiveTreeMap<Double> mapCreditFlat01Measures = cds.value (
 			valParams,
 			pricerParams,
-			ComponentMarketParamsBuilder.MakeCreditCMP (dc, cc01Bump),
+			MarketParamsBuilder.Credit (dc, cc01Bump),
 			null);
 
 		double dblCreditFlat01DirtyPV = mapCreditFlat01Measures.get ("DirtyPV");
@@ -342,7 +342,7 @@ public class CDSW {
 		CaseInsensitiveTreeMap<Double> mapRatesFlat01Measures = cds.value (
 			valParams,
 			pricerParams,
-			ComponentMarketParamsBuilder.MakeCreditCMP (dc01Bump, cc),
+			MarketParamsBuilder.Credit (dc01Bump, cc),
 			null);
 
 		double dblRatesFlat01DirtyPV = mapRatesFlat01Measures.get ("DirtyPV");
@@ -372,7 +372,7 @@ public class CDSW {
 		CaseInsensitiveTreeMap<Double> mapQSMeasures = cds.valueFromQuotedSpread (
 			valParams,
 			pricerParams,
-			mp,
+			mktParams,
 			null,
 			0.05,
 			208.);

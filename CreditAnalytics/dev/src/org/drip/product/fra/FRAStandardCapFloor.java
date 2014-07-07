@@ -100,7 +100,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		double dblPV = 0.;
@@ -111,7 +111,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 
 		for (org.drip.product.fra.FRAStandardCapFloorlet fracfl : _lsFRACapFloorlet) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRAResult = fracfl.value
-				(valParams, pricerParams, mktParams, quotingParams);
+				(valParams, pricerParams, csqs, quotingParams);
 
 			if (null == mapFRAResult) continue;
 

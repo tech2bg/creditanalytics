@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -333,7 +333,7 @@ public class FRAStdOption {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -344,7 +344,7 @@ public class FRAStdOption {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
@@ -538,23 +538,22 @@ public class FRAStdOption {
 			0.006,
 			"Act/360");
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setForwardCurveVolSurface (
+		mktParams.setForwardCurveVolSurface (
 			fri,
 			new FlatUnivariate (dblFRIVol)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
 			new AndersenPiterbargMeanReverter (
@@ -564,7 +563,7 @@ public class FRAStdOption {
 				new FlatUnivariate (dblFRIQuantoExchangeCorr))
 		);
 
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
 
 		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
 
@@ -577,7 +576,7 @@ public class FRAStdOption {
 			strCurrency,
 			strCurrency);
 
-		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, cmp, null);
+		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapFRACapletOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
@@ -595,7 +594,7 @@ public class FRAStdOption {
 			strCurrency,
 			strCurrency);
 
-		Map<String, Double> mapFRAFloorletOutput = fraFloorlet.value (valParams, null, cmp, null);
+		Map<String, Double> mapFRAFloorletOutput = fraFloorlet.value (valParams, null, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapFRAFloorletOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());

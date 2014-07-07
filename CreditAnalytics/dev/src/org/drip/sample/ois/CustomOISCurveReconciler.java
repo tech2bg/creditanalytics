@@ -6,7 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.param.creator.ComponentMarketParamsBuilder;
+import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -755,7 +755,7 @@ public class CustomOISCurveReconciler {
 		for (int i = 0; i < aDepositComp.length; ++i)
 			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dfdc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
 		/*
@@ -772,7 +772,7 @@ public class CustomOISCurveReconciler {
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
 			System.out.println ("\t[" + aShortEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dfdc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
 
 		/*
@@ -789,7 +789,7 @@ public class CustomOISCurveReconciler {
 		for (int i = 0; i < aOISFutureComp.length; ++i)
 			System.out.println ("\t[" + aOISFutureComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dfdc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
 
 		/*
@@ -806,7 +806,7 @@ public class CustomOISCurveReconciler {
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
 			System.out.println ("\t[" + aLongEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dfdc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.));
 
 		/*

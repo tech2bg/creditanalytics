@@ -92,7 +92,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		try {
 			return new org.drip.state.curve.DiscountFactorDiscountCurve (name(), collateralParams(),
 				(_rcci.lcc().calibrateSpan (aRBSBumped, 1., _rcci.getValuationParameter(),
-					_rcci.getPricerParameter(), _rcci.getQuotingParameter(), _rcci.getCMP())));
+					_rcci.getPricerParameter(), _rcci.getQuotingParameter(), _rcci.marketParameters())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

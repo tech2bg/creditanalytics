@@ -62,7 +62,7 @@ public class ScenarioDiscountCurveBuilder {
 
 	private static final CompQuote[] CompQuote (
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final java.lang.String strCurrency,
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtInitialMaturity,
@@ -89,7 +89,7 @@ public class ScenarioDiscountCurveBuilder {
 			lsCompDENSE.add (comp);
 
 			try {
-				lsCalibQuote.add (comp.measureValue (valParams, null, cmp, null, "Rate"));
+				lsCalibQuote.add (comp.measureValue (valParams, null, csqs, null, "Rate"));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -183,7 +183,7 @@ public class ScenarioDiscountCurveBuilder {
 	 * @param aSRS Array of the Instrument Representation Stretches
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * @param quotingParam Quoting Parameters
 	 * @param dblEpochResponse The Starting Response Value
 	 * 
@@ -195,7 +195,7 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final double dblEpochResponse)
 	{
@@ -206,10 +206,10 @@ public class ScenarioDiscountCurveBuilder {
 				org.drip.state.curve.DiscountFactorDiscountCurve
 					(aSRS[0].getCalibComp()[0].couponCurrency()[0], null == quotingParam ? null :
 						quotingParam.coreCollateralizationParams(), (lcc.calibrateSpan (aSRS,
-							dblEpochResponse, valParam, pricerParam, quotingParam, cmp)));
+							dblEpochResponse, valParam, pricerParam, quotingParam, csqs)));
 
 			return dcdf.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
-				pricerParam, quotingParam, cmp)) ? dcdf : null;
+				pricerParam, quotingParam, csqs)) ? dcdf : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -226,7 +226,7 @@ public class ScenarioDiscountCurveBuilder {
 	 * @param aSRS Array of the Instrument Representation Stretches
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * @param quotingParam Quoting Parameters
 	 * 
 	 * @return Globally Smoothed Instance of the Discount Curve
@@ -239,7 +239,7 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam)
 	{
 		if (null == dcShapePreserver) return null;
@@ -309,7 +309,7 @@ public class ScenarioDiscountCurveBuilder {
 						org.drip.spline.grid.OverlappingStretchSpan (stretch));
 
 			return dcMultiPass.setCCIS (new org.drip.analytics.rates.SmoothingCCIS (dcShapePreserver, gccp,
-				lcc, aSRS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
+				lcc, aSRS, valParam, pricerParam, quotingParam, csqs)) ? dcMultiPass : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -326,7 +326,7 @@ public class ScenarioDiscountCurveBuilder {
 	 * @param aSRS Array of the Instrument Representation Stretches
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * @param quotingParam Quoting Parameters
 	 * 
 	 * @return Locally Smoothed Instance of the Discount Curve
@@ -339,7 +339,7 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam)
 	{
 		if (null == dcShapePreserver) return null;
@@ -415,7 +415,7 @@ public class ScenarioDiscountCurveBuilder {
 						org.drip.spline.grid.OverlappingStretchSpan (stretch));
 
 			return dcMultiPass.setCCIS (new org.drip.analytics.rates.SmoothingCCIS (dcShapePreserver,
-				lccp, lcc, aSRS, valParam, pricerParam, quotingParam, cmp)) ? dcMultiPass : null;
+				lccp, lcc, aSRS, valParam, pricerParam, quotingParam, csqs)) ? dcMultiPass : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -430,7 +430,7 @@ public class ScenarioDiscountCurveBuilder {
 	 * @param strName Curve Name
 	 * @param valParams Valuation Parameters
 	 * @param pricerParam Pricer Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * @param quotingParam Quoting Parameters
 	 * @param strBasisType The Basis Type
 	 * @param fsbp The Function Set Basis Parameters
@@ -448,7 +448,7 @@ public class ScenarioDiscountCurveBuilder {
 		final java.lang.String strName,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParam,
-		final org.drip.param.market.MarketParamSet cmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final java.lang.String strBasisType,
 		final org.drip.spline.basis.FunctionSetBuilderParams fsbp,
@@ -507,8 +507,8 @@ public class ScenarioDiscountCurveBuilder {
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
 									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
-			dcShapePreserving = ShapePreservingDFBuild (lcc, aSRS, valParams, pricerParam, cmp, quotingParam,
-				dblEpochResponse);
+			dcShapePreserving = ShapePreservingDFBuild (lcc, aSRS, valParams, pricerParam, csqs,
+				quotingParam, dblEpochResponse);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -695,11 +695,11 @@ public class ScenarioDiscountCurveBuilder {
 
 		if (null == dcShapePreserver || (null != tldf && !dcShapePreserver.setTurns (tldf))) return null;
 
-		org.drip.param.market.MarketParamSet cmp =
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcShapePreserver, null, null, null, null, null, null);
+		org.drip.param.market.CurveSurfaceQuoteSet csqs =
+			org.drip.param.creator.MarketParamsBuilder.Create (dcShapePreserver, null, null, null,
+				null, null, null);
 
-		if (null == cmp) return null;
+		if (null == csqs) return null;
 
 		CompQuote[] aCQ1 = null;
 
@@ -717,15 +717,13 @@ public class ScenarioDiscountCurveBuilder {
 				}
 			}
 		} else
-			aCQ1 = CompQuote (valParams, cmp, strCurrency, aCalibComp1[0].effective(),
-				aCalibComp1[0].maturity(), aCalibComp1[aCalibComp1.length - 1].maturity(),
-					strTenor1, false);
+			aCQ1 = CompQuote (valParams, csqs, strCurrency, aCalibComp1[0].effective(),
+				aCalibComp1[0].maturity(), aCalibComp1[aCalibComp1.length - 1].maturity(), strTenor1, false);
 
 		if (null == strTenor2 || strTenor2.isEmpty()) return dcShapePreserver;
 
-		CompQuote[] aCQ2 = CompQuote (valParams, cmp, strCurrency, aCalibComp2[0].effective(),
-			aCalibComp2[0].maturity(), aCalibComp2[aCalibComp2.length - 1].maturity(),
-				strTenor2, true);
+		CompQuote[] aCQ2 = CompQuote (valParams, csqs, strCurrency, aCalibComp2[0].effective(),
+			aCalibComp2[0].maturity(), aCalibComp2[aCalibComp2.length - 1].maturity(), strTenor2, true);
 
 		int iNumDENSEComp1 = null == aCQ1 ? 0 : aCQ1.length;
 		int iNumDENSEComp2 = null == aCQ2 ? 0 : aCQ2.length;

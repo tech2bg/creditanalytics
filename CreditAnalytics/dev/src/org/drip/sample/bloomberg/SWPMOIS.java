@@ -8,7 +8,7 @@ import org.drip.analytics.period.Period;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -252,7 +252,7 @@ public class SWPMOIS {
 
 		mmFixings.put (dtEffective, mapIndexFixing);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, mmFixings);
 
 		/*
 		 * Set up the valuation parameters
@@ -264,7 +264,7 @@ public class SWPMOIS {
 		 * Generate the base scenario measures for the swap
 		 */
 
-		CaseInsensitiveTreeMap<Double> mapSwapCalc = swap.value (valParams, null, cmp, null);
+		CaseInsensitiveTreeMap<Double> mapSwapCalc = swap.value (valParams, null, mktParams, null);
 
 		double dblBasePV = mapSwapCalc.get ("PV");
 
@@ -286,13 +286,13 @@ public class SWPMOIS {
 
 		mmFixings.put (dtEffective, mapIndexFixing);
 
-		MarketParamSet cmpFixingsBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, mmFixings);
+		CurveSurfaceQuoteSet mktParamsFixingsBumped = MarketParamsBuilder.Create (dc, null, null, null, null, null, mmFixings);
 
 		/*
 		 * Generate the fixing bumped scenario measures for the swap
 		 */
 
-		CaseInsensitiveTreeMap<Double> mapSwapFixingsBumpedCalc = swap.value (valParams, null, cmpFixingsBumped, null);
+		CaseInsensitiveTreeMap<Double> mapSwapFixingsBumpedCalc = swap.value (valParams, null, mktParamsFixingsBumped, null);
 
 		double dblFixingsDV01 = mapSwapFixingsBumpedCalc.get ("PV") - dblBasePV;
 
@@ -310,13 +310,13 @@ public class SWPMOIS {
 
 		mmFixings.put (dtEffective, mapIndexFixing);
 
-		MarketParamSet cmpRateBumped = ComponentMarketParamsBuilder.CreateComponentMarketParams (dcBumped, null, null, null, null, null, mmFixings);
+		CurveSurfaceQuoteSet mktParamsRateBumped = MarketParamsBuilder.Create (dcBumped, null, null, null, null, null, mmFixings);
 
 		/*
 		 * Generate the rate flat bumped scenario measures for the swap
 		 */
 
-		CaseInsensitiveTreeMap<Double> mapSwapRateBumpedCalc = swap.value (valParams, null, cmpRateBumped, null);
+		CaseInsensitiveTreeMap<Double> mapSwapRateBumpedCalc = swap.value (valParams, null, mktParamsRateBumped, null);
 
 		System.out.println ("PV01         : " + FormatUtil.FormatDouble (mapSwapRateBumpedCalc.get ("PV") - dblBasePV, 0, 0, dblNotional));
 

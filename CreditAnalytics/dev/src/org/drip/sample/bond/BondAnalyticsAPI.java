@@ -12,7 +12,7 @@ import org.drip.analytics.period.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
 import org.drip.param.definition.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.params.*;
@@ -394,7 +394,7 @@ public class BondAnalyticsAPI {
 			 * Create the bond's component market parameters from the market inputs
 			 */
 
-			MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (
+			CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 				dc,		// Discount curve
 				dcTSY,	// TSY Discount Curve (Includes Optional EDSF if available, or BILLS etc)
 				cc,		// Credit Curve
@@ -410,25 +410,25 @@ public class BondAnalyticsAPI {
 
 			ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "", Convention.DR_ACTUAL);
 
-			ComponentQuote cquote = ComponentQuoteBuilder.CreateComponentQuote();
+			ProductQuote cquote = ProductQuoteBuilder.CreateProductQuote();
 
 			Quote q = QuoteBuilder.CreateQuote ("mid", 0.05, Double.NaN);
 
 			cquote.addQuote ("Yield", q, true);
 
 			for (Bond bond : aBond)
-				cmp.setComponentQuote (bond.name(), cquote);
+				mktParams.setProductQuote (bond.name(), cquote);
 
-			aBond[i].value (valParams, null, cmp, null);
+			aBond[i].value (valParams, null, mktParams, null);
 
-			System.out.println ("\n" + aBond[i].name() + " Valuation OP: " + aBond[i].value (valParams, null, cmp, null));
+			System.out.println ("\n" + aBond[i].name() + " Valuation OP: " + aBond[i].value (valParams, null, mktParams, null));
 
 			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
-				(valParams, cmp, null, 0.03), 1, 3, 100.));
+				(valParams, mktParams, null, 0.03), 1, 3, 100.));
 
-			double dblPrice = aBond[i].calcPriceFromYield (valParams, cmp, null, 0.03);
+			double dblPrice = aBond[i].calcPriceFromYield (valParams, mktParams, null, 0.03);
 
-			WorkoutInfo wi = aBond[i].calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
+			WorkoutInfo wi = aBond[i].calcExerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
 			System.out.println ("Workout Date: " + JulianDate.fromJulian (wi.date()));
 
@@ -437,48 +437,48 @@ public class BondAnalyticsAPI {
 			System.out.println ("Workout Yield: " + FormatUtil.FormatDouble (wi.yield(), 1, 2, 100.));
 
 			System.out.println ("Workout Yield From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcYieldFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 2, 100.));
+				(aBond[i].calcYieldFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 2, 100.));
 
 			if (!aBond[i].isFloater()) {
 				System.out.println ("Z Spread From Price: " + FormatUtil.FormatDouble
-					(aBond[i].calcZSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+					(aBond[i].calcZSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 				/* System.out.println ("OAS From Price: " + FormatUtil.FormatDouble
-					(aBond[i].calcOASFromPrice (valParams, cmp, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.)); */
+					(aBond[i].calcOASFromPrice (valParams, mktParams, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.)); */
 			}
 
 			System.out.println ("I Spread From Price: " + FormatUtil.FormatDouble (aBond[i].calcISpreadFromPrice
-				(valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Discount Margin From Price: " + FormatUtil.FormatDouble (aBond[i].calcDiscountMarginFromPrice
-				(valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("TSY Spread From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcTSYSpreadFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+				(aBond[i].calcTSYSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("ASW From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcASWFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+				(aBond[i].calcASWFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Credit Basis From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcCreditBasisFromPrice (valParams, cmp, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+				(aBond[i].calcCreditBasisFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Price From TSY Spread: " + FormatUtil.FormatDouble
-				(aBond[i].calcPriceFromTSYSpread (valParams, cmp, null, 0.0188), 1, 3, 100.));
+				(aBond[i].calcPriceFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 3, 100.));
 
 			System.out.println ("Yield From TSY Spread: " + FormatUtil.FormatDouble
-				(aBond[i].calcYieldFromTSYSpread (valParams, cmp, null, 0.0188), 1, 2, 100.));
+				(aBond[i].calcYieldFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 2, 100.));
 
 			System.out.println ("ASW From TSY Spread: " + FormatUtil.FormatDouble
-				(aBond[i].calcASWFromTSYSpread (valParams, cmp, null, 0.0188), 1, 0, 10000.));
+				(aBond[i].calcASWFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));
 
 			System.out.println ("Credit Basis From TSY Spread: " + FormatUtil.FormatDouble
-				(aBond[i].calcCreditBasisFromTSYSpread (valParams, cmp, null, 0.0188), 1, 0, 10000.));
+				(aBond[i].calcCreditBasisFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));
 
 			/* System.out.println ("PECS From TSY Spread: " + FIGen.FormatSpread
-				(aBond[i].calcPECSFromTSYSpread (valParams, cmp, null, 0.0188))); */
+				(aBond[i].calcPECSFromTSYSpread (valParams, mktParams, null, 0.0188))); */
 
 			System.out.println ("Theoretical Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcPriceFromCreditBasis (valParams, cmp, null, wi.date(), wi.factor(), 0.), 1, 3, 100.));
+				(aBond[i].calcPriceFromCreditBasis (valParams, mktParams, null, wi.date(), wi.factor(), 0.), 1, 3, 100.));
 		}
 	}
 
@@ -514,7 +514,7 @@ public class BondAnalyticsAPI {
 		 * Component Market Parameters Container
 		 */
 
-		MarketParamSet cmp =  ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, cc, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams =  MarketParamsBuilder.Create (dc, null, null, cc, null, null, null, null);
 
 		/*
 		 * Valuation Parameters
@@ -526,7 +526,7 @@ public class BondAnalyticsAPI {
 		 * Theoretical Price
 		 */
 
-		double dblTheoreticalPrice = bond.calcPriceFromCreditBasis (valParams, cmp, null, bond.maturity().getJulian(), 1., 0.01);
+		double dblTheoreticalPrice = bond.calcPriceFromCreditBasis (valParams, mktParams, null, bond.maturity().getJulian(), 1., 0.01);
 
 
 		System.out.println ("Credit Price From DC and CC: " + dblTheoreticalPrice);
@@ -580,7 +580,7 @@ public class BondAnalyticsAPI {
 		 * Calibrated Component Market Parameters Container
 		 */
 
-		MarketParamSet cmpCalib = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, ccCalib, null, null, null, null);
+		CurveSurfaceQuoteSet mktParamsCalib = MarketParamsBuilder.Create (dc, null, null, ccCalib, null, null, null, null);
 
 		/*
 		 * Verify the CDS fair premium using the calibrated credit curve
@@ -589,7 +589,7 @@ public class BondAnalyticsAPI {
 		System.out.println (cds.primaryCode() + " => " + cds.measureValue (
 			valParams,
 			PricerParams.MakeStdPricerParams(),
-			cmpCalib,
+			mktParamsCalib,
 			null,
 			"FairPremium"));
 
@@ -599,7 +599,7 @@ public class BondAnalyticsAPI {
 
 		System.out.println (bond.primaryCode() + " => " + bond.calcPriceFromCreditBasis (
 			valParams,
-			cmpCalib,
+			mktParamsCalib,
 			null,
 			bond.maturity().getJulian(),
 			1.,

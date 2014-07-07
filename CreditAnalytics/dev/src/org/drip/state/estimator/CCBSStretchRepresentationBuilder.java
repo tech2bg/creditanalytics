@@ -46,7 +46,7 @@ public class CCBSStretchRepresentationBuilder {
 	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
 	 * @param aCCSP Array of Calibration Cross Currency Swap Pair Instances
 	 * @param valParams The Valuation Parameters
-	 * @param bmp The Basket Market Parameters to imply the Market Quote Measure
+	 * @param mktParams The Basket Market Parameters to imply the Market Quote Measure
 	 * @param adblReferenceComponentBasis Array of the Reference Component Reference Leg Basis Spread
 	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
 	 * 
@@ -59,11 +59,11 @@ public class CCBSStretchRepresentationBuilder {
 		final java.lang.String strLatentStateQuantificationMetric,
 		final org.drip.product.fx.CrossCurrencyComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.market.MarketParamSet bmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final double[] adblReferenceComponentBasis,
 		final boolean bBasisOnDerivedLeg)
 	{
-		if (null == aCCSP || null == bmp || null == adblReferenceComponentBasis) return null;
+		if (null == aCCSP || null == mktParams || null == adblReferenceComponentBasis) return null;
 
 		int iNumCCSP = aCCSP.length;
 
@@ -82,7 +82,7 @@ public class CCBSStretchRepresentationBuilder {
 			aCalibComp[i] = aCCSP[i].derivedComponent();
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
-				(valParams, null, bmp, null);
+				(valParams, null, mktParams, null);
 
 			org.drip.product.definition.RatesComponent rcReference = aCCSP[i].referenceComponent();
 
@@ -100,7 +100,7 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve
+			org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve
 				(org.drip.product.params.CurrencyPair.FromCode (aCCSP[i].fxCode()));
 
 			if (null == auFX) return null;
@@ -142,7 +142,7 @@ public class CCBSStretchRepresentationBuilder {
 	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
 	 * @param aCCSP Array of Calibration Cross Currency Swap Pair Instances
 	 * @param valParams The Valuation Parameters
-	 * @param bmp The Basket Market Parameters to imply the Market Quote Measure
+	 * @param mktParams The Basket Market Parameters to imply the Market Quote Measure
 	 * @param adblReferenceComponentBasis Array of the Reference Component Reference Leg Basis Spread
 	 * @param adblSwapRate Array of the IRS Calibration Swap Rates
 	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
@@ -156,12 +156,12 @@ public class CCBSStretchRepresentationBuilder {
 		final java.lang.String strLatentStateQuantificationMetric,
 		final org.drip.product.fx.CrossCurrencyComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.market.MarketParamSet bmp,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final double[] adblReferenceComponentBasis,
 		final double[] adblSwapRate,
 		final boolean bBasisOnDerivedLeg)
 	{
-		if (null == aCCSP || null == bmp || null == adblReferenceComponentBasis || null == adblSwapRate)
+		if (null == aCCSP || null == mktParams || null == adblReferenceComponentBasis || null == adblSwapRate)
 			return null;
 
 		int iNumCCSP = aCCSP.length;
@@ -183,7 +183,7 @@ public class CCBSStretchRepresentationBuilder {
 			aCalibComp[i] = aCCSP[i].derivedComponent();
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
-				(valParams, null, bmp, null);
+				(valParams, null, mktParams, null);
 
 			org.drip.product.definition.RatesComponent rcReference = aCCSP[i].referenceComponent();
 
@@ -201,7 +201,7 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.quant.function1D.AbstractUnivariate auFX = bmp.fxCurve
+			org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve
 				(org.drip.product.params.CurrencyPair.FromCode (aCCSP[i].fxCode()));
 
 			if (null == auFX) return null;

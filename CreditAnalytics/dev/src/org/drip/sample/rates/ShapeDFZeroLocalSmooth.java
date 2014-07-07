@@ -624,49 +624,49 @@ public class ShapeDFZeroLocalSmooth {
 				FormatUtil.FormatDouble (
 					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalAkima, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHarmonic, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
 					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHyman83, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHyman89, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCashComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalKruger, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
@@ -697,49 +697,49 @@ public class ShapeDFZeroLocalSmooth {
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalAkima, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHarmonic, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHyman83, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHyman89, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
-						ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
+						MarketParamsBuilder.Create (dcLocalKruger, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
@@ -772,43 +772,43 @@ public class ShapeDFZeroLocalSmooth {
 			System.out.println ("\t[" + aCC[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcShapePreserving, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dcShapePreserving, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalAkima, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dcLocalAkima, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHarmonic, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dcLocalHarmonic, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman83, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dcLocalHyman83, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHyman89, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dcLocalHyman89, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalHuynhLeFloch, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dcLocalKruger, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dcLocalKruger, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.)

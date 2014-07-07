@@ -590,7 +590,7 @@ public class CustomOISCurveBuilder {
 		for (int i = 0; i < aDepositComp.length; ++i)
 			System.out.println ("\t[" + aDepositComp[i].effective() + " => " + aDepositComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aDepositComp[i].measureValue (new ValuationParams (dtToday, dtToday, "EUR"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
 		/*
@@ -607,10 +607,10 @@ public class CustomOISCurveBuilder {
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
 			System.out.println ("\t[" + aShortEndOISComp[i].effective() + " => " + aShortEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (new ValuationParams (dtToday, dtToday, "EUR"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.) + " | " +
 							FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (new ValuationParams (dtToday, dtToday, "EUR"), null,
-								ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+								MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 									null, "FairPremium"), 1, 6, 1.));
 
 		/*
@@ -627,10 +627,10 @@ public class CustomOISCurveBuilder {
 		for (int i = 0; i < aOISFutureComp.length; ++i)
 			System.out.println ("\t[" + aOISFutureComp[i].effective() + " => " + aOISFutureComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (new ValuationParams (dtToday, dtToday, "EUR"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.) + " | " +
 							FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (new ValuationParams (dtToday, dtToday, "EUR"), null,
-								ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+								MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 									null, "FairPremium"), 1, 6, 1.));
 
 		/*
@@ -647,10 +647,10 @@ public class CustomOISCurveBuilder {
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
 			System.out.println ("\t[" + aLongEndOISComp[i].effective() + " => " + aLongEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (new ValuationParams (dtToday, dtToday, "EUR"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.) + " | " +
 							FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (new ValuationParams (dtToday, dtToday, "EUR"), null,
-								ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+								MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 									null, "FairPremium"), 1, 6, 1.));
 	}
 

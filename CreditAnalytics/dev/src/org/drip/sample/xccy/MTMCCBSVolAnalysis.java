@@ -1,7 +1,7 @@
 
 package org.drip.sample.xccy;
 
-import java.util.*;
+import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
@@ -45,13 +45,13 @@ import org.drip.state.creator.DiscountCurveBuilder;
  */
 
 /**
- * MTMCCBS demonstrates the construction, the usage, and the eventual valuation of the Mark-to-market Cross
- *  Currency Basis Swap.
+ * MTMCCBSVolAnalysis demonstrates the impact of Funding Volatility, FX Volatility, and Funding/FX
+ * 	Correlation on the MTMCCBS Valuation.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class MTMCCBS {
+public class MTMCCBSVolAnalysis {
 	private static final FloatFloatComponent MakexM6MBasisSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
@@ -118,6 +118,44 @@ public class MTMCCBS {
 		return new FloatFloatComponent (fsReference, fsDerived);
 	}
 
+	private static final void SetMarketParams (
+		final CurveSurfaceQuoteSet mktParams,
+		final CurrencyPair cp,
+		final String strCurrency,
+		final double dblFundingVol,
+		final double dblFXVol,
+		final double dblFundingFXCorr)
+		throws Exception
+	{
+		mktParams.setFundingCurveVolSurface (strCurrency, new FlatUnivariate (dblFundingVol));
+
+		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblFXVol));
+
+		mktParams.setFundingFXCorrSurface (strCurrency, cp, new FlatUnivariate (dblFundingFXCorr));
+	}
+
+	private static final void VolCorrScenario (
+		final MTMCrossCurrencyPair mtmccbs,
+		final CurrencyPair cp,
+		final String strCurrency,
+		final ValuationParams valParams,
+		final CurveSurfaceQuoteSet mktParams,
+		final double dblFundingVol,
+		final double dblFXVol,
+		final double dblFundingFXCorr)
+		throws Exception
+	{
+		SetMarketParams (mktParams, cp, strCurrency, dblFundingVol, dblFXVol, dblFundingFXCorr);
+
+		CaseInsensitiveTreeMap<Double> mapMTMOutput = mtmccbs.value (valParams, null, mktParams, null);
+
+		System.out.println ("\t[" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFXVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingFXCorr, 2, 0, 100.) + "%] = " +
+			org.drip.quant.common.FormatUtil.FormatDouble (mapMTMOutput.get ("MTMAdditiveAdjustment"), 1, 2, 100.) + "%");
+	}
+
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -177,7 +215,7 @@ public class MTMCCBS {
 
 		ffcDerivedJPY.setPrimaryCode ("JPY_6M::3M::2Y");
 
-		CrossCurrencyComponentPair ccbsUSDJPY = new MTMCrossCurrencyPair (
+		MTMCrossCurrencyPair ccbsUSDJPY = new MTMCrossCurrencyPair (
 			"USDJPY_CCBS",
 			ffcReferenceUSD,
 			ffcDerivedJPY);
@@ -192,17 +230,28 @@ public class MTMCCBS {
 
 		mktParams.setForwardCurve (fc3MJPY);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (0.3));
+		CurrencyPair cp = CurrencyPair.FromCode (ccbsUSDJPY.fxCode());
 
-		CurrencyPair cp = CurrencyPair.FromCode ("USD/JPY");
+		double[] adblFundingVol = new double[] {0.1, 0.2, 0.3, 0.4};
 
-		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (0.3));
+		double[] adblFXVol = new double[] {0.1, 0.2, 0.3, 0.4};
 
-		mktParams.setFundingFXCorrSurface ("USD", cp, new FlatUnivariate (0.3));
+		double[] adblFundingFXCorr = new double[] {-0.4, -0.1, 0.1, 0.4};
 
-		CaseInsensitiveTreeMap<Double> mapMTMOutput = ccbsUSDJPY.value (valParams, null, mktParams, null);
-
-		for (Map.Entry<String, Double> me : mapMTMOutput.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
+		for (double dblFundingVol : adblFundingVol) {
+			for (double dblFXVol : adblFXVol) {
+				for (double dblFundingFXCorr : adblFundingFXCorr)
+					VolCorrScenario (
+						ccbsUSDJPY,
+						cp,
+						"USD",
+						valParams,
+						mktParams,
+						dblFundingVol,
+						dblFXVol,
+						dblFundingFXCorr
+					);
+			}
+		}
 	}
 }

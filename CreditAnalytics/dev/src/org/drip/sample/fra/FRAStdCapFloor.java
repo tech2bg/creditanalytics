@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -333,7 +333,7 @@ public class FRAStdCapFloor {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -344,7 +344,7 @@ public class FRAStdCapFloor {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
@@ -498,7 +498,7 @@ public class FRAStdCapFloor {
 
 	private static final void SetVolCorrSurface (
 		final FloatingStream floatstream,
-		final MarketParamSet cmp,
+		final CurveSurfaceQuoteSet mktParams,
 		final FloatingRateIndex fri,
 		final double dblFRIVol,
 		final double dblMultiplicativeQuantoExchangeVol,
@@ -508,18 +508,18 @@ public class FRAStdCapFloor {
 		for (org.drip.analytics.period.CashflowPeriod period : floatstream.cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.getStartDate());
 
-			cmp.setForwardCurveVolSurface (
+			mktParams.setForwardCurveVolSurface (
 				fri,
 				new FlatUnivariate (dblFRIVol)
 			);
 
-			cmp.setCustomMetricVolSurface (
+			mktParams.setCustomMetricVolSurface (
 				"ForwardToDomesticExchangeVolatility",
 				dtFRADate,
 				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 			);
 
-			cmp.setCustomMetricVolSurface (
+			mktParams.setCustomMetricVolSurface (
 				"FRIForwardToDomesticExchangeCorrelation",
 				dtFRADate,
 				new FlatUnivariate (dblFRIQuantoExchangeCorr)
@@ -596,8 +596,7 @@ public class FRAStdCapFloor {
 			"Act/360",
 			strCurrency);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		double dblSigmaFwd = 0.50;
 		double dblSigmaFwd2DomX = 0.50;
@@ -605,7 +604,7 @@ public class FRAStdCapFloor {
 
 		SetVolCorrSurface (
 			floatStream,
-			cmp,
+			mktParams,
 			fri,
 			dblSigmaFwd,
 			dblSigmaFwd2DomX,
@@ -613,7 +612,7 @@ public class FRAStdCapFloor {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, cmp, null);
+		Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapFRACapOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
@@ -622,7 +621,7 @@ public class FRAStdCapFloor {
 
 		System.out.println ("\t-------------------------------------------------------------");
 
-		Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, cmp, null);
+		Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapFRAFloorOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());

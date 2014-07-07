@@ -458,8 +458,8 @@ public class RatesClosesLoader {
 		if (comp.maturity().getJulian() <= dt.getJulian()) return 0.;
 
 		return comp.value (new org.drip.param.valuation.ValuationParams (dt, dt, strCurrency), null,
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null,
-				null, null, null, mmFixings), null).get (strMeasure);
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null, null, null,
+				mmFixings), null).get (strMeasure);
 	}
 
 	private static final double calcCleanPnL (
@@ -540,8 +540,8 @@ public class RatesClosesLoader {
 				strCurrency, null)) * 10000.;
 
 		double dblProductFloatingRate = irs.getFloatStream().coupon (dtPrev.getJulian(),
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcDatePrevQuotePrev, null, null, null, null, null, null));
+			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
+				null, null, null, null));
 
 		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.getJulian(),
 			org.drip.product.params.FloatingRateIndex.Create (irs.forwardCurveName()[0]).tenor());
@@ -592,8 +592,8 @@ public class RatesClosesLoader {
 		double dbl1DTotalPnLWithFixing = dbl1DCleanPnLWithFixing + dbl1DCarry;
 
 		double dblFloatingRateUsed = irs.getFloatStream().coupon (dtPrev.getJulian(),
-			org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams
-				(dcDatePrevQuotePrev, null, null, null, null, null, mmFixings));
+			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
+				null, null, null, mmFixings));
 
 		double dblCleanFloatDV01WithFixing = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01",
 			strCurrency, mmFixings);
@@ -1642,8 +1642,8 @@ public class RatesClosesLoader {
 
 								org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
 									mapCDXMeasures = cdx.value (valParams, pricerParams,
-										org.drip.param.creator.ComponentMarketParamsBuilder.MakeCreditCMP
-											(dc, cc), null);
+										org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc),
+											null);
 
 								_writeCOB.write (dtCOB + "," + cdxNP.name() + "," + cdxNP.price() + "," +
 									org.drip.quant.common.FormatUtil.FormatDouble (mapCDXMeasures.get

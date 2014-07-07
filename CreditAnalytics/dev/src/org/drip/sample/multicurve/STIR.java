@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -332,7 +332,7 @@ public class STIR {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -343,7 +343,7 @@ public class STIR {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
@@ -557,7 +557,7 @@ public class STIR {
 	private static final void RunWithVolCorrSurface (
 		final STIRFutureComponent stir,
 		final ValuationParams valParams,
-		final MarketParamSet cmp,
+		final CurveSurfaceQuoteSet mktParams,
 		final FloatingRateIndex fri,
 		final double dblSwapRateVolatility,
 		final double dblSwapRateExchangeVolatility,
@@ -568,25 +568,25 @@ public class STIR {
 
 		String strComponentName = stir.name();
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			strComponentName + "SwapRateVolatility",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateVolatility)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			strComponentName + "SwapRateExchangeVolatility",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateExchangeVolatility)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			strComponentName + "SwapRateToSwapRateExchangeCorrelation",
 			dtEffective,
 			new FlatUnivariate (dblSwapRateToSwapRateExchangeCorrelation)
 		);
 
-		Map<String, Double> mapSTIROutput = stir.value (valParams, null, cmp, null);
+		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapSTIROutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
@@ -622,7 +622,7 @@ public class STIR {
 
 		STIRFutureComponent stir = CreateSTIR (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
@@ -630,7 +630,7 @@ public class STIR {
 		RunWithVolCorrSurface (
 			stir,
 			valParams,
-			cmp,
+			mktParams,
 			fri,
 			dblSwapRateVolatility,
 			dblSwapRateExchangeVolatility,

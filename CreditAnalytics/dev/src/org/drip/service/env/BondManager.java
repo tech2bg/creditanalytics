@@ -336,7 +336,7 @@ public class BondManager {
 			|| null == mpc || java.lang.Double.isNaN (dblBidPrice) || java.lang.Double.isNaN (dblAskPrice))
 			return null;
 
-		org.drip.param.market.MarketParamSet mktParams = mpc.getScenCMP (bond, "Base");
+		org.drip.param.market.CurveSurfaceQuoteSet mktParams = mpc.getScenMarketParams (bond, "Base");
 
 		if (null == mktParams) return null;
 
@@ -1152,7 +1152,8 @@ public class BondManager {
 				(dblPrice).append (", ");
 
 		try {
-			wi = bond.calcExerciseYieldFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null, dblPrice);
+			wi = bond.calcExerciseYieldFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
+				dblPrice);
 		} catch (java.lang.Exception e) {
 			System.out.println (e.getMessage() + "; " + bond.name() + " for price=" + dblPrice);
 
@@ -1162,23 +1163,23 @@ public class BondManager {
 		}
 
 		try {
-			dblZSpread = bond.calcZSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
+			dblZSpread = bond.calcZSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblGSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
+			dblGSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblISpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
+			dblISpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblTSYSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
+			dblTSYSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"),
+				null, wi.date(), wi.factor(), dblPrice);
+
+			dblASWSpread = bond.calcASWFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblASWSpread = bond.calcASWFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi.date(), wi.factor(), dblPrice);
-
-			dblCreditBasis = bond.calcCreditBasisFromPrice (valParams, mpc.getScenCMP (bond, "Base"), null,
-				wi.date(), wi.factor(), dblPrice);
+			dblCreditBasis = bond.calcCreditBasisFromPrice (valParams, mpc.getScenMarketParams (bond,
+				"Base"), null, wi.date(), wi.factor(), dblPrice);
 
 			AppendField (sbSQLInsertBondClose, wi.yield(), false);
 

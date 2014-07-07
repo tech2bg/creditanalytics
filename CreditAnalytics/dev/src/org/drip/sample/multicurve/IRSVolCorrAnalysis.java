@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -332,7 +332,7 @@ public class IRSVolCorrAnalysis {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -343,7 +343,7 @@ public class IRSVolCorrAnalysis {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
@@ -557,7 +557,7 @@ public class IRSVolCorrAnalysis {
 	private static final double RunWithVolCorrSurface (
 		final IRSComponent irs,
 		final ValuationParams valParams,
-		final MarketParamSet cmp,
+		final CurveSurfaceQuoteSet mktParams,
 		final FloatingRateIndex fri,
 		final double dblBaselineSwapRate,
 		final double dblFRIVol,
@@ -568,26 +568,26 @@ public class IRSVolCorrAnalysis {
 		for (org.drip.analytics.period.CashflowPeriod period : irs.getFixedStream().cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.getStartDate());
 
-			cmp.setCustomMetricVolSurface (
+			mktParams.setCustomMetricVolSurface (
 				fri.fullyQualifiedName(),
 				dtFRADate,
 				new FlatUnivariate (dblFRIVol)
 			);
 
-			cmp.setCustomMetricVolSurface (
+			mktParams.setCustomMetricVolSurface (
 				"ForwardToDomesticExchangeVolatility",
 				dtFRADate,
 				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 			);
 
-			cmp.setCustomMetricVolSurface (
+			mktParams.setCustomMetricVolSurface (
 				"FRIForwardToDomesticExchangeCorrelation",
 				dtFRADate,
 				new FlatUnivariate (dblFRIQuantoExchangeCorr)
 			);
 		}
 
-		Map<String, Double> mapIRSOutput = irs.value (valParams, null, cmp, null);
+		Map<String, Double> mapIRSOutput = irs.value (valParams, null, mktParams, null);
 
 		double dblSwapRate = mapIRSOutput.get ("SwapRate");
 
@@ -628,7 +628,7 @@ public class IRSVolCorrAnalysis {
 
 		IRSComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
@@ -650,7 +650,7 @@ public class IRSVolCorrAnalysis {
 		double dblBaselineSwapRate = RunWithVolCorrSurface (
 			irs,
 			valParams,
-			cmp,
+			mktParams,
 			fri,
 			0.,
 			0.,
@@ -663,7 +663,7 @@ public class IRSVolCorrAnalysis {
 					RunWithVolCorrSurface (
 						irs,
 						valParams,
-						cmp,
+						mktParams,
 						fri,
 						dblBaselineSwapRate,
 						dblSigmaFwd,

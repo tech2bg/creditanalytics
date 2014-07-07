@@ -18,7 +18,7 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
  */
 
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -320,9 +320,9 @@ public class MultiLegSwapAPI {
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);
 
-		MarketParamSet bmp = new MarketParamSet();
+		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
-		bmp.setFundingCurve (dc);
+		mktParams.setFundingCurve (dc);
 
 		/*
 		 * Create the Rates Basket from the streams
@@ -334,7 +334,7 @@ public class MultiLegSwapAPI {
 		 * Value the Rates Basket
 		 */
 
-		CaseInsensitiveTreeMap<Double> mapRBResults = rb.value (valParams, null, bmp, null);
+		CaseInsensitiveTreeMap<Double> mapRBResults = rb.value (valParams, null, mktParams, null);
 
 		System.out.println (mapRBResults);
 	}

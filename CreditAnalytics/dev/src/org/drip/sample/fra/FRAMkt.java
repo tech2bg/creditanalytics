@@ -6,7 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.fra.FRAMarketComponent;
 import org.drip.product.params.FloatingRateIndex;
@@ -92,40 +92,40 @@ public class FRAMkt {
 			0.006,
 			"Act/360");
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		cmp.setForwardCurveVolSurface (
+		mktParams.setForwardCurveVolSurface (
 			fri,
 			new FlatUnivariate (dblEURIBOR6MVol)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			"ForwardToDomesticExchangeVolatility",
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
-		cmp.setCustomMetricVolSurface (
+		mktParams.setCustomMetricVolSurface (
 			"FRIForwardToDomesticExchangeCorrelation",
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
-		cmp.setFundingCurveVolSurface (
+		mktParams.setFundingCurveVolSurface (
 			strCurrency,
 			new FlatUnivariate (dblEONIAVol)
 		);
 
-		cmp.setForwardFundingCorrSurface (
+		mktParams.setForwardFundingCorrSurface (
 			fri,
 			strCurrency,
 			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
 		);
 
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, cmp, null);
+		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapFRAOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());

@@ -86,12 +86,12 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams) return null;
+		if (null == valParams || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = mktParams.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -104,7 +104,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		double dblExerciseDate = exercise().getJulian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRAOutput = _fra.value
-			(valParams, pricerParams, mktParams, quotingParams);
+			(valParams, pricerParams, csqs, quotingParams);
 
 		java.lang.String strManifestMeasure = manifestMeasure();
 
@@ -114,7 +114,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblATMManifestMeasure)) return null;
 
-		org.drip.quant.function1D.AbstractUnivariate auForwardVolSurface = mktParams.forwardCurveVolSurface
+		org.drip.quant.function1D.AbstractUnivariate auForwardVolSurface = csqs.forwardCurveVolSurface
 			(_fra.fri());
 
 		if (null == auForwardVolSurface) return null;
@@ -124,8 +124,8 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 			double dblIntegratedQuantoDrift = java.lang.Math.exp (-1. *
 				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (auForwardVolSurface,
-					mktParams.customMetricVolSurface ("ForwardToDomesticExchangeVolatility", dtEffective),
-						mktParams.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
+					csqs.customMetricVolSurface ("ForwardToDomesticExchangeVolatility", dtEffective),
+						csqs.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
 							dtEffective), dblValueDate, dblExerciseDate));
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedQuantoDrift)) return null;

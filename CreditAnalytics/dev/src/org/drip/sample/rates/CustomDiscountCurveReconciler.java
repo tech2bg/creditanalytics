@@ -8,7 +8,7 @@ import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.rates.Turn;
 import org.drip.analytics.rates.TurnListDiscountFactor;
-import org.drip.param.creator.ComponentMarketParamsBuilder;
+import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -381,7 +381,7 @@ public class CustomDiscountCurveReconciler {
 		for (int i = 0; i < aCashComp.length; ++i)
 			System.out.println ("\t[" + aCashComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aCashComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dfdc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblCashQuote[i], 1, 6, 1.));
 
 		/*
@@ -398,7 +398,7 @@ public class CustomDiscountCurveReconciler {
 		for (int i = 0; i < aSwapComp.length; ++i)
 			System.out.println ("\t[" + aSwapComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aSwapComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
-					ComponentMarketParamsBuilder.CreateComponentMarketParams (dfdc, null, null, null, null, null, null),
+					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
 
 		/*

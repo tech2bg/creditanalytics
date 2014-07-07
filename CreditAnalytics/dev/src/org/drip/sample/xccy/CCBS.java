@@ -9,7 +9,7 @@ import org.drip.analytics.daycount.DateAdjustParams;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.CrossCurrencyComponentPair;
 import org.drip.product.params.FloatingRateIndex;
@@ -151,7 +151,7 @@ public class CCBS {
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
-		MarketParamSet cmpUSD = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParamsUSD = MarketParamsBuilder.Create
 			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null, null);
 
 		FloatFloatComponent ffcReferenceUSD = MakexM6MBasisSwap (
@@ -162,7 +162,7 @@ public class CCBS {
 
 		ffcReferenceUSD.setPrimaryCode ("USD_6M::3M::2Y");
 
-		System.out.println (ffcReferenceUSD.value (valParams, null, cmpUSD, null));
+		System.out.println (ffcReferenceUSD.value (valParams, null, mktParamsUSD, null));
 
 		DiscountCurve dcJPYCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
@@ -176,7 +176,7 @@ public class CCBS {
 			dblJPY3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
-		MarketParamSet cmpJPY = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParamsJPY = MarketParamsBuilder.Create
 			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null, null);
 
 		FloatFloatComponent ffcDerivedJPY = MakexM6MBasisSwap (
@@ -187,23 +187,23 @@ public class CCBS {
 
 		ffcDerivedJPY.setPrimaryCode ("JPY_6M::3M::2Y");
 
-		System.out.println (ffcDerivedJPY.value (valParams, null, cmpJPY, null));
+		System.out.println (ffcDerivedJPY.value (valParams, null, mktParamsJPY, null));
 
 		CrossCurrencyComponentPair ccbsUSDJPY = new CrossCurrencyComponentPair (
 			"USDJPY_CCBS",
 			ffcReferenceUSD,
 			ffcDerivedJPY);
 
-		MarketParamSet bmp = new MarketParamSet();
+		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
-		bmp.setFundingCurve (dcUSDCollatDomestic);
+		mktParams.setFundingCurve (dcUSDCollatDomestic);
 
-		bmp.setFundingCurve (dcJPYCollatDomestic);
+		mktParams.setFundingCurve (dcJPYCollatDomestic);
 
-		bmp.setForwardCurve (fc3MUSD);
+		mktParams.setForwardCurve (fc3MUSD);
 
-		bmp.setForwardCurve (fc3MJPY);
+		mktParams.setForwardCurve (fc3MJPY);
 
-		System.out.println (ccbsUSDJPY.value (valParams, null, bmp, null));
+		System.out.println (ccbsUSDJPY.value (valParams, null, mktParams, null));
 	}
 }

@@ -358,8 +358,8 @@ public class SerializerTestSuite {
 
 		Verify (q.serialize(), org.drip.param.creator.QuoteBuilder.FromByteArray (q.serialize()), "Quote");
 
-		org.drip.param.definition.ComponentQuote cq =
-			org.drip.param.creator.ComponentQuoteBuilder.CreateComponentQuote();
+		org.drip.param.definition.ProductQuote cq =
+			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
 
 		cq.addQuote ("Price", q, false);
 
@@ -368,14 +368,14 @@ public class SerializerTestSuite {
 
 		byte[] abCQ = cq.serialize();
 
-		Verify (abCQ, org.drip.param.creator.ComponentQuoteBuilder.FromByteArray (abCQ), "ComponentQuote");
+		Verify (abCQ, org.drip.param.creator.ProductQuoteBuilder.FromByteArray (abCQ), "ComponentQuote");
 
-		org.drip.param.market.ComponentTickQuote ctq = new org.drip.param.market.ComponentTickQuote
+		org.drip.param.market.ProductTickQuote ctq = new org.drip.param.market.ProductTickQuote
 			("TESTPRODUCT", cq, "MSIM", "IDC", true);
 
 		byte[] abCTQ = ctq.serialize();
 
-		Verify (abCTQ, org.drip.param.creator.ComponentTickQuoteBuilder.FromByteArray (abCTQ),
+		Verify (abCTQ, org.drip.param.creator.ProductTickQuoteBuilder.FromByteArray (abCTQ),
 			"ComponentTickQuote");
 
 		byte[] abFxFwd = org.drip.product.creator.FXForwardBuilder.CreateFXForward (cp, dtToday,
@@ -759,18 +759,18 @@ public class SerializerTestSuite {
 				(org.drip.analytics.date.JulianDate.Today(), "ABCTSY", null, adblDCDate, adblRateTSY,
 					org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 			mapTSYQuotes = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cq);
 
 		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
 
-		byte[] abCMP = org.drip.param.creator.ComponentMarketParamsBuilder.CreateComponentMarketParams (dc,
-			dcTSY, cc, "TSY2ON", cq, mapTSYQuotes, mmFixings).serialize();
+		byte[] abCSQS = org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, cc, "TSY2ON", cq,
+			mapTSYQuotes, mmFixings).serialize();
 
-		Verify (abCMP, org.drip.param.creator.ComponentMarketParamsBuilder.FromByteArray (abCMP),
+		Verify (abCSQS, org.drip.param.creator.MarketParamsBuilder.FromByteArray (abCSQS),
 			"ComponentMarketParams");
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve> mapDC =

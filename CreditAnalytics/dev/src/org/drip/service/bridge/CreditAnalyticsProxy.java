@@ -363,7 +363,7 @@ public class CreditAnalyticsProxy {
 						bpb.getNotionalParams());
 	}
 
-	private static org.drip.param.market.MarketParamSet MakeCMP (
+	private static org.drip.param.market.CurveSurfaceQuoteSet MakeCSQS (
 		final org.drip.product.definition.FixedIncomeComponent fic,
 		final org.drip.analytics.date.JulianDate dtStart,
 		final double dblDownShift)
@@ -386,8 +386,8 @@ public class CreditAnalyticsProxy {
 
 		org.drip.analytics.definition.CreditCurve cc = MakeCC (dtStart, dc);
 
-		org.drip.param.market.ComponentMultiMeasureQuote cqTSY2ON = new
-			org.drip.param.market.ComponentMultiMeasureQuote();
+		org.drip.param.market.ProductMultiMeasureQuote cqTSY2ON = new
+			org.drip.param.market.ProductMultiMeasureQuote();
 
 		try {
 			cqTSY2ON.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 103.,
@@ -398,9 +398,9 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote> mapTSYQuotes
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote> mapTSYQuotes
 			= new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ComponentQuote>();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cqTSY2ON);
 
@@ -416,8 +416,8 @@ public class CreditAnalyticsProxy {
 
 		mmFixings.put (dtStart.addDays (2), mIndexFixings);
 
-		org.drip.param.market.ComponentMultiMeasureQuote cqBond = new
-			org.drip.param.market.ComponentMultiMeasureQuote();
+		org.drip.param.market.ProductMultiMeasureQuote cqBond = new
+			org.drip.param.market.ProductMultiMeasureQuote();
 
 		try {
 			cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100. - dblDownShift,
@@ -428,7 +428,7 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		return org.drip.param.creator.ComponentMarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
+		return org.drip.param.creator.MarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
 			cqBond, mapTSYQuotes, mmFixings);
 	}
 
@@ -460,7 +460,7 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		org.drip.param.market.MarketParamSet cmp = MakeCMP (bond, dtStart, (1. +
+		org.drip.param.market.CurveSurfaceQuoteSet mktParams = MakeCSQS (bond, dtStart, (1. +
 			PRICE_DOWNSHIFT_AMPLITUDE * (new java.util.Random().nextDouble() - 0.5)) * iTenorInYears *
 				PRICE_DOWNSHIFT_RATE);
 
@@ -468,8 +468,8 @@ public class CreditAnalyticsProxy {
 			quotingParams = new org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true,
 				null, "USD", false, null, null);
 
-			cre = new org.drip.service.bridge.CreditAnalyticsRequest (bond, valParams, pricerParams, cmp,
-				quotingParams);
+			cre = new org.drip.service.bridge.CreditAnalyticsRequest (bond, valParams, pricerParams,
+				mktParams, quotingParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

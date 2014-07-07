@@ -112,10 +112,10 @@ public class DomesticCollateralizedForeignForward {
 	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.MarketParamSet mktParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mktParams) return null;
+		if (null == valParams || null == csqs) return null;
 
 		long lStart = System.nanoTime();
 
@@ -123,21 +123,21 @@ public class DomesticCollateralizedForeignForward {
 
 		if (dblValueDate > _dblMaturity) return null;
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve (_ccyPair);
+		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (_ccyPair);
 
 		if (null == auFX) return null;
 
 		java.lang.String strDomesticCurrency = _ccyPair.denomCcy();
 
 		org.drip.analytics.rates.DiscountCurve dcDomesticCollateral =
-			mktParams.payCurrencyCollateralCurrencyCurve (strDomesticCurrency, strDomesticCurrency);
+			csqs.payCurrencyCollateralCurrencyCurve (strDomesticCurrency, strDomesticCurrency);
 
 		if (null == dcDomesticCollateral) return null;
 
 		java.lang.String strForeignCurrency = _ccyPair.numCcy();
 
 		org.drip.analytics.rates.DiscountCurve dcForeignCurrencyDomesticCollateral =
-			mktParams.payCurrencyCollateralCurrencyCurve (strForeignCurrency, strDomesticCurrency);
+			csqs.payCurrencyCollateralCurrencyCurve (strForeignCurrency, strDomesticCurrency);
 
 		if (null == dcForeignCurrencyDomesticCollateral) return null;
 

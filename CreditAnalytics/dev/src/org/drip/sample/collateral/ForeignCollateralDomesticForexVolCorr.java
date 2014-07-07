@@ -4,8 +4,8 @@ package org.drip.sample.collateral;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.creator.ComponentMarketParamsBuilder;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.creator.MarketParamsBuilder;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.CollateralizationParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.fx.ForeignCollateralizedDomesticForward;
@@ -89,14 +89,13 @@ public class ForeignCollateralDomesticForexVolCorr {
 			new FlatUnivariate (0.),
 			new FlatUnivariate (0.));
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams
-			(null, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (null, null, null, null, null, null, null);
 
-		cmp.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
 
-		cmp.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
 
-		cmp.setFXCurve (cp, auFX);
+		mktParams.setFXCurve (cp, auFX);
 
 		ForeignCollateralizedDomesticForward fcff = new ForeignCollateralizedDomesticForward (
 			cp,
@@ -106,7 +105,7 @@ public class ForeignCollateralDomesticForexVolCorr {
 		CaseInsensitiveTreeMap<Double> mapBaseValue = fcff.value (
 			new ValuationParams (dtToday, dtToday, strDomesticCurrency),
 			null,
-			cmp,
+			mktParams,
 			null);
 
 		double dblBaselinePrice = mapBaseValue.get ("Price");
@@ -142,12 +141,12 @@ public class ForeignCollateralDomesticForexVolCorr {
 						new FlatUnivariate (dblFXVolatility),
 						new FlatUnivariate (dblFXForeignRatesCorrelation));
 
-					cmp.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
+					mktParams.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
 
 					CaseInsensitiveTreeMap<Double> mapFCFF = fcff.value (
 						valParams,
 						null,
-						cmp,
+						mktParams,
 						null);
 
 					double dblPrice = mapFCFF.get ("Price");

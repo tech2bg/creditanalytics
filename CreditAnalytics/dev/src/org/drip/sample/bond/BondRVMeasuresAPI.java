@@ -205,15 +205,15 @@ public class BondRVMeasuresAPI {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CaseInsensitiveTreeMap<ComponentQuote> MakeTSYQuotes (
+	private static final CaseInsensitiveTreeMap<ProductQuote> MakeTSYQuotes (
 		final String[] astrTSYTenor,
 		final double[] adblTSYYield)
 		throws Exception
 	{
-		CaseInsensitiveTreeMap<ComponentQuote> mTSYQuotes = new CaseInsensitiveTreeMap<ComponentQuote>();
+		CaseInsensitiveTreeMap<ProductQuote> mTSYQuotes = new CaseInsensitiveTreeMap<ProductQuote>();
 
 		for (int i = 0; i < astrTSYTenor.length; ++i) {
-			ComponentMultiMeasureQuote cmmq = new ComponentMultiMeasureQuote();
+			ProductMultiMeasureQuote cmmq = new ProductMultiMeasureQuote();
 
 			cmmq.addQuote ("Yield", new MultiSidedQuote ("mid", adblTSYYield[i], Double.NaN), true);
 
@@ -336,7 +336,7 @@ public class BondRVMeasuresAPI {
 				null,		// Principal Schedule
 				null);
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, dcTSY, null, null, null,
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, dcTSY, null, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);
@@ -347,25 +347,25 @@ public class BondRVMeasuresAPI {
 		 * Compute the work-out date given the price.
 		 */
 
-		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, cmp, null, dblPrice);
+		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
 		/*
 		 * Compute the base RV measures to the work-out date.
 		 */
 
-		org.drip.analytics.output.BondRVMeasures rvm = bond.standardMeasures (valParams, null, cmp, null, wi, dblPrice);
+		org.drip.analytics.output.BondRVMeasures rvm = bond.standardMeasures (valParams, null, mktParams, null, wi, dblPrice);
 
 		PrintRVMeasures ("\tBase: ", rvm);
 
 		DiscountCurve dcBumped = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0.0001, "USD");
 
-		cmp.setFundingCurve (dcBumped);
+		mktParams.setFundingCurve (dcBumped);
 
 		/*
 		 * Compute the bumped RV measures to the work-out date.
 		 */
 
-		org.drip.analytics.output.BondRVMeasures rvmBumped = bond.standardMeasures (valParams, null, cmp, null, wi, dblPrice);
+		org.drip.analytics.output.BondRVMeasures rvmBumped = bond.standardMeasures (valParams, null, mktParams, null, wi, dblPrice);
 
 		PrintRVMeasures ("\tBumped: ", rvmBumped);
 	}

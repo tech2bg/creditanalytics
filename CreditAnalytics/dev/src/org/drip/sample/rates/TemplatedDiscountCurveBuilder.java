@@ -3,7 +3,7 @@ package org.drip.sample.rates;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.param.creator.ComponentMarketParamsBuilder;
+import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.DepositBuilder;
@@ -141,7 +141,7 @@ public class TemplatedDiscountCurveBuilder {
 		return comp.measureValue (
 			valParams,
 			null,
-			ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null),
+			MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 			null,
 			strMeasure);
 	}

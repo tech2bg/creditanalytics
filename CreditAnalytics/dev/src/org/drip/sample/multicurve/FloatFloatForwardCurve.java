@@ -8,7 +8,7 @@ import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.MarketParamSet;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -392,7 +392,7 @@ public class FloatFloatForwardCurve {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		MarketParamSet cmp = ComponentMarketParamsBuilder.CreateComponentMarketParams (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
 		Map<String, ForwardCurve> mapForward = new HashMap<String, ForwardCurve>();
 
@@ -405,7 +405,7 @@ public class FloatFloatForwardCurve {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (4),
@@ -420,7 +420,7 @@ public class FloatFloatForwardCurve {
 		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
 		 */
 
-		MarketParamSet cmpCubicFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParamsCubicFwd = MarketParamsBuilder.Create
 			(dc, fcxMCubic, null, null, null, null, null, null);
 
 		/*
@@ -432,7 +432,7 @@ public class FloatFloatForwardCurve {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
@@ -447,7 +447,7 @@ public class FloatFloatForwardCurve {
 		 * Set the discount curve + quartic polynomial forward curve based component market parameters.
 		 */
 
-		MarketParamSet cmpQuarticFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParamsQuarticFwd = MarketParamsBuilder.Create
 			(dc, fcxMQuartic, null, null, null,  null, null, null);
 
 		/*
@@ -459,7 +459,7 @@ public class FloatFloatForwardCurve {
 			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
-			cmp,
+			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 			new ExponentialTensionSetParams (1.),
@@ -474,7 +474,7 @@ public class FloatFloatForwardCurve {
 		 * Set the discount curve + hyperbolic tension forward curve based component market parameters.
 		 */
 
-		MarketParamSet cmpKLKHyperFwd = ComponentMarketParamsBuilder.CreateComponentMarketParams
+		CurveSurfaceQuoteSet mktParamsKLKHyperFwd = MarketParamsBuilder.Create
 			(dc, fcxMKLKHyper, null, null, null, null, null, null);
 
 		int i = 0;
@@ -497,11 +497,11 @@ public class FloatFloatForwardCurve {
 
 			FloatFloatComponent ffc = aFFC[i++];
 
-			CaseInsensitiveTreeMap<Double> mapCubicValue = ffc.value (valParams, null, cmpCubicFwd, null);
+			CaseInsensitiveTreeMap<Double> mapCubicValue = ffc.value (valParams, null, mktParamsCubicFwd, null);
 
-			CaseInsensitiveTreeMap<Double> mapQuarticValue = ffc.value (valParams, null, cmpQuarticFwd, null);
+			CaseInsensitiveTreeMap<Double> mapQuarticValue = ffc.value (valParams, null, mktParamsQuarticFwd, null);
 
-			CaseInsensitiveTreeMap<Double> mapKLKHyperValue = ffc.value (valParams, null, cmpKLKHyperFwd, null);
+			CaseInsensitiveTreeMap<Double> mapKLKHyperValue = ffc.value (valParams, null, mktParamsKLKHyperFwd, null);
 
 			System.out.println (" " + strMaturityTenor + " =>  " +
 				FormatUtil.FormatDouble (fcxMCubic.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +

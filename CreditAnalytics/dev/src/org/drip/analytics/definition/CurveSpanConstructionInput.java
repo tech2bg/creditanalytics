@@ -51,15 +51,16 @@ public abstract class CurveSpanConstructionInput implements
 	org.drip.analytics.definition.CurveConstructionInputSet
 {
 	private org.drip.param.pricer.PricerParams _pricerParam = null;
+	private org.drip.param.market.CurveSurfaceQuoteSet _csqs = null;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
-	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
-	private org.drip.param.market.MarketParamSet _cmp = null;
 	private org.drip.state.estimator.StretchRepresentationSpec[] _aSRS = null;
+	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
 	private java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-		_mapQuote = null;
+	private
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			_mapQuote = null;
 
 	/**
 	 * CurveSpanConstructionInput constructor
@@ -68,7 +69,7 @@ public abstract class CurveSpanConstructionInput implements
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
 	 * @param quotingParam Quoting Parameters
-	 * @param cmp Component Market Parameters
+	 * @param csqs Market Parameters
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
@@ -78,13 +79,13 @@ public abstract class CurveSpanConstructionInput implements
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
-		final org.drip.param.market.MarketParamSet cmp)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
 		if (null == (_aSRS = aSRS) || 0 == _aSRS.length || null == (_valParam = valParam))
 			throw new java.lang.Exception ("CurveSpanConstructionInput ctr: Invalid Inputs");
 
-		_cmp = cmp;
+		_csqs = csqs;
 		_pricerParam = pricerParam;
 		_quotingParam = quotingParam;
 	}
@@ -212,14 +213,14 @@ public abstract class CurveSpanConstructionInput implements
 	}
 
 	/**
-	 * Retrieve the Component Market Parameters
+	 * Retrieve the Market Parameters
 	 * 
-	 * @return The Component Market Parameters
+	 * @return The Market Parameters
 	 */
 
-	public org.drip.param.market.MarketParamSet getCMP()
+	public org.drip.param.market.CurveSurfaceQuoteSet marketParameters()
 	{
-		return _cmp;
+		return _csqs;
 	}
 
 	/**
