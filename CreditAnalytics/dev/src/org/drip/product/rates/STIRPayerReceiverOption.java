@@ -202,7 +202,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 		return null;
 	}
 
-	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	@Override public java.util.Set<java.lang.String> measureNames()
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 

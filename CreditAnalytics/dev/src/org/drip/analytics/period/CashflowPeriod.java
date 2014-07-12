@@ -862,4 +862,15 @@ public class CashflowPeriod extends Period {
 	{
 		return _strCouponDC;
 	}
+
+	/**
+	 * Retrieve the Coupon Frequency
+	 * 
+	 * @return The Coupon Frequency
+	 */
+
+	public int freq()
+	{
+		return _iFreq;
+	}
 }

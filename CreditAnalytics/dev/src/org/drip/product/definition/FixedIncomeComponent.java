@@ -32,33 +32,33 @@ package org.drip.product.definition;
  */
 
 /**
- * FixedIncomeComponent abstract class extends ComponentMarketParamRef and provides the following methods:
- *  - Get the component's initial notional, notional, and coupon.
+ * FixedIncomeComponent abstract class extends the MarketParamRef and provides the following methods:
+ *  - Get the product's initial notional, notional, and coupon.
  *  - Get the Effective date, Maturity date, First Coupon Date.
  *  - List the coupon periods.
  *  - Set the market curves - discount, TSY, forward, and Credit curves.
- *  - Retrieve the component's settlement parameters.
- *  - Value the component using standard/custom market parameters.
- *  - Retrieve the component's named measures and named measure values.
+ *  - Retrieve the product's settlement parameters.
+ *  - Value the product's using standard/custom market parameters.
+ *  - Retrieve the product's named measures and named measure values.
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public abstract class FixedIncomeComponent extends org.drip.service.stream.Serializer implements
 	org.drip.product.definition.MarketParamRef {
-	protected double getMeasure (
+	protected double measure (
 		final java.lang.String strMeasure,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)
 		throws java.lang.Exception
 	{
 		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
-			throw new java.lang.Exception ("FixedIncomeComponent::getMeasure => Invalid Inputs");
+			throw new java.lang.Exception ("FixedIncomeComponent::measure => Invalid Inputs");
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
 			if (null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure)) return me.getValue();
 		}
 
-		throw new java.lang.Exception ("FixedIncomeComponent::getMeasure => Invalid Measure: " + strMeasure);
+		throw new java.lang.Exception ("FixedIncomeComponent::measure => Invalid Measure: " + strMeasure);
 	}
 
 	protected boolean adjustPVDFMicroJackForCashSettle (
@@ -67,8 +67,8 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack)
 	{
-		org.drip.quant.calculus.WengertJacobian wjCashSettleDFDF = dc.jackDDFDManifestMeasure
-			(dblSettleDate, "Rate");
+		org.drip.quant.calculus.WengertJacobian wjCashSettleDFDF = dc.jackDDFDManifestMeasure (dblSettleDate,
+			"Rate");
 
 		if (null == wjCashSettleDFDF) return false;
 
@@ -98,7 +98,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	}
 
 	/**
-	 * Get the Initial Notional for the Component
+	 * Get the Initial Notional for the Product
 	 * 
 	 * @return Initial Notional
 	 * 
@@ -109,11 +109,11 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		throws java.lang.Exception;
 
 	/**
-	 * Get the Notional for the Component at the given date
+	 * Get the Notional for the Product at the given date
 	 * 
 	 * @param dblDate Double date input
 	 * 
-	 * @return Component Notional
+	 * @return Product Notional
 	 * 
 	 * @throws java.lang.Exception Thrown if Notional cannot be computed
 	 */
@@ -123,12 +123,12 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		throws java.lang.Exception;
 
 	/**
-	 * Get the time-weighted Notional for the Component between 2 dates
+	 * Get the time-weighted Notional for the Product between 2 dates
 	 * 
 	 * @param dblDate1 Double date first
 	 * @param dblDate2 Double date second
 	 * 
-	 * @return Component Notional
+	 * @return The Product Notional
 	 * 
 	 * @throws java.lang.Exception Thrown if Notional cannot be computed
 	 */
@@ -139,20 +139,28 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		throws java.lang.Exception;
 
 	/**
-	 * Get the component's coupon at the given date
+	 * Get the Product's coupon at the given date
 	 * 
 	 * @param dblValue Valuation Date
 	 * @param csqs Component Market Parameters
 	 * 
-	 * @return Component's coupon
+	 * @return The Product's coupon
 	 * 
-	 * @throws java.lang.Exception Thrown if Component's coupon cannot be calculated
+	 * @throws java.lang.Exception Thrown if Product's coupon cannot be calculated
 	 */
 
 	public abstract double coupon (
 		final double dblValue,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Coupon Frequency
+	 * 
+	 * @return The Coupon Frequency
+	 */
+
+	public abstract int freq();
 
 	/**
 	 * Get the Effective Date
@@ -179,15 +187,15 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	public abstract org.drip.analytics.date.JulianDate firstCouponDate();
 
 	/**
-	 * Get the Component's Cash Flow Periods
+	 * Get the Product's Cash Flow Periods
 	 * 
-	 * @return List of the Component's Cash Flow Periods
+	 * @return List of the Product's Cash Flow Periods
 	 */
 
 	public abstract java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod();
 
 	/**
-	 * Get the component cash settlement parameters
+	 * Get the Product's cash settlement parameters
 	 * 
 	 * @return Cash settlement Parameters
 	 */
@@ -195,11 +203,11 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	public abstract org.drip.param.valuation.CashSettleParams cashSettleParams();
 
 	/**
-	 * Generate a full list of the component measures for the full input set of market parameters
+	 * Generate a full list of the Product measures for the full input set of market parameters
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
-	 * @param csqs ComponentMarketParams
+	 * @param csqs Market Parameters
 	 * @param quotingParams Quoting Parameters
 	 * 
 	 * @return Map of measure name and value
@@ -239,7 +247,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	}
 
 	/**
-	 * Calculate the value of the given component measure
+	 * Calculate the value of the given Product's measure
 	 * 
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
@@ -260,11 +268,11 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
 	{
-		return getMeasure (strMeasure, value (valParams, pricerParams, csqs, quotingParams));
+		return measure (strMeasure, value (valParams, pricerParams, csqs, quotingParams));
 	}
 
 	/**
-	 * Generate a full list of the component measures for the set of scenario market parameters present in
+	 * Generate a full list of the Product's measures for the set of scenario market parameters present in
 	 * 	the org.drip.param.definition.MarketParams
 	 * 
 	 * @param valParams ValuationParams
@@ -538,7 +546,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @param strCustomScenName Custom Scenario Name
 	 * @param quotingParams Quoting Parameters
 	 * @param mapBaseOP Base OP from used to calculate the desired delta measure. If null, the base OP will
-	 * 			be generated.
+	 * 	be generated.
 	 * 
 	 * @return Custom Scenarios Measures output set
 	 */

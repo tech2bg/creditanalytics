@@ -1395,6 +1395,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return getFloatingCoupon (dblValue, csqs);
 	}
 
+	@Override public int freq()
+	{
+		return cashFlowPeriod().get (0).freq();
+	}
+
 	@Override public java.lang.String[] forwardCurveName()
 	{
 		if (null == _fltParams) return null;

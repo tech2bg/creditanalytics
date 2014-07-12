@@ -264,6 +264,11 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return 0.;
 	}
 
+	@Override public int freq()
+	{
+		return cashFlowPeriod().get (0).freq();
+	}
+
 	@Override public java.lang.String[] forwardCurveName()
 	{
 		return new java.lang.String[] {_fri.fullyQualifiedName()};

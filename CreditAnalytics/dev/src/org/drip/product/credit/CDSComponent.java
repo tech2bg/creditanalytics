@@ -677,6 +677,11 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _dblCoupon;
 	}
 
+	@Override public int freq()
+	{
+		return cashFlowPeriod().get (0).freq();
+	}
+
 	/**
 	 * Reset the CDS's coupon
 	 * 

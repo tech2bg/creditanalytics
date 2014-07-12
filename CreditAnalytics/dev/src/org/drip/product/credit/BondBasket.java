@@ -45,7 +45,154 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 	private org.drip.product.definition.Bond[] _aBond = null;
 	private org.drip.analytics.date.JulianDate _dtEffective = null;
 
-	@Override protected int measureAggregationType (
+	/**
+	 * BondBasket de-serialization from input byte array
+	 * 
+	 * @param ab Byte Array
+	 * 
+	 * @throws java.lang.Exception Thrown if BondBasket cannot be properly de-serialized
+	 */
+
+	public BondBasket (
+		final byte[] ab)
+		throws java.lang.Exception
+	{
+		if (null == ab || 0 == ab.length)
+			throw new java.lang.Exception ("BondBasket de-serializer: Invalid input Byte array");
+
+		java.lang.String strRawString = new java.lang.String (ab);
+
+		if (null == strRawString || strRawString.isEmpty())
+			throw new java.lang.Exception ("BondBasket de-serializer: Empty state");
+
+		java.lang.String strSerializedBasketBond = strRawString.substring (0, strRawString.indexOf
+			(objectTrailer()));
+
+		if (null == strSerializedBasketBond || strSerializedBasketBond.isEmpty())
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate state");
+
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketBond,
+			fieldDelimiter());
+
+		if (null == astrField || 6 > astrField.length)
+			throw new java.lang.Exception ("BondBasket de-serializer: Invalid reqd field set");
+
+		// double dblVersion = new java.lang.Double (astrField[0]);
+
+		if (null == astrField[1] || astrField[1].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate notional");
+
+		_dblNotional = new java.lang.Double (astrField[1]);
+
+		if (null == astrField[2] || astrField[2].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate name");
+
+		_strName = astrField[2];
+
+		if (null == astrField[3] || astrField[3].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
+
+		java.lang.String[] astrBondRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
+			collectionRecordDelimiter());
+
+		if (null == astrBondRecord || 0 == astrBondRecord.length)
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
+
+		_aBond = new org.drip.product.definition.Bond[astrBondRecord.length];
+
+		for (int i = 0; i < astrBondRecord.length; ++i) {
+			if (null == astrBondRecord[i] || astrBondRecord[i].isEmpty() ||
+				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrBondRecord[i]))
+				throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate bond #" + i);
+
+			_aBond[i] = new org.drip.product.credit.BondComponent (astrBondRecord[i].getBytes());
+		}
+
+		if (null == astrField[4] || astrField[4].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
+
+		java.lang.String[] astrWeightRecord = org.drip.quant.common.StringUtil.Split (astrField[4],
+			collectionRecordDelimiter());
+
+		if (null == astrWeightRecord || 0 == astrWeightRecord.length)
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
+
+		_adblNormWeights = new double[astrWeightRecord.length];
+
+		for (int i = 0; i < astrWeightRecord.length; ++i) {
+			if (null == astrWeightRecord[i] || astrWeightRecord[i].isEmpty() ||
+				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrWeightRecord[i]))
+				throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate weight #" + i);
+
+			_adblNormWeights[i] = new java.lang.Double (astrWeightRecord[i]);
+		}
+
+		if (null == astrField[5] || astrField[5].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
+			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate effective date");
+
+		_dtEffective = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[5]));
+	}
+
+	/**
+	 * BondBasket constructor
+	 * 
+	 * @param strName BondBasket Name
+	 * @param aBond Component bonds
+	 * @param adblWeights Component Bond weights
+	 * @param dtEffective Effective date
+	 * @param dblNotional Basket Notional
+	 * 
+	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 */
+
+	public BondBasket (
+		final java.lang.String strName,
+		final org.drip.product.definition.Bond[] aBond,
+		final double[] adblWeights,
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final double dblNotional)
+		throws java.lang.Exception
+	{
+		if (null == strName || strName.isEmpty() || null == aBond || 0 == aBond.length || null == adblWeights
+			|| 0 == adblWeights.length || aBond.length != adblWeights.length || null == dtEffective)
+			throw new java.lang.Exception ("BasketBond ctr: Invalid inputs");
+
+		_aBond = aBond;
+		_strName = strName;
+		_dtEffective = dtEffective;
+		_dblNotional = dblNotional;
+		double dblCumulativeWeight = 0.;
+		_adblNormWeights = new double[adblWeights.length];
+
+		for (int i = 0; i < adblWeights.length; ++i) {
+			if (!org.drip.quant.common.NumberUtil.IsValid (adblWeights[i]))
+				throw new java.lang.Exception ("BasketBond ctr: Invalid weights");
+
+			dblCumulativeWeight += adblWeights[i];
+		}
+
+		if (0. == dblCumulativeWeight) throw new java.lang.Exception ("BasketBond ctr: Invalid weights");
+
+		for (int i = 0; i < adblWeights.length; ++i)
+			_adblNormWeights[i] = adblWeights[i] / dblCumulativeWeight;
+	}
+
+	@Override public java.lang.String name()
+	{
+		return _strName;
+	}
+
+	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
+	{
+		return _aBond;
+	}
+
+	@Override public int measureAggregationType (
 		final java.lang.String strMeasureName)
 	{
 		if ("Accrued".equalsIgnoreCase (strMeasureName))
@@ -610,153 +757,6 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
 
 		 return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_IGNORE;
-	}
-
-	/**
-	 * BondBasket de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if BondBasket cannot be properly de-serialized
-	 */
-
-	public BondBasket (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("BondBasket de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("BondBasket de-serializer: Empty state");
-
-		java.lang.String strSerializedBasketBond = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedBasketBond || strSerializedBasketBond.isEmpty())
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBasketBond,
-			fieldDelimiter());
-
-		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("BondBasket de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate notional");
-
-		_dblNotional = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate name");
-
-		_strName = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
-
-		java.lang.String[] astrBondRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
-			collectionRecordDelimiter());
-
-		if (null == astrBondRecord || 0 == astrBondRecord.length)
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component bonds");
-
-		_aBond = new org.drip.product.definition.Bond[astrBondRecord.length];
-
-		for (int i = 0; i < astrBondRecord.length; ++i) {
-			if (null == astrBondRecord[i] || astrBondRecord[i].isEmpty() ||
-				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrBondRecord[i]))
-				throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate bond #" + i);
-
-			_aBond[i] = new org.drip.product.credit.BondComponent (astrBondRecord[i].getBytes());
-		}
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
-
-		java.lang.String[] astrWeightRecord = org.drip.quant.common.StringUtil.Split (astrField[4],
-			collectionRecordDelimiter());
-
-		if (null == astrWeightRecord || 0 == astrWeightRecord.length)
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate component weights");
-
-		_adblNormWeights = new double[astrWeightRecord.length];
-
-		for (int i = 0; i < astrWeightRecord.length; ++i) {
-			if (null == astrWeightRecord[i] || astrWeightRecord[i].isEmpty() ||
-				org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrWeightRecord[i]))
-				throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate weight #" + i);
-
-			_adblNormWeights[i] = new java.lang.Double (astrWeightRecord[i]);
-		}
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("BondBasket de-serializer: Cannot locate effective date");
-
-		_dtEffective = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[5]));
-	}
-
-	/**
-	 * BondBasket constructor
-	 * 
-	 * @param strName BondBasket Name
-	 * @param aBond Component bonds
-	 * @param adblWeights Component Bond weights
-	 * @param dtEffective Effective date
-	 * @param dblNotional Basket Notional
-	 * 
-	 * @throws java.lang.Exception Thrown if inputs are invalid
-	 */
-
-	public BondBasket (
-		final java.lang.String strName,
-		final org.drip.product.definition.Bond[] aBond,
-		final double[] adblWeights,
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final double dblNotional)
-		throws java.lang.Exception
-	{
-		if (null == strName || strName.isEmpty() || null == aBond || 0 == aBond.length || null == adblWeights
-			|| 0 == adblWeights.length || aBond.length != adblWeights.length || null == dtEffective)
-			throw new java.lang.Exception ("BasketBond ctr: Invalid inputs");
-
-		_aBond = aBond;
-		_strName = strName;
-		_dtEffective = dtEffective;
-		_dblNotional = dblNotional;
-		double dblCumulativeWeight = 0.;
-		_adblNormWeights = new double[adblWeights.length];
-
-		for (int i = 0; i < adblWeights.length; ++i) {
-			if (!org.drip.quant.common.NumberUtil.IsValid (adblWeights[i]))
-				throw new java.lang.Exception ("BasketBond ctr: Invalid weights");
-
-			dblCumulativeWeight += adblWeights[i];
-		}
-
-		if (0. == dblCumulativeWeight) throw new java.lang.Exception ("BasketBond ctr: Invalid weights");
-
-		for (int i = 0; i < adblWeights.length; ++i)
-			_adblNormWeights[i] = adblWeights[i] / dblCumulativeWeight;
-	}
-
-	@Override public java.lang.String name()
-	{
-		return _strName;
-	}
-
-	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
-	{
-		return _aBond;
 	}
 
 	@Override public java.lang.String fieldDelimiter()

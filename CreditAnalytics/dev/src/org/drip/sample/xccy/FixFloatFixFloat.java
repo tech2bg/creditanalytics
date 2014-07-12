@@ -45,14 +45,15 @@ import org.drip.state.creator.DiscountCurveBuilder;
  */
 
 /**
- * CCBS demonstrates the construction, the usage, and the eventual valuation of the Cross Currency Basis
- * 	Swap.
+ * FixFloatFixFloat demonstrates the construction, the usage, and the eventual valuation of the Cross
+ *  Currency Basis Swap built out of a pair of fix-float swaps.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CCBS {
-	private static final FloatFloatComponent MakexM6MBasisSwap (
+public class FixFloatFixFloat {
+
+	private static final FixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -62,10 +63,10 @@ public class CCBS {
 		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
 
 			/*
-			 * The Reference 6M Leg
+			 * The Fixed Leg
 			 */
 
-		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixPeriods = CashflowPeriod.GeneratePeriodsRegular (
 			dtEffective.getJulian(),
 			strTenor,
 			dap,
@@ -77,14 +78,12 @@ public class CCBS {
 			strCurrency
 		);
 
-		FloatingStream fsReference = new FloatingStream (
+		FixedStream fixStream = new FixedStream (
 			strCurrency,
 			0.,
 			-1.,
 			null,
-			lsFloatPeriods,
-			FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
-			false
+			lsFixPeriods
 		);
 
 		/*
@@ -103,7 +102,7 @@ public class CCBS {
 			strCurrency
 		);
 
-		FloatingStream fsDerived = new FloatingStream (
+		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
 			0.,
 			1.,
@@ -114,10 +113,10 @@ public class CCBS {
 		);
 
 		/*
-		 * The float-float swap instance
+		 * The fix-float swap instance
 		 */
 
-		return new FloatFloatComponent (fsReference, fsDerived);
+		return new FixFloatComponent (fixStream, floatStream);
 	}
 
 	public static final void main (
@@ -154,15 +153,15 @@ public class CCBS {
 		CurveSurfaceQuoteSet mktParamsUSD = MarketParamsBuilder.Create
 			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null, null);
 
-		FloatFloatComponent ffcReferenceUSD = MakexM6MBasisSwap (
+		FixFloatComponent fixFloatUSD = MakeFixFloatSwap (
 			dtToday,
 			"USD",
 			"2Y",
 			3);
 
-		ffcReferenceUSD.setPrimaryCode ("USD_6M::3M::2Y");
+		fixFloatUSD.setPrimaryCode ("USD_IRS::3M::2Y");
 
-		System.out.println (ffcReferenceUSD.value (valParams, null, mktParamsUSD, null));
+		System.out.println (fixFloatUSD.value (valParams, null, mktParamsUSD, null));
 
 		DiscountCurve dcJPYCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
@@ -179,20 +178,20 @@ public class CCBS {
 		CurveSurfaceQuoteSet mktParamsJPY = MarketParamsBuilder.Create
 			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null, null);
 
-		FloatFloatComponent ffcDerivedJPY = MakexM6MBasisSwap (
+		FixFloatComponent fixFloatJPY = MakeFixFloatSwap (
 			dtToday,
 			"JPY",
 			"2Y",
 			3);
 
-		ffcDerivedJPY.setPrimaryCode ("JPY_6M::3M::2Y");
+		fixFloatJPY.setPrimaryCode ("JPY_IRS::3M::2Y");
 
-		System.out.println (ffcDerivedJPY.value (valParams, null, mktParamsJPY, null));
+		System.out.println (fixFloatJPY.value (valParams, null, mktParamsJPY, null));
 
 		CrossCurrencyComponentPair ccbsUSDJPY = new CrossCurrencyComponentPair (
 			"USDJPY_CCBS",
-			ffcReferenceUSD,
-			ffcDerivedJPY);
+			fixFloatUSD,
+			fixFloatJPY);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 

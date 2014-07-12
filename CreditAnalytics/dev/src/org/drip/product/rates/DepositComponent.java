@@ -273,6 +273,11 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return 0.;
 	}
 
+	@Override public int freq()
+	{
+		return cashFlowPeriod().get (0).freq();
+	}
+
 	@Override public java.lang.String[] forwardCurveName()
 	{
 		return null == _fri ? null : new java.lang.String[] {_fri.fullyQualifiedName()};

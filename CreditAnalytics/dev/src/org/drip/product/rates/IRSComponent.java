@@ -237,6 +237,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _fixStream.coupon (dblValue, csqs);
 	}
 
+	@Override public int freq()
+	{
+		return _fixStream.freq();
+	}
+
 	@Override public java.lang.String[] forwardCurveName()
 	{
 		return _floatStream.forwardCurveName();

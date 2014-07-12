@@ -341,6 +341,11 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return _lsCouponPeriod;
 	}
 
+	@Override public int freq()
+	{
+		return cashFlowPeriod().get (0).freq();
+	}
+
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
 	{
 		return _settleParams;

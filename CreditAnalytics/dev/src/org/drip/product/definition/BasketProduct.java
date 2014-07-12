@@ -354,9 +354,6 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 			" is an invalid measure!");
 	}
 
-	protected abstract int measureAggregationType (
-		final java.lang.String strMeasureName);
-
 	/**
 	 * Return the basket name
 	 * 
@@ -372,6 +369,17 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 	 */
 
 	public abstract org.drip.product.definition.FixedIncomeComponent[] components();
+
+	/**
+	 * Retrieve the Aggregation Type for the specified Measure
+	 * 
+	 * @param strMeasureName The Specified Measure Name
+	 * 
+	 * @return The Aggregation Type
+	 */
+
+	public abstract int measureAggregationType (
+		final java.lang.String strMeasureName);
 
 	/**
 	 * Retrieve the component Weights

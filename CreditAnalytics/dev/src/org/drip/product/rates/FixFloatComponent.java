@@ -46,7 +46,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixFloatComponent extends org.drip.product.definition.RatesComponent {
+public class FixFloatComponent extends org.drip.product.rates.DualStreamComponent {
 	private java.lang.String _strCode = "";
 	private org.drip.product.rates.FixedStream _fixReference = null;
 	private org.drip.product.rates.FloatingStream _floatDerived = null;
@@ -145,7 +145,7 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 
 	@Override public java.lang.String name()
 	{
-		return "IBS=" + maturity();
+		return _strCode;
 	}
 
 	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
@@ -238,6 +238,11 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		return _fixReference.coupon (dblValue, csqs);
 	}
 
+	@Override public int freq()
+	{
+		return _fixReference.freq();
+	}
+
 	@Override public java.lang.String[] forwardCurveName()
 	{
 		return _floatDerived.forwardCurveName();
@@ -253,24 +258,12 @@ public class FixFloatComponent extends org.drip.product.definition.RatesComponen
 		return null;
 	}
 
-	/**
-	 * Retrieve the Reference Stream
-	 * 
-	 * @return The Reference Stream
-	 */
-
-	public org.drip.product.rates.FixedStream getReferenceStream()
+	@Override public org.drip.product.definition.RatesComponent referenceStream()
 	{
 		return _fixReference;
 	}
 
-	/**
-	 * Retrieve the Derived Stream
-	 * 
-	 * @return The Derived Stream
-	 */
-
-	public org.drip.product.rates.FloatingStream getDerivedStream()
+	@Override public org.drip.product.definition.RatesComponent derivedStream()
 	{
 		return _floatDerived;
 	}

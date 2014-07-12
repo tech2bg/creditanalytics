@@ -383,6 +383,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return dcFunding.libor (dblStartDate, dblEndDate, currentPeriod.getCouponDCF()) + _dblSpread;
 	}
 
+	@Override public int freq()
+	{
+		return cashFlowPeriod().get (0).freq();
+	}
+
 	@Override public java.lang.String[] forwardCurveName()
 	{
 		return new java.lang.String[] {_fri.fullyQualifiedName()};

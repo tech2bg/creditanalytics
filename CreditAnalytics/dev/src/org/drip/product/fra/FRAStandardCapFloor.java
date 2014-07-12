@@ -136,7 +136,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 		return mapResult;
 	}
 
-	@Override public java.util.Set<java.lang.String> getMeasureNames()
+	@Override public java.util.Set<java.lang.String> measureNames()
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 

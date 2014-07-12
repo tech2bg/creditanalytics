@@ -40,12 +40,6 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 	private org.drip.product.definition.RatesComponent _rcDerived = null;
 	private org.drip.product.definition.RatesComponent _rcReference = null;
 
-	protected int measureAggregationType (
-		final java.lang.String strMeasureName)
-	{
-		return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE;
-	}
-
 	/**
 	 * CrossCurrencyComponentPair constructor
 	 * 
@@ -129,6 +123,12 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
 	{
 		return new org.drip.product.definition.FixedIncomeComponent[] {_rcReference, _rcDerived};
+	}
+
+	@Override public int measureAggregationType (
+		final java.lang.String strMeasureName)
+	{
+		return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE;
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (

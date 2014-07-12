@@ -50,7 +50,7 @@ public abstract class FixedIncomeOptionComponent implements
 	private double _dblNotional = java.lang.Double.NaN;
 	private org.drip.product.definition.FixedIncomeComponent _comp = null;
 
-	protected double getMeasure (
+	protected double measure (
 		final java.lang.String strMeasure,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)
 		throws java.lang.Exception
@@ -216,7 +216,7 @@ public abstract class FixedIncomeOptionComponent implements
 	 * @return Set of Measure Names
 	 */
 
-	public abstract java.util.Set<java.lang.String> getMeasureNames();
+	public abstract java.util.Set<java.lang.String> measureNames();
 
 	/**
 	 * Calculate the value of the given component measure
@@ -240,6 +240,6 @@ public abstract class FixedIncomeOptionComponent implements
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
 	{
-		return getMeasure (strMeasure, value (valParams, pricerParams, csqs, quotingParams));
+		return measure (strMeasure, value (valParams, pricerParams, csqs, quotingParams));
 	}
 }

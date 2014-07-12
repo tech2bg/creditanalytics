@@ -47,7 +47,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloatFloatComponent extends org.drip.product.definition.RatesComponent {
+public class FloatFloatComponent extends org.drip.product.rates.DualStreamComponent {
 	private java.lang.String _strCode = "";
 	private org.drip.product.rates.FloatingStream _floatDerived = null;
 	private org.drip.product.rates.FloatingStream _floatReference = null;
@@ -239,6 +239,11 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		return _floatReference.coupon (dblValue, csqs);
 	}
 
+	@Override public int freq()
+	{
+		return _floatReference.freq();
+	}
+
 	@Override public java.lang.String[] forwardCurveName()
 	{
 		return new java.lang.String[] {_floatReference.forwardCurveName()[0],
@@ -255,24 +260,12 @@ public class FloatFloatComponent extends org.drip.product.definition.RatesCompon
 		return null;
 	}
 
-	/**
-	 * Retrieve the Reference Stream
-	 * 
-	 * @return The Reference Stream
-	 */
-
-	public org.drip.product.rates.FloatingStream getReferenceStream()
+	@Override public org.drip.product.definition.RatesComponent referenceStream()
 	{
 		return _floatReference;
 	}
 
-	/**
-	 * Retrieve the Derived Stream
-	 * 
-	 * @return The Derived Stream
-	 */
-
-	public org.drip.product.rates.FloatingStream getDerivedStream()
+	@Override public org.drip.product.definition.RatesComponent derivedStream()
 	{
 		return _floatDerived;
 	}

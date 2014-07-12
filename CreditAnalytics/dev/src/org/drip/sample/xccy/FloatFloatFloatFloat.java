@@ -1,19 +1,19 @@
 
 package org.drip.sample.xccy;
 
-import java.util.*;
+import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.daycount.DateAdjustParams;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.*;
-import org.drip.product.params.*;
+import org.drip.product.fx.CrossCurrencyComponentPair;
+import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 
@@ -45,13 +45,13 @@ import org.drip.state.creator.DiscountCurveBuilder;
  */
 
 /**
- * MTMCCBS demonstrates the construction, the usage, and the eventual valuation of the Mark-to-market Cross
- *  Currency Basis Swap.
+ * FloatFloatFloatFloat demonstrates the construction, the usage, and the eventual valuation of the Cross
+ *  Currency Basis Swap built out of a pair of float-float swaps.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class MTMCCBS {
+public class FloatFloatFloatFloat {
 	private static final FloatFloatComponent MakexM6MBasisSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
@@ -59,14 +59,16 @@ public class MTMCCBS {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		/*
-		 * The Reference 6M Leg
-		 */
+		DateAdjustParams dap = new DateAdjustParams (Convention.DR_FOLL, strCurrency);
+
+			/*
+			 * The Reference 6M Leg
+			 */
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 			dtEffective.getJulian(),
 			strTenor,
-			null,
+			dap,
 			2,
 			"Act/360",
 			false,
@@ -92,7 +94,7 @@ public class MTMCCBS {
 		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 			dtEffective.getJulian(),
 			strTenor,
-			null,
+			dap,
 			12 / iTenorInMonths,
 			"Act/360",
 			false,
@@ -149,6 +151,9 @@ public class MTMCCBS {
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
+		CurveSurfaceQuoteSet mktParamsUSD = MarketParamsBuilder.Create
+			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null, null);
+
 		FloatFloatComponent ffcReferenceUSD = MakexM6MBasisSwap (
 			dtToday,
 			"USD",
@@ -156,6 +161,8 @@ public class MTMCCBS {
 			3);
 
 		ffcReferenceUSD.setPrimaryCode ("USD_6M::3M::2Y");
+
+		System.out.println (ffcReferenceUSD.value (valParams, null, mktParamsUSD, null));
 
 		DiscountCurve dcJPYCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
@@ -169,6 +176,9 @@ public class MTMCCBS {
 			dblJPY3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
+		CurveSurfaceQuoteSet mktParamsJPY = MarketParamsBuilder.Create
+			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null, null);
+
 		FloatFloatComponent ffcDerivedJPY = MakexM6MBasisSwap (
 			dtToday,
 			"JPY",
@@ -177,7 +187,9 @@ public class MTMCCBS {
 
 		ffcDerivedJPY.setPrimaryCode ("JPY_6M::3M::2Y");
 
-		CrossCurrencyComponentPair ccbsUSDJPY = new MTMCrossCurrencyPair (
+		System.out.println (ffcDerivedJPY.value (valParams, null, mktParamsJPY, null));
+
+		CrossCurrencyComponentPair ccbsUSDJPY = new CrossCurrencyComponentPair (
 			"USDJPY_CCBS",
 			ffcReferenceUSD,
 			ffcDerivedJPY);
@@ -192,17 +204,6 @@ public class MTMCCBS {
 
 		mktParams.setForwardCurve (fc3MJPY);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (0.3));
-
-		CurrencyPair cp = CurrencyPair.FromCode ("USD/JPY");
-
-		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (0.3));
-
-		mktParams.setFundingFXCorrSurface ("USD", cp, new FlatUnivariate (0.3));
-
-		CaseInsensitiveTreeMap<Double> mapMTMOutput = ccbsUSDJPY.value (valParams, null, mktParams, null);
-
-		for (Map.Entry<String, Double> me : mapMTMOutput.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
+		System.out.println (ccbsUSDJPY.value (valParams, null, mktParams, null));
 	}
 }

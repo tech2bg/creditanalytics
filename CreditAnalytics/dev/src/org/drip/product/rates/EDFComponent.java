@@ -316,6 +316,11 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return 0.;
 	}
 
+	@Override public int freq()
+	{
+		return cashFlowPeriod().get (0).freq();
+	}
+
 	@Override public double notional (
 		final double dblDate1,
 		final double dblDate2)
