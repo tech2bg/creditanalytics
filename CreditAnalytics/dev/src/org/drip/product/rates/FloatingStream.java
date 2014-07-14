@@ -285,7 +285,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 	@Override public java.lang.String name()
 	{
-		return "FloatingStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
+		return _strCode;
 	}
 
 	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()

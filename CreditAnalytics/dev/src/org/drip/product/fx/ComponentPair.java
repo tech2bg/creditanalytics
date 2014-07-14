@@ -29,28 +29,28 @@ package org.drip.product.fx;
  */
 
 /**
- * CrossCurrencyComponentPair contains the implementation of the dual cross currency components. It is
- *  composed of two different Rates Components - one each for each currency.
+ * ComponentPair contains the implementation of the dual cross currency components. It is composed of two
+ *  different Rates Components - one each for each currency.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class CrossCurrencyComponentPair extends org.drip.product.definition.BasketProduct {
+public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
 	private org.drip.product.definition.RatesComponent _rcDerived = null;
 	private org.drip.product.definition.RatesComponent _rcReference = null;
 
 	/**
-	 * CrossCurrencyComponentPair constructor
+	 * ComponentPair constructor
 	 * 
-	 * @param strName The CrossCurrencyBasisSwap Instance Name
+	 * @param strName The ComponentPair Instance Name
 	 * @param rcReference The Reference Component
 	 * @param rcDerived The Derived Component
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public CrossCurrencyComponentPair (
+	public ComponentPair (
 		final java.lang.String strName,
 		final org.drip.product.definition.RatesComponent rcReference,
 		final org.drip.product.definition.RatesComponent rcDerived)
@@ -58,7 +58,7 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_rcDerived = rcDerived) || null ==
 			(_rcReference = rcReference))
-			throw new java.lang.Exception ("CrossCurrencyComponentPair ctr: Invalid Inputs!");
+			throw new java.lang.Exception ("ComponentPair ctr: Invalid Inputs!");
 	}
 
 	/**
@@ -91,7 +91,12 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 
 	public java.lang.String fxCode()
 	{
-		return _rcReference.couponCurrency()[0] + "/" + _rcDerived.couponCurrency()[0];
+		java.lang.String strDerivedComponentCouponCurrency = _rcDerived.couponCurrency()[0];
+
+		java.lang.String strReferenceComponentCouponCurrency = _rcReference.couponCurrency()[0];
+
+		return strDerivedComponentCouponCurrency.equalsIgnoreCase (strReferenceComponentCouponCurrency) ?
+			null : strReferenceComponentCouponCurrency + "/" + strDerivedComponentCouponCurrency;
 	}
 
 	@Override public java.lang.String name()
@@ -144,21 +149,21 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 
 		if (null == mapOutput) return null;
 
-		org.drip.product.definition.RatesComponent rcDerived = derivedComponent();
-
 		org.drip.product.definition.RatesComponent rcReference = referenceComponent();
 
-		java.lang.String strRefCompName = rcReference.name();
+		org.drip.product.definition.RatesComponent rcDerived = derivedComponent();
+
+		java.lang.String strReferenceCompName = rcReference.name();
 
 		java.lang.String strDerivedCompName = rcDerived.name();
 
 		double dblFX = 1.;
-		java.lang.String strReferenceCompPV = strRefCompName + "[PV]";
 		java.lang.String strDerivedCompPV = strDerivedCompName + "[PV]";
-		java.lang.String strReferenceCompReferenceDV01 = strRefCompName + "[ReferenceCleanDV01]";
-		java.lang.String strReferenceCompDerivedDV01 = strRefCompName + "[DerivedCleanDV01]";
-		java.lang.String strDerivedCompReferenceDV01 = strDerivedCompName + "[ReferenceCleanDV01]";
+		java.lang.String strReferenceCompPV = strReferenceCompName + "[PV]";
 		java.lang.String strDerivedCompDerivedDV01 = strDerivedCompName + "[DerivedCleanDV01]";
+		java.lang.String strReferenceCompDerivedDV01 = strReferenceCompName + "[DerivedCleanDV01]";
+		java.lang.String strDerivedCompReferenceDV01 = strDerivedCompName + "[ReferenceCleanDV01]";
+		java.lang.String strReferenceCompReferenceDV01 = strReferenceCompName + "[ReferenceCleanDV01]";
 
 		if (!mapOutput.containsKey (strDerivedCompPV) || !mapOutput.containsKey (strReferenceCompPV) ||
 			!mapOutput.containsKey (strReferenceCompReferenceDV01) || !mapOutput.containsKey
@@ -173,13 +178,13 @@ public class CrossCurrencyComponentPair extends org.drip.product.definition.Bask
 
 		double dblReferenceCompPV = mapOutput.get (strReferenceCompPV);
 
-		double dblReferenceCompDerivedDV01 = mapOutput.get (strReferenceCompDerivedDV01);
-
-		double dblReferenceCompReferenceDV01 = mapOutput.get (strReferenceCompReferenceDV01);
-
 		double dblDerivedCompDerivedDV01 = mapOutput.get (strDerivedCompDerivedDV01);
 
 		double dblDerivedCompReferenceDV01 = mapOutput.get (strDerivedCompReferenceDV01);
+
+		double dblReferenceCompDerivedDV01 = mapOutput.get (strReferenceCompDerivedDV01);
+
+		double dblReferenceCompReferenceDV01 = mapOutput.get (strReferenceCompReferenceDV01);
 
 		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve
 			(org.drip.product.params.CurrencyPair.FromCode (fxCode()));

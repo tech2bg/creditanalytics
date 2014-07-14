@@ -137,7 +137,7 @@ public class CCBSForwardCurve {
 		return aFFC;
 	}
 
-	private static final CrossCurrencyComponentPair[] MakeCCSP (
+	private static final ComponentPair[] MakeCCSP (
 		final JulianDate dtValue,
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
@@ -157,10 +157,10 @@ public class CCBSForwardCurve {
 			astrTenor,
 			3);
 
-		CrossCurrencyComponentPair[] aCCSP = new CrossCurrencyComponentPair[astrTenor.length];
+		ComponentPair[] aCCSP = new ComponentPair[astrTenor.length];
 
 		for (int i = 0; i < aCCSP.length; ++i)
-			aCCSP[i] = new CrossCurrencyComponentPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aFFCDerived[i]);
+			aCCSP[i] = new ComponentPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aFFCDerived[i]);
 
 		return aCCSP;
 	}
@@ -181,7 +181,7 @@ public class CCBSForwardCurve {
 		final boolean bBasisOnDerivedLeg)
 		throws Exception
 	{
-		CrossCurrencyComponentPair[] aCCSP = MakeCCSP (
+		ComponentPair[] aCCSP = MakeCCSP (
 			dtValue,
 			strReferenceCurrency,
 			strDerivedCurrency,

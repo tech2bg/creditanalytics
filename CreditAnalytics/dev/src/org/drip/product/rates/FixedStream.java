@@ -231,7 +231,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 	@Override public java.lang.String name()
 	{
-		return "FixedStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
+		return _strCode;
 	}
 
 	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()

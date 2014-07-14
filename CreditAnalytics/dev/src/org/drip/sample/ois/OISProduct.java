@@ -747,7 +747,7 @@ public class OISProduct {
 			String strReconcile = NumberUtil.WithinTolerance (dblIndexMeasure, dblFundMeasure, 1.e-08, 1.e-04) ?
 				"RECONCILES" :
 				"DOES NOT RECONCILE";
-				
+
 			System.out.println ("\t" +
 				FormatUtil.FormatDouble (dblIndexMeasure, 1, 8, 1.) + " | " +
 				FormatUtil.FormatDouble (dblFundMeasure, 1, 8, 1.) + " | " +

@@ -12,7 +12,7 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.RatesComponent;
-import org.drip.product.fx.CrossCurrencyComponentPair;
+import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
 import org.drip.quant.calculus.WengertJacobian;
@@ -169,7 +169,7 @@ public class CCBSDiscountCurve {
 		return aCalibComp;
 	}
 
-	private static final CrossCurrencyComponentPair[] MakeCCSP (
+	private static final ComponentPair[] MakeCCSP (
 		final JulianDate dtValue,
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
@@ -188,10 +188,10 @@ public class CCBSDiscountCurve {
 			strDerivedCurrency,
 			astrTenor);
 
-		CrossCurrencyComponentPair[] aCCSP = new CrossCurrencyComponentPair[astrTenor.length];
+		ComponentPair[] aCCSP = new ComponentPair[astrTenor.length];
 
 		for (int i = 0; i < aCCSP.length; ++i)
-			aCCSP[i] = new CrossCurrencyComponentPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aIRS[i]);
+			aCCSP[i] = new ComponentPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aIRS[i]);
 
 		return aCCSP;
 	}
@@ -258,7 +258,7 @@ public class CCBSDiscountCurve {
 			lsCCBSMapManifestQuote.add (mapCCBSManifestQuote);
 		}
 
-		CrossCurrencyComponentPair[] aCCSP = MakeCCSP (
+		ComponentPair[] aCCSP = MakeCCSP (
 			dtValue,
 			strReferenceCurrency,
 			strDerivedCurrency,

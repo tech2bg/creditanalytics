@@ -11,7 +11,7 @@ import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.CrossCurrencyComponentPair;
+import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.service.api.CreditAnalytics;
@@ -189,7 +189,7 @@ public class FloatFloatFloatFloat {
 
 		System.out.println (ffcDerivedJPY.value (valParams, null, mktParamsJPY, null));
 
-		CrossCurrencyComponentPair ccbsUSDJPY = new CrossCurrencyComponentPair (
+		ComponentPair ccbsUSDJPY = new ComponentPair (
 			"USDJPY_CCBS",
 			ffcReferenceUSD,
 			ffcDerivedJPY);

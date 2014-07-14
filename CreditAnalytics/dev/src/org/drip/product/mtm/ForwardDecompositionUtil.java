@@ -199,7 +199,7 @@ public class ForwardDecompositionUtil {
 	 * @return The Array of Single Forward Period Dual Streams
 	 */
 
-	public static final org.drip.product.rates.DualStreamComponent[] DualStreamForwardArray (
+	public static final org.drip.product.definition.RatesComponent[] DualStreamForwardArray (
 		final org.drip.product.rates.DualStreamComponent dsc)
 	{
 		if (null == dsc) return null;
@@ -236,16 +236,16 @@ public class ForwardDecompositionUtil {
 				return null;
 		}
 
-		org.drip.product.rates.DualStreamComponent[] aDSC = new
-			org.drip.product.rates.DualStreamComponent[iNumForward];
+		org.drip.product.definition.RatesComponent[] aRC = new
+			org.drip.product.definition.RatesComponent[iNumForward];
 
 		for (int i = 0; i < iNumForward; ++i) {
 			try {
-				if (null == (aDSC[i] = org.drip.product.creator.DualStreamComponentBuilder.MakeDualStream
+				if (null == (aRC[i] = org.drip.product.creator.DualStreamComponentBuilder.MakeDualStream
 					(aRCReferenceForward[i], aRCDerivedForward[i])))
 					return null;
 
-				aDSC[i].setPrimaryCode (rcReference.name() + "::" + rcDerived.name() + "_" + i);
+				aRC[i].setPrimaryCode (rcReference.name() + "::" + rcDerived.name() + "_" + i);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -253,6 +253,36 @@ public class ForwardDecompositionUtil {
 			}
 		}
 
-		return aDSC;
+		return aRC;
+	}
+
+	/**
+	 * Decompose the Rates Component into an Array of Single Forward Rates Components
+	 * 
+	 * @param rc The Rates Component
+	 * 
+	 * @return The Array of Single Forward Period Rates Components
+	 */
+
+	public static final org.drip.product.definition.RatesComponent[] RatesComponentForwardArray (
+		final org.drip.product.definition.RatesComponent rc)
+	{
+		if (null == rc) return null;
+
+		if (rc instanceof org.drip.product.rates.DualStreamComponent)
+			return DualStreamForwardArray ((org.drip.product.rates.DualStreamComponent) rc);
+
+		org.drip.product.definition.RatesComponent[] aRCForward = SinglePeriodStreamDecompose (rc, 1);
+
+		if (null == aRCForward) return null;
+
+		int iNumForward = aRCForward.length;
+
+		if (0 == iNumForward) return null;
+
+		for (int i = 0; i < iNumForward; ++i)
+			aRCForward[i].setPrimaryCode (rc.name() + "_" + i);
+
+		return aRCForward;
 	}
 }

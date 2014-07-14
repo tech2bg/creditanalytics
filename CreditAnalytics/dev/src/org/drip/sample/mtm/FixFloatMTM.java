@@ -1,19 +1,23 @@
 
-package org.drip.sample.xccy;
+package org.drip.sample.mtm;
 
-import java.util.List;
+import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.Convention;
-import org.drip.analytics.daycount.DateAdjustParams;
+import org.drip.analytics.daycount.*;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.ComponentPair;
-import org.drip.product.params.FloatingRateIndex;
+import org.drip.product.fx.*;
+import org.drip.product.mtm.ComponentPairMTM;
+import org.drip.product.params.*;
 import org.drip.product.rates.*;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.common.NumberUtil;
+import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 
@@ -45,13 +49,13 @@ import org.drip.state.creator.DiscountCurveBuilder;
  */
 
 /**
- * FixFloatFixFloat demonstrates the construction, the usage, and the eventual valuation of the Cross
- *  Currency Basis Swap built out of a pair of fix-float swaps.
+ * FixFloatMTM demonstrates the construction, usage, and eventual valuation of the Mark-to-market fix-float
+ *  swap.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixFloatFixFloat {
+public class FixFloatMTM {
 
 	private static final FixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
@@ -86,6 +90,8 @@ public class FixFloatFixFloat {
 			lsFixPeriods
 		);
 
+		fixStream.setPrimaryCode ("USD::FIXED::" + strTenor);
+
 		/*
 		 * The Derived Leg
 		 */
@@ -112,6 +118,8 @@ public class FixFloatFixFloat {
 			false
 		);
 
+		floatStream.setPrimaryCode ("USD::" + iTenorInMonths + "M::" + strTenor);
+
 		/*
 		 * The fix-float swap instance
 		 */
@@ -125,8 +133,6 @@ public class FixFloatFixFloat {
 	{
 		double dblUSDCollateralRate = 0.02;
 		double dblUSD3MForwardRate = 0.02;
-		double dblJPYCollateralRate = 0.02;
-		double dblJPY3MForwardRate = 0.02;
 
 		/*
 		 * Initialize the Credit Analytics Library
@@ -150,9 +156,6 @@ public class FixFloatFixFloat {
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
-		CurveSurfaceQuoteSet mktParamsUSD = MarketParamsBuilder.Create
-			(dcUSDCollatDomestic, fc3MUSD, null, null, null, null, null, null);
-
 		FixFloatComponent fixFloatUSD = MakeFixFloatSwap (
 			dtToday,
 			"USD",
@@ -161,48 +164,53 @@ public class FixFloatFixFloat {
 
 		fixFloatUSD.setPrimaryCode ("USD_IRS::3M::2Y");
 
-		System.out.println (fixFloatUSD.value (valParams, null, mktParamsUSD, null));
+		ComponentPairMTM ccbsUSDJPYAbsolute = new ComponentPairMTM (
+			new ComponentPair (
+				"USD_IRS",
+				fixFloatUSD.referenceStream(),
+				fixFloatUSD.derivedStream()),
+			true,
+			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_FUNDING_FX,
+			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_NONE
+		);
 
-		DiscountCurve dcJPYCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
-			dtToday,
-			"JPY",
-			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"),
-			dblJPYCollateralRate);
-
-		ForwardCurve fc3MJPY = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
-			dtToday,
-			FloatingRateIndex.Create ("JPY", "LIBOR", "3M"),
-			dblJPY3MForwardRate,
-			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
-
-		CurveSurfaceQuoteSet mktParamsJPY = MarketParamsBuilder.Create
-			(dcJPYCollatDomestic, fc3MJPY, null, null, null, null, null, null);
-
-		FixFloatComponent fixFloatJPY = MakeFixFloatSwap (
-			dtToday,
-			"JPY",
-			"2Y",
-			3);
-
-		fixFloatJPY.setPrimaryCode ("JPY_IRS::3M::2Y");
-
-		System.out.println (fixFloatJPY.value (valParams, null, mktParamsJPY, null));
-
-		ComponentPair ccbsUSDJPY = new ComponentPair (
-			"USDJPY_CCBS",
-			fixFloatUSD,
-			fixFloatJPY);
+		ComponentPairMTM ccbsUSDJPYRelative = new ComponentPairMTM (
+			new ComponentPair (
+				"USD_IRS",
+				fixFloatUSD.referenceStream(),
+				fixFloatUSD.derivedStream()),
+			false,
+			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_FUNDING_FX,
+			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_NONE
+		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
 		mktParams.setFundingCurve (dcUSDCollatDomestic);
 
-		mktParams.setFundingCurve (dcJPYCollatDomestic);
-
 		mktParams.setForwardCurve (fc3MUSD);
 
-		mktParams.setForwardCurve (fc3MJPY);
+		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (0.3));
 
-		System.out.println (ccbsUSDJPY.value (valParams, null, mktParams, null));
+		CaseInsensitiveTreeMap<Double> mapAbsoluteMTMOutput = ccbsUSDJPYAbsolute.value (valParams, null, mktParams, null);
+
+		CaseInsensitiveTreeMap<Double> mapRelativeMTMOutput = ccbsUSDJPYRelative.value (valParams, null, mktParams, null);
+
+		for (Map.Entry<String, Double> me : mapRelativeMTMOutput.entrySet()) {
+			String strKey = me.getKey();
+
+			double dblAbsoluteMeasure = mapAbsoluteMTMOutput.get (strKey);
+
+			double dblRelativeMeasure = mapRelativeMTMOutput.get (strKey);
+
+			String strReconcile = NumberUtil.WithinTolerance (dblAbsoluteMeasure, dblRelativeMeasure, 1.e-08, 1.e-04) ?
+				"RECONCILES" :
+				"DOES NOT RECONCILE";
+
+			System.out.println ("\t" +
+				FormatUtil.FormatDouble (dblAbsoluteMeasure, 1, 8, 1.) + " | " +
+				FormatUtil.FormatDouble (dblRelativeMeasure, 1, 8, 1.) + " | " +
+				strReconcile + " <= " + strKey);
+		}
 	}
 }
