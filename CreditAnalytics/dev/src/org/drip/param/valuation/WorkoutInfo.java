@@ -218,7 +218,7 @@ public class WorkoutInfo extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		WorkoutInfo wi = new WorkoutInfo (org.drip.analytics.date.JulianDate.Today().getJulian(), 0.06, 1.,
+		WorkoutInfo wi = new WorkoutInfo (org.drip.analytics.date.JulianDate.Today().julian(), 0.06, 1.,
 			WO_TYPE_MATURITY);
 
 		byte[] abWI = wi.serialize();

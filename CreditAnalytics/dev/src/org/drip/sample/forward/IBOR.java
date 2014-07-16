@@ -107,7 +107,7 @@ public class IBOR {
 				strCurrency,
 				"FRA::" + strCurrency,
 				strCurrency,
-				dtEffective.addTenor (astrMaturityTenor[i]).getJulian(),
+				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				fri,
 				adblFRAStrike[i],
 				"Act/365");
@@ -143,7 +143,7 @@ public class IBOR {
 			 */
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
 				4,
@@ -167,7 +167,7 @@ public class IBOR {
 			 */
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
 				12 / iForwardTenorFreq,
@@ -225,7 +225,7 @@ public class IBOR {
 			 */
 
 			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
 				2,
@@ -251,7 +251,7 @@ public class IBOR {
 			 */
 
 			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
 				12 / iForwardTenorFreq,

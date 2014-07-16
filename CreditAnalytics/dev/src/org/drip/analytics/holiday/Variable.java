@@ -148,10 +148,10 @@ public class Variable extends Base {
 		try {
 			if (_bFromFront)
 				dblDate = (org.drip.analytics.date.JulianDate.CreateFromYMD (iYear, _iMonth,
-					_iWeekDay)).getJulian() + (7 * (_iWeekInMonth - 1));
+					_iWeekDay)).julian() + (7 * (_iWeekInMonth - 1));
 			else {
 				dblDate = (org.drip.analytics.date.JulianDate.CreateFromYMD (iYear, _iMonth,
-					org.drip.analytics.date.JulianDate.DaysInMonth (_iMonth, iYear))).getJulian() - (7 *
+					org.drip.analytics.date.JulianDate.DaysInMonth (_iMonth, iYear))).julian() - (7 *
 						(_iWeekInMonth - 1));
 
 				while (_iWeekDay != (dblDate % 7)) --dblDate;

@@ -164,7 +164,7 @@ public class SerializerTestSuite {
 
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
-		double dblStart = dtToday.getJulian();
+		double dblStart = dtToday.julian();
 
 		double[] adblDCDate = new double[3];
 		double[] adblDCRate = new double[3];
@@ -297,7 +297,7 @@ public class SerializerTestSuite {
 			"InterestRateSwap");
 
 		byte[] abFRA = new org.drip.product.fra.FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
-			org.drip.analytics.date.JulianDate.Today().getJulian(),
+			org.drip.analytics.date.JulianDate.Today().julian(),
 				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01,
 					"Act/360").serialize();
 
@@ -310,39 +310,39 @@ public class SerializerTestSuite {
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod3Y =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "3Y", dap,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap,
 				2, "Act/360", false, false, "ABC", "DEF");
 
 		aFixedStream[0] = new org.drip.product.rates.FixedStream ("DEF", 0.03, 1., null, lsFixedPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod5Y =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "5Y", dap,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap,
 				2, "Act/360", false, false, "GHI", "JKL");
 
 		aFixedStream[1] = new org.drip.product.rates.FixedStream ("JKL", 0.05, 1., null, lsFixedPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod7Y =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "7Y", dap,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap,
 				2, "Act/360", false, false, "MNO", "PQR");
 
 		aFixedStream[2] = new org.drip.product.rates.FixedStream ("PQR", 0.07, 1., null, lsFixedPeriod7Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod3Y =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "3Y", dap,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
 		aFloatStream[0] = new org.drip.product.rates.FloatingStream ("DEF", 0.03, -1., null, lsFloatPeriod3Y,
 			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod5Y =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "5Y", dap,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
 		aFloatStream[1] = new org.drip.product.rates.FloatingStream ("DEF", 0.05, -1., null, lsFloatPeriod5Y,
 			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod7Y =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "7Y", dap,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
 		aFloatStream[2] = new org.drip.product.rates.FloatingStream ("DEF", 0.07, -1., null, lsFloatPeriod7Y,
@@ -793,7 +793,7 @@ public class SerializerTestSuite {
 
 		byte[] abPricer = new org.drip.param.pricer.PricerParams (7, new
 			org.drip.param.definition.CalibrationParams ("KOOL", 1, new
-				org.drip.param.valuation.WorkoutInfo (org.drip.analytics.date.JulianDate.Today().getJulian(),
+				org.drip.param.valuation.WorkoutInfo (org.drip.analytics.date.JulianDate.Today().julian(),
 					0.04, 1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1).serialize();
 
 		Verify (abPricer, new org.drip.param.pricer.PricerParams (abPricer), "PricerParams");

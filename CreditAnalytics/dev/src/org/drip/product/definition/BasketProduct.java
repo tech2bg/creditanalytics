@@ -768,7 +768,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		for (int i = 1; i < iNumComp; ++i) {
 			org.drip.analytics.date.JulianDate dtCompEffective = aComp[i].effective();
 
-			if (dtCompEffective.getJulian() < dtEffective.getJulian()) dtEffective = dtCompEffective;
+			if (dtCompEffective.julian() < dtEffective.julian()) dtEffective = dtCompEffective;
 		}
 
 		return dtEffective;
@@ -791,7 +791,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		for (int i = 1; i < iNumComp; ++i) {
 			org.drip.analytics.date.JulianDate dtCompMaturity = aComp[i].maturity();
 
-			if (dtCompMaturity.getJulian() < dtMaturity.getJulian()) dtMaturity = dtCompMaturity;
+			if (dtCompMaturity.julian() < dtMaturity.julian()) dtMaturity = dtCompMaturity;
 		}
 
 		return dtMaturity;
@@ -835,7 +835,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		org.drip.analytics.date.JulianDate dtFirstCoupon = aComp[0].firstCouponDate();
 
 		for (int i = 1; i < iNumComp; ++i) {
-			if (dtFirstCoupon.getJulian() > aComp[i].firstCouponDate().getJulian())
+			if (dtFirstCoupon.julian() > aComp[i].firstCouponDate().julian())
 				dtFirstCoupon = aComp[i].firstCouponDate();
 		}
 

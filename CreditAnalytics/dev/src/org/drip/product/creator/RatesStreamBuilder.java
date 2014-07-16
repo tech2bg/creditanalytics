@@ -67,7 +67,7 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(),
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(),
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
 
 		try {
@@ -103,8 +103,8 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.getJulian(),
-				dtMaturity.getJulian(), null, iFreq, strDayCount, false,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.julian(),
+				dtMaturity.julian(), null, iFreq, strDayCount, false,
 					org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT, true, strCalendar,
 						strCurrency);
 
@@ -143,7 +143,7 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(),
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(),
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
 
 		try {
@@ -183,8 +183,8 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.getJulian(),
-				dtMaturity.getJulian(), null, iFreq, strDayCount, false,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.julian(),
+				dtMaturity.julian(), null, iFreq, strDayCount, false,
 					org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT, true, strCalendar,
 						strCurrency);
 

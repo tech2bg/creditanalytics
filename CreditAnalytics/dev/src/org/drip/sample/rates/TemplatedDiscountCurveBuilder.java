@@ -346,9 +346,9 @@ public class TemplatedDiscountCurveBuilder {
 
 		System.out.println ("\t-----------------------------------------------------------------------------------------------------------------------------------");
 
-		double dblStartDate = aCashComp[0].maturity().getJulian();
+		double dblStartDate = aCashComp[0].maturity().julian();
 
-		double dblEndDate = aSwapComp[aSwapComp.length - 1].maturity().getJulian();
+		double dblEndDate = aSwapComp[aSwapComp.length - 1].maturity().julian();
 
 		double dblDateIncrement = 0.05 * (dblEndDate - dblStartDate);
 

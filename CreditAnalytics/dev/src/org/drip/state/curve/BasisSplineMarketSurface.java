@@ -92,7 +92,7 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		final double dblStrikeAnchor)
 	{
 		try {
-			return new BasisSplineTermStructure (epoch().getJulian(), name() + "_" + dblStrikeAnchor,
+			return new BasisSplineTermStructure (epoch().julian(), name() + "_" + dblStrikeAnchor,
 				currency(), _wss.wireSpanXAnchor (dblStrikeAnchor), _collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -105,7 +105,7 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		final double dblMaturityDateAnchor)
 	{
 		try {
-			return new BasisSplineTermStructure (epoch().getJulian(), name() + "_" + new
+			return new BasisSplineTermStructure (epoch().julian(), name() + "_" + new
 				org.drip.analytics.date.JulianDate (dblMaturityDateAnchor), currency(), _wss.wireSpanYAnchor
 					(dblMaturityDateAnchor), _collatParams);
 		} catch (java.lang.Exception e) {

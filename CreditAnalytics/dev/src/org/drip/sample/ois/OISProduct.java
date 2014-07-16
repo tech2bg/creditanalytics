@@ -100,7 +100,7 @@ public class OISProduct {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -122,7 +122,7 @@ public class OISProduct {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -170,8 +170,8 @@ public class OISProduct {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.getJulian(),
-				dtMaturity.getJulian(),
+				dtEffective.julian(),
+				dtMaturity.julian(),
 				null,
 				null,
 				"Act/360",
@@ -190,7 +190,7 @@ public class OISProduct {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -241,7 +241,7 @@ public class OISProduct {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -263,7 +263,7 @@ public class OISProduct {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -314,8 +314,8 @@ public class OISProduct {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.getJulian(),
-				dtMaturity.getJulian(),
+				dtEffective.julian(),
+				dtMaturity.julian(),
 				null,
 				null,
 				"Act/360",
@@ -334,7 +334,7 @@ public class OISProduct {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -674,7 +674,7 @@ public class OISProduct {
 		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtCustomOISStart.getJulian(),
+			dtCustomOISStart.julian(),
 			"4M",
 			null,
 			4,
@@ -696,7 +696,7 @@ public class OISProduct {
 		);
 
 		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtCustomOISStart.getJulian(),
+			dtCustomOISStart.julian(),
 			"4M",
 			null,
 			2,

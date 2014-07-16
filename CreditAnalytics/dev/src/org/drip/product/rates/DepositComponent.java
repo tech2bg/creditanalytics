@@ -80,8 +80,8 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		throws java.lang.Exception
 	{
 		if (null == dtEffective || null == dtMaturity || null == (_strCurrency = strCurrency) ||
-			_strCurrency.isEmpty() || (_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective =
-				dtEffective.getJulian()))
+			_strCurrency.isEmpty() || (_dblMaturity = dtMaturity.julian()) <= (_dblEffective =
+				dtEffective.julian()))
 			throw new java.lang.Exception ("DepositComponent ctr: Invalid Inputs!");
 
 		_fri = fri;

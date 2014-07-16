@@ -81,7 +81,7 @@ public class DeterministicCollateralChoiceZeroCoupon {
 			new CollateralizationParams ("OVERNIGHT_INDEX", strForeignCurrency),
 			dblForeignCollateralRate);
 
-		AbstractUnivariate auFX = new ExponentialDecay (dtToday.getJulian(), dblCollateralizedFXRate / 365.25);
+		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
 
 		ForeignCollateralizedDiscountCurve dcCcyDomesticCollatForeign = new ForeignCollateralizedDiscountCurve (
 			strDomesticCurrency,
@@ -96,9 +96,9 @@ public class DeterministicCollateralChoiceZeroCoupon {
 			new org.drip.state.curve.ForeignCollateralizedDiscountCurve[] {dcCcyDomesticCollatForeign},
 			iDiscreteCollateralizationIncrement);
 
-		double dblStart = dtToday.getJulian() + iDiscreteCollateralizationIncrement;
+		double dblStart = dtToday.julian() + iDiscreteCollateralizationIncrement;
 
-		double dblCollateralizationCheckDate = dtToday.addTenor (strCollateralizationCheckTenor).getJulian();
+		double dblCollateralizationCheckDate = dtToday.addTenor (strCollateralizationCheckTenor).julian();
 
 		System.out.println ("\tPrinting the Zero Coupon Bond Price in Order (Left -> Right):");
 

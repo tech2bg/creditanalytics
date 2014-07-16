@@ -76,7 +76,7 @@ public class DiscountForwardEstimator implements org.drip.analytics.rates.Forwar
 		if (null == dt)
 			throw new java.lang.Exception ("DiscountForwardEstimator::forward => Invalid Inputs!");
 
-		return _dfe.forward (dt.subtractTenor (_fri.tenor()).getJulian(), dt.getJulian());
+		return _dfe.forward (dt.subtractTenor (_fri.tenor()).julian(), dt.julian());
 	}
 
 	@Override public double forward (

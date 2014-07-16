@@ -215,9 +215,9 @@ public class CreditCurveBuilder {
 			double[] adblRecoveryDate = new double[1];
 			adblRecovery[0] = dblRecovery;
 
-			adblRecoveryDate[0] = dtStart.getJulian();
+			adblRecoveryDate[0] = dtStart.julian();
 
-			return new org.drip.state.curve.ForwardHazardCreditCurve (dtStart.getJulian(), strName,
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dtStart.julian(), strName,
 				strCurrency, adblHazardRate, adblDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

@@ -147,7 +147,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		if (dblDate <= dblStartDate) return 1.;
 
 		return (java.lang.Math.exp (-1. * zero (dblDate) * (dblDate - dblStartDate) / 365.25)) * turnAdjust
-			(epoch().getJulian(), dblDate);
+			(epoch().julian(), dblDate);
 	}
 
 	public double forward (
@@ -159,7 +159,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 			(dblDate2))
 			throw new java.lang.Exception ("ZeroRateDiscountCurve::forward => Invalid input");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
 

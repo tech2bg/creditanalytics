@@ -212,7 +212,7 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 		throws java.lang.Exception
 	{
 		CalibrationParams cp = new CalibrationParams ("Price", 1, new org.drip.param.valuation.WorkoutInfo
-			(org.drip.analytics.date.JulianDate.Today().getJulian(), 0.06, 1.,
+			(org.drip.analytics.date.JulianDate.Today().julian(), 0.06, 1.,
 				org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY));
 
 		byte[] abCP = cp.serialize();

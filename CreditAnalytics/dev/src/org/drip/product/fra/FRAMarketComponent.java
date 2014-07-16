@@ -80,7 +80,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblEffectiveDate = effective().getJulian();
+		double dblEffectiveDate = effective().julian();
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
@@ -90,7 +90,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		org.drip.analytics.date.JulianDate dtMaturity = maturity();
 
-		double dblMaturity = dtMaturity.getJulian();
+		double dblMaturity = dtMaturity.julian();
 
 		org.drip.product.params.FloatingRateIndex fri = fri();
 
@@ -120,7 +120,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 				dblParStandardFRA = fc.forward (dblMaturity);
 
 			double dblForwardDCF = org.drip.analytics.daycount.Convention.YearFraction (dblMaturity, new
-				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (fri.tenor()).getJulian(),
+				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (fri.tenor()).julian(),
 					dayCount(), false, dblMaturity, null, calendar());
 
 			double dblParDCForward = dcFunding.libor (dblEffectiveDate, dblMaturity);

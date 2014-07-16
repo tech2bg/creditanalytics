@@ -85,9 +85,9 @@ public class ScenarioBasisCurveBuilder {
 
 				if (null == dtMaturity) return null;
 
-				adblBasisPredictorOrdinate[i] = dtMaturity.getJulian();
+				adblBasisPredictorOrdinate[i] = dtMaturity.julian();
 			} else
-				adblBasisPredictorOrdinate[i] = dtStart.getJulian();
+				adblBasisPredictorOrdinate[i] = dtStart.julian();
 
 			adblBasisResponseValue[i] = 0 == i ? adblBasis[0] : adblBasis[i - 1];
 

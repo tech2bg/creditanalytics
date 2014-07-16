@@ -87,7 +87,7 @@ public class FRAMkt {
 			strCurrency,
 			fri.fullyQualifiedName(),
 			strCurrency,
-			dtForward.getJulian(),
+			dtForward.julian(),
 			fri,
 			0.006,
 			"Act/360");

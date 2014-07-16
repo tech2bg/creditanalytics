@@ -74,7 +74,7 @@ public class ScenarioTermStructureBuilder {
 			aSCBC[i] = scbc;
 
 		try {
-			return new org.drip.state.curve.BasisSplineTermStructure (dtStart.getJulian(), strName,
+			return new org.drip.state.curve.BasisSplineTermStructure (dtStart.julian(), strName,
 				strCurrency, new org.drip.spline.grid.OverlappingStretchSpan
 					(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
 						(strName, adblDate, adblNode, aSCBC, null,
@@ -116,7 +116,7 @@ public class ScenarioTermStructureBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -160,7 +160,7 @@ public class ScenarioTermStructureBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -204,7 +204,7 @@ public class ScenarioTermStructureBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -250,7 +250,7 @@ public class ScenarioTermStructureBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -296,7 +296,7 @@ public class ScenarioTermStructureBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -342,7 +342,7 @@ public class ScenarioTermStructureBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,

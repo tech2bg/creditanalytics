@@ -103,7 +103,7 @@ public class VanillaBlackNormalPricing {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -125,7 +125,7 @@ public class VanillaBlackNormalPricing {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,

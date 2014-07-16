@@ -115,7 +115,7 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 	{
 		if (null == dt) throw new java.lang.Exception ("ForwardRate::forward got null for date");
 
-		return forward (dt.getJulian());
+		return forward (dt.julian());
 	}
 
 	/**
@@ -222,7 +222,7 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 	{
 		if (null == dt) return null;
 
-		return jackDForwardDManifestMeasure (strManifestMeasure, dt.getJulian());
+		return jackDForwardDManifestMeasure (strManifestMeasure, dt.julian());
 	}
 
 	/**

@@ -77,7 +77,7 @@ public abstract class VolatilityTermStructure extends org.drip.analytics.definit
 		if (null == dt)
 			throw new java.lang.Exception ("VolatilityTermStructure::impliedVol => Invalid Inputs!");
 
-		return impliedVol (dt.getJulian());
+		return impliedVol (dt.julian());
 	}
 
 	/**
@@ -97,7 +97,7 @@ public abstract class VolatilityTermStructure extends org.drip.analytics.definit
 		if (null == strTenor || strTenor.isEmpty())
 			throw new java.lang.Exception ("VolatilityTermStructure::impliedVol => Invalid Inputs!");
 
-		return impliedVol (epoch().addTenor (strTenor).getJulian());
+		return impliedVol (epoch().addTenor (strTenor).julian());
 	}
 
 	/**

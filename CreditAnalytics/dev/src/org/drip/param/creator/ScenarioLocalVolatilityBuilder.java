@@ -147,7 +147,7 @@ public class ScenarioLocalVolatilityBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl

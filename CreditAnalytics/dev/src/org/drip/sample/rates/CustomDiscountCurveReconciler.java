@@ -126,7 +126,7 @@ public class CustomDiscountCurveReconciler {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -148,7 +148,7 @@ public class CustomDiscountCurveReconciler {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -408,8 +408,8 @@ public class CustomDiscountCurveReconciler {
 		TurnListDiscountFactor tldc = new TurnListDiscountFactor();
 
 		tldc.addTurn (new Turn (
-			dtToday.addTenor ("5Y").getJulian(),
-			dtToday.addTenor ("40Y").getJulian(),
+			dtToday.addTenor ("5Y").julian(),
+			dtToday.addTenor ("40Y").julian(),
 			0.001));
 
 		/*

@@ -163,16 +163,16 @@ public class BondBuilder {
 			strName, strName, strName), new org.drip.product.params.CouponSetting (fsCoupon, "", dblCoupon,
 				java.lang.Double.NaN, java.lang.Double.NaN), org.drip.product.params.CurrencySet.Create
 					(strCurrency), null, new org.drip.product.params.QuoteConvention (null, "",
-						dtEffective.getJulian(), 100., 0, strCurrency,
+						dtEffective.julian(), 100., 0, strCurrency,
 							org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 								org.drip.product.params.RatesSetting (strCurrency, strCurrency, strCurrency,
 									strCurrency), new org.drip.product.params.CreditSetting (30,
 										java.lang.Double.NaN, true, strCreditCurveName, true), new
 											org.drip.product.params.TerminationSetting (false,
 												false, false), new org.drip.product.params.PeriodGenerator
-													(dtMaturity.getJulian(), dtEffective.getJulian(),
+													(dtMaturity.julian(), dtEffective.julian(),
 														java.lang.Double.NaN, java.lang.Double.NaN,
-															dtEffective.getJulian(), iFreq, strDayCount,
+															dtEffective.julian(), iFreq, strDayCount,
 																strDayCount, null, null, null, null, null,
 																	null, null, null, "", false,
 																		strCurrency, strCurrency), new
@@ -222,7 +222,7 @@ public class BondBuilder {
 					org.drip.product.params.CurrencySet.Create (strCurrency), new
 						org.drip.product.params.FloaterSetting (strRateIndex, "", dblSpread,
 							java.lang.Double.NaN), new org.drip.product.params.QuoteConvention (null, "",
-								dtEffective.getJulian(), 100., 0, strCurrency,
+								dtEffective.julian(), 100., 0, strCurrency,
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 										org.drip.product.params.RatesSetting (strCurrency, strCurrency,
 											strCurrency, strCurrency), new
@@ -231,11 +231,11 @@ public class BondBuilder {
 														new org.drip.product.params.TerminationSetting
 															(false, false, false), new
 																org.drip.product.params.PeriodGenerator
-																	(dtMaturity.getJulian(),
-																		dtEffective.getJulian(),
+																	(dtMaturity.julian(),
+																		dtEffective.julian(),
 																			java.lang.Double.NaN,
 																				java.lang.Double.NaN,
-																					dtEffective.getJulian(),
+																					dtEffective.julian(),
 																						iFreq, strDayCount,
 																							strDayCount,
 																								null, null,
@@ -290,7 +290,7 @@ public class BondBuilder {
 		double[] adblNormalizedPrincipal = new double[adt.length];
 		double[] adblCurrentCumulativePayDown = new double[adt.length];
 
-		double dblPeriodStart = dtEffective.getJulian();
+		double dblPeriodStart = dtEffective.julian();
 
 		if (bIsPrincipalPayDown) {
 			for (int i = 0; i < adt.length; ++i) {
@@ -310,7 +310,7 @@ public class BondBuilder {
 				return null;
 			}
 
-			adblDate[i] = adt[i].getJulian();
+			adblDate[i] = adt[i].julian();
 
 			adblCouponFactor[i] = adblCouponAmount[i] * iFreq;
 
@@ -343,7 +343,7 @@ public class BondBuilder {
 		}
 
 		org.drip.product.params.PeriodSet bfpgp = new org.drip.product.params.PeriodSet
-			(dtEffective.getJulian(), strDC, iFreq, lsCouponPeriod);
+			(dtEffective.julian(), strDC, iFreq, lsCouponPeriod);
 
 		if (!bfpgp.validate()) {
 			System.out.println ("Could not validate bfpgp!");
@@ -356,7 +356,7 @@ public class BondBuilder {
 				(org.drip.product.params.FactorSchedule.CreateFromDateFactorArray (adblDate,
 					adblCouponFactor), "", 1., java.lang.Double.NaN, java.lang.Double.NaN),
 						org.drip.product.params.CurrencySet.Create (strCurrency), null, new
-							org.drip.product.params.QuoteConvention (null, "", dtEffective.getJulian(), 100.,
+							org.drip.product.params.QuoteConvention (null, "", dtEffective.julian(), 100.,
 								0, strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 									org.drip.product.params.RatesSetting (strCurrency, strCurrency,
 										strCurrency, strCurrency), new org.drip.product.params.CreditSetting

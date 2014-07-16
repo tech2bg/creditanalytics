@@ -100,7 +100,7 @@ public class CustomOISCurveReconciler {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -122,7 +122,7 @@ public class CustomOISCurveReconciler {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -170,8 +170,8 @@ public class CustomOISCurveReconciler {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.getJulian(),
-				dtMaturity.getJulian(),
+				dtEffective.julian(),
+				dtMaturity.julian(),
 				null,
 				null,
 				"Act/360",
@@ -190,7 +190,7 @@ public class CustomOISCurveReconciler {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -241,7 +241,7 @@ public class CustomOISCurveReconciler {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -263,7 +263,7 @@ public class CustomOISCurveReconciler {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -314,8 +314,8 @@ public class CustomOISCurveReconciler {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.getJulian(),
-				dtMaturity.getJulian(),
+				dtEffective.julian(),
+				dtMaturity.julian(),
 				null,
 				null,
 				"Act/360",
@@ -334,7 +334,7 @@ public class CustomOISCurveReconciler {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -816,8 +816,8 @@ public class CustomOISCurveReconciler {
 		TurnListDiscountFactor tldc = new TurnListDiscountFactor();
 
 		tldc.addTurn (new Turn (
-			dtSpot.addTenor ("5Y").getJulian(),
-			dtSpot.addTenor ("40Y").getJulian(),
+			dtSpot.addTenor ("5Y").julian(),
+			dtSpot.addTenor ("40Y").julian(),
 			0.001));
 
 		/*

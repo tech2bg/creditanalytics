@@ -95,7 +95,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 					double adblRate[] = new double[NUM_DC_NODES];
 
 					for (int i = 0; i < NUM_DC_NODES; ++i) {
-						adblDate[i] = _dtStart.addYears (2 * i + 1).getJulian();
+						adblDate[i] = _dtStart.addYears (2 * i + 1).julian();
 
 						adblRate[i] = 0.05 + 0.001 * (NUM_DC_NODES - i);
 					}
@@ -106,11 +106,11 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						return false;
 
 					for (int i = 0; i < NUM_PERIOD_NODES; ++i) {
-						double dblStart = _dtPeriodStart.getJulian();
+						double dblStart = _dtPeriodStart.julian();
 
 						org.drip.analytics.date.JulianDate dtEnd = _dtPeriodStart.addMonths (6);
 
-						double dblEnd = dtEnd.getJulian();
+						double dblEnd = dtEnd.julian();
 
 						try {
 							_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart,
@@ -132,8 +132,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				{
 					try {
 						if (null == (_zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (2,
-							"30/360", _dc.currency(), true, _lsCouponPeriod, _dtPeriodStart.getJulian(),
-								_dtStart.addDays (2).getJulian(), _dc, null, s_dblZSpread)))
+							"30/360", _dc.currency(), true, _lsCouponPeriod, _dtPeriodStart.julian(),
+								_dtStart.addDays (2).julian(), _dc, null, s_dblZSpread)))
 							return false;
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
@@ -165,7 +165,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 							org.drip.analytics.date.JulianDate.SEPTEMBER, 25);
 
 					for (int i = 0; i < NUM_DF_NODES; ++i)
-						_adblDate[i] = dtStart.addMonths (6 * i + 6).getJulian();
+						_adblDate[i] = dtStart.addMonths (6 * i + 6).julian();
 
 					return true;
 				}
@@ -221,7 +221,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 							org.drip.analytics.date.JulianDate.SEPTEMBER, 25);
 
 					for (int i = 0; i < NUM_DF_NODES; ++i)
-						_adblDate[i] = dtStart.addMonths (6 * i + 6).getJulian();
+						_adblDate[i] = dtStart.addMonths (6 * i + 6).julian();
 
 					return true;
 				}

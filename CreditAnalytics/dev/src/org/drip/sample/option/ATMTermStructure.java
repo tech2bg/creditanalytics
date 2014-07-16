@@ -104,7 +104,7 @@ public class ATMTermStructure {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -126,7 +126,7 @@ public class ATMTermStructure {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,

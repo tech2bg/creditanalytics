@@ -278,7 +278,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 
 		if (null == dtFloatReferenceEffective || null == dtFloatDerivedEffective) return null;
 
-		return dtFloatReferenceEffective.getJulian() < dtFloatDerivedEffective.getJulian() ?
+		return dtFloatReferenceEffective.julian() < dtFloatDerivedEffective.julian() ?
 			dtFloatReferenceEffective : dtFloatDerivedEffective;
 	}
 
@@ -290,7 +290,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 
 		if (null == dtFloatReferenceMaturity || null == dtFloatDerivedMaturity) return null;
 
-		return dtFloatReferenceMaturity.getJulian() > dtFloatDerivedMaturity.getJulian() ?
+		return dtFloatReferenceMaturity.julian() > dtFloatDerivedMaturity.julian() ?
 			dtFloatReferenceMaturity : dtFloatDerivedMaturity;
 	}
 
@@ -302,7 +302,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 
 		if (null == dtFloatReferenceFirstCoupon || null == dtFloatDerivedFirstCoupon) return null;
 
-		return dtFloatReferenceFirstCoupon.getJulian() < dtFloatDerivedFirstCoupon.getJulian() ?
+		return dtFloatReferenceFirstCoupon.julian() < dtFloatDerivedFirstCoupon.julian() ?
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
@@ -537,7 +537,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == lsmm ||
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == lsmm ||
 			null == csqs)
 			return null;
 

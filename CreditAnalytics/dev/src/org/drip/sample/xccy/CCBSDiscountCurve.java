@@ -79,7 +79,7 @@ public class CCBSDiscountCurve {
 			 */
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -105,7 +105,7 @@ public class CCBSDiscountCurve {
 			 */
 
 			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				12 / iTenorInMonths,

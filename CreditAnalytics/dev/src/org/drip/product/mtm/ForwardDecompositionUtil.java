@@ -67,7 +67,7 @@ public class ForwardDecompositionUtil {
 		org.drip.product.rates.FixedStream[] aFS = new org.drip.product.rates.FixedStream[iNumForward];
 
 		try {
-			dblCoupon = fs.coupon (fs.effective().getJulian(), null);
+			dblCoupon = fs.coupon (fs.effective().julian(), null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -124,7 +124,7 @@ public class ForwardDecompositionUtil {
 
 		java.lang.String strCurrency = fs.couponCurrency()[0];
 
-		double dblInitialNotional = fs.initialNotional();
+		double dblNotional = fs.initialNotional();
 
 		int iNumPeriods = lsCouponFlow.size();
 
@@ -135,7 +135,6 @@ public class ForwardDecompositionUtil {
 		int iCFPIndex = 0;
 		int iNumPeriodsAccumulated = 0;
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
-		double dblNotional = bIsReference ? -1. * dblInitialNotional : dblInitialNotional;
 		org.drip.product.rates.FloatingStream[] aFS = new org.drip.product.rates.FloatingStream[iNumForward];
 
 		java.util.List<java.util.List<org.drip.analytics.period.CashflowPeriod>> lslsCouponPeriod = new

@@ -235,7 +235,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 
 	public java.lang.String tenor()
 	{
-		double dblNumDays = maturity().getJulian() - effective().getJulian();
+		double dblNumDays = maturity().julian() - effective().julian();
 
 		if (365. > dblNumDays) {
 			int iNumMonth = (int) (0.5 + (dblNumDays / 30.));

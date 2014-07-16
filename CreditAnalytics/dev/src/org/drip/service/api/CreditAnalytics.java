@@ -84,8 +84,8 @@ public class CreditAnalytics {
 			org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.CreateFromYMD (iYear,
 				1, 1);
 
-			while (iYear + 1 != org.drip.analytics.date.JulianDate.Year (dt.getJulian())) {
-				if (org.drip.analytics.daycount.Convention.IsHoliday (dt.getJulian(), strLocationSet,
+			while (iYear + 1 != org.drip.analytics.date.JulianDate.Year (dt.julian())) {
+				if (org.drip.analytics.daycount.Convention.IsHoliday (dt.julian(), strLocationSet,
 					iHolType))
 					ldtHols.add (dt);
 
@@ -230,7 +230,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
-		return org.drip.analytics.daycount.Convention.IsHoliday (dt.getJulian(), strLocationSet);
+		return org.drip.analytics.daycount.Convention.IsHoliday (dt.julian(), strLocationSet);
 	}
 
 	/**
@@ -257,8 +257,8 @@ public class CreditAnalytics {
 		if (null == dtStart || null == dtEnd)
 			throw new java.lang.Exception ("Null date into CreditAnalytics.YearFraction");
 
-		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.getJulian(),
-			dtEnd.getJulian(), strDayCount, bApplyEOMAdj, java.lang.Double.NaN, null, strCalendar);
+		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.julian(),
+			dtEnd.julian(), strDayCount, bApplyEOMAdj, java.lang.Double.NaN, null, strCalendar);
 	}
 
 	/**
@@ -283,8 +283,8 @@ public class CreditAnalytics {
 		if (null == dtStart || null == dtEnd)
 			throw new java.lang.Exception ("Null date into CreditAnalytics.YearFraction");
 
-		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.getJulian(),
-			dtEnd.getJulian(), strDayCount, true, java.lang.Double.NaN, null, strCalendar);
+		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.julian(),
+			dtEnd.julian(), strDayCount, true, java.lang.Double.NaN, null, strCalendar);
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class CreditAnalytics {
 		if (null == dt) return null;
 
 		try {
-			double dblAdjust = org.drip.analytics.daycount.Convention.Adjust (dt.getJulian(), strCalendar,
+			double dblAdjust = org.drip.analytics.daycount.Convention.Adjust (dt.julian(), strCalendar,
 				iAdjustMode);
 
 			if (java.lang.Double.isNaN (dblAdjust)) return null;
@@ -336,7 +336,7 @@ public class CreditAnalytics {
 		if (null == dt) return null;
 
 		try {
-			double dblAdjust = org.drip.analytics.daycount.Convention.RollDate (dt.getJulian(), iRollMode,
+			double dblAdjust = org.drip.analytics.daycount.Convention.RollDate (dt.julian(), iRollMode,
 				strCalendarSet);
 
 			if (java.lang.Double.isNaN (dblAdjust)) return null;
@@ -495,14 +495,14 @@ public class CreditAnalytics {
 			final org.drip.analytics.date.JulianDate dtStart,
 			final org.drip.analytics.date.JulianDate dtEnd)
 	{
-		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.getJulian() >
-			dtEnd.getJulian() || null == s_stmt)
+		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.julian() >
+			dtEnd.julian() || null == s_stmt)
 			return null;
 
 		org.drip.analytics.date.JulianDate dt = null;
 
 		try {
-			dt = new org.drip.analytics.date.JulianDate (dtStart.getJulian());
+			dt = new org.drip.analytics.date.JulianDate (dtStart.julian());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -513,7 +513,7 @@ public class CreditAnalytics {
 			= new java.util.TreeMap<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.rates.DiscountCurve>();
 
-		while (dt.getJulian() <= dtEnd.getJulian()) {
+		while (dt.julian() <= dtEnd.julian()) {
 			org.drip.analytics.rates.DiscountCurve dc = LoadEODFullIRCurve (strName, dt);
 
 			if (null != dc) mapDC.put (dt, dc);
@@ -578,14 +578,14 @@ public class CreditAnalytics {
 			final org.drip.analytics.date.JulianDate dtStart,
 			final org.drip.analytics.date.JulianDate dtEnd)
 	{
-		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.getJulian() >
-			dtEnd.getJulian() || null == s_stmt)
+		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.julian() >
+			dtEnd.julian() || null == s_stmt)
 			return null;
 
 		org.drip.analytics.date.JulianDate dt = null;
 
 		try {
-			dt = new org.drip.analytics.date.JulianDate (dtStart.getJulian());
+			dt = new org.drip.analytics.date.JulianDate (dtStart.julian());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -596,7 +596,7 @@ public class CreditAnalytics {
 			= new java.util.TreeMap<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.rates.DiscountCurve>();
 
-		while (dt.getJulian() <= dtEnd.getJulian()) {
+		while (dt.julian() <= dtEnd.julian()) {
 			org.drip.analytics.rates.DiscountCurve dc = LoadEODIRCashCurve (strName, dt);
 
 			if (null != dc) mapDC.put (dt, dc);
@@ -661,14 +661,14 @@ public class CreditAnalytics {
 			final org.drip.analytics.date.JulianDate dtStart,
 			final org.drip.analytics.date.JulianDate dtEnd)
 	{
-		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.getJulian() >
-			dtEnd.getJulian() || null == s_stmt)
+		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.julian() >
+			dtEnd.julian() || null == s_stmt)
 			return null;
 
 		org.drip.analytics.date.JulianDate dt = null;
 
 		try {
-			dt = new org.drip.analytics.date.JulianDate (dtStart.getJulian());
+			dt = new org.drip.analytics.date.JulianDate (dtStart.julian());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -679,7 +679,7 @@ public class CreditAnalytics {
 			= new java.util.TreeMap<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.rates.DiscountCurve>();
 
-		while (dt.getJulian() <= dtEnd.getJulian()) {
+		while (dt.julian() <= dtEnd.julian()) {
 			org.drip.analytics.rates.DiscountCurve dc = LoadEODEDSFCurve (strName, dt);
 
 			if (null != dc) mapDC.put (dt, dc);
@@ -756,14 +756,14 @@ public class CreditAnalytics {
 			final org.drip.analytics.date.JulianDate dtStart,
 			final org.drip.analytics.date.JulianDate dtEnd)
 	{
-		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.getJulian() >
-			dtEnd.getJulian() || null == s_stmt)
+		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.julian() >
+			dtEnd.julian() || null == s_stmt)
 			return null;
 
 		org.drip.analytics.date.JulianDate dt = null;
 
 		try {
-			dt = new org.drip.analytics.date.JulianDate (dtStart.getJulian());
+			dt = new org.drip.analytics.date.JulianDate (dtStart.julian());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -774,7 +774,7 @@ public class CreditAnalytics {
 			= new java.util.TreeMap<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.rates.DiscountCurve>();
 
-		while (dt.getJulian() <= dtEnd.getJulian()) {
+		while (dt.julian() <= dtEnd.julian()) {
 			org.drip.analytics.rates.DiscountCurve dc = LoadEODIRSwapCurve (strName, dt);
 
 			if (null != dc) mapDC.put (dt, dc);
@@ -849,14 +849,14 @@ public class CreditAnalytics {
 			final org.drip.analytics.date.JulianDate dtStart,
 			final org.drip.analytics.date.JulianDate dtEnd)
 	{
-		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.getJulian() >
-			dtEnd.getJulian() || null == s_stmt)
+		if (null == strName|| strName.isEmpty() || null == dtStart || null == dtEnd || dtStart.julian() >
+			dtEnd.julian() || null == s_stmt)
 			return null;
 
 		org.drip.analytics.date.JulianDate dt = null;
 
 		try {
-			dt = new org.drip.analytics.date.JulianDate (dtStart.getJulian());
+			dt = new org.drip.analytics.date.JulianDate (dtStart.julian());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -867,7 +867,7 @@ public class CreditAnalytics {
 			= new java.util.TreeMap<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.rates.DiscountCurve>();
 
-		while (dt.getJulian() <= dtEnd.getJulian()) {
+		while (dt.julian() <= dtEnd.julian()) {
 			org.drip.analytics.rates.DiscountCurve dc = LoadEODTSYCurve (strName, dt);
 
 			if (null != dc) mapDC.put (dt, dc);
@@ -958,13 +958,13 @@ public class CreditAnalytics {
 			final org.drip.analytics.date.JulianDate dtEnd)
 	{
 		if (null == strName|| strName.isEmpty() || null == strCurrency || strCurrency.isEmpty() || null ==
-			dtStart || null == dtEnd || dtStart.getJulian() > dtEnd.getJulian() || null == s_stmt)
+			dtStart || null == dtEnd || dtStart.julian() > dtEnd.julian() || null == s_stmt)
 			return null;
 
 		org.drip.analytics.date.JulianDate dt = null;
 
 		try {
-			dt = new org.drip.analytics.date.JulianDate (dtStart.getJulian());
+			dt = new org.drip.analytics.date.JulianDate (dtStart.julian());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -975,7 +975,7 @@ public class CreditAnalytics {
 			= new java.util.TreeMap<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.definition.CreditCurve>();
 
-		while (dt.getJulian() <= dtEnd.getJulian()) {
+		while (dt.julian() <= dtEnd.julian()) {
 			org.drip.analytics.definition.CreditCurve cc = LoadEODCDSCreditCurve (strName, strCurrency, dt);
 
 			if (null != cc) mapCC.put (dt, cc);
@@ -1166,10 +1166,10 @@ public class CreditAnalytics {
 		if (null == s_stmt) return null;
 
 		if (null != dt)
-			bond = org.drip.service.env.BondManager.LoadFromBondId (null, s_stmt, strBondId, dt.getJulian());
+			bond = org.drip.service.env.BondManager.LoadFromBondId (null, s_stmt, strBondId, dt.julian());
 		else
 			bond = org.drip.service.env.BondManager.LoadFromBondId (null, s_stmt, strBondId,
-				org.drip.analytics.date.JulianDate.Today().getJulian());
+				org.drip.analytics.date.JulianDate.Today().julian());
 
 		_mapBondCache.put (strBondId, bond);
 
@@ -5780,7 +5780,7 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot get Bond " + strBondId);
 
 		if ("Coupon".equalsIgnoreCase (strField))
-			return bond.coupon (org.drip.analytics.date.JulianDate.Today().getJulian(), null);
+			return bond.coupon (org.drip.analytics.date.JulianDate.Today().julian(), null);
 
 		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.getCurrentCoupon();
 
@@ -6013,12 +6013,12 @@ public class CreditAnalytics {
 			org.drip.product.definition.Bond bond = CreditAnalytics.GetBond (strISIN);
 
 			if (null != bond && !bond.hasVariableCoupon() && !bond.hasBeenExercised() && !bond.hasDefaulted()
-				&& bond.maturity().getJulian() > dtCurrent.getJulian()) {
+				&& bond.maturity().julian() > dtCurrent.julian()) {
 				try {
 					double dblOutstandingAmount = GetBondDoubleField (strISIN, "OutstandingAmount");
 
 					for (org.drip.analytics.date.JulianDate dt : mapOutstandingNotionals.keySet()) {
-						if (bond.maturity().getJulian() <= dt.getJulian()) {
+						if (bond.maturity().julian() <= dt.julian()) {
 							double dblCumulativeNotional = mapOutstandingNotionals.get (dt);
 
 							mapOutstandingNotionals.put (dt, dblCumulativeNotional + dblOutstandingAmount);

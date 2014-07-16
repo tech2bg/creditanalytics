@@ -74,7 +74,7 @@ public class ScenarioDeterministicVolatilityBuilder {
 			aSCBC[i] = scbc;
 
 		try {
-			return new org.drip.state.curve.BasisSplineDeterministicVolatility (dtStart.getJulian(), strName,
+			return new org.drip.state.curve.BasisSplineDeterministicVolatility (dtStart.julian(), strName,
 				strCurrency, new org.drip.spline.grid.OverlappingStretchSpan
 					(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
 						(strName, adblDate, adblImpliedVolatility, aSCBC, null,
@@ -116,7 +116,7 @@ public class ScenarioDeterministicVolatilityBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -161,7 +161,7 @@ public class ScenarioDeterministicVolatilityBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -207,7 +207,7 @@ public class ScenarioDeterministicVolatilityBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -255,7 +255,7 @@ public class ScenarioDeterministicVolatilityBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -303,7 +303,7 @@ public class ScenarioDeterministicVolatilityBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,
@@ -352,7 +352,7 @@ public class ScenarioDeterministicVolatilityBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblDate[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblDate[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			return CustomSplineTermStructure (strName, dtStart, strCurrency, collatParams, adblDate,

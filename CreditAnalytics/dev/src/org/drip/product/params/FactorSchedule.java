@@ -142,7 +142,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		double[] adblFactor = new double[1];
 		adblFactor[0] = 1.;
 
-		adblDate[0] = org.drip.analytics.date.JulianDate.CreateFromYMD (1900, 1, 1).getJulian();
+		adblDate[0] = org.drip.analytics.date.JulianDate.CreateFromYMD (1900, 1, 1).julian();
 
 		try {
 			return new FactorSchedule (adblDate, adblFactor);
@@ -385,7 +385,7 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblFactor = new double[3];

@@ -176,7 +176,7 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		ActActDCParams aap = new ActActDCParams (2, dblStart, dblStart + 180);
 

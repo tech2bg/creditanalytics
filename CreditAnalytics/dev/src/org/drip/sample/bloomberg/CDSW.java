@@ -91,7 +91,7 @@ public class CDSW {
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
 			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective,
-				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
+				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
 				strCurrency);
 		}
@@ -107,7 +107,7 @@ public class CDSW {
 
 			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
 				dtIRSEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				0.,
 				2,
 				"Act/360",

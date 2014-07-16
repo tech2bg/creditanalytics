@@ -396,7 +396,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = new
 			java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();

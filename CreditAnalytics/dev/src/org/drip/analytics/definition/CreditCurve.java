@@ -162,7 +162,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	{
 		if (null == dt) throw new java.lang.Exception ("CreditCurve::getSurvival => Invalid Date");
 
-		return getSurvival (dt.getJulian());
+		return getSurvival (dt.julian());
 	}
 
 	/**
@@ -235,7 +235,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		if (null == dt1 || null == dt2)
 			throw new java.lang.Exception ("CreditCurve::getEffectiveSurvival => Invalid date");
 
-		return getEffectiveSurvival (dt1.getJulian(), dt2.getJulian());
+		return getEffectiveSurvival (dt1.julian(), dt2.julian());
 	}
 
 	/**
@@ -291,7 +291,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	{
 		if (null == dt) throw new java.lang.Exception ("CreditCurve::getRecovery => Invalid Date");
 
-		return getRecovery (dt.getJulian());
+		return getRecovery (dt.julian());
 	}
 
 	/**
@@ -364,7 +364,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		if (null == dt1 || null == dt2)
 			throw new java.lang.Exception ("CreditCurve::getEffectiveRecovery => Invalid date");
 
-		return getEffectiveRecovery (dt1.getJulian(), dt2.getJulian());
+		return getEffectiveRecovery (dt1.julian(), dt2.julian());
 	}
 
 	/**
@@ -409,9 +409,9 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		if (null == dt1 || null == dt2)
 			throw new java.lang.Exception ("CreditCurve::calcHazard => Invalid dates");
 
-		if (dt1.getJulian() < _dblEpochDate || dt2.getJulian() < _dblEpochDate) return 0.;
+		if (dt1.julian() < _dblEpochDate || dt2.julian() < _dblEpochDate) return 0.;
 
-		return 365.25 / (dt2.getJulian() - dt1.getJulian()) * java.lang.Math.log (getSurvival (dt1) /
+		return 365.25 / (dt2.julian() - dt1.julian()) * java.lang.Math.log (getSurvival (dt1) /
 			getSurvival (dt2));
 	}
 

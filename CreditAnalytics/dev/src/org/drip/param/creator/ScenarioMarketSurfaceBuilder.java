@@ -110,7 +110,7 @@ public class ScenarioMarketSurfaceBuilder {
 		}
 
 		try {
-			return new org.drip.state.curve.BasisSplineMarketSurface (dtStart.getJulian(), strName,
+			return new org.drip.state.curve.BasisSplineMarketSurface (dtStart.julian(), strName,
 				strCurrency, new org.drip.spline.multidimensional.WireSurfaceStretch ("WireSurfaceStretch@" +
 					strName + "@" + org.drip.quant.common.StringUtil.GUID(), scbcSurface, mapWireSpan),
 						collatParams);
@@ -155,7 +155,7 @@ public class ScenarioMarketSurfaceBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -211,7 +211,7 @@ public class ScenarioMarketSurfaceBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -267,7 +267,7 @@ public class ScenarioMarketSurfaceBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -325,7 +325,7 @@ public class ScenarioMarketSurfaceBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -383,7 +383,7 @@ public class ScenarioMarketSurfaceBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -441,7 +441,7 @@ public class ScenarioMarketSurfaceBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -498,7 +498,7 @@ public class ScenarioMarketSurfaceBuilder {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).getJulian();
+			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
 			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);

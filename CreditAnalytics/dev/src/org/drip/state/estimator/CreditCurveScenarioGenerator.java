@@ -157,7 +157,7 @@ public class CreditCurveScenarioGenerator {
 		for (int i = 0; i < iNumInstr; ++i) {
 			adblHazardRate[i] = java.lang.Double.NaN;
 
-			adblDate[i] = _aCalibInst[i].maturity().getJulian();
+			adblDate[i] = _aCalibInst[i].maturity().julian();
 		}
 
 		try {
@@ -304,7 +304,7 @@ public class CreditCurveScenarioGenerator {
 				return null;
 
 			mapTenorCC.put (org.drip.analytics.date.JulianDate.fromJulian
-				(_aCalibInst[i].maturity().getJulian()), cc);
+				(_aCalibInst[i].maturity().julian()), cc);
 		}
 
 		return mapTenorCC;

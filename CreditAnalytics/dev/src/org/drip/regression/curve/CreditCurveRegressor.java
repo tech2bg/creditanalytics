@@ -135,7 +135,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccFromFlatHazard =
-						org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (_dtStart.getJulian(),
+						org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (_dtStart.julian(),
 							"CORP", "USD", 0.02, 0.4));
 				}
 
@@ -187,7 +187,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean preRegression()
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
-						_adblDate[i] = _dtStart.addYears (i + 1).getJulian();
+						_adblDate[i] = _dtStart.addYears (i + 1).julian();
 
 						_adblSurvival[i] = 1. - (i + 1) * 0.1;
 					}
@@ -198,7 +198,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean execRegression()
 				{
 					return null != (_ccFromSurvival = org.drip.state.creator.CreditCurveBuilder.FromSurvival
-						(_dtStart.getJulian(), "CORP", "USD", _adblDate, _adblSurvival, 0.4));
+						(_dtStart.julian(), "CORP", "USD", _adblDate, _adblSurvival, 0.4));
 				}
 
 				@Override public boolean postRegression (
@@ -252,7 +252,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean preRegression()
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
-						_adblDate[i] = _dtStart.addYears (i + 1).getJulian();
+						_adblDate[i] = _dtStart.addYears (i + 1).julian();
 
 						_adblHazard[i] = 0.01 * (1. - (i + 1) * 0.1);
 					}
@@ -592,7 +592,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean preRegression()
 				{
 					return !org.drip.quant.common.NumberUtil.IsValid (_dblSpecificDefault = _dtStart.addYears
-						(2).getJulian());
+						(2).julian());
 				}
 
 				@Override public boolean execRegression()
@@ -607,7 +607,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 
 					org.drip.analytics.date.JulianDate dtSurvival = _dtStart.addYears (3);
 
-					double dblSurvivalDate = dtSurvival.getJulian();
+					double dblSurvivalDate = dtSurvival.julian();
 
 					try {
 						if (!org.drip.quant.common.NumberUtil.IsValid (dblSurvivalProb = _cc.getSurvival
@@ -655,7 +655,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				@Override public boolean preRegression()
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i)
-						_adblDate[i] = _dtStart.addYears (i + 1).getJulian();
+						_adblDate[i] = _dtStart.addYears (i + 1).julian();
 
 					return true;
 				}

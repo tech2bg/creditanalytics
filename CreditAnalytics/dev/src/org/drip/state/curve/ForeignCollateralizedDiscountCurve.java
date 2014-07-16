@@ -65,7 +65,7 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 		final org.drip.quant.function1D.AbstractUnivariate auFXForeignRatesCorrSurface)
 		throws java.lang.Exception
 	{
-		super (dcForeignCollateralized.epoch().getJulian(), strCurrency,
+		super (dcForeignCollateralized.epoch().julian(), strCurrency,
 			dcForeignCollateralized.collateralParams());
 
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null ==
@@ -103,7 +103,7 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 			(dblDate2))
 			throw new java.lang.Exception ("ForeignCollateralizedDiscountCurve::forward => Invalid input");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
 
@@ -117,7 +117,7 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ForeignCollateralizedDiscountCurve::zero => Invalid Date");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate < dblStartDate) return 0.;
 

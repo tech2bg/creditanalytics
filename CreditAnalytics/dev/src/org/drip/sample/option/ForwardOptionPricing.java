@@ -104,7 +104,7 @@ public class ForwardOptionPricing {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -126,7 +126,7 @@ public class ForwardOptionPricing {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,

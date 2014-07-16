@@ -125,7 +125,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final double[] adblRate)
 		throws java.lang.Exception
 	{
-		super (dtStart.getJulian(), strCurrency, collatParams);
+		super (dtStart.julian(), strCurrency, collatParams);
 
 		if (null == adblDate || null == adblRate)
 			throw new java.lang.Exception ("FlatForwardDiscountCurve ctr: Invalid inputs");
@@ -148,7 +148,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final FlatForwardDiscountCurve dc)
 		throws java.lang.Exception
 	{
-		super (dc.epoch().getJulian(), dc.currency(), dc.collateralParams());
+		super (dc.epoch().julian(), dc.currency(), dc.collateralParams());
 
 		_adblDate = dc._adblDate;
 		_adblRate = dc._adblRate;
@@ -168,7 +168,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEF_INIT", null);
+		super (org.drip.analytics.date.JulianDate.Today().julian(), "DEF_INIT", null);
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
@@ -261,7 +261,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 		dblExpArg -= _adblRate[i] * (dblDate - dblStartDate);
 
-		return (java.lang.Math.exp (dblExpArg / 365.25)) * turnAdjust (epoch().getJulian(), dblDate);
+		return (java.lang.Math.exp (dblExpArg / 365.25)) * turnAdjust (epoch().julian(), dblDate);
 	}
 
 	@Override public double forward (
@@ -273,7 +273,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			(dblDate2))
 			throw new java.lang.Exception ("FlatForwardDiscountCurve::forward => Invalid input");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
 
@@ -287,7 +287,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FlatForwardDiscountCurve::zero => Invalid Date");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate < dblStartDate) return 0.;
 
@@ -536,7 +536,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblRate = new double[3];

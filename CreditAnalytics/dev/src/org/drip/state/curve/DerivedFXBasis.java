@@ -80,7 +80,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 				adblDate.length != adblFXBasis.length)
 			throw new java.lang.Exception ("DerivedFXBasis ctr: Invalid Params");
 
-		_dblSpotDate = dtSpot.getJulian();
+		_dblSpotDate = dtSpot.julian();
 
 		_cp = cp;
 		_dblFXSpot = dblFXSpot;

@@ -85,7 +85,7 @@ public class Static extends Base {
 
 		if (null == dt) throw new java.lang.Exception ("Static ctr: Null date into Static Holiday");
 
-		_dblDate = dt.getJulian();
+		_dblDate = dt.julian();
 	}
 
 	/**

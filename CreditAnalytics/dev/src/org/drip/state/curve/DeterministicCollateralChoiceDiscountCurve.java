@@ -57,7 +57,7 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 		final int iDiscreteCollateralizationIncrement)
 		throws java.lang.Exception
 	{
-		super (dcDomesticCollateralized.epoch().getJulian(), dcDomesticCollateralized.currency(), null,
+		super (dcDomesticCollateralized.epoch().julian(), dcDomesticCollateralized.currency(), null,
 			null);
 
 		if (0 >= (_iDiscreteCollateralizationIncrement = iDiscreteCollateralizationIncrement))
@@ -78,7 +78,7 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 
 		if (0 == iNumCollateralizer) return _dcDomesticCollateralized.df (dblDate);
 
-		double dblStartDate = _dcDomesticCollateralized.epoch().getJulian();
+		double dblStartDate = _dcDomesticCollateralized.epoch().julian();
 
 		if (dblDate <= dblStartDate) return 1.;
 
@@ -130,7 +130,7 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 			throw new java.lang.Exception
 				("DeterministicCollateralChoiceDiscountCurve::forward => Invalid input");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
 
@@ -145,7 +145,7 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 			throw new java.lang.Exception
 				("DeterministicCollateralChoiceDiscountCurve::zero => Invalid Date");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate < dblStartDate) return 0.;
 

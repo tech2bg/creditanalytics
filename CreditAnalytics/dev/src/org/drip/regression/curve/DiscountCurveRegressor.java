@@ -103,19 +103,19 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						org.drip.analytics.date.JulianDate.MAY, 12)))
 						return false;
 
-					adblDate[0] = _dtStart.addDays (3).getJulian(); // ON
+					adblDate[0] = _dtStart.addDays (3).julian(); // ON
 
-					adblDate[1] = _dtStart.addDays (4).getJulian(); // 1D (TN)
+					adblDate[1] = _dtStart.addDays (4).julian(); // 1D (TN)
 
-					adblDate[2] = _dtStart.addDays (9).getJulian(); // 1W
+					adblDate[2] = _dtStart.addDays (9).julian(); // 1W
 
-					adblDate[3] = _dtStart.addDays (16).getJulian(); // 2W
+					adblDate[3] = _dtStart.addDays (16).julian(); // 2W
 
-					adblDate[4] = _dtStart.addDays (32).getJulian(); // 1M
+					adblDate[4] = _dtStart.addDays (32).julian(); // 1M
 
-					adblDate[5] = _dtStart.addDays (62).getJulian(); // 2M
+					adblDate[5] = _dtStart.addDays (62).julian(); // 2M
 
-					adblDate[6] = _dtStart.addDays (92).getJulian(); // 3M
+					adblDate[6] = _dtStart.addDays (92).julian(); // 3M
 
 					_adblCompCalibValue[0] = .0013;
 					_adblCompCalibValue[1] = .0017;
@@ -158,38 +158,38 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						_astrCalibMeasure[i + 7] = "Rate";
 						adblRate[i + 7] = java.lang.Double.NaN;
 
-						adblDate[i + 7] = dtEDFStart.addDays ((i + 1) * 91).getJulian();
+						adblDate[i + 7] = dtEDFStart.addDays ((i + 1) * 91).julian();
 					}
 
-					adblDate[15] = _dtStart.addDays ((int)(365.25 * 4 + 2)).getJulian(); // 4Y
+					adblDate[15] = _dtStart.addDays ((int)(365.25 * 4 + 2)).julian(); // 4Y
 
-					adblDate[16] = _dtStart.addDays ((int)(365.25 * 5 + 2)).getJulian(); // 5Y
+					adblDate[16] = _dtStart.addDays ((int)(365.25 * 5 + 2)).julian(); // 5Y
 
-					adblDate[17] = _dtStart.addDays ((int)(365.25 * 6 + 2)).getJulian(); // 6Y
+					adblDate[17] = _dtStart.addDays ((int)(365.25 * 6 + 2)).julian(); // 6Y
 
-					adblDate[18] = _dtStart.addDays ((int)(365.25 * 7 + 2)).getJulian(); // 7Y
+					adblDate[18] = _dtStart.addDays ((int)(365.25 * 7 + 2)).julian(); // 7Y
 
-					adblDate[19] = _dtStart.addDays ((int)(365.25 * 8 + 2)).getJulian(); // 8Y
+					adblDate[19] = _dtStart.addDays ((int)(365.25 * 8 + 2)).julian(); // 8Y
 
-					adblDate[20] = _dtStart.addDays ((int)(365.25 * 9 + 2)).getJulian(); // 9Y
+					adblDate[20] = _dtStart.addDays ((int)(365.25 * 9 + 2)).julian(); // 9Y
 
-					adblDate[21] = _dtStart.addDays ((int)(365.25 * 10 + 2)).getJulian(); // 10Y
+					adblDate[21] = _dtStart.addDays ((int)(365.25 * 10 + 2)).julian(); // 10Y
 
-					adblDate[22] = _dtStart.addDays ((int)(365.25 * 11 + 2)).getJulian(); // 11Y
+					adblDate[22] = _dtStart.addDays ((int)(365.25 * 11 + 2)).julian(); // 11Y
 
-					adblDate[23] = _dtStart.addDays ((int)(365.25 * 12 + 2)).getJulian(); // 12Y
+					adblDate[23] = _dtStart.addDays ((int)(365.25 * 12 + 2)).julian(); // 12Y
 
-					adblDate[24] = _dtStart.addDays ((int)(365.25 * 15 + 2)).getJulian(); // 15Y
+					adblDate[24] = _dtStart.addDays ((int)(365.25 * 15 + 2)).julian(); // 15Y
 
-					adblDate[25] = _dtStart.addDays ((int)(365.25 * 20 + 2)).getJulian(); // 20Y
+					adblDate[25] = _dtStart.addDays ((int)(365.25 * 20 + 2)).julian(); // 20Y
 
-					adblDate[26] = _dtStart.addDays ((int)(365.25 * 25 + 2)).getJulian(); // 25Y
+					adblDate[26] = _dtStart.addDays ((int)(365.25 * 25 + 2)).julian(); // 25Y
 
-					adblDate[27] = _dtStart.addDays ((int)(365.25 * 30 + 2)).getJulian(); // 30Y
+					adblDate[27] = _dtStart.addDays ((int)(365.25 * 30 + 2)).julian(); // 30Y
 
-					adblDate[28] = _dtStart.addDays ((int)(365.25 * 40 + 2)).getJulian(); // 40Y
+					adblDate[28] = _dtStart.addDays ((int)(365.25 * 40 + 2)).julian(); // 40Y
 
-					adblDate[29] = _dtStart.addDays ((int)(365.25 * 50 + 2)).getJulian(); // 50Y
+					adblDate[29] = _dtStart.addDays ((int)(365.25 * 50 + 2)).julian(); // 50Y
 
 					_adblCompCalibValue[15] = .0166;
 					_adblCompCalibValue[16] = .0206;
@@ -267,7 +267,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.quant.common.NumberUtil.IsValid (adblDiscountFactorFlatRate[i] =
-								_dcFromFlatRate.df (adblDate[i] = _dtStart.addYears (i + 1).getJulian())))
+								_dcFromFlatRate.df (adblDate[i] = _dtStart.addYears (i + 1).julian())))
 								return false;
 
 							rnvd.set ("DiscountFactor[" + new org.drip.analytics.date.JulianDate
@@ -303,7 +303,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.quant.common.NumberUtil.IsValid (_adblDiscountFactorFlatRate[i] =
-								_dc.df (_adblDate[i] = _dtStart.addYears (i + 1).getJulian())))
+								_dc.df (_adblDate[i] = _dtStart.addYears (i + 1).julian())))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
@@ -370,7 +370,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.quant.common.NumberUtil.IsValid (_adblRate[i] = _dc.zero
-								(_adblDate[i] = _dtStart.addYears (i + 1).getJulian())))
+								(_adblDate[i] = _dtStart.addYears (i + 1).julian())))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
@@ -394,7 +394,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
-							double dblStartDate = _dtStart.getJulian();
+							double dblStartDate = _dtStart.julian();
 
 							if (0 != i) dblStartDate = _adblDate[i - 1];
 
@@ -534,11 +534,11 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						try {
 							if (!org.drip.quant.common.NumberUtil.IsValid (adblRate[i] = _dcFromFlatRate.zero
-								(adblDate[i] = _dtStart.addYears (i + 1).getJulian())))
+								(adblDate[i] = _dtStart.addYears (i + 1).julian())))
 								return false;
 
 							if (!org.drip.quant.common.NumberUtil.IsValid (adblRateShifted[i] =
-								_dcShifted.zero (adblDate[i] = _dtStart.addYears (i + 1).getJulian())))
+								_dcShifted.zero (adblDate[i] = _dtStart.addYears (i + 1).julian())))
 								return false;
 
 							org.drip.analytics.date.JulianDate dt = new org.drip.analytics.date.JulianDate
@@ -583,7 +583,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i) {
 						_adblBasis[i] = (i + 1) * 0.0001;
 
-						_adblDate[i] = _dtStart.addYears (i + 1).getJulian();
+						_adblDate[i] = _dtStart.addYears (i + 1).julian();
 					}
 
 					return true;
@@ -647,7 +647,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean preRegression()
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i)
-						_adblDate[i] = _dtStart.addYears (i + 1).getJulian();
+						_adblDate[i] = _dtStart.addYears (i + 1).julian();
 
 					try {
 						_ntp = new org.drip.param.definition.ResponseValueTweakParams (0, false, 0.0005);
@@ -721,7 +721,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean preRegression()
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i)
-						_adblDate[i] = _dtStart.addYears (i + 1).getJulian();
+						_adblDate[i] = _dtStart.addYears (i + 1).julian();
 
 					return true;
 				}
@@ -778,7 +778,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				@Override public boolean preRegression()
 				{
 					for (int i = 0; i < NUM_DC_INSTRUMENTS; ++i)
-						_adblDate[i] = _dtStart.addYears (i + 1).getJulian();
+						_adblDate[i] = _dtStart.addYears (i + 1).julian();
 
 					return true;
 				}

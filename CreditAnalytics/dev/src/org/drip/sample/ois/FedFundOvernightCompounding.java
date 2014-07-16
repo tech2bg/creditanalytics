@@ -107,8 +107,8 @@ public class FedFundOvernightCompounding {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.getJulian(),
-				dtMaturity.getJulian(),
+				dtEffective.julian(),
+				dtMaturity.julian(),
 				null,
 				null,
 				"Act/360",
@@ -127,7 +127,7 @@ public class FedFundOvernightCompounding {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -272,7 +272,7 @@ public class FedFundOvernightCompounding {
 		double dblAccount = 1.;
 		JulianDate dt = dtStart;
 
-		while (dt.getJulian() < dtValue.getJulian()) {
+		while (dt.julian() < dtValue.julian()) {
 			CaseInsensitiveTreeMap<Double> mapFixing = new CaseInsensitiveTreeMap<Double>();
 
 			mapFixing.put (fri.fullyQualifiedName(), dblFlatFixing);
@@ -287,7 +287,7 @@ public class FedFundOvernightCompounding {
 		System.out.println ("\tManual Calc Float Accrued (Geometric Compounding): " + (dblAccount - 1.) * dblNotional);
 
 		System.out.println ("\tManual Calc Float Accrued (Arithmetic Compounding): " +
-			((dtValue.getJulian() - dtStart.getJulian()) * dblNotional * dblFlatFixing / 360.));
+			((dtValue.julian() - dtStart.julian()) * dblNotional * dblFlatFixing / 360.));
 
 		return mapFixings;
 	}
@@ -317,7 +317,7 @@ public class FedFundOvernightCompounding {
 		FloatingRateIndex fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtCustomOISStart.getJulian(),
+			dtCustomOISStart.julian(),
 			"6M",
 			null,
 			4,
@@ -339,7 +339,7 @@ public class FedFundOvernightCompounding {
 		);
 
 		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtCustomOISStart.getJulian(),
+			dtCustomOISStart.julian(),
 			"4M",
 			null,
 			2,

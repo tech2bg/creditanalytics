@@ -833,7 +833,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 		if (null == _dtEffective)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else
-			sb.append (_dtEffective.getJulian());
+			sb.append (_dtEffective.julian());
 
 		return sb.append (objectTrailer()).toString().getBytes();
 	}
@@ -858,7 +858,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 
 		org.drip.analytics.daycount.Convention.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
 
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblPutDate = new double[3];

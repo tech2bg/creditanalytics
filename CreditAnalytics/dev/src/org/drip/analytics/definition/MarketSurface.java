@@ -163,7 +163,7 @@ public abstract class MarketSurface extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt) throw new java.lang.Exception ("MarketSurface::node => Invalid Inputs");
 
-		return node (dblStrike, dt.getJulian());
+		return node (dblStrike, dt.julian());
 	}
 
 	/**
@@ -185,7 +185,7 @@ public abstract class MarketSurface extends org.drip.service.stream.Serializer i
 		if (null == strTenor || strTenor.isEmpty())
 			throw new java.lang.Exception ("MarketSurface::node => Invalid Inputs");
 
-		return node (dblStrike, epoch().addTenor (strTenor).getJulian());
+		return node (dblStrike, epoch().addTenor (strTenor).julian());
 	}
 
 	/**
@@ -221,7 +221,7 @@ public abstract class MarketSurface extends org.drip.service.stream.Serializer i
 	public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
 		final org.drip.analytics.date.JulianDate dtMaturityAnchor)
 	{
-		return null == dtMaturityAnchor ? null : maturityAnchorTermStructure (dtMaturityAnchor.getJulian());
+		return null == dtMaturityAnchor ? null : maturityAnchorTermStructure (dtMaturityAnchor.julian());
 	}
 
 	/**
@@ -236,6 +236,6 @@ public abstract class MarketSurface extends org.drip.service.stream.Serializer i
 		final java.lang.String strTenorAnchor)
 	{
 		return null == strTenorAnchor || strTenorAnchor.isEmpty() ? null : maturityAnchorTermStructure
-			(epoch().addTenor (strTenorAnchor).getJulian());
+			(epoch().addTenor (strTenorAnchor).julian());
 	}
 }

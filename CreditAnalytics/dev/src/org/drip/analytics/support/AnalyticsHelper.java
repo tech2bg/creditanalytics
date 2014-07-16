@@ -872,7 +872,7 @@ public class AnalyticsHelper {
 		org.drip.analytics.date.JulianDate dtReset = null;
 
 		try {
-			dtReset = bond.getPeriodResetDate (dtValue.getJulian());
+			dtReset = bond.getPeriodResetDate (dtValue.julian());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

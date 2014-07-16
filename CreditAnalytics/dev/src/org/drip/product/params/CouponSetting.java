@@ -250,7 +250,7 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblFactor = new double[3];

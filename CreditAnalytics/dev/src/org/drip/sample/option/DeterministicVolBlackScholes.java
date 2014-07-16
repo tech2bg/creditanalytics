@@ -103,7 +103,7 @@ public class DeterministicVolBlackScholes {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -125,7 +125,7 @@ public class DeterministicVolBlackScholes {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -256,7 +256,7 @@ public class DeterministicVolBlackScholes {
 		double dblSpot = 1.;
 
 		SABRLIBORCapVolatility auSABRLIBORCapVol = new SABRLIBORCapVolatility (
-				dtToday.getJulian(),
+				dtToday.julian(),
 				0.2000,				// A
 				0.0005 / 365.25, 	// B
 				0.1000 / 365.25, 	// C

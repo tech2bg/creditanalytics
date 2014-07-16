@@ -251,7 +251,7 @@ public class EODCurves {
 
 		try {
 			while (rsCDSPoints.next()) {
-				org.drip.analytics.date.JulianDate dtEffective = dtEOD.getFirstEDFStartDate (3);
+				org.drip.analytics.date.JulianDate dtEffective = dtEOD.firstEDFStartDate (3);
 
 				dblRecovery = rsCDSPoints.getDouble ("RecRate");
 

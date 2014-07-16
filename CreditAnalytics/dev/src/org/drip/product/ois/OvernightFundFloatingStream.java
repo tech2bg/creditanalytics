@@ -104,8 +104,8 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsOISFloatCouponPeriod =
 			org.drip.analytics.period.CashflowPeriod.GenerateDailyPeriod
-				(org.drip.analytics.date.JulianDate.Today().getJulian(),
-					org.drip.analytics.date.JulianDate.Today().addTenor ("1Y").getJulian(), null, null,
+				(org.drip.analytics.date.JulianDate.Today().julian(),
+					org.drip.analytics.date.JulianDate.Today().addTenor ("1Y").julian(), null, null,
 						"30/360", "JPY", "JPY");
 
 		OvernightFundFloatingStream fs = new OvernightFundFloatingStream ("JPY", 0.03, -1., null,

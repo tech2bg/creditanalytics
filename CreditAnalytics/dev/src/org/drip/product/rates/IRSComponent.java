@@ -265,7 +265,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == dtFixEffective || null == dtFloatEffective) return null;
 
-		return dtFixEffective.getJulian() < dtFloatEffective.getJulian() ? dtFixEffective : dtFloatEffective;
+		return dtFixEffective.julian() < dtFloatEffective.julian() ? dtFixEffective : dtFloatEffective;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate maturity()
@@ -276,7 +276,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == dtFixMaturity || null == dtFloatMaturity) return null;
 
-		return dtFixMaturity.getJulian() > dtFloatMaturity.getJulian() ? dtFixMaturity : dtFloatMaturity;
+		return dtFixMaturity.julian() > dtFloatMaturity.julian() ? dtFixMaturity : dtFloatMaturity;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
@@ -287,7 +287,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		if (null == dtFixFirstCoupon || null == dtFloatFirstCoupon) return null;
 
-		return dtFixFirstCoupon.getJulian() < dtFloatFirstCoupon.getJulian() ? dtFixFirstCoupon :
+		return dtFixFirstCoupon.julian() < dtFloatFirstCoupon.julian() ? dtFixFirstCoupon :
 			dtFloatFirstCoupon;
 	}
 
@@ -404,7 +404,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				mapResult.put ("CleanPrice", dblCleanPrice);
 
-				double dblStartDate = effective().getJulian();
+				double dblStartDate = effective().julian();
 
 				mapResult.put ("CalibSwapRatePV", (dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
 					dblValueDate) - dcFunding.df (maturity())));
@@ -548,7 +548,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null ==
 			strManifestMeasure || null == csqs)
 			return null;
 
@@ -625,7 +625,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	{
 		boolean bFirstPeriod = true;
 
-		// double dblMaturityDate = maturity().getJulian();
+		// double dblMaturityDate = maturity().julian();
 
 		org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
@@ -670,7 +670,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.analytics.rates.RatesLSMM ratesLSMM,
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prwc)
 	{
-		double dblMaturityDate = maturity().getJulian();
+		double dblMaturityDate = maturity().julian();
 
 		org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
@@ -702,11 +702,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblMaturityDate = maturity().getJulian();
+		double dblMaturityDate = maturity().julian();
 
 		if (dblValueDate >= dblMaturityDate) return null;
 
-		double dblEffectiveDate = effective().getJulian();
+		double dblEffectiveDate = effective().julian();
 
 		double dblUpfront = 0.;
 		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
@@ -811,14 +811,14 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.analytics.date.JulianDate dtEffective = org.drip.analytics.date.JulianDate.Today();
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(), "4Y",
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "4Y",
 				null, 2, "30/360", false, true, "JPY", "JPY");
 
 		org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream ("JPY", 0.05,
 			7., null, lsFixedCouponPeriod);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.getJulian(), "4Y",
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "4Y",
 				null, 4, "Act/360", false, true, "JPY", "JPY");
 
 		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream ("JPY",

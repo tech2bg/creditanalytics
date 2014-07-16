@@ -109,7 +109,7 @@ public class BasisSplineDeterministicVolatility extends org.drip.analytics.defin
 		double dblImpliedVol = impliedVol (dblDate);
 
 		return java.lang.Math.sqrt (dblImpliedVol * dblImpliedVol + 2. * dblImpliedVol * (dblDate -
-			epoch().getJulian()) / 365.25 * _spanImpliedVolatility.calcResponseValueDerivative (dblDate, 1));
+			epoch().julian()) / 365.25 * _spanImpliedVolatility.calcResponseValueDerivative (dblDate, 1));
 	}
 
 	@Override public double vol (

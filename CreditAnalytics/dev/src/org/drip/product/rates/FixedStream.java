@@ -728,7 +728,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.getJulian(), "4Y", null,
+			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "4Y", null,
 				2, "30/360", false, true, "JPY", "JPY");
 
 		FixedStream fs = new org.drip.product.rates.FixedStream ("JPY", 0.03, 100., null, lsCouponPeriod);

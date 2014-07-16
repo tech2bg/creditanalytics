@@ -3416,32 +3416,32 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == _dtAnnounce)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtAnnounce.getJulian() + fieldDelimiter());
+			sb.append (_dtAnnounce.julian() + fieldDelimiter());
 
 		if (null == _dtFirstSettle)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFirstSettle.getJulian() + fieldDelimiter());
+			sb.append (_dtFirstSettle.julian() + fieldDelimiter());
 
 		if (null == _dtFirstCoupon)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFirstCoupon.getJulian() + fieldDelimiter());
+			sb.append (_dtFirstCoupon.julian() + fieldDelimiter());
 
 		if (null == _dtInterestAccrualStart)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtInterestAccrualStart.getJulian() + fieldDelimiter());
+			sb.append (_dtInterestAccrualStart.julian() + fieldDelimiter());
 
 		if (null == _dtIssue)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtIssue.getJulian() + fieldDelimiter());
+			sb.append (_dtIssue.julian() + fieldDelimiter());
 
 		if (null == _dtNextCouponDate)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtNextCouponDate.getJulian() + fieldDelimiter());
+			sb.append (_dtNextCouponDate.julian() + fieldDelimiter());
 
 		sb.append (_bIsCallable + fieldDelimiter());
 
@@ -3497,7 +3497,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == _dtPrevCouponDate)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtPrevCouponDate.getJulian() + fieldDelimiter());
+			sb.append (_dtPrevCouponDate.julian() + fieldDelimiter());
 
 		if (null == _strBBGUniqueID || _strBBGUniqueID.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
@@ -3544,7 +3544,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == _dtPenultimateCouponDate)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtPenultimateCouponDate.getJulian() + fieldDelimiter());
+			sb.append (_dtPenultimateCouponDate.julian() + fieldDelimiter());
 
 		if (null == _strFloatCouponConvention || _strFloatCouponConvention.isEmpty())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
@@ -3570,7 +3570,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == _dtFinalMaturity)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFinalMaturity.getJulian() + fieldDelimiter());
+			sb.append (_dtFinalMaturity.julian() + fieldDelimiter());
 
 		sb.append (_bIsPrivatePlacement + fieldDelimiter());
 
@@ -3617,7 +3617,7 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		if (null == _dtMaturity)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
 		else
-			sb.append (_dtMaturity.getJulian());
+			sb.append (_dtMaturity.julian());
 
 		return sb.append (objectTrailer()).toString().getBytes();
 	}

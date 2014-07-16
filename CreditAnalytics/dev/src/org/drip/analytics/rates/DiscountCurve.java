@@ -171,7 +171,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final double dblFinishDate)
 		throws java.lang.Exception
 	{
-		return turnAdjust (epoch().getJulian(), dblFinishDate);
+		return turnAdjust (epoch().julian(), dblFinishDate);
 	}
 
 	@Override public double df (
@@ -180,7 +180,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt) throw new java.lang.Exception ("DiscountCurve::df got null for date");
 
-		return df (dt.getJulian());
+		return df (dt.julian());
 	}
 
 	@Override public double df (
@@ -221,7 +221,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (null == dt1 || null == dt2)
 			throw new java.lang.Exception ("DiscountCurve::effectiveDF => Got null for date");
 
-		return effectiveDF (dt1.getJulian(), dt2.getJulian());
+		return effectiveDF (dt1.julian(), dt2.julian());
 	}
 
 	@Override public double effectiveDF (
@@ -247,8 +247,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.analytics.date.JulianDate dtStart = epoch();
 
-		return forward (dtStart.addTenor (strTenor1).getJulian(), dtStart.addTenor
-			(strTenor2).getJulian());
+		return forward (dtStart.addTenor (strTenor1).julian(), dtStart.addTenor
+			(strTenor2).julian());
 	}
 
 	@Override public double zero (
@@ -260,7 +260,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.analytics.date.JulianDate dtStart = epoch();
 
-		return forward (dtStart.getJulian(), dtStart.addTenor (strTenor).getJulian());
+		return forward (dtStart.julian(), dtStart.addTenor (strTenor).julian());
 	}
 
 	@Override public double libor (
@@ -298,7 +298,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == strTenor || strTenor.isEmpty())
 			throw new java.lang.Exception ("DiscountCurve.libor => Invalid Inputs");
 
-		double dblEndDate = new org.drip.analytics.date.JulianDate (dblDate).addTenor (strTenor).getJulian();
+		double dblEndDate = new org.drip.analytics.date.JulianDate (dblDate).addTenor (strTenor).julian();
 
 		return ((df (dblDate) / df (dblEndDate)) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
 			(dblDate, dblEndDate, "Act/360", false, java.lang.Double.NaN, null, "");
@@ -311,7 +311,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt) throw new java.lang.Exception ("DiscountCurve.libor => Invalid Inputs");
 
-		return libor (dt.getJulian(), strTenor);
+		return libor (dt.julian(), strTenor);
 	}
 
 	@Override public double liborDV01 (
@@ -398,7 +398,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 			adblQuote[i] = aLSMM[i].measureQuoteValue (strManifestMeasure);
 
-			adblDate[i] = aCalibComp[i].maturity().getJulian();
+			adblDate[i] = aCalibComp[i].maturity().julian();
 		}
 
 		org.drip.spline.stretch.MultiSegmentSequence regime =
@@ -472,7 +472,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt) return null;
 
-		return jackDDFDManifestMeasure (dt.getJulian(), strManifestMeasure);
+		return jackDDFDManifestMeasure (dt.julian(), strManifestMeasure);
 	}
 
 	/**
@@ -567,7 +567,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	public org.drip.quant.calculus.WengertJacobian compJackDPVDManifestMeasure (
 		final org.drip.analytics.date.JulianDate dt)
 	{
-		return null == dt ? null : compJackDPVDManifestMeasure (dt.getJulian());
+		return null == dt ? null : compJackDPVDManifestMeasure (dt.julian());
 	}
 
 	/**
@@ -658,7 +658,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt1 || null == dt2) return null;
 
-		return jackDForwardDManifestMeasure (dt1.getJulian(), dt2.getJulian(), strManifestMeasure,
+		return jackDForwardDManifestMeasure (dt1.julian(), dt2.julian(), strManifestMeasure,
 			dblElapsedYear);
 	}
 
@@ -681,7 +681,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt || null == strTenor || strTenor.isEmpty()) return null;
 
-		return jackDForwardDManifestMeasure (dt.getJulian(), dt.addTenor (strTenor).getJulian(),
+		return jackDForwardDManifestMeasure (dt.julian(), dt.addTenor (strTenor).julian(),
 			strManifestMeasure, dblElapsedYear);
 	}
 
@@ -698,7 +698,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final double dblDate,
 		final java.lang.String strManifestMeasure)
 	{
-		double dblEpochDate = epoch().getJulian();
+		double dblEpochDate = epoch().julian();
 
 		return jackDForwardDManifestMeasure (dblEpochDate, dblDate, strManifestMeasure, (dblDate -
 			dblEpochDate) / 365.25);
@@ -717,7 +717,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strManifestMeasure)
 	{
-		return null == dt? null : getZeroRateJack (dt.getJulian(), strManifestMeasure);
+		return null == dt? null : getZeroRateJack (dt.julian(), strManifestMeasure);
 	}
 
 	/**

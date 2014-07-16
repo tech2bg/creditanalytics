@@ -100,7 +100,7 @@ public class BondAnalyticsAPI {
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
 			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective,
-				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
+				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
 				strCurrency);
 		}
@@ -116,7 +116,7 @@ public class BondAnalyticsAPI {
 
 			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
 				dtIRSEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				0.,
 				2,
 				"Act/360",
@@ -173,7 +173,7 @@ public class BondAnalyticsAPI {
 		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
-			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
 		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
 	}
@@ -194,7 +194,7 @@ public class BondAnalyticsAPI {
 		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
-			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
 		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
 	}
@@ -285,14 +285,14 @@ public class BondAnalyticsAPI {
 				adblPutFactor[i] = 0.9;
 				adblCallFactor[i] = 1.0;
 
-				adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+				adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 			}
 
 			if (bEOSAmerican) {		// Creation of the American call and put schedule
-				eosCall = EmbeddedOptionSchedule.fromAmerican (JulianDate.Today().getJulian() + 1, adblDate,
+				eosCall = EmbeddedOptionSchedule.fromAmerican (JulianDate.Today().julian() + 1, adblDate,
 					adblCallFactor, false, 30, false, Double.NaN, "", Double.NaN);
 
-				eosPut = EmbeddedOptionSchedule.fromAmerican (JulianDate.Today().getJulian(), adblDate,
+				eosPut = EmbeddedOptionSchedule.fromAmerican (JulianDate.Today().julian(), adblDate,
 					adblPutFactor, true, 30, false, Double.NaN, "", Double.NaN);
 			} else {		// Creation of the European call and put schedule
 				eosCall = new EmbeddedOptionSchedule (adblDate, adblCallFactor, false, 30, false, Double.NaN, "", Double.NaN);
@@ -369,7 +369,7 @@ public class BondAnalyticsAPI {
 		 * Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), strCreditCurve, "USD", 0.01, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().julian(), strCreditCurve, "USD", 0.01, 0.4);
 
 		for (int i = 0; i < aBond.length; ++i) {
 			System.out.println ("\nAcc Start     Acc End     Pay Date      Cpn DCF       Pay01       Surv01");
@@ -508,7 +508,7 @@ public class BondAnalyticsAPI {
 		 * Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().getJulian(), "CC", "USD", 0.01, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().julian(), "CC", "USD", 0.01, 0.4);
 
 		/*
 		 * Component Market Parameters Container
@@ -526,7 +526,7 @@ public class BondAnalyticsAPI {
 		 * Theoretical Price
 		 */
 
-		double dblTheoreticalPrice = bond.calcPriceFromCreditBasis (valParams, mktParams, null, bond.maturity().getJulian(), 1., 0.01);
+		double dblTheoreticalPrice = bond.calcPriceFromCreditBasis (valParams, mktParams, null, bond.maturity().julian(), 1., 0.01);
 
 
 		System.out.println ("Credit Price From DC and CC: " + dblTheoreticalPrice);
@@ -601,7 +601,7 @@ public class BondAnalyticsAPI {
 			valParams,
 			mktParamsCalib,
 			null,
-			bond.maturity().getJulian(),
+			bond.maturity().julian(),
 			1.,
 			0.));
 	}

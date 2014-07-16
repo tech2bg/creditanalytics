@@ -135,7 +135,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEFNAME", "CCYNAME");
+		super (org.drip.analytics.date.JulianDate.Today().julian(), "DEFNAME", "CCYNAME");
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
@@ -644,7 +644,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblHazardDate = new double[3];
 		double[] adblHazardRate = new double[3];

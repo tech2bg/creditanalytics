@@ -62,7 +62,7 @@ public class DomesticCollateralizedForeignForward {
 			= dblForexForwardStrike) || null == dtMaturity)
 			throw new java.lang.Exception ("DomesticCollateralizedForeignForward ctr: Invalid Inputs");
 
-		_dblMaturity = dtMaturity.getJulian();
+		_dblMaturity = dtMaturity.julian();
 	}
 
 	public java.lang.String getPrimaryCode()

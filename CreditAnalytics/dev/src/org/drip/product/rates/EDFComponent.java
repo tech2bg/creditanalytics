@@ -88,8 +88,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		throws java.lang.Exception
 	{
 		if (null == dtEffective || null == dtMaturity || null == (_strCurrency = strCurrency) ||
-			_strCurrency.isEmpty() || (_dblMaturity = dtMaturity.getJulian()) <= (_dblEffective =
-				dtEffective.getJulian()))
+			_strCurrency.isEmpty() || (_dblMaturity = dtMaturity.julian()) <= (_dblEffective =
+				dtEffective.julian()))
 			throw new java.lang.Exception ("EDFComponent ctr:: Invalid Params!");
 
 		_strDC = strDC;
@@ -143,17 +143,17 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		else
 			 throw new java.lang.Exception ("EDFComponent ctr:: Unknown Month in " + strEDCode);
 
-		org.drip.analytics.date.JulianDate dtEDEffective = dt.getFirstEDFStartDate (3);
+		org.drip.analytics.date.JulianDate dtEDEffective = dt.firstEDFStartDate (3);
 
-		while (iYearDigit != (org.drip.analytics.date.JulianDate.Year (dtEDEffective.getJulian()) % 10))
+		while (iYearDigit != (org.drip.analytics.date.JulianDate.Year (dtEDEffective.julian()) % 10))
 			 dtEDEffective = dtEDEffective.addYears (1);
 
 		org.drip.analytics.date.JulianDate dtEffective = org.drip.analytics.date.JulianDate.CreateFromYMD
-			 (org.drip.analytics.date.JulianDate.Year (dtEDEffective.getJulian()), iEffectiveMonth, 15);
+			 (org.drip.analytics.date.JulianDate.Year (dtEDEffective.julian()), iEffectiveMonth, 15);
 
-		_dblEffective = dtEffective.getJulian();
+		_dblEffective = dtEffective.julian();
 
-		_dblMaturity = dtEffective.addMonths (3).getJulian();
+		_dblMaturity = dtEffective.addMonths (3).julian();
 
 		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 	}
@@ -450,7 +450,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null == csqs)
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == csqs)
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
@@ -465,13 +465,13 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 			double dblDFEffective = dcFunding.df (_dblEffective);
 
-			double dblDFMaturity = dcFunding.df (maturity().getJulian());
+			double dblDFMaturity = dcFunding.df (maturity().julian());
 
 			org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
 				(_dblEffective, "Rate");
 
 			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
-				(maturity().getJulian(), "Rate");
+				(maturity().julian(), "Rate");
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
 
@@ -507,7 +507,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian() || null ==
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null ==
 			strManifestMeasure || strManifestMeasure.isEmpty() || null == csqs)
 			return null;
 
@@ -519,13 +519,13 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			try {
 				double dblDFEffective = dcFunding.df (_dblEffective);
 
-				double dblDFMaturity = dcFunding.df (maturity().getJulian());
+				double dblDFMaturity = dcFunding.df (maturity().julian());
 
 				org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
 					(_dblEffective, "Rate");
 
 				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
-					(maturity().getJulian(), "Rate");
+					(maturity().julian(), "Rate");
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;
 

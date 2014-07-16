@@ -61,7 +61,7 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 
 		_ccyPair = ccyPair;
 
-		_dblSpotDate = dtSpot.getJulian();
+		_dblSpotDate = dtSpot.julian();
 	}
 
 	/**

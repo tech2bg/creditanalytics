@@ -250,7 +250,7 @@ public class PeriodGenerator extends PeriodSet {
 	{
 		org.drip.service.api.CreditAnalytics.Init ("");
 
-		double dblEffective = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblEffective = org.drip.analytics.date.JulianDate.Today().julian();
 
 		PeriodGenerator bpp = new PeriodGenerator (dblEffective + 3653., dblEffective, dblEffective + 3653.,
 			dblEffective + 182., dblEffective, 2, "30/360", "30/360", null, null, null, null, null, null,

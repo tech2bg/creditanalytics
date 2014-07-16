@@ -79,7 +79,7 @@ public class CreditAnalyticsAPI {
 		 * Create Credit Curve from flat Hazard Rate
 		 */
 
-		CreditCurve ccFlatHazard = CreditCurveBuilder.FromFlatHazard (dtStart.getJulian(), "CC", "USD", 0.02, 0.4);
+		CreditCurve ccFlatHazard = CreditCurveBuilder.FromFlatHazard (dtStart.julian(), "CC", "USD", 0.02, 0.4);
 
 		System.out.println ("CCFromFlatHazard[" + dt10Y.toString() + "]; Survival=" +
 			ccFlatHazard.getSurvival ("10Y") + "; Hazard=" + ccFlatHazard.calcHazard ("10Y"));
@@ -88,7 +88,7 @@ public class CreditAnalyticsAPI {
 		double[] adblSurvival = new double[5];
 
 		for (int i = 0; i < 5; ++i) {
-			adblDate[i] = dtStart.addYears (2 * i + 2).getJulian();
+			adblDate[i] = dtStart.addYears (2 * i + 2).julian();
 
 			adblSurvival[i] = 1. - 0.1 * (i + 1);
 		}
@@ -98,7 +98,7 @@ public class CreditAnalyticsAPI {
 		 */
 
 		CreditCurve ccFromSurvival = CreditCurveBuilder.FromSurvival
-			(dtStart.getJulian(), "CC", "USD", adblDate, adblSurvival, 0.4);
+			(dtStart.julian(), "CC", "USD", adblDate, adblSurvival, 0.4);
 
 		System.out.println ("CCFromSurvival[" + dt10Y.toString() + "]; Survival=" +
 			ccFromSurvival.getSurvival ("10Y") + "; Hazard=" + ccFromSurvival.calcHazard ("10Y"));
@@ -199,7 +199,7 @@ public class CreditAnalyticsAPI {
 		 * Flat Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtStart.getJulian(), "CC", "USD", 0.02, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtStart.julian(), "CC", "USD", 0.02, 0.4);
 
 		/*
 		 * Component Market Parameters built from the Discount and the Credit Curves

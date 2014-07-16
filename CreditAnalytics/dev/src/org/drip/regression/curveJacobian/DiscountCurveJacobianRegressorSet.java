@@ -75,35 +75,35 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 					if (null == (dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6)))
 						return false;
 
-					adblDate[0] = dtStart.addDays ((int)(365.25 * 1 + 2)).getJulian(); // 4Y
+					adblDate[0] = dtStart.addDays ((int)(365.25 * 1 + 2)).julian(); // 4Y
 
-					adblDate[1] = dtStart.addDays ((int)(365.25 * 2 + 2)).getJulian(); // 5Y
+					adblDate[1] = dtStart.addDays ((int)(365.25 * 2 + 2)).julian(); // 5Y
 
-					adblDate[2] = dtStart.addDays ((int)(365.25 * 3 + 2)).getJulian(); // 6Y
+					adblDate[2] = dtStart.addDays ((int)(365.25 * 3 + 2)).julian(); // 6Y
 
-					adblDate[3] = dtStart.addDays ((int)(365.25 * 7 + 2)).getJulian(); // 7Y
+					adblDate[3] = dtStart.addDays ((int)(365.25 * 7 + 2)).julian(); // 7Y
 
-					adblDate[4] = dtStart.addDays ((int)(365.25 * 8 + 2)).getJulian(); // 8Y
+					adblDate[4] = dtStart.addDays ((int)(365.25 * 8 + 2)).julian(); // 8Y
 
-					adblDate[5] = dtStart.addDays ((int)(365.25 * 9 + 2)).getJulian(); // 9Y
+					adblDate[5] = dtStart.addDays ((int)(365.25 * 9 + 2)).julian(); // 9Y
 
-					adblDate[6] = dtStart.addDays ((int)(365.25 * 10 + 2)).getJulian(); // 10Y
+					adblDate[6] = dtStart.addDays ((int)(365.25 * 10 + 2)).julian(); // 10Y
 
-					adblDate[7] = dtStart.addDays ((int)(365.25 * 11 + 2)).getJulian(); // 11Y
+					adblDate[7] = dtStart.addDays ((int)(365.25 * 11 + 2)).julian(); // 11Y
 
-					adblDate[8] = dtStart.addDays ((int)(365.25 * 12 + 2)).getJulian(); // 12Y
+					adblDate[8] = dtStart.addDays ((int)(365.25 * 12 + 2)).julian(); // 12Y
 
-					adblDate[9] = dtStart.addDays ((int)(365.25 * 15 + 2)).getJulian(); // 15Y
+					adblDate[9] = dtStart.addDays ((int)(365.25 * 15 + 2)).julian(); // 15Y
 
-					adblDate[10] = dtStart.addDays ((int)(365.25 * 20 + 2)).getJulian(); // 20Y
+					adblDate[10] = dtStart.addDays ((int)(365.25 * 20 + 2)).julian(); // 20Y
 
-					adblDate[11] = dtStart.addDays ((int)(365.25 * 25 + 2)).getJulian(); // 25Y
+					adblDate[11] = dtStart.addDays ((int)(365.25 * 25 + 2)).julian(); // 25Y
 
-					adblDate[12] = dtStart.addDays ((int)(365.25 * 30 + 2)).getJulian(); // 30Y
+					adblDate[12] = dtStart.addDays ((int)(365.25 * 30 + 2)).julian(); // 30Y
 
-					adblDate[13] = dtStart.addDays ((int)(365.25 * 40 + 2)).getJulian(); // 40Y
+					adblDate[13] = dtStart.addDays ((int)(365.25 * 40 + 2)).julian(); // 40Y
 
-					adblDate[14] = dtStart.addDays ((int)(365.25 * 50 + 2)).getJulian(); // 50Y
+					adblDate[14] = dtStart.addDays ((int)(365.25 * 50 + 2)).julian(); // 50Y
 
 					adblCompCalibValue[0] = .0166;
 					adblCompCalibValue[1] = .0206;

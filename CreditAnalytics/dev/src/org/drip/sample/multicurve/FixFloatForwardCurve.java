@@ -104,7 +104,7 @@ public class FixFloatForwardCurve {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -126,7 +126,7 @@ public class FixFloatForwardCurve {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -242,7 +242,7 @@ public class FixFloatForwardCurve {
 			 */
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -266,7 +266,7 @@ public class FixFloatForwardCurve {
 			 */
 
 			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				12 / iTenorInMonths,
@@ -338,8 +338,8 @@ public class FixFloatForwardCurve {
 		 */
 
 		double dblStartingFwd = dc.forward (
-			dtSpot.getJulian(),
-			dtSpot.addTenor (strBasisTenor).getJulian()
+			dtSpot.julian(),
+			dtSpot.addTenor (strBasisTenor).julian()
 		);
 
 		/*
@@ -445,9 +445,9 @@ public class FixFloatForwardCurve {
 		 */
 
 		for (String strMaturityTenor : astrxM6MFwdTenor) {
-			double dblFwdEndDate = dtSpot.addTenor (strMaturityTenor).getJulian();
+			double dblFwdEndDate = dtSpot.addTenor (strMaturityTenor).julian();
 
-			double dblFwdStartDate = dtSpot.addTenor (strMaturityTenor).subtractTenor (strBasisTenor).getJulian();
+			double dblFwdStartDate = dtSpot.addTenor (strMaturityTenor).subtractTenor (strBasisTenor).julian();
 
 			FixFloatComponent ffc = aFFC[i++];
 

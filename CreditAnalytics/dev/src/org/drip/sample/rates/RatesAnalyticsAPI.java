@@ -78,7 +78,7 @@ public class RatesAnalyticsAPI {
 		double[] adblRate = new double[5];
 
 		for (int i = 0; i < 5; ++i) {
-			adblDate[i] = dtStart.addYears (2 * i + 2).getJulian();
+			adblDate[i] = dtStart.addYears (2 * i + 2).julian();
 
 			adblDF[i] = 1. - 2 * (i + 1) * 0.05;
 			adblRate[i] = 0.05;
@@ -138,19 +138,19 @@ public class RatesAnalyticsAPI {
 
 		JulianDate dtCashEffective = dtStart.addBusDays (1, "USD");
 
-		adblMaturity[0] = dtCashEffective.addBusDays (1, "USD").getJulian(); // ON
+		adblMaturity[0] = dtCashEffective.addBusDays (1, "USD").julian(); // ON
 
-		adblMaturity[1] = dtCashEffective.addBusDays (2, "USD").getJulian(); // 1D (TN)
+		adblMaturity[1] = dtCashEffective.addBusDays (2, "USD").julian(); // 1D (TN)
 
-		adblMaturity[2] = dtCashEffective.addBusDays (7, "USD").getJulian(); // 1W
+		adblMaturity[2] = dtCashEffective.addBusDays (7, "USD").julian(); // 1W
 
-		adblMaturity[3] = dtCashEffective.addBusDays (14, "USD").getJulian(); // 2W
+		adblMaturity[3] = dtCashEffective.addBusDays (14, "USD").julian(); // 2W
 
-		adblMaturity[4] = dtCashEffective.addBusDays (30, "USD").getJulian(); // 1M
+		adblMaturity[4] = dtCashEffective.addBusDays (30, "USD").julian(); // 1M
 
-		adblMaturity[5] = dtCashEffective.addBusDays (60, "USD").getJulian(); // 2M
+		adblMaturity[5] = dtCashEffective.addBusDays (60, "USD").julian(); // 2M
 
-		adblMaturity[6] = dtCashEffective.addBusDays (90, "USD").getJulian(); // 3M
+		adblMaturity[6] = dtCashEffective.addBusDays (90, "USD").julian(); // 3M
 
 		/*
 		 * Cash Rate Quotes
@@ -193,42 +193,42 @@ public class RatesAnalyticsAPI {
 			aCompCalib[i + 7] = aEDF[i];
 			astrCalibMeasure[i + 7] = "Rate";
 
-			adblMaturity[i + 7] = aEDF[i].maturity().getJulian();
+			adblMaturity[i + 7] = aEDF[i].maturity().julian();
 		}
 
 		// Final 15 instruments - IRS calibration
 
 		JulianDate dtIRSEffective = dtStart.addBusDays (2, "USD");
 
-		adblMaturity[15] = dtIRSEffective.addTenor ("4Y").getJulian();
+		adblMaturity[15] = dtIRSEffective.addTenor ("4Y").julian();
 
-		adblMaturity[16] = dtIRSEffective.addTenor ("5Y").getJulian();
+		adblMaturity[16] = dtIRSEffective.addTenor ("5Y").julian();
 
-		adblMaturity[17] = dtIRSEffective.addTenor ("6Y").getJulian();
+		adblMaturity[17] = dtIRSEffective.addTenor ("6Y").julian();
 
-		adblMaturity[18] = dtIRSEffective.addTenor ("7Y").getJulian();
+		adblMaturity[18] = dtIRSEffective.addTenor ("7Y").julian();
 
-		adblMaturity[19] = dtIRSEffective.addTenor ("8Y").getJulian();
+		adblMaturity[19] = dtIRSEffective.addTenor ("8Y").julian();
 
-		adblMaturity[20] = dtIRSEffective.addTenor ("9Y").getJulian();
+		adblMaturity[20] = dtIRSEffective.addTenor ("9Y").julian();
 
-		adblMaturity[21] = dtIRSEffective.addTenor ("10Y").getJulian();
+		adblMaturity[21] = dtIRSEffective.addTenor ("10Y").julian();
 
-		adblMaturity[22] = dtIRSEffective.addTenor ("11Y").getJulian();
+		adblMaturity[22] = dtIRSEffective.addTenor ("11Y").julian();
 
-		adblMaturity[23] = dtIRSEffective.addTenor ("12Y").getJulian();
+		adblMaturity[23] = dtIRSEffective.addTenor ("12Y").julian();
 
-		adblMaturity[24] = dtIRSEffective.addTenor ("15Y").getJulian();
+		adblMaturity[24] = dtIRSEffective.addTenor ("15Y").julian();
 
-		adblMaturity[25] = dtIRSEffective.addTenor ("20Y").getJulian();
+		adblMaturity[25] = dtIRSEffective.addTenor ("20Y").julian();
 
-		adblMaturity[26] = dtIRSEffective.addTenor ("25Y").getJulian();
+		adblMaturity[26] = dtIRSEffective.addTenor ("25Y").julian();
 
-		adblMaturity[27] = dtIRSEffective.addTenor ("30Y").getJulian();
+		adblMaturity[27] = dtIRSEffective.addTenor ("30Y").julian();
 
-		adblMaturity[28] = dtIRSEffective.addTenor ("40Y").getJulian();
+		adblMaturity[28] = dtIRSEffective.addTenor ("40Y").julian();
 
-		adblMaturity[29] = dtIRSEffective.addTenor ("50Y").getJulian();
+		adblMaturity[29] = dtIRSEffective.addTenor ("50Y").julian();
 
 		adblCompCalibValue[15] = .0166;
 		adblCompCalibValue[16] = .0206;
@@ -322,19 +322,19 @@ public class RatesAnalyticsAPI {
 
 		JulianDate dtCashEffective = dtStart.addBusDays (1, "USD");
 
-		adblMaturity[0] = dtCashEffective.addBusDays (1, "USD").getJulian(); // ON
+		adblMaturity[0] = dtCashEffective.addBusDays (1, "USD").julian(); // ON
 
-		adblMaturity[1] = dtCashEffective.addBusDays (2, "USD").getJulian(); // 1D (TN)
+		adblMaturity[1] = dtCashEffective.addBusDays (2, "USD").julian(); // 1D (TN)
 
-		adblMaturity[2] = dtCashEffective.addBusDays (7, "USD").getJulian(); // 1W
+		adblMaturity[2] = dtCashEffective.addBusDays (7, "USD").julian(); // 1W
 
-		adblMaturity[3] = dtCashEffective.addBusDays (14, "USD").getJulian(); // 2W
+		adblMaturity[3] = dtCashEffective.addBusDays (14, "USD").julian(); // 2W
 
-		adblMaturity[4] = dtCashEffective.addBusDays (30, "USD").getJulian(); // 1M
+		adblMaturity[4] = dtCashEffective.addBusDays (30, "USD").julian(); // 1M
 
-		adblMaturity[5] = dtCashEffective.addBusDays (60, "USD").getJulian(); // 2M
+		adblMaturity[5] = dtCashEffective.addBusDays (60, "USD").julian(); // 2M
 
-		adblMaturity[6] = dtCashEffective.addBusDays (90, "USD").getJulian(); // 3M
+		adblMaturity[6] = dtCashEffective.addBusDays (90, "USD").julian(); // 3M
 
 		/*
 		 * Cash Rate Quotes
@@ -418,7 +418,7 @@ public class RatesAnalyticsAPI {
 			aCompCalib[i] = aEDF[i];
 			astrCalibMeasure[i] = "Rate";
 
-			adblMaturity[i + 7] = aEDF[i].maturity().getJulian();
+			adblMaturity[i + 7] = aEDF[i].maturity().julian();
 		}
 
 		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
@@ -462,35 +462,35 @@ public class RatesAnalyticsAPI {
 
 		JulianDate dtIRSEffective = dtStart.addBusDays (2, "USD");
 
-		adblMaturity[0] = dtIRSEffective.addTenor ("4Y").getJulian();
+		adblMaturity[0] = dtIRSEffective.addTenor ("4Y").julian();
 
-		adblMaturity[1] = dtIRSEffective.addTenor ("5Y").getJulian();
+		adblMaturity[1] = dtIRSEffective.addTenor ("5Y").julian();
 
-		adblMaturity[2] = dtIRSEffective.addTenor ("6Y").getJulian();
+		adblMaturity[2] = dtIRSEffective.addTenor ("6Y").julian();
 
-		adblMaturity[3] = dtIRSEffective.addTenor ("7Y").getJulian();
+		adblMaturity[3] = dtIRSEffective.addTenor ("7Y").julian();
 
-		adblMaturity[4] = dtIRSEffective.addTenor ("8Y").getJulian();
+		adblMaturity[4] = dtIRSEffective.addTenor ("8Y").julian();
 
-		adblMaturity[5] = dtIRSEffective.addTenor ("9Y").getJulian();
+		adblMaturity[5] = dtIRSEffective.addTenor ("9Y").julian();
 
-		adblMaturity[6] = dtIRSEffective.addTenor ("10Y").getJulian();
+		adblMaturity[6] = dtIRSEffective.addTenor ("10Y").julian();
 
-		adblMaturity[7] = dtIRSEffective.addTenor ("11Y").getJulian();
+		adblMaturity[7] = dtIRSEffective.addTenor ("11Y").julian();
 
-		adblMaturity[8] = dtIRSEffective.addTenor ("12Y").getJulian();
+		adblMaturity[8] = dtIRSEffective.addTenor ("12Y").julian();
 
-		adblMaturity[9] = dtIRSEffective.addTenor ("15Y").getJulian();
+		adblMaturity[9] = dtIRSEffective.addTenor ("15Y").julian();
 
-		adblMaturity[10] = dtIRSEffective.addTenor ("20Y").getJulian();
+		adblMaturity[10] = dtIRSEffective.addTenor ("20Y").julian();
 
-		adblMaturity[11] = dtIRSEffective.addTenor ("25Y").getJulian();
+		adblMaturity[11] = dtIRSEffective.addTenor ("25Y").julian();
 
-		adblMaturity[12] = dtIRSEffective.addTenor ("30Y").getJulian();
+		adblMaturity[12] = dtIRSEffective.addTenor ("30Y").julian();
 
-		adblMaturity[13] = dtIRSEffective.addTenor ("40Y").getJulian();
+		adblMaturity[13] = dtIRSEffective.addTenor ("40Y").julian();
 
-		adblMaturity[14] = dtIRSEffective.addTenor ("50Y").getJulian();
+		adblMaturity[14] = dtIRSEffective.addTenor ("50Y").julian();
 
 		adblCompCalibValue[0] = .0166;
 		adblCompCalibValue[1] = .0206;

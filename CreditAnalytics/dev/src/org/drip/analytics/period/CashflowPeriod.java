@@ -174,7 +174,7 @@ public class CashflowPeriod extends Period {
 
 		try {
 			dblPeriodStartDate = new org.drip.analytics.date.JulianDate (dblPeriodEndDate).subtractTenor
-				(strTenor).getJulian();
+				(strTenor).julian();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -232,7 +232,7 @@ public class CashflowPeriod extends Period {
 
 			try {
 				dblPeriodStartDate = new org.drip.analytics.date.JulianDate (dblPeriodEndDate).subtractTenor
-					(strTenor).getJulian();
+					(strTenor).julian();
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -456,7 +456,7 @@ public class CashflowPeriod extends Period {
 
 		if (null == dtMaturity) return null;
 
-		double dblMaturityDate = dtMaturity.getJulian();
+		double dblMaturityDate = dtMaturity.julian();
 
 		org.drip.analytics.date.JulianDate dtPeriodEnd = dtPeriodStart.addTenor (strPeriodTenor);
 
@@ -464,7 +464,7 @@ public class CashflowPeriod extends Period {
 
 		java.util.List<CashflowPeriod> lsCashflowPeriod = new java.util.ArrayList<CashflowPeriod>();
 
-		double dblPeriodEndDate = dtPeriodEnd.getJulian();
+		double dblPeriodEndDate = dtPeriodEnd.julian();
 
 		if (dblPeriodEndDate > dblMaturityDate) dblPeriodEndDate = dblMaturityDate;
 
@@ -474,7 +474,7 @@ public class CashflowPeriod extends Period {
 				dblPeriodEndDate = dblMaturityDate;
 			}
 
-			double dblPeriodStartDate = dtPeriodStart.getJulian();
+			double dblPeriodStartDate = dtPeriodStart.julian();
 
 			double dblAdjustedAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
 
@@ -498,7 +498,7 @@ public class CashflowPeriod extends Period {
 
 				if (null == (dtPeriodEnd = dtPeriodStart.addTenor (strPeriodTenor))) return null;
 
-				dblPeriodEndDate = dtPeriodEnd.getJulian();
+				dblPeriodEndDate = dtPeriodEnd.julian();
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

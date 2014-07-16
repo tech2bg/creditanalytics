@@ -80,7 +80,7 @@ public class CDSBuilder {
 					(org.drip.analytics.daycount.Convention.DR_FOLL, strCalendar);
 
 			org.drip.product.definition.CreditDefaultSwap cds = new org.drip.product.credit.CDSComponent
-				(dtEffective.getJulian(), dtMaturity.getJulian(), dblCoupon, 4, "Act/360", "Act/360", "",
+				(dtEffective.julian(), dtMaturity.julian(), dblCoupon, 4, "Act/360", "Act/360", "",
 					false, null, null, null, dap, dap, dap, dap, null, null, 100., strIR, crValParams,
 						strCalendar);
 
@@ -182,7 +182,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -213,7 +213,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -244,7 +244,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -276,7 +276,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.getFirstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -319,7 +319,7 @@ public class CDSBuilder {
 
 		try {
 			org.drip.product.definition.CreditDefaultSwap cds = new org.drip.product.credit.CDSComponent
-				(dtEffective.getJulian(), dtEffective.addTenor (strTenor).getJulian(), dblCoupon, 4,
+				(dtEffective.julian(), dtEffective.addTenor (strTenor).julian(), dblCoupon, 4,
 					"30/360", "30/360", "", true, null, null, null, null, null, null, null, null, null, 100.,
 						strIR, crValParams, strCalendar);
 

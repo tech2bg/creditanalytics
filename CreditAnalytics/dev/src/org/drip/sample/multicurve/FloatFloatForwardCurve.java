@@ -130,7 +130,7 @@ public class FloatFloatForwardCurve {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -152,7 +152,7 @@ public class FloatFloatForwardCurve {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -274,7 +274,7 @@ public class FloatFloatForwardCurve {
 			 */
 
 			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -300,7 +300,7 @@ public class FloatFloatForwardCurve {
 			 */
 
 			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				12 / iTenorInMonths,
@@ -386,7 +386,7 @@ public class FloatFloatForwardCurve {
 		 * Calculate the starting forward rate off of the discount curve.
 		 */
 
-		double dblStartingFwd = dc.forward (dtSpot.getJulian(), dtSpot.addTenor (strBasisTenor).getJulian());
+		double dblStartingFwd = dc.forward (dtSpot.julian(), dtSpot.addTenor (strBasisTenor).julian());
 
 		/*
 		 * Set the discount curve based component market parameters.
@@ -491,9 +491,9 @@ public class FloatFloatForwardCurve {
 		 */
 
 		for (String strMaturityTenor : astrxM6MFwdTenor) {
-			double dblFwdEndDate = dtSpot.addTenor (strMaturityTenor).getJulian();
+			double dblFwdEndDate = dtSpot.addTenor (strMaturityTenor).julian();
 
-			double dblFwdStartDate = dtSpot.addTenor (strMaturityTenor).subtractTenor (strBasisTenor).getJulian();
+			double dblFwdStartDate = dtSpot.addTenor (strMaturityTenor).subtractTenor (strBasisTenor).julian();
 
 			FloatFloatComponent ffc = aFFC[i++];
 

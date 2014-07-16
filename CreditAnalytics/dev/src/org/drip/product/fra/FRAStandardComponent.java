@@ -233,7 +233,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || dblDate < _dblEffectiveDate || dblDate >
-			_dtMaturity.getJulian())
+			_dtMaturity.julian())
 			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
 
 		return 1.;
@@ -248,7 +248,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 			(dblDate2) || dblDate1 < _dblEffectiveDate || dblDate2 < _dblEffectiveDate)
 			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
 
-		double dblMaturity = _dtMaturity.getJulian();
+		double dblMaturity = _dtMaturity.julian();
 
 		if (dblDate1 > dblMaturity || dblDate2 > dblMaturity)
 			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
@@ -309,7 +309,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	{
 		try {
 			return org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (_dblEffectiveDate, new
-				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).getJulian(),
+				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
 					_strDayCount, _strCalendar, _strCurrency);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -343,7 +343,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 
 		if (dblValueDate > _dblEffectiveDate) return null;
 
-		double dblMaturity = _dtMaturity.getJulian();
+		double dblMaturity = _dtMaturity.julian();
 
 		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
 
@@ -511,7 +511,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
 					org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-				double dblMaturity = _dtMaturity.getJulian();
+				double dblMaturity = _dtMaturity.julian();
 
 				try {
 					return prlc.addPredictorResponseWeight (dblMaturity, 1.) && prlc.updateValue
@@ -617,7 +617,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		throws java.lang.Exception
 	{
 		FRAStandardComponent fra = new FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
-			org.drip.analytics.date.JulianDate.Today().getJulian(),
+			org.drip.analytics.date.JulianDate.Today().julian(),
 				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01, "Act/360");
 
 		byte[] abFRA = fra.serialize();

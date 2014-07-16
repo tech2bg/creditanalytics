@@ -103,14 +103,14 @@ public class EDFutureBuilder {
 		org.drip.product.definition.RatesComponent[] aEDF = new org.drip.product.rates.EDFComponent[iNumEDF];
 
 		try {
-			org.drip.analytics.date.JulianDate dtEDFStart = dt.getFirstEDFStartDate (3);
+			org.drip.analytics.date.JulianDate dtEDFStart = dt.firstEDFStartDate (3);
 
 			for (int i = 0; i < iNumEDF; ++i) {
 				org.drip.analytics.date.JulianDate dtEDFMaturity = dtEDFStart.addMonths (3);
 
 				(aEDF[i] = new org.drip.product.rates.EDFComponent (dtEDFStart, dtEDFMaturity,
 					strCurrency, "Act/360", strCurrency)).setPrimaryCode (MakeBaseEDFCode
-						(dtEDFStart.getJulian()));
+						(dtEDFStart.julian()));
 
 				dtEDFStart = dtEDFStart.addMonths (3);
 			}
@@ -142,7 +142,7 @@ public class EDFutureBuilder {
 			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
 				(dtEffective, dtMaturity, strIR, "Act/360", strIR);
 
-			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.getJulian()));
+			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
 
 			return edf;
 		} catch (java.lang.Exception e) {
@@ -171,7 +171,7 @@ public class EDFutureBuilder {
 			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
 				(dtEffective, dtEffective.addTenor (strTenor), strIR, "Act/360", strIR);
 
-			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.getJulian()));
+			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
 
 			return edf;
 		} catch (java.lang.Exception e) {

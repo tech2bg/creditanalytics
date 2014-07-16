@@ -97,11 +97,11 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= exercise().getJulian()) return null;
+		if (dblValueDate >= exercise().julian()) return null;
 
 		long lStart = System.nanoTime();
 
-		double dblExerciseDate = exercise().getJulian();
+		double dblExerciseDate = exercise().julian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRAOutput = _fra.value
 			(valParams, pricerParams, csqs, quotingParams);

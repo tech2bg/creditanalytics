@@ -79,7 +79,7 @@ public class StaticBACurves {
 		bondTSY.setFloaterSetting (null);
 
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention
-			(null, "", dt.getJulian(), java.lang.Double.NaN, 3, strCurrency,
+			(null, "", dt.julian(), java.lang.Double.NaN, 3, strCurrency,
 				org.drip.analytics.daycount.Convention.DR_MOD_FOLL);
 
 		if (!mktConv.validate()) return null;
@@ -113,8 +113,8 @@ public class StaticBACurves {
 
 		try {
 			periodParams = new org.drip.product.params.PeriodGenerator (dt.addYears
-				(iNumYears).getJulian(), dt.getJulian(), java.lang.Double.NaN, dt.getJulian(),
-					dt.getJulian(), 2, "30/360", "30/360", null, null, null, null, null, null, null, null,
+				(iNumYears).julian(), dt.julian(), java.lang.Double.NaN, dt.julian(),
+					dt.julian(), 2, "30/360", "30/360", null, null, null, null, null, null, null, null,
 						"", false, strCurrency, strCurrency);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -408,19 +408,19 @@ public class StaticBACurves {
 		// First 7 instruments - cash calibration
 
 		try {
-			adblDate[0] = dt.addDays (3).getJulian(); // ON
+			adblDate[0] = dt.addDays (3).julian(); // ON
 
-			adblDate[1] = dt.addDays (4).getJulian(); // 1D (TN)
+			adblDate[1] = dt.addDays (4).julian(); // 1D (TN)
 
-			adblDate[2] = dt.addDays (9).getJulian(); // 1W
+			adblDate[2] = dt.addDays (9).julian(); // 1W
 
-			adblDate[3] = dt.addDays (16).getJulian(); // 2W
+			adblDate[3] = dt.addDays (16).julian(); // 2W
 
-			adblDate[4] = dt.addDays (32).getJulian(); // 1M
+			adblDate[4] = dt.addDays (32).julian(); // 1M
 
-			adblDate[5] = dt.addDays (62).getJulian(); // 2M
+			adblDate[5] = dt.addDays (62).julian(); // 2M
 
-			adblDate[6] = dt.addDays (92).getJulian(); // 3M
+			adblDate[6] = dt.addDays (92).julian(); // 3M
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -466,63 +466,63 @@ public class StaticBACurves {
 
 		if (null == dtMatIRS) return false;
 
-		adblDate[15] = dtMatIRS.getJulian();
+		adblDate[15] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 5 + 2)))) return false; // 5Y
 
-		adblDate[16] = dtMatIRS.getJulian();
+		adblDate[16] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 6 + 2)))) return false; // 6Y
 
-		adblDate[17] = dtMatIRS.getJulian();
+		adblDate[17] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 7 + 2)))) return false; // 7Y
 
-		adblDate[18] = dtMatIRS.getJulian();
+		adblDate[18] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 8 + 2)))) return false; // 8Y
 
-		adblDate[19] = dtMatIRS.getJulian();
+		adblDate[19] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 9 + 2)))) return false; // 9Y
 
-		adblDate[20] = dtMatIRS.getJulian();
+		adblDate[20] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 10 + 2)))) return false; // 10Y
 
-		adblDate[21] = dtMatIRS.getJulian();
+		adblDate[21] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 11 + 2)))) return false; // 11Y
 
-		adblDate[22] = dtMatIRS.getJulian();
+		adblDate[22] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 12 + 2)))) return false; // 12Y
 
-		adblDate[23] = dtMatIRS.getJulian();
+		adblDate[23] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 15 + 2)))) return false; // 15Y
 
-		adblDate[24] = dtMatIRS.getJulian();
+		adblDate[24] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 20 + 2)))) return false; // 20Y
 
-		adblDate[25] = dtMatIRS.getJulian();
+		adblDate[25] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 25 + 2)))) return false; // 25Y
 
-		adblDate[26] = dtMatIRS.getJulian();
+		adblDate[26] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 30 + 2)))) return false; // 30Y
 
-		adblDate[27] = dtMatIRS.getJulian();
+		adblDate[27] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 40 + 2)))) return false; // 40Y
 
-		adblDate[28] = dtMatIRS.getJulian();
+		adblDate[28] = dtMatIRS.julian();
 
 		if (null == (dtMatIRS = dt.addDays ((int)(365.25 * 50 + 2)))) return false; // 50Y
 
-		adblDate[29] = dtMatIRS.getJulian();
+		adblDate[29] = dtMatIRS.julian();
 
 		adblCompCalibValue[15] = .0166;
 		adblCompCalibValue[16] = .0206;

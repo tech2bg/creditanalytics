@@ -111,7 +111,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 					abIsPIP.length)
 			throw new java.lang.Exception ("DerivedFXForward ctr => Invalid params!");
 
-		_dblSpotDate = dtSpot.getJulian();
+		_dblSpotDate = dtSpot.julian();
 
 		_cp = cp;
 		_dblFXSpot = dblFXSpot;
@@ -569,7 +569,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblFXFwd = new double[3];

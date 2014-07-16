@@ -66,7 +66,7 @@ public class ValuationParams extends org.drip.service.stream.Serializer {
 		try {
 			return new ValuationParams (dtValue, new org.drip.analytics.date.JulianDate
 				(org.drip.analytics.daycount.Convention.Adjust (dtValue.addDays
-					(iCashSettleLag).getJulian(), strCalendar, iAdjustMode)), strCalendar);
+					(iCashSettleLag).julian(), strCalendar, iAdjustMode)), strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -186,9 +186,9 @@ public class ValuationParams extends org.drip.service.stream.Serializer {
 		if (null == dtValue || null ==  dtCashPay)
 			throw new java.lang.Exception ("ValuationParams ctr: Invalid settle/Cash pay into Val Params!");
 
-		_dblValue = dtValue.getJulian();
+		_dblValue = dtValue.julian();
 
-		_dblCashPay = dtCashPay.getJulian();
+		_dblCashPay = dtCashPay.julian();
 
 		_strCalendar = strCalendar;
 	}

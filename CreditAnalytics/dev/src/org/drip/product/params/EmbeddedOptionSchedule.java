@@ -486,7 +486,7 @@ public class EmbeddedOptionSchedule extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblScheduleStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblScheduleStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblFactor = new double[3];

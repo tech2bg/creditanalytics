@@ -37,72 +37,116 @@ package org.drip.product.mtm;
 
 public class ComponentPairMTM extends org.drip.product.definition.BasketProduct {
 
-	/**
-	 * MTM Quanto Adjustment - No Adjustment Applied
-	 */
-
-	public static final int MTM_QUANTO_ADJUSTMENT_NONE = 0;
-
-	/**
-	 * MTM Quanto Adjustment - Forward/Funding Volatility/Correlation
-	 */
-
-	public static final int MTM_QUANTO_ADJUSTMENT_FORWARD_FUNDING = 1;
-
-	/**
-	 * MTM Quanto Adjustment - Funding/FX Volatility/Correlation
-	 */
-
-	public static final int MTM_QUANTO_ADJUSTMENT_FUNDING_FX = 2;
-
-	/**
-	 * MTM Quanto Adjustment - Forward/Funding/FX Volatility/Correlation
-	 */
-
-	public static final int MTM_QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX = 4;
-
 	private org.drip.product.fx.ComponentPair _dcpBase = null;
-	private int _iDerivedQuantoAdjuster = MTM_QUANTO_ADJUSTMENT_NONE;
-	private int _iReferenceQuantoAdjuster = MTM_QUANTO_ADJUSTMENT_NONE;
 	private org.drip.product.definition.RatesComponent[] _aRCDerivedForward = null;
 	private org.drip.product.definition.RatesComponent[] _aRCReferenceForward = null;
+
+	private final double ForwardFundingQuanto (
+		final org.drip.product.definition.RatesComponent rcForward,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		if (!(rcForward instanceof org.drip.product.rates.FloatingStream)) return 1.;
+
+		org.drip.product.params.FloatingRateIndex fri = ((org.drip.product.rates.FloatingStream)
+			rcForward).fri();
+
+		java.lang.String strCurrency = rcForward.couponCurrency()[0];
+
+		try {
+			return java.lang.Math.exp (org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+				(csqs.fundingCurveVolSurface (strCurrency), csqs.forwardCurveVolSurface (fri),
+					csqs.forwardFundingCorrSurface (fri, strCurrency), valParams.valueDate(),
+						rcForward.maturity().julian()));
+		} catch (java.lang.Exception e) {
+		}
+
+		return 1.;
+	}
+
+	private final double ForwardFXQuanto (
+		final org.drip.product.definition.RatesComponent rcForward,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		if (!(rcForward instanceof org.drip.product.rates.FloatingStream)) return 1.;
+
+		org.drip.product.params.FloatingRateIndex fri = ((org.drip.product.rates.FloatingStream)
+			rcForward).fri();
+
+		org.drip.product.params.CurrencyPair cp = org.drip.product.params.CurrencyPair.FromCode
+			(_dcpBase.fxCode());
+
+		try {
+			return null == cp ? 1. : java.lang.Math.exp
+				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+					(csqs.forwardCurveVolSurface (fri), csqs.fxCurveVolSurface (cp),
+						csqs.forwardFXCorrSurface (fri, cp), valParams.valueDate(),
+							rcForward.maturity().julian()));
+		} catch (java.lang.Exception e) {
+		}
+
+		return 1.;
+	}
+
+	private final double FundingFXQuanto (
+		final org.drip.product.definition.RatesComponent rcForward,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		org.drip.product.params.CurrencyPair cp = org.drip.product.params.CurrencyPair.FromCode
+			(_dcpBase.fxCode());
+
+		java.lang.String strCurrency = rcForward.couponCurrency()[0];
+
+		try {
+			return null == cp ? 1. : java.lang.Math.exp
+				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+					(csqs.fundingCurveVolSurface (strCurrency), csqs.fxCurveVolSurface (cp),
+						csqs.fundingFXCorrSurface (strCurrency, cp), valParams.valueDate(),
+							rcForward.maturity().julian()));
+		} catch (java.lang.Exception e) {
+		}
+
+		return 1.;
+	}
 
 	protected double forwardComponentPVAdjustment (
 		final org.drip.product.definition.RatesComponent rcForward,
 		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final int iMTMQuantoAdjuster)
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		if (MTM_QUANTO_ADJUSTMENT_NONE == iMTMQuantoAdjuster) return 1.;
+		if (null == pricerParams || !(pricerParams instanceof org.drip.param.pricer.JointStatePricerParams))
+			return 1.;
+
+		org.drip.param.pricer.JointStatePricerParams jspp = (org.drip.param.pricer.JointStatePricerParams)
+			pricerParams;
+
+		int iQuantoAdjustment = jspp.quantoAdjustment();
+
+		if (org.drip.param.pricer.JointStatePricerParams.QUANTO_ADJUSTMENT_NONE == iQuantoAdjustment)
+			return 1.;
 
 		if (null == rcForward || null == valParams || null == csqs)
 			throw new java.lang.Exception
-				("ComponentPairMTM::referenceForwardPVAdjustment => Invalid Inputs");
+				("ComponentPairMTM::forwardComponentPVAdjustment => Invalid Inputs");
 
-		java.lang.String strCurrency = rcForward.couponCurrency()[0];
+		if (org.drip.param.pricer.JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING ==
+			iQuantoAdjustment)
+			return ForwardFundingQuanto (rcForward, valParams, csqs);
 
-		if (MTM_QUANTO_ADJUSTMENT_FUNDING_FX == iMTMQuantoAdjuster) {
-			org.drip.product.params.CurrencyPair cp = org.drip.product.params.CurrencyPair.FromCode
-				(_dcpBase.fxCode());
+		if (org.drip.param.pricer.JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FX == iQuantoAdjustment)
+			return ForwardFXQuanto (rcForward, valParams, csqs);
 
-			if (null == cp) return 1.;
+		if (org.drip.param.pricer.JointStatePricerParams.QUANTO_ADJUSTMENT_FUNDING_FX == iQuantoAdjustment)
+			return FundingFXQuanto (rcForward, valParams, csqs);
 
-			return java.lang.Math.exp (org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-				(csqs.fundingCurveVolSurface (strCurrency), csqs.fxCurveVolSurface (cp),
-					csqs.fundingFXCorrSurface (strCurrency, cp), valParams.valueDate(),
-						rcForward.maturity().getJulian()));
-		} else if (MTM_QUANTO_ADJUSTMENT_FORWARD_FUNDING == iMTMQuantoAdjuster) {
-			if (!(rcForward instanceof org.drip.product.rates.FloatingStream)) return 1.;
-
-			org.drip.product.params.FloatingRateIndex fri = ((org.drip.product.rates.FloatingStream)
-				rcForward).fri();
-
-			return java.lang.Math.exp (org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-				(csqs.fundingCurveVolSurface (strCurrency), csqs.forwardCurveVolSurface (fri),
-					csqs.forwardFundingCorrSurface (fri, strCurrency), valParams.valueDate(),
-						rcForward.maturity().getJulian()));
-		}
+		if (org.drip.param.pricer.JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX ==
+			iQuantoAdjustment)
+			return ForwardFundingQuanto (rcForward, valParams, csqs) * ForwardFXQuanto (rcForward, valParams,
+				csqs) * FundingFXQuanto (rcForward, valParams, csqs);
 
 		return 1.;
 	}
@@ -112,17 +156,13 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 	 * 
 	 * @param dcpBase The Base Component Pair
 	 * @param bIsMTMAbsolute TRUE => The MTM is computed on an Absolute Basis
-	 * @param iReferenceQuantoAdjuster The MTM Quanto Adjustment Mode to be applied to the Reference Leg
-	 * @param iDerivedQuantoAdjuster The MTM Quanto Adjustment Mode to be applied to the Derived Leg
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
 	public ComponentPairMTM (
 		final org.drip.product.fx.ComponentPair dcpBase,
-		final boolean bIsMTMAbsolute,
-		final int iReferenceQuantoAdjuster,
-		final int iDerivedQuantoAdjuster)
+		final boolean bIsMTMAbsolute)
 		throws java.lang.Exception
 	{
 		if (null == (_dcpBase = dcpBase))
@@ -139,9 +179,6 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 				(_dcpBase.derivedComponent())) || 0 == _aRCDerivedForward.length))
 			throw new java.lang.Exception
 				("ComponentPairMTM ctr: Cannot construct Derived Forward Component Strip");
-
-		_iDerivedQuantoAdjuster = iDerivedQuantoAdjuster;
-		_iReferenceQuantoAdjuster = iReferenceQuantoAdjuster;
 	}
 
 	@Override public java.lang.String name()
@@ -197,7 +234,7 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 
 			try {
 				dblMTMReferenceCorrectionAdjust = forwardComponentPVAdjustment (_aRCReferenceForward[i],
-					valParams, csqs, _iReferenceQuantoAdjuster);
+					valParams, pricerParams, csqs);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -218,7 +255,7 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 
 				try {
 					dblMTMDerivedCorrectionAdjust = forwardComponentPVAdjustment (_aRCDerivedForward[i],
-						valParams, csqs, _iDerivedQuantoAdjuster);
+						valParams, pricerParams, csqs);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -238,8 +275,8 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 
 		double dblBaseDerivedPV = mapOutput.get (_dcpBase.derivedComponent().name() + "[PV]");
 
-		double dblReferenceMultiplicativeAdjustment = 0. == dblBaseReferencePV && dblMTMReferencePV ==
-			dblBaseReferencePV ? 1. : dblMTMReferencePV / dblBaseReferencePV;
+		double dblReferenceMultiplicativeAdjustment = (0. == dblBaseReferencePV && dblMTMReferencePV ==
+			dblBaseReferencePV) ? 1. : dblMTMReferencePV / dblBaseReferencePV;
 		double dblDerivedMultiplicativeAdjustment = null == _aRCDerivedForward || (0. == dblBaseDerivedPV &&
 			dblMTMDerivedPV == dblBaseDerivedPV) ? 1. : dblMTMDerivedPV / dblBaseDerivedPV;
 
@@ -287,28 +324,6 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 	public boolean isAbsolute()
 	{
 		return null != _aRCDerivedForward;
-	}
-
-	/**
-	 * Retrieve the Reference Leg MTM Quanto Adjustment Mode
-	 * 
-	 * @return The Reference Leg MTM Quanto Adjustment Mode
-	 */
-
-	public int referenceQuantoAdjustment()
-	{
-		return _iReferenceQuantoAdjuster;
-	}
-
-	/**
-	 * Retrieve the Derived Leg MTM Quanto Adjustment Mode
-	 * 
-	 * @return The Derived Leg MTM Quanto Adjustment Mode
-	 */
-
-	public int derivedQuantoAdjustment()
-	{
-		return _iDerivedQuantoAdjuster;
 	}
 
 	@Override public byte[] serialize()

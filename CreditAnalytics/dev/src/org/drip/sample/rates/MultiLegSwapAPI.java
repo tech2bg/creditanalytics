@@ -97,7 +97,7 @@ public class MultiLegSwapAPI {
 
 			aCompCalib[i] = DepositBuilder.CreateDeposit (
 				dtCashEffective,
-				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
+				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
 				strCurrency);
 		}
@@ -113,7 +113,7 @@ public class MultiLegSwapAPI {
 
 			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
 				dtIRSEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				0.,
 				2,
 				"Act/360",
@@ -150,7 +150,7 @@ public class MultiLegSwapAPI {
 		FixedStream[] aFixedStream = new FixedStream[3];
 
 		List<CashflowPeriod> lsFixedPeriods3Y = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			"3Y",
 			null,
 			2,
@@ -170,7 +170,7 @@ public class MultiLegSwapAPI {
 		);
 
 		List<CashflowPeriod> lsFixedPeriods5Y = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			"5Y",
 			null,
 			2,
@@ -190,7 +190,7 @@ public class MultiLegSwapAPI {
 		);
 
 		List<CashflowPeriod> lsFixedPeriods7Y = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			"7Y",
 			null,
 			2,
@@ -216,7 +216,7 @@ public class MultiLegSwapAPI {
 		FloatingStream[] aFloatStream = new FloatingStream[3];
 
 		List<CashflowPeriod> lsFloatPeriods3Y = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			"3Y",
 			null,
 			4,
@@ -238,7 +238,7 @@ public class MultiLegSwapAPI {
 		);
 
 		List<CashflowPeriod> lsFloatPeriods5Y = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			"5Y",
 			null,
 			4,
@@ -260,7 +260,7 @@ public class MultiLegSwapAPI {
 		);
 
 		List<CashflowPeriod> lsFloatPeriods7Y = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			"7Y",
 			null,
 			4,

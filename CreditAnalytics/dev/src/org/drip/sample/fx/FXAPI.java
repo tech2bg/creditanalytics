@@ -108,7 +108,7 @@ public class FXAPI {
 
 			adblFXFwd[i] = dblFXSpot - (i + 1) * 0.01 * rand.nextDouble();
 
-			adblNodes[i] = JulianDate.Today().addYears (i + 1).getJulian();
+			adblNodes[i] = JulianDate.Today().addYears (i + 1).julian();
 
 			System.out.println (cp.code() + "[" + (i + 1) + "]=" + FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
 		}

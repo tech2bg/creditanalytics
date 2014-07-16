@@ -10,6 +10,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.pricer.JointStatePricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.*;
 import org.drip.product.mtm.ComponentPairMTM;
@@ -69,7 +70,7 @@ public class FloatFloatMTM {
 			 */
 
 		List<CashflowPeriod> lsReferencePeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			dap,
 			2,
@@ -97,7 +98,7 @@ public class FloatFloatMTM {
 		 */
 
 		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			dap,
 			12 / iTenorInMonths,
@@ -135,6 +136,12 @@ public class FloatFloatMTM {
 		double dblUSD3MForwardRate = 0.02;
 		double dblUSD6MForwardRate = 0.025;
 
+		double dblFundingVol = 0.1;
+		double dblForward3MVol = 0.1;
+		double dblForward3MFundingCorr = 0.1;
+		double dblForward6MVol = 0.1;
+		double dblForward6MFundingCorr = 0.5;
+
 		/*
 		 * Initialize the Credit Analytics Library
 		 */
@@ -151,15 +158,19 @@ public class FloatFloatMTM {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"),
 			dblUSDCollateralRate);
 
+		FloatingRateIndex fri3M = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+
 		ForwardCurve fc3MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			fri3M,
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
+		FloatingRateIndex fri6M = FloatingRateIndex.Create ("USD", "LIBOR", "6M");
+
 		ForwardCurve fc6MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
+			fri6M,
 			dblUSD6MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
@@ -171,24 +182,20 @@ public class FloatFloatMTM {
 
 		floatFloatUSD.setPrimaryCode ("USD_IRS::3M::6M::2Y");
 
-		ComponentPairMTM ccbsUSDJPYAbsolute = new ComponentPairMTM (
+		ComponentPairMTM floatFloatAbsolute = new ComponentPairMTM (
 			new ComponentPair (
 				"USD_3M_6M_ABSOLUTE",
 				floatFloatUSD.referenceStream(),
 				floatFloatUSD.derivedStream()),
-			true,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_FUNDING_FX,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_NONE
+			true
 		);
 
-		ComponentPairMTM ccbsUSDJPYRelative = new ComponentPairMTM (
+		ComponentPairMTM floatFloatRelative = new ComponentPairMTM (
 			new ComponentPair (
 				"USD_3M_6M_RELATIVE",
 				floatFloatUSD.referenceStream(),
 				floatFloatUSD.derivedStream()),
-			false,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_FUNDING_FX,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_NONE
+			false
 		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
@@ -199,11 +206,21 @@ public class FloatFloatMTM {
 
 		mktParams.setForwardCurve (fc6MUSD);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (0.3));
+		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblFundingVol));
 
-		CaseInsensitiveTreeMap<Double> mapAbsoluteMTMOutput = ccbsUSDJPYAbsolute.value (valParams, null, mktParams, null);
+		mktParams.setForwardCurveVolSurface (fri3M, new FlatUnivariate (dblForward3MVol));
 
-		CaseInsensitiveTreeMap<Double> mapRelativeMTMOutput = ccbsUSDJPYRelative.value (valParams, null, mktParams, null);
+		mktParams.setForwardFundingCorrSurface (fri3M, "USD", new FlatUnivariate (dblForward3MFundingCorr));
+
+		mktParams.setForwardCurveVolSurface (fri6M, new FlatUnivariate (dblForward6MVol));
+
+		mktParams.setForwardFundingCorrSurface (fri6M, "USD", new FlatUnivariate (dblForward6MFundingCorr));
+
+		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX);
+
+		CaseInsensitiveTreeMap<Double> mapAbsoluteMTMOutput = floatFloatAbsolute.value (valParams, jspp, mktParams, null);
+
+		CaseInsensitiveTreeMap<Double> mapRelativeMTMOutput = floatFloatRelative.value (valParams, jspp, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapRelativeMTMOutput.entrySet()) {
 			String strKey = me.getKey();

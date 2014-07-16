@@ -175,7 +175,7 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt) throw new java.lang.Exception ("TermStructure::node => Invalid Inputs");
 
-		return node (dt.getJulian());
+		return node (dt.julian());
 	}
 
 	/**
@@ -195,7 +195,7 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 		if (null == strTenor || strTenor.isEmpty())
 			throw new java.lang.Exception ("TermStructure::node => Invalid Inputs");
 
-		return node (epoch().addTenor (strTenor).getJulian());
+		return node (epoch().addTenor (strTenor).julian());
 	}
 
 	/**
@@ -216,7 +216,7 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 	{
 		if (null == dt) throw new java.lang.Exception ("TermStructure::nodeDerivative => Invalid Inputs");
 
-		return nodeDerivative (dt.getJulian(), iOrder);
+		return nodeDerivative (dt.julian(), iOrder);
 	}
 
 	/**
@@ -238,6 +238,6 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 		if (null == strTenor || strTenor.isEmpty())
 			throw new java.lang.Exception ("TermStructure::nodeDerivative => Invalid Inputs");
 
-		return nodeDerivative (epoch().addTenor (strTenor).getJulian(), iOrder);
+		return nodeDerivative (epoch().addTenor (strTenor).julian(), iOrder);
 	}
 }

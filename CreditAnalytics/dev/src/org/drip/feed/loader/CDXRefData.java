@@ -268,8 +268,8 @@ public class CDXRefData {
 
 		org.drip.product.params.CDXRefDataParams cdxrd =
 			org.drip.product.params.CDXRefDataParams.CreateCDXRefDataBuilder (strCurveID, strSPN,
-				strIndexLabel, strIndexName, strCurveName, dtIssueDate.getJulian(),
-					dtMaturityDate.getJulian(), dblCoupon, strCurrency, strDayCount, bFullFirstStub,
+				strIndexLabel, strIndexName, strCurveName, dtIssueDate.julian(),
+					dtMaturityDate.julian(), dblCoupon, strCurrency, strDayCount, bFullFirstStub,
 						dblRecovery, iFrequency, strRedID, strIndexClass, iIndexSeries, strIndexGroupName,
 							strIndexShortName, strIndexShortGroupName, iIndexVersion, iIndexLifeSpan,
 								strCurvyCurveID, dblIndexFactor, iOriginalComponentCount,

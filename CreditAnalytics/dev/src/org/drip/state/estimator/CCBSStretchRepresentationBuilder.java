@@ -106,7 +106,7 @@ public class CCBSStretchRepresentationBuilder {
 			if (null == auFX) return null;
 
 			try {
-				dblFX = auFX.evaluate (aCalibComp[i].effective().getJulian());
+				dblFX = auFX.evaluate (aCalibComp[i].effective().julian());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -207,7 +207,7 @@ public class CCBSStretchRepresentationBuilder {
 			if (null == auFX) return null;
 
 			try {
-				dblFX = auFX.evaluate (aCalibComp[i].effective().getJulian());
+				dblFX = auFX.evaluate (aCalibComp[i].effective().julian());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

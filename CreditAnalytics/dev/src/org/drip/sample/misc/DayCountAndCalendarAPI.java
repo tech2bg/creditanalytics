@@ -142,7 +142,7 @@ public class DayCountAndCalendarAPI {
 		 */
 
 		List<Double> lsHols = Convention.HolidaySet
-			(dtToday.getJulian(), dtToday.addYears (1).getJulian(), "USD,GBP");
+			(dtToday.julian(), dtToday.addYears (1).julian(), "USD,GBP");
 
 		for (double dblDate : lsHols)
 			System.out.println (new JulianDate (dblDate).toOracleDate());

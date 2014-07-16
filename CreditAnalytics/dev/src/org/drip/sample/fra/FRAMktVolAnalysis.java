@@ -91,7 +91,7 @@ public class FRAMktVolAnalysis {
 		for (int i = 0; i < adblTime.length; ++i) {
 			if (0 != i) aSCBC[i - 1] = scbc;
 
-			adblTime[i] = 0 == i ? dtEpoch.getJulian(): dtEpoch.addTenor (astrTenor[i - 1]).getJulian();
+			adblTime[i] = 0 == i ? dtEpoch.julian(): dtEpoch.addTenor (astrTenor[i - 1]).julian();
 
 			adblATMLogNormalVolTS[i] = 0 == i ? adblATMLogNormalVolTSIn[0] : adblATMLogNormalVolTSIn[i - 1];
 		}
@@ -130,7 +130,7 @@ public class FRAMktVolAnalysis {
 			strCurrency,
 			fri.fullyQualifiedName(),
 			strCurrency,
-			dtForward.getJulian(),
+			dtForward.julian(),
 			fri,
 			0.006,
 			"Act/360");

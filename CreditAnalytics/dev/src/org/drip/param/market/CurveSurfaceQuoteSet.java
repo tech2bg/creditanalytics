@@ -2401,7 +2401,7 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 					else
 						sb.append (collectionRecordDelimiter());
 
-					sbFixings.append (meOut.getKey().getJulian() + collectionMultiLevelKeyDelimiter() +
+					sbFixings.append (meOut.getKey().julian() + collectionMultiLevelKeyDelimiter() +
 						meIn.getKey() + collectionKeyValueDelimiter() + meIn.getValue());
 				}
 			}
@@ -2454,7 +2454,7 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblRate = new double[3];

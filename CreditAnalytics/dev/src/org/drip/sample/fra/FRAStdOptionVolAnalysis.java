@@ -105,7 +105,7 @@ public class FRAStdOptionVolAnalysis {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -127,7 +127,7 @@ public class FRAStdOptionVolAnalysis {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -249,7 +249,7 @@ public class FRAStdOptionVolAnalysis {
 			 */
 
 			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -275,7 +275,7 @@ public class FRAStdOptionVolAnalysis {
 			 */
 
 			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				12 / iTenorInMonths,
@@ -329,7 +329,7 @@ public class FRAStdOptionVolAnalysis {
 		 * Calculate the starting forward rate off of the discount curve.
 		 */
 
-		double dblStartingFwd = dc.forward (dtSpot.getJulian(), dtSpot.addTenor (strBasisTenor).getJulian());
+		double dblStartingFwd = dc.forward (dtSpot.julian(), dtSpot.addTenor (strBasisTenor).julian());
 
 		/*
 		 * Set the discount curve based component market parameters.
@@ -611,7 +611,7 @@ public class FRAStdOptionVolAnalysis {
 			strCurrency,
 			strCurrency + "-FRA-" + strTenor,
 			strCurrency,
-			dtForward.getJulian(),
+			dtForward.julian(),
 			fri,
 			0.006,
 			"Act/360");

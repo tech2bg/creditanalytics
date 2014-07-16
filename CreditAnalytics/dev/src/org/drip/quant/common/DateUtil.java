@@ -124,9 +124,9 @@ public class DateUtil {
 		if (null == strYYYYMMDD || strYYYYMMDD.isEmpty()) return null;
 
 		try {
-			return strYYYYMMDD.substring (6) + "-" + org.drip.analytics.date.JulianDate.getMonthOracleChar
-				((new java.lang.Integer (strYYYYMMDD.substring (4, 6))).intValue()) + "-" +
-					strYYYYMMDD.substring (0, 4);
+			return strYYYYMMDD.substring (6) + "-" + org.drip.analytics.date.JulianDate.MonthOracleChar ((new
+				java.lang.Integer (strYYYYMMDD.substring (4, 6))).intValue()) + "-" + strYYYYMMDD.substring
+					(0, 4);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -150,7 +150,7 @@ public class DateUtil {
 		java.util.StringTokenizer st = new java.util.StringTokenizer (strBBGDate, "/");
 
 		try {
-			java.lang.String strMonth = org.drip.analytics.date.JulianDate.getMonthOracleChar ((new
+			java.lang.String strMonth = org.drip.analytics.date.JulianDate.MonthOracleChar ((new
 				java.lang.Integer (st.nextToken())).intValue());
 
 			if (null == strMonth) return null;

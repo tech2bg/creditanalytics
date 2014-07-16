@@ -77,7 +77,7 @@ public class ScenarioDiscountCurveBuilder {
 
 		org.drip.analytics.date.JulianDate dtMaturity = dtInitialMaturity;
 
-		while (dtMaturity.getJulian() <= dtTerminalMaturity.getJulian()) {
+		while (dtMaturity.julian() <= dtTerminalMaturity.julian()) {
 			org.drip.product.definition.CalibratableFixedIncomeComponent comp = bIsIRS ?
 				org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective, dtMaturity, 0., 2,
 					"Act/360", 0., 4, "Act/360", strCurrency, strCurrency) :

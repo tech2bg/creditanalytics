@@ -64,15 +64,15 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 		final org.drip.analytics.date.JulianDate dtMaturity)
 		throws java.lang.Exception
 	{
-		if (null == ccyPair || null == dtEffective || null == dtMaturity || dtEffective.getJulian() >=
-			dtMaturity.getJulian())
+		if (null == ccyPair || null == dtEffective || null == dtMaturity || dtEffective.julian() >=
+			dtMaturity.julian())
 			throw new java.lang.Exception ("FXForwardContract ctr: Invalid Inputs");
 
 		_ccyPair = ccyPair;
 
-		_dblMaturity = dtMaturity.getJulian();
+		_dblMaturity = dtMaturity.julian();
 
-		_dblEffective = dtEffective.getJulian();
+		_dblEffective = dtEffective.julian();
 	}
 
 	/**

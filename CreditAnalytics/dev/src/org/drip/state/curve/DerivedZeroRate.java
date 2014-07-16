@@ -58,7 +58,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
-		double dblYearFraction = org.drip.analytics.daycount.Convention.YearFraction (epoch().getJulian(),
+		double dblYearFraction = org.drip.analytics.daycount.Convention.YearFraction (epoch().julian(),
 			dblDate, strDC, bApplyCpnEOMAdj, dblDate, null, strCalendar);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYearFraction) || 0. > dblYearFraction) return;
@@ -116,7 +116,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
-		super (dc.epoch().getJulian(), dc.currency(), null == quotingParams ? null :
+		super (dc.epoch().julian(), dc.currency(), null == quotingParams ? null :
 			quotingParams.coreCollateralizationParams());
 
 		if (null == (_dc = dc) || null == lsCouponPeriod || 0 == lsCouponPeriod.size() ||
@@ -161,7 +161,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEFINIT", null);
+		super (org.drip.analytics.date.JulianDate.Today().julian(), "DEFINIT", null);
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception ("DerivedZeroRate de-serializer: Invalid input Byte array");
@@ -177,7 +177,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DerivedZeroCurve::df => got NaN for date");
 
-		if (dblDate <= epoch().getJulian()) return 1.;
+		if (dblDate <= epoch().julian()) return 1.;
 
 		java.lang.Double objDF = _mapDF.get (new org.drip.analytics.date.JulianDate (dblDate));
 
@@ -219,7 +219,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DerivedZeroCurve::getZeroRate => Invalid Date");
 
-		if (dblDate <= epoch().getJulian()) return 1.;
+		if (dblDate <= epoch().julian()) return 1.;
 
 		java.lang.Double objZeroRate = _mapZeroRate.get (new org.drip.analytics.date.JulianDate (dblDate));
 

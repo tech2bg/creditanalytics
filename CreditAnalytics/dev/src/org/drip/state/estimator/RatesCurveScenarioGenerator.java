@@ -137,7 +137,7 @@ public class RatesCurveScenarioGenerator {
 				return null;
 			}
 
-			adblDates[i] = _aCalibInst[i].maturity().getJulian();
+			adblDates[i] = _aCalibInst[i].maturity().julian();
 		}
 
 		try {
@@ -273,7 +273,7 @@ public class RatesCurveScenarioGenerator {
 			}
 
 			mapTenorDC.put (org.drip.analytics.date.JulianDate.fromJulian
-				(_aCalibInst[i].maturity().getJulian()), createIRCurve (valParams, dcTSY,
+				(_aCalibInst[i].maturity().julian()), createIRCurve (valParams, dcTSY,
 					adblTenorQuotes, 0., astrCalibMeasure, mmFixings, quotingParams));
 		}
 

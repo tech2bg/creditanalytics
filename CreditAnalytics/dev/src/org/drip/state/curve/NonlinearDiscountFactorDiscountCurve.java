@@ -123,13 +123,13 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final double[] adblRate)
 		throws java.lang.Exception
 	{
-		super (dtStart.getJulian(), strCurrency, collatParams);
+		super (dtStart.julian(), strCurrency, collatParams);
 
 		if (null == adblDate || 0 == adblDate.length || null == adblRate || adblDate.length !=
 			adblRate.length || null == dtStart)
 			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve ctr: Invalid inputs");
 
-		_dblEpochDate = dtStart.getJulian();
+		_dblEpochDate = dtStart.julian();
 
 		org.drip.spline.params.SegmentCustomBuilderControl sbp = new
 			org.drip.spline.params.SegmentCustomBuilderControl
@@ -180,7 +180,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().getJulian(), "DEF_INIT", null);
+		super (org.drip.analytics.date.JulianDate.Today().julian(), "DEF_INIT", null);
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
@@ -270,7 +270,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 		return (dblDate <= _adblDate[_adblDate.length - 1] ? _msr.responseValue (dblDate) :
 			java.lang.Math.exp (-1. * _dblRightFlatForwardRate * (dblDate - _dblEpochDate) / 365.25))  *
-				turnAdjust (epoch().getJulian(), dblDate);
+				turnAdjust (epoch().julian(), dblDate);
 	}
 
 	@Override public double forward (
@@ -282,7 +282,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 			(dblDate2))
 			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve::forward => Invalid input");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
 
@@ -296,7 +296,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("NonlinearDiscountFactorDiscountCurve::zero => Invalid Date");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate < dblStartDate) return 0.;
 

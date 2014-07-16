@@ -81,7 +81,7 @@ public class ForeignCollateralDomesticForex {
 			new CollateralizationParams ("OVERNIGHT_INDEX", strForeignCurrency),
 			dblForeignCollateralRate);
 
-		AbstractUnivariate auFX = new ExponentialDecay (dtToday.getJulian(), dblCollateralizedFXRate / 365.25);
+		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
 
 		DiscountCurve dcCcyDomesticCollatForeign = new ForeignCollateralizedDiscountCurve (
 			strDomesticCurrency,

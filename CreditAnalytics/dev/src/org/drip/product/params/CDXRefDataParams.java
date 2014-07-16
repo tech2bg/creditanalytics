@@ -883,7 +883,7 @@ public class CDXRefDataParams {
 		if (null == _strCurveID || _strCurveID.isEmpty() || null == _strSPN || _strSPN.isEmpty() || null ==
 			_strIndexLabel || _strIndexLabel.isEmpty() || null == _strIndexName || _strIndexName.isEmpty() ||
 				null == _strCurveName || _strCurveName.isEmpty() || null == _dtIssue || null == _dtMaturity
-					|| _dtIssue.getJulian() >= _dtMaturity.getJulian() ||
+					|| _dtIssue.julian() >= _dtMaturity.julian() ||
 						!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon) || null == _strCurrency ||
 							_strCurrency.isEmpty() || null == _strDayCount || _strDayCount.isEmpty() ||
 								!org.drip.quant.common.NumberUtil.IsValid (_dblRecovery) || null == _strRedID
@@ -922,9 +922,9 @@ public class CDXRefDataParams {
 
 		sb.append (org.drip.quant.common.StringUtil.MakeStringArg (_strCurveName) + ", ");
 
-		sb.append (_dtIssue.getJulian() + ", ");
+		sb.append (_dtIssue.julian() + ", ");
 
-		sb.append (_dtMaturity.getJulian() + ", ");
+		sb.append (_dtMaturity.julian() + ", ");
 
 		sb.append (_dblCoupon + ", ");
 

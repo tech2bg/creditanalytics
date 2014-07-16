@@ -182,7 +182,7 @@ public class CreditAnalyticsTestSuite {
 		for (int i = 0; i < NUM_SCHEDULE_ENTRIES; ++i) {
 			adblFactor[i] = 1.0 - 0. * i;
 
-			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 		}
 
 		try {
@@ -206,7 +206,7 @@ public class CreditAnalyticsTestSuite {
 		for (int i = 0; i < NUM_SCHEDULE_ENTRIES; ++i) {
 			adblFactor[i] = 1.0 - 0. * i;
 
-			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 		}
 
 		try {
@@ -280,16 +280,16 @@ public class CreditAnalyticsTestSuite {
 				adblPutFactor[i] = 0.9;
 				adblCallFactor[i] = 1.0;
 
-				adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+				adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 			}
 
 			if (bEOSAmerican) {
 				eosCall = org.drip.product.params.EmbeddedOptionSchedule.fromAmerican
-					(org.drip.analytics.date.JulianDate.Today().getJulian() + 1, adblDate, adblCallFactor,
+					(org.drip.analytics.date.JulianDate.Today().julian() + 1, adblDate, adblCallFactor,
 						false, 30, false, java.lang.Double.NaN, "", java.lang.Double.NaN);
 
 				eosPut = org.drip.product.params.EmbeddedOptionSchedule.fromAmerican
-					(org.drip.analytics.date.JulianDate.Today().getJulian(), adblDate, adblPutFactor, true,
+					(org.drip.analytics.date.JulianDate.Today().julian(), adblDate, adblPutFactor, true,
 						30, false, java.lang.Double.NaN, "", java.lang.Double.NaN);
 			} else {
 				try {
@@ -352,8 +352,8 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		java.util.List<java.lang.Double> lsHols = org.drip.analytics.daycount.Convention.HolidaySet
-			(org.drip.analytics.date.JulianDate.Today().getJulian(),
-				org.drip.analytics.date.JulianDate.Today().addYears (1).getJulian(), "USD,GBP");
+			(org.drip.analytics.date.JulianDate.Today().julian(),
+				org.drip.analytics.date.JulianDate.Today().addYears (1).julian(), "USD,GBP");
 
 		if (s_bPrintHolLoc) {
 			System.out.println ("Num Hol Locations: " + setLoc.size());
@@ -510,7 +510,7 @@ public class CreditAnalyticsTestSuite {
 		org.drip.analytics.date.JulianDate dtStart = org.drip.analytics.date.JulianDate.Today();
 
 		for (int i = 0; i < 5; ++i) {
-			adblDate[i] = dtStart.addYears (2 * i + 2).getJulian();
+			adblDate[i] = dtStart.addYears (2 * i + 2).julian();
 
 			adblDF[i] = 1. - 2 * (i + 1) * (adblRate[i] = 0.05);
 		}
@@ -878,7 +878,7 @@ public class CreditAnalyticsTestSuite {
 	{
 		org.drip.analytics.definition.CreditCurve ccFlatHazard =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
-				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", "USD", 0.02, 0.4);
+				(org.drip.analytics.date.JulianDate.Today().julian(), "CC", "USD", 0.02, 0.4);
 
 		double[] adblDate = new double[5];
 		double[] adblSurvival = new double[5];
@@ -886,13 +886,13 @@ public class CreditAnalyticsTestSuite {
 		org.drip.analytics.date.JulianDate dtStart = org.drip.analytics.date.JulianDate.Today();
 
 		for (int i = 0; i < 5; ++i) {
-			adblDate[i] = dtStart.addYears (2 * i + 2).getJulian();
+			adblDate[i] = dtStart.addYears (2 * i + 2).julian();
 
 			adblSurvival[i] = 1. - 0.1 * (i + 1);
 		}
 
 		org.drip.analytics.definition.CreditCurve ccFromSurvival =
-			org.drip.state.creator.CreditCurveBuilder.FromSurvival (dtStart.getJulian(), "CC", "USD",
+			org.drip.state.creator.CreditCurveBuilder.FromSurvival (dtStart.julian(), "CC", "USD",
 				adblDate, adblSurvival, 0.4);
 
 		java.util.Set<java.lang.String> setstrCDSCurves =
@@ -1039,7 +1039,7 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
-				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", "USD", 0.02, 0.4);
+				(org.drip.analytics.date.JulianDate.Today().julian(), "CC", "USD", 0.02, 0.4);
 
 		org.drip.product.definition.CreditDefaultSwap cds = org.drip.product.creator.CDSBuilder.CreateSNAC
 			(org.drip.analytics.date.JulianDate.Today(), "5Y", 0.1, "CC");
@@ -1062,7 +1062,7 @@ public class CreditAnalyticsTestSuite {
 					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(org.drip.analytics.date.JulianDate.Today(), "USD", null, 0.05),
 							org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
-								(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", "USD", 0.02,
+								(org.drip.analytics.date.JulianDate.Today().julian(), "CC", "USD", 0.02,
 									0.4))))
 			{
 				try {
@@ -1191,7 +1191,7 @@ public class CreditAnalyticsTestSuite {
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02,
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.julian(), "CC", "USD", 0.02,
 				0.);
 
 		org.drip.param.valuation.WorkoutInfo wi =
@@ -1330,7 +1330,7 @@ public class CreditAnalyticsTestSuite {
 			for (org.drip.analytics.period.CashflowPeriodCurveFactors p : bond.getCouponFlow
 				(valParams, pricerParams, org.drip.param.creator.MarketParamsBuilder.Credit
 					(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null,
-						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(),
+						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.julian(),
 							"CC", "USD", 0.02, 0.4)))) {
 				try {
 					System.out.println (org.drip.analytics.date.JulianDate.fromJulian
@@ -1383,7 +1383,7 @@ public class CreditAnalyticsTestSuite {
 			try {
 				System.out.println (strISIN + "    " + bond.getTicker() + " " +
 					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
-						(org.drip.analytics.date.JulianDate.Today().getJulian(),
+						(org.drip.analytics.date.JulianDate.Today().julian(),
 							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2, 3, 100.)
 								+ " " + bond.maturity());
 
@@ -1524,7 +1524,7 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
-				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", "USD", 0.01, 0.4);
+				(org.drip.analytics.date.JulianDate.Today().julian(), "CC", "USD", 0.01, 0.4);
 
 		for (int i = 0; i < aBond.length; ++i) {
 			if (s_bCustomBondCouponCFDisplay) {
@@ -1703,7 +1703,7 @@ public class CreditAnalyticsTestSuite {
 			org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
 		org.drip.analytics.definition.CreditCurve cc =
-			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02,
+			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.julian(), "CC", "USD", 0.02,
 				0.4);
 
 		java.util.List<java.lang.String> lsstrISIN = org.drip.service.api.CreditAnalytics.GetISINsForTicker
@@ -1721,7 +1721,7 @@ public class CreditAnalyticsTestSuite {
 			org.drip.product.definition.Bond bond = org.drip.service.api.CreditAnalytics.GetBond (strISIN);
 
 			if (null != bond && !bond.hasVariableCoupon() && !bond.hasBeenExercised() && !bond.hasDefaulted()
-				&& bond.maturity().getJulian() > dtToday.getJulian()) {
+				&& bond.maturity().julian() > dtToday.julian()) {
 				try {
 					++iNumBonds;
 					double dblPECSFromPrice = java.lang.Double.NaN;
@@ -1762,7 +1762,7 @@ public class CreditAnalyticsTestSuite {
 					if (s_bTickerAnalDisplay)
 						System.out.println (strISIN + "    " + bond.getTicker() + " " +
 							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
-								(org.drip.analytics.date.JulianDate.Today().getJulian(),
+								(org.drip.analytics.date.JulianDate.Today().julian(),
 									org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2,
 										3, 100.) + " " + bond.maturity() + "    " + (bond.isFloater() ?
 											"FLOAT" : "FIXED") + "     " + 
@@ -1801,7 +1801,7 @@ public class CreditAnalyticsTestSuite {
 				if (s_bTickerNotionalDisplay)
 					System.out.println (strISIN + "    " + bond.getTicker() + " " +
 						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
-							(org.drip.analytics.date.JulianDate.Today().getJulian(),
+							(org.drip.analytics.date.JulianDate.Today().julian(),
 								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2, 3,
 									100.) + " " + bond.maturity() + "    " +
 										org.drip.quant.common.FormatUtil.FormatDouble
@@ -2722,7 +2722,7 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.analytics.definition.CreditCurve cc =
 			org.drip.state.creator.CreditCurveBuilder.FromFlatHazard
-				(org.drip.analytics.date.JulianDate.Today().getJulian(), "CC", "USD", 0.01, 0.4);
+				(org.drip.analytics.date.JulianDate.Today().julian(), "CC", "USD", 0.01, 0.4);
 
 		org.drip.product.credit.BondComponent bond = org.drip.product.creator.BondBuilder.CreateSimpleFixed
 			("CCCalibBond", "DKK", "CC", 0.05, 2, "30/360", org.drip.analytics.date.JulianDate.CreateFromYMD
@@ -2739,7 +2739,7 @@ public class CreditAnalyticsTestSuite {
 					org.drip.analytics.daycount.Convention.DR_ACTUAL);
 		try {
 			dblCreditPrice = bond.calcPriceFromCreditBasis (valParams, mktParams, null,
-				bond.maturity().getJulian(), 1., 0.);
+				bond.maturity().julian(), 1., 0.);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
 				System.out.println ("BondCDSCurveCalibration failed.");
@@ -2802,7 +2802,7 @@ public class CreditAnalyticsTestSuite {
 					org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, ccCalib,
 						null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
 							(bond, org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
-								bond.maturity().getJulian(), 1., 0.));
+								bond.maturity().julian(), 1., 0.));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -2910,7 +2910,7 @@ public class CreditAnalyticsTestSuite {
 			abIsPIP[i] = false;
 			adblFXFwd[i] = dblFXSpot - (i + 1) * 0.01 * rand.nextDouble();
 
-			adblNodes[i] = org.drip.analytics.date.JulianDate.Today().addYears (i + 1).getJulian();
+			adblNodes[i] = org.drip.analytics.date.JulianDate.Today().addYears (i + 1).julian();
 
 			if (s_bFXFwd)
 				System.out.println ("Input " + cp.code() + "[" + (i + 1) + "] = " +

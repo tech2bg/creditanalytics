@@ -101,7 +101,7 @@ public class BondBasketAPI {
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
 			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective,
-				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
+				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
 				strCurrency);
 		}
@@ -117,7 +117,7 @@ public class BondBasketAPI {
 
 			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
 				dtIRSEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				0.,
 				2,
 				"Act/360",
@@ -225,7 +225,7 @@ public class BondBasketAPI {
 		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
-			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
 		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
 	}
@@ -246,7 +246,7 @@ public class BondBasketAPI {
 		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
-			adblDate[i] = dtEOSStart.addYears (i + 2).getJulian();
+			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
 		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
 	}

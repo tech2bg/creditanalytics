@@ -102,7 +102,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 
 						_adblFXFwd[i] = _dblFXSpot - (i + 1) * 0.01 * rand.nextDouble();
 
-						_adblNodes[i] = dtToday.addYears (i + 1).getJulian();
+						_adblNodes[i] = dtToday.addYears (i + 1).julian();
 					}
 
 					return true;
@@ -235,7 +235,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 						return false;
 
 						for (int i = 0; i < NUM_FX_NODES; ++i)
-							_adblNodes[i] = dtToday.addYears (i + 1).getJulian();
+							_adblNodes[i] = dtToday.addYears (i + 1).julian();
 
 					return true;
 				}

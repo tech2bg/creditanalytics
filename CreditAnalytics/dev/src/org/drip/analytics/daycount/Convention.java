@@ -939,7 +939,7 @@ public class Convention {
 	{
 		Convention.Init ("c:\\DRIP\\CreditProduct\\Config.xml");
 
-		double dblDate = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 5, 5).getJulian();
+		double dblDate = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 5, 5).julian();
 
 		org.drip.analytics.holiday.Locale lh = s_mapLocHols.get ("HKD");
 

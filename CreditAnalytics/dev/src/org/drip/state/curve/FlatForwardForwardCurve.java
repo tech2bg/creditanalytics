@@ -57,7 +57,7 @@ public class FlatForwardForwardCurve extends org.drip.analytics.rates.ForwardCur
 		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception
 	{
-		super (dtEpoch.getJulian(), fri);
+		super (dtEpoch.julian(), fri);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFlatForwardRate = dblFlatForwardRate))
 			throw new java.lang.Exception ("FlatForwardForwardCurve ctr: Invalid Inputs");

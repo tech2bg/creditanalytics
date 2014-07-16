@@ -84,7 +84,7 @@ public class DiscountCurveBuilder {
 		double dblDFBegin = 1.;
 		double[] adblRate = new double[adblDate.length];
 
-		double dblPeriodBegin = dtStart.getJulian();
+		double dblPeriodBegin = dtStart.julian();
 
 		for (int i = 0; i < adblDate.length; ++i) {
 			if (adblDate[i] <= dblPeriodBegin) return null;
@@ -135,7 +135,7 @@ public class DiscountCurveBuilder {
 
 		try {
 			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams, new
-				double[] {dtStart.getJulian()}, new double[] {dblRate});
+				double[] {dtStart.julian()}, new double[] {dblRate});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -84,9 +84,9 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 		_adblWeight = new double[adblWeight.length];
 		_aComp = new org.drip.product.definition.FixedIncomeComponent[aComp.length];
 
-		_dblEffective = dtEffective.getJulian();
+		_dblEffective = dtEffective.julian();
 
-		_dblMaturity = dtMaturity.getJulian();
+		_dblMaturity = dtMaturity.julian();
 
 		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 

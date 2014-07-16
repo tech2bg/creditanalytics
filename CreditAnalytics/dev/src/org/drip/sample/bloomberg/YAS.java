@@ -95,7 +95,7 @@ public class YAS {
 
 			aCompCalib[i] = DepositBuilder.CreateDeposit (
 				dtCashEffective,
-				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).getJulian()),
+				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
 				strCurrency);
 		}
@@ -111,7 +111,7 @@ public class YAS {
 
 			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
 				dtIRSEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).getJulian()),
+				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				adblCompCalibValue[i + astrCashTenor.length],
 				2,
 				"Act/360",
@@ -277,11 +277,11 @@ public class YAS {
 				null);
 
 		double[] adblDate = new double[] {
-			JulianDate.CreateFromYMD (2016, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2017, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2018, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2019, 3, 1).getJulian(),
-			JulianDate.CreateFromYMD (2020, 3, 1).getJulian()
+			JulianDate.CreateFromYMD (2016, 3, 1).julian(),
+			JulianDate.CreateFromYMD (2017, 3, 1).julian(),
+			JulianDate.CreateFromYMD (2018, 3, 1).julian(),
+			JulianDate.CreateFromYMD (2019, 3, 1).julian(),
+			JulianDate.CreateFromYMD (2020, 3, 1).julian()
 		};
 
 		double[] adblFactor = new double[] {1.045, 1.03, 1.015, 1., 1.};

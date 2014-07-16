@@ -103,7 +103,7 @@ public class CustomOISCurveBuilder {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -125,7 +125,7 @@ public class CustomOISCurveBuilder {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -173,8 +173,8 @@ public class CustomOISCurveBuilder {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.getJulian(),
-				dtMaturity.getJulian(),
+				dtEffective.julian(),
+				dtMaturity.julian(),
 				null,
 				null,
 				"Act/360",
@@ -193,7 +193,7 @@ public class CustomOISCurveBuilder {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -244,7 +244,7 @@ public class CustomOISCurveBuilder {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				4,
@@ -266,7 +266,7 @@ public class CustomOISCurveBuilder {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -317,8 +317,8 @@ public class CustomOISCurveBuilder {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.getJulian(),
-				dtMaturity.getJulian(),
+				dtEffective.julian(),
+				dtMaturity.julian(),
 				null,
 				null,
 				"Act/360",
@@ -337,7 +337,7 @@ public class CustomOISCurveBuilder {
 			);
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,

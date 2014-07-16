@@ -71,19 +71,19 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 					if (null == (dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6)))
 						return false;
 
-					adblDate[0] = dtStart.addDays (3).getJulian(); // ON
+					adblDate[0] = dtStart.addDays (3).julian(); // ON
 
-					adblDate[1] = dtStart.addDays (4).getJulian(); // 1D (TN)
+					adblDate[1] = dtStart.addDays (4).julian(); // 1D (TN)
 
-					adblDate[2] = dtStart.addDays (9).getJulian(); // 1W
+					adblDate[2] = dtStart.addDays (9).julian(); // 1W
 
-					adblDate[3] = dtStart.addDays (16).getJulian(); // 2W
+					adblDate[3] = dtStart.addDays (16).julian(); // 2W
 
-					adblDate[4] = dtStart.addDays (32).getJulian(); // 1M
+					adblDate[4] = dtStart.addDays (32).julian(); // 1M
 
-					adblDate[5] = dtStart.addDays (62).getJulian(); // 2M
+					adblDate[5] = dtStart.addDays (62).julian(); // 2M
 
-					adblDate[6] = dtStart.addDays (92).getJulian(); // 3M
+					adblDate[6] = dtStart.addDays (92).julian(); // 3M
 
 					adblCompCalibValue[0] = .0013;
 					adblCompCalibValue[1] = .0017;

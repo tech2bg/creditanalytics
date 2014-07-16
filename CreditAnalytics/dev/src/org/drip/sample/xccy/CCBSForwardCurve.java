@@ -78,7 +78,7 @@ public class CCBSForwardCurve {
 			 */
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				2,
@@ -104,7 +104,7 @@ public class CCBSForwardCurve {
 			 */
 
 			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.getJulian(),
+				dtEffective.julian(),
 				astrTenor[i],
 				null,
 				12 / iTenorInMonths,
@@ -231,7 +231,7 @@ public class CCBSForwardCurve {
 			null,
 			MarketParamsBuilder.Create (dcDerived, fc6MDerived, null, null, null, null, null, null),
 			null,
-			dcDerived.forward (dtValue.getJulian(), dtValue.addTenor ("3M").getJulian()));
+			dcDerived.forward (dtValue.julian(), dtValue.addTenor ("3M").julian()));
 
 		CurveSurfaceQuoteSet mktParamsDerived = MarketParamsBuilder.Create
 			(dcDerived, fc3MDerived, null, null, null, null, null, null);

@@ -79,7 +79,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblEffectiveDate = effective().getJulian();
+		double dblEffectiveDate = effective().julian();
 
 		java.lang.String strComponentName = name();
 

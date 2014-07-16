@@ -134,7 +134,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		if (dblDate <= dblStartDate) return 1.;
 
 		return (dblDate <= _span.right() ? _span.calcResponseValue (dblDate) : java.lang.Math.exp (-1. *
-			_dblRightFlatForwardRate * (dblDate - dblStartDate) / 365.25)) * turnAdjust (epoch().getJulian(),
+			_dblRightFlatForwardRate * (dblDate - dblStartDate) / 365.25)) * turnAdjust (epoch().julian(),
 				dblDate);
 	}
 
@@ -147,7 +147,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 			(dblDate2))
 			throw new java.lang.Exception ("DiscountFactorDiscountCurve::forward => Invalid input");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate1 < dblStartDate || dblDate2 < dblStartDate) return 0.;
 
@@ -161,7 +161,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("DiscountFactorDiscountCurve::zero => Invalid Date");
 
-		double dblStartDate = epoch().getJulian();
+		double dblStartDate = epoch().julian();
 
 		if (dblDate < dblStartDate) return 0.;
 

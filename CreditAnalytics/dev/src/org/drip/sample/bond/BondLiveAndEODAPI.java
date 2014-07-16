@@ -153,7 +153,7 @@ public class BondLiveAndEODAPI {
 
 		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
-		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD", 0.02, 0.4);
+		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.julian(), "CC", "USD", 0.02, 0.4);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Credit (dc, cc);
 
@@ -167,7 +167,7 @@ public class BondLiveAndEODAPI {
 			Bond bond = CreditAnalytics.GetBond (strISIN);
 
 			if (null != bond && !bond.hasVariableCoupon() && !bond.hasBeenExercised() && !bond.hasDefaulted()
-				&& bond.maturity().getJulian() > dtToday.getJulian()) {
+				&& bond.maturity().julian() > dtToday.julian()) {
 				double dblZSpreadFromPrice = Double.NaN;
 				double dblOASpreadFromPrice = Double.NaN;
 
@@ -191,7 +191,7 @@ public class BondLiveAndEODAPI {
 
 				System.out.println (strISIN + FIELD_SEPARATOR +
 					(bond.isFloater() ? "FLOAT   " : "FIXED   ") + bond.getTicker() + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (bond.coupon (dtToday.getJulian(), mktParams), 2, 3, 100.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (bond.coupon (dtToday.julian(), mktParams), 2, 3, 100.) + FIELD_SEPARATOR +
 					bond.maturity() + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblYieldFromPrice, 2, 3, 100.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblZSpreadFromPrice, 1, 3, 100.) + FIELD_SEPARATOR +
@@ -211,7 +211,7 @@ public class BondLiveAndEODAPI {
 
 			System.out.println (
 				strISIN + FIELD_SEPARATOR + bond.getTicker() + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (bond.coupon (JulianDate.Today().getJulian(), null), 2, 3, 100.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (bond.coupon (JulianDate.Today().julian(), null), 2, 3, 100.) + FIELD_SEPARATOR +
 				bond.maturity() + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (CreditAnalytics.GetBondDoubleField (strISIN, "OutstandingAmount"), 10, 0, 1.)
 			);
@@ -279,7 +279,7 @@ public class BondLiveAndEODAPI {
 
 		ExplicitBootDiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.04);
 
-		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.getJulian(), "CC", "USD",
+		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.julian(), "CC", "USD",
 			0.02, 0.);
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtToday, 0, "", Convention.DR_ACTUAL);
@@ -360,9 +360,9 @@ public class BondLiveAndEODAPI {
 
 		JulianDate dtMaturity = CreditAnalytics.MaturityDate (strISIN);
 
-		boolean bInFirstPeriod = CreditAnalytics.InFirstPeriod (strISIN, dtToday.getJulian());
+		boolean bInFirstPeriod = CreditAnalytics.InFirstPeriod (strISIN, dtToday.julian());
 
-		boolean bInLastPeriod = CreditAnalytics.InLastPeriod (strISIN, dtToday.getJulian());
+		boolean bInLastPeriod = CreditAnalytics.InLastPeriod (strISIN, dtToday.julian());
 
 		ExerciseInfo nei = CreditAnalytics.NextExerciseInfo (strISIN, dtToday);
 

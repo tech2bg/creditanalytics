@@ -134,7 +134,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	 * @return date
 	 */
 
-	public double getDate()
+	public double date()
 	{
 		return _dblDate;
 	}
@@ -145,7 +145,7 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	 * @return time
 	 */
 
-	public long getTime()
+	public long time()
 	{
 		return _lTime;
 	}

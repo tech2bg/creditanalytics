@@ -66,7 +66,7 @@ public class FloatFloatFloatFloat {
 			 */
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			dap,
 			2,
@@ -92,7 +92,7 @@ public class FloatFloatFloatFloat {
 		 */
 
 		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			dap,
 			12 / iTenorInMonths,

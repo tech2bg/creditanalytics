@@ -126,7 +126,7 @@ public class Fixed extends Base {
 		double dblDate = java.lang.Double.NaN;
 
 		try {
-			dblDate = org.drip.analytics.date.JulianDate.CreateFromYMD (iYear, _iMonth, _iDay).getJulian();
+			dblDate = org.drip.analytics.date.JulianDate.CreateFromYMD (iYear, _iMonth, _iDay).julian();
 
 			if (bAdjust) return Base.rollHoliday (dblDate, true, _wkend);
 		} catch (java.lang.Exception e) {

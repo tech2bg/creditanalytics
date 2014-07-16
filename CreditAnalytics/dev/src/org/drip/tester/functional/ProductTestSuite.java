@@ -138,7 +138,7 @@ public class ProductTestSuite {
 		simpleBond.setFloaterSetting (null);
 
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (null,
-			"", dtEffective.getJulian(), 1., 0, strCurrency,
+			"", dtEffective.julian(), 1., 0, strCurrency,
 				org.drip.analytics.daycount.Convention.DR_MOD_FOLL);
 
 		if (!mktConv.validate()) {
@@ -184,8 +184,8 @@ public class ProductTestSuite {
 		simpleBond.setTerminationSetting (cfteParams);
 
 		org.drip.product.params.PeriodGenerator periodParams = new
-			org.drip.product.params.PeriodGenerator (dtMaturity.getJulian(),
-				dtEffective.getJulian(), java.lang.Double.NaN, java.lang.Double.NaN, java.lang.Double.NaN, 2,
+			org.drip.product.params.PeriodGenerator (dtMaturity.julian(),
+				dtEffective.julian(), java.lang.Double.NaN, java.lang.Double.NaN, java.lang.Double.NaN, 2,
 					"30/360", "30/360", null, null, null, null, null, null, null, null, "", false,
 						strCurrency, strCurrency);
 
@@ -257,7 +257,7 @@ public class ProductTestSuite {
 		bondTSY.setFloaterSetting (null);
 
 		org.drip.product.params.QuoteConvention mktConv = new
-			org.drip.product.params.QuoteConvention (null, "", dt.getJulian(), 1., 3, "USD",
+			org.drip.product.params.QuoteConvention (null, "", dt.julian(), 1., 3, "USD",
 				org.drip.analytics.daycount.Convention.DR_MOD_FOLL);
 
 		if (!mktConv.validate()) {
@@ -303,8 +303,8 @@ public class ProductTestSuite {
 		bondTSY.setTerminationSetting (cfteParams);
 
 		org.drip.product.params.PeriodGenerator periodParams = new
-			org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).getJulian(),
-				dt.getJulian(), java.lang.Double.NaN, dt.getJulian(), dt.getJulian(), 2, "30/360", "30/360",
+			org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).julian(),
+				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, "30/360", "30/360",
 					null, null, null, null, null, null, null, null, "", false, "USD", "USD");
 
 		if (!periodParams.validate()) {
@@ -480,7 +480,7 @@ public class ProductTestSuite {
 
 			for (int i = 0; i < aCompCalib.length; ++i) {
 				System.out.println ("TSYRate[" + i + "] = " + dcBaseTSY.zero
-					(aCompCalib[i].maturity().getJulian()));
+					(aCompCalib[i].maturity().julian()));
 
 				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
 					(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
@@ -611,19 +611,19 @@ public class ProductTestSuite {
 
 		// First 7 instruments - cash calibration
 
-		adblDate[0] = dt.addDays (3).getJulian(); // ON
+		adblDate[0] = dt.addDays (3).julian(); // ON
 
-		adblDate[1] = dt.addDays (4).getJulian(); // 1D (TN)
+		adblDate[1] = dt.addDays (4).julian(); // 1D (TN)
 
-		adblDate[2] = dt.addDays (9).getJulian(); // 1W
+		adblDate[2] = dt.addDays (9).julian(); // 1W
 
-		adblDate[3] = dt.addDays (16).getJulian(); // 2W
+		adblDate[3] = dt.addDays (16).julian(); // 2W
 
-		adblDate[4] = dt.addDays (32).getJulian(); // 1M
+		adblDate[4] = dt.addDays (32).julian(); // 1M
 
-		adblDate[5] = dt.addDays (62).getJulian(); // 2M
+		adblDate[5] = dt.addDays (62).julian(); // 2M
 
-		adblDate[6] = dt.addDays (92).getJulian(); // 3M
+		adblDate[6] = dt.addDays (92).julian(); // 3M
 
 		adblCompCalibValue[0] = .0013;
 		adblCompCalibValue[1] = .0017;
@@ -661,40 +661,40 @@ public class ProductTestSuite {
 			aCompCalib[i + 7] = aEDF[i];
 			astrCalibMeasure[i + 7] = "Rate";
 
-			adblDate[i + 7] = dtEDFStart.addDays ((i + 1) * 91).getJulian();
+			adblDate[i + 7] = dtEDFStart.addDays ((i + 1) * 91).julian();
 		}
 
 		// Final 15 instruments - IRS calibration
 
-		adblDate[15] = dt.addDays ((int)(365.25 * 4 + 2)).getJulian(); // 4Y
+		adblDate[15] = dt.addDays ((int)(365.25 * 4 + 2)).julian(); // 4Y
 
-		adblDate[16] = dt.addDays ((int)(365.25 * 5 + 2)).getJulian(); // 5Y
+		adblDate[16] = dt.addDays ((int)(365.25 * 5 + 2)).julian(); // 5Y
 
-		adblDate[17] = dt.addDays ((int)(365.25 * 6 + 2)).getJulian(); // 6Y
+		adblDate[17] = dt.addDays ((int)(365.25 * 6 + 2)).julian(); // 6Y
 
-		adblDate[18] = dt.addDays ((int)(365.25 * 7 + 2)).getJulian(); // 7Y
+		adblDate[18] = dt.addDays ((int)(365.25 * 7 + 2)).julian(); // 7Y
 
-		adblDate[19] = dt.addDays ((int)(365.25 * 8 + 2)).getJulian(); // 8Y
+		adblDate[19] = dt.addDays ((int)(365.25 * 8 + 2)).julian(); // 8Y
 
-		adblDate[20] = dt.addDays ((int)(365.25 * 9 + 2)).getJulian(); // 9Y
+		adblDate[20] = dt.addDays ((int)(365.25 * 9 + 2)).julian(); // 9Y
 
-		adblDate[21] = dt.addDays ((int)(365.25 * 10 + 2)).getJulian(); // 10Y
+		adblDate[21] = dt.addDays ((int)(365.25 * 10 + 2)).julian(); // 10Y
 
-		adblDate[22] = dt.addDays ((int)(365.25 * 11 + 2)).getJulian(); // 11Y
+		adblDate[22] = dt.addDays ((int)(365.25 * 11 + 2)).julian(); // 11Y
 
-		adblDate[23] = dt.addDays ((int)(365.25 * 12 + 2)).getJulian(); // 12Y
+		adblDate[23] = dt.addDays ((int)(365.25 * 12 + 2)).julian(); // 12Y
 
-		adblDate[24] = dt.addDays ((int)(365.25 * 15 + 2)).getJulian(); // 15Y
+		adblDate[24] = dt.addDays ((int)(365.25 * 15 + 2)).julian(); // 15Y
 
-		adblDate[25] = dt.addDays ((int)(365.25 * 20 + 2)).getJulian(); // 20Y
+		adblDate[25] = dt.addDays ((int)(365.25 * 20 + 2)).julian(); // 20Y
 
-		adblDate[26] = dt.addDays ((int)(365.25 * 25 + 2)).getJulian(); // 25Y
+		adblDate[26] = dt.addDays ((int)(365.25 * 25 + 2)).julian(); // 25Y
 
-		adblDate[27] = dt.addDays ((int)(365.25 * 30 + 2)).getJulian(); // 30Y
+		adblDate[27] = dt.addDays ((int)(365.25 * 30 + 2)).julian(); // 30Y
 
-		adblDate[28] = dt.addDays ((int)(365.25 * 40 + 2)).getJulian(); // 40Y
+		adblDate[28] = dt.addDays ((int)(365.25 * 40 + 2)).julian(); // 40Y
 
-		adblDate[29] = dt.addDays ((int)(365.25 * 50 + 2)).getJulian(); // 50Y
+		adblDate[29] = dt.addDays ((int)(365.25 * 50 + 2)).julian(); // 50Y
 
 		adblCompCalibValue[15] = .0166;
 		adblCompCalibValue[16] = .0206;
@@ -1602,13 +1602,13 @@ public class ProductTestSuite {
 			dt.addYears (10), 0.05, "USD", "BRA", "BRA");
 
 		for (int i = 0; i < 5; ++i) {
-			adblAmericanCallDates[i] = dt.addYears (i + 5).getJulian();
+			adblAmericanCallDates[i] = dt.addYears (i + 5).julian();
 
 			adblAmericanCallFactors[i] = 1.;
 		}
 
 		/* bond.setEmbeddedCallSchedule (org.drip.product.params.EmbeddedOptionSchedule.fromAmerican
-			(org.drip.analytics.date.JulianDate.CreateFromYMD (2015, 6, 20).getJulian(),
+			(org.drip.analytics.date.JulianDate.CreateFromYMD (2015, 6, 20).julian(),
 				adblAmericanCallDates, adblAmericanCallFactors, false, 30, false, java.lang.Double.NaN, "",
 					java.lang.Double.NaN)); */
 
@@ -2213,7 +2213,7 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		double dblStart = dt.getJulian();
+		double dblStart = dt.julian();
 
 		double[] adblDate = new double[3];
 		double[] adblPutDate = new double[3];

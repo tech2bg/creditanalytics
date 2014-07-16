@@ -65,7 +65,7 @@ public class FloatFloatFloatFloatMTM {
 		 */
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			null,
 			2,
@@ -91,7 +91,7 @@ public class FloatFloatFloatFloatMTM {
 		 */
 
 		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			null,
 			12 / iTenorInMonths,
@@ -183,9 +183,7 @@ public class FloatFloatFloatFloatMTM {
 				"USDJPY_CCBS",
 				ffcReferenceUSD,
 				ffcDerivedJPY),
-			false,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_FUNDING_FX,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_NONE
+			false
 		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();

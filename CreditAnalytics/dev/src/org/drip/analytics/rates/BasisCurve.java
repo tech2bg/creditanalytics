@@ -108,7 +108,7 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 	{
 		if (null == dt) throw new java.lang.Exception ("BasisCurve::basis got null for date");
 
-		return basis (dt.getJulian());
+		return basis (dt.julian());
 	}
 
 	@Override public double basis (
@@ -205,7 +205,7 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 	{
 		if (null == dt) return null;
 
-		return jackDForwardDManifestMeasure (strManifestMeasure, dt.getJulian());
+		return jackDForwardDManifestMeasure (strManifestMeasure, dt.julian());
 	}
 
 	/**

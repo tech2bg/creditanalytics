@@ -104,7 +104,7 @@ public class EuropeanCallPut {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblMaturity = _dtMaturity.getJulian();
+		double dblMaturity = _dtMaturity.julian();
 
 		if (dblValueDate >= dblMaturity) return null;
 
@@ -201,7 +201,7 @@ public class EuropeanCallPut {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblMaturity = _dtMaturity.getJulian();
+		double dblMaturity = _dtMaturity.julian();
 
 		if (dblValueDate >= dblMaturity)
 			throw new java.lang.Exception ("EuropeanCallPut::implyVolatility => Invalid Inputs");

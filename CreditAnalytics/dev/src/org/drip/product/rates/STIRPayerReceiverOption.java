@@ -93,7 +93,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= exercise().getJulian()) return null;
+		if (dblValueDate >= exercise().julian()) return null;
 
 		long lStart = System.nanoTime();
 
@@ -104,7 +104,7 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		if (null == auSTIRSwapRateVolSurface) return null;
 
-		double dblExerciseDate = exercise().getJulian();
+		double dblExerciseDate = exercise().julian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapSTIROutput = _stir.value
 			(valParams, pricerParams, csqs, quotingParams);

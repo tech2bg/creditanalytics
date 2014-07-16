@@ -89,7 +89,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 						aCompCalib[i] = aEDF[i];
 						astrCalibMeasure[i] = "Rate";
 
-						adblDate[i] = dtEDFStart.addDays ((i + 1) * 91).getJulian();
+						adblDate[i] = dtEDFStart.addDays ((i + 1) * 91).julian();
 					}
 
 					return null != (dcEDF =

@@ -1493,7 +1493,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 				org.drip.analytics.rates.DiscountCurve dcBase = mpc.irsg().get
 					(_strCouponCurrency).getDCBase();
 
-				_dblFloatSpread = _dblCurrentCoupon - 100. * dcBase.libor (dcBase.epoch().getJulian(),
+				_dblFloatSpread = _dblCurrentCoupon - 100. * dcBase.libor (dcBase.epoch().julian(),
 					(org.drip.analytics.support.AnalyticsHelper.GetTenorFromFreq (_iCouponFreq)));
 			} else
 				_dblFloatSpread = 0.;
@@ -1779,7 +1779,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	public org.drip.product.params.QuoteConvention getMarketConvention()
 	{
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (null,
-			_strCalculationType, _dtFirstSettle.getJulian(), _dblRedemptionValue, 0, "",
+			_strCalculationType, _dtFirstSettle.julian(), _dblRedemptionValue, 0, "",
 				org.drip.analytics.daycount.Convention.DR_ACTUAL);
 
 		return mktConv.validate() ? mktConv : null;
@@ -1850,9 +1850,9 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 	public org.drip.product.params.PeriodGenerator getPeriodGenParams()
 	{
 		org.drip.product.params.PeriodGenerator periodParams = new org.drip.product.params.PeriodGenerator
-			(_dtMaturity.getJulian(), _dtInterestAccrualStart.getJulian(), null == _dtFinalMaturity ?
-				java.lang.Double.NaN : _dtFinalMaturity.getJulian(), null == _dtFirstCoupon ?
-					java.lang.Double.NaN : _dtFirstCoupon.getJulian(), _dtInterestAccrualStart.getJulian(),
+			(_dtMaturity.julian(), _dtInterestAccrualStart.julian(), null == _dtFinalMaturity ?
+				java.lang.Double.NaN : _dtFinalMaturity.julian(), null == _dtFirstCoupon ?
+					java.lang.Double.NaN : _dtFirstCoupon.julian(), _dtInterestAccrualStart.julian(),
 						_iCouponFreq, _strDayCountCode, _strDayCountCode, null, null, null, null, null, null,
 							null, null, _strMaturityType, false, _strCouponCurrency, _strCouponCurrency);
 
@@ -1901,7 +1901,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		if (null == _dtMaturity)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtMaturity.getJulian() + fieldDelimiter());
+			sb.append (_dtMaturity.julian() + fieldDelimiter());
 
 		sb.append (_iCouponFreq + fieldDelimiter());
 
@@ -1930,27 +1930,27 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		if (null == _dtAnnounce)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtAnnounce.getJulian() + fieldDelimiter());
+			sb.append (_dtAnnounce.julian() + fieldDelimiter());
 
 		if (null == _dtFirstSettle)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFirstSettle.getJulian() + fieldDelimiter());
+			sb.append (_dtFirstSettle.julian() + fieldDelimiter());
 
 		if (null == _dtFirstCoupon)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFirstCoupon.getJulian() + fieldDelimiter());
+			sb.append (_dtFirstCoupon.julian() + fieldDelimiter());
 
 		if (null == _dtInterestAccrualStart)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtInterestAccrualStart.getJulian() + fieldDelimiter());
+			sb.append (_dtInterestAccrualStart.julian() + fieldDelimiter());
 
 		if (null == _dtIssue)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtIssue.getJulian() + fieldDelimiter());
+			sb.append (_dtIssue.julian() + fieldDelimiter());
 
 		sb.append (_bIsCallable + fieldDelimiter());
 
@@ -1987,7 +1987,7 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 		if (null == _dtFinalMaturity)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
-			sb.append (_dtFinalMaturity.getJulian() + fieldDelimiter());
+			sb.append (_dtFinalMaturity.julian() + fieldDelimiter());
 
 		sb.append (_bIsPerpetual + fieldDelimiter());
 

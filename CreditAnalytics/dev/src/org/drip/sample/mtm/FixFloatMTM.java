@@ -10,6 +10,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.pricer.JointStatePricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.*;
 import org.drip.product.mtm.ComponentPairMTM;
@@ -71,7 +72,7 @@ public class FixFloatMTM {
 			 */
 
 		List<CashflowPeriod> lsFixPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			dap,
 			2,
@@ -97,7 +98,7 @@ public class FixFloatMTM {
 		 */
 
 		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtEffective.getJulian(),
+			dtEffective.julian(),
 			strTenor,
 			dap,
 			12 / iTenorInMonths,
@@ -134,6 +135,10 @@ public class FixFloatMTM {
 		double dblUSDCollateralRate = 0.02;
 		double dblUSD3MForwardRate = 0.02;
 
+		double dblForwardVol = 0.1;
+		double dblFundingVol = 0.1;
+		double dblForwardFundingCorr = 0.1;
+
 		/*
 		 * Initialize the Credit Analytics Library
 		 */
@@ -144,6 +149,8 @@ public class FixFloatMTM {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
+		FloatingRateIndex fri3M = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+
 		DiscountCurve dcUSDCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
 			"USD",
@@ -152,7 +159,7 @@ public class FixFloatMTM {
 
 		ForwardCurve fc3MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			fri3M,
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
@@ -164,24 +171,20 @@ public class FixFloatMTM {
 
 		fixFloatUSD.setPrimaryCode ("USD_IRS::3M::2Y");
 
-		ComponentPairMTM ccbsUSDJPYAbsolute = new ComponentPairMTM (
+		ComponentPairMTM fixFloatAbsolute = new ComponentPairMTM (
 			new ComponentPair (
 				"USD_IRS",
 				fixFloatUSD.referenceStream(),
 				fixFloatUSD.derivedStream()),
-			true,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_FUNDING_FX,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_NONE
+			true
 		);
 
-		ComponentPairMTM ccbsUSDJPYRelative = new ComponentPairMTM (
+		ComponentPairMTM fixFloatRelative = new ComponentPairMTM (
 			new ComponentPair (
 				"USD_IRS",
 				fixFloatUSD.referenceStream(),
 				fixFloatUSD.derivedStream()),
-			false,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_FUNDING_FX,
-			ComponentPairMTM.MTM_QUANTO_ADJUSTMENT_NONE
+			false
 		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
@@ -190,11 +193,17 @@ public class FixFloatMTM {
 
 		mktParams.setForwardCurve (fc3MUSD);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (0.3));
+		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblFundingVol));
 
-		CaseInsensitiveTreeMap<Double> mapAbsoluteMTMOutput = ccbsUSDJPYAbsolute.value (valParams, null, mktParams, null);
+		mktParams.setForwardCurveVolSurface (fri3M, new FlatUnivariate (dblForwardVol));
 
-		CaseInsensitiveTreeMap<Double> mapRelativeMTMOutput = ccbsUSDJPYRelative.value (valParams, null, mktParams, null);
+		mktParams.setForwardFundingCorrSurface (fri3M, "USD", new FlatUnivariate (dblForwardFundingCorr));
+
+		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX);
+
+		CaseInsensitiveTreeMap<Double> mapAbsoluteMTMOutput = fixFloatAbsolute.value (valParams, jspp, mktParams, null);
+
+		CaseInsensitiveTreeMap<Double> mapRelativeMTMOutput = fixFloatRelative.value (valParams, jspp, mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapRelativeMTMOutput.entrySet()) {
 			String strKey = me.getKey();

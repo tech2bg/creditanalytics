@@ -374,11 +374,11 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		double dblEndDate = currentPeriod.getEndDate();
 
-		double dblEpochDate = dcFunding.epoch().getJulian();
+		double dblEpochDate = dcFunding.epoch().julian();
 
 		if (dblEpochDate > dblStartDate)
 			dblEndDate = new org.drip.analytics.date.JulianDate (dblStartDate = dblEpochDate).addTenor
-				(_fri.tenor()).getJulian();
+				(_fri.tenor()).julian();
 
 		return dcFunding.libor (dblStartDate, dblEndDate, currentPeriod.getCouponDCF()) + _dblSpread;
 	}
@@ -805,7 +805,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= maturity().getJulian() || null == csqs) return null;
+		if (dblValueDate >= maturity().julian() || null == csqs) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
@@ -909,7 +909,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
 	{
-		return valParams.valueDate() >= maturity().getJulian() ? null : new
+		return valParams.valueDate() >= maturity().julian() ? null : new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 	}
 

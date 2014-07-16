@@ -548,7 +548,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 
 		if (DECEMBER == iMonth) return "December";
 
-		throw new java.lang.Exception ("JulianDate::getMonthChar => Invalid Month: " + iMonth);
+		throw new java.lang.Exception ("JulianDate::MonthChar => Invalid Month: " + iMonth);
 	}
 
 	/**
@@ -561,7 +561,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	 * @throws java.lang.Exception thrown if the input month is invalid
 	 */
 
-	public static java.lang.String getMonthOracleChar (
+	public static java.lang.String MonthOracleChar (
 		final int iMonth)
 		throws java.lang.Exception
 	{
@@ -589,7 +589,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 
 		if (DECEMBER == iMonth) return "DEC";
 
-		throw new java.lang.Exception ("JulianDate::getMonthOracleChar => Invalid Month: " + iMonth);
+		throw new java.lang.Exception ("JulianDate::MonthOracleChar => Invalid Month: " + iMonth);
 	}
 
 	/**
@@ -864,7 +864,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	 * @return The double Julian
 	 */
 
-	public double getJulian()
+	public double julian()
 	{
 		return _dblJulian;
 	}
@@ -1078,7 +1078,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	 * @return The new JulianDate
 	 */
 
-	public JulianDate getFirstEDFStartDate (
+	public JulianDate firstEDFStartDate (
 		final int iNumRollMonths)
 	{
 		int iJA = (int) (_dblJulian + HALFSECOND / 86400.);
@@ -1128,7 +1128,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	 * @return The new JulianDate
 	 */
 
-	public JulianDate getFirstCreditIMMStartDate (
+	public JulianDate firstCreditIMMStartDate (
 		final int iNumRollMonths)
 	{
 		int iJA = (int) (_dblJulian + HALFSECOND / 86400.);
@@ -1232,7 +1232,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		if (null == dtNew) return null;
 
 		try {
-			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.getJulian(),
+			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.julian(),
 				org.drip.analytics.daycount.Convention.DR_FOLL, strCalendarSet));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1301,7 +1301,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		if (null == dtNew) return null;
 
 		try {
-			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.getJulian(),
+			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.julian(),
 				org.drip.analytics.daycount.Convention.DR_FOLL, strCalendarSet));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1326,7 +1326,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	{
 		if (null == dt) throw new java.lang.Exception ("JulianDate::daysDiff => Invalid Input!");
 
-		return (int) (_dblJulian - dt.getJulian());
+		return (int) (_dblJulian - dt.julian());
 	}
 
 	/**
@@ -1338,8 +1338,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	public java.lang.String toOracleDate()
 	{
 		try {
-			return Day (_dblJulian) + "-" + getMonthOracleChar (Month (_dblJulian)) + "-" + Year
-				(_dblJulian);
+			return Day (_dblJulian) + "-" + MonthOracleChar (Month (_dblJulian)) + "-" + Year (_dblJulian);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

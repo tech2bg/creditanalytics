@@ -608,7 +608,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		org.drip.analytics.output.BondWorkoutMeasures bwmFair = calcBondWorkoutMeasures (valParams,
-			pricerParams, csqs, maturity().getJulian(), 1.);
+			pricerParams, csqs, maturity().julian(), 1.);
 
 		if (null == bwmFair) return null;
 
@@ -621,7 +621,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		try {
 			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, standardRVMeasureMap (valParams,
 				pricerParams, csqs, quotingParams, new org.drip.param.valuation.WorkoutInfo
-					(maturity().getJulian(), calcYieldFromPrice (valParams, csqs, quotingParams,
+					(maturity().julian(), calcYieldFromPrice (valParams, csqs, quotingParams,
 						dblPrice / notional (valParams.valueDate())), 1.,
 							org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY), dblPrice, ""));
 
@@ -684,7 +684,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblExerciseFactor = 1.;
 		double dblCleanPrice = java.lang.Double.NaN;
 
-		double dblExerciseDate = maturity().getJulian();
+		double dblExerciseDate = maturity().julian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalibMeasures = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
@@ -1854,7 +1854,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt) return null;
 
 		try {
-			int iIndex = _periodParams.getPeriodIndex (dt.getJulian());
+			int iIndex = _periodParams.getPeriodIndex (dt.julian());
 
 			if (0 == iIndex) return null;
 			
@@ -1877,17 +1877,17 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt || null == csqs)
 			throw new java.lang.Exception ("BondComponent::calcPreviousCouponRate => Null val/mkt params!");
 
-		int iIndex = _periodParams.getPeriodIndex (dt.getJulian());
+		int iIndex = _periodParams.getPeriodIndex (dt.julian());
 
 		org.drip.analytics.period.Period period = _periodParams.getPeriod (iIndex - 1);
 
-		if (null == _fltParams) return coupon (dt.getJulian(), csqs);
+		if (null == _fltParams) return coupon (dt.julian(), csqs);
 
 		if (null == period)
 			throw new java.lang.Exception
 				("BondComponent::calcPreviousCouponRate => Cannot find previous period!");
 
-		return coupon (dt.getJulian(), csqs);
+		return coupon (dt.julian(), csqs);
 	}
 
 	@Override public org.drip.analytics.date.JulianDate calcCurrentCouponDate (
@@ -1896,7 +1896,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt) return null;
 
 		try {
-			int iIndex = _periodParams.getPeriodIndex (dt.getJulian());
+			int iIndex = _periodParams.getPeriodIndex (dt.julian());
 			
 			org.drip.analytics.period.Period period = _periodParams.getPeriod (iIndex);
 
@@ -1915,7 +1915,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt) return null;
 
 		try {
-			int iIndex = _periodParams.getPeriodIndex (dt.getJulian());
+			int iIndex = _periodParams.getPeriodIndex (dt.julian());
 			
 			org.drip.analytics.period.Period period = _periodParams.getPeriod (iIndex + 1);
 
@@ -1945,8 +1945,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == eos || null == adblEOSExerciseDates || 0 == adblEOSExerciseDates.length) return null;
 
 		for (int i = 0; i < adblEOSExerciseDates.length; ++i) {
-			if (dt.getJulian() > adblEOSExerciseDates[i] + LEFT_EOS_SNIP || adblEOSExerciseDates[i] -
-				dt.getJulian() < eos.getExerciseNoticePeriod())
+			if (dt.julian() > adblEOSExerciseDates[i] + LEFT_EOS_SNIP || adblEOSExerciseDates[i] -
+				dt.julian() < eos.getExerciseNoticePeriod())
 				continue;
 
 			try {
@@ -1974,7 +1974,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == neiNextCall && null == neiNextPut) {
 			try {
-				return new org.drip.analytics.output.ExerciseInfo (maturity().getJulian(), 1.,
+				return new org.drip.analytics.output.ExerciseInfo (maturity().julian(), 1.,
 					org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
@@ -1998,11 +1998,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt || null == csqs)
 			throw new java.lang.Exception ("BondComponent::calcCurrentCouponRate => Null val/mkt params!");
 
-		if (null == _fltParams) return coupon (dt.getJulian(), csqs);
+		if (null == _fltParams) return coupon (dt.julian(), csqs);
 
 		if (!java.lang.Double.isNaN (_fltParams._dblCurrentCoupon)) return _fltParams._dblCurrentCoupon;
 
-		return coupon (dt.getJulian(), csqs);
+		return coupon (dt.julian(), csqs);
 	}
 
 	@Override public double calcNextCouponRate (
@@ -2013,16 +2013,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt || null == csqs)
 			throw new java.lang.Exception ("BondComponent::calcNextCouponRate => Null val/mkt params!");
 
-		if (null == _fltParams) return coupon (dt.getJulian(), csqs);
+		if (null == _fltParams) return coupon (dt.julian(), csqs);
 
-		int iIndex = _periodParams.getPeriodIndex (dt.getJulian());
+		int iIndex = _periodParams.getPeriodIndex (dt.julian());
 
 		org.drip.analytics.period.Period period = _periodParams.getPeriod (iIndex + 1);
 
 		if (null == period)
 			throw new java.lang.Exception ("BondComponent::calcNextCouponRate => Cannot find next period!");
 
-		return coupon (dt.getJulian(), csqs);
+		return coupon (dt.julian(), csqs);
 	}
 
 	@Override public double calcAccrued (
@@ -12008,8 +12008,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketInputType=TSYSpread", dblTSYSpread);
 
-				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().getJulian(),
-					getTsyBmkYield (valParams, csqs, maturity().getJulian()) + dblTSYSpread, 1.,
+				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().julian(),
+					getTsyBmkYield (valParams, csqs, maturity().julian()) + dblTSYSpread, 1.,
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
@@ -12022,7 +12022,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketInputType=Yield", dblYield);
 
-				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().getJulian(), dblYield,
+				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().julian(), dblYield,
 					1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
@@ -12035,7 +12035,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketInputType=ZSpread", dblZSpread);
 
-				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().getJulian(),
+				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().julian(),
 					calcYieldFromZSpread (valParams, csqs, quotingParams, dblZSpread), 1.,
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
@@ -12049,7 +12049,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketInputType=ISpread", dblISpread);
 
-				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().getJulian(),
+				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().julian(),
 					calcYieldFromISpread (valParams, csqs, quotingParams, dblISpread), 1.,
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
@@ -12064,7 +12064,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketInputType=CreditBasis", dblCreditBasis);
 
-				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().getJulian(),
+				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().julian(),
 					calcYieldFromCreditBasis (valParams, csqs, quotingParams, dblCreditBasis), 1.,
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
@@ -12078,7 +12078,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketInputType=PECS", dblCreditBasis);
 
-				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().getJulian(),
+				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().julian(),
 					calcYieldFromPECS (valParams, csqs, quotingParams, dblCreditBasis), 1.,
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
@@ -12556,7 +12556,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().getJulian()|| null ==
+		if (null == valParams || valParams.valueDate() >= maturity().julian()|| null ==
 			strManifestMeasure || null == csqs || null == csqs.fundingCurve (couponCurrency()[0]))
 			return null;
 
@@ -12933,7 +12933,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					else
 						sb.append (collectionRecordDelimiter());
 
-					sbFixings.append (meOut.getKey().getJulian() + collectionMultiLevelKeyDelimiter() +
+					sbFixings.append (meOut.getKey().julian() + collectionMultiLevelKeyDelimiter() +
 						meIn.getKey() + collectionKeyValueDelimiter() + meIn.getValue());
 				}
 			}
@@ -13011,7 +13011,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		org.drip.analytics.daycount.Convention.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
 
-		double dblStart = org.drip.analytics.date.JulianDate.Today().getJulian();
+		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
 
 		double[] adblDate = new double[3];
 		double[] adblPutDate = new double[3];

@@ -191,7 +191,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 		if (null != auFX) {
 			try {
-				dblFX = auFX.evaluate (effective().getJulian());
+				dblFX = auFX.evaluate (effective().julian());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
