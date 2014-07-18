@@ -371,28 +371,31 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "3Y",
 				dap, 2, "30/360", false, true, "DEF", "ABC");
 
-		aFixedStream[0] = new org.drip.product.rates.FixedStream ("ABC", 0.03, 100., null, lsCouponPeriod3Y);
+		aFixedStream[0] = new org.drip.product.rates.FixedStream ("ABC", null, 0.03, 100., null,
+			lsCouponPeriod3Y);
 
-		aFloatStream[0] = new org.drip.product.rates.FloatingStream ("ABC", 0., 100., null, lsCouponPeriod3Y,
-			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+		aFloatStream[0] = new org.drip.product.rates.FloatingStream ("ABC", null, 0., 100., null,
+			lsCouponPeriod3Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod5Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "5Y",
 				dap, 2, "30/360", false, true, "JKL", "GHI");
 
-		aFixedStream[1] = new org.drip.product.rates.FixedStream ("GHI", 0.05, 100., null, lsCouponPeriod5Y);
+		aFixedStream[1] = new org.drip.product.rates.FixedStream ("GHI", null, 0.05, 100., null,
+			lsCouponPeriod5Y);
 
-		aFloatStream[1] = new org.drip.product.rates.FloatingStream ("ABC", 0., 100., null, lsCouponPeriod5Y,
-			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+		aFloatStream[1] = new org.drip.product.rates.FloatingStream ("ABC", null, 0., 100., null,
+			lsCouponPeriod5Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod7Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "7Y",
 				dap, 2, "30/360", false, true, "PQR", "MNO");
 
-		aFixedStream[2] = new org.drip.product.rates.FixedStream ("MNO", 0.05, 100., null, lsCouponPeriod7Y);
+		aFixedStream[2] = new org.drip.product.rates.FixedStream ("MNO", null, 0.05, 100., null,
+			lsCouponPeriod7Y);
 
-		aFloatStream[2] = new org.drip.product.rates.FloatingStream ("ABC", 0., 100., null, lsCouponPeriod7Y,
-			org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+		aFloatStream[2] = new org.drip.product.rates.FloatingStream ("ABC", null, 0., 100., null,
+			lsCouponPeriod7Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		RatesBasket rb = new RatesBasket ("SAMRB", aFixedStream, aFloatStream);
 

@@ -92,6 +92,7 @@ public class CCBSDiscountCurve {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -118,6 +119,7 @@ public class CCBSDiscountCurve {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,

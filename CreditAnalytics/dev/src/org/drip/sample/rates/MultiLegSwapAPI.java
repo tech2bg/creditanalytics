@@ -163,6 +163,7 @@ public class MultiLegSwapAPI {
 
 		aFixedStream[0] = new FixedStream (
 			"USD",
+			null,
 			0.03,
 			1.,
 			null,
@@ -183,6 +184,7 @@ public class MultiLegSwapAPI {
 
 		aFixedStream[1] = new FixedStream (
 			"USD",
+			null,
 			0.05,
 			1.,
 			null,
@@ -203,6 +205,7 @@ public class MultiLegSwapAPI {
 
 		aFixedStream[2] = new FixedStream (
 			"USD",
+			null,
 			0.07,
 			1.,
 			null,
@@ -229,6 +232,7 @@ public class MultiLegSwapAPI {
 
 		aFloatStream[0] = new FloatingStream (
 			"USD",
+			null,
 			0.03,
 			-1.,
 			null,
@@ -251,6 +255,7 @@ public class MultiLegSwapAPI {
 
 		aFloatStream[1] = new FloatingStream (
 			"USD",
+			null,
 			0.05,
 			-1.,
 			null,
@@ -273,6 +278,7 @@ public class MultiLegSwapAPI {
 
 		aFloatStream[2] = new FloatingStream (
 			"USD",
+			null,
 			0.07,
 			-1.,
 			null,

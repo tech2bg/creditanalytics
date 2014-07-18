@@ -135,6 +135,7 @@ public class CustomOISCurveReconciler {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -203,6 +204,7 @@ public class CustomOISCurveReconciler {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -276,6 +278,7 @@ public class CustomOISCurveReconciler {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -347,6 +350,7 @@ public class CustomOISCurveReconciler {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,

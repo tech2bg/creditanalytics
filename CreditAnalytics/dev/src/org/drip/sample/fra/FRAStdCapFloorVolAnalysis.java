@@ -117,6 +117,7 @@ public class FRAStdCapFloorVolAnalysis {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -139,6 +140,7 @@ public class FRAStdCapFloorVolAnalysis {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -261,6 +263,7 @@ public class FRAStdCapFloorVolAnalysis {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -287,6 +290,7 @@ public class FRAStdCapFloorVolAnalysis {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,
@@ -571,6 +575,7 @@ public class FRAStdCapFloorVolAnalysis {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,

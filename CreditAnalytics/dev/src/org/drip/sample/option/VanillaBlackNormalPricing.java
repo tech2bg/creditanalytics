@@ -116,6 +116,7 @@ public class VanillaBlackNormalPricing {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -138,6 +139,7 @@ public class VanillaBlackNormalPricing {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,

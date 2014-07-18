@@ -61,7 +61,7 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 		final boolean bIsReference)
 		throws java.lang.Exception
 	{
-		super (strCurrency, dblSpread, dblNotional, notlSchedule, lsCouponPeriod, fri, bIsReference);
+		super (strCurrency, null, dblSpread, dblNotional, notlSchedule, lsCouponPeriod, fri, bIsReference);
 	}
 
 	/**

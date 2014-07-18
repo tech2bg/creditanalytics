@@ -139,6 +139,7 @@ public class CustomDiscountCurveReconciler {
 
 			FloatingStream floatStream = new FloatingStream (
 				"USD",
+				null,
 				0.,
 				-1.,
 				null,
@@ -161,6 +162,7 @@ public class CustomDiscountCurveReconciler {
 
 			FixedStream fixStream = new FixedStream (
 				"USD",
+				null,
 				0.,
 				1.,
 				null,

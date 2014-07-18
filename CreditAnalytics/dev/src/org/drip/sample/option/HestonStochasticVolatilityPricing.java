@@ -117,6 +117,7 @@ public class HestonStochasticVolatilityPricing {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -139,6 +140,7 @@ public class HestonStochasticVolatilityPricing {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,

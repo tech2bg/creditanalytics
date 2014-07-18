@@ -156,6 +156,7 @@ public class IBOR {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -180,6 +181,7 @@ public class IBOR {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -238,6 +240,7 @@ public class IBOR {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,
@@ -264,6 +267,7 @@ public class IBOR {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,

@@ -116,6 +116,7 @@ public class FRAStdOption {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -138,6 +139,7 @@ public class FRAStdOption {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -260,6 +262,7 @@ public class FRAStdOption {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -286,6 +289,7 @@ public class FRAStdOption {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,

@@ -118,6 +118,7 @@ public class FRAStdOptionVolAnalysis {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -140,6 +141,7 @@ public class FRAStdOptionVolAnalysis {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -262,6 +264,7 @@ public class FRAStdOptionVolAnalysis {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -288,6 +291,7 @@ public class FRAStdOptionVolAnalysis {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,

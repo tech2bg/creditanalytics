@@ -85,6 +85,7 @@ public class FixFloatFixFloatMTM {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -109,6 +110,7 @@ public class FixFloatFixFloatMTM {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,

@@ -143,6 +143,7 @@ public class FloatFloatForwardCurve {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -165,6 +166,7 @@ public class FloatFloatForwardCurve {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -287,6 +289,7 @@ public class FloatFloatForwardCurve {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -313,6 +316,7 @@ public class FloatFloatForwardCurve {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,

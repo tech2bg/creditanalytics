@@ -10,14 +10,9 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.pricer.JointStatePricerParams;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.*;
-import org.drip.product.mtm.ComponentPairMTM;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
-import org.drip.quant.common.FormatUtil;
-import org.drip.quant.common.NumberUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
@@ -85,6 +80,7 @@ public class FixFloatMTM {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -111,6 +107,7 @@ public class FixFloatMTM {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,
@@ -171,22 +168,6 @@ public class FixFloatMTM {
 
 		fixFloatUSD.setPrimaryCode ("USD_IRS::3M::2Y");
 
-		ComponentPairMTM fixFloatAbsolute = new ComponentPairMTM (
-			new ComponentPair (
-				"USD_IRS",
-				fixFloatUSD.referenceStream(),
-				fixFloatUSD.derivedStream()),
-			true
-		);
-
-		ComponentPairMTM fixFloatRelative = new ComponentPairMTM (
-			new ComponentPair (
-				"USD_IRS",
-				fixFloatUSD.referenceStream(),
-				fixFloatUSD.derivedStream()),
-			false
-		);
-
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
 		mktParams.setFundingCurve (dcUSDCollatDomestic);
@@ -199,27 +180,12 @@ public class FixFloatMTM {
 
 		mktParams.setForwardFundingCorrSurface (fri3M, "USD", new FlatUnivariate (dblForwardFundingCorr));
 
-		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX);
+		CaseInsensitiveTreeMap<Double> mapMTMOutput = fixFloatUSD.value (valParams, null, mktParams, null);
 
-		CaseInsensitiveTreeMap<Double> mapAbsoluteMTMOutput = fixFloatAbsolute.value (valParams, jspp, mktParams, null);
-
-		CaseInsensitiveTreeMap<Double> mapRelativeMTMOutput = fixFloatRelative.value (valParams, jspp, mktParams, null);
-
-		for (Map.Entry<String, Double> me : mapRelativeMTMOutput.entrySet()) {
+		for (Map.Entry<String, Double> me : mapMTMOutput.entrySet()) {
 			String strKey = me.getKey();
 
-			double dblAbsoluteMeasure = mapAbsoluteMTMOutput.get (strKey);
-
-			double dblRelativeMeasure = mapRelativeMTMOutput.get (strKey);
-
-			String strReconcile = NumberUtil.WithinTolerance (dblAbsoluteMeasure, dblRelativeMeasure, 1.e-08, 1.e-04) ?
-				"RECONCILES" :
-				"DOES NOT RECONCILE";
-
-			System.out.println ("\t" +
-				FormatUtil.FormatDouble (dblAbsoluteMeasure, 1, 8, 1.) + " | " +
-				FormatUtil.FormatDouble (dblRelativeMeasure, 1, 8, 1.) + " | " +
-				strReconcile + " <= " + strKey);
+			System.out.println ("\t" + strKey + "=> " +  mapMTMOutput.get (strKey));
 		}
 	}
 }

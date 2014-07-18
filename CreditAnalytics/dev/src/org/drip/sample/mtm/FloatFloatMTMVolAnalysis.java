@@ -83,6 +83,7 @@ public class FloatFloatMTMVolAnalysis {
 
 		FloatingStream floatReferenceStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -111,6 +112,7 @@ public class FloatFloatMTMVolAnalysis {
 
 		FloatingStream floatDerivedStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,

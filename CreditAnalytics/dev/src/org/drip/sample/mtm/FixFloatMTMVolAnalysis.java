@@ -83,6 +83,7 @@ public class FixFloatMTMVolAnalysis {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -109,6 +110,7 @@ public class FixFloatMTMVolAnalysis {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,

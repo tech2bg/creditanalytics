@@ -71,7 +71,8 @@ public class RatesStreamBuilder {
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
 
 		try {
-			return new org.drip.product.rates.FixedStream (strCurrency, dblCoupon, 1., null, lsCouponPeriod);
+			return new org.drip.product.rates.FixedStream (strCurrency, null, dblCoupon, 1., null,
+				lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -109,7 +110,8 @@ public class RatesStreamBuilder {
 						strCurrency);
 
 		try {
-			return new org.drip.product.rates.FixedStream (strCurrency, dblCoupon, 1., null, lsCouponPeriod);
+			return new org.drip.product.rates.FixedStream (strCurrency, null, dblCoupon, 1., null,
+				lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -147,7 +149,7 @@ public class RatesStreamBuilder {
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
 
 		try {
-			return new org.drip.product.rates.FloatingStream (strCurrency, dblSpread, -1., null,
+			return new org.drip.product.rates.FloatingStream (strCurrency, null, dblSpread, -1., null,
 				lsCouponPeriod, org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR", (12 /
 					iFreq) + "M"), bIsReference);
 		} catch (java.lang.Exception e) {
@@ -189,7 +191,7 @@ public class RatesStreamBuilder {
 						strCurrency);
 
 		try {
-			return new org.drip.product.rates.FloatingStream (strCurrency, dblSpread, -1., null,
+			return new org.drip.product.rates.FloatingStream (strCurrency, null, dblSpread, -1., null,
 				lsCouponPeriod, org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR", (12 /
 					iFreq) + "M"), bIsReference);
 		} catch (java.lang.Exception e) {

@@ -79,6 +79,7 @@ public class FloatFloatFloatFloat {
 
 		FloatingStream fsReference = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -105,6 +106,7 @@ public class FloatFloatFloatFloat {
 
 		FloatingStream fsDerived = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,

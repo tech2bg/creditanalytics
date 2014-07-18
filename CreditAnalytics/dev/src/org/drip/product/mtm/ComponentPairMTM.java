@@ -46,7 +46,7 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		if (!(rcForward instanceof org.drip.product.rates.FloatingStream)) return 1.;
+		/* if (!(rcForward instanceof org.drip.product.rates.FloatingStream)) return 1.;
 
 		org.drip.product.params.FloatingRateIndex fri = ((org.drip.product.rates.FloatingStream)
 			rcForward).fri();
@@ -59,7 +59,7 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 					csqs.forwardFundingCorrSurface (fri, strCurrency), valParams.valueDate(),
 						rcForward.maturity().julian()));
 		} catch (java.lang.Exception e) {
-		}
+		} */
 
 		return 1.;
 	}
@@ -69,13 +69,15 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		if (!(rcForward instanceof org.drip.product.rates.FloatingStream)) return 1.;
+		/* if (!(rcForward instanceof org.drip.product.rates.FloatingStream)) return 1.;
 
 		org.drip.product.params.FloatingRateIndex fri = ((org.drip.product.rates.FloatingStream)
 			rcForward).fri();
 
 		org.drip.product.params.CurrencyPair cp = org.drip.product.params.CurrencyPair.FromCode
 			(_dcpBase.fxCode());
+
+		System.out.println ("\t\t" + cp.code() + " | " + fri.fullyQualifiedName());
 
 		try {
 			return null == cp ? 1. : java.lang.Math.exp
@@ -84,7 +86,7 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 						csqs.forwardFXCorrSurface (fri, cp), valParams.valueDate(),
 							rcForward.maturity().julian()));
 		} catch (java.lang.Exception e) {
-		}
+		} */
 
 		return 1.;
 	}
@@ -94,7 +96,7 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		org.drip.product.params.CurrencyPair cp = org.drip.product.params.CurrencyPair.FromCode
+		/* org.drip.product.params.CurrencyPair cp = org.drip.product.params.CurrencyPair.FromCode
 			(_dcpBase.fxCode());
 
 		java.lang.String strCurrency = rcForward.couponCurrency()[0];
@@ -106,7 +108,7 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 						csqs.fundingFXCorrSurface (strCurrency, cp), valParams.valueDate(),
 							rcForward.maturity().julian()));
 		} catch (java.lang.Exception e) {
-		}
+		} */
 
 		return 1.;
 	}
@@ -144,9 +146,16 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 			return FundingFXQuanto (rcForward, valParams, csqs);
 
 		if (org.drip.param.pricer.JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX ==
-			iQuantoAdjustment)
+			iQuantoAdjustment) {
+			System.out.println ("\t\tForwardFundingQuanto = " + ForwardFundingQuanto (rcForward, valParams, csqs));
+
+			System.out.println ("\t\tForwardFXQuanto = " + ForwardFXQuanto (rcForward, valParams, csqs));
+
+			System.out.println ("\t\tFundingFXQuanto = " + FundingFXQuanto (rcForward, valParams, csqs));
+
 			return ForwardFundingQuanto (rcForward, valParams, csqs) * ForwardFXQuanto (rcForward, valParams,
 				csqs) * FundingFXQuanto (rcForward, valParams, csqs);
+		}
 
 		return 1.;
 	}
@@ -233,6 +242,8 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 				_aRCReferenceForward[i].value (valParams, pricerParams, csqs, quotingParams);
 
 			try {
+				System.out.println ("\tReference");
+
 				dblMTMReferenceCorrectionAdjust = forwardComponentPVAdjustment (_aRCReferenceForward[i],
 					valParams, pricerParams, csqs);
 			} catch (java.lang.Exception e) {
@@ -254,6 +265,8 @@ public class ComponentPairMTM extends org.drip.product.definition.BasketProduct 
 					_aRCDerivedForward[i].value (valParams, pricerParams, csqs, quotingParams);
 
 				try {
+					System.out.println ("\tDerived");
+
 					dblMTMDerivedCorrectionAdjust = forwardComponentPVAdjustment (_aRCDerivedForward[i],
 						valParams, pricerParams, csqs);
 				} catch (java.lang.Exception e) {

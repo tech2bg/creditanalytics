@@ -207,6 +207,7 @@ public class ShapeOISZeroLocalSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -275,6 +276,7 @@ public class ShapeOISZeroLocalSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -348,6 +350,7 @@ public class ShapeOISZeroLocalSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -419,6 +422,7 @@ public class ShapeOISZeroLocalSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,

@@ -93,6 +93,12 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	public int _iDiscretizationScheme = PERIOD_DISCRETIZATION_DAY_STEP;
 
 	/**
+	 * Apply The Ametrano-Bianchetti Forward-Funding Correlated Quanto Adjustment
+	 */
+
+	public boolean _bAmetranoBianchettiForwardQuanto = true;
+
+	/**
 	 * Create the standard pricer parameters object instance
 	 * 
 	 * @return PricerParams object instance

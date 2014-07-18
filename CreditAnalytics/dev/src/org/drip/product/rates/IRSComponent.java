@@ -814,15 +814,15 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "4Y",
 				null, 2, "30/360", false, true, "JPY", "JPY");
 
-		org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream ("JPY", 0.05,
-			7., null, lsFixedCouponPeriod);
+		org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream ("JPY", null,
+			0.05, 7., null, lsFixedCouponPeriod);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatCouponPeriod =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "4Y",
 				null, 4, "Act/360", false, true, "JPY", "JPY");
 
 		org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream ("JPY",
-			0.01, -7., null, lsFloatCouponPeriod, org.drip.product.params.FloatingRateIndex.Create
+			null, 0.01, -7., null, lsFloatCouponPeriod, org.drip.product.params.FloatingRateIndex.Create
 				("JPY-LIBOR-3M"), false);
 
 		IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream, floatStream);

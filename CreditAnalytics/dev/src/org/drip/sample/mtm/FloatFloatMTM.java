@@ -83,6 +83,7 @@ public class FloatFloatMTM {
 
 		FloatingStream floatReferenceStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -111,6 +112,7 @@ public class FloatFloatMTM {
 
 		FloatingStream floatDerivedStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,

@@ -9,11 +9,14 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.pricer.JointStatePricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.*;
 import org.drip.product.mtm.ComponentPairMTM;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
+import org.drip.quant.common.FormatUtil;
+import org.drip.quant.common.NumberUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
@@ -78,6 +81,7 @@ public class FloatFloatFloatFloatMTM {
 
 		FloatingStream fsReference = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -104,6 +108,7 @@ public class FloatFloatFloatFloatMTM {
 
 		FloatingStream fsDerived = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,
@@ -128,6 +133,21 @@ public class FloatFloatFloatFloatMTM {
 		double dblJPYCollateralRate = 0.02;
 		double dblJPY3MForwardRate = 0.02;
 
+		double dblForwardUSD3MVol = 0.3;
+		double dblForwardUSD6MVol = 0.3;
+		double dblForwardJPY3MVol = 0.3;
+		double dblForwardJPY6MVol = 0.3;
+		double dblFundingUSDVol = 0.3;
+		double dblFundingJPYVol = 0.3;
+		double dblForwardUSD3MFundingUSDCorr = 0.3;
+		double dblForwardUSD6MFundingUSDCorr = 0.3;
+		double dblForwardJPY3MFundingJPYCorr = 0.3;
+		double dblForwardJPY6MFundingJPYCorr = 0.3;
+		double dblJPYUSDFXVol = 0.3;
+		double dblFundingUSDJPYUSDFXCorr = 0.3;
+		double dblForwardUSD3MJPYUSDFXCorr = 0.3;
+		double dblForwardUSD6MJPYUSDFXCorr = 0.3;
+
 		/*
 		 * Initialize the Credit Analytics Library
 		 */
@@ -144,9 +164,13 @@ public class FloatFloatFloatFloatMTM {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"),
 			dblUSDCollateralRate);
 
+		FloatingRateIndex friUSD3M = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+
+		FloatingRateIndex friUSD6M = FloatingRateIndex.Create ("USD", "LIBOR", "6M");
+
 		ForwardCurve fc3MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			friUSD3M,
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
@@ -164,9 +188,13 @@ public class FloatFloatFloatFloatMTM {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"),
 			dblJPYCollateralRate);
 
+		FloatingRateIndex friJPY3M = FloatingRateIndex.Create ("JPY", "LIBOR", "3M");
+
+		FloatingRateIndex friJPY6M = FloatingRateIndex.Create ("JPY", "LIBOR", "6M");
+
 		ForwardCurve fc3MJPY = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			FloatingRateIndex.Create ("JPY", "LIBOR", "3M"),
+			friJPY3M,
 			dblJPY3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
@@ -177,6 +205,14 @@ public class FloatFloatFloatFloatMTM {
 			3);
 
 		ffcDerivedJPY.setPrimaryCode ("JPY_6M::3M::2Y");
+
+		ComponentPairMTM ccbsUSDJPYAbsolute = new ComponentPairMTM (
+			new ComponentPair (
+				"USDJPY_CCBS",
+				ffcReferenceUSD,
+				ffcDerivedJPY),
+			true
+		);
 
 		ComponentPairMTM ccbsUSDJPYRelative = new ComponentPairMTM (
 			new ComponentPair (
@@ -196,17 +232,57 @@ public class FloatFloatFloatFloatMTM {
 
 		mktParams.setForwardCurve (fc3MJPY);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (0.3));
-
 		CurrencyPair cp = CurrencyPair.FromCode ("USD/JPY");
 
-		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (0.3));
+		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblFundingUSDVol));
 
-		mktParams.setFundingFXCorrSurface ("USD", cp, new FlatUnivariate (0.3));
+		mktParams.setFundingCurveVolSurface ("JPY", new FlatUnivariate (dblFundingJPYVol));
 
-		CaseInsensitiveTreeMap<Double> mapMTMOutput = ccbsUSDJPYRelative.value (valParams, null, mktParams, null);
+		mktParams.setForwardCurveVolSurface (friUSD3M, new FlatUnivariate (dblForwardUSD3MVol));
 
-		for (Map.Entry<String, Double> me : mapMTMOutput.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
+		mktParams.setForwardCurveVolSurface (friUSD6M, new FlatUnivariate (dblForwardUSD6MVol));
+
+		mktParams.setForwardCurveVolSurface (friJPY3M, new FlatUnivariate (dblForwardJPY3MVol));
+
+		mktParams.setForwardCurveVolSurface (friJPY6M, new FlatUnivariate (dblForwardJPY6MVol));
+
+		mktParams.setForwardFundingCorrSurface (friUSD3M, "USD", new FlatUnivariate (dblForwardUSD3MFundingUSDCorr));
+
+		mktParams.setForwardFundingCorrSurface (friUSD6M, "USD", new FlatUnivariate (dblForwardUSD6MFundingUSDCorr));
+
+		mktParams.setForwardFundingCorrSurface (friJPY3M, "JPY", new FlatUnivariate (dblForwardJPY3MFundingJPYCorr));
+
+		mktParams.setForwardFundingCorrSurface (friJPY6M, "JPY", new FlatUnivariate (dblForwardJPY6MFundingJPYCorr));
+
+		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblJPYUSDFXVol));
+
+		mktParams.setFundingFXCorrSurface ("USD", cp, new FlatUnivariate (dblFundingUSDJPYUSDFXCorr));
+
+		mktParams.setForwardFXCorrSurface (friUSD3M, cp, new FlatUnivariate (dblForwardUSD3MJPYUSDFXCorr));
+
+		mktParams.setForwardFXCorrSurface (friUSD6M, cp, new FlatUnivariate (dblForwardUSD6MJPYUSDFXCorr));
+
+		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX);
+
+		CaseInsensitiveTreeMap<Double> mapAbsoluteMTMOutput = ccbsUSDJPYAbsolute.value (valParams, jspp, mktParams, null);
+
+		CaseInsensitiveTreeMap<Double> mapRelativeMTMOutput = ccbsUSDJPYRelative.value (valParams, jspp, mktParams, null);
+
+		for (Map.Entry<String, Double> me : mapRelativeMTMOutput.entrySet()) {
+			String strKey = me.getKey();
+
+			double dblAbsoluteMeasure = mapAbsoluteMTMOutput.get (strKey);
+
+			double dblRelativeMeasure = mapRelativeMTMOutput.get (strKey);
+
+			String strReconcile = NumberUtil.WithinTolerance (dblAbsoluteMeasure, dblRelativeMeasure, 1.e-08, 1.e-04) ?
+				"RECONCILES" :
+				"DOES NOT RECONCILE";
+
+			System.out.println ("\t" +
+				FormatUtil.FormatDouble (dblAbsoluteMeasure, 1, 8, 1.) + " | " +
+				FormatUtil.FormatDouble (dblRelativeMeasure, 1, 8, 1.) + " | " +
+				strReconcile + " <= " + strKey);
+		}
 	}
 }

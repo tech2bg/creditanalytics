@@ -362,6 +362,12 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		mapResult.put ("ReferencePV", dblReferencePV);
 
+		mapResult.put ("ReferenceQuantoAdjustmentFactor", mapFixedReferenceStreamResult.get
+			("QuantoAdjustmentFactor"));
+
+		mapResult.put ("ReferenceQuantoAdjustmentPremium", mapFixedReferenceStreamResult.get
+			("QuantoAdjustmentPremium"));
+
 		mapResult.put ("ReferenceResetDate", mapFixedReferenceStreamResult.get ("ResetDate"));
 
 		mapResult.put ("ReferenceResetRate", mapFixedReferenceStreamResult.get ("ResetRate"));
@@ -391,6 +397,12 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		double dblDerivedPV = mapFloatDerivedStreamResult.get ("PV");
 
 		mapResult.put ("DerivedPV", dblDerivedPV);
+
+		mapResult.put ("DerivedQuantoAdjustmentFactor", mapFloatDerivedStreamResult.get
+			("QuantoAdjustmentFactor"));
+
+		mapResult.put ("DerivedQuantoAdjustmentPremium", mapFloatDerivedStreamResult.get
+			("QuantoAdjustmentPremium"));
 
 		mapResult.put ("DerivedResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
 
@@ -482,6 +494,10 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		setstrMeasureNames.add ("PV");
 
+		setstrMeasureNames.add ("QuantoAdjustmentFactor");
+
+		setstrMeasureNames.add ("QuantoAdjustmentPremium");
+
 		setstrMeasureNames.add ("ReferenceAccrued01");
 
 		setstrMeasureNames.add ("ReferenceAccrued");
@@ -499,6 +515,10 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		setstrMeasureNames.add ("ReferenceFixing01");
 
 		setstrMeasureNames.add ("ReferenceParBasisSpread");
+
+		setstrMeasureNames.add ("ReferenceQuantoAdjustmentFactor");
+
+		setstrMeasureNames.add ("ReferenceQuantoAdjustmentPremium");
 
 		setstrMeasureNames.add ("ReferencePV");
 

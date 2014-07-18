@@ -91,7 +91,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.rates.FixedStream (strCurrency, dblCoupon,
+				aFS[iCFPIndex++] = new org.drip.product.rates.FixedStream (strCurrency, null, dblCoupon,
 					dblInitialNotional, null, lsCouponPeriod);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -154,7 +154,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.rates.FloatingStream (strCurrency, dblSpread,
+				aFS[iCFPIndex++] = new org.drip.product.rates.FloatingStream (strCurrency, null, dblSpread,
 					dblNotional, null, lsCouponPeriod, fri, bIsReference);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

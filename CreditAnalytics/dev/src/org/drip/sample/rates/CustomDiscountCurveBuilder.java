@@ -123,6 +123,7 @@ public class CustomDiscountCurveBuilder {
 
 			FloatingStream floatStream = new FloatingStream (
 				"USD",
+				null,
 				0.,
 				-1.,
 				null,
@@ -145,6 +146,7 @@ public class CustomDiscountCurveBuilder {
 
 			FixedStream fixStream = new FixedStream (
 				"USD",
+				null,
 				0.,
 				1.,
 				null,

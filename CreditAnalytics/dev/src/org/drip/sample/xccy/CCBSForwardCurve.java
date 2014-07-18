@@ -91,6 +91,7 @@ public class CCBSForwardCurve {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -117,6 +118,7 @@ public class CCBSForwardCurve {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,

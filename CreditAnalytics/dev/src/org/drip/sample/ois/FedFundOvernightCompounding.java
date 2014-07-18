@@ -140,6 +140,7 @@ public class FedFundOvernightCompounding {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -352,6 +353,7 @@ public class FedFundOvernightCompounding {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,

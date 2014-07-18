@@ -145,6 +145,7 @@ public class OISCurveQuoteSensitivity {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
+			null,
 			dblCoupon,
 			1.,
 			null,
@@ -212,6 +213,7 @@ public class OISCurveQuoteSensitivity {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -280,6 +282,7 @@ public class OISCurveQuoteSensitivity {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -353,6 +356,7 @@ public class OISCurveQuoteSensitivity {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -424,6 +428,7 @@ public class OISCurveQuoteSensitivity {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,

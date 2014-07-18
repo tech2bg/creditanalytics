@@ -83,6 +83,7 @@ public class FixFloatFixFloatMTMVolAnalysis {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -107,6 +108,7 @@ public class FixFloatFixFloatMTMVolAnalysis {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			1.,
 			null,
@@ -125,37 +127,80 @@ public class FixFloatFixFloatMTMVolAnalysis {
 	private static final void SetMarketParams (
 		final CurveSurfaceQuoteSet mktParams,
 		final CurrencyPair cp,
+		final FloatingRateIndex friUSD3M,
+		final FloatingRateIndex friJPY3M,
 		final String strCurrency,
-		final double dblFundingVol,
-		final double dblFXVol,
-		final double dblFundingFXCorr)
+		final double dblForwardUSD3MVol,
+		final double dblForwardJPY3MVol,
+		final double dblFundingUSDVol,
+		final double dblFundingJPYVol,
+		final double dblForwardUSD3MFundingUSDCorr,
+		final double dblForwardJPY3MFundingJPYCorr,
+		final double dblJPYUSDFXVol,
+		final double dblFundingUSDJPYUSDFXCorr)
 		throws Exception
 	{
-		mktParams.setFundingCurveVolSurface (strCurrency, new FlatUnivariate (dblFundingVol));
+		mktParams.setForwardCurveVolSurface (friUSD3M, new FlatUnivariate (dblForwardUSD3MVol));
 
-		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblFXVol));
+		mktParams.setForwardCurveVolSurface (friJPY3M, new FlatUnivariate (dblForwardJPY3MVol));
 
-		mktParams.setFundingFXCorrSurface (strCurrency, cp, new FlatUnivariate (dblFundingFXCorr));
+		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblFundingUSDVol));
+
+		mktParams.setFundingCurveVolSurface ("JPY", new FlatUnivariate (dblFundingJPYVol));
+
+		mktParams.setForwardFundingCorrSurface (friUSD3M, "USD", new FlatUnivariate (dblForwardUSD3MFundingUSDCorr));
+
+		mktParams.setForwardFundingCorrSurface (friJPY3M, "JPY", new FlatUnivariate (dblForwardJPY3MFundingJPYCorr));
+
+		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblJPYUSDFXVol));
+
+		mktParams.setFundingFXCorrSurface ("USD", cp, new FlatUnivariate (dblFundingUSDJPYUSDFXCorr));
 	}
 
 	private static final void VolCorrScenario (
 		final ComponentPairMTM[] aCCBSMTM,
 		final CurrencyPair cp,
+		final FloatingRateIndex friUSD3M,
+		final FloatingRateIndex friJPY3M,
 		final String strCurrency,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
-		final double dblFundingVol,
-		final double dblFXVol,
-		final double dblFundingFXCorr,
+		final double dblForwardUSD3MVol,
+		final double dblForwardJPY3MVol,
+		final double dblFundingUSDVol,
+		final double dblFundingJPYVol,
+		final double dblForwardUSD3MFundingUSDCorr,
+		final double dblForwardJPY3MFundingJPYCorr,
+		final double dblJPYUSDFXVol,
+		final double dblFundingUSDJPYUSDFXCorr,
 		final JointStatePricerParams jspp)
 		throws Exception
 	{
-		SetMarketParams (mktParams, cp, strCurrency, dblFundingVol, dblFXVol, dblFundingFXCorr);
+		SetMarketParams (
+			mktParams,
+			cp,
+			friUSD3M,
+			friJPY3M,
+			strCurrency,
+			dblForwardUSD3MVol,
+			dblForwardJPY3MVol,
+			dblFundingUSDVol,
+			dblFundingJPYVol,
+			dblForwardUSD3MFundingUSDCorr,
+			dblForwardJPY3MFundingJPYCorr,
+			dblJPYUSDFXVol,
+			dblFundingUSDJPYUSDFXCorr
+		);
 
 		String strDump = "\t[" +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFXVol, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingFXCorr, 2, 0, 100.) + "%] = ";
+				org.drip.quant.common.FormatUtil.FormatDouble (dblForwardUSD3MVol, 2, 0, 100.) + "%," +
+				org.drip.quant.common.FormatUtil.FormatDouble (dblForwardJPY3MVol, 2, 0, 100.) + "%," +
+				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingUSDVol, 2, 0, 100.) + "%," +
+				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingJPYVol, 2, 0, 100.) + "%," +
+				org.drip.quant.common.FormatUtil.FormatDouble (dblForwardUSD3MFundingUSDCorr, 2, 0, 100.) + "%," +
+				org.drip.quant.common.FormatUtil.FormatDouble (dblForwardJPY3MFundingJPYCorr, 2, 0, 100.) + "%," +
+				org.drip.quant.common.FormatUtil.FormatDouble (dblJPYUSDFXVol, 2, 0, 100.) + "%," +
+				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingUSDJPYUSDFXCorr, 2, 0, 100.) + "%] = ";
 
 		for (int i = 0; i < aCCBSMTM.length; ++i) {
 			CaseInsensitiveTreeMap<Double> mapMTMOutput = aCCBSMTM[i].value (valParams, jspp, mktParams, null);
@@ -195,9 +240,11 @@ public class FixFloatFixFloatMTMVolAnalysis {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"),
 			dblUSDCollateralRate);
 
+		FloatingRateIndex friUSD3M = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+
 		ForwardCurve fc3MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			friUSD3M,
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
@@ -215,9 +262,11 @@ public class FixFloatFixFloatMTMVolAnalysis {
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"),
 			dblJPYCollateralRate);
 
+		FloatingRateIndex friJPY3M = FloatingRateIndex.Create ("JPY", "LIBOR", "3M");
+
 		ForwardCurve fc3MJPY = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			FloatingRateIndex.Create ("JPY", "LIBOR", "3M"),
+			friJPY3M,
 			dblJPY3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "JPY"));
 
@@ -257,28 +306,49 @@ public class FixFloatFixFloatMTMVolAnalysis {
 
 		CurrencyPair cp = CurrencyPair.FromCode (ccbsUSDJPYRelative.fxCode());
 
-		double[] adblFundingVol = new double[] {0.1, 0.2, 0.3, 0.4};
+		double[] adblForwardUSD3MVol = new double[] {0.1, 0.3, 0.5};
+		double[] adblForwardJPY3MVol = new double[] {0.1, 0.3, 0.5};
+		double[] adblFundingUSDVol = new double[] {0.1, 0.3, 0.5};
+		double[] adblFundingJPYVol = new double[] {0.1, 0.3, 0.5};
+		double[] adblForwardUSD3MFundingUSDCorr = new double[] {-0.1, 0.1, 0.3};
+		double[] adblForwardJPY3MFundingJPYCorr = new double[] {-0.1, 0.1, 0.3};
+		double[] adblJPYUSDFXVol = new double[] {0.1, 0.3, 0.5};
+		double[] adblFundingUSDJPYUSDFXVol = new double[] {-0.1, 0.1, 0.3};
 
-		double[] adblFXVol = new double[] {0.1, 0.2, 0.3, 0.4};
+		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX);
 
-		double[] adblFundingFXCorr = new double[] {-0.4, -0.1, 0.1, 0.4};
-
-		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING);
-
-		for (double dblFundingVol : adblFundingVol) {
-			for (double dblFXVol : adblFXVol) {
-				for (double dblFundingFXCorr : adblFundingFXCorr)
-					VolCorrScenario (
-						new ComponentPairMTM[] {ccbsUSDJPYRelative, ccbsUSDJPYAbsolute},
-						cp,
-						"USD",
-						valParams,
-						mktParams,
-						dblFundingVol,
-						dblFXVol,
-						dblFundingFXCorr,
-						jspp
-					);
+		for (double dblForwardUSD3MVol : adblForwardUSD3MVol) {
+			for (double dblForwardJPY3MVol : adblForwardJPY3MVol) {
+				for (double dblFundingUSDVol : adblFundingUSDVol) {
+					for (double dblFundingJPYVol : adblFundingJPYVol) {
+						for (double dblForwardUSD3MFundingUSDCorr : adblForwardUSD3MFundingUSDCorr) {
+							for (double dblForwardJPY3MFundingJPYCorr : adblForwardJPY3MFundingJPYCorr) {
+								for (double dblJPYUSDFXVol : adblJPYUSDFXVol) {
+									for (double dblFundingUSDJPYUSDFXVol : adblFundingUSDJPYUSDFXVol) {
+										VolCorrScenario (
+											new ComponentPairMTM[] {ccbsUSDJPYRelative, ccbsUSDJPYAbsolute},
+											cp,
+											friUSD3M,
+											friJPY3M,
+											"USD",
+											valParams,
+											mktParams,
+											dblForwardUSD3MVol,
+											dblForwardJPY3MVol,
+											dblFundingUSDVol,
+											dblFundingJPYVol,
+											dblForwardUSD3MFundingUSDCorr,
+											dblForwardJPY3MFundingJPYCorr,
+											dblJPYUSDFXVol,
+											dblFundingUSDJPYUSDFXVol,
+											jspp
+										);
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}

@@ -116,6 +116,7 @@ public class STIROptionVolCorrAnalysis {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -138,6 +139,7 @@ public class STIROptionVolCorrAnalysis {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -260,6 +262,7 @@ public class STIROptionVolCorrAnalysis {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -286,6 +289,7 @@ public class STIROptionVolCorrAnalysis {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,
@@ -520,6 +524,7 @@ public class STIROptionVolCorrAnalysis {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,
@@ -542,6 +547,7 @@ public class STIROptionVolCorrAnalysis {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
+			null,
 			dblCoupon,
 			1.,
 			null,

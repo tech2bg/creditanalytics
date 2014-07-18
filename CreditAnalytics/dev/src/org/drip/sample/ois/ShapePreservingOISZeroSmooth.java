@@ -170,6 +170,7 @@ public class ShapePreservingOISZeroSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				1.,
 				null,

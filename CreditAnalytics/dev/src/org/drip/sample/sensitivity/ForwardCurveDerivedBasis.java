@@ -143,6 +143,7 @@ public class ForwardCurveDerivedBasis {
 
 			FloatingStream floatStream = new FloatingStream (
 				"USD",
+				null,
 				0.,
 				-1.,
 				null,
@@ -165,6 +166,7 @@ public class ForwardCurveDerivedBasis {
 
 			FixedStream fixStream = new FixedStream (
 				"USD",
+				null,
 				0.,
 				1.,
 				null,
@@ -287,6 +289,7 @@ public class ForwardCurveDerivedBasis {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -313,6 +316,7 @@ public class ForwardCurveDerivedBasis {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				1.,
 				null,
