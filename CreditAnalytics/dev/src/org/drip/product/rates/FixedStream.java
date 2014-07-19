@@ -52,7 +52,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	private java.lang.String _strCurrency = "";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.params.CurrencyPair _cp = null;
+	private org.drip.product.params.FXMTMSetting _fxmtm = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
@@ -70,7 +70,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	 * Full-featured instantiation of the Fixed Stream instance
 	 * 
 	 * @param strCurrency => Pay Currency
-	 * @param cp Currency Pair
+	 * @param fxmtm FX MTM setting
 	 * @param dblCoupon Fixed Coupon
 	 * @param dblNotional => Notional Amount
 	 * @param notlSchedule => Notional Schedule
@@ -81,7 +81,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 	public FixedStream (
 		final java.lang.String strCurrency,
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.product.params.FXMTMSetting fxmtm,
 		final double dblCoupon,
 		final double dblNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
@@ -98,10 +98,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 		if (0 == iNumCouponPeriod) throw new java.lang.Exception ("FixedStream ctr: Invalid Params!");
 
-		_cp = cp;
-
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+
+		_fxmtm = fxmtm;
 
 		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
 
@@ -137,7 +137,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFixedStream,
 			fieldDelimiter());
 
-		if (null == astrField || 11 > astrField.length)
+		if (null == astrField || 10 > astrField.length)
 			throw new java.lang.Exception ("FixedStream de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -221,14 +221,6 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 				}
 			}
 		}
-
-		if (null == astrField[10] || astrField[10].isEmpty())
-			throw new java.lang.Exception ("FixedStream de-serializer: Cannot locate currency pair");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_cp = null;
-		else
-			_cp = org.drip.product.params.CurrencyPair.FromCode (astrField[1]);
 	}
 
 	@Override public java.lang.String primaryCode()
@@ -313,7 +305,11 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 	@Override public java.lang.String[] currencyPairCode()
 	{
-		return null == _cp ? null : new java.lang.String[] {_cp.code()};
+		if (null == _fxmtm) return null;
+
+		org.drip.product.params.CurrencyPair cp = _fxmtm.currencyPair();
+
+		return null == cp ? null : new java.lang.String[] {cp.code()};
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -386,8 +382,22 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		boolean bFirstPeriod = true;
 		double dblUnadjustedDirtyDV01 = 0.;
 		double dblQuantoAdjustedDirtyDV01 = 0.;
+		double dblAdjustedNotional = _dblNotional;
 		double dblCashPayDF = java.lang.Double.NaN;
 		double dblValueNotional = java.lang.Double.NaN;
+
+		org.drip.product.params.CurrencyPair cp = null == _fxmtm ? null : _fxmtm.currencyPair();
+
+		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (cp);
+
+		try {
+			dblAdjustedNotional *= (null != auFX && null != _fxmtm && !_fxmtm.mtmMode() ? auFX.evaluate
+				(dblValueDate) : 1.);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			double dblPeriodQuantoAdjustment = 1.;
@@ -408,10 +418,12 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 							(dblPeriodAccrualStartDate, dblValueDate);
 				}
 
-				dblPeriodQuantoAdjustment = java.lang.Math.exp
-					(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-						(csqs.fundingCurveVolSurface (strCurrency), csqs.fxCurveVolSurface (_cp),
-							csqs.fundingFXCorrSurface (strCurrency, _cp), dblValueDate, dblPeriodPayDate));
+				if (null != _fxmtm && _fxmtm.mtmMode())
+					dblPeriodQuantoAdjustment *= java.lang.Math.exp
+						(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+							(csqs.fundingCurveVolSurface (strCurrency), csqs.fxCurveVolSurface (cp),
+								csqs.fundingFXCorrSurface (strCurrency, cp), dblValueDate,
+									dblPeriodPayDate));
 
 				dblPeriodUnadjustedDirtyDV01 = 0.0001 * period.getCouponDCF() * dcFunding.df
 					(dblPeriodPayDate) * notional (dblPeriodAccrualStartDate, period.getEndDate());
@@ -437,10 +449,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			return null;
 		}
 
-		dblAccrued01 *= _dblNotional;
+		dblAccrued01 *= dblAdjustedNotional;
 		double dblAccrued = dblAccrued01 * 10000. * _dblCoupon;
-		dblUnadjustedDirtyDV01 *= (_dblNotional / dblCashPayDF);
-		dblQuantoAdjustedDirtyDV01 *= (_dblNotional / dblCashPayDF);
+		dblUnadjustedDirtyDV01 *= (dblAdjustedNotional / dblCashPayDF);
+		dblQuantoAdjustedDirtyDV01 *= (dblAdjustedNotional / dblCashPayDF);
 		double dblUnadjustedCleanDV01 = dblUnadjustedDirtyDV01 - dblAccrued01;
 		double dblUnadjustedCleanPV = dblUnadjustedCleanDV01 * 10000. * _dblCoupon;
 		double dblUnadjustedDirtyPV = dblUnadjustedDirtyDV01 * 10000. * _dblCoupon;
@@ -486,7 +498,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		mapResult.put ("QuantoAdjustmentFactor", dblQuantoAdjustedDirtyDV01 / dblUnadjustedDirtyDV01);
 
 		mapResult.put ("QuantoAdjustmentPremium", (dblQuantoAdjustedCleanPV - dblUnadjustedCleanPV) /
-			_dblNotional);
+			dblAdjustedNotional);
 
 		mapResult.put ("UnadjustedCleanDV01", dblUnadjustedCleanDV01);
 
@@ -505,7 +517,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		mapResult.put ("Upfront", dblQuantoAdjustedCleanPV);
 
 		try {
-			dblValueNotional = notional (dblValueDate);
+			dblValueNotional = notional (dblValueDate) * (null != auFX && null != _fxmtm && !_fxmtm.mtmMode()
+				? auFX.evaluate (dblValueDate) : 1.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -827,11 +840,6 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			else
 				sb.append (sbPeriods.toString());
 		}
-
-		if (null == _cp)
-			sb.append (fieldDelimiter() + org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else
-			sb.append (fieldDelimiter() + _cp.code());
 
 		return sb.append (objectTrailer()).toString().getBytes();
 	}

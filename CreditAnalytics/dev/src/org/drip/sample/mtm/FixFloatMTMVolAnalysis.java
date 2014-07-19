@@ -10,12 +10,10 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.pricer.JointStatePricerParams;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.ComponentPair;
-import org.drip.product.mtm.ComponentPairMTM;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
@@ -145,35 +143,28 @@ public class FixFloatMTMVolAnalysis {
 	}
 
 	private static final void VolCorrScenario (
-		final ComponentPairMTM[] aCCBSMTM,
+		final FixFloatComponent fixFloat,
 		final FloatingRateIndex fri,
 		final String strCurrency,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
 		final double dblFundingVol,
 		final double dblForwardVol,
-		final double dblFundingForwardCorr,
-		final JointStatePricerParams jspp)
+		final double dblFundingForwardCorr)
 		throws Exception
 	{
 		SetMarketParams (mktParams, fri, strCurrency, dblFundingVol, dblForwardVol, dblFundingForwardCorr);
 
-		String strDump = "\t[" +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVol, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingForwardCorr, 2, 0, 100.) + "%] = ";
+		CaseInsensitiveTreeMap<Double> mapMTMOutput = fixFloat.value (valParams, null, mktParams, null);
 
-		for (int i = 0; i < aCCBSMTM.length; ++i) {
-			CaseInsensitiveTreeMap<Double> mapMTMOutput = aCCBSMTM[i].value (valParams, jspp, mktParams, null);
-
-			if (0 != i) strDump += "  ||  ";
-
-			strDump += 
-				org.drip.quant.common.FormatUtil.FormatDouble (mapMTMOutput.get ("ReferenceMTMAdditiveAdjustment"), 1, 2, 100.) + "% | " +
-				org.drip.quant.common.FormatUtil.FormatDouble (mapMTMOutput.get ("DerivedMTMAdditiveAdjustment"), 1, 2, 100.) + "%";
-		}
-
-		System.out.println (strDump);
+		System.out.println ("\t[" +
+			FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblForwardVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblFundingForwardCorr, 2, 0, 100.) + "%] = " +
+			FormatUtil.FormatDouble (mapMTMOutput.get ("ReferenceQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
+			FormatUtil.FormatDouble (mapMTMOutput.get ("DerivedQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
+			FormatUtil.FormatDouble (mapMTMOutput.get ("QuantoAdjustmentPremium"), 2, 0, 10000.)
+		);
 	}
 
 	public static final void main (
@@ -215,22 +206,6 @@ public class FixFloatMTMVolAnalysis {
 
 		fixFloatUSD.setPrimaryCode ("USD_IRS::3M::2Y");
 
-		ComponentPairMTM fixFloatAbsolute = new ComponentPairMTM (
-			new ComponentPair (
-				"USD_IRS",
-				fixFloatUSD.referenceStream(),
-				fixFloatUSD.derivedStream()),
-			true
-		);
-
-		ComponentPairMTM fixFloatRelative = new ComponentPairMTM (
-			new ComponentPair (
-				"USD_IRS",
-				fixFloatUSD.referenceStream(),
-				fixFloatUSD.derivedStream()),
-			false
-		);
-
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
 		mktParams.setFundingCurve (dcUSDCollatDomestic);
@@ -243,21 +218,18 @@ public class FixFloatMTMVolAnalysis {
 
 		double[] adblFundingForwardCorr = new double[] {-0.4, -0.1, 0.1, 0.4};
 
-		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX);
-
 		for (double dblFundingVol : adblFundingVol) {
 			for (double dblForwardVol : adblForwardVol) {
 				for (double dblFundingForwardCorr : adblFundingForwardCorr)
 					VolCorrScenario (
-						new ComponentPairMTM[] {fixFloatRelative, fixFloatAbsolute},
+						fixFloatUSD,
 						fri3M,
 						"USD",
 						valParams,
 						mktParams,
 						dblFundingVol,
 						dblForwardVol,
-						dblFundingForwardCorr,
-						jspp
+						dblFundingForwardCorr
 					);
 			}
 		}

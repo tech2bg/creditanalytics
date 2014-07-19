@@ -81,7 +81,7 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 
 	@Override public java.lang.String name()
 	{
-		return "OvernightFundFloatingStream=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
+		return "OvernightFundFloatingStream=" + super.maturity();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
@@ -111,8 +111,7 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 		OvernightFundFloatingStream fs = new OvernightFundFloatingStream ("JPY", 0.03, -1., null,
 			lsOISFloatCouponPeriod, org.drip.product.params.FloatingRateIndex.Create ("JPY-OIS-ON"), false);
 
-		System.out.println ("\tEffective: " + new org.drip.analytics.date.JulianDate (fs._dblEffective) +
-			"=>" + new org.drip.analytics.date.JulianDate (fs._dblMaturity));
+		System.out.println ("\tEffective: " + fs.effective() + " => " + fs.maturity());
 
 		byte[] abFS = fs.serialize();
 

@@ -364,6 +364,14 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 
 		mapResult.put ("ReferencePV", dblReferencePV);
 
+		mapResult.put ("ReferenceQuantoAdjustmentFactor", mapFloatReferenceStreamResult.get
+			("QuantoAdjustmentFactor"));
+
+		double dblReferenceQuantoAdjustmentPremium = mapFloatReferenceStreamResult.get
+			("QuantoAdjustmentPremium");
+
+		mapResult.put ("ReferenceQuantoAdjustmentPremium", dblReferenceQuantoAdjustmentPremium);
+
 		mapResult.put ("ReferenceResetDate", mapFloatReferenceStreamResult.get ("ResetDate"));
 
 		mapResult.put ("ReferenceResetRate", mapFloatReferenceStreamResult.get ("ResetRate"));
@@ -394,6 +402,14 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 
 		mapResult.put ("DerivedPV", dblDerivedPV);
 
+		mapResult.put ("DerivedQuantoAdjustmentFactor", mapFloatDerivedStreamResult.get
+			("QuantoAdjustmentFactor"));
+
+		double dblDerivedQuantoAdjustmentPremium = mapFloatDerivedStreamResult.get
+			("QuantoAdjustmentPremium");
+
+		mapResult.put ("DerivedQuantoAdjustmentPremium", dblDerivedQuantoAdjustmentPremium);
+
 		mapResult.put ("DerivedResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
 
 		mapResult.put ("DerivedResetRate", mapFloatDerivedStreamResult.get ("ResetRate"));
@@ -405,6 +421,10 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		mapResult.put ("DirtyPV", dblDerivedCleanPV + dblDerivedDirtyPV);
 
 		mapResult.put ("PV", dblReferencePV + dblDerivedPV);
+
+		mapResult.put ("QuantoAdjustmentPremium", _floatReference.initialNotional() *
+			dblReferenceQuantoAdjustmentPremium + _floatDerived.initialNotional() *
+				dblDerivedQuantoAdjustmentPremium);
 
 		mapResult.put ("Upfront", mapFloatReferenceStreamResult.get ("Upfront") +
 			mapFloatDerivedStreamResult.get ("Upfront"));
@@ -472,6 +492,10 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 
 		setstrMeasureNames.add ("DerivedPV");
 
+		setstrMeasureNames.add ("DerivedQuantoAdjustmentFactor");
+
+		setstrMeasureNames.add ("DerivedQuantoAdjustmentPremium");
+
 		setstrMeasureNames.add ("DerivedResetDate");
 
 		setstrMeasureNames.add ("DerivedResetRate");
@@ -481,6 +505,8 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		setstrMeasureNames.add ("Price");
 
 		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("QuantoAdjustmentPremium");
 
 		setstrMeasureNames.add ("ReferenceAccrued01");
 
@@ -499,6 +525,10 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		setstrMeasureNames.add ("ReferenceFixing01");
 
 		setstrMeasureNames.add ("ReferenceParBasisSpread");
+
+		setstrMeasureNames.add ("ReferenceQuantoAdjustmentFactor");
+
+		setstrMeasureNames.add ("ReferenceQuantoAdjustmentPremium");
 
 		setstrMeasureNames.add ("ReferencePV");
 

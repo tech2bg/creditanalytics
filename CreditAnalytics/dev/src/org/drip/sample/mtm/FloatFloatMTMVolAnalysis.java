@@ -10,12 +10,10 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.pricer.JointStatePricerParams;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.ComponentPair;
-import org.drip.product.mtm.ComponentPairMTM;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
@@ -154,7 +152,7 @@ public class FloatFloatMTMVolAnalysis {
 	}
 
 	private static final void VolCorrScenario (
-		final ComponentPairMTM[] aCCBSMTM,
+		final FloatFloatComponent floatFloat,
 		final FloatingRateIndex fri3M,
 		final FloatingRateIndex fri6M,
 		final String strCurrency,
@@ -164,8 +162,7 @@ public class FloatFloatMTMVolAnalysis {
 		final double dblForward3MVol,
 		final double dblFundingForward3MCorr,
 		final double dblForward6MVol,
-		final double dblFundingForward6MCorr,
-		final JointStatePricerParams jspp)
+		final double dblFundingForward6MCorr)
 		throws Exception
 	{
 		SetMarketParams (
@@ -180,24 +177,18 @@ public class FloatFloatMTMVolAnalysis {
 			dblFundingForward6MCorr
 		);
 
-		String strDump = "\t[" +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblForward3MVol, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingForward3MCorr, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblForward6MVol, 2, 0, 100.) + "%," +
-				org.drip.quant.common.FormatUtil.FormatDouble (dblFundingForward6MCorr, 2, 0, 100.) + "%] = ";
+		CaseInsensitiveTreeMap<Double> mapMTMOutput = floatFloat.value (valParams, null, mktParams, null);
 
-		for (int i = 0; i < aCCBSMTM.length; ++i) {
-			CaseInsensitiveTreeMap<Double> mapMTMOutput = aCCBSMTM[i].value (valParams, jspp, mktParams, null);
-
-			if (0 != i) strDump += "  ||  ";
-
-			strDump += 
-				org.drip.quant.common.FormatUtil.FormatDouble (mapMTMOutput.get ("ReferenceMTMAdditiveAdjustment"), 2, 2, 100.) + "% | " +
-				org.drip.quant.common.FormatUtil.FormatDouble (mapMTMOutput.get ("DerivedMTMAdditiveAdjustment"), 2, 2, 100.) + "%";
-		}
-
-		System.out.println (strDump);
+		System.out.println ("\t[" +
+			FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblForward3MVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblFundingForward3MCorr, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblForward6MVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblFundingForward6MCorr, 2, 0, 100.) + "%] = " +
+			FormatUtil.FormatDouble (mapMTMOutput.get ("ReferenceQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
+			FormatUtil.FormatDouble (mapMTMOutput.get ("DerivedQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
+			FormatUtil.FormatDouble (mapMTMOutput.get ("QuantoAdjustmentPremium"), 2, 0, 10000.)
+		);
 	}
 
 	public static final void main (
@@ -248,22 +239,6 @@ public class FloatFloatMTMVolAnalysis {
 
 		floatFloatUSD.setPrimaryCode ("USD_IRS::3M::6M::2Y");
 
-		ComponentPairMTM floatFloatAbsolute = new ComponentPairMTM (
-			new ComponentPair (
-				"USD_3M_6M_ABSOLUTE",
-				floatFloatUSD.referenceStream(),
-				floatFloatUSD.derivedStream()),
-			true
-		);
-
-		ComponentPairMTM floatFloatRelative = new ComponentPairMTM (
-			new ComponentPair (
-				"USD_3M_6M_RELATIVE",
-				floatFloatUSD.referenceStream(),
-				floatFloatUSD.derivedStream()),
-			false
-		);
-
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
 		mktParams.setFundingCurve (dcUSDCollatDomestic);
@@ -282,15 +257,13 @@ public class FloatFloatMTMVolAnalysis {
 
 		double[] adblFundingForward6MCorr = new double[] {-0.6, 0.1, 0.8};
 
-		JointStatePricerParams jspp = JointStatePricerParams.Make (JointStatePricerParams.QUANTO_ADJUSTMENT_FORWARD_FUNDING_FX);
-
 		for (double dblFundingVol : adblFundingVol) {
 			for (double dblForward3MVol : adblForward3MVol) {
 				for (double dblFundingForward3MCorr : adblFundingForward3MCorr) {
 					for (double dblForward6MVol : adblForward6MVol) {
 						for (double dblFundingForward6MCorr : adblFundingForward6MCorr)
 							VolCorrScenario (
-								new ComponentPairMTM[] {floatFloatRelative, floatFloatAbsolute},
+								floatFloatUSD,
 								fri3M,
 								fri6M,
 								"USD",
@@ -300,8 +273,7 @@ public class FloatFloatMTMVolAnalysis {
 								dblForward3MVol,
 								dblFundingForward3MCorr,
 								dblForward6MVol,
-								dblFundingForward6MCorr,
-								jspp
+								dblFundingForward6MCorr
 							);
 					}
 				}
