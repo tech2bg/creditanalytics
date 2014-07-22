@@ -88,7 +88,6 @@ public class CCBSStretchRepresentationBuilder {
 
 			java.lang.String strReferenceComponentName = rcReference.name();
 
-			double dblFX = java.lang.Double.NaN;
 			java.lang.String strReferenceComponentPV = strReferenceComponentName + "[PV]";
 			java.lang.String strReferenceComponentReferenceLegCleanDV01 = strReferenceComponentName +
 				"[ReferenceCleanDV01]";
@@ -100,23 +99,10 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve
-				(org.drip.product.params.CurrencyPair.FromCode (aCCSP[i].fxCode()));
-
-			if (null == auFX) return null;
-
-			try {
-				dblFX = auFX.evaluate (aCalibComp[i].effective().julian());
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-			mapManifestQuote.put ("PV", -1. * dblFX * (mapOP.get (strReferenceComponentPV) + 10000. *
+			mapManifestQuote.put ("PV", -1. * (mapOP.get (strReferenceComponentPV) + 10000. *
 				(bBasisOnDerivedLeg ? mapOP.get (strReferenceComponentDerivedLegCleanDV01) : mapOP.get
 					(strReferenceComponentReferenceLegCleanDV01)) * adblReferenceComponentBasis[i]));
 
@@ -189,7 +175,6 @@ public class CCBSStretchRepresentationBuilder {
 
 			java.lang.String strReferenceComponentName = rcReference.name();
 
-			double dblFX = java.lang.Double.NaN;
 			java.lang.String strReferenceComponentPV = strReferenceComponentName + "[PV]";
 			java.lang.String strReferenceComponentReferenceLegCleanDV01 = strReferenceComponentName +
 				"[ReferenceCleanDV01]";
@@ -201,25 +186,12 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve
-				(org.drip.product.params.CurrencyPair.FromCode (aCCSP[i].fxCode()));
-
-			if (null == auFX) return null;
-
-			try {
-				dblFX = auFX.evaluate (aCalibComp[i].effective().julian());
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 			mapManifestQuote.put ("Rate", adblSwapRate[i]);
 
-			mapManifestQuote.put ("Upfront", -1. * dblFX * (mapOP.get (strReferenceComponentPV) + 10000. *
+			mapManifestQuote.put ("Upfront", -1. * (mapOP.get (strReferenceComponentPV) + 10000. *
 				(bBasisOnDerivedLeg ? mapOP.get (strReferenceComponentDerivedLegCleanDV01) : mapOP.get
 					(strReferenceComponentReferenceLegCleanDV01)) * adblReferenceComponentBasis[i]));
 

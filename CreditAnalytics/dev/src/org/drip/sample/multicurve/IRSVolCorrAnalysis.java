@@ -8,6 +8,7 @@ import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -593,7 +594,7 @@ public class IRSVolCorrAnalysis {
 			);
 		}
 
-		Map<String, Double> mapIRSOutput = irs.value (valParams, null, mktParams, null);
+		Map<String, Double> mapIRSOutput = irs.value (valParams, PricerParams.MakeStdPricerParams(), mktParams, null);
 
 		double dblSwapRate = mapIRSOutput.get ("SwapRate");
 

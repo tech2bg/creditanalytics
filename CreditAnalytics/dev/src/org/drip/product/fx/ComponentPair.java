@@ -157,18 +157,24 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 		java.lang.String strDerivedCompName = rcDerived.name();
 
-		double dblFX = 1.;
 		java.lang.String strDerivedCompPV = strDerivedCompName + "[PV]";
 		java.lang.String strReferenceCompPV = strReferenceCompName + "[PV]";
 		java.lang.String strDerivedCompDerivedDV01 = strDerivedCompName + "[DerivedCleanDV01]";
 		java.lang.String strReferenceCompDerivedDV01 = strReferenceCompName + "[DerivedCleanDV01]";
 		java.lang.String strDerivedCompReferenceDV01 = strDerivedCompName + "[ReferenceCleanDV01]";
 		java.lang.String strReferenceCompReferenceDV01 = strReferenceCompName + "[ReferenceCleanDV01]";
+		java.lang.String strDerivedCompQuantoPremium = strDerivedCompName + "[QuantoAdjustmentPremium]";
+		java.lang.String strDerivedCompQuantoAdjustment = strDerivedCompName + "[QuantoAdjustmentFactor]";
+		java.lang.String strReferenceCompQuantoPremium = strReferenceCompName + "[QuantoAdjustmentPremium]";
+		java.lang.String strReferenceCompQuantoAdjustment = strReferenceCompName +
+			"[QuantoAdjustmentFactor]";
 
 		if (!mapOutput.containsKey (strDerivedCompPV) || !mapOutput.containsKey (strReferenceCompPV) ||
 			!mapOutput.containsKey (strReferenceCompReferenceDV01) || !mapOutput.containsKey
 				(strReferenceCompDerivedDV01) || !mapOutput.containsKey (strDerivedCompReferenceDV01) ||
-					!mapOutput.containsKey (strDerivedCompDerivedDV01)) {
+					!mapOutput.containsKey (strDerivedCompDerivedDV01) || !mapOutput.containsKey
+						(strDerivedCompQuantoPremium) || !mapOutput.containsKey
+							(strReferenceCompQuantoPremium)) {
 			mapOutput.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 			return mapOutput;
@@ -186,30 +192,41 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 		double dblReferenceCompReferenceDV01 = mapOutput.get (strReferenceCompReferenceDV01);
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve
-			(org.drip.product.params.CurrencyPair.FromCode (fxCode()));
+		mapOutput.put ("ReferenceCompReferenceBasis", -1. * (dblDerivedCompPV + dblReferenceCompPV) /
+			dblReferenceCompReferenceDV01);
 
-		if (null != auFX) {
-			try {
-				dblFX = auFX.evaluate (effective().julian());
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
+		mapOutput.put ("ReferenceCompDerivedBasis", -1. * (dblDerivedCompPV + dblReferenceCompPV) /
+			dblReferenceCompDerivedDV01);
 
-				dblFX = 1.;
-			}
-		}
-
-		mapOutput.put ("ReferenceCompReferenceBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
-			(dblFX * dblReferenceCompReferenceDV01));
-
-		mapOutput.put ("ReferenceCompDerivedBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
-			(dblFX * dblReferenceCompDerivedDV01));
-
-		mapOutput.put ("DerivedCompReferenceBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
+		mapOutput.put ("DerivedCompReferenceBasis", -1. * (dblDerivedCompPV + dblReferenceCompPV) /
 			dblDerivedCompReferenceDV01);
 
-		mapOutput.put ("DerivedCompDerivedBasis", -1. * (dblDerivedCompPV + dblFX * dblReferenceCompPV) /
+		mapOutput.put ("DerivedCompDerivedBasis", -1. * (dblDerivedCompPV + dblReferenceCompPV) /
 			dblDerivedCompDerivedDV01);
+
+		if (mapOutput.containsKey (strReferenceCompQuantoAdjustment))
+			mapOutput.put ("ReferenceQuantoAdjustmentFactor", mapOutput.get (strReferenceCompQuantoAdjustment));
+
+		double dblReferenceQuantoAdjustmentPremium = mapOutput.get (strReferenceCompQuantoPremium);
+
+		mapOutput.put ("ReferenceQuantoAdjustmentPremium", dblReferenceQuantoAdjustmentPremium);
+
+		if (mapOutput.containsKey (strDerivedCompQuantoAdjustment))
+			mapOutput.put ("DerivedQuantoAdjustmentFactor", mapOutput.get (strDerivedCompQuantoAdjustment));
+
+		double dblDerivedQuantoAdjustmentPremium = mapOutput.get (strDerivedCompQuantoPremium);
+
+		mapOutput.put ("DerivedQuantoAdjustmentPremium", dblDerivedQuantoAdjustmentPremium);
+
+		try {
+			mapOutput.put ("QuantoAdjustmentPremium", _rcReference.initialNotional() *
+				dblReferenceQuantoAdjustmentPremium + _rcDerived.initialNotional() *
+					dblDerivedQuantoAdjustmentPremium);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		mapOutput.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 

@@ -1,19 +1,20 @@
 
-package org.drip.sample.mtm;
+package org.drip.sample.xccy;
 
-import java.util.*;
+import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.param.creator.*;
+import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.params.*;
+import org.drip.product.params.CurrencyPair;
+import org.drip.product.params.FXMTMSetting;
+import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.common.NumberUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
@@ -46,14 +47,14 @@ import org.drip.state.creator.DiscountCurveBuilder;
  */
 
 /**
- * DualFixedSingleFloat demonstrates the construction, usage, and eventual valuation of a fix-float swap with
- *  a EUR Fixed leg that pays in USD, and a USD Floating Leg. Comparison is done across MTM and non-MTM fixed
- *  Leg Counterparts.
+ * CrossFixedPlainFloatAnalysis demonstrates the impact of Funding Volatility, Forward Volatility, and
+ *  Funding/Forward Correlation on the Valuation of a fix-float swap with a EUR Fixed leg that pays in USD,
+ *  and a USD Floating Leg. Comparison is done across MTM and non-MTM fixed Leg Counterparts.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class DualFixedSingleFloat {
+public class CrossFixedPlainFloatAnalysis {
 
 	private static final FixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
@@ -132,22 +133,93 @@ public class DualFixedSingleFloat {
 		return fixFloat;
 	}
 
+	private static final void SetMarketParams (
+		final CurveSurfaceQuoteSet mktParams,
+		final FloatingRateIndex fri3MUSD,
+		final CurrencyPair cp,
+		final String strFixedCurrency,
+		final String strFloatCurrency,
+		final double dblUSDFundingVol,
+		final double dblUSD3MVol,
+		final double dblUSD3MUSDFundingCorr,
+		final double dblEURFundingVol,
+		final double dblUSDEURFXVol,
+		final double dblEURFundingUSDEURFXCorr)
+		throws Exception
+	{
+		mktParams.setFundingCurveVolSurface (strFloatCurrency, new FlatUnivariate (dblUSDFundingVol));
+
+		mktParams.setForwardCurveVolSurface (fri3MUSD, new FlatUnivariate (dblUSD3MVol));
+
+		mktParams.setForwardFundingCorrSurface (fri3MUSD, strFloatCurrency, new FlatUnivariate (dblUSD3MUSDFundingCorr));
+
+		mktParams.setFundingCurveVolSurface (strFixedCurrency, new FlatUnivariate (dblEURFundingVol));
+
+		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblUSDEURFXVol));
+
+		mktParams.setFundingFXCorrSurface (strFixedCurrency, cp, new FlatUnivariate (dblEURFundingUSDEURFXCorr));
+	}
+
+	private static final void VolCorrScenario (
+		final FixFloatComponent[] aFixFloat,
+		final FloatingRateIndex fri3MUSD,
+		final CurrencyPair cp,
+		final String strFixedCurrency,
+		final String strFloatCurrency,
+		final ValuationParams valParams,
+		final CurveSurfaceQuoteSet mktParams,
+		final double dblUSDFundingVol,
+		final double dblUSD3MVol,
+		final double dblUSD3MUSDFundingCorr,
+		final double dblEURFundingVol,
+		final double dblUSDEURFXVol,
+		final double dblEURFundingUSDEURFXCorr)
+		throws Exception
+	{
+		SetMarketParams (
+			mktParams,
+			fri3MUSD,
+			cp,
+			strFixedCurrency,
+			strFloatCurrency,
+			dblUSDFundingVol,
+			dblUSD3MVol,
+			dblUSD3MUSDFundingCorr,
+			dblEURFundingVol,
+			dblUSDEURFXVol,
+			dblEURFundingUSDEURFXCorr
+		);
+
+		String strDump = "\t[" +
+			FormatUtil.FormatDouble (dblUSDFundingVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblUSD3MVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblUSD3MUSDFundingCorr, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblEURFundingVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblUSDEURFXVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblEURFundingUSDEURFXCorr, 2, 0, 100.) + "%] = ";
+
+		for (int i = 0; i < aFixFloat.length; ++i) {
+			CaseInsensitiveTreeMap<Double> mapOutput = aFixFloat[i].value (valParams, null, mktParams, null);
+
+			if (0 != i) strDump += " || ";
+
+			strDump +=
+				FormatUtil.FormatDouble (mapOutput.get ("ReferenceQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("DerivedQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("QuantoAdjustmentPremium"), 2, 0, 10000.);
+		}
+
+		System.out.println (strDump);
+	}
+
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
 	{
-		double dblUSDCollateralRate = 0.03;
+		double dblUSDCollateralRate = 0.02;
 		double dblEURCollateralRate = 0.02;
 		double dblUSD3MForwardRate = 0.02;
 		double dblUSDEURFXRate = 1. / 1.35;
-
-		double dblUSDFundingVol = 0.1;
-		double dblUSD3MVol = 0.1;
-		double dblUSD3MUSDFundingCorr = 0.1;
-
-		double dblEURFundingVol = 0.1;
-		double dblUSDEURFXVol = 0.3;
-		double dblEURFundingUSDEURFXCorr = 0.3;
 
 		/*
 		 * Initialize the Credit Analytics Library
@@ -159,7 +231,7 @@ public class DualFixedSingleFloat {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		FloatingRateIndex fri3MUSD = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+		FloatingRateIndex fri3M = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
 
 		DiscountCurve dcUSDCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
@@ -175,7 +247,7 @@ public class DualFixedSingleFloat {
 
 		ForwardCurve fc3MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
-			fri3MUSD,
+			fri3M,
 			dblUSD3MForwardRate,
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
 
@@ -205,42 +277,46 @@ public class DualFixedSingleFloat {
 
 		mktParams.setForwardCurve (fc3MUSD);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
-
-		mktParams.setForwardCurveVolSurface (fri3MUSD, new FlatUnivariate (dblUSD3MVol));
-
-		mktParams.setForwardFundingCorrSurface (fri3MUSD, "USD", new FlatUnivariate (dblUSD3MUSDFundingCorr));
-
 		mktParams.setFundingCurve (dcEURCollatDomestic);
 
 		mktParams.setFXCurve (cp, new FlatUnivariate (dblUSDEURFXRate));
 
-		mktParams.setFundingCurveVolSurface ("EUR", new FlatUnivariate (dblEURFundingVol));
+		double[] adblUSDFundingVol = new double[] {0.1, 0.35, 0.60};
 
-		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblUSDEURFXVol));
+		double[] adblUSD3MVol = new double[] {0.1, 0.35, 0.60};
 
-		mktParams.setFundingFXCorrSurface ("EUR", cp, new FlatUnivariate (dblEURFundingUSDEURFXCorr));
+		double[] adblUSD3MUSDFundingCorr = new double[] {-0.1, 0.35};
 
-		CaseInsensitiveTreeMap<Double> mapMTMOutput = fixMTMFloat.value (valParams, null, mktParams, null);
+		double[] adblEURFundingVol = new double[] {0.1, 0.35, 0.60};
 
-		CaseInsensitiveTreeMap<Double> mapNonMTMOutput = fixNonMTMFloat.value (valParams, null, mktParams, null);
+		double[] adblUSDEURFXVol = new double[] {0.1, 0.35, 0.60};
 
-		for (Map.Entry<String, Double> me : mapMTMOutput.entrySet()) {
-			String strKey = me.getKey();
+		double[] adblEURFundingUSDEURFXCorr = new double[] {-0.1, 0.35};
 
-			if (null != me.getValue() && null != mapNonMTMOutput.get (strKey)) {
-				double dblMTMMeasure = me.getValue();
-
-				double dblNonMTMMeasure = mapNonMTMOutput.get (strKey);
-
-				String strReconcile = NumberUtil.WithinTolerance (dblMTMMeasure, dblNonMTMMeasure, 1.e-08, 1.e-04) ?
-					"RECONCILES" :
-					"DOES NOT RECONCILE";
-
-				System.out.println ("\t" +
-					FormatUtil.FormatDouble (dblMTMMeasure, 1, 8, 1.) + " | " +
-					FormatUtil.FormatDouble (dblNonMTMMeasure, 1, 8, 1.) + " | " +
-					strReconcile + " <= " + strKey);
+		for (double dblUSDFundingVol : adblUSDFundingVol) {
+			for (double dblUSD3MVol : adblUSD3MVol) {
+				for (double dblUSD3MUSDFundingCorr : adblUSD3MUSDFundingCorr) {
+					for (double dblEURFundingVol : adblEURFundingVol) {
+						for (double dblUSDEURFXVol : adblUSDEURFXVol) {
+							for (double dblEURFundingUSDEURFXCorr : adblEURFundingUSDEURFXCorr)
+								VolCorrScenario (
+									new FixFloatComponent[] {fixMTMFloat, fixNonMTMFloat},
+									fri3M,
+									cp,
+									"EUR",
+									"USD",
+									valParams,
+									mktParams,
+									dblUSDFundingVol,
+									dblUSD3MVol,
+									dblUSD3MUSDFundingCorr,
+									dblEURFundingVol,
+									dblUSDEURFXVol,
+									dblEURFundingUSDEURFXCorr
+								);
+						}
+					}
+				}
 			}
 		}
 	}

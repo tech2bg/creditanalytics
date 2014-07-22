@@ -6,8 +6,6 @@ import org.drip.analytics.rates.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.sample.forward.*;
-import org.drip.sample.xccy.CCBSDiscountCurve;
-import org.drip.sample.xccy.CCBSForwardCurve;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;

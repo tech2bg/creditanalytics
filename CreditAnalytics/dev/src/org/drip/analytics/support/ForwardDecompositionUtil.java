@@ -1,5 +1,5 @@
 
-package org.drip.product.mtm;
+package org.drip.analytics.support;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
