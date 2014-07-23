@@ -4,6 +4,7 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
@@ -15,6 +16,7 @@ import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.ois.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -267,22 +269,32 @@ public class FedFundOvernightCompounding {
 		final FloatingRateIndex fri,
 		final double dblFlatFixing,
 		final double dblNotional)
+		throws Exception
 	{
 		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mapFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
 
 		double dblAccount = 1.;
-		JulianDate dt = dtStart;
 
-		while (dt.julian() < dtValue.julian()) {
+		double dblPrevDate = dtStart.julian();
+
+		JulianDate dt = dtStart.addDays (1);
+
+		while (dt.julian() <= dtEnd.julian()) {
 			CaseInsensitiveTreeMap<Double> mapFixing = new CaseInsensitiveTreeMap<Double>();
 
 			mapFixing.put (fri.fullyQualifiedName(), dblFlatFixing);
 
 			mapFixings.put (dt, mapFixing);
 
-			dblAccount *= (1. + (dblFlatFixing / 360.));
+			if (dt.julian() <= dtValue.julian()) {
+				double dblAccrualFraction = Convention.YearFraction (dblPrevDate, dt.julian(), "Act/360", false, Double.NaN, null, "USD");
 
-			dt = dt.addDays (1);
+				dblAccount *= (1. + dblFlatFixing * dblAccrualFraction);
+			}
+
+			dblPrevDate = dt.julian();
+
+			dt = dt.addBusDays (1, "USD");
 		}
 
 		System.out.println ("\tManual Calc Float Accrued (Geometric Compounding): " + (dblAccount - 1.) * dblNotional);
@@ -378,8 +390,10 @@ public class FedFundOvernightCompounding {
 				-1.)
 			);
 
+		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
+
 		Map<String, Double> mapOISOutput = ois.value (
-			new ValuationParams (dtToday, dtToday, strCurrency),
+			valParams,
 			null,
 			mktParams,
 			null);
@@ -395,5 +409,29 @@ public class FedFundOvernightCompounding {
 			null);
 
 		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISOutput.get ("FloatAccrued"));
+
+		CashflowPeriod period = lsFloatPeriods.get (1);
+
+		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + floatStream.coupon (
+			period.end(),
+			valParams,
+			mktParams).nominal()
+		);
+
+		double dblOISVol = 0.3;
+		double dblUSDFundingVol = 0.3;
+		double dblUSDFundingUSDOISCorrelation = 0.3;
+
+		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
+
+		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
+
+		mktParams.setForwardFundingCorrSurface (fri, "USD", new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
+
+		System.out.println ("\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
+			period.end(),
+			valParams,
+			mktParams).convexityAdjusted()
+		);
 	}
 }

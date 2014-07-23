@@ -68,35 +68,11 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 
 	public static final int PERIOD_DISCRETIZATION_FULL_COUPON = 3;
 
-	/**
-	 * Discretization Unit Size
-	 */
-
-	public int _iUnitSize = 7;
-
-	/**
-	 * (Optional) Calibration Params
-	 */
-
-	public org.drip.param.definition.CalibrationParams _calibParams = null;
-
-	/**
-	 * Survival to Pay Date (True) or Period End Date (false)
-	 */
-
-	public boolean _bSurvToPayDate = false;
-
-	/**
-	 * Discretization Scheme In Use
-	 */
-
-	public int _iDiscretizationScheme = PERIOD_DISCRETIZATION_DAY_STEP;
-
-	/**
-	 * Apply The Ametrano-Bianchetti Forward-Funding Correlated Quanto Adjustment
-	 */
-
-	public boolean _bAmetranoBianchettiForwardQuanto = true;
+	private int _iUnitSize = 7;
+	private boolean _bSurvToPayDate = false;
+	private boolean _bAmetranoBianchettiForwardQuanto = false;
+	private int _iDiscretizationScheme = PERIOD_DISCRETIZATION_DAY_STEP;
+	private org.drip.param.definition.CalibrationParams _calibParams = null;
 
 	/**
 	 * Create the standard pricer parameters object instance
@@ -104,9 +80,20 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	 * @return PricerParams object instance
 	 */
 
-	public static final PricerParams MakeStdPricerParams()
+	public static final PricerParams Standard()
 	{
-		return new PricerParams (7, null, false, PERIOD_DISCRETIZATION_DAY_STEP);
+		return new PricerParams (7, null, false, PERIOD_DISCRETIZATION_DAY_STEP, false);
+	}
+
+	/**
+	 * Create the standard pricer parameters object instance with the Ametrano-Bianchetti Mode Turned On
+	 * 
+	 * @return PricerParams object instance
+	 */
+
+	public static final PricerParams StandardAmetranoBianchetti()
+	{
+		return new PricerParams (7, null, false, PERIOD_DISCRETIZATION_DAY_STEP, true);
 	}
 
 	/**
@@ -117,18 +104,21 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	 * @param calibParams Optional Calibration Params
 	 * @param bSurvToPayDate Survival to Pay Date (True) or Period End Date (false)
 	 * @param iDiscretizationScheme Discretization Scheme In Use
+	 * @param bAmetranoBianchettiForwardQuanto TRUE => Ametrano-Bianchetti (2013) Forward Mode On
 	 */
 
 	public PricerParams (
 		final int iUnitSize,
 		final org.drip.param.definition.CalibrationParams calibParams,
 		final boolean bSurvToPayDate,
-		final int iDiscretizationScheme)
+		final int iDiscretizationScheme,
+		final boolean bAmetranoBianchettiForwardQuanto)
 	{
 		_iUnitSize = iUnitSize;
 		_calibParams = calibParams;
 		_bSurvToPayDate = bSurvToPayDate;
 		_iDiscretizationScheme = iDiscretizationScheme;
+		_bAmetranoBianchettiForwardQuanto = bAmetranoBianchettiForwardQuanto;
 	}
 
 	/**
@@ -192,6 +182,61 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 				("PricerParams de-serializer: Cannot locate discretization scheme");
 
 		_iDiscretizationScheme = new java.lang.Integer (astrField[4]);
+	}
+
+	/**
+	 * Retrieve the Discretized Loss Unit Size
+	 * 
+	 * @return The Discretized Loss Unit Size
+	 */
+
+	public int unitSize()
+	{
+		return _iUnitSize;
+	}
+
+	/**
+	 * Retrieve the Calibration Parameters Instance
+	 * 
+	 * @return The Calibration Parameters Instance
+	 */
+
+	public org.drip.param.definition.CalibrationParams calibParams()
+	{
+		return _calibParams;
+	}
+
+	/**
+	 * Retrieve the flag indicating whether the Survival is to be computed to the Pay Date (TRUE) or not
+	 * 
+	 * @return TRUE => Survival is to be computed to the Pay Date
+	 */
+
+	public boolean survivalToPayDate()
+	{
+		return _bSurvToPayDate;
+	}
+
+	/**
+	 * Retrieve the Discretization Scheme
+	 * 
+	 * @return The Discretization Scheme
+	 */
+
+	public int discretizationScheme()
+	{
+		return _iDiscretizationScheme;
+	}
+
+	/**
+	 * Retrieve the Flag indicating if the Ametrano-Bianchetti Mode has been turned on
+	 *  
+	 * @return TRUE => Ametrano-Bianchetti Mode has been turned on
+	 */
+
+	public boolean ametranoBianchettiMode()
+	{
+		return _bAmetranoBianchettiForwardQuanto;
 	}
 
 	@Override public java.lang.String fieldDelimiter()

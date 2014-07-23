@@ -381,7 +381,7 @@ public class BondBasketAPI {
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "USD", Convention.DR_ACTUAL);
 
-		PricerParams pricerParams = new PricerParams (7, null, false, PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON);
+		PricerParams pricerParams = new PricerParams (7, null, false, PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON, false);
 
 		/*
 		 * Generate the bond basket measures from the valuation, the pricer, and the market parameters

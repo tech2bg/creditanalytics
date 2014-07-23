@@ -230,12 +230,12 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _fixReference.notional (dblDate1, dblDate2);
 	}
 
-	@Override public double coupon (
-		final double dblValue,
+	@Override public org.drip.analytics.output.PeriodCouponMeasures coupon (
+		final double dblAccrualEndDate,
+		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
-		return _fixReference.coupon (dblValue, csqs);
+		return _fixReference.coupon (dblAccrualEndDate, valParams, csqs);
 	}
 
 	@Override public int freq()

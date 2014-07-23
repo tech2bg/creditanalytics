@@ -453,7 +453,7 @@ public class CreditAnalyticsProxy {
 			pricerParams = new org.drip.param.pricer.PricerParams (7, new
 				org.drip.param.definition.CalibrationParams ("Price", 1, new
 					org.drip.param.valuation.WorkoutInfo (dtStart.julian(), 0.04, 1.,
-						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1);
+						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1, false);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

@@ -525,7 +525,7 @@ public class RatesClosesLoader {
 	{
 		org.drip.product.rates.IRSComponent irs = (org.drip.product.rates.IRSComponent) comp;
 
-		double dblFixedCoupon = irs.getFixedStream().coupon (dtPrev.julian(), null);
+		double dblFixedCoupon = irs.getFixedStream().coupon (dtPrev.julian(), null, null).nominal();
 
 		boolean bApplyFixedCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFixedDC.get (strCurrency));
 
@@ -539,9 +539,9 @@ public class RatesClosesLoader {
 			strCurrency, null) - calcMeasure (irs.getFixedStream(), dtPrev, dcDatePrevQuotePrev, "Accrued01",
 				strCurrency, null)) * 10000.;
 
-		double dblProductFloatingRate = irs.getFloatStream().coupon (dtPrev.julian(),
+		double dblProductFloatingRate = irs.getFloatStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
-				null, null, null, null));
+				null, null, null, null)).nominal();
 
 		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.julian(),
 			org.drip.product.params.FloatingRateIndex.Create (irs.forwardCurveName()[0]).tenor());
@@ -591,9 +591,9 @@ public class RatesClosesLoader {
 
 		double dbl1DTotalPnLWithFixing = dbl1DCleanPnLWithFixing + dbl1DCarry;
 
-		double dblFloatingRateUsed = irs.getFloatStream().coupon (dtPrev.julian(),
+		double dblFloatingRateUsed = irs.getFloatStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
-				null, null, null, mmFixings));
+				null, null, null, mmFixings)).nominal();
 
 		double dblCleanFloatDV01WithFixing = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01",
 			strCurrency, mmFixings);
@@ -1577,8 +1577,7 @@ public class RatesClosesLoader {
 		java.lang.String[] astrTenor = null;
 		java.io.BufferedReader brSwapCOB = null;
 
-		org.drip.param.pricer.PricerParams pricerParams = 
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams();
+		org.drip.param.pricer.PricerParams pricerParams = org.drip.param.pricer.PricerParams.Standard();
 
 		try {
 			brSwapCOB = new java.io.BufferedReader (new java.io.FileReader

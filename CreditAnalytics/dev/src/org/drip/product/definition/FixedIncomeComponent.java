@@ -139,20 +139,19 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 		throws java.lang.Exception;
 
 	/**
-	 * Get the Product's coupon at the given date
+	 * Get the Product's coupon at the specified accrual date
 	 * 
-	 * @param dblValue Valuation Date
+	 * @param dblAccrualEndDate Accrual End Date
+	 * @param valParams The Valuation Parameters
 	 * @param csqs Component Market Parameters
 	 * 
-	 * @return The Product's coupon
-	 * 
-	 * @throws java.lang.Exception Thrown if Product's coupon cannot be calculated
+	 * @return The Product's coupon Nominal/Adjusted Coupon Measures
 	 */
 
-	public abstract double coupon (
-		final double dblValue,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception;
+	public abstract org.drip.analytics.output.PeriodCouponMeasures coupon (
+		final double dblAccrualEndDate,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
 
 	/**
 	 * Retrieve the Coupon Frequency

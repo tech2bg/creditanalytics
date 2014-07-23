@@ -531,7 +531,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, new
 			org.drip.param.definition.CalibrationParams ("Price", 1, new org.drip.param.valuation.WorkoutInfo
 				(org.drip.analytics.date.JulianDate.Today().julian(), 0.04, 1.,
-					org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1);
+					org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1, false);
 
 		org.drip.param.market.CurveSurfaceQuoteSet mktParams = MakeCSQS (bond);
 

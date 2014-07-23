@@ -256,12 +256,12 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return 1.;
 	}
 
-	@Override public double coupon (
-		final double dblValue,
+	@Override public org.drip.analytics.output.PeriodCouponMeasures coupon (
+		final double dblAccrualEndDate,
+		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
-		return 0.;
+		return null;
 	}
 
 	@Override public int freq()

@@ -1051,7 +1051,7 @@ public class CreditAnalyticsTestSuite {
 						org.drip.analytics.daycount.Convention.DR_ACTUAL);
 
 			org.drip.param.pricer.PricerParams pricerParams =
-				org.drip.param.pricer.PricerParams.MakeStdPricerParams();
+				org.drip.param.pricer.PricerParams.Standard();
 
 			System.out.println ("Acc Start       Acc End     Pay Date      Cpn DCF    Pay01    Surv01");
 
@@ -1066,15 +1066,14 @@ public class CreditAnalyticsTestSuite {
 									0.4))))
 			{
 				try {
-					System.out.println (org.drip.analytics.date.JulianDate.fromJulian
-						(p.getAccrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
-							(p.getAccrualEndDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
-								(p.getPayDate()) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
-									(p.getCouponDCF(), 1, 4, 1.) + "    " +
-										org.drip.quant.common.FormatUtil.FormatDouble (dc.df
-											(p.getPayDate()), 1, 4, 1.) + "    " +
-												org.drip.quant.common.FormatUtil.FormatDouble (cc.getSurvival
-													(p.getPayDate()), 1, 4, 1.));
+					System.out.println (org.drip.analytics.date.JulianDate.fromJulian (p.accrualStart()) +
+						"    " + org.drip.analytics.date.JulianDate.fromJulian (p.accrualEnd()) + "    " +
+							org.drip.analytics.date.JulianDate.fromJulian (p.pay()) + "    " +
+								org.drip.quant.common.FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) +
+									"    " + org.drip.quant.common.FormatUtil.FormatDouble (dc.df
+										(p.pay()), 1, 4, 1.) + "    " +
+											org.drip.quant.common.FormatUtil.FormatDouble (cc.getSurvival
+												(p.pay()), 1, 4, 1.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("CDSAPISample failed.");
@@ -1098,21 +1097,21 @@ public class CreditAnalyticsTestSuite {
 				(org.drip.param.valuation.ValuationParams.CreateValParams 
 					(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 						org.drip.analytics.daycount.Convention.DR_ACTUAL),
-							org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
+							org.drip.param.pricer.PricerParams.Standard(),
 								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)))
-				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.getStartDate()) +
-					"    " + org.drip.analytics.date.JulianDate.fromJulian (dp.getEndDate()) + "    " +
-						org.drip.analytics.date.JulianDate.fromJulian (dp.getPayDate()) + "    " +
-							org.drip.quant.common.FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) +
-								"    " + org.drip.quant.common.FormatUtil.FormatDouble
-									(dp.effectiveNotional(), 1, 0, 1.) + "    " +
-										org.drip.quant.common.FormatUtil.FormatDouble
-											(dp.effectiveRecovery(), 1, 2, 1.) + "    " +
-												org.drip.quant.common.FormatUtil.FormatDouble
-													(dp.effectiveDF(), 1, 4, 1.)  + "    " +
-														org.drip.quant.common.FormatUtil.FormatDouble
-					(dp.startSurvival(), 1, 4, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
-						(dp.endSurvival(), 1, 4, 1.));
+				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.start()) + "    " +
+					org.drip.analytics.date.JulianDate.fromJulian (dp.end()) + "    " +
+						org.drip.analytics.date.JulianDate.fromJulian (dp.pay()) + "    " +
+							org.drip.quant.common.FormatUtil.FormatDouble (dp.couponDCF(), 1, 4, 1.) + "    "
+								+ org.drip.quant.common.FormatUtil.FormatDouble (dp.effectiveNotional(), 1,
+									0, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
+										(dp.effectiveRecovery(), 1, 2, 1.) + "    " +
+											org.drip.quant.common.FormatUtil.FormatDouble (dp.effectiveDF(),
+												1, 4, 1.)  + "    " +
+													org.drip.quant.common.FormatUtil.FormatDouble
+														(dp.startSurvival(), 1, 4, 1.) + "    " +
+															org.drip.quant.common.FormatUtil.FormatDouble
+																(dp.endSurvival(), 1, 4, 1.));
 		}
 	}
 
@@ -1321,7 +1320,7 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bBondCouponCFDisplay) {
 			org.drip.param.pricer.PricerParams pricerParams =
-				org.drip.param.pricer.PricerParams.MakeStdPricerParams();
+				org.drip.param.pricer.PricerParams.Standard();
 
 			System.out.println ("Acc Start       Acc End     Pay Date      Cpn DCF    Pay01    Surv01");
 
@@ -1333,15 +1332,13 @@ public class CreditAnalyticsTestSuite {
 						0.05), org.drip.state.creator.CreditCurveBuilder.FromFlatHazard (dtToday.julian(),
 							"CC", "USD", 0.02, 0.4)))) {
 				try {
-					System.out.println (org.drip.analytics.date.JulianDate.fromJulian
-						(p.getAccrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
-							(p.getAccrualEndDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
-								(p.getPayDate()) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
-									(p.getCouponDCF(), 1, 4, 1.) + "    " +
-										org.drip.quant.common.FormatUtil.FormatDouble (dc.df
-											(p.getPayDate()), 1, 4, 1.) + "    " +
-												org.drip.quant.common.FormatUtil.FormatDouble
-													(cc.getSurvival (p.getPayDate()), 1, 4, 1.));
+					System.out.println (org.drip.analytics.date.JulianDate.fromJulian (p.accrualStart()) +
+						"    " + org.drip.analytics.date.JulianDate.fromJulian (p.accrualEnd()) + "    " +
+							org.drip.analytics.date.JulianDate.fromJulian (p.pay()) + "    " +
+								org.drip.quant.common.FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) +
+									"    " + org.drip.quant.common.FormatUtil.FormatDouble (dc.df (p.pay()),
+										1, 4, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
+											(cc.getSurvival (p.pay()), 1, 4, 1.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("BondAPISample failed.");
@@ -1362,30 +1359,30 @@ public class CreditAnalyticsTestSuite {
 				("----------     --------      --------      ---    ----     ---    -----    ---------  -------");
 	
 			for (org.drip.analytics.period.LossPeriodCurveFactors dp : bond.getLossFlow (valParams,
-				org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
+				org.drip.param.pricer.PricerParams.Standard(),
 					org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)))
-				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.getStartDate()) +
-					"    " + org.drip.analytics.date.JulianDate.fromJulian (dp.getEndDate()) + "    " +
-						org.drip.analytics.date.JulianDate.fromJulian (dp.getPayDate()) + "    " +
-							org.drip.quant.common.FormatUtil.FormatDouble (dp.getCouponDCF(), 1,
-								4, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
-									(dp.effectiveNotional(), 1, 0, 1.) + "    " +
-										org.drip.quant.common.FormatUtil.FormatDouble
-											(dp.effectiveRecovery(), 1, 2, 1.) + "    " +
-												org.drip.quant.common.FormatUtil.FormatDouble
-													(dp.effectiveDF(), 1, 4, 1.)  + "    " +
-														org.drip.quant.common.FormatUtil.FormatDouble
-					(dp.startSurvival(), 1, 4, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
-						(dp.endSurvival(), 1, 4, 1.));
+				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.start()) + "    " +
+					org.drip.analytics.date.JulianDate.fromJulian (dp.end()) + "    " +
+						org.drip.analytics.date.JulianDate.fromJulian (dp.pay()) + "    " +
+							org.drip.quant.common.FormatUtil.FormatDouble (dp.couponDCF(), 1, 4, 1.) + "    "
+								+ org.drip.quant.common.FormatUtil.FormatDouble (dp.effectiveNotional(), 1,
+									0, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
+										(dp.effectiveRecovery(), 1, 2, 1.) + "    " +
+											org.drip.quant.common.FormatUtil.FormatDouble (dp.effectiveDF(),
+												1, 4, 1.)  + "    " +
+													org.drip.quant.common.FormatUtil.FormatDouble
+														(dp.startSurvival(), 1, 4, 1.) + "    " +
+															org.drip.quant.common.FormatUtil.FormatDouble
+																(dp.endSurvival(), 1, 4, 1.));
 		}
 
 		if (s_bBondAnalDisplay) {
 			try {
 				System.out.println (strISIN + "    " + bond.getTicker() + " " +
 					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
-						(org.drip.analytics.date.JulianDate.Today().julian(),
-							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2, 3, 100.)
-								+ " " + bond.maturity());
+						(org.drip.analytics.date.JulianDate.Today().julian(), valParams,
+							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominal(), 2, 3,
+								100.) + " " + bond.maturity());
 
 				System.out.println ("Work-out date From Price: " + new org.drip.analytics.date.JulianDate
 					(wi.date()));
@@ -1536,16 +1533,14 @@ public class CreditAnalyticsTestSuite {
 
 				for (org.drip.analytics.period.Period p : aBond[i].cashFlowPeriod()) {
 					try {
-						System.out.println (org.drip.analytics.date.JulianDate.fromJulian
-							(p.getAccrualStartDate()) + "    " +
-								org.drip.analytics.date.JulianDate.fromJulian (p.getAccrualEndDate()) +
-									"    " + org.drip.analytics.date.JulianDate.fromJulian (p.getPayDate()) +
-										"    " + org.drip.quant.common.FormatUtil.FormatDouble
-											(p.getCouponDCF(), 1, 4, 1.) + "    " +
-												org.drip.quant.common.FormatUtil.FormatDouble (dc.df
-													(p.getPayDate()), 1, 4, 1.) + "    " +
-														org.drip.quant.common.FormatUtil.FormatDouble
-							(cc.getSurvival (p.getPayDate()), 1, 4, 1.));
+						System.out.println (org.drip.analytics.date.JulianDate.fromJulian (p.accrualStart())
+							+ "    " + org.drip.analytics.date.JulianDate.fromJulian (p.accrualEnd()) +
+								"    " + org.drip.analytics.date.JulianDate.fromJulian (p.pay()) + "    " +
+									org.drip.quant.common.FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) +
+										"    " + org.drip.quant.common.FormatUtil.FormatDouble (dc.df
+											(p.pay()), 1, 4, 1.) + "    " +
+												org.drip.quant.common.FormatUtil.FormatDouble (cc.getSurvival
+													(p.pay()), 1, 4, 1.));
 					} catch (java.lang.Exception e) {
 						if (s_bSupressErrMsg) {
 							System.out.println ("CustomAPISample failed.");
@@ -1762,10 +1757,10 @@ public class CreditAnalyticsTestSuite {
 					if (s_bTickerAnalDisplay)
 						System.out.println (strISIN + "    " + bond.getTicker() + " " +
 							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
-								(org.drip.analytics.date.JulianDate.Today().julian(),
-									org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2,
-										3, 100.) + " " + bond.maturity() + "    " + (bond.isFloater() ?
-											"FLOAT" : "FIXED") + "     " + 
+								(org.drip.analytics.date.JulianDate.Today().julian(), null,
+									org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominal(), 2, 3,
+										100.) + " " + bond.maturity() + "    " + (bond.isFloater() ? "FLOAT"
+											: "FIXED") + "     " +
 												org.drip.quant.common.FormatUtil.FormatDouble
 													(dblYieldFromPrice, 2, 3, 100.) + "    " +
 														org.drip.quant.common.FormatUtil.FormatDouble
@@ -1801,8 +1796,8 @@ public class CreditAnalyticsTestSuite {
 				if (s_bTickerNotionalDisplay)
 					System.out.println (strISIN + "    " + bond.getTicker() + " " +
 						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
-							(org.drip.analytics.date.JulianDate.Today().julian(),
-								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)), 2, 3,
+							(org.drip.analytics.date.JulianDate.Today().julian(), null,
+								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominal(), 2, 3,
 									100.) + " " + bond.maturity() + "    " +
 										org.drip.quant.common.FormatUtil.FormatDouble
 											(dblOutstandingAmount, 10, 0, 1.));
@@ -2792,7 +2787,7 @@ public class CreditAnalyticsTestSuite {
 		if (s_bCDSBondCreditCurve) {
 			try {
 				System.out.println (cds.primaryCode() + " => " + cds.measureValue (valParams,
-					org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
+					org.drip.param.pricer.PricerParams.Standard(),
 						org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, ccCalib,
 							null, null, null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject
 								(bond, org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
@@ -2832,7 +2827,8 @@ public class CreditAnalyticsTestSuite {
 			mapResult = bb.value (org.drip.param.valuation.ValuationParams.CreateValParams (dtToday, 0,
 				"USD", org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 					org.drip.param.pricer.PricerParams (7, null, false,
-						org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON), csqs, null);
+						org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON, false), csqs,
+							null);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
 				System.out.println ("BasketBondAPISample failed.");

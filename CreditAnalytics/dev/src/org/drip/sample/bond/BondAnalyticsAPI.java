@@ -382,12 +382,12 @@ public class BondAnalyticsAPI {
 
 			for (Period p : aBond[i].cashFlowPeriod())
 				System.out.println (
-					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
+					JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
+					JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
+					JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
 				);
 
 			/*
@@ -588,7 +588,7 @@ public class BondAnalyticsAPI {
 
 		System.out.println (cds.primaryCode() + " => " + cds.measureValue (
 			valParams,
-			PricerParams.MakeStdPricerParams(),
+			PricerParams.Standard(),
 			mktParamsCalib,
 			null,
 			"FairPremium"));

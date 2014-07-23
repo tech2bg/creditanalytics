@@ -593,7 +593,7 @@ public class STIR {
 			new FlatUnivariate (dblSwapRateToSwapRateExchangeCorrelation)
 		);
 
-		Map<String, Double> mapSTIROutput = stir.value (valParams, PricerParams.MakeStdPricerParams(), mktParams, null);
+		Map<String, Double> mapSTIROutput = stir.value (valParams, PricerParams.StandardAmetranoBianchetti(), mktParams, null);
 
 		for (Map.Entry<String, Double> me : mapSTIROutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());

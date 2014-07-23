@@ -794,21 +794,20 @@ public class CashflowPeriod extends Period {
 		super (ab);
 	}
 
-	@Override public double getResetDate()
+	@Override public double reset()
 	{
 		return _dblReset;
 	}
 
-	@Override public double getAccrualDCF (
+	@Override public double accrualDCF (
 		final double dblAccrualEnd)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEnd))
-			throw new java.lang.Exception ("CashflowPeriod::getAccrualDCF => Accrual end is NaN!");
+			throw new java.lang.Exception ("CashflowPeriod::accrualDCF => Accrual end is NaN!");
 
 		if (_dblAccrualStart > dblAccrualEnd && dblAccrualEnd > _dblAccrualEnd)
-			throw new java.lang.Exception
-				("CashflowPeriod::getAccrualDCF => Invalid in-period accrual date!");
+			throw new java.lang.Exception ("CashflowPeriod::accrualDCF => Invalid in-period accrual date!");
 
 		org.drip.analytics.daycount.ActActDCParams actactDCParams = new
 			org.drip.analytics.daycount.ActActDCParams (_iFreq, _dblAccrualStart, _dblAccrualEnd);

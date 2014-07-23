@@ -37,22 +37,22 @@ package org.drip.product.ois;
 
 public class OvernightIndexFloatingStream extends org.drip.product.rates.FloatingStream {
 
-	private double compoundArithmetic (
-		final double dblValueDate,
+	private org.drip.analytics.output.PeriodCouponMeasures compoundArithmetic (
+		final double dblAccrualEndDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
+		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
 				csqs.fixings();
 
-		if (null == mapFixings || 0 == mapFixings.size())
-			throw new java.lang.Exception
-				("OvernightIndexFloatingStream::compoundArithmetic => Cannot get Fixing");
+		if (null == mapFixings || 0 == mapFixings.size()) return null;
 
-		double dblPrevDate = currentPeriod.getStartDate();
+		double dblValueDate = valParams.valueDate();
+
+		double dblPrevDate = currentPeriod.start();
 
 		java.lang.String strCalendar = currentPeriod.calendar();
 
@@ -60,56 +60,107 @@ public class OvernightIndexFloatingStream extends org.drip.product.rates.Floatin
 
 		java.lang.String strFRIFullName = fri.fullyQualifiedName();
 
-		double dblAccruedAmount = 0.;
-		double dblDate = dblPrevDate + 1;
+		double dblNominalAccrued = 0.;
+		double dblConvexityAdjustedAccrued = 0.;
 		double dblLastCoupon = java.lang.Double.NaN;
+		org.drip.analytics.date.JulianDate dt = null;
 
-		while (dblDate <= dblValueDate) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = mapFixings.get
-				(new org.drip.analytics.date.JulianDate (dblDate));
+		try {
+			dt = new org.drip.analytics.date.JulianDate (dblPrevDate + 1);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		double dblDate = dt.julian();
+
+		java.lang.String strCurrency = couponCurrency()[0];
+
+		while (dblDate <= dblAccrualEndDate) {
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = null;
+
+			try {
+				mapFRIFixing = mapFixings.get (new org.drip.analytics.date.JulianDate (dblDate));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
 
 			if (null != mapFRIFixing && mapFRIFixing.containsKey (strFRIFullName)) {
 				java.lang.Double dblFixing = mapFRIFixing.get (strFRIFullName);
 
 				if (null != dblFixing && org.drip.quant.common.NumberUtil.IsValid (dblFixing)) {
-					dblAccruedAmount += org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate,
-						dblDate, strAccrualDC, false, java.lang.Double.NaN, null, strCalendar) *
-							(dblLastCoupon = dblFixing);
+					double dblAccrualConvexityAdjustment = 1.;
+					double dblIncrementalAccrued = java.lang.Double.NaN;
+
+					if (dblValueDate < dblDate) {
+						try {
+							dblAccrualConvexityAdjustment = java.lang.Math.exp
+								(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+									(csqs.fundingCurveVolSurface (strCurrency), csqs.forwardCurveVolSurface
+										(fri), csqs.forwardFundingCorrSurface (fri, strCurrency),
+											dblValueDate, dblDate));
+						} catch (java.lang.Exception e) {
+							e.printStackTrace();
+
+							return null;
+						}
+					}
+
+					try {
+						dblIncrementalAccrued = org.drip.analytics.daycount.Convention.YearFraction
+							(dblPrevDate, dblDate, strAccrualDC, false, java.lang.Double.NaN, null,
+								strCalendar) * (dblLastCoupon = dblFixing);
+					} catch (java.lang.Exception e) {
+						e.printStackTrace();
+
+						return null;
+					}
 
 					dblPrevDate = dblDate;
+					dblNominalAccrued += dblIncrementalAccrued;
+					dblConvexityAdjustedAccrued += dblIncrementalAccrued * dblAccrualConvexityAdjustment;
 				}
 			}
 
-			++dblDate;
+			dblDate = (dt = dt.addBusDays (1, strCalendar)).julian();
 		}
 
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblLastCoupon))
-			throw new java.lang.Exception
-				("OvernightIndexFloatingStream::compoundArithmetic => Cannot get Fixing");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblLastCoupon)) return null;
 
-		return (dblAccruedAmount + org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate,
-			dblValueDate, currentPeriod.accrualDC(), false, java.lang.Double.NaN, null, strCalendar) *
-				dblLastCoupon) / org.drip.analytics.daycount.Convention.YearFraction
-					(currentPeriod.getStartDate(), dblValueDate, strAccrualDC, false, java.lang.Double.NaN,
-						null, strCalendar);
+		try {
+			double dblGapAccrued = org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate,
+				dblAccrualEndDate, currentPeriod.accrualDC(), false, java.lang.Double.NaN, null, strCalendar)
+					* dblLastCoupon;
+
+			double dblDCFNormalizer = org.drip.analytics.daycount.Convention.YearFraction
+				(currentPeriod.start(), dblAccrualEndDate, strAccrualDC, false, java.lang.Double.NaN, null,
+					strCalendar);
+
+			return new org.drip.analytics.output.PeriodCouponMeasures ((dblNominalAccrued + dblGapAccrued) /
+				dblDCFNormalizer, (dblConvexityAdjustedAccrued + dblGapAccrued) / dblDCFNormalizer);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
-	private double compoundGeometric (
-		final double dblValueDate,
+	private org.drip.analytics.output.PeriodCouponMeasures compoundGeometric (
+		final double dblAccrualEndDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
 				csqs.fixings();
 
-		if (null == mapFixings || 0 == mapFixings.size())
-			throw new java.lang.Exception
-				("OvernightIndexFloatingStream::compoundGeometric => Cannot get Fixing");
+		if (null == mapFixings || 0 == mapFixings.size()) return null;
 
-		double dblPrevDate = currentPeriod.getStartDate();
+		double dblPrevDate = currentPeriod.start();
 
 		java.lang.String strCalendar = currentPeriod.calendar();
 
@@ -118,54 +169,82 @@ public class OvernightIndexFloatingStream extends org.drip.product.rates.Floatin
 		java.lang.String strFRIFullName = fri.fullyQualifiedName();
 
 		double dblAccruedAccount = 1.;
-		double dblDate = dblPrevDate + 1;
 		double dblLastCoupon = java.lang.Double.NaN;
+		org.drip.analytics.date.JulianDate dt = null;
 
-		while (dblDate <= dblValueDate) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = mapFixings.get
-				(new org.drip.analytics.date.JulianDate (dblDate));
+		try {
+			dt = new org.drip.analytics.date.JulianDate (dblPrevDate + 1);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		double dblDate = dt.julian();
+
+		while (dblDate <= dblAccrualEndDate) {
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = null;
+
+			try {
+				mapFRIFixing = mapFixings.get (new org.drip.analytics.date.JulianDate (dblDate));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
 
 			if (null != mapFRIFixing && mapFRIFixing.containsKey (strFRIFullName)) {
 				java.lang.Double dblFixing = mapFRIFixing.get (strFRIFullName);
 
 				if (null != dblFixing && org.drip.quant.common.NumberUtil.IsValid (dblFixing)) {
-					dblAccruedAccount *= (1. + org.drip.analytics.daycount.Convention.YearFraction
-						(dblPrevDate, dblDate, strAccrualDC, false, java.lang.Double.NaN, null, strCalendar)
-							* (dblLastCoupon = dblFixing));
+					try {
+						dblAccruedAccount *= (1. + org.drip.analytics.daycount.Convention.YearFraction
+							(dblPrevDate, dblDate, strAccrualDC, false, java.lang.Double.NaN, null,
+								strCalendar) * (dblLastCoupon = dblFixing));
+					} catch (java.lang.Exception e) {
+						e.printStackTrace();
+
+						return null;
+					}
 
 					dblPrevDate = dblDate;
 				}
 			}
 
-			++dblDate;
+			dblDate = (dt = dt.addBusDays (1, strCalendar)).julian();
 		}
 
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblLastCoupon))
-			throw new java.lang.Exception
-				("OvernightIndexFloatingStream::compoundGeometric => Cannot get Fixing");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblLastCoupon)) return null;
 
-		return (dblAccruedAccount * (1. + org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate,
-			dblValueDate, currentPeriod.accrualDC(), false, java.lang.Double.NaN, null, strCalendar) *
-				dblLastCoupon) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
-					(currentPeriod.getStartDate(), dblValueDate, strAccrualDC, false, java.lang.Double.NaN,
-						null, strCalendar);
+		try {
+			return org.drip.analytics.output.PeriodCouponMeasures.Nominal ((dblAccruedAccount * (1. +
+				org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate, dblAccrualEndDate,
+					currentPeriod.accrualDC(), false, java.lang.Double.NaN, null, strCalendar) *
+						dblLastCoupon) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
+							(currentPeriod.start(), dblAccrualEndDate, strAccrualDC, false,
+								java.lang.Double.NaN, null, strCalendar));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
-	@Override protected double getFixing (
-		final double dblValueDate,
+	@Override protected org.drip.analytics.output.PeriodCouponMeasures compoundFixing (
+		final double dblAccrualEndDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
+		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
-		try {
-			return super.getFixing (dblValueDate, org.drip.product.params.FloatingRateIndex.Create
-				(fri.currency(), fri.index(), "1D"), currentPeriod, csqs);
-		} catch (java.lang.Exception e) {
-		}
+		org.drip.analytics.output.PeriodCouponMeasures pcm = super.compoundFixing (dblAccrualEndDate,
+			org.drip.product.params.FloatingRateIndex.Create (fri.currency(), fri.index(), "1D"),
+				currentPeriod, valParams, csqs);
 
-		return fri.isArithmeticCompounding() ? compoundArithmetic (dblValueDate, fri, currentPeriod, csqs) :
-			compoundGeometric (dblValueDate, fri, currentPeriod, csqs);
+		if (null != pcm) return pcm;
+
+		return fri.isArithmeticCompounding() ? compoundArithmetic (dblAccrualEndDate, fri, currentPeriod,
+			valParams, csqs) : compoundGeometric (dblAccrualEndDate, fri, currentPeriod, csqs);
 	}
 
 	/**

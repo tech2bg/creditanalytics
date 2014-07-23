@@ -94,9 +94,10 @@ public class NonlinearCurveCalibrator {
 			_dblCalibValue = dblCalibValue;
 			_quotingParams = quotingParams;
 
-			_pricerParams = new org.drip.param.pricer.PricerParams (pricerParamsIn._iUnitSize, new
+			_pricerParams = new org.drip.param.pricer.PricerParams (pricerParamsIn.unitSize(), new
 				org.drip.param.definition.CalibrationParams (strMeasure, 0, null),
-					pricerParamsIn._bSurvToPayDate, pricerParamsIn._iDiscretizationScheme);
+					pricerParamsIn.survivalToPayDate(), pricerParamsIn.discretizationScheme(),
+						pricerParamsIn.ametranoBianchettiMode());
 		}
 
 		@Override public double evaluate (
@@ -325,8 +326,8 @@ public class NonlinearCurveCalibrator {
 							" for node " + iInstr);
 
 				return dblCalibValue - comp.measureValue (valParams, new org.drip.param.pricer.PricerParams
-					(1, new org.drip.param.definition.CalibrationParams (strMeasure, 0, null), true, 0),
-						org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null, null,
+					(1, new org.drip.param.definition.CalibrationParams (strMeasure, 0, null), true, 0,
+						false), org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null, null,
 							null, null, mmFixings), quotingParams, strMeasure);
 			}
 

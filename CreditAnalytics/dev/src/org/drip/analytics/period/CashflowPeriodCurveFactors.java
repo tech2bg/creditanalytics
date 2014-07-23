@@ -213,7 +213,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	 * @return Period Full Coupon Rate
 	 */
 
-	public double getFullCouponRate()
+	public double fullCouponRate()
 	{
 		return _dblFullCouponRate;
 	}
@@ -224,7 +224,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	 * @return Period Spread
 	 */
 
-	public double getSpread()
+	public double spread()
 	{
 		return _dblSpread;
 	}
@@ -235,7 +235,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	 * @return Period Index Reference Rate
 	 */
 
-	public double getIndexRate()
+	public double indexRate()
 	{
 		return _dblIndexRate;
 	}
@@ -246,7 +246,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	 * @return Period Start Notional
 	 */
 
-	public double getStartNotional()
+	public double startNotional()
 	{
 		return _dblStartNotional;
 	}
@@ -257,7 +257,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	 * @return Period end Notional
 	 */
 
-	public double getEndNotional()
+	public double endNotional()
 	{
 		return _dblEndNotional;
 	}
@@ -268,7 +268,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	 * @return Period end discount factor
 	 */
 
-	public double getEndDF()
+	public double endDF()
 	{
 		return _dblEndDF;
 	}
@@ -279,7 +279,7 @@ public class CashflowPeriodCurveFactors extends Period {
 	 * @return Period end survival probability
 	 */
 
-	public double getEndSurvival()
+	public double endSurvival()
 	{
 		return _dblEndSurvival;
 	}

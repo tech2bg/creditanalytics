@@ -229,12 +229,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _fixStream.notional (dblDate1, dblDate2);
 	}
 
-	@Override public double coupon (
-		final double dblValue,
+	@Override public org.drip.analytics.output.PeriodCouponMeasures coupon (
+		final double dblAccrualEndDate,
+		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
-		return _fixStream.coupon (dblValue, csqs);
+		return _fixStream.coupon (dblAccrualEndDate, valParams, csqs);
 	}
 
 	@Override public int freq()
@@ -572,20 +572,19 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				if (null == dcFunding) return null;
 
 				for (org.drip.analytics.period.Period p : cashFlowPeriod()) {
-					double dblPeriodPayDate = p.getPayDate();
+					double dblPeriodPayDate = p.pay();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dcFunding.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
-							p.getCouponDCF());
+						dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
 						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dcFunding.libor (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dcFunding.libor (p.start(), p.end());
 
 					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
 
@@ -593,9 +592,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
-					double dblPeriodNotional = notional (p.getStartDate(), p.getEndDate());
+					double dblPeriodNotional = notional (p.start(), p.end());
 
-					double dblPeriodDCF = p.getCouponDCF();
+					double dblPeriodDCF = p.couponDCF();
 
 					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
 						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
@@ -625,28 +624,25 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	{
 		boolean bFirstPeriod = true;
 
-		// double dblMaturityDate = maturity().julian();
-
 		org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
 
 		try {
 			for (org.drip.analytics.period.CashflowPeriod period : _fixStream.cashFlowPeriod()) {
 				if (null == period) continue;
 
-				double dblPayDate = period.getPayDate();
+				double dblPayDate = period.pay();
 
 				if (dblValueDate > dblPayDate) continue;
 
 				double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
 					dblPayDate);
 
-				double dblPeriodDCF = period.getCouponDCF();
+				double dblPeriodDCF = period.couponDCF();
 
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (dblValueDate > period.getStartDate())
-						dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
+					if (dblValueDate > period.start()) dblPeriodDCF -= period.accrualDCF (dblValueDate);
 				}
 
 				double dblPay01 = dblPeriodDCF * dblPeriodTurnDF;

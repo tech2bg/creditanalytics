@@ -142,7 +142,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		}
 
 		for (org.drip.analytics.period.CashflowPeriod period : lsCouponPeriod)
-			updateMapEntries (period.getPayDate(), iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
+			updateMapEntries (period.pay(), iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
 
 		updateMapEntries (dblWorkoutDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
 

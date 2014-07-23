@@ -166,7 +166,7 @@ public class CreditAnalyticsAPI {
 		 * Standard Credit Pricer Parameters (check javadoc for details)
 		 */
 
-		PricerParams pricerParams = PricerParams.MakeStdPricerParams();
+		PricerParams pricerParams = PricerParams.Standard();
 
 		/*
 		 * Re-calculate the input calibration measures for the input CDSes
@@ -223,7 +223,7 @@ public class CreditAnalyticsAPI {
 		 * Standard Credit Pricer Parameters (check javadoc for details)
 		 */
 
-		PricerParams pricerParams = PricerParams.MakeStdPricerParams();
+		PricerParams pricerParams = PricerParams.Standard();
 
 		System.out.println ("Acc Start       Acc End     Pay Date    Index   Spread   Cpn DCF    Pay01    Surv01");
 
@@ -235,14 +235,14 @@ public class CreditAnalyticsAPI {
 
 		for (CashflowPeriodCurveFactors p : cds.getCouponFlow (valParams, pricerParams, mktParams))
 			System.out.println (
-				JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getIndexRate(), 1, 4, 1.) +	FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getSpread(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
+				JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (p.indexRate(), 1, 4, 1.) +	FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (p.spread(), 1, 4, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
 			);
 
 		System.out.println ("Loss Start     Loss End      Pay Date      Cpn    Notl     Rec    EffDF    StartSurv  EndSurv");
@@ -255,10 +255,10 @@ public class CreditAnalyticsAPI {
 
 		for (LossPeriodCurveFactors dp : cds.getLossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
-				JulianDate.fromJulian (dp.getStartDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (dp.getEndDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (dp.getPayDate()) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (dp.start()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (dp.end()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (dp.pay()) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +

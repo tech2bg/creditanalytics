@@ -573,7 +573,7 @@ public class IRSVolCorrAnalysis {
 		throws Exception
 	{
 		for (org.drip.analytics.period.CashflowPeriod period : irs.getFixedStream().cashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.getStartDate());
+			JulianDate dtFRADate = new JulianDate (period.start());
 
 			mktParams.setCustomMetricVolSurface (
 				fri.fullyQualifiedName(),
@@ -594,7 +594,7 @@ public class IRSVolCorrAnalysis {
 			);
 		}
 
-		Map<String, Double> mapIRSOutput = irs.value (valParams, PricerParams.MakeStdPricerParams(), mktParams, null);
+		Map<String, Double> mapIRSOutput = irs.value (valParams, PricerParams.StandardAmetranoBianchetti(), mktParams, null);
 
 		double dblSwapRate = mapIRSOutput.get ("SwapRate");
 

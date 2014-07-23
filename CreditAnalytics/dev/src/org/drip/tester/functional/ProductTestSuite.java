@@ -909,7 +909,7 @@ public class ProductTestSuite {
 		}
 
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
-			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
+			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP, false);
 
 		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenMarketParams (aCDSBRA[0],
 			"Base").fundingCurve (aCDSBRA[0].couponCurrency()[0]);
@@ -1396,7 +1396,7 @@ public class ProductTestSuite {
 
 		org.drip.analytics.output.ComponentMeasures cdsOut = cds.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"),
-				org.drip.param.pricer.PricerParams.MakeStdPricerParams(), mpc, null);
+				org.drip.param.pricer.PricerParams.Standard(), mpc, null);
 
 		System.out.println ("CDS calcs in " + cdsOut._dblCalcTime + " sec");
 
@@ -1614,7 +1614,7 @@ public class ProductTestSuite {
 
 		org.drip.analytics.output.ComponentMeasures bondOut = bond.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"),
-				org.drip.param.pricer.PricerParams.MakeStdPricerParams(), mpc, null);
+				org.drip.param.pricer.PricerParams.Standard(), mpc, null);
 
 		System.out.println ("Fixed Cpn Bond calcs in " + bondOut._dblCalcTime + " sec");
 
@@ -1849,7 +1849,7 @@ public class ProductTestSuite {
 			(dt, dt, "USD");
 
 		org.drip.param.pricer.PricerParams pricerParams =
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams();
+			org.drip.param.pricer.PricerParams.Standard();
 
 		org.drip.analytics.output.BasketMeasures cdxOp = cdx.measures (valParams, pricerParams, mpc,
 			null);
@@ -2365,8 +2365,7 @@ public class ProductTestSuite {
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
 			(dt, dt, "USD");
 
-		org.drip.param.pricer.PricerParams pricerParams =
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams();
+		org.drip.param.pricer.PricerParams pricerParams = org.drip.param.pricer.PricerParams.Standard();
 
 		org.drip.analytics.output.BasketMeasures bbOp = bb.measures (valParams, pricerParams, mpc, null);
 

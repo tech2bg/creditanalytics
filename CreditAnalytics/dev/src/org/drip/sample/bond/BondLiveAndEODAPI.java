@@ -191,7 +191,7 @@ public class BondLiveAndEODAPI {
 
 				System.out.println (strISIN + FIELD_SEPARATOR +
 					(bond.isFloater() ? "FLOAT   " : "FIXED   ") + bond.getTicker() + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (bond.coupon (dtToday.julian(), mktParams), 2, 3, 100.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (bond.coupon (dtToday.julian(), null, mktParams).nominal(), 2, 3, 100.) + FIELD_SEPARATOR +
 					bond.maturity() + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblYieldFromPrice, 2, 3, 100.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblZSpreadFromPrice, 1, 3, 100.) + FIELD_SEPARATOR +
@@ -211,7 +211,7 @@ public class BondLiveAndEODAPI {
 
 			System.out.println (
 				strISIN + FIELD_SEPARATOR + bond.getTicker() + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (bond.coupon (JulianDate.Today().julian(), null), 2, 3, 100.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (bond.coupon (JulianDate.Today().julian(), null, null).nominal(), 2, 3, 100.) + FIELD_SEPARATOR +
 				bond.maturity() + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (CreditAnalytics.GetBondDoubleField (strISIN, "OutstandingAmount"), 10, 0, 1.)
 			);
@@ -284,7 +284,7 @@ public class BondLiveAndEODAPI {
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtToday, 0, "", Convention.DR_ACTUAL);
 
-		PricerParams pricerParams = PricerParams.MakeStdPricerParams();
+		PricerParams pricerParams = PricerParams.Standard();
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Credit (dc, cc);
 
@@ -367,7 +367,7 @@ public class BondLiveAndEODAPI {
 		ExerciseInfo nei = CreditAnalytics.NextExerciseInfo (strISIN, dtToday);
 
 		System.out.println (strISIN + "    " + bond.getTicker() + " " + FormatUtil.FormatDouble (bond.coupon
-			(valParams.valueDate(), mktParams), 2, 3, 100.) + " " + bond.maturity());
+			(valParams.valueDate(), valParams, mktParams).nominal(), 2, 3, 100.) + " " + bond.maturity());
 
 		System.out.println ("Work-out date From Price: " + new JulianDate (wi.date()));
 
@@ -444,14 +444,14 @@ public class BondLiveAndEODAPI {
 
 			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, mktParams))
 				System.out.println (
-					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.getIndexRate(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.getSpread(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
+					JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
+					JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
+					JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (p.indexRate(), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (p.spread(), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
 				);
 		} else {
 			System.out.println ("Acc Start       Acc End     Pay Date   Cpn DCF    Pay01    Surv01");
@@ -460,12 +460,12 @@ public class BondLiveAndEODAPI {
 
 			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, mktParams))
 				System.out.println (
-					JulianDate.fromJulian (p.getAccrualStartDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.getAccrualEndDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.getPayDate()) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.df (p.getPayDate()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.getSurvival (p.getPayDate()), 1, 4, 1.)
+					JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
+					JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
+					JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
 				);
 		}
 
@@ -475,10 +475,10 @@ public class BondLiveAndEODAPI {
 
 		for (LossPeriodCurveFactors dp : bond.getLossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
-				JulianDate.fromJulian (dp.getStartDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (dp.getEndDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (dp.getPayDate()) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.getCouponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (dp.start()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (dp.end()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (dp.pay()) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (dp.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +

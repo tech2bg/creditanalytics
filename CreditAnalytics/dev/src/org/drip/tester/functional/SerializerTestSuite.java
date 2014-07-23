@@ -797,7 +797,8 @@ public class SerializerTestSuite {
 		byte[] abPricer = new org.drip.param.pricer.PricerParams (7, new
 			org.drip.param.definition.CalibrationParams ("KOOL", 1, new
 				org.drip.param.valuation.WorkoutInfo (org.drip.analytics.date.JulianDate.Today().julian(),
-					0.04, 1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1).serialize();
+					0.04, 1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY)), false, 1,
+						false).serialize();
 
 		Verify (abPricer, new org.drip.param.pricer.PricerParams (abPricer), "PricerParams");
 

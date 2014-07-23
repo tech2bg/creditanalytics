@@ -61,34 +61,39 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
-	protected double getFixing (
-		final double dblValueDate,
+	protected org.drip.analytics.output.PeriodCouponMeasures compoundFixing (
+		final double dblAccrualEndDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
+		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
 				csqs.fixings();
 
-		if (null != mapFixings) {
-			double dblCurrentResetDate = currentPeriod.getResetDate();
+		if (null == mapFixings) return null;
 
-			if (org.drip.quant.common.NumberUtil.IsValid (dblCurrentResetDate)) {
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIndexFixing =
-					mapFixings.get (new org.drip.analytics.date.JulianDate (dblCurrentResetDate));
+		org.drip.analytics.date.JulianDate dtCurrentReset = null;
 
-				if (null != mapIndexFixing) {
-					java.lang.Double dblFixing = mapIndexFixing.get (fri.fullyQualifiedName());
+		try {
+			dtCurrentReset = new org.drip.analytics.date.JulianDate (currentPeriod.reset());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 
-					if (null != dblFixing && org.drip.quant.common.NumberUtil.IsValid (dblFixing))
-						return dblFixing + _dblSpread;
-				}
-			}
+			return null;
 		}
 
-		throw new java.lang.Exception ("FloatingStream::getRegularFixing => Cannot get Fixing");
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIndexFixing = mapFixings.get
+			(dtCurrentReset);
+
+		if (null == mapIndexFixing) return null;
+
+		java.lang.Double dblFixing = mapIndexFixing.get (fri.fullyQualifiedName());
+
+		if (null == dblFixing || org.drip.quant.common.NumberUtil.IsValid (dblFixing)) return null;
+
+		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dblFixing + _dblSpread);
 	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -142,9 +147,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_dblEffective = _lsCouponPeriod.get (0).getStartDate();
+		_dblEffective = _lsCouponPeriod.get (0).start();
 
-		_dblMaturity = _lsCouponPeriod.get (iNumPeriod - 1).getEndDate();
+		_dblMaturity = _lsCouponPeriod.get (iNumPeriod - 1).end();
 	}
 
 	/**
@@ -338,53 +343,70 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
 	}
 
-	@Override public double coupon (
-		final double dblValueDate,
+	@Override public org.drip.analytics.output.PeriodCouponMeasures coupon (
+		final double dblAccrualEndDate,
+		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || null == csqs)
-			throw new java.lang.Exception ("FloatingStream::coupon => Invalid Inputs");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEndDate) || null == csqs) return null;
 
 		org.drip.analytics.period.CashflowPeriod currentPeriod = null;
 
-		if (dblValueDate <= _dblEffective)
+		if (dblAccrualEndDate <= _dblEffective)
 			currentPeriod = _lsCouponPeriod.get (0);
 		else {
 			for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 				if (null == period) continue;
 
-				if (dblValueDate >= period.getStartDate() && dblValueDate <= period.getEndDate()) {
+				if (dblAccrualEndDate >= period.start() && dblAccrualEndDate <= period.end()) {
 					currentPeriod = period;
 					break;
 				}
 			}
 		}
 
-		if (null == currentPeriod)
-			throw new java.lang.Exception ("FloatingStream::coupon => Invalid Inputs");
+		if (null == currentPeriod) return null;
 
-		try {
-			return getFixing (dblValueDate, _fri, currentPeriod, csqs);
-		} catch (java.lang.Exception e) {
+		org.drip.analytics.output.PeriodCouponMeasures pcm = compoundFixing (dblAccrualEndDate, _fri,
+			currentPeriod, valParams, csqs);
+
+		if (null != pcm) return pcm;
+
+		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
+
+		if (null != fc) {
+			try {
+				return org.drip.analytics.output.PeriodCouponMeasures.Nominal (fc.forward
+					(currentPeriod.pay()) + _dblSpread);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
 		}
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
 
-		if (null == dcFunding)
-			throw new java.lang.Exception ("FloatingStream::getCoupon => cant determine index");
-
-		double dblStartDate = currentPeriod.getStartDate();
-
-		double dblEndDate = currentPeriod.getEndDate();
+		if (null == dcFunding) return null;
 
 		double dblEpochDate = dcFunding.epoch().julian();
 
-		if (dblEpochDate > dblStartDate)
-			dblEndDate = new org.drip.analytics.date.JulianDate (dblStartDate = dblEpochDate).addTenor
-				(_fri.tenor()).julian();
+		double dblStartDate = currentPeriod.start();
 
-		return dcFunding.libor (dblStartDate, dblEndDate, currentPeriod.getCouponDCF()) + _dblSpread;
+		double dblEndDate = currentPeriod.pay();
+
+		try {
+			if (dblEpochDate > dblStartDate)
+				dblEndDate = new org.drip.analytics.date.JulianDate (dblStartDate = dblEpochDate).addTenor
+					(_fri.tenor()).julian();
+
+			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dcFunding.libor (dblStartDate,
+				dblEndDate, currentPeriod.couponDCF()) + _dblSpread);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Override public int freq()
@@ -436,7 +458,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
 		try {
-			return new org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (0).getEndDate());
+			return new org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (0).end());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -481,11 +503,14 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblUnadjustedDirtyDV01 = 0.;
 		double dblQuantoAdjustedDirtyPV = 0.;
 		double dblQuantoAdjustedDirtyDV01 = 0.;
+		double dblUnadjustedConvexDirtyPV = 0.;
 		double dblAdjustedNotional = _dblNotional;
+		double dblQuantoAdjustedConvexDirtyPV = 0.;
 		double dblCashPayDF = java.lang.Double.NaN;
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 		double dblValueNotional = java.lang.Double.NaN;
+		double dblConvexResetRate = java.lang.Double.NaN;
 
 		double dblValueDate = valParams.valueDate();
 
@@ -500,52 +525,65 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		java.lang.String strFRI = _fri.fullyQualifiedName();
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
-
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
-			double dblFloatingRate = 0.;
 			double dblPeriodQuantoAdjustment = 1.;
 			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
 
-			double dblPeriodAcrualStartDate = period.getAccrualStartDate();
+			double dblPeriodAcrualStartDate = period.accrualStart();
 
-			double dblPeriodResetDate = period.getResetDate();
+			double dblPeriodResetDate = period.reset();
 
-			double dblPeriodStartDate = period.getStartDate();
+			double dblPeriodStartDate = period.start();
 
-			double dblPeriodEndDate = period.getEndDate();
+			double dblPeriodEndDate = period.end();
 
-			double dblPeriodPayDate = period.getPayDate();
+			double dblPeriodPayDate = period.pay();
 
-			double dblPeriodDCF = period.getCouponDCF();
+			double dblPeriodDCF = period.couponDCF();
 
 			if (dblPeriodPayDate < dblValueDate) continue;
+
+			double dblFloatingRate = 0.;
+			double dblConvexFloatingRate = 0.;
 
 			try {
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 					dblResetDate = dblPeriodResetDate;
 
-					dblResetRate = dblFloatingRate = null == fc ? coupon (dblValueDate, csqs) : fc.forward
-						(dblPeriodPayDate);
+					org.drip.analytics.output.PeriodCouponMeasures pcm = coupon (dblValueDate, valParams,
+						csqs);
 
-					dblFixing01 = period.getAccrualDCF (dblValueDate) * 0.0001 * notional
+					if (null == pcm) return null;
+
+					dblResetRate = dblFloatingRate = pcm.nominal();
+
+					dblConvexResetRate = dblConvexFloatingRate = pcm.convexityAdjusted();
+
+					dblFixing01 = period.accrualDCF (dblValueDate) * 0.0001 * notional
 						(dblPeriodAcrualStartDate, dblValueDate) * (null != auFX && null != _fxmtm &&
 							_fxmtm.mtmMode() ? auFX.evaluate (dblValueDate) : 1.);
 
 					if (dblPeriodStartDate < dblValueDate) dblAccrued01 = dblFixing01;
 				} else {
-					dblPeriodQuantoAdjustment = null != pricerParams &&
-						pricerParams._bAmetranoBianchettiForwardQuanto ?
-							org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (csqs,
-								strFRI, "ForwardToDomesticExchangeVolatility",
-									"FRIForwardToDomesticExchangeCorrelation", dblValueDate,
-										dblPeriodStartDate) : java.lang.Math.exp
-											(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-												(csqs.fundingCurveVolSurface (strCurrency),
-													csqs.forwardCurveVolSurface (_fri),
-														csqs.forwardFundingCorrSurface (_fri, strCurrency),
-															dblValueDate, dblPeriodStartDate));
+					org.drip.analytics.output.PeriodCouponMeasures pcm = coupon (dblPeriodEndDate, valParams,
+						csqs);
+
+					if (null == pcm) return null;
+
+					dblFloatingRate = pcm.nominal();
+
+					dblConvexFloatingRate = pcm.convexityAdjusted();
+
+					dblPeriodQuantoAdjustment = null != pricerParams && pricerParams.ametranoBianchettiMode()
+						? org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (csqs, strFRI,
+							"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
+								dblValueDate, dblPeriodStartDate) : java.lang.Math.exp
+									(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+										(csqs.fundingCurveVolSurface (strCurrency),
+											csqs.forwardCurveVolSurface (_fri),
+												csqs.forwardFundingCorrSurface (_fri, strCurrency),
+													dblValueDate, dblPeriodStartDate));
 
 					if (null != _fxmtm && _fxmtm.mtmMode())
 						dblPeriodQuantoAdjustment *= java.lang.Math.exp
@@ -557,9 +595,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 												(csqs.forwardCurveVolSurface (_fri), csqs.fxCurveVolSurface
 													(cp), csqs.forwardFXCorrSurface (_fri, cp), dblValueDate,
 														dblPeriodStartDate));
-
-					dblFloatingRate = (null == fc ? dcFunding.libor (dblPeriodStartDate, dblPeriodPayDate,
-						dblPeriodDCF) : fc.forward (dblPeriodPayDate));
 				}
 
 				dblUnadjustedDirtyPeriodDV01 = 0.0001 * dblPeriodDCF * dcFunding.df (dblPeriodPayDate) *
@@ -584,11 +619,15 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			dblUnadjustedDirtyDV01 += dblUnadjustedDirtyPeriodDV01;
 			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate + _dblSpread);
+			dblUnadjustedConvexDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblConvexFloatingRate +
+				_dblSpread);
 			double dblQuantoAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
 				dblPeriodQuantoAdjustment;
 			dblQuantoAdjustedDirtyDV01 += dblQuantoAdjustedDirtyPeriodDV01;
 			dblQuantoAdjustedDirtyPV += dblQuantoAdjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate +
 				_dblSpread);
+			dblQuantoAdjustedConvexDirtyPV += dblQuantoAdjustedDirtyPeriodDV01 * 10000. *
+				(dblConvexFloatingRate + _dblSpread);
 		}
 
 		try {
@@ -608,13 +647,20 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		dblUnadjustedDirtyDV01 *= (dblAdjustedNotional / dblCashPayDF);
 		dblQuantoAdjustedDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
 		dblQuantoAdjustedDirtyDV01 *= (dblAdjustedNotional / dblCashPayDF);
+		dblUnadjustedConvexDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
+		dblQuantoAdjustedConvexDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
 		double dblAccrued = dblAccrued01 * 10000. * (dblResetRate + _dblSpread);
 		double dblUnadjustedCleanPV = dblUnadjustedDirtyPV - dblAccrued;
 		double dblUnadjustedCleanDV01 = dblUnadjustedDirtyDV01 - dblAccrued01;
 		double dblQuantoAdjustedCleanPV = dblQuantoAdjustedDirtyPV - dblAccrued;
+		double dblUnadjustedConvexCleanPV = dblUnadjustedConvexDirtyPV - dblAccrued;
 		double dblQuantoAdjustedCleanDV01 = dblQuantoAdjustedDirtyDV01 - dblAccrued01;
+		double dblQuantoAdjustedConvexCleanPV = dblQuantoAdjustedConvexDirtyPV - dblAccrued;
 		double dblUnadjustedFairPremium = 0.0001 * dblUnadjustedCleanPV / dblUnadjustedCleanDV01;
+		double dblUnadjustedConvexFairPremium = 0.0001 * dblUnadjustedConvexCleanPV / dblUnadjustedCleanDV01;
 		double dblQuantoAdjustedFairPremium = 0.0001 * dblQuantoAdjustedCleanPV / dblQuantoAdjustedCleanDV01;
+		double dblQuantoAdjustedConvexFairPremium = 0.0001 * dblQuantoAdjustedConvexCleanPV /
+			dblQuantoAdjustedCleanDV01;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
@@ -626,6 +672,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		mapResult.put ("CleanDV01", dblQuantoAdjustedCleanDV01);
 
 		mapResult.put ("CleanPV", dblQuantoAdjustedCleanPV);
+
+		mapResult.put ("ConvexResetRate", dblConvexResetRate);
 
 		mapResult.put ("CV01", dblQuantoAdjustedCleanDV01);
 
@@ -646,6 +694,14 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		mapResult.put ("QuantoAdjustedCleanPV", dblQuantoAdjustedCleanPV);
 
 		mapResult.put ("QuantoAdjustedCleanDV01", dblQuantoAdjustedCleanDV01);
+
+		mapResult.put ("QuantoAdjustedConvexCleanPV", dblQuantoAdjustedConvexCleanPV);
+
+		mapResult.put ("QuantoAdjustedConvexDirtyPV", dblQuantoAdjustedConvexDirtyPV);
+
+		mapResult.put ("QuantoAdjustedConvexFairPremium", dblQuantoAdjustedConvexFairPremium);
+
+		mapResult.put ("QuantoAdjustedConvexParRate", dblQuantoAdjustedConvexFairPremium);
 
 		mapResult.put ("QuantoAdjustedDirtyDV01", dblQuantoAdjustedDirtyDV01);
 
@@ -675,6 +731,14 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		mapResult.put ("UnadjustedCleanPV", dblUnadjustedCleanPV);
 
 		mapResult.put ("UnadjustedCleanDV01", dblUnadjustedCleanDV01);
+
+		mapResult.put ("UnadjustedConvexCleanPV", dblUnadjustedConvexCleanPV);
+
+		mapResult.put ("UnadjustedConvexDirtyPV", dblUnadjustedConvexDirtyPV);
+
+		mapResult.put ("UnadjustedConvexFairPremium", dblUnadjustedConvexFairPremium);
+
+		mapResult.put ("UnadjustedConvexParRate", dblUnadjustedConvexFairPremium);
 
 		mapResult.put ("UnadjustedDirtyDV01", dblUnadjustedDirtyDV01);
 
@@ -706,6 +770,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			double dblQuantoAdjustedPrice = 100. * (1. + (dblQuantoAdjustedCleanPV / dblAdjustedNotional /
 				dblValueNotional));
 
+			double dblUnadjustedConvexPrice = 100. * (1. + (dblUnadjustedConvexCleanPV / dblAdjustedNotional
+				/ dblValueNotional));
+
+			double dblQuantoAdjustedConvexPrice = 100. * (1. + (dblQuantoAdjustedConvexCleanPV /
+				dblAdjustedNotional / dblValueNotional));
+
 			mapResult.put ("CleanPrice", dblQuantoAdjustedPrice);
 
 			mapResult.put ("DirtyPrice", 100. * (1. + (dblQuantoAdjustedDirtyPV / dblAdjustedNotional /
@@ -715,12 +785,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			mapResult.put ("QuantoAdjustedCleanPrice", dblQuantoAdjustedPrice);
 
+			mapResult.put ("QuantoAdjustedConvexCleanPrice", dblQuantoAdjustedConvexPrice);
+
 			mapResult.put ("QuantoAdjustedDirtyPrice", 100. * (1. + (dblQuantoAdjustedDirtyPV /
 				dblAdjustedNotional / dblValueNotional)));
 
 			mapResult.put ("QuantoAdjustedPrice", dblQuantoAdjustedPrice);
 
 			mapResult.put ("UnadjustedCleanPrice", dblUnadjustedPrice);
+
+			mapResult.put ("UnadjustedConvexCleanPrice", dblUnadjustedConvexPrice);
 
 			mapResult.put ("UnadjustedDirtyPrice", 100. * (1. + (dblUnadjustedDirtyPV / dblAdjustedNotional /
 				dblValueNotional)));
@@ -749,6 +823,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		setstrMeasureNames.add ("CleanPV");
 
+		setstrMeasureNames.add ("ConvexResetRate");
+
 		setstrMeasureNames.add ("CV01");
 
 		setstrMeasureNames.add ("DirtyDV01");
@@ -774,6 +850,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		setstrMeasureNames.add ("QuantoAdjustedCleanPrice");
 
 		setstrMeasureNames.add ("QuantoAdjustedCleanPV");
+
+		setstrMeasureNames.add ("QuantoAdjustedConvexCleanPrice");
+
+		setstrMeasureNames.add ("QuantoAdjustedConvexCleanPV");
+
+		setstrMeasureNames.add ("QuantoAdjustedConvexDirtyPV");
+
+		setstrMeasureNames.add ("QuantoAdjustedConvexFairPremium");
+
+		setstrMeasureNames.add ("QuantoAdjustedConvexParRate");
 
 		setstrMeasureNames.add ("QuantoAdjustedDirtyDV01");
 
@@ -808,6 +894,16 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		setstrMeasureNames.add ("UnadjustedCleanPrice");
 
 		setstrMeasureNames.add ("UnadjustedCleanPV");
+
+		setstrMeasureNames.add ("UnadjustedConvexCleanPrice");
+
+		setstrMeasureNames.add ("UnadjustedConvexCleanPV");
+
+		setstrMeasureNames.add ("UnadjustedConvexDirtyPV");
+
+		setstrMeasureNames.add ("UnadjustedConvexFairPremium");
+
+		setstrMeasureNames.add ("UnadjustedConvexParRate");
 
 		setstrMeasureNames.add ("UnadjustedDirtyDV01");
 
@@ -848,13 +944,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
-				double dblPeriodPayDate = p.getPayDate();
+				double dblPeriodPayDate = p.pay();
 
-				if (p.getStartDate() < valParams.valueDate()) continue;
+				if (p.start() < valParams.valueDate()) continue;
 
 				org.drip.quant.calculus.WengertJacobian wjDForwardDManifestMeasure =
-					dcFunding.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
-						p.getCouponDCF());
+					dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
 
 				if (null == wjDForwardDManifestMeasure) continue;
 
@@ -869,7 +964,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					wjDPayDFDManifestMeasure.numParameters())
 					continue;
 
-				double dblForward = dcFunding.libor (p.getStartDate(), p.getEndDate());
+				double dblForward = dcFunding.libor (p.start(), p.end());
 
 				double dblPayDF = dcFunding.df (dblPeriodPayDate);
 
@@ -877,9 +972,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
 						iNumQuote);
 
-				double dblPeriodNotional = _dblNotional * notional (p.getStartDate(), p.getEndDate());
+				double dblPeriodNotional = _dblNotional * notional (p.start(), p.end());
 
-				double dblPeriodDCF = p.getCouponDCF();
+				double dblPeriodDCF = p.couponDCF();
 
 				for (int i = 0; i < iNumQuote; ++i) {
 					double dblDCashflowPVDManifestMeasurei = dblPeriodDCF * (dblForward *
@@ -929,20 +1024,19 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
-					double dblPeriodPayDate = p.getPayDate();
+					double dblPeriodPayDate = p.pay();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dcFunding.jackDForwardDManifestMeasure (p.getStartDate(), p.getEndDate(), "Rate",
-							p.getCouponDCF());
+						dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
 						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dcFunding.libor (p.getStartDate(), p.getEndDate());
+					double dblForwardRate = dcFunding.libor (p.start(), p.end());
 
 					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
 
@@ -950,9 +1044,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
-					double dblPeriodNotional = notional (p.getStartDate(), p.getEndDate());
+					double dblPeriodNotional = notional (p.start(), p.end());
 
-					double dblPeriodDCF = p.getCouponDCF();
+					double dblPeriodDCF = p.couponDCF();
 
 					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
 						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
@@ -1016,20 +1110,19 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 				if (null == period) continue;
 
-				double dblPayDate = period.getPayDate();
+				double dblPayDate = period.pay();
 
 				if (dblValueDate > dblPayDate) {
 					bFirstPeriod = false;
 					continue;
 				}
 
-				double dblPeriodDCF = period.getCouponDCF();
+				double dblPeriodDCF = period.couponDCF();
 
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (dblValueDate > period.getStartDate())
-						dblPeriodDCF -= period.getAccrualDCF (dblValueDate);
+					if (dblValueDate > period.start()) dblPeriodDCF -= period.accrualDCF (dblValueDate);
 				}
 
 				double dblPeriodCV100 = dblPeriodDCF * dcFunding.df (dblPayDate) * notional (dblPayDate);

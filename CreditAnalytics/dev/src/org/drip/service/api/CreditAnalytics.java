@@ -1125,9 +1125,8 @@ public class CreditAnalytics {
 		if (null == dcEOD || null == ccEOD) return null;
 
 		return cds.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
-				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null,
-					null, ccEOD, null, null, null, null), null);
+			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
+				(dcEOD, null, null, ccEOD, null, null, null, null), null);
 	}
 
 	/**
@@ -1138,8 +1137,9 @@ public class CreditAnalytics {
 	 * @return Map of live measures
 	 */
 
-	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> GetLiveCDSMeasures (
-		final org.drip.product.definition.CreditDefaultSwap cds)
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+		GetLiveCDSMeasures (
+			final org.drip.product.definition.CreditDefaultSwap cds)
 	{
 		if (null == cds) return null;
 
@@ -5480,10 +5480,9 @@ public class CreditAnalytics {
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
-				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD,
-					dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
-						dtEOD, strIR), null), null);
+			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
+				(dcEOD, dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5562,10 +5561,9 @@ public class CreditAnalytics {
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
-				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD,
-					dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
-						dtEOD, strIR), null), null);
+			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
+				(dcEOD, dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5644,10 +5642,9 @@ public class CreditAnalytics {
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
 		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
-			org.drip.param.pricer.PricerParams.MakeStdPricerParams(),
-				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD,
-					dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
-						dtEOD, strIR), null), null);
+			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
+				(dcEOD, dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
+					dtEOD, strIR), null), null);
 	}
 
 	/**
@@ -5780,7 +5777,7 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot get Bond " + strBondId);
 
 		if ("Coupon".equalsIgnoreCase (strField))
-			return bond.coupon (org.drip.analytics.date.JulianDate.Today().julian(), null);
+			return bond.coupon (org.drip.analytics.date.JulianDate.Today().julian(), null, null).nominal();
 
 		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.getCurrentCoupon();
 

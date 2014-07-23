@@ -171,7 +171,7 @@ public class CreditCurveScenarioGenerator {
 		}
 
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
-			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
+			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP, false);
 
 		for (int i = 0; i < iNumInstr; ++i) {
 			TranslatedQuoteMeasure tqm = translateQuoteMeasure (_aCalibInst[i], valParams, pricerParams, dc,

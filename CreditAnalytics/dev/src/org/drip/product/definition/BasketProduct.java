@@ -738,7 +738,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		double dblNotional = notional (dblDate);
 
 		if (null == csqs || 0. == dblNotional || !org.drip.quant.common.NumberUtil.IsValid (dblNotional))
-			throw new java.lang.Exception ("BasketProduct::getCoupon => Cannot extract basket notional");
+			throw new java.lang.Exception ("BasketProduct::coupon => Cannot extract basket notional");
 
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
 
@@ -746,7 +746,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblCoupon += aComp[i].coupon (dblDate, csqs);
+			dblCoupon += aComp[i].coupon (dblDate, null, csqs).nominal();
 
 		return dblCoupon / dblNotional;
 	}

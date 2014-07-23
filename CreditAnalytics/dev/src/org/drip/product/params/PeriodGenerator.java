@@ -231,10 +231,10 @@ public class PeriodGenerator extends PeriodSet {
 		}
 
 		if (org.drip.quant.common.NumberUtil.IsValid (_dblFirstCouponDate))
-			_lsCouponPeriod.get (0).setPayDate (_dblFirstCouponDate);
+			_lsCouponPeriod.get (0).setPay (_dblFirstCouponDate);
 
 		if (org.drip.quant.common.NumberUtil.IsValid (_dblInterestAccrualStart))
-			_lsCouponPeriod.get (0).setAccrualStartDate (_dblInterestAccrualStart);
+			_lsCouponPeriod.get (0).setAccrualStart (_dblInterestAccrualStart);
 
 		return true;
 	}

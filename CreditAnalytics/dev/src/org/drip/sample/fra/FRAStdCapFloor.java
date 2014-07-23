@@ -510,7 +510,7 @@ public class FRAStdCapFloor {
 		throws Exception
 	{
 		for (org.drip.analytics.period.CashflowPeriod period : floatstream.cashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.getStartDate());
+			JulianDate dtFRADate = new JulianDate (period.start());
 
 			mktParams.setForwardCurveVolSurface (
 				fri,

@@ -402,8 +402,8 @@ public class BondManager {
 
 			try {
 				java.lang.String strRunName = bond.getTicker() + "  " + df2p.format (100. * bond.coupon
-					(valParams.valueDate(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
-						(bond.maturity().julian()) - 2000);
+					(valParams.valueDate(), valParams, null).nominal()) + " " +
+						(org.drip.analytics.date.JulianDate.Year (bond.maturity().julian()) - 2000);
 
 				if (bond.isFloater()) {
 					if (s_bBlog)
@@ -474,8 +474,8 @@ public class BondManager {
 
 				try {
 					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.coupon
-						(valParams.valueDate(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
-							(bond.maturity().julian()) - 2000);
+						(valParams.valueDate(), valParams, null).nominal()) + " " +
+							(org.drip.analytics.date.JulianDate.Year (bond.maturity().julian()) - 2000);
 
 					if (bond.isFloater())
 						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
@@ -531,7 +531,7 @@ public class BondManager {
 
 				try {
 					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.coupon
-						(dt.julian(), null)) + " " + (org.drip.analytics.date.JulianDate.Year
+						(dt.julian(), null, null).nominal()) + " " + (org.drip.analytics.date.JulianDate.Year
 							(bond.maturity().julian()) - 2000);
 
 					if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey

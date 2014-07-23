@@ -122,7 +122,7 @@ public class OvernightFundFloatingStream extends org.drip.product.rates.Floating
 		System.out.println (new java.lang.String (fsDeser.serialize()));
 
 		for (org.drip.analytics.period.CashflowPeriod cfPeriod : fsDeser.cashFlowPeriod())
-			System.out.println ("\t" + new org.drip.analytics.date.JulianDate (cfPeriod.getStartDate()) +
-				"=>" + new org.drip.analytics.date.JulianDate (cfPeriod.getEndDate()));
+			System.out.println ("\t" + new org.drip.analytics.date.JulianDate (cfPeriod.start()) + "=>" + new
+				org.drip.analytics.date.JulianDate (cfPeriod.end()));
 	}
 }
