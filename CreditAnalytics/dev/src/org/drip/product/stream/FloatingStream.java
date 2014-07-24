@@ -1,5 +1,5 @@
 
-package org.drip.product.rates;
+package org.drip.product.stream;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -74,6 +74,12 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		if (null == mapFixings) return null;
 
+		if (fri.overnight())
+			return fri.isArithmeticCompounding() ? org.drip.analytics.support.CompoundingUtil.Arithmetic
+				(dblAccrualEndDate, fri, currentPeriod, valParams, csqs) :
+					org.drip.analytics.support.CompoundingUtil.Geometric (dblAccrualEndDate, fri,
+						currentPeriod, csqs);
+
 		org.drip.analytics.date.JulianDate dtCurrentReset = null;
 
 		try {
@@ -93,7 +99,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		if (null == dblFixing || org.drip.quant.common.NumberUtil.IsValid (dblFixing)) return null;
 
-		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dblFixing + _dblSpread);
+		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dblFixing);
 	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -150,6 +156,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		_dblEffective = _lsCouponPeriod.get (0).start();
 
 		_dblMaturity = _lsCouponPeriod.get (iNumPeriod - 1).end();
+
+		_strCode = _strCurrency + "::" + _fri.fullyQualifiedName() + "::" + new
+			org.drip.analytics.date.JulianDate (_dblMaturity);
 	}
 
 	/**
@@ -377,7 +386,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null != fc) {
 			try {
 				return org.drip.analytics.output.PeriodCouponMeasures.Nominal (fc.forward
-					(currentPeriod.pay()) + _dblSpread);
+					(currentPeriod.pay()));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -401,7 +410,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 					(_fri.tenor()).julian();
 
 			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dcFunding.libor (dblStartDate,
-				dblEndDate, currentPeriod.couponDCF()) + _dblSpread);
+				dblEndDate, currentPeriod.couponDCF()));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -498,7 +507,9 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		double dblFixing01 = 0.;
 		double dblAccrued01 = 0.;
+		double dblTotalCoupon = 0.;
 		boolean bFirstPeriod = true;
+		double dblTotalConvexCoupon = 0.;
 		double dblUnadjustedDirtyPV = 0.;
 		double dblUnadjustedDirtyDV01 = 0.;
 		double dblQuantoAdjustedDirtyPV = 0.;
@@ -617,6 +628,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 				}
 			}
 
+			dblTotalCoupon += dblFloatingRate;
+			dblTotalConvexCoupon += dblConvexFloatingRate;
 			dblUnadjustedDirtyDV01 += dblUnadjustedDirtyPeriodDV01;
 			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate + _dblSpread);
 			dblUnadjustedConvexDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblConvexFloatingRate +
@@ -650,6 +663,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		dblUnadjustedConvexDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
 		dblQuantoAdjustedConvexDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
 		double dblAccrued = dblAccrued01 * 10000. * (dblResetRate + _dblSpread);
+		double dblConvexAccrued = dblAccrued01 * 10000. * (dblConvexResetRate + _dblSpread);
 		double dblUnadjustedCleanPV = dblUnadjustedDirtyPV - dblAccrued;
 		double dblUnadjustedCleanDV01 = dblUnadjustedDirtyDV01 - dblAccrued01;
 		double dblQuantoAdjustedCleanPV = dblQuantoAdjustedDirtyPV - dblAccrued;
@@ -662,6 +676,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		double dblQuantoAdjustedConvexFairPremium = 0.0001 * dblQuantoAdjustedConvexCleanPV /
 			dblQuantoAdjustedCleanDV01;
 
+		try {
+			dblValueNotional = notional (dblValueDate) * _dblNotional * (null != auFX && null != _fxmtm &&
+				!_fxmtm.mtmMode() ? auFX.evaluate (dblValueDate) : 1.);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
@@ -671,25 +692,32 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("CleanDV01", dblQuantoAdjustedCleanDV01);
 
-		mapResult.put ("CleanPV", dblQuantoAdjustedCleanPV);
+		mapResult.put ("CleanPV", dblQuantoAdjustedConvexCleanPV);
+
+		mapResult.put ("ConvexAccrued", dblConvexAccrued);
 
 		mapResult.put ("ConvexResetRate", dblConvexResetRate);
+
+		mapResult.put ("CouponConvexityPremiumUpfront", (dblQuantoAdjustedConvexCleanPV -
+			dblQuantoAdjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("CouponConvexityRatio", dblTotalConvexCoupon / dblTotalCoupon);
 
 		mapResult.put ("CV01", dblQuantoAdjustedCleanDV01);
 
 		mapResult.put ("DirtyDV01", dblQuantoAdjustedDirtyDV01);
 
-		mapResult.put ("DirtyPV", dblQuantoAdjustedDirtyPV);
+		mapResult.put ("DirtyPV", dblQuantoAdjustedConvexDirtyPV);
 
 		mapResult.put ("DV01", dblQuantoAdjustedCleanDV01);
 
-		mapResult.put ("FairPremium", dblQuantoAdjustedFairPremium);
+		mapResult.put ("FairPremium", dblQuantoAdjustedConvexFairPremium);
 
 		mapResult.put ("Fixing01", dblFixing01 * dblAdjustedNotional / dblCashPayDF);
 
-		mapResult.put ("ParRate", dblQuantoAdjustedFairPremium);
+		mapResult.put ("ParRate", dblQuantoAdjustedConvexFairPremium);
 
-		mapResult.put ("PV", dblQuantoAdjustedCleanPV);
+		mapResult.put ("PV", dblQuantoAdjustedConvexCleanPV);
 
 		mapResult.put ("QuantoAdjustedCleanPV", dblQuantoAdjustedCleanPV);
 
@@ -719,10 +747,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("QuantoAdjustmentFactor", dblQuantoAdjustedDirtyDV01 / dblUnadjustedDirtyDV01);
 
-		mapResult.put ("QuantoAdjustmentPremium", (dblQuantoAdjustedCleanPV - dblUnadjustedCleanPV) /
-			dblAdjustedNotional);
+		mapResult.put ("QuantoAdjustmentPremiumUpfront", (dblQuantoAdjustedCleanPV - dblUnadjustedCleanPV) /
+			dblValueNotional);
 
-		mapResult.put ("Rate", dblQuantoAdjustedFairPremium);
+		mapResult.put ("Rate", dblQuantoAdjustedConvexFairPremium);
 
 		mapResult.put ("ResetDate", dblResetDate);
 
@@ -754,41 +782,30 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		mapResult.put ("UnadjustedUpfront", dblUnadjustedCleanPV);
 
-		mapResult.put ("Upfront", dblQuantoAdjustedCleanPV);
-
-		try {
-			dblValueNotional = notional (dblValueDate) * (null != auFX && null != _fxmtm && !_fxmtm.mtmMode()
-				? auFX.evaluate (dblValueDate) : 1.);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
+		mapResult.put ("Upfront", dblQuantoAdjustedConvexCleanPV);
 
 		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
-			double dblUnadjustedPrice = 100. * (1. + (dblUnadjustedCleanPV / dblAdjustedNotional /
-				dblValueNotional));
-
-			double dblQuantoAdjustedPrice = 100. * (1. + (dblQuantoAdjustedCleanPV / dblAdjustedNotional /
-				dblValueNotional));
-
-			double dblUnadjustedConvexPrice = 100. * (1. + (dblUnadjustedConvexCleanPV / dblAdjustedNotional
-				/ dblValueNotional));
-
+			double dblUnadjustedPrice = 100. * (1. + (dblUnadjustedCleanPV / dblValueNotional));
+			double dblQuantoAdjustedPrice = 100. * (1. + (dblQuantoAdjustedCleanPV / dblValueNotional));
+			double dblUnadjustedConvexPrice = 100. * (1. + (dblUnadjustedConvexCleanPV / dblValueNotional));
 			double dblQuantoAdjustedConvexPrice = 100. * (1. + (dblQuantoAdjustedConvexCleanPV /
-				dblAdjustedNotional / dblValueNotional));
+				dblValueNotional));
 
-			mapResult.put ("CleanPrice", dblQuantoAdjustedPrice);
+			mapResult.put ("CleanPrice", dblQuantoAdjustedConvexPrice);
 
-			mapResult.put ("DirtyPrice", 100. * (1. + (dblQuantoAdjustedDirtyPV / dblAdjustedNotional /
-				dblValueNotional)));
+			mapResult.put ("DirtyPrice", 100. * (1. + (dblQuantoAdjustedConvexDirtyPV / dblValueNotional)));
 
-			mapResult.put ("Price", dblQuantoAdjustedPrice);
+			mapResult.put ("Price", dblQuantoAdjustedConvexPrice);
 
 			mapResult.put ("QuantoAdjustedCleanPrice", dblQuantoAdjustedPrice);
 
 			mapResult.put ("QuantoAdjustedConvexCleanPrice", dblQuantoAdjustedConvexPrice);
 
+			mapResult.put ("QuantoAdjustedConvexDirtyPrice", 100. * (1. + (dblQuantoAdjustedConvexDirtyPV /
+				dblValueNotional)));
+
 			mapResult.put ("QuantoAdjustedDirtyPrice", 100. * (1. + (dblQuantoAdjustedDirtyPV /
-				dblAdjustedNotional / dblValueNotional)));
+				dblValueNotional)));
 
 			mapResult.put ("QuantoAdjustedPrice", dblQuantoAdjustedPrice);
 
@@ -796,8 +813,10 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 			mapResult.put ("UnadjustedConvexCleanPrice", dblUnadjustedConvexPrice);
 
-			mapResult.put ("UnadjustedDirtyPrice", 100. * (1. + (dblUnadjustedDirtyPV / dblAdjustedNotional /
+			mapResult.put ("UnadjustedConvexDirtyPrice", 100. * (1. + (dblUnadjustedConvexDirtyPV /
 				dblValueNotional)));
+
+			mapResult.put ("UnadjustedDirtyPrice", 100. * (1. + (dblUnadjustedDirtyPV / dblValueNotional)));
 
 			mapResult.put ("UnadjustedPrice", dblUnadjustedPrice);
 		}
@@ -823,7 +842,13 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		setstrMeasureNames.add ("CleanPV");
 
+		setstrMeasureNames.add ("ConvexAccrued");
+
 		setstrMeasureNames.add ("ConvexResetRate");
+
+		setstrMeasureNames.add ("CouponConvexityPremiumUpfront");
+
+		setstrMeasureNames.add ("CouponConvexityRatio");
 
 		setstrMeasureNames.add ("CV01");
 
@@ -855,6 +880,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		setstrMeasureNames.add ("QuantoAdjustedConvexCleanPV");
 
+		setstrMeasureNames.add ("QuantoAdjustedConvexDirtyPrice");
+
 		setstrMeasureNames.add ("QuantoAdjustedConvexDirtyPV");
 
 		setstrMeasureNames.add ("QuantoAdjustedConvexFairPremium");
@@ -881,7 +908,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		setstrMeasureNames.add ("QuantoAdjustmentFactor");
 
-		setstrMeasureNames.add ("QuantoAdjustmentPremium");
+		setstrMeasureNames.add ("QuantoAdjustmentPremiumUpfront");
 
 		setstrMeasureNames.add ("Rate");
 
@@ -898,6 +925,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		setstrMeasureNames.add ("UnadjustedConvexCleanPrice");
 
 		setstrMeasureNames.add ("UnadjustedConvexCleanPV");
+
+		setstrMeasureNames.add ("UnadjustedConvexDirtyPrice");
 
 		setstrMeasureNames.add ("UnadjustedConvexDirtyPV");
 
@@ -1184,7 +1213,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,

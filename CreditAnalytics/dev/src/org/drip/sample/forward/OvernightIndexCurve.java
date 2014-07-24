@@ -6,12 +6,13 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.param.creator.ScenarioDiscountCurveBuilder;
+import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.DepositBuilder;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.ois.*;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FixedStream;
+import org.drip.product.stream.FloatingStream;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
@@ -107,8 +108,9 @@ public class OvernightIndexCurve {
 				strCurrency
 			);
 
-			OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -176,8 +178,9 @@ public class OvernightIndexCurve {
 				strCurrency
 			);
 
-			OvernightFundFloatingStream floatStream = new OvernightFundFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -250,8 +253,9 @@ public class OvernightIndexCurve {
 				strCurrency
 			);
 
-			OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -322,8 +326,9 @@ public class OvernightIndexCurve {
 				strCurrency
 			);
 
-			OvernightFundFloatingStream floatStream = new OvernightFundFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				-1.,
 				null,

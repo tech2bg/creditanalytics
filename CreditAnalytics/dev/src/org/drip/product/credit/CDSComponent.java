@@ -426,8 +426,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_bApplyCpnEOMAdj,
 			strAccrualDC, // Accrual Day Count
 			_bApplyAccEOMAdj,
-			bConvCDS ? org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT :
-				org.drip.analytics.period.PeriodSetEdgeCustomizer.FULL_FRONT_PERIOD,
+			bConvCDS ? org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT :
+				org.drip.analytics.period.CashflowPeriod.FULL_FRONT_PERIOD,
 			false,
 			strCalendar,
 			_strCouponCurrency);
@@ -1295,7 +1295,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,

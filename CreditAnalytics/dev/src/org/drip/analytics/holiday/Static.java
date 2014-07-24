@@ -127,7 +127,7 @@ public class Static extends Base {
 		_dblDate = new java.lang.Double (astrField[1]);
 	}
 
-	@Override public double getDateInYear (
+	@Override public double dateInYear (
 		final int iYear,
 		final boolean bAdjusted)
 	{

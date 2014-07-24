@@ -12,6 +12,8 @@ import org.drip.param.valuation.*;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FixedStream;
+import org.drip.product.stream.FloatingStream;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;

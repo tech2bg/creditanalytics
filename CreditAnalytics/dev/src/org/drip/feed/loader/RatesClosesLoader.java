@@ -362,7 +362,7 @@ public class RatesClosesLoader {
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
 						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency);
 
-			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
+			org.drip.product.stream.FixedStream fixStream = new org.drip.product.stream.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
@@ -370,7 +370,7 @@ public class RatesClosesLoader {
 					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
 						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency);
 
-			org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
+			org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream
 				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
 					org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR",
 						_mapFloatingTenor.get (strCurrency)), false);
@@ -420,14 +420,14 @@ public class RatesClosesLoader {
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
 						strCurrency, strCurrency);
 
-			org.drip.product.rates.FixedStream fixStream = new org.drip.product.rates.FixedStream
+			org.drip.product.stream.FixedStream fixStream = new org.drip.product.stream.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (dtEffective.julian(),
 					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency);
 
-			org.drip.product.rates.FloatingStream floatStream = new org.drip.product.rates.FloatingStream
+			org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream
 				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
 					org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR",
 						_mapFloatingTenor.get (strCurrency)), false);

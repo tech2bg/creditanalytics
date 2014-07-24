@@ -428,15 +428,15 @@ public class Convention {
 
 				if (null == lh) continue;
 
-				if (0 != (WEEKEND_HOLS & iHolType) && null != lh.getWeekendDays() &&
-					lh.getWeekendDays().isWeekend (dblDate))
+				if (0 != (WEEKEND_HOLS & iHolType) && null != lh.weekendDays() && lh.weekendDays().isWeekend
+					(dblDate))
 					return true;
 
-				if (null == lh.getHolidays() || 0 == (WEEKDAY_HOLS & iHolType)) continue;
+				if (null == lh.holidays() || 0 == (WEEKDAY_HOLS & iHolType)) continue;
 
-				for (org.drip.analytics.holiday.Base hol : lh.getHolidays()) {
+				for (org.drip.analytics.holiday.Base hol : lh.holidays()) {
 					try {
-						if (null != hol && (int) dblDate == (int) hol.getDateInYear
+						if (null != hol && (int) dblDate == (int) hol.dateInYear
 							(org.drip.analytics.date.JulianDate.Year (dblDate), true))
 							return true;
 					} catch (java.lang.Exception e) {
@@ -518,10 +518,9 @@ public class Convention {
 			if (null != strCalendar && null != s_mapLocHols.get (strCalendar)) {
 				org.drip.analytics.holiday.Locale lh = s_mapLocHols.get (strCalendar);
 
-				if (null == lh || null == lh.getWeekendDays() || null == lh.getWeekendDays().getDays())
-					continue;
+				if (null == lh || null == lh.weekendDays() || null == lh.weekendDays().days()) continue;
 
-				for (int i : lh.getWeekendDays().getDays())
+				for (int i : lh.weekendDays().days())
 					si.add (i);
 			}
 		}
@@ -943,10 +942,10 @@ public class Convention {
 
 		org.drip.analytics.holiday.Locale lh = s_mapLocHols.get ("HKD");
 
-		System.out.println (lh.getWeekendDays());
+		System.out.println (lh.weekendDays());
 
-		for (org.drip.analytics.holiday.Base hol : lh.getHolidays()) {
-			double dblHoliday = hol.getDateInYear (org.drip.analytics.date.JulianDate.Year (dblDate), true);
+		for (org.drip.analytics.holiday.Base hol : lh.holidays()) {
+			double dblHoliday = hol.dateInYear (org.drip.analytics.date.JulianDate.Year (dblDate), true);
 
 			System.out.println (dblHoliday + "=" + org.drip.analytics.date.JulianDate.fromJulian
 				(dblHoliday));

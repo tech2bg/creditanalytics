@@ -50,8 +50,8 @@ public class DualStreamComponentBuilder {
 	 */
 
 	public static final org.drip.product.rates.FixFloatComponent MakeFixFloat (
-		final org.drip.product.rates.FixedStream fixReference,
-		final org.drip.product.rates.FloatingStream floatDerived)
+		final org.drip.product.stream.FixedStream fixReference,
+		final org.drip.product.stream.FloatingStream floatDerived)
 	{
 		try {
 			return new org.drip.product.rates.FixFloatComponent (fixReference, floatDerived);
@@ -72,8 +72,8 @@ public class DualStreamComponentBuilder {
 	 */
 
 	public static final org.drip.product.rates.FloatFloatComponent MakeFloatFloat (
-		final org.drip.product.rates.FloatingStream floatReference,
-		final org.drip.product.rates.FloatingStream floatDerived)
+		final org.drip.product.stream.FloatingStream floatReference,
+		final org.drip.product.stream.FloatingStream floatDerived)
 	{
 		try {
 			return new org.drip.product.rates.FloatFloatComponent (floatReference, floatDerived);
@@ -93,21 +93,21 @@ public class DualStreamComponentBuilder {
 	 * @return The DualStreamComponent Instance
 	 */
 
-	public static final org.drip.product.rates.DualStreamComponent MakeDualStream (
+	public static final org.drip.product.stream.DualStreamComponent MakeDualStream (
 		final org.drip.product.definition.RatesComponent rcReference,
 		final org.drip.product.definition.RatesComponent rcDerived)
 	{
 		if (null == rcReference || null == rcDerived) return null;
 
-		if (rcReference instanceof org.drip.product.rates.FloatingStream && rcDerived instanceof
-			org.drip.product.rates.FloatingStream)
-			return MakeFloatFloat ((org.drip.product.rates.FloatingStream) rcReference,
-				(org.drip.product.rates.FloatingStream) rcDerived);
+		if (rcReference instanceof org.drip.product.stream.FloatingStream && rcDerived instanceof
+			org.drip.product.stream.FloatingStream)
+			return MakeFloatFloat ((org.drip.product.stream.FloatingStream) rcReference,
+				(org.drip.product.stream.FloatingStream) rcDerived);
 
-		if (rcReference instanceof org.drip.product.rates.FixedStream && rcDerived instanceof
-			org.drip.product.rates.FloatingStream)
-			return MakeFixFloat ((org.drip.product.rates.FixedStream) rcReference,
-				(org.drip.product.rates.FloatingStream) rcDerived);
+		if (rcReference instanceof org.drip.product.stream.FixedStream && rcDerived instanceof
+			org.drip.product.stream.FloatingStream)
+			return MakeFixFloat ((org.drip.product.stream.FixedStream) rcReference,
+				(org.drip.product.stream.FloatingStream) rcDerived);
 
 		return null;
 	}

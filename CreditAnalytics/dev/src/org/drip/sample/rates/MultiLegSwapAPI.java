@@ -24,6 +24,8 @@ import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FixedStream;
+import org.drip.product.stream.FloatingStream;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 

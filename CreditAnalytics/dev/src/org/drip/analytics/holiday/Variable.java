@@ -139,7 +139,7 @@ public class Variable extends Base {
 			_wkend = new Weekend (astrField[5].getBytes());
 	}
 
-	@Override public double getDateInYear (
+	@Override public double dateInYear (
 		final int iYear,
 		final boolean bAdjustForWeekend)
 	{

@@ -12,6 +12,7 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FloatingStream;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;

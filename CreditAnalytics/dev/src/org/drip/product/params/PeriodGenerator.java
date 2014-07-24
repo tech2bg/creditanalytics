@@ -198,7 +198,7 @@ public class PeriodGenerator extends PeriodSet {
 						_bApplyCpnEOMAdj,
 						_strAccrualDC, // Accrual Day Count
 						_bApplyAccEOMAdj,
-						org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT,
+						org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT,
 						true,
 						_strCalendar,
 						_strCurrency))
@@ -221,7 +221,7 @@ public class PeriodGenerator extends PeriodSet {
 					_bApplyCpnEOMAdj,
 					_strAccrualDC, // Accrual Day Count
 					_bApplyAccEOMAdj,
-					org.drip.analytics.period.PeriodSetEdgeCustomizer.NO_ADJUSTMENT,
+					org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT,
 					true,
 					_strCalendar,
 					_strCurrency))

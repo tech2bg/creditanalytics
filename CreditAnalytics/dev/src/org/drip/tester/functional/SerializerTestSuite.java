@@ -303,8 +303,8 @@ public class SerializerTestSuite {
 
 		Verify (abFRA, new org.drip.product.fra.FRAStandardComponent (abFRA), "FloatingRateAgreement");
 
-		org.drip.product.rates.FixedStream[] aFixedStream = new org.drip.product.rates.FixedStream[3];
-		org.drip.product.rates.FloatingStream[] aFloatStream = new org.drip.product.rates.FloatingStream[3];
+		org.drip.product.stream.FixedStream[] aFixedStream = new org.drip.product.stream.FixedStream[3];
+		org.drip.product.stream.FloatingStream[] aFloatStream = new org.drip.product.stream.FloatingStream[3];
 
 		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
@@ -313,42 +313,42 @@ public class SerializerTestSuite {
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap,
 				2, "Act/360", false, false, "ABC", "DEF");
 
-		aFixedStream[0] = new org.drip.product.rates.FixedStream ("DEF", null, 0.03, 1., null,
+		aFixedStream[0] = new org.drip.product.stream.FixedStream ("DEF", null, 0.03, 1., null,
 			lsFixedPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod5Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap,
 				2, "Act/360", false, false, "GHI", "JKL");
 
-		aFixedStream[1] = new org.drip.product.rates.FixedStream ("JKL", null, 0.05, 1., null,
+		aFixedStream[1] = new org.drip.product.stream.FixedStream ("JKL", null, 0.05, 1., null,
 			lsFixedPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod7Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap,
 				2, "Act/360", false, false, "MNO", "PQR");
 
-		aFixedStream[2] = new org.drip.product.rates.FixedStream ("PQR", null, 0.07, 1., null,
+		aFixedStream[2] = new org.drip.product.stream.FixedStream ("PQR", null, 0.07, 1., null,
 			lsFixedPeriod7Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod3Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
-		aFloatStream[0] = new org.drip.product.rates.FloatingStream ("DEF", null, 0.03, -1., null,
+		aFloatStream[0] = new org.drip.product.stream.FloatingStream ("DEF", null, 0.03, -1., null,
 			lsFloatPeriod3Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod5Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
-		aFloatStream[1] = new org.drip.product.rates.FloatingStream ("DEF", null, 0.05, -1., null,
+		aFloatStream[1] = new org.drip.product.stream.FloatingStream ("DEF", null, 0.05, -1., null,
 			lsFloatPeriod5Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod7Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
-		aFloatStream[2] = new org.drip.product.rates.FloatingStream ("DEF", null, 0.07, -1., null,
+		aFloatStream[2] = new org.drip.product.stream.FloatingStream ("DEF", null, 0.07, -1., null,
 			lsFloatPeriod7Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,

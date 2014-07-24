@@ -134,7 +134,7 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	 * @return Description
 	 */
 
-	public java.lang.String getDescription()
+	public java.lang.String description()
 	{
 		return _strDescription;
 	}
@@ -148,7 +148,7 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	 * @return The full date
 	 */
 
-	public abstract double getDateInYear (
+	public abstract double dateInYear (
 		final int iYear,
 		final boolean bAdjusted);
 

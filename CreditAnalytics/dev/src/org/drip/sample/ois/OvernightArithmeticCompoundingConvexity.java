@@ -4,7 +4,7 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.output.PeriodCouponMeasures;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
@@ -17,6 +17,7 @@ import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.product.stream.FixedStream;
 import org.drip.product.stream.FloatingStream;
+import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -52,13 +53,14 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * FedFundOvernightCompounding demonstrates in detail the methodology behind the overnight compounding used
- * 	in the Overnight fund Floating Stream Accrual.
+ * OvernightArithmeticCompoundingConvexity contains an assessment of the impact of the Overnight Index
+ *  Volatility, the Funding Numeraire Volatility, and the ON Index/Funding Correlation on the Overnight
+ *  Floating Stream.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FedFundOvernightCompounding {
+public class OvernightArithmeticCompoundingConvexity {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -274,10 +276,6 @@ public class FedFundOvernightCompounding {
 	{
 		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mapFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
 
-		double dblAccount = 1.;
-
-		double dblPrevDate = dtStart.julian();
-
 		JulianDate dt = dtStart.addDays (1);
 
 		while (dt.julian() <= dtEnd.julian()) {
@@ -287,23 +285,70 @@ public class FedFundOvernightCompounding {
 
 			mapFixings.put (dt, mapFixing);
 
-			if (dt.julian() <= dtValue.julian()) {
-				double dblAccrualFraction = Convention.YearFraction (dblPrevDate, dt.julian(), "Act/360", false, Double.NaN, null, "USD");
-
-				dblAccount *= (1. + dblFlatFixing * dblAccrualFraction);
-			}
-
-			dblPrevDate = dt.julian();
-
 			dt = dt.addBusDays (1, "USD");
 		}
 
-		System.out.println ("\tManual Calc Float Accrued (Geometric Compounding): " + (dblAccount - 1.) * dblNotional);
-
-		System.out.println ("\tManual Calc Float Accrued (Arithmetic Compounding): " +
-			((dtValue.julian() - dtStart.julian()) * dblNotional * dblFlatFixing / 360.));
-
 		return mapFixings;
+	}
+
+	private static final void SetMarketParams (
+		final CurveSurfaceQuoteSet mktParams,
+		final String strCurrency,
+		final FloatingRateIndex fri,
+		final double dblOISVol,
+		final double dblUSDFundingVol,
+		final double dblUSDFundingUSDOISCorrelation)
+		throws Exception
+	{
+		mktParams.setFundingCurveVolSurface (strCurrency, new FlatUnivariate (dblUSDFundingVol));
+
+		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
+
+		mktParams.setForwardFundingCorrSurface (fri, strCurrency, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
+	}
+
+	private static final void VolCorrScenario (
+		final FloatingStream[] aFloatStream,
+		final String strCurrency,
+		final FloatingRateIndex fri,
+		final double dblAccrualEndDate,
+		final ValuationParams valParams,
+		final CurveSurfaceQuoteSet mktParams,
+		final double dblOISVol,
+		final double dblUSDFundingVol,
+		final double dblUSDFundingUSDOISCorrelation)
+		throws Exception
+	{
+		SetMarketParams (
+			mktParams,
+			strCurrency,
+			fri,
+			dblOISVol,
+			dblUSDFundingVol,
+			dblUSDFundingUSDOISCorrelation
+		);
+
+		String strDump = "\t[" +
+			FormatUtil.FormatDouble (dblOISVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblUSDFundingVol, 2, 0, 100.) + "%," +
+			FormatUtil.FormatDouble (dblUSDFundingUSDOISCorrelation, 2, 0, 100.) + "%] = ";
+
+		for (int i = 0; i < aFloatStream.length; ++i) {
+			PeriodCouponMeasures pcm = aFloatStream[i].coupon (
+				dblAccrualEndDate,
+				valParams,
+				mktParams
+			);
+
+			if (0 != i) strDump += " || ";
+
+			strDump +=
+				FormatUtil.FormatDouble (pcm.nominal(), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (pcm.convexityAdjusted(), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (pcm.convexityAdjustment(), 1, 2, 10000.);
+		}
+
+		System.out.println (strDump);
 	}
 
 	public static final void main (
@@ -330,6 +375,8 @@ public class FedFundOvernightCompounding {
 
 		FloatingRateIndex fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
+		fri.setArithmeticCompounding (true);
+
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 			dtCustomOISStart.julian(),
 			"6M",
@@ -353,29 +400,6 @@ public class FedFundOvernightCompounding {
 			false
 		);
 
-		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtCustomOISStart.julian(),
-			"4M",
-			null,
-			2,
-			"Act/360",
-			false,
-			false,
-			strCurrency,
-			strCurrency
-		);
-
-		FixedStream fixStream = new FixedStream (
-			strCurrency,
-			null,
-			0.,
-			1.,
-			null,
-			lsFixedPeriods
-		);
-
-		IRSComponent ois = new IRSComponent (fixStream, floatStream);
-
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dc,
 			null,
@@ -394,46 +418,38 @@ public class FedFundOvernightCompounding {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		Map<String, Double> mapOISOutput = ois.value (
-			valParams,
-			null,
-			mktParams,
-			null);
-
-		System.out.println ("\tMachine Calc Float Accrued (Geometric Compounding): " + mapOISOutput.get ("FloatAccrued"));
-
-		fri.setArithmeticCompounding (true);
-
-		mapOISOutput = ois.value (
-			new ValuationParams (dtToday, dtToday, strCurrency),
-			null,
-			mktParams,
-			null);
-
-		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISOutput.get ("FloatAccrued"));
-
 		CashflowPeriod period = lsFloatPeriods.get (1);
 
-		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + floatStream.coupon (
-			period.end(),
-			valParams,
-			mktParams).nominal()
-		);
+		double[] adblOISVol = new double [] {0.1, 0.3, 0.5};
+		double[] adblUSDFundingVol = new double [] {0.1, 0.3, 0.5};
+		double[] adblUSDFundingUSDOISCorrelation = new double [] {-0.3, 0.0, 0.3};
 
-		double dblOISVol = 0.3;
-		double dblUSDFundingVol = 0.3;
-		double dblUSDFundingUSDOISCorrelation = 0.3;
+		System.out.println ("\n\t----------------------------------------------------------------------");
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
+		System.out.println ("\tInput Order (LHS) L->R:");
 
-		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
+		System.out.println ("\t\tOIS Volatility, Funding Volatility, OIS/Funding Correlation\n");
 
-		mktParams.setForwardFundingCorrSurface (fri, "USD", new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
+		System.out.println ("\tOutput Order (RHS) L->R:");
 
-		System.out.println ("\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
-			period.end(),
-			valParams,
-			mktParams).convexityAdjusted()
-		);
+		System.out.println ("\t\tPeriod Coupon (Nominal), Period Coupon Convexity Adjusted, Adjustment (bp)\n");
+
+		System.out.println ("\t----------------------------------------------------------------------");
+
+		for (double dblOISVol : adblOISVol) {
+			for (double dblUSDFundingVol : adblUSDFundingVol) {
+				for (double dblUSDFundingUSDOISCorrelation : adblUSDFundingUSDOISCorrelation)
+					VolCorrScenario (
+						new FloatingStream[] {floatStream},
+						"USD",
+						fri,
+						period.end(),
+						valParams,
+						mktParams,
+						dblOISVol,
+						dblUSDFundingVol,
+						dblUSDFundingUSDOISCorrelation);
+			}
+		}
 	}
 }

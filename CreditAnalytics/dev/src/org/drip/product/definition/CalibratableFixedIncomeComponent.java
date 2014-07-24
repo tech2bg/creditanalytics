@@ -125,8 +125,9 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
-	 * Generate the Calibratable Linearized Predictor/Response Constraints for the Component from the Market
-	 *  Inputs. The Constraints here typically correspond to Date/Cash Flow pairs and the corresponding PV.
+	 * Generate the Calibratable Linearized Predictor/Response Constraint Weights for the Component from the
+	 *  Market Inputs. The Constraints here typically correspond to Date/Cash Flow pairs and the
+	 *  corresponding leading PV.
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
@@ -138,7 +139,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * 	corresponding PV)
 	 */
 
-	public abstract org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+	public abstract org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,

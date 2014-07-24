@@ -186,7 +186,7 @@ public class Locale {
 	 * @return Weekend
 	 */
 
-	public Weekend getWeekendDays()
+	public Weekend weekendDays()
 	{
 		return _wkend;
 	}
@@ -197,7 +197,7 @@ public class Locale {
 	 * @return Set of hoidays
 	 */
 
-	public java.util.Set<Base> getHolidays()
+	public java.util.Set<Base> holidays()
 	{
 		return _setHolidays;
 	}

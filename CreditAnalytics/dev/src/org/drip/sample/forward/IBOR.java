@@ -14,6 +14,8 @@ import org.drip.product.definition.*;
 import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FixedStream;
+import org.drip.product.stream.FloatingStream;
 import org.drip.quant.common.FormatUtil;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;

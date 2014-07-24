@@ -14,6 +14,8 @@ import org.drip.product.definition.*;
 import org.drip.product.fra.*;
 import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FixedStream;
+import org.drip.product.stream.FloatingStream;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;

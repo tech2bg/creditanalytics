@@ -15,6 +15,7 @@ import org.drip.product.definition.RatesComponent;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FloatingStream;
 import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;

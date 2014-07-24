@@ -135,7 +135,7 @@ public class Weekend extends org.drip.service.stream.Serializer {
 	 * @return Array of the weekend days
 	 */
 
-	public int[] getDays()
+	public int[] days()
 	{
 		return _aiDay;
 	}

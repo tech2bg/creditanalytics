@@ -1141,4 +1141,39 @@ public class AnalyticsHelper {
 
 		return setAggregatedPeriod;
 	}
+
+	/**
+	 * Append the Prefixed Map Entries of the specified Input Map onto the Output Map
+	 * 
+	 * @param mapOutput The Output Map
+	 * @param strPrefix The Entry Prefix
+	 * @param mapInput The Input Map
+	 * 
+	 * @return TRUE => At least one entry appended
+	 */
+
+	public static final boolean AccumulateMeasures (
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOutput,
+		final java.lang.String strPrefix,
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapInput)
+	{
+		if (null == mapOutput || null == strPrefix || strPrefix.isEmpty() || null == mapInput) return false;
+
+		java.util.Set<java.util.Map.Entry<java.lang.String, java.lang.Double>> mapInputESSingle =
+			mapInput.entrySet();
+
+		if (null == mapInputESSingle) return false;
+
+		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapInputESSingle) {
+			if (null == me) continue;
+
+			java.lang.String strKey = me.getKey();
+
+			if (null == strKey || strKey.isEmpty()) continue;
+
+			mapOutput.put (strPrefix + "@" + strKey, me.getValue());
+		}
+
+		return true;
+	}
 }

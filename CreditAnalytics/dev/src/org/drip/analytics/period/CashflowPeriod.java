@@ -43,6 +43,31 @@ package org.drip.analytics.period;
  */
 
 public class CashflowPeriod extends Period {
+
+	/**
+	 * Period Set Generation Customization - No adjustment on either end
+	 */
+
+	public static final int NO_ADJUSTMENT = 0;
+
+	/**
+	 * Period Set Generation Customization - Merge the front periods to produce a long front
+	 */
+
+	public static final int FULL_FRONT_PERIOD = 1;
+
+	/**
+	 * Period Set Generation Customization - Stub (if present) belongs to the front end
+	 */
+
+	public static final int LONG_FRONT_STUB = 2;
+
+	/**
+	 * Period Set Generation Customization - Stub (if present) belongs to the back end
+	 */
+
+	public static final int LONG_BACK_STUB = 4;
+
 	private static final boolean s_bLog = false;
 
 	private int _iFreq = 2;
@@ -185,8 +210,7 @@ public class CashflowPeriod extends Period {
 
 		while (!bGenerationDone) {
 			if (dblPeriodStartDate <= dblEffective) {
-				if (org.drip.analytics.period.PeriodSetEdgeCustomizer.FULL_FRONT_PERIOD == iPSEC)
-					dblPeriodStartDate = dblEffective;
+				if (FULL_FRONT_PERIOD == iPSEC) dblPeriodStartDate = dblEffective;
 
 				bGenerationDone = true;
 			}
@@ -240,9 +264,7 @@ public class CashflowPeriod extends Period {
 			}
 		}
 
-		if (org.drip.analytics.period.PeriodSetEdgeCustomizer.LONG_FRONT_STUB != iPSEC || null == periodFirst
-			|| null == periodSecond)
-			return lsCashflowPeriod;
+		if (LONG_FRONT_STUB != iPSEC || null == periodFirst || null == periodSecond) return lsCashflowPeriod;
 
 		CashflowPeriod periodMerged = MergeCashFlowPeriods (periodFirst, periodSecond);
 
@@ -374,8 +396,7 @@ public class CashflowPeriod extends Period {
 			dblPeriodStartDate = dblPeriodEndDate - dblPeriodDays;
 		}
 
-		if (org.drip.analytics.period.PeriodSetEdgeCustomizer.LONG_BACK_STUB != iPSEC || null == periodFinal
-			|| null == periodPenultimate)
+		if (LONG_BACK_STUB != iPSEC || null == periodFinal || null == periodPenultimate)
 			return lsCashflowPeriod;
 
 		CashflowPeriod periodMerged = MergeCashFlowPeriods (periodFinal, periodPenultimate);

@@ -1,5 +1,5 @@
 
-package org.drip.product.rates;
+package org.drip.product.stream;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -106,6 +106,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		_dblEffective = _lsCouponPeriod.get (0).start();
 
 		_dblMaturity = _lsCouponPeriod.get (iNumCouponPeriod - 1).end();
+
+		_strCode = _strCurrency + "::" + (12 / _lsCouponPeriod.get (0).freq()) + "M::" + new
+			org.drip.analytics.date.JulianDate (_dblMaturity);
 	}
 
 	/**
@@ -762,7 +765,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -867,7 +870,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "4Y", null,
 				2, "30/360", false, true, "JPY", "JPY");
 
-		FixedStream fs = new org.drip.product.rates.FixedStream ("JPY", null, 0.03, 100., null,
+		FixedStream fs = new org.drip.product.stream.FixedStream ("JPY", null, 0.03, 100., null,
 			lsCouponPeriod);
 
 		byte[] abFS = fs.serialize();

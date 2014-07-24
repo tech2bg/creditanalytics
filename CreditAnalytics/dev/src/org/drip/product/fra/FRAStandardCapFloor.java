@@ -53,7 +53,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 	 */
 
 	public FRAStandardCapFloor (
-		final org.drip.product.rates.FloatingStream fs,
+		final org.drip.product.stream.FloatingStream fs,
 		final java.lang.String strManifestMeasure,
 		final boolean bIsCap,
 		final double dblStrike,

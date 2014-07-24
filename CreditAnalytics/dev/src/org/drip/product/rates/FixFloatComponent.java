@@ -46,10 +46,10 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixFloatComponent extends org.drip.product.rates.DualStreamComponent {
+public class FixFloatComponent extends org.drip.product.stream.DualStreamComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.rates.FixedStream _fixReference = null;
-	private org.drip.product.rates.FloatingStream _floatDerived = null;
+	private org.drip.product.stream.FixedStream _fixReference = null;
+	private org.drip.product.stream.FloatingStream _floatDerived = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -70,8 +70,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 	 */
 
 	public FixFloatComponent (
-		final org.drip.product.rates.FixedStream fixReference,
-		final org.drip.product.rates.FloatingStream floatDerived)
+		final org.drip.product.stream.FixedStream fixReference,
+		final org.drip.product.stream.FloatingStream floatDerived)
 		throws java.lang.Exception
 	{
 		if (null == (_fixReference = fixReference) || null == (_floatDerived = floatDerived))
@@ -120,7 +120,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_fixReference = null;
 		else
-			_fixReference = new org.drip.product.rates.FixedStream (astrField[1].getBytes());
+			_fixReference = new org.drip.product.stream.FixedStream (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
@@ -129,7 +129,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_floatDerived = null;
 		else
-			_floatDerived = new org.drip.product.rates.FloatingStream (astrField[2].getBytes());
+			_floatDerived = new org.drip.product.stream.FloatingStream (astrField[2].getBytes());
 	}
 
 	@Override public void setPrimaryCode (
@@ -336,6 +336,14 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
+		if (!org.drip.analytics.support.AnalyticsHelper.AccumulateMeasures (mapResult, _fixReference.name(),
+			mapFixedReferenceStreamResult))
+			return null;
+
+		if (!org.drip.analytics.support.AnalyticsHelper.AccumulateMeasures (mapResult, _floatDerived.name(),
+			mapFloatDerivedStreamResult))
+			return null;
+
 		mapResult.put ("ReferenceAccrued01", mapFixedReferenceStreamResult.get ("Accrued01"));
 
 		mapResult.put ("ReferenceAccrued", mapFixedReferenceStreamResult.get ("FloatAccrued"));
@@ -363,7 +371,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		mapResult.put ("ReferencePV", dblReferencePV);
 
 		mapResult.put ("ReferenceQuantoAdjustmentFactor", mapFixedReferenceStreamResult.get
-			("QuantoAdjustmentFactor"));
+			("QuantoAdjustmentPremiumUpfront"));
 
 		double dblReferenceQuantoAdjustmentPremium = mapFixedReferenceStreamResult.get
 			("QuantoAdjustmentPremium");
@@ -404,7 +412,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 			("QuantoAdjustmentFactor"));
 
 		double dblDerivedQuantoAdjustmentPremium = mapFloatDerivedStreamResult.get
-			("QuantoAdjustmentPremium");
+			("QuantoAdjustmentPremiumUpfront");
 
 		mapResult.put ("DerivedQuantoAdjustmentPremium", dblDerivedQuantoAdjustmentPremium);
 
@@ -560,7 +568,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRLC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -583,7 +591,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		java.lang.String[] astrManifestMeasure = lsmm.manifestMeasures();
 
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRLC
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRWC
 			(valParams, pricerParams, csqs, quotingParams, lsmm);
 
 		if (null == prwc) return null;

@@ -11,8 +11,9 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.ois.*;
 import org.drip.product.rates.*;
+import org.drip.product.stream.FixedStream;
+import org.drip.product.stream.FloatingStream;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
@@ -111,8 +112,9 @@ public class OISProduct {
 				strCurrency
 			);
 
-			OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -180,8 +182,9 @@ public class OISProduct {
 				strCurrency
 			);
 
-			OvernightFundFloatingStream floatStream = new OvernightFundFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -254,8 +257,9 @@ public class OISProduct {
 				strCurrency
 			);
 
-			OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				0.,
 				-1.,
 				null,
@@ -326,8 +330,9 @@ public class OISProduct {
 				strCurrency
 			);
 
-			OvernightFundFloatingStream floatStream = new OvernightFundFloatingStream (
+			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
+				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -689,8 +694,9 @@ public class OISProduct {
 			strCurrency
 		);
 
-		OvernightIndexFloatingStream floatStream = new OvernightIndexFloatingStream (
+		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
+			null,
 			0.,
 			-1.,
 			null,

@@ -229,7 +229,18 @@ public class FloatingRateIndex extends org.drip.service.stream.Serializer implem
 	}
 
 	/**
-	 * Sets the Arithmetic Compounding Flag
+	 * Indicate if the Index is an Overnight Index
+	 * 
+	 * @return TRUE => Overnight Index
+	 */
+
+	public boolean overnight()
+	{
+		return "ON".equalsIgnoreCase (_strTenor) || "1D".equalsIgnoreCase (_strTenor);
+	}
+
+	/**
+	 * Set the Arithmetic Compounding Flag
 	 * 
 	 * @param bArithmeticCompounding TRUE => The Compounding Type is Arithmetic
 	 */

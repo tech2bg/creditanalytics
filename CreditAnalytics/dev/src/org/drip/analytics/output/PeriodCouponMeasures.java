@@ -109,4 +109,15 @@ public class PeriodCouponMeasures {
 	{
 		return _dblConvexityAdjustedRate / _dblNominalRate;
 	}
+
+	/**
+	 * Retrieve the Convexity Adjustment
+	 * 
+	 * @return The Convexity Adjustment
+	 */
+
+	public double convexityAdjustment()
+	{
+		return _dblConvexityAdjustedRate - _dblNominalRate;
+	}
 }

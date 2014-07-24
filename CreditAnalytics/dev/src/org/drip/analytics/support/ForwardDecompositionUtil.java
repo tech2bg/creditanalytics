@@ -46,8 +46,8 @@ public class ForwardDecompositionUtil {
 	 * @return The Array of Single Forward Period Fixed Streams
 	 */
 	
-	public static final org.drip.product.rates.FixedStream[] SinglePeriodFixedStreamDecompose (
-		final org.drip.product.rates.FixedStream fs,
+	public static final org.drip.product.stream.FixedStream[] SinglePeriodFixedStreamDecompose (
+		final org.drip.product.stream.FixedStream fs,
 		final int iNumPeriodsToAccumulate)
 	{
 		if (null == fs) return null;
@@ -64,7 +64,7 @@ public class ForwardDecompositionUtil {
 		int iNumPeriodsAccumulated = 0;
 		double dblCoupon = java.lang.Double.NaN;
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
-		org.drip.product.rates.FixedStream[] aFS = new org.drip.product.rates.FixedStream[iNumForward];
+		org.drip.product.stream.FixedStream[] aFS = new org.drip.product.stream.FixedStream[iNumForward];
 
 		try {
 			dblCoupon = fs.coupon (fs.effective().julian(), null, null).nominal();
@@ -91,7 +91,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.rates.FixedStream (strCurrency, null, dblCoupon,
+				aFS[iCFPIndex++] = new org.drip.product.stream.FixedStream (strCurrency, null, dblCoupon,
 					dblInitialNotional, null, lsCouponPeriod);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -112,8 +112,8 @@ public class ForwardDecompositionUtil {
 	 * @return The Array of Single Forward Period Floating Streams
 	 */
 
-	public static final org.drip.product.rates.FloatingStream[] SinglePeriodFloatingStreamDecompose (
-		final org.drip.product.rates.FloatingStream fs,
+	public static final org.drip.product.stream.FloatingStream[] SinglePeriodFloatingStreamDecompose (
+		final org.drip.product.stream.FloatingStream fs,
 		final int iNumPeriodsToAccumulate)
 	{
 		if (null == fs) return null;
@@ -135,7 +135,7 @@ public class ForwardDecompositionUtil {
 		int iCFPIndex = 0;
 		int iNumPeriodsAccumulated = 0;
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
-		org.drip.product.rates.FloatingStream[] aFS = new org.drip.product.rates.FloatingStream[iNumForward];
+		org.drip.product.stream.FloatingStream[] aFS = new org.drip.product.stream.FloatingStream[iNumForward];
 
 		java.util.List<java.util.List<org.drip.analytics.period.CashflowPeriod>> lslsCouponPeriod = new
 			java.util.ArrayList<java.util.List<org.drip.analytics.period.CashflowPeriod>>();
@@ -154,7 +154,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.rates.FloatingStream (strCurrency, null, dblSpread,
+				aFS[iCFPIndex++] = new org.drip.product.stream.FloatingStream (strCurrency, null, dblSpread,
 					dblNotional, null, lsCouponPeriod, fri, bIsReference);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -179,12 +179,12 @@ public class ForwardDecompositionUtil {
 		final org.drip.product.definition.RatesComponent rc,
 		final int iNumPeriodsToAccumulate)
 	{
-		if (rc instanceof org.drip.product.rates.FloatingStream)
-			return SinglePeriodFloatingStreamDecompose ((org.drip.product.rates.FloatingStream) rc,
+		if (rc instanceof org.drip.product.stream.FloatingStream)
+			return SinglePeriodFloatingStreamDecompose ((org.drip.product.stream.FloatingStream) rc,
 				iNumPeriodsToAccumulate);
 
-		if (rc instanceof org.drip.product.rates.FixedStream)
-			return SinglePeriodFixedStreamDecompose ((org.drip.product.rates.FixedStream) rc,
+		if (rc instanceof org.drip.product.stream.FixedStream)
+			return SinglePeriodFixedStreamDecompose ((org.drip.product.stream.FixedStream) rc,
 				iNumPeriodsToAccumulate);
 
 		return null;
@@ -199,7 +199,7 @@ public class ForwardDecompositionUtil {
 	 */
 
 	public static final org.drip.product.definition.RatesComponent[] DualStreamForwardArray (
-		final org.drip.product.rates.DualStreamComponent dsc)
+		final org.drip.product.stream.DualStreamComponent dsc)
 	{
 		if (null == dsc) return null;
 
@@ -268,8 +268,8 @@ public class ForwardDecompositionUtil {
 	{
 		if (null == rc) return null;
 
-		if (rc instanceof org.drip.product.rates.DualStreamComponent)
-			return DualStreamForwardArray ((org.drip.product.rates.DualStreamComponent) rc);
+		if (rc instanceof org.drip.product.stream.DualStreamComponent)
+			return DualStreamForwardArray ((org.drip.product.stream.DualStreamComponent) rc);
 
 		org.drip.product.definition.RatesComponent[] aRCForward = SinglePeriodStreamDecompose (rc, 1);
 

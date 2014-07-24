@@ -17,6 +17,7 @@ import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.product.stream.FixedStream;
 import org.drip.product.stream.FloatingStream;
+import org.drip.quant.common.*;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -52,13 +53,13 @@ import org.drip.state.estimator.*;
  */
 
 /**
- * FedFundOvernightCompounding demonstrates in detail the methodology behind the overnight compounding used
- * 	in the Overnight fund Floating Stream Accrual.
+ * CrossOvernightFloatingStream demonstrates the construction, customization, and valuation of Cross-Currency
+ * 	Overnight Floating Streams.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FedFundOvernightCompounding {
+public class CrossOvernightFloatingStream {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -310,6 +311,11 @@ public class FedFundOvernightCompounding {
 		final String[] astrArgs)
 		throws Exception
 	{
+
+		double dblOISVol = 0.3;
+		double dblUSDFundingVol = 0.3;
+		double dblUSDFundingUSDOISCorrelation = 0.3;
+
 		/*
 		 * Initialize the Credit Analytics Library
 		 */
@@ -353,29 +359,6 @@ public class FedFundOvernightCompounding {
 			false
 		);
 
-		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-			dtCustomOISStart.julian(),
-			"4M",
-			null,
-			2,
-			"Act/360",
-			false,
-			false,
-			strCurrency,
-			strCurrency
-		);
-
-		FixedStream fixStream = new FixedStream (
-			strCurrency,
-			null,
-			0.,
-			1.,
-			null,
-			lsFixedPeriods
-		);
-
-		IRSComponent ois = new IRSComponent (fixStream, floatStream);
-
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dc,
 			null,
@@ -394,46 +377,48 @@ public class FedFundOvernightCompounding {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		Map<String, Double> mapOISOutput = ois.value (
-			valParams,
-			null,
-			mktParams,
-			null);
-
-		System.out.println ("\tMachine Calc Float Accrued (Geometric Compounding): " + mapOISOutput.get ("FloatAccrued"));
-
-		fri.setArithmeticCompounding (true);
-
-		mapOISOutput = ois.value (
-			new ValuationParams (dtToday, dtToday, strCurrency),
-			null,
-			mktParams,
-			null);
-
-		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISOutput.get ("FloatAccrued"));
-
-		CashflowPeriod period = lsFloatPeriods.get (1);
-
-		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + floatStream.coupon (
-			period.end(),
-			valParams,
-			mktParams).nominal()
-		);
-
-		double dblOISVol = 0.3;
-		double dblUSDFundingVol = 0.3;
-		double dblUSDFundingUSDOISCorrelation = 0.3;
-
 		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
 
 		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
 
 		mktParams.setForwardFundingCorrSurface (fri, "USD", new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 
-		System.out.println ("\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
-			period.end(),
+		Map<String, Double> mapGeometricOutput = floatStream.value (
 			valParams,
-			mktParams).convexityAdjusted()
-		);
+			null,
+			mktParams,
+			null);
+
+		fri.setArithmeticCompounding (true);
+
+		Map<String, Double> mapArithmeticOutput = floatStream.value (
+			valParams,
+			null,
+			mktParams,
+			null);
+
+		System.out.println ("\n\t-----------------------------------");
+
+		System.out.println ("\t  GEOMETRIC |  ARITHMETIC | CHECK");
+
+		System.out.println ("\t-----------------------------------\n");
+
+		for (Map.Entry<String, Double> meGeometric : mapGeometricOutput.entrySet()) {
+			String strKey = meGeometric.getKey();
+
+			double dblGeometricMeasure = meGeometric.getValue();
+
+			double dblArithmeticMeasure = mapArithmeticOutput.get (strKey);
+
+			String strMatch = NumberUtil.WithinTolerance (dblGeometricMeasure, dblArithmeticMeasure, 1.e-08, 1.e-04) ?
+				"MATCH " :
+				"DIFFER";
+
+			System.out.println ("\t" +
+				FormatUtil.FormatDouble (dblGeometricMeasure, 1, 8, 1.) + " | " +
+				FormatUtil.FormatDouble (dblArithmeticMeasure, 1, 8, 1.) + " | " +
+				strMatch + " <= " + strKey
+			);
+		}
 	}
 }

@@ -1,5 +1,5 @@
 
-package org.drip.product.ois;
+package org.drip.analytics.support;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,21 +29,44 @@ package org.drip.product.ois;
  */
 
 /**
- * OvernightIndexFloatingStream contains an implementation of the Floating leg cash flow stream backed by an
- * 	Overnight Stream.
+ * CompoundingUtil performs a sub-period roll-over compounding onto the corresponding pay period. Currently
+ * 	it supports arithmetic and geometric compounding. It outputs both the nominal and convexity adjusted
+ * 	coupons.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class OvernightIndexFloatingStream extends org.drip.product.rates.FloatingStream {
+public class CompoundingUtil {
 
-	private org.drip.analytics.output.PeriodCouponMeasures compoundArithmetic (
+	/**
+	 * Compounds the sub period flows arithmetically onto the pay period
+	 * 
+	 * @param dblAccrualEndDate The Accrual End Date
+	 * @param fri The Floating Rate Index
+	 * @param currentPeriod The Period Enclosing the Accrual Date
+	 * @param valParams The Valuation Parameters
+	 * @param csqs The Market Parameters Surface
+	 * 
+	 * @return Arithmetically rolled over Nominal/Convexity Adjusted Coupon Amounts
+	 */
+
+	public static final org.drip.analytics.output.PeriodCouponMeasures Arithmetic (
 		final double dblAccrualEndDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
+		if (null == currentPeriod || null == fri || null == valParams || null == csqs) return null;
+
+		try {
+			if (!currentPeriod.contains (dblAccrualEndDate)) return null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
 				csqs.fixings();
@@ -75,7 +98,7 @@ public class OvernightIndexFloatingStream extends org.drip.product.rates.Floatin
 
 		double dblDate = dt.julian();
 
-		java.lang.String strCurrency = couponCurrency()[0];
+		java.lang.String strCurrency = fri.currency();
 
 		while (dblDate <= dblAccrualEndDate) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = null;
@@ -148,12 +171,33 @@ public class OvernightIndexFloatingStream extends org.drip.product.rates.Floatin
 		return null;
 	}
 
-	private org.drip.analytics.output.PeriodCouponMeasures compoundGeometric (
+	/**
+	 * Compounds the sub period flows geometrically onto the pay period
+	 * 
+	 * @param dblAccrualEndDate The Accrual End Date
+	 * @param fri The Floating Rate Index
+	 * @param currentPeriod The Period Enclosing the Accrual Date
+	 * @param csqs The Market Parameters Surface
+	 * 
+	 * @return Geometrically rolled over Nominal/Convexity Adjusted Coupon Amounts
+	 */
+
+	public static final org.drip.analytics.output.PeriodCouponMeasures Geometric (
 		final double dblAccrualEndDate,
 		final org.drip.product.params.FloatingRateIndex fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
+		if (null == currentPeriod || null == fri || null == csqs) return null;
+
+		try {
+			if (!currentPeriod.contains (dblAccrualEndDate)) return null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
 				csqs.fixings();
@@ -228,49 +272,5 @@ public class OvernightIndexFloatingStream extends org.drip.product.rates.Floatin
 		}
 
 		return null;
-	}
-
-	@Override protected org.drip.analytics.output.PeriodCouponMeasures compoundFixing (
-		final double dblAccrualEndDate,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.analytics.period.CashflowPeriod currentPeriod,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-	{
-		org.drip.analytics.output.PeriodCouponMeasures pcm = super.compoundFixing (dblAccrualEndDate,
-			org.drip.product.params.FloatingRateIndex.Create (fri.currency(), fri.index(), "1D"),
-				currentPeriod, valParams, csqs);
-
-		if (null != pcm) return pcm;
-
-		return fri.isArithmeticCompounding() ? compoundArithmetic (dblAccrualEndDate, fri, currentPeriod,
-			valParams, csqs) : compoundGeometric (dblAccrualEndDate, fri, currentPeriod, csqs);
-	}
-
-	/**
-	 * OvernightIndexFloatingStream constructor
-	 * 
-	 * @param strCurrency Cash Flow Currency
-	 * @param dblSpread Spread
-	 * @param dblNotional Initial Notional Amount
-	 * @param notlSchedule Notional Schedule
-	 * @param lsCouponPeriod List of the Coupon Periods
-	 * @param fri Floating Rate Index
-	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
-	 * 
-	 * @throws java.lang.Exception Thrown if inputs are invalid
-	 */
-
-	public OvernightIndexFloatingStream (
-		final java.lang.String strCurrency,
-		final double dblSpread,
-		final double dblNotional,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
-		final org.drip.product.params.FloatingRateIndex fri,
-		final boolean bIsReference)
-		throws java.lang.Exception
-	{
-		super (strCurrency, null, dblSpread, dblNotional, notlSchedule, lsCouponPeriod, fri, bIsReference);
 	}
 }

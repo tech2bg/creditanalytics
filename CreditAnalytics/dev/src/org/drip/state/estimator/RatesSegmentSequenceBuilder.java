@@ -358,14 +358,10 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null == aCS || 0 == aCS.length) return false;
 
-		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC (_valParams,
+		org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRWC (_valParams,
 			_pricerParams, _mktParams, _quotingParams, _srs.getLSMM (0));
 
 		double dblSegmentRight = aCS[0].right();
-
-		/* if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc, _srs.getLSMM
-			(0).getManifestMeasures()[0]))
-			return false; */
 
 		if (null == prlc || !generateSegmentConstraintSet2 (dblSegmentRight, prlc, _srs.getLSMM
 			(0).manifestMeasures()[0]))
@@ -408,7 +404,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			if (null == cc) return false;
 
-			org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRLC
+			org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRWC
 				(_valParams, _pricerParams, _mktParams, _quotingParams, _srs.getLSMM (iSegment));
 
 			double dblSegmentRight = aCS[iSegment].right();
