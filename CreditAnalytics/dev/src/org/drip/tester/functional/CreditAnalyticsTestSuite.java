@@ -930,7 +930,7 @@ public class CreditAnalyticsTestSuite {
 
 			try {
 				System.out.println ("CCFromFlatHazard[" + dt.toString() + "]; Survival=" +
-					ccFlatHazard.getSurvival ("10Y") + "; Hazard=" + ccFlatHazard.calcHazard ("10Y"));
+					ccFlatHazard.survival ("10Y") + "; Hazard=" + ccFlatHazard.hazard ("10Y"));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
 					System.out.println ("CreditCurveAPISample failed.");
@@ -947,7 +947,7 @@ public class CreditAnalyticsTestSuite {
 
 			try {
 				System.out.println ("CCFromSurvival[" + dt.toString() + "]; Survival=" +
-					ccFromSurvival.getSurvival ("10Y") + "; Hazard=" + ccFromSurvival.calcHazard ("10Y"));
+					ccFromSurvival.survival ("10Y") + "; Hazard=" + ccFromSurvival.hazard ("10Y"));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
 					System.out.println ("CreditCurveAPISample failed.");
@@ -963,8 +963,8 @@ public class CreditAnalyticsTestSuite {
 			org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.Today().addYears (10);
 
 			try {
-				System.out.println ("CCFromEOD[" + dt.toString() + "]; Survival=" + ccEOD.getSurvival ("10Y")
-					+ "; Hazard=" + ccEOD.calcHazard ("10Y"));
+				System.out.println ("CCFromEOD[" + dt.toString() + "]; Survival=" + ccEOD.survival ("10Y") +
+					"; Hazard=" + ccEOD.hazard ("10Y"));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
 					System.out.println ("CreditCurveAPISample failed.");
@@ -978,7 +978,7 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bPrintEODCDSQuotes) {
 			try {
-				System.out.println ("Surv (2021, 1, 14): " + ccEOD.getSurvival
+				System.out.println ("Surv (2021, 1, 14): " + ccEOD.survival
 					(org.drip.analytics.date.JulianDate.CreateFromYMD (2021, 1, 14)));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {
@@ -1072,7 +1072,7 @@ public class CreditAnalyticsTestSuite {
 								org.drip.quant.common.FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) +
 									"    " + org.drip.quant.common.FormatUtil.FormatDouble (dc.df
 										(p.pay()), 1, 4, 1.) + "    " +
-											org.drip.quant.common.FormatUtil.FormatDouble (cc.getSurvival
+											org.drip.quant.common.FormatUtil.FormatDouble (cc.survival
 												(p.pay()), 1, 4, 1.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
@@ -1338,7 +1338,7 @@ public class CreditAnalyticsTestSuite {
 								org.drip.quant.common.FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) +
 									"    " + org.drip.quant.common.FormatUtil.FormatDouble (dc.df (p.pay()),
 										1, 4, 1.) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
-											(cc.getSurvival (p.pay()), 1, 4, 1.));
+											(cc.survival (p.pay()), 1, 4, 1.));
 				} catch (java.lang.Exception e) {
 					if (s_bSupressErrMsg) {
 						System.out.println ("BondAPISample failed.");
@@ -1539,7 +1539,7 @@ public class CreditAnalyticsTestSuite {
 									org.drip.quant.common.FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) +
 										"    " + org.drip.quant.common.FormatUtil.FormatDouble (dc.df
 											(p.pay()), 1, 4, 1.) + "    " +
-												org.drip.quant.common.FormatUtil.FormatDouble (cc.getSurvival
+												org.drip.quant.common.FormatUtil.FormatDouble (cc.survival
 													(p.pay()), 1, 4, 1.));
 					} catch (java.lang.Exception e) {
 						if (s_bSupressErrMsg) {
@@ -2772,7 +2772,7 @@ public class CreditAnalyticsTestSuite {
 					null, null), false);
 
 			if (s_bCDSBondCreditCurve)
-				System.out.println ("Surv (2021, 1, 14): " + ccCalib.getSurvival
+				System.out.println ("Surv (2021, 1, 14): " + ccCalib.survival
 					(org.drip.analytics.date.JulianDate.CreateFromYMD (2021, 1, 14)));
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {

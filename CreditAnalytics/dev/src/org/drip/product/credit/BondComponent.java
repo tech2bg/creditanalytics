@@ -455,14 +455,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					double dblSurvProb = java.lang.Double.NaN;
 
 					if (dblPeriodEndDate < period.end())
-						dblSurvProb = csqs.creditCurve (astrCreditCurveName[0]).getSurvival
-							(dblPeriodEndDate);
+						dblSurvProb = csqs.creditCurve (astrCreditCurveName[0]).survival (dblPeriodEndDate);
 					else {
 						if (pricerParams.survivalToPayDate())
-							dblSurvProb = csqs.creditCurve (astrCreditCurveName[0]).getSurvival
-								(period.pay());
+							dblSurvProb = csqs.creditCurve (astrCreditCurveName[0]).survival (period.pay());
 						else
-							dblSurvProb = csqs.creditCurve (astrCreditCurveName[0]).getSurvival
+							dblSurvProb = csqs.creditCurve (astrCreditCurveName[0]).survival
 								(dblPeriodEndDate);
 					}
 
@@ -487,17 +485,17 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 						double dblSubPeriodNotional = notional (dblSubPeriodStart, dblSubPeriodEnd);
 
-						double dblSubPeriodSurvival = csqs.creditCurve
-							(astrCreditCurveName[0]).getSurvival (dblSubPeriodStart) - csqs.creditCurve
-								(astrCreditCurveName[0]).getSurvival (dblSubPeriodEnd);
+						double dblSubPeriodSurvival = csqs.creditCurve (astrCreditCurveName[0]).survival
+							(dblSubPeriodStart) - csqs.creditCurve (astrCreditCurveName[0]).survival
+								(dblSubPeriodEnd);
 
 						if (_crValParams._bAccrOnDefault)
 							dblPeriodCreditRiskyDirtyDV01 += 0.0001 * lp.accrualDCF() * dblSubPeriodSurvival
 								* dblSubPeriodDF * dblSubPeriodNotional;
 
 						double dblRecovery = _crValParams._bUseCurveRec ? csqs.creditCurve
-							(astrCreditCurveName[0]).getEffectiveRecovery (dblSubPeriodStart,
-								dblSubPeriodEnd) : _crValParams._dblRecovery;
+							(astrCreditCurveName[0]).effectiveRecovery (dblSubPeriodStart, dblSubPeriodEnd) :
+								_crValParams._dblRecovery;
 
 						double dblSubPeriodExpRecovery = dblRecovery * dblSubPeriodSurvival *
 							dblSubPeriodNotional;
@@ -547,7 +545,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (null != astrCreditCurveName && 0 < astrCreditCurveName.length && null !=
 				csqs.creditCurve (astrCreditCurveName[0]) && null != pricerParams)
 				dblCreditRiskyParPV = dblCreditRisklessParPV * csqs.creditCurve
-					(astrCreditCurveName[0]).getSurvival (_periodParams._dblMaturity);
+					(astrCreditCurveName[0]).survival (_periodParams._dblMaturity);
 
 			org.drip.analytics.output.BondCouponMeasures bcmCreditRisklessDirty = new
 				org.drip.analytics.output.BondCouponMeasures (dblCreditRisklessDirtyDV01,
@@ -566,10 +564,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 						dblCreditRiskyDirtyCouponPV + dblCreditRiskyPrincipalPV + dblCreditRiskyParPV);
 
 				dblDefaultExposure = (dblDefaultExposureNoRec = notional (valParams.valueDate())) *
-					csqs.creditCurve (astrCreditCurveName[0]).getRecovery (valParams.valueDate());
+					csqs.creditCurve (astrCreditCurveName[0]).recovery (valParams.valueDate());
 
 				dblLossOnInstantaneousDefault = notional (valParams.valueDate()) * (1. -
-					csqs.creditCurve (astrCreditCurveName[0]).getRecovery (valParams.valueDate()));
+					csqs.creditCurve (astrCreditCurveName[0]).recovery (valParams.valueDate()));
 			}
 
 			return new org.drip.analytics.output.BondWorkoutMeasures (bcmCreditRiskyDirty,
@@ -1364,7 +1362,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (java.lang.Double.isNaN (dblDate) || null == cc)
 			throw new java.lang.Exception ("Bond.getRecovery: Bad state/inputs");
 
-		return _crValParams._bUseCurveRec ? cc.getRecovery (dblDate) : _crValParams._dblRecovery;
+		return _crValParams._bUseCurveRec ? cc.recovery (dblDate) : _crValParams._dblRecovery;
 	}
 
 	@Override public double getRecovery (
@@ -1376,7 +1374,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (java.lang.Double.isNaN (dblDateStart) || java.lang.Double.isNaN (dblDateEnd) || null == cc)
 			throw new java.lang.Exception ("Bond.getRecovery: Bad state/inputs");
 
-		return _crValParams._bUseCurveRec ? cc.getEffectiveRecovery (dblDateStart, dblDateEnd) :
+		return _crValParams._bUseCurveRec ? cc.effectiveRecovery (dblDateStart, dblDateEnd) :
 			_crValParams._dblRecovery;
 	}
 
@@ -1507,13 +1505,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (java.lang.Double.isNaN (dblDFStart)) dblDFStart = dcFunding.df (fp.start());
 
-				if (java.lang.Double.isNaN (dblSurvProbStart))
-					dblSurvProbStart = cc.getSurvival (fp.start());
+				if (java.lang.Double.isNaN (dblSurvProbStart)) dblSurvProbStart = cc.survival (fp.start());
 
 				if (pricerParams.survivalToPayDate())
-					dblSurvProbEnd = cc.getSurvival (fp.pay());
+					dblSurvProbEnd = cc.survival (fp.pay());
 				else
-					dblSurvProbEnd = cc.getSurvival (fp.end());
+					dblSurvProbEnd = cc.survival (fp.end());
 
 				if (null != _fltParams) {
 					double dblCpnFactor = _cpnParams._fsCoupon.getFactor (fp.end());
@@ -2326,7 +2323,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (null != _crValParams && !_crValParams._bUseCurveRec)
 				dblRecoveryCalib = _crValParams._dblRecovery;
 
-			cc = ccIn.createFlatCurve (dblCreditBasis, true, dblRecoveryCalib);
+			cc = ccIn.flatCurve (dblCreditBasis, true, dblRecoveryCalib);
 		} else
 			cc = (org.drip.analytics.definition.CreditCurve) ccIn.parallelShiftManifestMeasure
 				("FairPremium", dblCreditBasis);
@@ -2363,7 +2360,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			double dblPeriodCoupon = pcm.nominal();
 
-			double dblPeriodEndSurv = cc.getSurvival (period.end());
+			double dblPeriodEndSurv = cc.survival (period.end());
 
 			double dblCouponNotional = notional (period.start());
 
@@ -2404,14 +2401,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				double dblSubPeriodNotional = notional (dblSubPeriodStart, dblSubPeriodEnd);
 
-				double dblSubPeriodSurvival = cc.getSurvival (dblSubPeriodStart) - cc.getSurvival
+				double dblSubPeriodSurvival = cc.survival (dblSubPeriodStart) - cc.survival
 					(dblSubPeriodEnd);
 
 				if (_crValParams._bAccrOnDefault)
 					dblPVFromCC += 0.0001 * lp.accrualDCF() * dblSubPeriodSurvival * dblSubPeriodDF *
 						dblSubPeriodNotional * dblPeriodCoupon;
 
-				double dblRec = _crValParams._bUseCurveRec ? cc.getEffectiveRecovery (dblSubPeriodStart,
+				double dblRec = _crValParams._bUseCurveRec ? cc.effectiveRecovery (dblSubPeriodStart,
 					dblSubPeriodEnd) : _crValParams._dblRecovery;
 
 				dblPVFromCC += dblRec * dblSubPeriodSurvival * dblSubPeriodNotional * dblSubPeriodDF;
@@ -2437,7 +2434,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (!_notlParams._bPriceOffOriginalNotional) dblScalingNotional = notional (dblWorkoutDate);
 
-		return ((dblPVFromCC + dblWorkoutFactor * dcFunding.df (dblWorkoutDate) * cc.getSurvival
+		return ((dblPVFromCC + dblWorkoutFactor * dcFunding.df (dblWorkoutDate) * cc.survival
 			(dblWorkoutDate) * notional (dblWorkoutDate)) / dcFunding.df (dblCashPayDate) - calcAccrued
 				(valParams.valueDate(), csqs)) / dblScalingNotional;
 	}
@@ -12589,6 +12586,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,

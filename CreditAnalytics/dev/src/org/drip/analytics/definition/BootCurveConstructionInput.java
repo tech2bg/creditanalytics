@@ -170,36 +170,36 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		_quotingParam = quotingParam;
 	}
 
-	@Override public org.drip.param.valuation.ValuationParams getValuationParameter()
+	@Override public org.drip.param.valuation.ValuationParams valuationParameter()
 	{
 		return _valParam;
 	}
 
-	@Override public org.drip.param.valuation.ValuationCustomizationParams getQuotingParameter()
+	@Override public org.drip.param.valuation.ValuationCustomizationParams quotingParameter()
 	{
 		return _quotingParam;
 	}
 
-	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] getComponent()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] components()
 	{
 		return _aCalibInst;
 	}
 
 	@Override public
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getQuote()
+			quoteMap()
 	{
 		return _mapQuote;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> getMeasures()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> measures()
 	{
 		return _mapMeasures;
 	}
 
 	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getFixing()
+			fixing()
 	{
 		return _mmFixing;
 	}

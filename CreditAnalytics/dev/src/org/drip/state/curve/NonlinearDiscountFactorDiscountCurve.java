@@ -61,18 +61,17 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		if (!org.drip.quant.common.NumberUtil.IsValid (adblShiftedManifestMeasure) || null == _ccis)
 			return null;
 
-		org.drip.param.valuation.ValuationParams valParam = _ccis.getValuationParameter();
+		org.drip.param.valuation.ValuationParams valParam = _ccis.valuationParameter();
 
-		org.drip.param.valuation.ValuationCustomizationParams quotingParam = _ccis.getQuotingParameter();
+		org.drip.param.valuation.ValuationCustomizationParams quotingParam = _ccis.quotingParameter();
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.components();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
-			_ccis.getMeasures();
+			_ccis.measures();
 
 		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing =
-				_ccis.getFixing();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing = _ccis.fixing();
 
 		org.drip.state.estimator.NonlinearCurveCalibrator calibrator = new
 			org.drip.state.estimator.NonlinearCurveCalibrator();
@@ -316,10 +315,10 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.components();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _ccis.getQuote();
+			mapQuote = _ccis.quoteMap();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShiftedManifestMeasure = new double[iNumComp];
@@ -338,10 +337,10 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.components();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-	mapQuote = _ccis.getQuote();
+			mapQuote = _ccis.quoteMap();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShiftedManifestMeasure = new double[iNumComp];
@@ -361,10 +360,10 @@ public class NonlinearDiscountFactorDiscountCurve extends
 	{
 		if (null == rvtp) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.components();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _ccis.getQuote();
+			mapQuote = _ccis.quoteMap();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblManifestMeasure = new double[iNumComp];

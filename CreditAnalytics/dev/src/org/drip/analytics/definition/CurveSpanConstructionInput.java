@@ -90,17 +90,17 @@ public abstract class CurveSpanConstructionInput implements
 		_quotingParam = quotingParam;
 	}
 
-	@Override public org.drip.param.valuation.ValuationParams getValuationParameter()
+	@Override public org.drip.param.valuation.ValuationParams valuationParameter()
 	{
 		return _valParam;
 	}
 
-	@Override public org.drip.param.valuation.ValuationCustomizationParams getQuotingParameter()
+	@Override public org.drip.param.valuation.ValuationCustomizationParams quotingParameter()
 	{
 		return _quotingParam;
 	}
 
-	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] getComponent()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] components()
 	{
 		if (null == _aSRS || 0 == _aSRS.length) return null;
 
@@ -137,7 +137,7 @@ public abstract class CurveSpanConstructionInput implements
 
 	@Override public
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getQuote()
+			quoteMap()
 	{
 		if (null != _mapQuote) return _mapQuote;
 
@@ -166,7 +166,7 @@ public abstract class CurveSpanConstructionInput implements
 		return _mapQuote;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> getMeasures()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> measures()
 	{
 		if (null != _mapMeasures) return _mapMeasures;
 
@@ -196,7 +196,7 @@ public abstract class CurveSpanConstructionInput implements
 
 	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getFixing()
+			fixing()
 	{
 		return _mmFixing;
 	}
@@ -207,7 +207,7 @@ public abstract class CurveSpanConstructionInput implements
 	 * @return The Pricer Parameters
 	 */
 
-	public org.drip.param.pricer.PricerParams getPricerParameter()
+	public org.drip.param.pricer.PricerParams pricerParameter()
 	{
 		return _pricerParam;
 	}
@@ -229,7 +229,7 @@ public abstract class CurveSpanConstructionInput implements
 	 * @return The Array of SRS
 	 */
 
-	public org.drip.state.estimator.StretchRepresentationSpec[] getSRS()
+	public org.drip.state.estimator.StretchRepresentationSpec[] srs()
 	{
 		return _aSRS;
 	}

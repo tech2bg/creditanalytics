@@ -604,16 +604,76 @@ public class FloatFloatComponent extends org.drip.product.stream.DualStreamCompo
 			return null;
 		}
 
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.discountPRWC
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcDerived = _floatDerived.discountPRWC
 			(valParams, pricerParams, csqs, quotingParams, fsqsDerived);
-
-		if (null == prwc) return null;
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwcReference =
 			_floatReference.discountPRWC (valParams, pricerParams, csqs, quotingParams, fsqsReference);
 
-		return null == prwcReference || !prwc.absorb (prwcReference) || !prwc.updateValue (dblPV) ? null :
-			prwc;
+		if (null == prwcDerived && null == prwcReference) return null;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		if (null == prwcDerived && !prwc.absorb (prwcDerived)) return null;
+
+		if (null == prwcReference && !prwc.absorb (prwcReference)) return null;
+
+		return !prwc.updateValue (dblPV) ? null : prwc;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FloatFloatQuoteSet))
+			return null;
+
+		if (valParams.valueDate() >= maturity().julian()) return null;
+
+		double dblPV = 0.;
+		org.drip.product.calib.FloatFloatQuoteSet ffqs = (org.drip.product.calib.FloatFloatQuoteSet) pqs;
+
+		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsReferenceBasis())
+			return null;
+
+		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = new
+			org.drip.product.calib.FloatingStreamQuoteSet();
+
+		org.drip.product.calib.FloatingStreamQuoteSet fsqsReference = new
+			org.drip.product.calib.FloatingStreamQuoteSet();
+
+		try {
+			if (ffqs.containsPV()) dblPV = ffqs.pv();
+
+			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
+
+			if (ffqs.containsReferenceBasis()) fsqsReference.setSpread (ffqs.referenceBasis());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcDerived = _floatDerived.forwardPRWC
+			(valParams, pricerParams, csqs, quotingParams, fsqsDerived);
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcReference =
+			_floatReference.forwardPRWC (valParams, pricerParams, csqs, quotingParams, fsqsReference);
+
+		if (null == prwcDerived && null == prwcReference) return null;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		if (null == prwcDerived && !prwc.absorb (prwcDerived)) return null;
+
+		if (null == prwcReference && !prwc.absorb (prwcReference)) return null;
+
+		return !prwc.updateValue (dblPV) ? null : prwc;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (

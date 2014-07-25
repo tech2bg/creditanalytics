@@ -600,6 +600,47 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			("PV", _dblMaturity, 1.) && prwc.updateValue (dblForwardPV * dblEffectiveDF) ? prwc : null;
 	}
 
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs || !(pqs instanceof
+			org.drip.product.calib.EDFComponentQuoteSet))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= _dblMaturity) return null;
+
+		org.drip.product.calib.EDFComponentQuoteSet ecqs = (org.drip.product.calib.EDFComponentQuoteSet) pqs;
+
+		if (!ecqs.containsPrice() && !ecqs.containsRate()) return null;
+
+		double dblForwardRate = java.lang.Double.NaN;
+
+		try {
+			if (ecqs.containsPrice())
+				dblForwardRate = ((1. / ecqs.price()) - 1.) /
+					org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
+						false, _dblMaturity, null, _strCalendar);
+			else if (ecqs.containsRate())
+				dblForwardRate = ecqs.rate();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		return prwc.addPredictorResponseWeight (_dblEffective, 1.) && prwc.addDResponseWeightDManifestMeasure
+			("Rate", _dblEffective, 1.) && prwc.updateValue (dblForwardRate) ? prwc : null;
+	}
+
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,

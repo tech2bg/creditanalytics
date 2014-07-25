@@ -134,7 +134,7 @@ public class CreditAnalytics {
 
 	public static final java.util.Set<java.lang.String> GetHolLocations()
 	{
-		return org.drip.analytics.daycount.Convention.GetHolLocations();
+		return org.drip.analytics.daycount.Convention.HolidayLocations();
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class CreditAnalytics {
 
 	public static final java.lang.String GetAvailableDC()
 	{
-		return org.drip.analytics.daycount.Convention.GetAvailableDC();
+		return org.drip.analytics.daycount.Convention.AvailableDC();
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class CreditAnalytics {
 	public static final int[] GetWeekendDays (
 		final java.lang.String strLocationSet)
 	{
-		return org.drip.analytics.daycount.Convention.GetWeekendDays (strLocationSet);
+		return org.drip.analytics.daycount.Convention.WeekendDays (strLocationSet);
 	}
 
 	/**

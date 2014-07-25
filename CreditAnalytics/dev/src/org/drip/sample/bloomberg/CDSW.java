@@ -179,7 +179,7 @@ public class CDSW {
 			System.out.println (
 				aCDS[i].maturity() + " | " +
 				cc.manifestMeasure(aCDS[i].primaryCode()) + " | " +
-				org.drip.quant.common.FormatUtil.FormatDouble (1. - cc.getSurvival (aCDS[i].maturity()), 1, 3, 1.));
+				org.drip.quant.common.FormatUtil.FormatDouble (1. - cc.survival (aCDS[i].maturity()), 1, 3, 1.));
 	}
 
 	/*
@@ -362,7 +362,7 @@ public class CDSW {
 				JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 1, 2, 0.01 * dblNotional) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
+				FormatUtil.FormatDouble (cc.survival (p.pay()), 1, 4, 1.)
 			);
 
 		/*

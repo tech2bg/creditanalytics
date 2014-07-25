@@ -387,7 +387,7 @@ public class BondAnalyticsAPI {
 					JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
+					FormatUtil.FormatDouble (cc.survival (p.pay()), 1, 4, 1.)
 				);
 
 			/*
@@ -574,7 +574,7 @@ public class BondAnalyticsAPI {
 		 * Calculate the survival probability, and recover the input quotes
 		 */
 
-		System.out.println ("Surv (2021, 1, 14): " + ccCalib.getSurvival (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("Surv (2021, 1, 14): " + ccCalib.survival (JulianDate.CreateFromYMD (2021, 1, 14)));
 
 		/*
 		 * Calibrated Component Market Parameters Container

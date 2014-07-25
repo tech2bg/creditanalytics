@@ -98,8 +98,8 @@ public class CDSLiveAndEODAPI {
 
 		JulianDate dt10Y = JulianDate.Today().addYears (10);
 
-		System.out.println ("CCFromEOD[" + dt10Y.toString() + "]; Survival=" + ccEOD.getSurvival ("10Y") +
-			"; Hazard=" + ccEOD.calcHazard ("10Y"));
+		System.out.println ("CCFromEOD[" + dt10Y.toString() + "]; Survival=" + ccEOD.survival ("10Y") +
+			"; Hazard=" + ccEOD.hazard ("10Y"));
 
 		/*
 		 * Displays the CDS quotes used to construct the closing credit curve

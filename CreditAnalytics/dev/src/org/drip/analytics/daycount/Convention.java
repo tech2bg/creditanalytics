@@ -492,7 +492,7 @@ public class Convention {
 	 * @return Set of holiday locations
 	 */
 
-	public static final java.util.Set<java.lang.String> GetHolLocations()
+	public static final java.util.Set<java.lang.String> HolidayLocations()
 	{
 		return s_mapLocHols.keySet();
 	}
@@ -505,7 +505,7 @@ public class Convention {
 	 * @return Array of days indicating the week day union
 	 */
 
-	public static final int[] GetWeekendDays (
+	public static final int[] WeekendDays (
 		final java.lang.String strCalendarSet)
 	{
 		if (null == strCalendarSet || strCalendarSet.isEmpty()) return null;
@@ -541,7 +541,7 @@ public class Convention {
 	 * @return Available DRIP day count conventions
 	 */
 
-	public static final java.lang.String GetAvailableDC()
+	public static final java.lang.String AvailableDC()
 	{
 		java.lang.StringBuffer sbDCSet = new java.lang.StringBuffer();
 

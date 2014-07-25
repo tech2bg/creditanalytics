@@ -142,7 +142,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the survival probability cannot be calculated
 	 */
 
-	public abstract double getSurvival (
+	public abstract double survival (
 		final double dblDate)
 		throws java.lang.Exception;
 
@@ -156,13 +156,13 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the survival probability cannot be calculated
 	 */
 
-	public double getSurvival (
+	public double survival (
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
-		if (null == dt) throw new java.lang.Exception ("CreditCurve::getSurvival => Invalid Date");
+		if (null == dt) throw new java.lang.Exception ("CreditCurve::survival => Invalid Date");
 
-		return getSurvival (dt.julian());
+		return survival (dt.julian());
 	}
 
 	/**
@@ -175,14 +175,14 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the survival probability cannot be calculated
 	 */
 
-	public double getSurvival (
+	public double survival (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
 		if (null == strTenor || strTenor.isEmpty())
-			throw new java.lang.Exception ("CreditCurve::getSurvival => Bad tenor");
+			throw new java.lang.Exception ("CreditCurve::survival => Bad tenor");
 
-		return getSurvival (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor));
+		return survival (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor));
 	}
 
 	/**
@@ -196,12 +196,12 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the survival probability cannot be calculated
 	 */
 
-	public double getEffectiveSurvival (
+	public double effectiveSurvival (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (dblDate1 == dblDate2) return getSurvival (dblDate1);
+		if (dblDate1 == dblDate2) return survival (dblDate1);
 
 		int iNumQuadratures = 0;
 		double dblEffectiveSurvival = 0.;
@@ -210,7 +210,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		for (double dblDate = dblDate1; dblDate <= dblDate2; dblDate += dblQuadratureWidth) {
 			++iNumQuadratures;
 
-			dblEffectiveSurvival += (getSurvival (dblDate) + getSurvival (dblDate + dblQuadratureWidth));
+			dblEffectiveSurvival += (survival (dblDate) + survival (dblDate + dblQuadratureWidth));
 		}
 
 		return dblEffectiveSurvival / (2. * iNumQuadratures);
@@ -227,15 +227,15 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the survival probability cannot be calculated
 	 */
 
-	public double getEffectiveSurvival (
+	public double effectiveSurvival (
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2)
 		throws java.lang.Exception
 	{
 		if (null == dt1 || null == dt2)
-			throw new java.lang.Exception ("CreditCurve::getEffectiveSurvival => Invalid date");
+			throw new java.lang.Exception ("CreditCurve::effectiveSurvival => Invalid date");
 
-		return getEffectiveSurvival (dt1.julian(), dt2.julian());
+		return effectiveSurvival (dt1.julian(), dt2.julian());
 	}
 
 	/**
@@ -249,15 +249,15 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the survival probability cannot be calculated
 	 */
 
-	public double getEffectiveSurvival (
+	public double effectiveSurvival (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
 	{
 		if (null == strTenor1 || strTenor1.isEmpty() || null == strTenor2 || strTenor2.isEmpty())
-			throw new java.lang.Exception ("CreditCurve::getEffectiveSurvival => bad tenor");
+			throw new java.lang.Exception ("CreditCurve::effectiveSurvival => bad tenor");
 
-		return getEffectiveSurvival (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor
+		return effectiveSurvival (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor
 			(strTenor1), new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor2));
 	}
 
@@ -271,7 +271,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the Recovery rate cannot be calculated
 	 */
 
-	public abstract double getRecovery (
+	public abstract double recovery (
 		final double dblDate)
 		throws java.lang.Exception;
 
@@ -285,13 +285,13 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the Recovery rate cannot be calculated
 	 */
 
-	public double getRecovery (
+	public double recovery (
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
-		if (null == dt) throw new java.lang.Exception ("CreditCurve::getRecovery => Invalid Date");
+		if (null == dt) throw new java.lang.Exception ("CreditCurve::recovery => Invalid Date");
 
-		return getRecovery (dt.julian());
+		return recovery (dt.julian());
 	}
 
 	/**
@@ -304,14 +304,14 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the Recovery rate cannot be calculated
 	 */
 
-	public double getRecovery (
+	public double recovery (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
 		if (null == strTenor || strTenor.isEmpty())
-			throw new java.lang.Exception ("CreditCurve::getRecovery => Invalid Tenor");
+			throw new java.lang.Exception ("CreditCurve::recovery => Invalid Tenor");
 
-		return getRecovery (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor));
+		return recovery (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor));
 	}
 
 	/**
@@ -325,12 +325,12 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the recovery cannot be calculated
 	 */
 
-	public double getEffectiveRecovery (
+	public double effectiveRecovery (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (dblDate1 == dblDate2) return getRecovery (dblDate1);
+		if (dblDate1 == dblDate2) return recovery (dblDate1);
 
 		int iNumQuadratures = 0;
 		double dblEffectiveRecovery = 0.;
@@ -339,7 +339,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		for (double dblDate = dblDate1; dblDate <= dblDate2; dblDate += dblQuadratureWidth) {
 			++iNumQuadratures;
 
-			dblEffectiveRecovery += (getRecovery (dblDate) + getRecovery (dblDate + dblQuadratureWidth));
+			dblEffectiveRecovery += (recovery (dblDate) + recovery (dblDate + dblQuadratureWidth));
 		}
 
 		return dblEffectiveRecovery / (2. * iNumQuadratures);
@@ -356,15 +356,15 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the recovery cannot be calculated
 	 */
 
-	public double getEffectiveRecovery (
+	public double effectiveRecovery (
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2)
 		throws java.lang.Exception
 	{
 		if (null == dt1 || null == dt2)
-			throw new java.lang.Exception ("CreditCurve::getEffectiveRecovery => Invalid date");
+			throw new java.lang.Exception ("CreditCurve::effectiveRecovery => Invalid date");
 
-		return getEffectiveRecovery (dt1.julian(), dt2.julian());
+		return effectiveRecovery (dt1.julian(), dt2.julian());
 	}
 
 	/**
@@ -378,15 +378,15 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the recovery cannot be calculated
 	 */
 
-	public double getEffectiveRecovery (
+	public double effectiveRecovery (
 		final java.lang.String strTenor1,
 		final java.lang.String strTenor2)
 		throws java.lang.Exception
 	{
 		if (null == strTenor1 || strTenor1.isEmpty() || null == strTenor2 || strTenor2.isEmpty())
-			throw new java.lang.Exception ("CreditCurve::getEffectiveRecovery => Invalid tenor");
+			throw new java.lang.Exception ("CreditCurve::effectiveRecovery => Invalid tenor");
 
-		return getEffectiveRecovery (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor
+		return effectiveRecovery (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor
 			(strTenor1), new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor2));
 	}
 
@@ -401,18 +401,17 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the hazard rate cannot be calculated
 	 */
 
-	public double calcHazard (
+	public double hazard (
 		final org.drip.analytics.date.JulianDate dt1,
 		final org.drip.analytics.date.JulianDate dt2)
 		throws java.lang.Exception
 	{
 		if (null == dt1 || null == dt2)
-			throw new java.lang.Exception ("CreditCurve::calcHazard => Invalid dates");
+			throw new java.lang.Exception ("CreditCurve::hazard => Invalid dates");
 
 		if (dt1.julian() < _dblEpochDate || dt2.julian() < _dblEpochDate) return 0.;
 
-		return 365.25 / (dt2.julian() - dt1.julian()) * java.lang.Math.log (getSurvival (dt1) /
-			getSurvival (dt2));
+		return 365.25 / (dt2.julian() - dt1.julian()) * java.lang.Math.log (survival (dt1) / survival (dt2));
 	}
 
 	/**
@@ -425,11 +424,11 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the hazard rate cannot be calculated
 	 */
 
-	public double calcHazard (
+	public double hazard (
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
 	{
-		return calcHazard (dt, new org.drip.analytics.date.JulianDate (_dblEpochDate));
+		return hazard (dt, new org.drip.analytics.date.JulianDate (_dblEpochDate));
 	}
 
 	/**
@@ -442,14 +441,14 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @throws java.lang.Exception Thrown if the hazard rate cannot be calculated
 	 */
 
-	public double calcHazard (
+	public double hazard (
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
 		if (null == strTenor || strTenor.isEmpty())
-			throw new java.lang.Exception ("CreditCurve::calcHazard => Bad Tenor");
+			throw new java.lang.Exception ("CreditCurve::hazard => Bad Tenor");
 
-		return calcHazard (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor));
+		return hazard (new org.drip.analytics.date.JulianDate (_dblEpochDate).addTenor (strTenor));
 	}
 
 	/**
@@ -462,7 +461,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @return New CreditCurve instance
 	 */
 
-	public abstract CreditCurve createFlatCurve (
+	public abstract CreditCurve flatCurve (
 		final double dblFlatNodeValue,
 		final boolean bSingleNode,
 		final double dblRecovery);

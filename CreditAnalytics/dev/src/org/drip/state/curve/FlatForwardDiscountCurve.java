@@ -57,21 +57,20 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (adblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.components();
 
-		org.drip.param.valuation.ValuationParams valParam = _ccis.getValuationParameter();
+		org.drip.param.valuation.ValuationParams valParam = _ccis.valuationParameter();
 
-		org.drip.param.valuation.ValuationCustomizationParams quotingParam = _ccis.getQuotingParameter();
+		org.drip.param.valuation.ValuationCustomizationParams quotingParam = _ccis.quotingParameter();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _ccis.getQuote();
+			mapQuote = _ccis.quoteMap();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
-			_ccis.getMeasures();
+			_ccis.measures();
 
 		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing =
-				_ccis.getFixing();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing = _ccis.fixing();
 
 		org.drip.state.estimator.NonlinearCurveCalibrator calibrator = new
 			org.drip.state.estimator.NonlinearCurveCalibrator();
@@ -313,7 +312,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.components();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShift = new double[iNumComp];
@@ -331,7 +330,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift) || null == _ccis) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.getComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst = _ccis.components();
 
 		int iNumComp = aCalibInst.length;
 		double[] adblShift = new double[iNumComp];

@@ -114,8 +114,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					}
 				}
 
-				double dblSurvProb = pricerParams.survivalToPayDate() ? cc.getSurvival (period.pay()) :
-					cc.getSurvival (period.end());
+				double dblSurvProb = pricerParams.survivalToPayDate() ? cc.survival (period.pay()) :
+					cc.survival (period.end());
 
 				dblDirtyDV01 += 0.01 * period.couponDCF() * dcFunding.df (period.pay()) * dblSurvProb *
 					notional (period.accrualStart(), period.end());
@@ -138,10 +138,10 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 					double dblSubPeriodNotional = notional (dblSubPeriodStart, dblSubPeriodEnd);
 
-					double dblSubPeriodSurvival = cc.getSurvival (dblSubPeriodStart) - cc.getSurvival
+					double dblSubPeriodSurvival = cc.survival (dblSubPeriodStart) - cc.survival
 						(dblSubPeriodEnd);
 
-					double dblRec = _crValParams._bUseCurveRec ? cc.getEffectiveRecovery (dblSubPeriodStart,
+					double dblRec = _crValParams._bUseCurveRec ? cc.effectiveRecovery (dblSubPeriodStart,
 						dblSubPeriodEnd) : _crValParams._dblRecovery;
 
 					double dblSubPeriodExpLoss = (1. - dblRec) * 100. * dblSubPeriodSurvival *
@@ -224,7 +224,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				notional (valParams.valueDate()))));
 
 			mapResult.put (strMeasureSetPrefix + "LossOnInstantaneousDefault", _dblNotional * (1. -
-				cc.getRecovery (valParams.valueDate())));
+				cc.recovery (valParams.valueDate())));
 
 			mapResult.put (strMeasureSetPrefix + "Price", 100. * (1. + (dblCleanPV / _dblNotional /
 				notional (valParams.valueDate()))));
@@ -645,9 +645,9 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == cc)
-			throw new java.lang.Exception ("CDSComponent::getRecovery => Bad inputs");
+			throw new java.lang.Exception ("CDSComponent::recovery => Bad inputs");
 
-		return _crValParams._bUseCurveRec ? cc.getRecovery (dblDate) : _crValParams._dblRecovery;
+		return _crValParams._bUseCurveRec ? cc.recovery (dblDate) : _crValParams._dblRecovery;
 	}
 
 	@Override public double getRecovery (
@@ -658,9 +658,9 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDateStart) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblDateEnd) || null == cc)
-			throw new java.lang.Exception ("CDSComponent::getRecovery: Bad inputs");
+			throw new java.lang.Exception ("CDSComponent::recovery: Bad inputs");
 
-		return _crValParams._bUseCurveRec ? cc.getEffectiveRecovery (dblDateStart, dblDateEnd) :
+		return _crValParams._bUseCurveRec ? cc.effectiveRecovery (dblDateStart, dblDateEnd) :
 			_crValParams._dblRecovery;
 	}
 
@@ -790,14 +790,14 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			org.drip.analytics.period.CashflowPeriodCurveFactors cp = null;
 
 			try {
-				double dblSurvProbEnd = pricerParams.survivalToPayDate() ? cc.getSurvival (fp.pay()) :
-					cc.getSurvival (fp.end());
+				double dblSurvProbEnd = pricerParams.survivalToPayDate() ? cc.survival (fp.pay()) :
+					cc.survival (fp.end());
 
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblDFStart))
 					dblDFStart = dcFunding.df (fp.start());
 
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblSurvProbStart))
-					dblSurvProbStart = cc.getSurvival (fp.start());
+					dblSurvProbStart = cc.survival (fp.start());
 
 				double dblDFEnd = dcFunding.df (fp.pay());
 
@@ -1127,8 +1127,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		try {
 			if (null == (ccQS = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
 				(astrCreditCurveName[0], new org.drip.analytics.date.JulianDate (valParams.valueDate()),
-					aComp, csqs.fundingCurve (couponCurrency()[0]), adblQS, astrCalibMeasure, null != cc
-						? cc.getRecovery (valParams.valueDate()) : 0.4, false)))
+					aComp, csqs.fundingCurve (couponCurrency()[0]), adblQS, astrCalibMeasure, null != cc ?
+						cc.recovery (valParams.valueDate()) : 0.4, false)))
 				return null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1201,7 +1201,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 						wjPeriodPayDFDF.numParameters());
 
 				double dblPeriodCashFlow = dblFairPremium * notional (p.start(), p.end()) * p.couponDCF() *
-					cc.getSurvival (dblPeriodPayDate);
+					cc.survival (dblPeriodPayDate);
 
 				for (int k = 0; k < wjPeriodPayDFDF.numParameters(); ++k) {
 					if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodCashFlow *
@@ -1270,7 +1270,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 						wjFairPremiumDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodPayDFDF.numParameters());
 
-					double dblPeriodCoupon01 = notional (p.start(), p.end()) * p.couponDCF() * cc.getSurvival
+					double dblPeriodCoupon01 = notional (p.start(), p.end()) * p.couponDCF() * cc.survival
 						(p.end());
 
 					dblDV01 += dblPeriodCoupon01 * dcFunding.df (p.pay()) + plmj._dblAccrOnDef01;
@@ -1296,6 +1296,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -1536,7 +1546,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					throws java.lang.Exception
 				{
 					if (CALIBRATION_TYPE_NODE_PARALLEL_BUMP != _iCalibType)
-						csqs.setCreditCurve (ccOld.createFlatCurve (dblFlatSpread,
+						csqs.setCreditCurve (ccOld.flatCurve (dblFlatSpread,
 							CALIBRATION_TYPE_FLAT_CURVE_NODES == _iCalibType, java.lang.Double.NaN));
 					else
 						csqs.setCreditCurve ((org.drip.analytics.definition.CreditCurve)

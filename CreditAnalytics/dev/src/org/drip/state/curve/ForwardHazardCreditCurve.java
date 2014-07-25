@@ -240,12 +240,12 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		return null;
 	}
 
-	@Override public double getSurvival (
+	@Override public double survival (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("ForwardHazardCreditCurve::getSurvival => No surv for NaN date");
+			throw new java.lang.Exception ("ForwardHazardCreditCurve::survival => No surv for NaN date");
 
 		if (dblDate <= _dblEpochDate) return 1.;
 
@@ -269,12 +269,12 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		return java.lang.Math.exp (dblExpArg / 365.25);
 	}
 
-	@Override public double getRecovery (
+	@Override public double recovery (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("ForwardHazardCreditCurve::getRecovery => NaN date");
+			throw new java.lang.Exception ("ForwardHazardCreditCurve::recovery => NaN date");
 
 		for (int i = 0; i < _adblRecoveryDate.length; ++i) {
 			if (dblDate < _adblRecoveryDate[i]) return _adblRecoveryRate[i];
@@ -402,7 +402,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		return cc;
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve createFlatCurve (
+	@Override public org.drip.analytics.definition.CreditCurve flatCurve (
 		final double dblFlatNodeValue,
 		final boolean bSingleNode,
 		final double dblRecovery)
@@ -665,14 +665,14 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 
 		System.out.println ("Input: " + new java.lang.String (abCC));
 
-		System.out.println ("Surv[12/12/20]=" + cc.getSurvival
+		System.out.println ("Surv[12/12/20]=" + cc.survival
 			(org.drip.analytics.date.JulianDate.CreateFromDDMMMYYYY ("12-DEC-2020")));
 
 		ForwardHazardCreditCurve ccDeser = new ForwardHazardCreditCurve (abCC);
 
 		System.out.println ("Output: " + new java.lang.String (ccDeser.serialize()));
 
-		System.out.println ("Surv[12/12/20]=" + ccDeser.getSurvival
+		System.out.println ("Surv[12/12/20]=" + ccDeser.survival
 			(org.drip.analytics.date.JulianDate.CreateFromDDMMMYYYY ("12-DEC-2020")));
 	}
 }

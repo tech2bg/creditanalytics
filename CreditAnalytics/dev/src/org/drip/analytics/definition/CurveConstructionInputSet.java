@@ -50,7 +50,7 @@ public interface CurveConstructionInputSet {
 	 * @return The Valuation Parameter
 	 */
 
-	public abstract org.drip.param.valuation.ValuationParams getValuationParameter();
+	public abstract org.drip.param.valuation.ValuationParams valuationParameter();
 
 	/**
 	 * Retrieve the Quoting Parameter
@@ -58,7 +58,7 @@ public interface CurveConstructionInputSet {
 	 * @return The Quoting Parameter
 	 */
 
-	public abstract org.drip.param.valuation.ValuationCustomizationParams getQuotingParameter();
+	public abstract org.drip.param.valuation.ValuationCustomizationParams quotingParameter();
 
 	/**
 	 * Retrieve the Array of the Calibration Components
@@ -66,7 +66,7 @@ public interface CurveConstructionInputSet {
 	 * @return The Array of the Calibration Components
 	 */
 
-	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent[] getComponent();
+	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent[] components();
 
 	/**
 	 * Retrieve the Calibration Quote Map
@@ -76,7 +76,7 @@ public interface CurveConstructionInputSet {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getQuote();
+			quoteMap();
 
 	/**
 	 * Retrieve the Map containing the array of the Calibration Measures
@@ -84,7 +84,7 @@ public interface CurveConstructionInputSet {
 	 * @return The Map containing the array of the Calibration Measures
 	 */
 
-	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> getMeasures();
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> measures();
 
 	/**
 	 * Retrieve the Calibration Fixing
@@ -93,6 +93,5 @@ public interface CurveConstructionInputSet {
 	 */
 
 	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getFixing();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixing();
 }

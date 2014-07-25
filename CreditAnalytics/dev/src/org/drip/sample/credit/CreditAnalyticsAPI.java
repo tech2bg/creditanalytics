@@ -82,7 +82,7 @@ public class CreditAnalyticsAPI {
 		CreditCurve ccFlatHazard = CreditCurveBuilder.FromFlatHazard (dtStart.julian(), "CC", "USD", 0.02, 0.4);
 
 		System.out.println ("CCFromFlatHazard[" + dt10Y.toString() + "]; Survival=" +
-			ccFlatHazard.getSurvival ("10Y") + "; Hazard=" + ccFlatHazard.calcHazard ("10Y"));
+			ccFlatHazard.survival ("10Y") + "; Hazard=" + ccFlatHazard.hazard ("10Y"));
 
 		double[] adblDate = new double[5];
 		double[] adblSurvival = new double[5];
@@ -101,7 +101,7 @@ public class CreditAnalyticsAPI {
 			(dtStart.julian(), "CC", "USD", adblDate, adblSurvival, 0.4);
 
 		System.out.println ("CCFromSurvival[" + dt10Y.toString() + "]; Survival=" +
-			ccFromSurvival.getSurvival ("10Y") + "; Hazard=" + ccFromSurvival.calcHazard ("10Y"));
+			ccFromSurvival.survival ("10Y") + "; Hazard=" + ccFromSurvival.hazard ("10Y"));
 	}
 
 	/*
@@ -242,7 +242,7 @@ public class CreditAnalyticsAPI {
 				FormatUtil.FormatDouble (p.spread(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
+				FormatUtil.FormatDouble (cc.survival (p.pay()), 1, 4, 1.)
 			);
 
 		System.out.println ("Loss Start     Loss End      Pay Date      Cpn    Notl     Rec    EffDF    StartSurv  EndSurv");

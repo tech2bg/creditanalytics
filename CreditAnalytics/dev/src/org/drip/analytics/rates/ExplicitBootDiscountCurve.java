@@ -77,14 +77,14 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 			org.drip.state.representation.LatentStateMetricMeasure[iNumLSMM];
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _ccis.getQuote();
+			mapQuote = _ccis.quoteMap();
 
 		for (int i = 0; i < iNumLSMM; ++i) {
 			try {
 				aLSMM[i] = new org.drip.analytics.rates.RatesLSMM
 					(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 						org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-							mapQuote.get (_ccis.getComponent()[i].primaryCode()), null);
+							mapQuote.get (_ccis.components()[i].primaryCode()), null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -103,7 +103,7 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 
 	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
-		return null == _ccis ? null : _ccis.getComponent();
+		return null == _ccis ? null : _ccis.components();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
@@ -112,7 +112,7 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 		if (null == _ccis) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _ccis.getQuote();
+			mapQuote = _ccis.quoteMap();
 
 		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode)) return null;
 

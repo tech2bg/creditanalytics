@@ -81,7 +81,7 @@ public class LossPeriodCurveFactors extends Period {
 
 		try {
 			return new LossPeriodCurveFactors (dblStart, dblEnd, dblStart, dblEnd, dblStart + iDefaultLag,
-				dblEffectiveDCF, cc.getSurvival (dblStart), cc.getSurvival (dblEnd), dblEffectiveNotional,
+				dblEffectiveDCF, cc.survival (dblStart), cc.survival (dblEnd), dblEffectiveNotional,
 					dblEffectiveRecovery, dc.effectiveDF (dblStart + iDefaultLag, dblEnd + iDefaultLag));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -119,8 +119,8 @@ public class LossPeriodCurveFactors extends Period {
 
 		try {
 			return new LossPeriodCurveFactors (dblStart, dblEnd, dblStart, dblEnd, dblStart + iDefaultLag,
-				dblEffectiveDCF, cc.getSurvival (dblStart), cc.getSurvival (dblEnd), dblEffectiveNotional,
-					cc.getEffectiveRecovery (dblStart + iDefaultLag, dblEnd + iDefaultLag), dc.effectiveDF
+				dblEffectiveDCF, cc.survival (dblStart), cc.survival (dblEnd), dblEffectiveNotional,
+					cc.effectiveRecovery (dblStart + iDefaultLag, dblEnd + iDefaultLag), dc.effectiveDF
 						(dblStart + iDefaultLag, dblEnd + iDefaultLag));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

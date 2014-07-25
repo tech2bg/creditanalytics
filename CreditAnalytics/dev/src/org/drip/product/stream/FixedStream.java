@@ -805,8 +805,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 				double dblPeriodCV100 = _dblNotional * notional (dblPeriodEndDate) * (period.contains
 					(dblValueDate) ? period.accrualDCF (dblValueDate) : period.couponDCF()) * dblCoupon;
 
-				if (!prwc.addPredictorResponseWeight (dblPeriodEndDate, dblPeriodCV100) ||
-					!prwc.addDResponseWeightDManifestMeasure ("PV", dblPeriodEndDate, dblPeriodCV100))
+				double dblPeriodPayDate = period.pay();
+
+				if (!prwc.addPredictorResponseWeight (dblPeriodPayDate, dblPeriodCV100) ||
+					!prwc.addDResponseWeightDManifestMeasure ("PV", dblPeriodPayDate, dblPeriodCV100))
 					return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -816,6 +818,16 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		}
 
 		return prwc.updateValue (dblPV) && prwc.updateDValueDManifestMeasure ("PV", 1.) ? prwc : null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (

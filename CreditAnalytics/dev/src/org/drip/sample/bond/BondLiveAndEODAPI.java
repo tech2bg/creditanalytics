@@ -451,7 +451,7 @@ public class BondLiveAndEODAPI {
 					FormatUtil.FormatDouble (p.spread(), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
+					FormatUtil.FormatDouble (cc.survival (p.pay()), 1, 4, 1.)
 				);
 		} else {
 			System.out.println ("Acc Start       Acc End     Pay Date   Cpn DCF    Pay01    Surv01");
@@ -465,7 +465,7 @@ public class BondLiveAndEODAPI {
 					JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.getSurvival (p.pay()), 1, 4, 1.)
+					FormatUtil.FormatDouble (cc.survival (p.pay()), 1, 4, 1.)
 				);
 		}
 

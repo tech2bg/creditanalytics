@@ -526,7 +526,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.param.market.CurveSurfaceQuoteSet csqs =
 			org.drip.param.creator.MarketParamsBuilder.Create (this, null, null, null, null, null,
-				null, null == _ccis ? null : _ccis.getFixing());
+				null, null == _ccis ? null : _ccis.fixing());
 
 		for (int i = 0; i < iNumComponents; ++i) {
 			org.drip.quant.calculus.WengertJacobian wjCompDDirtyPVDManifestMeasure =

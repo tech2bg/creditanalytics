@@ -52,7 +52,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 	private ZeroRateDiscountCurve shiftManifestMeasure (
 		final double[] adblShiftedManifestMeasure)
 	{
-		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.getSRS();
+		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.srs();
 
 		int iRBSIndex = 0;
 		int iCalibInstrIndex = 0;
@@ -100,8 +100,8 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 
 		try {
 			return new org.drip.state.curve.ZeroRateDiscountCurve (name(), collateralParams(),
-				(_rcci.lcc().calibrateSpan (aRBSBumped, dblLeftMostZero, _rcci.getValuationParameter(),
-					_rcci.getPricerParameter(), _rcci.getQuotingParameter(), _rcci.marketParameters())));
+				(_rcci.lcc().calibrateSpan (aRBSBumped, dblLeftMostZero, _rcci.valuationParameter(),
+					_rcci.pricerParameter(), _rcci.quotingParameter(), _rcci.marketParameters())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -242,7 +242,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		if (null == aCC) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _rcci.getQuote();
+			mapQuote = _rcci.quoteMap();
 
 		if (null == mapQuote || 0 == mapQuote.size()) return null;
 
@@ -289,7 +289,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 
 	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
-		return null == _rcci ? null : _rcci.getComponent();
+		return null == _rcci ? null : _rcci.components();
 	}
 
 	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
@@ -299,7 +299,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		java.util.List<org.drip.state.representation.LatentStateMetricMeasure> lsLSMM = new
 			java.util.ArrayList<org.drip.state.representation.LatentStateMetricMeasure>();
 
-		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.getSRS();
+		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.srs();
 
 		for (org.drip.state.estimator.StretchRepresentationSpec rbs : aRBS) {
 			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
@@ -327,7 +327,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		if (null == _rcci) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _rcci.getQuote();
+			mapQuote = _rcci.quoteMap();
 
 		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode)) return null;
 
