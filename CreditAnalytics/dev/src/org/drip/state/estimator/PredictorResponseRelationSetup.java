@@ -124,4 +124,31 @@ public class PredictorResponseRelationSetup {
 	{
 		return _mapPredictorResponseWeight;
 	}
+
+	/**
+	 * Absorb the "Other" PRRS onto the current one
+	 * 
+	 * @param prrsOther The "Other" PRRS
+	 * 
+	 * @return TRUE => At least one Entry was absorbed
+	 */
+
+	public boolean absorb (
+		final PredictorResponseRelationSetup prrsOther)
+	{
+		if (null == prrsOther) return false;
+
+		if (!updateValue (prrsOther.getValue())) return false;
+
+		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPRW =
+			prrsOther.getPredictorResponseWeight();
+
+		if (null == mapPRW || 0 == mapPRW.size()) return true;
+
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : mapPRW.entrySet()) {
+			if (null != me) addPredictorResponseWeight (me.getKey(), me.getValue());
+		}
+
+		return true;
+	}
 }

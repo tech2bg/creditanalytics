@@ -125,6 +125,28 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
+	 * Generate the Calibratable Linearized Predictor/Response Constraint Weights for the Non-merged Discount
+	 *  Factor Latent State from the Component's Cash Flows. The Constraints here typically correspond to
+	 *  Date/Cash Flow pairs and the corresponding leading PV.
+	 * 
+	 * @param valParams Valuation Parameters
+	 * @param pricerParams Pricer Parameters
+	 * @param csqs Component Market Parameters
+	 * @param quotingParams Component Quoting Parameters
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Calibratable Linearized Predictor/Response Constraints (Date/Cash Flow pairs and the
+	 * 	corresponding PV)
+	 */
+
+	public abstract org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs);
+
+	/**
 	 * Generate the Calibratable Linearized Predictor/Response Constraint Weights for the Component from the
 	 *  Market Inputs. The Constraints here typically correspond to Date/Cash Flow pairs and the
 	 *  corresponding leading PV.

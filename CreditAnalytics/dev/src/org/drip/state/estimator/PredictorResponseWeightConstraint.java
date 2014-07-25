@@ -199,6 +199,39 @@ public class PredictorResponseWeightConstraint {
 	}
 
 	/**
+	 * "Absorb" the other PRWC Instance into the Current One
+	 * 
+	 * @param prwcOther The "Other" PRWC Instance
+	 * 
+	 * @return TRUE => At least one entry of the "Other" was absorbed
+	 */
+
+	public boolean absorb (
+		final PredictorResponseWeightConstraint prwcOther)
+	{
+		if (null == prwcOther || !_prrsCalib.absorb (prwcOther._prrsCalib)) return false;
+
+		if (0 == _mapPRRSSens.size() || 0 == prwcOther._mapPRRSSens.size()) return true;
+
+		for (java.util.Map.Entry<java.lang.String, org.drip.state.estimator.PredictorResponseRelationSetup>
+			me : _mapPRRSSens.entrySet()) {
+			java.lang.String strKey = me.getKey();
+
+			if (prwcOther._mapPRRSSens.containsKey (strKey))
+				me.getValue().absorb (prwcOther._mapPRRSSens.get (strKey));
+		}
+
+		for (java.util.Map.Entry<java.lang.String, org.drip.state.estimator.PredictorResponseRelationSetup>
+			me : prwcOther._mapPRRSSens.entrySet()) {
+			java.lang.String strKey = me.getKey();
+
+			if (!_mapPRRSSens.containsKey (strKey)) _mapPRRSSens.put (strKey, me.getValue());
+		}
+
+		return true;
+	}
+
+	/**
 	 * Display the Constraints and the corresponding Weights
 	 */
 

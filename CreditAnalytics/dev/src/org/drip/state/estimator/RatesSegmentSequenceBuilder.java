@@ -121,17 +121,17 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return _mapPMSC.containsKey (strManifestMeasure) ? _mapPMSC.get (strManifestMeasure) : null;
 	}
 
-	private boolean generateSegmentConstraintSet2 (
+	private boolean generateSegmentConstraintSet (
 		final double dblSegmentRight,
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
 		final java.lang.String strManifestMeasure)
 	{
-		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentCalibResponseConstraint2
+		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentCalibResponseConstraint
 			(prlc);
 
 		if (null == srvcBase) return false;
 
-		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentSensResponseConstraint2
+		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentSensResponseConstraint
 			(prlc, strManifestMeasure);
 
 		if (null == srvcSensitivity) return false;
@@ -153,7 +153,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return true;
 	}
 
-	protected org.drip.spline.params.SegmentResponseValueConstraint segmentCalibResponseConstraint2 (
+	protected org.drip.spline.params.SegmentResponseValueConstraint segmentCalibResponseConstraint (
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc)
 	{
 		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPredictorResponseWeight =
@@ -215,7 +215,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		return null;
 	}
 
-	protected org.drip.spline.params.SegmentResponseValueConstraint segmentSensResponseConstraint2 (
+	protected org.drip.spline.params.SegmentResponseValueConstraint segmentSensResponseConstraint (
 		final org.drip.state.estimator.PredictorResponseWeightConstraint prlc,
 		final java.lang.String strManifestMeasure)
 	{
@@ -363,7 +363,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		double dblSegmentRight = aCS[0].right();
 
-		if (null == prlc || !generateSegmentConstraintSet2 (dblSegmentRight, prlc, _srs.getLSMM
+		if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc, _srs.getLSMM
 			(0).manifestMeasures()[0]))
 			return false;
 
@@ -409,7 +409,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			double dblSegmentRight = aCS[iSegment].right();
 
-			if (null == prlc || !generateSegmentConstraintSet2 (dblSegmentRight, prlc, _srs.getLSMM
+			if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc, _srs.getLSMM
 				(iSegment).manifestMeasures()[0]))
 				return false;
 

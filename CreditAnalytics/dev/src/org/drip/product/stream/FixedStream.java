@@ -270,10 +270,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
 
-		return _notlSchedule.getFactor (dblDate);
+		return null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate);
 	}
 
 	@Override public double notional (
@@ -763,6 +763,59 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		}
 
 		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= _dblMaturity) return null;
+
+		double dblPV = 0.;
+		double dblCoupon = _dblCoupon;
+		org.drip.product.calib.FixedStreamQuoteSet fsqs = (org.drip.product.calib.FixedStreamQuoteSet) pqs;
+
+		try {
+			if (fsqs.containsPV()) dblPV = fsqs.pv();
+
+			if (fsqs.containsCoupon()) dblCoupon = fsqs.coupon();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+			double dblPeriodEndDate = period.end();
+
+			if (dblPeriodEndDate < dblValueDate) continue;
+
+			try {
+				double dblPeriodCV100 = _dblNotional * notional (dblPeriodEndDate) * (period.contains
+					(dblValueDate) ? period.accrualDCF (dblValueDate) : period.couponDCF()) * dblCoupon;
+
+				if (!prwc.addPredictorResponseWeight (dblPeriodEndDate, dblPeriodCV100) ||
+					!prwc.addDResponseWeightDManifestMeasure ("PV", dblPeriodEndDate, dblPeriodCV100))
+					return null;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return prwc.updateValue (dblPV) && prwc.updateDValueDManifestMeasure ("PV", 1.) ? prwc : null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (

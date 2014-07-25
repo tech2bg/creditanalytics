@@ -690,6 +690,53 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return false;
 	}
 
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FixFloatQuoteSet))
+			return null;
+
+		if (valParams.valueDate() >= maturity().julian()) return null;
+
+		double dblPV = 0.;
+		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
+
+		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+
+		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = new
+			org.drip.product.calib.FloatingStreamQuoteSet();
+
+		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = new
+			org.drip.product.calib.FixedStreamQuoteSet();
+
+		try {
+			if (ffqs.containsPV()) dblPV = ffqs.pv();
+
+			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
+
+			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatStream.discountPRWC
+			(valParams, pricerParams, csqs, quotingParams, fsqsDerived);
+
+		if (null == prwc) return null;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcReference = _fixStream.discountPRWC
+			(valParams, pricerParams, csqs, quotingParams, fsqsReference);
+
+		return null == prwcReference || !prwc.absorb (prwcReference) || !prwc.updateValue (dblPV) ? null :
+			prwc;
+	}
+
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,

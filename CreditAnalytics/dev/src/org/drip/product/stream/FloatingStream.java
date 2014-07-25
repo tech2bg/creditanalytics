@@ -1213,6 +1213,67 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 	}
 
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs || !(pqs instanceof
+			org.drip.product.calib.FloatingStreamQuoteSet))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= _dblMaturity) return null;
+
+		double dblPV = 0.;
+		double dblSpread = _dblSpread;
+		org.drip.product.calib.FloatingStreamQuoteSet fsqs = (org.drip.product.calib.FloatingStreamQuoteSet)
+			pqs;
+
+		try {
+			if (fsqs.containsSpread()) dblSpread = fsqs.spread();
+
+			if (fsqs.containsPV()) dblPV = fsqs.pv();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+			double dblPeriodEndDate = period.end();
+
+			if (dblPeriodEndDate < dblValueDate) continue;
+
+			try {
+				org.drip.analytics.output.PeriodCouponMeasures pcm = coupon (dblPeriodEndDate, valParams,
+					csqs);
+
+				if (null == pcm) return null;
+
+				double dblPeriodCV100 = _dblNotional * notional (dblPeriodEndDate) * (period.contains
+					(dblValueDate) ? period.accrualDCF (dblValueDate) : period.couponDCF()) *
+						(pcm.convexityAdjusted() + dblSpread);
+
+				if (!prwc.addPredictorResponseWeight (dblPeriodEndDate, dblPeriodCV100) ||
+					!prwc.addDResponseWeightDManifestMeasure ("PV", dblPeriodEndDate, dblPeriodCV100))
+					return null;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return prwc.updateValue (dblPV) && prwc.updateDValueDManifestMeasure ("PV", 1.) ? prwc : null;
+	}
+
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
