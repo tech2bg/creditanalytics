@@ -13,6 +13,7 @@ import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 import org.drip.state.curve.ForeignCollateralizedDiscountCurve;
+import org.drip.state.identifier.FXLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -94,7 +95,7 @@ public class DomesticCollateralForeignForexVolCorr {
 
 		mktParams.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strDomesticCurrency, dcCcyDomesticCollatDomestic);
 
-		mktParams.setFXCurve (cp, auFX);
+		mktParams.setFXCurve (FXLabel.Standard (cp), auFX);
 
 		DomesticCollateralizedForeignForward dcff = new DomesticCollateralizedForeignForward (
 			cp,

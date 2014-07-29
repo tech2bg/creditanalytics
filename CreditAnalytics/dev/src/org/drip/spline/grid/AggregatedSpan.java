@@ -141,7 +141,7 @@ public class AggregatedSpan implements org.drip.spline.grid.Span {
 
 	@Override public boolean isMergeState (
 		final double dblPredictorOrdinate,
-		final org.drip.state.representation.LatentStateLabel lsl)
+		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
 		for (org.drip.spline.grid.Span span : _lsSpan) {
 			if (span.isMergeState (dblPredictorOrdinate, lsl)) return true;

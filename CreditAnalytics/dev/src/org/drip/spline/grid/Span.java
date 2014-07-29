@@ -79,7 +79,7 @@ public interface Span {
 
 	public abstract boolean isMergeState (
 		final double dblPredictorOrdinate,
-		final org.drip.state.representation.LatentStateLabel lsl);
+		final org.drip.state.identifier.LatentStateLabel lsl);
 
 	/**
 	 * Compute the Response from the containing Stretches

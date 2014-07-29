@@ -43,7 +43,7 @@ public class BasisSplineTermStructure extends org.drip.analytics.definition.Term
 	 * BasisSplineTermStructure Constructor
 	 * 
 	 * @param dblEpochDate The Epoch Date
-	 * @param strName Name of the Surface
+	 * @param label Term Structure Latent State Label
 	 * @param strCurrency The Currency
 	 * @param span The Latent State Span
 	 * @param collatParams Collateral Parameters
@@ -53,13 +53,13 @@ public class BasisSplineTermStructure extends org.drip.analytics.definition.Term
 
 	public BasisSplineTermStructure (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CustomMetricLabel label,
 		final java.lang.String strCurrency,
 		final org.drip.spline.grid.Span span,
 		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strName, strCurrency);
+		super (dblEpochDate, label, strCurrency);
 
 		_span = span;
 		_collatParams = collatParams;

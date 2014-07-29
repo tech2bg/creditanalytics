@@ -3,13 +3,13 @@ package org.drip.sample.ccbs;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -612,7 +612,7 @@ public class JPY3M6MUSD3M6M {
 		ForwardCurve fc6MReference = IBOR.CustomIBORBuilderSample (
 			dcReference,
 			null,
-			FloatingRateIndex.Create (strReferenceCurrency + "-LIBOR-6M"),
+			ForwardLabel.Create (strReferenceCurrency + "-LIBOR-6M"),
 			scbcCubic,
 			s_astrUSD6MDepositTenor,
 			s_adblUSD6MDepositQuote,
@@ -635,7 +635,7 @@ public class JPY3M6MUSD3M6M {
 		ForwardCurve fc3MReference = IBOR.CustomIBORBuilderSample (
 			dcReference,
 			fc6MReference,
-			FloatingRateIndex.Create (strReferenceCurrency + "-LIBOR-3M"),
+			ForwardLabel.Create (strReferenceCurrency + "-LIBOR-3M"),
 			scbcCubic,
 			s_astrUSD3MDepositTenor,
 			s_adblUSD3MDepositQuote,
@@ -674,7 +674,7 @@ public class JPY3M6MUSD3M6M {
 		ForwardCurve fc6MDerived = IBOR.CustomIBORBuilderSample (
 			dcDerived,
 			null,
-			FloatingRateIndex.Create (strDerivedCurrency + "-LIBOR-6M"),
+			ForwardLabel.Create (strDerivedCurrency + "-LIBOR-6M"),
 			scbcCubic,
 			s_astrJPY6MDepositTenor,
 			s_adblJPY6MDepositQuote,

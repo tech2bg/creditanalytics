@@ -74,12 +74,13 @@ public class ScenarioTermStructureBuilder {
 			aSCBC[i] = scbc;
 
 		try {
-			return new org.drip.state.curve.BasisSplineTermStructure (dtStart.julian(), strName,
-				strCurrency, new org.drip.spline.grid.OverlappingStretchSpan
-					(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
-						(strName, adblDate, adblNode, aSCBC, null,
-							org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
-								org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE)), collatParams);
+			return new org.drip.state.curve.BasisSplineTermStructure (dtStart.julian(),
+				org.drip.state.identifier.CustomMetricLabel.Standard (strName), strCurrency, new
+					org.drip.spline.grid.OverlappingStretchSpan
+						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+							(strName, adblDate, adblNode, aSCBC, null,
+								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE)), collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

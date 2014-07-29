@@ -92,7 +92,7 @@ public class DepositBuilder {
 	public static final org.drip.product.definition.RatesComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final java.lang.String strIR)
 	{
 		if (null == dtMaturity) {

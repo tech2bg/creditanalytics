@@ -10,7 +10,6 @@ import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.stream.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -19,6 +18,7 @@ import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -128,7 +128,7 @@ public class CustomDiscountCurveBuilder {
 				-1.,
 				null,
 				lsFloatPeriods,
-				FloatingRateIndex.Create ("USD-LIBOR-6M"),
+				ForwardLabel.Create ("USD-LIBOR-6M"),
 				false
 			);
 

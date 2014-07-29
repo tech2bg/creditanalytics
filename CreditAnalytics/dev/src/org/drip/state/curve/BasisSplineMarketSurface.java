@@ -42,7 +42,7 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 	 * BasisSplineMarketSurface Constructor
 	 * 
 	 * @param dblEpochDate The Starting Date
-	 * @param strName Name of the Surface
+	 * @param label The Spline Market Surface Latent State Label
 	 * @param strCurrency The Currency
 	 * @param wss Wire Surface Stretch Instance
 	 * @param collatParams Collateral Parameters
@@ -52,13 +52,13 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 
 	public BasisSplineMarketSurface (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CustomMetricLabel label,
 		final java.lang.String strCurrency,
 		final org.drip.spline.multidimensional.WireSurfaceStretch wss,
 		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strName, strCurrency);
+		super (dblEpochDate, label, strCurrency);
 
 		_wss = wss;
 		_collatParams = collatParams;
@@ -92,8 +92,9 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		final double dblStrikeAnchor)
 	{
 		try {
-			return new BasisSplineTermStructure (epoch().julian(), name() + "_" + dblStrikeAnchor,
-				currency(), _wss.wireSpanXAnchor (dblStrikeAnchor), _collatParams);
+			return new BasisSplineTermStructure (epoch().julian(),
+				org.drip.state.identifier.CustomMetricLabel.Standard (label() + "_" + dblStrikeAnchor),
+					currency(), _wss.wireSpanXAnchor (dblStrikeAnchor), _collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -105,9 +106,10 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		final double dblMaturityDateAnchor)
 	{
 		try {
-			return new BasisSplineTermStructure (epoch().julian(), name() + "_" + new
-				org.drip.analytics.date.JulianDate (dblMaturityDateAnchor), currency(), _wss.wireSpanYAnchor
-					(dblMaturityDateAnchor), _collatParams);
+			return new BasisSplineTermStructure (epoch().julian(),
+				org.drip.state.identifier.CustomMetricLabel.Standard (label() + "_" + new
+					org.drip.analytics.date.JulianDate (dblMaturityDateAnchor)), currency(),
+						_wss.wireSpanYAnchor (dblMaturityDateAnchor), _collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

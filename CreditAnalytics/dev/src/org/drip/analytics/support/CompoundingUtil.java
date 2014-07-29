@@ -52,7 +52,7 @@ public class CompoundingUtil {
 
 	public static final org.drip.analytics.output.PeriodCouponMeasures Arithmetic (
 		final double dblAccrualEndDate,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -100,6 +100,9 @@ public class CompoundingUtil {
 
 		java.lang.String strCurrency = fri.currency();
 
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(strCurrency);
+
 		while (dblDate <= dblAccrualEndDate) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = null;
 
@@ -122,8 +125,8 @@ public class CompoundingUtil {
 						try {
 							dblAccrualConvexityAdjustment = java.lang.Math.exp
 								(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-									(csqs.fundingCurveVolSurface (strCurrency), csqs.forwardCurveVolSurface
-										(fri), csqs.forwardFundingCorrSurface (fri, strCurrency),
+									(csqs.fundingCurveVolSurface (fundingLabel), csqs.forwardCurveVolSurface
+										(fri), csqs.forwardFundingCorrSurface (fri, fundingLabel),
 											dblValueDate, dblDate));
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
@@ -184,7 +187,7 @@ public class CompoundingUtil {
 
 	public static final org.drip.analytics.output.PeriodCouponMeasures Geometric (
 		final double dblAccrualEndDate,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{

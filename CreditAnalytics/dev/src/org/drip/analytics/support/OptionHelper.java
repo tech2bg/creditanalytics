@@ -150,7 +150,8 @@ public class OptionHelper {
 			return 0.;
 
 		org.drip.quant.function1D.AbstractUnivariate auVolSurface = csqs.customMetricVolSurface
-			(strVolSurface, new org.drip.analytics.date.JulianDate (dblEndDate));
+			(org.drip.state.identifier.CustomMetricLabel.Standard (strVolSurface), new
+				org.drip.analytics.date.JulianDate (dblEndDate));
 
 		return null != auVolSurface ? new PeriodVariance (auVolSurface).integrate (dblStartDate, dblEndDate)
 			/ 365.25 : 0.;
@@ -288,9 +289,12 @@ public class OptionHelper {
 
 		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
 
-		return IntegratedCrossVolQuanto (csqs.customMetricVolSurface (strVolSurface1, dtEnd),
-			csqs.customMetricVolSurface (strVolSurface2, dtEnd), csqs.customMetricVolSurface (strCorrSurface,
-				dtEnd), dblStartDate, dblEndDate);
+		return IntegratedCrossVolQuanto (csqs.customMetricVolSurface
+			(org.drip.state.identifier.CustomMetricLabel.Standard (strVolSurface1), dtEnd),
+				csqs.customMetricVolSurface (org.drip.state.identifier.CustomMetricLabel.Standard
+					(strVolSurface2), dtEnd), csqs.customMetricVolSurface
+						(org.drip.state.identifier.CustomMetricLabel.Standard (strCorrSurface), dtEnd),
+							dblStartDate, dblEndDate);
 	}
 
 	/**
@@ -361,11 +365,14 @@ public class OptionHelper {
 				strDiscountForwardCorrTS.isEmpty() || dblEndDate == dblStartDate)
 			return 0.;
 
-		org.drip.product.params.FloatingRateIndex fri = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel fri = org.drip.state.identifier.ForwardLabel.Create
 			(strForwardVolTS);
 
-		return IntegratedFRACrossVolConvexityExponent (csqs.fundingCurveVolSurface (strDiscountVolTS),
-			csqs.forwardCurveVolSurface (fri), csqs.forwardFundingCorrSurface (fri, strDiscountVolTS),
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(strDiscountVolTS);
+
+		return IntegratedFRACrossVolConvexityExponent (csqs.fundingCurveVolSurface (fundingLabel),
+			csqs.forwardCurveVolSurface (fri), csqs.forwardFundingCorrSurface (fri, fundingLabel),
 				dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
 					dblEndDate);
 	}

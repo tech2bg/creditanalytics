@@ -276,7 +276,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 
 	@Override public java.lang.String objectTrailer()
 	{
-		return ":";
+		return "^";
 	}
 
 	@Override public byte[] serialize()
@@ -375,7 +375,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			lsCouponPeriod3Y);
 
 		aFloatStream[0] = new org.drip.product.stream.FloatingStream ("ABC", null, 0., 100., null,
-			lsCouponPeriod3Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+			lsCouponPeriod3Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod5Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "5Y",
@@ -385,7 +385,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			lsCouponPeriod5Y);
 
 		aFloatStream[1] = new org.drip.product.stream.FloatingStream ("ABC", null, 0., 100., null,
-			lsCouponPeriod5Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+			lsCouponPeriod5Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod7Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "7Y",
@@ -395,7 +395,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			lsCouponPeriod7Y);
 
 		aFloatStream[2] = new org.drip.product.stream.FloatingStream ("ABC", null, 0., 100., null,
-			lsCouponPeriod7Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+			lsCouponPeriod7Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
 
 		RatesBasket rb = new RatesBasket ("SAMRB", aFixedStream, aFloatStream);
 

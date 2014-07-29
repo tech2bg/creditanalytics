@@ -38,7 +38,7 @@ package org.drip.analytics.rates;
  */
 
 public class DiscountForwardEstimator implements org.drip.analytics.rates.ForwardRateEstimator {
-	private org.drip.product.params.FloatingRateIndex _fri = null;
+	private org.drip.state.identifier.ForwardLabel _fri = null;
 	private org.drip.analytics.rates.DiscountFactorEstimator _dfe = null;
 
 	/**
@@ -52,14 +52,14 @@ public class DiscountForwardEstimator implements org.drip.analytics.rates.Forwar
 
 	public DiscountForwardEstimator (
 		final org.drip.analytics.rates.DiscountFactorEstimator dfe,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 		throws java.lang.Exception
 	{
 		if (null == (_dfe = dfe) || null == (_fri = fri))
 			throw new java.lang.Exception ("DiscountForwardEstimator ctr: Invalid Inputs");
 	}
 
-	@Override public org.drip.product.params.FloatingRateIndex index()
+	@Override public org.drip.state.identifier.ForwardLabel index()
 	{
 		return _fri;
 	}

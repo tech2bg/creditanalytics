@@ -12,14 +12,13 @@ import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.product.stream.FixedStream;
-import org.drip.product.stream.FloatingStream;
+import org.drip.product.stream.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -123,7 +122,7 @@ public class STIR {
 				-1.,
 				null,
 				lsFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -269,7 +268,7 @@ public class STIR {
 				-1.,
 				null,
 				lsReferenceFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -296,7 +295,7 @@ public class STIR {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -347,7 +346,7 @@ public class STIR {
 
 		return ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
+			ForwardLabel.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -505,7 +504,7 @@ public class STIR {
 	private static final STIRFutureComponent CreateSTIR (
 		final JulianDate dtEffective,
 		final String strTenor,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblCoupon,
 		final String strCurrency)
 		throws Exception
@@ -567,7 +566,7 @@ public class STIR {
 		final STIRFutureComponent stir,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblSwapRateVolatility,
 		final double dblSwapRateExchangeVolatility,
 		final double dblSwapRateToSwapRateExchangeCorrelation)
@@ -578,19 +577,19 @@ public class STIR {
 		String strComponentName = stir.name();
 
 		mktParams.setCustomMetricVolSurface (
-			strComponentName + "SwapRateVolatility",
+			CustomMetricLabel.Standard (strComponentName + "SwapRateVolatility"),
 			dtEffective,
 			new FlatUnivariate (dblSwapRateVolatility)
 		);
 
 		mktParams.setCustomMetricVolSurface (
-			strComponentName + "SwapRateExchangeVolatility",
+			CustomMetricLabel.Standard (strComponentName + "SwapRateExchangeVolatility"),
 			dtEffective,
 			new FlatUnivariate (dblSwapRateExchangeVolatility)
 		);
 
 		mktParams.setCustomMetricVolSurface (
-			strComponentName + "SwapRateToSwapRateExchangeCorrelation",
+			CustomMetricLabel.Standard (strComponentName + "SwapRateToSwapRateExchangeCorrelation"),
 			dtEffective,
 			new FlatUnivariate (dblSwapRateToSwapRateExchangeCorrelation)
 		);
@@ -627,7 +626,7 @@ public class STIR {
 
 		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
 
-		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
 
 		STIRFutureComponent stir = CreateSTIR (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 

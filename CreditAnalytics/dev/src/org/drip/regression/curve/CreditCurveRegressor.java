@@ -89,7 +89,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 
 				@Override public boolean preRegression()
 				{
-					_strCurrency = "CHF";
+					_strCurrency = "USD";
 
 					if (null == (_dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2010,
 						org.drip.analytics.date.JulianDate.MAY, 12)))
@@ -113,12 +113,8 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 
 				@Override public boolean execRegression()
 				{
-					_cc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
-						("CORP", _dtStart, _aCDS, _dc, _adblQuotes, _astrCalibMeasure, 0.4, false);
-
-					System.out.println ("\t\t_aCDS = " + _aCDS.length);
-
-					return null != _cc;
+					return null != (_cc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
+						("CORP", _dtStart, _aCDS, _dc, _adblQuotes, _astrCalibMeasure, 0.4, false));
 				}
 			});
 

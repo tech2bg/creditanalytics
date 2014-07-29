@@ -22,6 +22,7 @@ import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -99,7 +100,7 @@ public class CCBSDiscountCurve {
 				-1.,
 				null,
 				lsFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -126,7 +127,7 @@ public class CCBSDiscountCurve {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -280,9 +281,9 @@ public class CCBSDiscountCurve {
 
 		mktParams.setForwardCurve (fc6MReference);
 
-		mktParams.setFXCurve (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency), new FlatUnivariate (1. / dblRefDerFX));
+		mktParams.setFXCurve (FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency)), new FlatUnivariate (1. / dblRefDerFX));
 
-		mktParams.setFXCurve (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency), new FlatUnivariate (dblRefDerFX));
+		mktParams.setFXCurve (FXLabel.Standard (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency)), new FlatUnivariate (dblRefDerFX));
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 

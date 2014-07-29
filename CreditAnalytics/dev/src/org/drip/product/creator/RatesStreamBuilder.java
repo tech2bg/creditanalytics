@@ -149,7 +149,7 @@ public class RatesStreamBuilder {
 
 		try {
 			return new org.drip.product.stream.FloatingStream (strCurrency, null, dblSpread, -1., null,
-				lsCouponPeriod, org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR", (12 /
+				lsCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 /
 					iFreq) + "M"), bIsReference);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -190,7 +190,7 @@ public class RatesStreamBuilder {
 
 		try {
 			return new org.drip.product.stream.FloatingStream (strCurrency, null, dblSpread, -1., null,
-				lsCouponPeriod, org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR", (12 /
+				lsCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 /
 					iFreq) + "M"), bIsReference);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

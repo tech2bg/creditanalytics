@@ -21,6 +21,7 @@ import org.drip.sample.forward.IBOR;
 import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -98,7 +99,7 @@ public class CCBSForwardCurve {
 				-1.,
 				null,
 				lsFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -125,7 +126,7 @@ public class CCBSForwardCurve {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -212,9 +213,9 @@ public class CCBSForwardCurve {
 
 		mktParams.setForwardCurve (fc6MDerived);
 
-		mktParams.setFXCurve (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency), new FlatUnivariate (dblRefDerFX));
+		mktParams.setFXCurve (FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency)), new FlatUnivariate (dblRefDerFX));
 
-		mktParams.setFXCurve (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency), new FlatUnivariate (1. / dblRefDerFX));
+		mktParams.setFXCurve (FXLabel.Standard (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency)), new FlatUnivariate (1. / dblRefDerFX));
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
@@ -238,7 +239,7 @@ public class CCBSForwardCurve {
 		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			lcc,
 			new StretchRepresentationSpec[] {srsFloatFloat},
-			FloatingRateIndex.Create (strDerivedCurrency + "-LIBOR-3M"),
+			ForwardLabel.Create (strDerivedCurrency + "-LIBOR-3M"),
 			valParams,
 			null,
 			MarketParamsBuilder.Create (dcDerived, fc6MDerived, null, null, null, null, null, null),

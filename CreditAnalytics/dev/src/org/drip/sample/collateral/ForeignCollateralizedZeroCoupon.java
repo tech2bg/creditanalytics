@@ -70,7 +70,7 @@ public class ForeignCollateralizedZeroCoupon {
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFXVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFXForeignRatesCorrelation, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblPrice, 1, 2, 100.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblPrice - dblBaselinePrice, 3, 0, 100.));
+			org.drip.quant.common.FormatUtil.FormatDouble (dblPrice - dblBaselinePrice, 2, 0, 100.));
 
 		return dblPrice;
 	}

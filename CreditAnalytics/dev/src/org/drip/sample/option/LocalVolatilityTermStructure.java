@@ -63,7 +63,7 @@ public class LocalVolatilityTermStructure {
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		System.out.println ("\n\t  " + volSurface.name());
+		System.out.println ("\n\t  " + volSurface.label());
 
 		System.out.println ("\t|------------------------------------------------------------|");
 

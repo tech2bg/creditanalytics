@@ -420,13 +420,13 @@ public class ShapePreservingDFZeroSmooth {
 						null,
 						"CalibSwapRate"),
 					1, 6, 1.) + "   |   " +
-				FormatUtil.FormatDouble (
+				/* FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
 						MarketParamsBuilder.Create (dcGloballySmooth, null, null, null, null, null, null),
 						null,
 						"CalibSwapRate"),
-					1, 6, 1.) + "   |   " +
+					1, 6, 1.) + "   |   " + */
 				FormatUtil.FormatDouble (
 					aSwapComp[i].measureValue (
 						new ValuationParams (dtToday, dtToday, "MXN"), null,
@@ -467,12 +467,12 @@ public class ShapePreservingDFZeroSmooth {
 					null,
 					"CalibSwapRate"),
 				1, 6, 1.) + "   |   " +
-				FormatUtil.FormatDouble (
+				/* FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
 					MarketParamsBuilder.Create (dcGloballySmooth, null, null, null, null, null, null),
 					null,
 					"CalibSwapRate"),
-				1, 6, 1.) + "   |   " +
+				1, 6, 1.) + "   |   " + */
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtToday, dtToday, "MXN"), null,
 					MarketParamsBuilder.Create (dcLocallySmooth, null, null, null, null, null, null),

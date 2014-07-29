@@ -40,21 +40,22 @@ public abstract class TermStructure extends org.drip.service.stream.Serializer i
 	protected java.lang.String _strName = "";
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;
+	protected org.drip.state.identifier.CustomMetricLabel _label = null;
 
 	protected TermStructure (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CustomMetricLabel label,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_strName =
-			strName) || _strName.isEmpty() || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_label =
+			label) || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
 			throw new java.lang.Exception ("TermStructure ctr: Invalid Inputs");
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
-		return _strName;
+		return _label;
 	}
 
 	@Override public java.lang.String currency()

@@ -243,17 +243,17 @@ public class FixFloatComponent extends org.drip.product.stream.DualStreamCompone
 		return _fixReference.freq();
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return _floatDerived.forwardCurveName();
+		return _floatDerived.forwardLabel();
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		return null;
 	}

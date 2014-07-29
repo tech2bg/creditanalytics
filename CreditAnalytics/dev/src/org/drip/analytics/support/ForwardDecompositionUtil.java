@@ -120,7 +120,7 @@ public class ForwardDecompositionUtil {
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponFlow = fs.cashFlowPeriod();
 
-		org.drip.product.params.FloatingRateIndex fri = fs.fri();
+		org.drip.state.identifier.ForwardLabel fri = fs.fri();
 
 		java.lang.String strCurrency = fs.couponCurrency()[0];
 

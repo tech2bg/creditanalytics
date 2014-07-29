@@ -9,10 +9,10 @@ import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.fra.FRAMarketComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -78,7 +78,9 @@ public class FRAMkt {
 			strCurrency,
 			strTenor);
 
-		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+
+		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
 		JulianDate dtForward = dtToday.addTenor (strTenor);
 
@@ -103,25 +105,25 @@ public class FRAMkt {
 		);
 
 		mktParams.setCustomMetricVolSurface (
-			"ForwardToDomesticExchangeVolatility",
+			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
 		mktParams.setCustomMetricVolSurface (
-			"FRIForwardToDomesticExchangeCorrelation",
+			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
 		mktParams.setFundingCurveVolSurface (
-			strCurrency,
+			fundingLabel,
 			new FlatUnivariate (dblEONIAVol)
 		);
 
 		mktParams.setForwardFundingCorrSurface (
 			fri,
-			strCurrency,
+			fundingLabel,
 			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
 		);
 

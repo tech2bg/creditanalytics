@@ -5,9 +5,9 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.BasisCurve;
 import org.drip.param.creator.ScenarioBasisCurveBuilder;
 import org.drip.param.valuation.CollateralizationParams;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -81,8 +81,8 @@ public class CustomBasisCurveBuilder {
 		BasisCurve bcCubicPolynomial = ScenarioBasisCurveBuilder.CubicPolynomialBasisCurve (
 			"USD3M6MBasis_CubicPolynomial",
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			ForwardLabel.Create ("USD", "LIBOR", "6M"),
+			ForwardLabel.Create ("USD", "LIBOR", "3M"),
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
@@ -91,8 +91,8 @@ public class CustomBasisCurveBuilder {
 		BasisCurve bcQuinticPolynomial = ScenarioBasisCurveBuilder.QuarticPolynomialBasisCurve (
 			"USD3M6MBasis_QuinticPolynomial",
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			ForwardLabel.Create ("USD", "LIBOR", "6M"),
+			ForwardLabel.Create ("USD", "LIBOR", "3M"),
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
@@ -101,8 +101,8 @@ public class CustomBasisCurveBuilder {
 		BasisCurve bcKaklisPandelis = ScenarioBasisCurveBuilder.KaklisPandelisBasisCurve (
 			"USD3M6MBasis_KaklisPandelis",
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			ForwardLabel.Create ("USD", "LIBOR", "6M"),
+			ForwardLabel.Create ("USD", "LIBOR", "3M"),
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
@@ -111,8 +111,8 @@ public class CustomBasisCurveBuilder {
 		BasisCurve bcKLKHyperbolic = ScenarioBasisCurveBuilder.KLKHyperbolicBasisCurve (
 			"USD3M6MBasis_KLKHyperbolic",
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			ForwardLabel.Create ("USD", "LIBOR", "6M"),
+			ForwardLabel.Create ("USD", "LIBOR", "3M"),
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
@@ -122,8 +122,8 @@ public class CustomBasisCurveBuilder {
 		BasisCurve bcKLKRationalLinear = ScenarioBasisCurveBuilder.KLKRationalLinearBasisCurve (
 			"USD3M6MBasis_KLKRationalLinear",
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			ForwardLabel.Create ("USD", "LIBOR", "6M"),
+			ForwardLabel.Create ("USD", "LIBOR", "3M"),
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
@@ -133,8 +133,8 @@ public class CustomBasisCurveBuilder {
 		BasisCurve bcKLKRationalQuadratic = ScenarioBasisCurveBuilder.KLKRationalLinearBasisCurve (
 			"USD3M6MBasis_KLKRationalQuadratic",
 			dtToday,
-			FloatingRateIndex.Create ("USD", "LIBOR", "6M"),
-			FloatingRateIndex.Create ("USD", "LIBOR", "3M"),
+			ForwardLabel.Create ("USD", "LIBOR", "6M"),
+			ForwardLabel.Create ("USD", "LIBOR", "3M"),
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,

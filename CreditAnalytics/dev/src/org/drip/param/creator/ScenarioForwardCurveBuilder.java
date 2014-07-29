@@ -64,7 +64,7 @@ public class ScenarioForwardCurveBuilder {
 	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
 		final org.drip.state.estimator.LinearCurveCalibrator lcc,
 		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -108,7 +108,7 @@ public class ScenarioForwardCurveBuilder {
 
 	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
 		final java.lang.String strName,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParam,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -170,7 +170,7 @@ public class ScenarioForwardCurveBuilder {
 
 	public static final org.drip.analytics.rates.ForwardCurve FlatForwardForwardCurve (
 		final org.drip.analytics.date.JulianDate dtStart,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final double dblFlatForwardRate,
 		final org.drip.param.valuation.CollateralizationParams collatParams)
 	{

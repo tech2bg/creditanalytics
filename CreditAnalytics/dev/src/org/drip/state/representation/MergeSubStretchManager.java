@@ -59,7 +59,7 @@ public class MergeSubStretchManager {
 
 	public boolean partOfMergeState (
 		final double dblDate,
-		final org.drip.state.representation.LatentStateLabel lsl)
+		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == lsl || null == _lsLSMS)
 			return false;

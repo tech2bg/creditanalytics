@@ -38,14 +38,14 @@ package org.drip.product.fx;
 public class DomesticCollateralizedForeignForward {
 	private java.lang.String _strCode = "";
 	private double _dblMaturity = java.lang.Double.NaN;
-	private org.drip.product.params.CurrencyPair _ccyPair = null;
+	private org.drip.product.params.CurrencyPair _cp = null;
 	private double _dblForexForwardStrike = java.lang.Double.NaN;
 
 	/**
 	 * Create an DomesticCollateralizedForeignForward from the currency pair, the strike, and the maturity
 	 * 	dates
 	 * 
-	 * @param ccyPair Currency Pair
+	 * @param cp Currency Pair
 	 * @param dblForexForwardStrike Forex Forward Strike
 	 * @param dtMaturity Maturity Date
 	 * 
@@ -53,13 +53,13 @@ public class DomesticCollateralizedForeignForward {
 	 */
 
 	public DomesticCollateralizedForeignForward (
-		final org.drip.product.params.CurrencyPair ccyPair,
+		final org.drip.product.params.CurrencyPair cp,
 		final double dblForexForwardStrike,
 		final org.drip.analytics.date.JulianDate dtMaturity)
 		throws java.lang.Exception
 	{
-		if (null == (_ccyPair = ccyPair) || !org.drip.quant.common.NumberUtil.IsValid (_dblForexForwardStrike
-			= dblForexForwardStrike) || null == dtMaturity)
+		if (null == (_cp = cp) || !org.drip.quant.common.NumberUtil.IsValid (_dblForexForwardStrike =
+			dblForexForwardStrike) || null == dtMaturity)
 			throw new java.lang.Exception ("DomesticCollateralizedForeignForward ctr: Invalid Inputs");
 
 		_dblMaturity = dtMaturity.julian();
@@ -106,7 +106,7 @@ public class DomesticCollateralizedForeignForward {
 
 	public org.drip.product.params.CurrencyPair getCcyPair()
 	{
-		return _ccyPair;
+		return _cp;
 	}
 
 	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -123,18 +123,19 @@ public class DomesticCollateralizedForeignForward {
 
 		if (dblValueDate > _dblMaturity) return null;
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (_ccyPair);
+		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve
+			(org.drip.state.identifier.FXLabel.Standard (_cp));
 
 		if (null == auFX) return null;
 
-		java.lang.String strDomesticCurrency = _ccyPair.denomCcy();
+		java.lang.String strDomesticCurrency = _cp.denomCcy();
 
 		org.drip.analytics.rates.DiscountCurve dcDomesticCollateral =
 			csqs.payCurrencyCollateralCurrencyCurve (strDomesticCurrency, strDomesticCurrency);
 
 		if (null == dcDomesticCollateral) return null;
 
-		java.lang.String strForeignCurrency = _ccyPair.numCcy();
+		java.lang.String strForeignCurrency = _cp.numCcy();
 
 		org.drip.analytics.rates.DiscountCurve dcForeignCurrencyDomesticCollateral =
 			csqs.payCurrencyCollateralCurrencyCurve (strForeignCurrency, strDomesticCurrency);

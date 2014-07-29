@@ -12,7 +12,6 @@ import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.DepositBuilder;
 import org.drip.product.definition.*;
 import org.drip.product.fra.FRAStandardComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.product.stream.FixedStream;
 import org.drip.product.stream.FloatingStream;
@@ -20,6 +19,7 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -65,7 +65,7 @@ public class IBOR {
 	private static final RatesComponent[] DepositFromMaturityDays (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
-		final FloatingRateIndex fri)
+		final ForwardLabel fri)
 		throws Exception
 	{
 		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
@@ -92,7 +92,7 @@ public class IBOR {
 
 	private static final RatesComponent[] FRAFromMaturityDays (
 		final JulianDate dtEffective,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final String[] astrMaturityTenor,
 		final double[] adblFRAStrike)
 		throws Exception
@@ -125,7 +125,7 @@ public class IBOR {
 
 	private static final FixFloatComponent[] FixFloatSwap (
 		final JulianDate dtEffective,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon)
 		throws Exception
@@ -210,7 +210,7 @@ public class IBOR {
 
 	private static final FloatFloatComponent[] FloatFloatSwap (
 		final JulianDate dtEffective,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
@@ -247,7 +247,7 @@ public class IBOR {
 				1.,
 				null,
 				lsReferenceFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -291,7 +291,7 @@ public class IBOR {
 	public static final ForwardCurve CustomIBORBuilderSample (
 		final DiscountCurve dc,
 		final ForwardCurve fcReference,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final SegmentCustomBuilderControl scbc,
 		final String[] astrDepositTenor,
 		final double[] adblDepositQuote,

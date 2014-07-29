@@ -39,11 +39,11 @@ public abstract class VolatilityTermStructure extends org.drip.analytics.definit
 
 	protected VolatilityTermStructure (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CustomMetricLabel label,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strName, strCurrency);
+		super (dblEpochDate, label, strCurrency);
 	}
 
 	/**

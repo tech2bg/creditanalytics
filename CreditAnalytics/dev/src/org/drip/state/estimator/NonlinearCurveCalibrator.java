@@ -263,7 +263,7 @@ public class NonlinearCurveCalibrator {
 
 		try {
 			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.quant.solver1D.FixedPointFinderBrent (0., new CreditCurveCalibrator (cc, comp,
+				org.drip.quant.solver1D.FixedPointFinderZheng (0., new CreditCurveCalibrator (cc, comp,
 					iInstr, valParams, dc, dcTSY, pricerParamsIn, strMeasure, dblCalibValue, mmFixings,
 						quotingParams, bFlat), true).findRoot();
 

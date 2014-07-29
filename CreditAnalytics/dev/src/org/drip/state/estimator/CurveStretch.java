@@ -79,7 +79,7 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 
 	public boolean setSegmentBuilt (
 		final int iSegment,
-		final org.drip.product.params.FloatingRateIndex[] aFRI)
+		final org.drip.state.identifier.ForwardLabel[] aFRI)
 	{
 		org.drip.spline.segment.LatentStateResponseModel[] aCS = segments();
 

@@ -178,19 +178,19 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.name();
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return _comp.forwardCurveName();
+		return _comp.forwardLabel();
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
-		return _comp.creditCurveName();
+		return _comp.creditLabel();
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
-		return _comp.currencyPairCode();
+		return _comp.fxLabel();
 	}
 
 	/**

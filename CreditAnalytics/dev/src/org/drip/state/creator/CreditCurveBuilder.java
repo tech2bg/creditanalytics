@@ -77,8 +77,9 @@ public class CreditCurveBuilder {
 		adblRecoveryDate[0] = dblStartDate;
 
 		try {
-			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate, strName, strCurrency,
-				adblHazard, adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate,
+				org.drip.state.identifier.CreditLabel.Standard (strName), strCurrency, adblHazard,
+					adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -130,8 +131,9 @@ public class CreditCurveBuilder {
 				dblSurvivalBegin = adblSurvivalProbability[i];
 			}
 
-			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate, strName, strCurrency,
-				adblHazard, adblSurvivalDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate,
+				org.drip.state.identifier.CreditLabel.Standard (strName), strCurrency, adblHazard,
+					adblSurvivalDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -176,8 +178,9 @@ public class CreditCurveBuilder {
 		adblRecoveryDate[0] = dblStartDate;
 
 		try {
-			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate, strName, strCurrency,
-				adblHazard, adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStartDate,
+				org.drip.state.identifier.CreditLabel.Standard (strName), strCurrency, adblHazard,
+					adblHazardDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -217,8 +220,9 @@ public class CreditCurveBuilder {
 
 			adblRecoveryDate[0] = dtStart.julian();
 
-			return new org.drip.state.curve.ForwardHazardCreditCurve (dtStart.julian(), strName,
-				strCurrency, adblHazardRate, adblDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dtStart.julian(),
+				org.drip.state.identifier.CreditLabel.Standard (strName), strCurrency, adblHazardRate,
+					adblDate, adblRecovery, adblRecoveryDate, java.lang.Double.NaN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -274,8 +278,9 @@ public class CreditCurveBuilder {
 		final double dblSpecificDefaultDate)
 	{
 		try {
-			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStart, strName, strCurrency,
-				adblHazardRate, adblHazardDate, adblRecoveryRate, adblRecoveryDate, dblSpecificDefaultDate);
+			return new org.drip.state.curve.ForwardHazardCreditCurve (dblStart,
+				org.drip.state.identifier.CreditLabel.Standard (strName), strCurrency, adblHazardRate,
+					adblHazardDate, adblRecoveryRate, adblRecoveryDate, dblSpecificDefaultDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

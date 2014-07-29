@@ -42,7 +42,7 @@ public interface BasisEstimator {
 	 * @return The Reference Index
 	 */
 
-	public abstract org.drip.product.params.FloatingRateIndex referenceIndex();
+	public abstract org.drip.state.identifier.ForwardLabel referenceIndex();
 
 	/**
 	 * Retrieve the Derived Index
@@ -50,7 +50,7 @@ public interface BasisEstimator {
 	 * @return The Derived Index
 	 */
 
-	public abstract org.drip.product.params.FloatingRateIndex derivedIndex();
+	public abstract org.drip.state.identifier.ForwardLabel derivedIndex();
 
 	/**
 	 * Calculate the Basis to the given Date

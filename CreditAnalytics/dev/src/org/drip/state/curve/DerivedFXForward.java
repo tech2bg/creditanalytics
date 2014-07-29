@@ -425,7 +425,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		return null;
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
@@ -437,7 +437,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 			sb.append (_adblDate[i] + ":" + _adblFXFwd[i]);
 		}
 
-		return sb.toString();
+		return org.drip.state.identifier.CustomMetricLabel.Standard (sb.toString());
 	}
 
 	@Override public org.drip.analytics.definition.Curve parallelShiftQuantificationMetric (

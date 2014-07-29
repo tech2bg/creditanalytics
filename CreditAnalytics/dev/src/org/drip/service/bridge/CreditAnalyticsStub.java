@@ -256,7 +256,8 @@ public class CreditAnalyticsStub {
 
 		if (null == mktParams) return null;
 
-		if (null == mktParams.fundingCurve (bond.couponCurrency()[0])) {
+		if (null == mktParams.fundingCurve (org.drip.state.identifier.FundingLabel.Standard
+			(bond.couponCurrency()[0]))) {
 			try {
 				if (!mktParams.setFundingCurve (MakeDC (new org.drip.analytics.date.JulianDate
 					(valParams.valueDate()))))

@@ -151,7 +151,7 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 
 	@Override public boolean isMergeState (
 		final double dblPredictorOrdinate,
-		final org.drip.state.representation.LatentStateLabel lsl)
+		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
 		try {
 			for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {

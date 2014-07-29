@@ -46,7 +46,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 	 * Floating Rate Index
 	 */
 
-	public org.drip.product.params.FloatingRateIndex _fri = null;
+	public org.drip.state.identifier.ForwardLabel _fri = null;
 
 	/**
 	 * Floating Day Count
@@ -85,7 +85,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		_strFloatDayCount = strFloatDayCount;
 		_dblCurrentCoupon = dblCurrentCoupon;
 
-		_fri = org.drip.product.params.FloatingRateIndex.Create (strRateIndex);
+		_fri = org.drip.state.identifier.ForwardLabel.Create (strRateIndex);
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate rate index");
 
-		_fri = new org.drip.product.params.FloatingRateIndex (astrField[1].getBytes());
+		_fri = new org.drip.state.identifier.ForwardLabel (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))

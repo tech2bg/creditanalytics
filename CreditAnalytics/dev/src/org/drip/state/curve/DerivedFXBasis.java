@@ -320,7 +320,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return null;
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
@@ -332,7 +332,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 			sb.append (_adblDate[i] + ":" + _adblFXBasis[i]);
 		}
 
-		return sb.toString();
+		return org.drip.state.identifier.CustomMetricLabel.Standard (sb.toString());
 	}
 
 	@Override public org.drip.analytics.definition.Curve parallelShiftQuantificationMetric (

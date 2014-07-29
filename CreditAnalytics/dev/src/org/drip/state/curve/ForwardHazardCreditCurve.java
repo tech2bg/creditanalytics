@@ -61,7 +61,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		if (null == adblHazardBumped || _adblHazardRate.length != adblHazardBumped.length) return null;
 
 		try {
-			return new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency, adblHazardBumped,
+			return new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency, adblHazardBumped,
 				_adblHazardDate, _adblRecoveryRate, _adblRecoveryDate, _dblSpecificDefaultDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -74,7 +74,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 	 * Create a credit curve from hazard rate and recovery rate term structures
 	 * 
 	 * @param dblStartDate Curve Epoch date
-	 * @param strName Credit Curve Name
+	 * @param label Credit Curve Label
 	 * @param strCurrency Currency
 	 * @param adblHazardRate Matched array of hazard rates
 	 * @param adblHazardDate Matched array of hazard dates
@@ -87,7 +87,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 
 	public ForwardHazardCreditCurve (
 		final double dblStartDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CreditLabel label,
 		final java.lang.String strCurrency,
 		final double adblHazardRate[],
 		final double adblHazardDate[],
@@ -96,7 +96,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final double dblSpecificDefaultDate)
 		throws java.lang.Exception
 	{
-		super (dblStartDate, strName, strCurrency);
+		super (dblStartDate, label, strCurrency);
 
 		if (null == adblHazardRate || 0 == adblHazardRate.length || null == adblHazardDate || 0 ==
 			adblHazardDate.length || adblHazardRate.length != adblHazardDate.length || null ==
@@ -135,7 +135,8 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (org.drip.analytics.date.JulianDate.Today().julian(), "DEFNAME", "CCYNAME");
+		super (org.drip.analytics.date.JulianDate.Today().julian(),
+			org.drip.state.identifier.CreditLabel.Standard ("DEFNAME"), "CCYNAME");
 
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception
@@ -164,8 +165,10 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			throw new java.lang.Exception
 				("ForwardHazardCreditCurve de-serializer: Cannot locate curve name");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (_strName = astrField[1]))
-			_strName = "";
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
+			_label = null;
+		else
+			_label = org.drip.state.identifier.CreditLabel.Standard (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
@@ -294,7 +297,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			adblHazard[i] = _adblHazardRate[i] + dblShift;
 
 		try {
-			return new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency, adblHazard,
+			return new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency, adblHazard,
 				_adblHazardDate, _adblRecoveryRate, _adblRecoveryDate, _dblSpecificDefaultDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -328,7 +331,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			org.drip.state.estimator.NonlinearCurveCalibrator();
 
 		try {
-			cc = new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency, _adblHazardRate,
+			cc = new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency, _adblHazardRate,
 				_adblHazardDate, _adblRecoveryRate, _adblRecoveryDate, _dblSpecificDefaultDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -376,7 +379,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			org.drip.state.estimator.NonlinearCurveCalibrator();
 
 		try {
-			cc = new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency, _adblHazardRate,
+			cc = new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency, _adblHazardRate,
 				_adblHazardDate, _adblRecoveryRate, _adblRecoveryDate, _dblSpecificDefaultDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -421,12 +424,12 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 
 		try {
 			if (bSingleNode)
-				cc = org.drip.state.creator.CreditCurveBuilder.FromHazardNode (_dblEpochDate, _strName,
-					_strCurrency, _adblHazardRate[0], _adblHazardDate[0],
+				cc = org.drip.state.creator.CreditCurveBuilder.FromHazardNode (_dblEpochDate,
+					_label.fullyQualifiedName(), _strCurrency, _adblHazardRate[0], _adblHazardDate[0],
 						!org.drip.quant.common.NumberUtil.IsValid (dblRecovery) ? _adblRecoveryRate[0] :
 							dblRecovery);
 			else
-				cc = new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency, _adblHazardRate,
+				cc = new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency, _adblHazardRate,
 					_adblHazardDate, _adblRecoveryRate, _adblRecoveryDate, _dblSpecificDefaultDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -484,7 +487,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 				return null;
 
 			try {
-				return new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency, _adblHazardRate,
+				return new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency, _adblHazardRate,
 					_adblHazardDate, adblRecoveryRateBumped, _adblRecoveryDate, _dblSpecificDefaultDate);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -502,7 +505,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 					return null;
 
 				try {
-					return new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency,
+					return new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency,
 						adblHazardBumped, _adblHazardDate, _adblRecoveryRate, _adblRecoveryDate,
 							_dblSpecificDefaultDate);
 				} catch (java.lang.Exception e) {
@@ -526,10 +529,10 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 				try {
 					if (cmmt._bSingleNodeCalib)
 						cc = org.drip.state.creator.CreditCurveBuilder.FromHazardNode (_dblEpochDate,
-							_strCurrency, _strName, _adblHazardRate[0], _adblHazardDate[0],
-								_adblRecoveryRate[0]);
+							_strCurrency, _label.fullyQualifiedName(), _adblHazardRate[0],
+								_adblHazardDate[0], _adblRecoveryRate[0]);
 					else
-						cc = new ForwardHazardCreditCurve (_dblEpochDate, _strName, _strCurrency,
+						cc = new ForwardHazardCreditCurve (_dblEpochDate, _label, _strCurrency,
 							_adblHazardRate, _adblHazardDate, _adblRecoveryRate, _adblRecoveryDate,
 								_dblSpecificDefaultDate);
 				} catch (java.lang.Exception e) {
@@ -601,7 +604,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		java.lang.String strNameSer = _strName;
+		java.lang.String strNameSer = _label.fullyQualifiedName();
 
 		if (null == strNameSer || strNameSer.isEmpty())
 			strNameSer = org.drip.service.stream.Serializer.NULL_SER_STRING;
@@ -658,8 +661,9 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			adblRecoveryRate[i] = 0.40;
 		}
 
-		ForwardHazardCreditCurve cc = new ForwardHazardCreditCurve (dblStart, "XXS", "USD", adblHazardRate,
-			adblHazardDate, adblRecoveryRate, adblRecoveryDate, java.lang.Double.NaN);
+		ForwardHazardCreditCurve cc = new ForwardHazardCreditCurve (dblStart,
+			org.drip.state.identifier.CreditLabel.Standard ("XXS"), "USD", adblHazardRate, adblHazardDate,
+				adblRecoveryRate, adblRecoveryDate, java.lang.Double.NaN);
 
 		byte[] abCC = cc.serialize();
 

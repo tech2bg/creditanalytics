@@ -44,7 +44,7 @@ package org.drip.state.representation;
 public class LatentStateMergeSubStretch {
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
-	private org.drip.state.representation.LatentStateLabel _lsl = null;
+	private org.drip.state.identifier.LatentStateLabel _lsl = null;
 
 	/**
 	 * LatentStateMergeSubStretch constructor
@@ -59,7 +59,7 @@ public class LatentStateMergeSubStretch {
 	public LatentStateMergeSubStretch (
 		final double dblStartDate,
 		final double dblEndDate,
-		final org.drip.state.representation.LatentStateLabel lsl)
+		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
@@ -130,7 +130,7 @@ public class LatentStateMergeSubStretch {
 	 * @return The Latent State Label
 	 */
 
-	public org.drip.state.representation.LatentStateLabel label()
+	public org.drip.state.identifier.LatentStateLabel label()
 	{
 		return _lsl;
 	}

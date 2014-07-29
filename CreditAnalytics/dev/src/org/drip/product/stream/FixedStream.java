@@ -296,23 +296,24 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (_dblCoupon);
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		if (null == _fxmtm) return null;
 
 		org.drip.product.params.CurrencyPair cp = _fxmtm.currencyPair();
 
-		return null == cp ? null : new java.lang.String[] {cp.code()};
+		return null == cp ? null : new org.drip.state.identifier.FXLabel[]
+			{org.drip.state.identifier.FXLabel.Standard (cp.code())};
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -371,9 +372,10 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == csqs) return null;
 
-		java.lang.String strCurrency = couponCurrency()[0];
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(couponCurrency()[0]);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (strCurrency);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 
 		if (null == dcFunding) return null;
 
@@ -388,10 +390,12 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		double dblAdjustedNotional = _dblNotional;
 		double dblCashPayDF = java.lang.Double.NaN;
 		double dblValueNotional = java.lang.Double.NaN;
+		org.drip.state.identifier.FXLabel fxLabel = null;
+		org.drip.quant.function1D.AbstractUnivariate auFX = null;
 
-		org.drip.product.params.CurrencyPair cp = null == _fxmtm ? null : _fxmtm.currencyPair();
+		org.drip.state.identifier.FXLabel[] aFXLabel = fxLabel();
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (cp);
+		if (null != aFXLabel && 0 != aFXLabel.length) auFX = csqs.fxCurve (fxLabel = aFXLabel[0]);
 
 		try {
 			dblAdjustedNotional *= (null != auFX && null != _fxmtm && !_fxmtm.mtmMode() ? auFX.evaluate
@@ -424,8 +428,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 				if (null != _fxmtm && _fxmtm.mtmMode())
 					dblPeriodQuantoAdjustment *= java.lang.Math.exp
 						(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-							(csqs.fundingCurveVolSurface (strCurrency), csqs.fxCurveVolSurface (cp),
-								csqs.fundingFXCorrSurface (strCurrency, cp), dblValueDate,
+							(csqs.fundingCurveVolSurface (fundingLabel), csqs.fxCurveVolSurface (fxLabel),
+								csqs.fundingFXCorrSurface (fundingLabel, fxLabel), dblValueDate,
 									dblPeriodPayDate));
 
 				dblPeriodUnadjustedDirtyDV01 = 0.0001 * period.couponDCF() * dcFunding.df (dblPeriodPayDate)
@@ -646,7 +650,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -702,7 +707,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			== csqs)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 

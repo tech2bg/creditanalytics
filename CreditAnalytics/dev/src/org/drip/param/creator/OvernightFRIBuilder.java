@@ -37,87 +37,87 @@ package org.drip.param.creator;
 
 public class OvernightFRIBuilder {
 	private static final
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.FloatingRateIndex>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
 			_mapOvernightFRI = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.FloatingRateIndex>();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
 
 	private static final
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.FloatingRateIndex>
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
 			_mapJurisdictionFRI = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.product.params.FloatingRateIndex>();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
 
 	static {
-		org.drip.product.params.FloatingRateIndex friCAD = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friCAD = org.drip.state.identifier.ForwardLabel.Create
 			("CAD-OIS-ON");
 
 		_mapOvernightFRI.put ("CAD-OIS-ON", friCAD);
 
 		_mapJurisdictionFRI.put ("CAD", friCAD);
 
-		org.drip.product.params.FloatingRateIndex friCHF = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friCHF = org.drip.state.identifier.ForwardLabel.Create
 			("CHF-OIS-ON");
 
 		_mapOvernightFRI.put ("CHF-OIS-ON", friCHF);
 
 		_mapJurisdictionFRI.put ("CHF", friCHF);
 
-		org.drip.product.params.FloatingRateIndex friCZK = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friCZK = org.drip.state.identifier.ForwardLabel.Create
 			("CZK-OIS-ON");
 
 		_mapOvernightFRI.put ("CZK-OIS-ON", friCZK);
 
 		_mapJurisdictionFRI.put ("CZK", friCZK);
 
-		org.drip.product.params.FloatingRateIndex friDKK = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friDKK = org.drip.state.identifier.ForwardLabel.Create
 			("DKK-OIS-ON");
 
 		_mapOvernightFRI.put ("DKK-OIS-ON", friDKK);
 
 		_mapJurisdictionFRI.put ("DKK", friDKK);
 
-		org.drip.product.params.FloatingRateIndex friEUR = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friEUR = org.drip.state.identifier.ForwardLabel.Create
 			("EUR-EONIA-ON");
 
 		_mapOvernightFRI.put ("EUR-EONIA-ON", friEUR);
 
 		_mapJurisdictionFRI.put ("EUR", friEUR);
 
-		org.drip.product.params.FloatingRateIndex friGBP = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friGBP = org.drip.state.identifier.ForwardLabel.Create
 			("GBP-SONIA-ON");
 
 		_mapOvernightFRI.put ("GBP-SONIA-ON", friGBP);
 
 		_mapJurisdictionFRI.put ("GBP", friGBP);
 
-		org.drip.product.params.FloatingRateIndex friJPY = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friJPY = org.drip.state.identifier.ForwardLabel.Create
 			("JPY-OIS-ON");
 
 		_mapOvernightFRI.put ("JPY-OIS-ON", friJPY);
 
 		_mapJurisdictionFRI.put ("JPY", friJPY);
 
-		org.drip.product.params.FloatingRateIndex friNOK = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friNOK = org.drip.state.identifier.ForwardLabel.Create
 			("NOK-OIS-ON");
 
 		_mapOvernightFRI.put ("NOK-OIS-ON", friNOK);
 
 		_mapJurisdictionFRI.put ("NOK", friNOK);
 
-		org.drip.product.params.FloatingRateIndex friPLN = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friPLN = org.drip.state.identifier.ForwardLabel.Create
 			("PLN-OIS-ON");
 
 		_mapOvernightFRI.put ("PLN-OIS-ON", friPLN);
 
 		_mapJurisdictionFRI.put ("PLN", friPLN);
 
-		org.drip.product.params.FloatingRateIndex friSEK = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friSEK = org.drip.state.identifier.ForwardLabel.Create
 			("SEK-OIS-ON");
 
 		_mapOvernightFRI.put ("SEK-OIS-ON", friSEK);
 
 		_mapJurisdictionFRI.put ("SEK", friSEK);
 
-		org.drip.product.params.FloatingRateIndex friUSD = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel friUSD = org.drip.state.identifier.ForwardLabel.Create
 			("USD-OIS-ON");
 
 		_mapOvernightFRI.put ("USD-OIS-ON", friUSD);
@@ -136,7 +136,7 @@ public class OvernightFRIBuilder {
 	public static final boolean Add (
 		final java.lang.String strFRIFullName)
 	{
-		org.drip.product.params.FloatingRateIndex fri = org.drip.product.params.FloatingRateIndex.Create
+		org.drip.state.identifier.ForwardLabel fri = org.drip.state.identifier.ForwardLabel.Create
 			(strFRIFullName);
 
 		if (null == fri) return false;
@@ -157,7 +157,7 @@ public class OvernightFRIBuilder {
 	 */
 
 	public static final boolean Add (
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
 		if (null == fri) return false;
 
@@ -177,7 +177,7 @@ public class OvernightFRIBuilder {
 	 */
 
 	public static final boolean IsOvernight (
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
 		if (null == fri) return false;
 
@@ -208,7 +208,7 @@ public class OvernightFRIBuilder {
 	 * @return The Jurisdiction FRI
 	 */
 
-	public static final org.drip.product.params.FloatingRateIndex JurisdictionFRI (
+	public static final org.drip.state.identifier.ForwardLabel JurisdictionFRI (
 		final java.lang.String strJurisdiction)
 	{
 		if (null == strJurisdiction || strJurisdiction.isEmpty()) return null;

@@ -13,16 +13,15 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.product.stream.FixedStream;
-import org.drip.product.stream.FloatingStream;
+import org.drip.product.stream.*;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -267,7 +266,7 @@ public class FedFundOvernightCompounding {
 		final JulianDate dtStart,
 		final JulianDate dtEnd,
 		final JulianDate dtValue,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblFlatFixing,
 		final double dblNotional)
 		throws Exception
@@ -328,7 +327,9 @@ public class FedFundOvernightCompounding {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
-		FloatingRateIndex fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
+		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
+
+		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 			dtCustomOISStart.julian(),
@@ -424,11 +425,11 @@ public class FedFundOvernightCompounding {
 		double dblUSDFundingVol = 0.3;
 		double dblUSDFundingUSDOISCorrelation = 0.3;
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
+		mktParams.setFundingCurveVolSurface (fundingLabel, new FlatUnivariate (dblUSDFundingVol));
 
 		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
 
-		mktParams.setForwardFundingCorrSurface (fri, "USD", new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
+		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 
 		System.out.println ("\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
 			period.end(),

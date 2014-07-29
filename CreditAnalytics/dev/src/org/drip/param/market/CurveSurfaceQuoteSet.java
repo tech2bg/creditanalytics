@@ -300,8 +300,8 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 						_mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
 							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> map2D = _mmFixings.get
-						(astrKeySet[0]);
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> map2D =
+						_mmFixings.get (astrKeySet[0]);
 
 					if (null == map2D)
 						map2D = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
@@ -462,27 +462,27 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieve the  Credit Curve
+	 * Retrieve the Credit Latent State from the Label
 	 * 
-	 * @param strCreditCurveName Name of the Credit Curve
+	 * @param creditLabel The Credit Latent State Label
 	 * 
-	 * @return  Credit Curve
+	 * @return The Credit Latent State from the Label
 	 */
 
 	public org.drip.analytics.definition.CreditCurve creditCurve (
-		final java.lang.String strCreditCurveName)
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || !_mapCreditCurve.containsKey
-			(strCreditCurveName))
-			return null;
+		if (null == creditLabel) return null;
 
-		return _mapCreditCurve.get (strCreditCurveName);
+		java.lang.String strCreditLabel = creditLabel.fullyQualifiedName();
+
+		return !_mapCreditCurve.containsKey (strCreditLabel) ? null : _mapCreditCurve.get (strCreditLabel);
 	}
 
 	/**
-	 * (Re)-set the  Credit Curve
+	 * (Re)-set the Credit Curve
 	 * 
-	 * @param cc  Credit Curve
+	 * @param cc The Credit Curve
 	 * 
 	 * @return TRUE => Successfully set
 	 */
@@ -492,28 +492,28 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	{
 		if (null == cc) return false;
 
-		_mapCreditCurve.put (cc.name(), cc);
+		_mapCreditCurve.put (cc.label().fullyQualifiedName(), cc);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Forward Curve
+	 * Retrieve the Forward Curve corresponding to the Label
 	 * 
-	 * @param fri Floating Rate Index
+	 * @param forwardLabel Forward Latent State Label
 	 * 
-	 * @return  Forward Curve
+	 * @return Forward Curve
 	 */
 
 	public org.drip.analytics.rates.ForwardCurve forwardCurve (
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
-		if (null == fri) return null;
+		if (null == forwardLabel) return null;
 
-		java.lang.String strFullyQualifiedName = fri.fullyQualifiedName();
+		java.lang.String strForwardLabel = forwardLabel.fullyQualifiedName();
 
-		return _mapForwardCurve.containsKey (strFullyQualifiedName) ? _mapForwardCurve.get
-			(strFullyQualifiedName) : null;
+		return _mapForwardCurve.containsKey (strForwardLabel) ? _mapForwardCurve.get (strForwardLabel) :
+			null;
 	}
 
 	/**
@@ -529,24 +529,28 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	{
 		if (null == fc) return false;
 
-		_mapForwardCurve.put (fc.index().fullyQualifiedName(), fc);
+		_mapForwardCurve.put (fc.label().fullyQualifiedName(), fc);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Funding Curve Corresponding to the specified Currency
+	 * Retrieve the Funding Latent State Corresponding to the Label
 	 * 
-	 * @param strCurrency The Currency
+	 * @param fundingLabel Funding Latent State Label
 	 * 
-	 * @return Funding Curve
+	 * @return The Funding Latent State
 	 */
 
 	public org.drip.analytics.rates.DiscountCurve fundingCurve (
-		final java.lang.String strCurrency)
+		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
-		return null == strCurrency || strCurrency.isEmpty() || !_mapFundingCurve.containsKey (strCurrency) ?
-			null : _mapFundingCurve.get (strCurrency);
+		if (null == fundingLabel) return null;
+
+		java.lang.String strFundingLabel = fundingLabel.fullyQualifiedName();
+
+		return _mapFundingCurve.containsKey (strFundingLabel) ? _mapFundingCurve.get (strFundingLabel) :
+			null;
 	}
 
 	/**
@@ -562,48 +566,49 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	{
 		if (null == dc) return false;
 
-		_mapFundingCurve.put (dc.currency(), dc);
+		_mapFundingCurve.put (dc.label().fullyQualifiedName(), dc);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the FX Curve for the specified currency Pair
+	 * Retrieve the FX Curve for the specified FX Latent State Label
 	 * 
-	 * @param cp The Currency Pair
+	 * @param fxLabel The FX Latent State Label
 	 * 
 	 * @return FX Curve
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fxCurve (
-		final org.drip.product.params.CurrencyPair cp)
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
-		if (null == cp) return null;
+		if (null == fxLabel) return null;
 
-		java.lang.String strFXCode = cp.code();
+		java.lang.String strCode = fxLabel.fullyQualifiedName();
 
-		return _mapFXCurve.containsKey (strFXCode) ? _mapFXCurve.get (strFXCode) : null;
+		return _mapFXCurve.containsKey (strCode) ? _mapFXCurve.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the FX Curve for the specified Currency Pair
+	 * (Re)-set the FX Curve for the specified FX Latent State Label
 	 * 
-	 * @param cp The Currency Pair
+	 * @param fxLabel The FX Latent State Label
 	 * @param auFX The FX Curve
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFXCurve (
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auFX)
 	{
-		if (null == cp || null == auFX) return false;
+		if (null == fxLabel || null == auFX) return false;
 
-		_mapFXCurve.put (cp.code(), auFX);
+		_mapFXCurve.put (fxLabel.fullyQualifiedName(), auFX);
 
 		try {
-			_mapFXCurve.put (cp.inverseCode(), new org.drip.quant.function1D.UnivariateReciprocal (auFX));
+			_mapFXCurve.put (fxLabel.inverse().fullyQualifiedName(), new
+				org.drip.quant.function1D.UnivariateReciprocal (auFX));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -614,16 +619,21 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieve the Government Curve for the specified Currency
+	 * Retrieve the Government Curve for the specified Label
 	 * 
-	 * @return Government Curve for the specified Currency
+	 * @param lslGovvie Govvie Curve Latent State Label
+	 * 
+	 * @return Government Curve for the specified Label
 	 */
 
 	public org.drip.analytics.rates.DiscountCurve govvieCurve (
-		final java.lang.String strCurrency)
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		return null == strCurrency || strCurrency.isEmpty() || !_mapGovvieCurve.containsKey (strCurrency) ?
-			null : _mapGovvieCurve.get (strCurrency);
+		if (null == govvieLabel) return null;
+
+		java.lang.String strGovvieLabel = govvieLabel.fullyQualifiedName();
+
+		return !_mapGovvieCurve.containsKey (strGovvieLabel) ? null : _mapGovvieCurve.get (strGovvieLabel);
 	}
 
 	/**
@@ -639,7 +649,7 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	{
 		if (null == dcGovvie) return false;
 
-		_mapGovvieCurve.put (dcGovvie.currency(), dcGovvie);
+		_mapGovvieCurve.put (dcGovvie.label().fullyQualifiedName(), dcGovvie);
 
 		return true;
 	}
@@ -683,69 +693,74 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieve the Volatility Surface for the specified Credit Curve
+	 * Retrieve the Volatility Surface for the Credit Latent State
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
+	 * @param creditLabel The Credit Curve Latent State Label
 	 * 
-	 * @return The Volatility Surface for the specified Credit Curve
+	 * @return The Volatility Surface for the Credit Latent State
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditCurveVolSurface (
-		final java.lang.String strCreditCurveName)
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
-		return null == strCreditCurveName || strCreditCurveName.isEmpty() ||
-			!_mapCreditVolatilitySurface.containsKey (strCreditCurveName) ? null :
-				_mapCreditVolatilitySurface.get (strCreditCurveName);
+		if (null == creditLabel) return null;
+
+		java.lang.String strCreditLabel = creditLabel.fullyQualifiedName();
+
+		return  !_mapCreditVolatilitySurface.containsKey (strCreditLabel) ? null :
+			_mapCreditVolatilitySurface.get (strCreditLabel);
 	}
 
 	/**
-	 * (Re)-set the Volatility Surface for the specified Credit Curve
+	 * (Re)-set the Volatility Surface for the Credit Latent State
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
+	 * @param creditLabel The Credit Curve Latent State Label
 	 * @param auVolatility The Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCreditCurveVolSurface (
-		final java.lang.String strCreditCurveName,
+		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == auVolatility) return false;
+		if (null == creditLabel || null == auVolatility) return false;
 
-		_mapCreditVolatilitySurface.put (strCreditCurveName, auVolatility);
+		_mapCreditVolatilitySurface.put (creditLabel.fullyQualifiedName(), auVolatility);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Custom Metric Volatility Surface for the given Forward Date
+	 * Retrieve the Volatility Surface for the Custom Metric Latent State for the Forward Date
 	 * 
-	 * @param strCustomMetric The Custom Metric Name
+	 * @param customMetricLabel The Custom Metric Latent State Label
 	 * @param dtForward The Forward Date 
 	 * 
-	 * @return The Latent State Volatility Surface
+	 * @return The Volatility Surface for the Custom Metric Latent State for the Forward Date
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate customMetricVolSurface (
-		final java.lang.String strCustomMetric,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.analytics.date.JulianDate dtForward)
 	{
-		if (null == strCustomMetric || !_mapCustomMetricVolatilitySurface.containsKey (strCustomMetric))
-			return null;
+		if (null == customMetricLabel) return null;
+
+		java.lang.String strCustomMetricLabel = customMetricLabel.fullyQualifiedName();
+
+		if (!_mapCustomMetricVolatilitySurface.containsKey (strCustomMetricLabel)) return null;
 
 		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
-			mapForwardVolatility = _mapCustomMetricVolatilitySurface.get (strCustomMetric);
+			mapForwardVolatility = _mapCustomMetricVolatilitySurface.get (strCustomMetricLabel);
 
-		if (null == mapForwardVolatility || !mapForwardVolatility.containsKey (dtForward)) return null;
-
-		return mapForwardVolatility.get (dtForward);
+		return null == mapForwardVolatility || !mapForwardVolatility.containsKey (dtForward) ? null :
+			mapForwardVolatility.get (dtForward);
 	}
 
 	/**
 	 * (Re)-set the Custom Metric Volatility Surface for the given Forward Date
 	 * 
-	 * @param strCustomMetric The Custom Metric Name
+	 * @param customMetricLabel The Custom Metric Latent State Label
 	 * @param dtForward The Forward Date 
 	 * @param auVolatility The Custom Metric Volatility Surface
 	 * 
@@ -753,16 +768,16 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	 */
 
 	public boolean setCustomMetricVolSurface (
-		final java.lang.String strCustomMetric,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.analytics.date.JulianDate dtForward,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == dtForward || null ==
-			auVolatility)
-			return false;
+		if (null == customMetricLabel || null == dtForward || null == auVolatility) return false;
+
+		java.lang.String strCustomMetricLabel = customMetricLabel.fullyQualifiedName();
 
 		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
-			mapForwardVolatility = _mapCustomMetricVolatilitySurface.get (strCustomMetric);
+			mapForwardVolatility = _mapCustomMetricVolatilitySurface.get (strCustomMetricLabel);
 
 		if (null == mapForwardVolatility) {
 			mapForwardVolatility = new java.util.HashMap<org.drip.analytics.date.JulianDate,
@@ -770,7 +785,7 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 			mapForwardVolatility.put (dtForward, auVolatility);
 
-			_mapCustomMetricVolatilitySurface.put (strCustomMetric, mapForwardVolatility);
+			_mapCustomMetricVolatilitySurface.put (strCustomMetricLabel, mapForwardVolatility);
 		} else
 			mapForwardVolatility.put (dtForward, auVolatility);
 
@@ -778,153 +793,157 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieve the Volatility Surface for the specified Forward Curve
+	 * Retrieve the Volatility Surface for the specified Forward Latent State Label
 	 * 
-	 * @param fri The Forward Rate Index identifying the Forward Curve
+	 * @param forwardLabel The Forward Latent State Label
 	 * 
 	 * @return The Volatility Surface for the Forward Curve
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate forwardCurveVolSurface (
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
-		if (null == fri) return null;
+		if (null == forwardLabel) return null;
 
-		java.lang.String strFRI = fri.fullyQualifiedName();
+		java.lang.String strForwardLabel = forwardLabel.fullyQualifiedName();
 
-		return _mapForwardVolatilitySurface.containsKey (strFRI) ? _mapForwardVolatilitySurface.get (strFRI)
-			: null;
+		return _mapForwardVolatilitySurface.containsKey (strForwardLabel) ? _mapForwardVolatilitySurface.get
+			(strForwardLabel) : null;
 	}
 
 	/**
-	 * (Re)-set the Volatility Surface for the specified Forward Curve
+	 * (Re)-set the Volatility Surface for the specified Forward Latent State Label
 	 * 
-	 * @param fri The Forward Rate Index identifying the Forward Curve
+	 * @param forwardLabel The Forward Latent State Label
 	 * @param auVolatility The Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setForwardCurveVolSurface (
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == fri || null == auVolatility) return false;
+		if (null == forwardLabel || null == auVolatility) return false;
 
-		_mapForwardVolatilitySurface.put (fri.fullyQualifiedName(), auVolatility);
+		_mapForwardVolatilitySurface.put (forwardLabel.fullyQualifiedName(), auVolatility);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Volatility Surface for the specified Funding Curve
+	 * Retrieve the Volatility Surface for the Funding Latent State Label
 	 * 
-	 * @param strCurrency The Funding Currency
+	 * @param fundingLabel The Funding Latent State Label
 	 * 
 	 * @return The Volatility Surface for the Funding Currency
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fundingCurveVolSurface (
-		final java.lang.String strCurrency)
+		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
-		if (null == strCurrency || strCurrency.isEmpty() || !_mapFundingVolatilitySurface.containsKey
-			(strCurrency))
-			return null;
+		if (null == fundingLabel) return null;
 
-		return _mapFundingVolatilitySurface.get (strCurrency);
+		java.lang.String strFundingLabel = fundingLabel.fullyQualifiedName();
+
+		return _mapFundingVolatilitySurface.containsKey (strFundingLabel) ? _mapFundingVolatilitySurface.get
+			(strFundingLabel) : null;
 	}
 
 	/**
-	 * (Re)-set the Volatility Surface for the specified Funding Curve
+	 * (Re)-set the Volatility Surface for the Funding Latent State Label
 	 * 
-	 * @param strCurrency The Funding Currency
+	 * @param fundingLabel The Funding Latent State Label
 	 * @param auVolatility The Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFundingCurveVolSurface (
-		final java.lang.String strCurrency,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == strCurrency || strCurrency.isEmpty() || null == auVolatility) return false;
+		if (null == fundingLabel || null == auVolatility) return false;
 
-		_mapFundingVolatilitySurface.put (strCurrency, auVolatility);
+		_mapFundingVolatilitySurface.put (fundingLabel.fullyQualifiedName(), auVolatility);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the FX Volatility Surface for the specified Currency Pair
+	 * Retrieve the Volatility Surface for the specified FX Latent State Label
 	 * 
-	 * @param cp The Currency Pair
+	 * @param fxLabel The FX Latent State Label
 	 * 
-	 * @return The FX Volatility Surface for the Currency Pair
+	 * @return The Volatility Surface for the FX Latent State Label
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fxCurveVolSurface (
-		final org.drip.product.params.CurrencyPair cp)
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
-		if (null == cp) return null;
+		if (null == fxLabel) return null;
 
-		java.lang.String strCode = cp.code();
+		java.lang.String strCode = fxLabel.fullyQualifiedName();
 
 		return !_mapFXVolatilitySurface.containsKey (strCode) ? null : _mapFXVolatilitySurface.get
 			(strCode);
 	}
 
 	/**
-	 * (Re)-set the FX Volatility Surface for the specified Currency Pair
+	 * (Re)-set the Volatility Surface for the specified FX Latent State
 	 * 
-	 * @param cp The Currency Pair
+	 * @param fxLabel The FX Latent State Label
 	 * @param auVolatility The Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFXCurveVolSurface (
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == cp || null == auVolatility) return false;
+		if (null == fxLabel || null == auVolatility) return false;
 
-		_mapFXVolatilitySurface.put (cp.code(), auVolatility);
+		_mapFXVolatilitySurface.put (fxLabel.fullyQualifiedName(), auVolatility);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Volatility Surface for the specified Govvie Curve
+	 * Retrieve the Volatility Surface for the specified Govvie Latent State
 	 * 
-	 * @param strCurrency The Govvie Currency
+	 * @param govvieLabel The Govvie Latent State Label
 	 * 
-	 * @return The Volatility Surface for the Govvie Curve
+	 * @return The Volatility Surface for the Govvie Latent State
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate govvieCurveVolSurface (
-		final java.lang.String strCurrency)
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		return null == strCurrency || strCurrency.isEmpty() ||
-			!_mapGovvieVolatilitySurface.containsKey (strCurrency) ? null : _mapGovvieVolatilitySurface.get
-				(strCurrency);
+		if (null == govvieLabel) return null;
+
+		java.lang.String strGovvieLabel = govvieLabel.fullyQualifiedName();
+
+		return !_mapGovvieVolatilitySurface.containsKey (strGovvieLabel) ? null :
+			_mapGovvieVolatilitySurface.get (strGovvieLabel);
 	}
 
 	/**
-	 * (Re)-set the Volatility Surface for the specified Govvie Curve
+	 * (Re)-set the Volatility Surface for the Govvie Latent State
 	 * 
-	 * @param strCurrency The Govvie Currency
+	 * @param govvieLabel The Govvie Latent State Label
 	 * @param auVolatility The Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setGovvieCurveVolSurface (
-		final java.lang.String strCurrency,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == strCurrency || strCurrency.isEmpty() || null == auVolatility) return false;
+		if (null == govvieLabel || null == auVolatility) return false;
 
-		_mapGovvieVolatilitySurface.put (strCurrency, auVolatility);
+		_mapGovvieVolatilitySurface.put (govvieLabel.fullyQualifiedName(), auVolatility);
 
 		return true;
 	}
@@ -979,334 +998,357 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Credit Pair
+	 * Retrieve the Correlation Surface between the Pair of Credit Latent States
 	 * 
-	 * @param strCreditCurveName1 Credit Curve Name #1
-	 * @param strCreditCurveName2 Credit Curve Name #2
+	 * @param creditLabel1 The Credit Curve Latent State Label #1
+	 * @param creditLabel2 The Credit Curve Latent State Label #2
 	 * 
-	 * @return The Correlation Surface for the specified Credit Pair
+	 * @return The Correlation Surface between the Pair of Credit Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditCreditCorrSurface (
-		final java.lang.String strCreditCurveName1,
-		final java.lang.String strCreditCurveName2)
+		final org.drip.state.identifier.CreditLabel creditLabel1,
+		final org.drip.state.identifier.CreditLabel creditLabel2)
 	{
-		if (null == strCreditCurveName1 || strCreditCurveName1.isEmpty() || null == strCreditCurveName2 ||
-			strCreditCurveName2.isEmpty())
-			return null;
+		if (null == creditLabel1 || null == creditLabel2) return null;
 
-		java.lang.String strCode = strCreditCurveName1 + "@#" + strCreditCurveName2;
+		java.lang.String strCode12 = creditLabel1.fullyQualifiedName() + "@#" +
+			creditLabel2.fullyQualifiedName();
 
-		return !_mapCreditCreditCorrelationSurface.containsKey (strCode) ? null :
-			_mapCreditCreditCorrelationSurface.get (strCode);
+		if (_mapCreditCreditCorrelationSurface.containsKey (strCode12))
+			return _mapCreditCreditCorrelationSurface.get (strCode12);
+
+		java.lang.String strCode21 = creditLabel2.fullyQualifiedName() + "@#" +
+			creditLabel1.fullyQualifiedName();
+
+		return !_mapCreditCreditCorrelationSurface.containsKey (strCode21) ? null :
+			_mapCreditCreditCorrelationSurface.get (strCode21);
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Credit Pair
+	 * (Re)-set the Correlation Surface between the Pair of Credit Latent States
 	 * 
-	 * @param strCreditCurveName1 Credit Curve Name #1
-	 * @param strCreditCurveName2 Credit Curve Name #2
+	 * @param creditLabel1 The Credit Curve Latent State Label #1
+	 * @param creditLabel2 The Credit Curve Latent State Label #2
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCreditCreditCorrSurface (
-		final java.lang.String strCreditCurveName1,
-		final java.lang.String strCreditCurveName2,
+		final org.drip.state.identifier.CreditLabel creditLabel1,
+		final org.drip.state.identifier.CreditLabel creditLabel2,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCreditCurveName1 || strCreditCurveName1.isEmpty() || null == strCreditCurveName2 ||
-			strCreditCurveName2.isEmpty() || null == auCorrelation)
-			return false;
+		if (null == creditLabel1 || null == creditLabel2 || null == auCorrelation) return false;
 
-		_mapCreditCreditCorrelationSurface.put (strCreditCurveName1 + "@#" + strCreditCurveName2,
-			auCorrelation);
+		java.lang.String strCreditLabel1 = creditLabel1.fullyQualifiedName();
 
-		_mapCreditCreditCorrelationSurface.put (strCreditCurveName2 + "@#" + strCreditCurveName1,
-			auCorrelation);
+		java.lang.String strCreditLabel2 = creditLabel2.fullyQualifiedName();
+
+		_mapCreditCreditCorrelationSurface.put (strCreditLabel1 + "@#" + strCreditLabel2, auCorrelation);
+
+		_mapCreditCreditCorrelationSurface.put (strCreditLabel2 + "@#" + strCreditLabel1, auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Custom Metric Pair
+	 * Retrieve the Correlation Surface between the Custom Metric Latent State Pair
 	 * 
-	 * @param strCustomMetric1 Custom Metric #1
-	 * @param strCustomMetric2 Custom Metric #2
+	 * @param customMetricLabel1 The Custom Metric Latent State Label #1
+	 * @param customMetricLabel2 The Custom Metric Latent State Label #2
 	 * 
-	 * @return The Correlation Surface for the specified Custom Metric Pair
+	 * @return The Correlation Surface between the Custom Metric Latent State Pair
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate customMetricCustomMetricCorrSurface (
-		final java.lang.String strCustomMetric1,
-		final java.lang.String strCustomMetric2)
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel1,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel2)
 	{
-		if (null == strCustomMetric1 || strCustomMetric1.isEmpty() || null == strCustomMetric2 ||
-			strCustomMetric2.isEmpty())
-			return null;
+		if (null == customMetricLabel1 || null == customMetricLabel2) return null;
 
-		java.lang.String strCode = strCustomMetric1 + "@#" + strCustomMetric2;
+		java.lang.String strCode12 = customMetricLabel1.fullyQualifiedName() + "@#" +
+			customMetricLabel2.fullyQualifiedName();
 
-		if (!_mapCustomMetricCustomMetricCorrelationSurface.containsKey (strCode)) return null;
+		if (_mapCustomMetricCustomMetricCorrelationSurface.containsKey (strCode12))
+			return _mapCustomMetricCustomMetricCorrelationSurface.get (strCode12);
 
-		return _mapCustomMetricCustomMetricCorrelationSurface.get (strCode);
+		java.lang.String strCode21 = customMetricLabel2.fullyQualifiedName() + "@#" +
+			customMetricLabel1.fullyQualifiedName();
+
+		return _mapCustomMetricCustomMetricCorrelationSurface.containsKey (strCode21) ?
+			_mapCustomMetricCustomMetricCorrelationSurface.get (strCode21) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Custom Metric Pair
+	 * (Re)-set the Correlation Surface between the Custom Metric Latent State Pair
 	 * 
-	 * @param strCustomMetric1 Custom Metric #1
-	 * @param strCustomMetric2 Custom Metric #2
+	 * @param customMetricLabel1 The Custom Metric Latent State Label #1
+	 * @param customMetricLabel2 The Custom Metric Latent State Label #2
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCustomMetricCustomMetricCorrSurface (
-		final java.lang.String strCustomMetric1,
-		final java.lang.String strCustomMetric2,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel1,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel2,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCustomMetric1 || strCustomMetric1.isEmpty() || null == strCustomMetric2 ||
-			strCustomMetric2.isEmpty() || null == auCorrelation)
+		if (null == customMetricLabel1 || null == customMetricLabel2 || customMetricLabel1.match
+			(customMetricLabel2) || null == auCorrelation)
 			return false;
 
-		_mapCustomMetricCustomMetricCorrelationSurface.put (strCustomMetric1 + "@#" + strCustomMetric2,
-			auCorrelation);
+		_mapCustomMetricCustomMetricCorrelationSurface.put (customMetricLabel1.fullyQualifiedName() + "@#" +
+			customMetricLabel2.fullyQualifiedName(), auCorrelation);
 
-		_mapCustomMetricCustomMetricCorrelationSurface.put (strCustomMetric2 + "@#" + strCustomMetric1,
-			auCorrelation);
+		_mapCustomMetricCustomMetricCorrelationSurface.put (customMetricLabel2.fullyQualifiedName() + "@#" +
+			customMetricLabel1.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified FRI Pair
+	 * Retrieve the Correlation Surface between the Pair of Forward Latent States
 	 * 
-	 * @param fri1 FRI #1
-	 * @param fri2 FRI #2
+	 * @param forwardLabel1 Forward Curve Latent State Label #1
+	 * @param forwardLabel2 Forward Curve Latent State Label #2
 	 * 
-	 * @return The Correlation Surface for the specified FRI Pair
+	 * @return The Correlation Surface between the Pair of Forward Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate forwardForwardCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri1,
-		final org.drip.product.params.FloatingRateIndex fri2)
+		final org.drip.state.identifier.ForwardLabel forwardLabel1,
+		final org.drip.state.identifier.ForwardLabel forwardLabel2)
 	{
-		if (null == fri1 || null == fri2) return null;
+		if (null == forwardLabel1 || null == forwardLabel2) return null;
 
-		java.lang.String strCode = fri1.fullyQualifiedName() + "@#" + fri2.fullyQualifiedName();
+		java.lang.String strCode = forwardLabel1.fullyQualifiedName() + "@#" +
+			forwardLabel2.fullyQualifiedName();
 
-		if (!_mapForwardForwardCorrelationSurface.containsKey (strCode)) return null;
-
-		return _mapForwardForwardCorrelationSurface.get (strCode);
+		return _mapForwardForwardCorrelationSurface.containsKey (strCode) ?
+			_mapForwardForwardCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified FRI Pair
+	 * (Re)-set the Correlation Surface between the Pair of Forward Latent States
 	 * 
-	 * @param fri1 FRI #1
-	 * @param fri2 FRI #2
+	 * @param forwardLabel1 Forward Curve Latent State Label #1
+	 * @param forwardLabel2 Forward Curve Latent State Label #2
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setForwardForwardCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri1,
-		final org.drip.product.params.FloatingRateIndex fri2,
+		final org.drip.state.identifier.ForwardLabel forwardLabel1,
+		final org.drip.state.identifier.ForwardLabel forwardLabel2,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == fri1 || null == fri2 || null == auCorrelation) return false;
+		if (null == forwardLabel1 || null == forwardLabel2 || forwardLabel1.match (forwardLabel2) || null ==
+			auCorrelation)
+			return false;
 
-		java.lang.String strFRI1 = fri1.fullyQualifiedName();
+		java.lang.String strForwardLabel1 = forwardLabel1.fullyQualifiedName();
 
-		java.lang.String strFRI2 = fri2.fullyQualifiedName();
+		java.lang.String strForwardLabel2 = forwardLabel2.fullyQualifiedName();
 
-		_mapForwardForwardCorrelationSurface.put (strFRI1 + "@#" + strFRI2, auCorrelation);
+		_mapForwardForwardCorrelationSurface.put (strForwardLabel1 + "@#" + strForwardLabel2, auCorrelation);
 
-		_mapForwardForwardCorrelationSurface.put (strFRI2 + "@#" + strFRI1, auCorrelation);
+		_mapForwardForwardCorrelationSurface.put (strForwardLabel2 + "@#" + strForwardLabel1, auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Funding Currency Pair
+	 * Retrieve the Correlation Surface between the Pair of Funding Latent States
 	 * 
-	 * @param strCurrency1 Funding Currency #1
-	 * @param strCurrency2 Funding Currency #2
+	 * @param fundingLabel1 Funding Latent State Label #1
+	 * @param fundingLabel2 Funding Latent State Label #2
 	 * 
-	 * @return The Correlation Surface for the specified Funding Currency Pair
+	 * @return The Correlation Surface between the Pair of Funding Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fundingFundingCorrSurface (
-		final java.lang.String strCurrency1,
-		final java.lang.String strCurrency2)
+		final org.drip.state.identifier.FundingLabel fundingLabel1,
+		final org.drip.state.identifier.FundingLabel fundingLabel2)
 	{
-		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty())
+		if (null == fundingLabel1 || null == fundingLabel2 || fundingLabel1.match (fundingLabel2))
 			return null;
 
-		java.lang.String strCode = strCurrency1 + "@#" + strCurrency2;
+		java.lang.String strCode = fundingLabel1.fullyQualifiedName() + "@#" +
+			fundingLabel2.fullyQualifiedName();
 
-		if (!_mapFundingFundingCorrelationSurface.containsKey (strCode)) return null;
-
-		return _mapFundingFundingCorrelationSurface.get (strCode);
+		return _mapFundingFundingCorrelationSurface.containsKey (strCode) ?
+			_mapFundingFundingCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Funding Currency Pair
+	 * (Re)-set the Correlation Surface between the Pair of Funding Latent States
 	 * 
-	 * @param strCurrency1 Funding Currency #1
-	 * @param strCurrency2 Funding Currency #2
+	 * @param fundingLabel1 Funding Latent State Label #1
+	 * @param fundingLabel2 Funding Latent State Label #2
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFundingFundingCorrSurface (
-		final java.lang.String strCurrency1,
-		final java.lang.String strCurrency2,
+		final org.drip.state.identifier.FundingLabel fundingLabel1,
+		final org.drip.state.identifier.FundingLabel fundingLabel2,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty()
-			|| null == auCorrelation)
+		if (null == fundingLabel1 || null == fundingLabel2 || fundingLabel1.match (fundingLabel2) || null ==
+			auCorrelation)
 			return false;
 
-		_mapFundingFundingCorrelationSurface.put (strCurrency1 + "@#" + strCurrency2, auCorrelation);
+		java.lang.String strFundingLabel1 = fundingLabel1.fullyQualifiedName();
 
-		_mapFundingFundingCorrelationSurface.put (strCurrency2 + "@#" + strCurrency1, auCorrelation);
+		java.lang.String strFundingLabel2 = fundingLabel2.fullyQualifiedName();
+
+		_mapFundingFundingCorrelationSurface.put (strFundingLabel1 + "@#" + strFundingLabel2, auCorrelation);
+
+		_mapFundingFundingCorrelationSurface.put (strFundingLabel2 + "@#" + strFundingLabel1, auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the FX Correlation Surface for the specified Currency Pair Set
+	 * Retrieve the Correlation Surface for the specified FX Latent State Label Set
 	 * 
-	 * @param cp1 Currency Pair #1
-	 * @param cp2 Currency Pair #2
+	 * @param fxLabel1 The FX Latent State Label #1
+	 * @param fxLabel2 The FX Latent State Label #2
 	 * 
-	 * @return The FX Correlation Surface for the specified Currency Pair Set
+	 * @return The Correlation Surface for the specified FX Latent State Label Set
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fxFXCorrSurface (
-		final org.drip.product.params.CurrencyPair cp1,
-		final org.drip.product.params.CurrencyPair cp2)
+		final org.drip.state.identifier.FXLabel fxLabel1,
+		final org.drip.state.identifier.FXLabel fxLabel2)
 	{
-		if (null == cp1 || null == cp2) return null;
+		if (null == fxLabel1 || null == fxLabel2 || fxLabel1.match (fxLabel2)) return null;
 
-		java.lang.String strCode = cp1.code() + "@#" + cp2.code();
+		java.lang.String strCode = fxLabel1.fullyQualifiedName() + "@#" + fxLabel2.fullyQualifiedName();
 
 		return !_mapFXFXCorrelationSurface.containsKey (strCode) ? null : _mapFXFXCorrelationSurface.get
 			(strCode);
 	}
 
 	/**
-	 * (Re)-set the FX Correlation Surface for the specified Funding Currency Pair Set
+	 * (Re)-set the Correlation Surface for the specified FX Latent State Label Set
 	 * 
-	 * @param cp1 Currency Pair #1
-	 * @param cp2 Currency Pair #2
+	 * @param fxLabel1 The FX Latent State Label #1
+	 * @param fxLabel2 The FX Latent State Label #2
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFXFXCorrSurface (
-		final org.drip.product.params.CurrencyPair cp1,
-		final org.drip.product.params.CurrencyPair cp2,
+		final org.drip.state.identifier.FXLabel fxLabel1,
+		final org.drip.state.identifier.FXLabel fxLabel2,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == cp1 || null == cp2 || null == auCorrelation) return false;
+		if (null == fxLabel1 || null == fxLabel2 || fxLabel1.match (fxLabel2) || null == auCorrelation)
+			return false;
 
-		java.lang.String strCurrencyPair1 = cp1.code();
+		java.lang.String strCode1 = fxLabel1.fullyQualifiedName();
 
-		java.lang.String strCurrencyPair2 = cp2.code();
+		java.lang.String strCode2 = fxLabel2.fullyQualifiedName();
 
-		_mapFXFXCorrelationSurface.put (strCurrencyPair1 + "@#" + strCurrencyPair2, auCorrelation);
+		_mapFXFXCorrelationSurface.put (strCode1 + "@#" + strCode2, auCorrelation);
 
-		_mapFXFXCorrelationSurface.put (strCurrencyPair2 + "@#" + strCurrencyPair1, auCorrelation);
+		_mapFXFXCorrelationSurface.put (strCode2 + "@#" + strCode1, auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Govvie Currency Pair
+	 * Retrieve the Correlation Surface for the specified Govvie Latent State Pair
 	 * 
-	 * @param strCurrency1 Govvie Currency #1
-	 * @param strCurrency2 Govvie Currency #2
+	 * @param govvieLabel1 The Govvie Curve Latent State Label #1
+	 * @param govvieLabel2 The Govvie Curve Latent State Label #2
 	 * 
-	 * @return The Correlation Surface for the specified Govvie Currency Pair
+	 * @return The Correlation Surface for the specified Govvie Latent State Pair
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate govvieGovvieCorrSurface (
-		final java.lang.String strCurrency1,
-		final java.lang.String strCurrency2)
+		final org.drip.state.identifier.GovvieLabel govvieLabel1,
+		final org.drip.state.identifier.GovvieLabel govvieLabel2)
 	{
-		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty())
-			return null;
+		if (null == govvieLabel1 || null == govvieLabel2 || govvieLabel1.match (govvieLabel2)) return null;
 
-		java.lang.String strCode = strCurrency1 + "@#" + strCurrency2;
+		java.lang.String strCode12 = govvieLabel1.fullyQualifiedName() + "@#" +
+			govvieLabel2.fullyQualifiedName();
 
-		if (!_mapGovvieGovvieCorrelationSurface.containsKey (strCode)) return null;
+		if (_mapGovvieGovvieCorrelationSurface.containsKey (strCode12))
+			return _mapGovvieGovvieCorrelationSurface.get (strCode12);
 
-		return _mapGovvieGovvieCorrelationSurface.get (strCode);
+		java.lang.String strCode21 = govvieLabel2.fullyQualifiedName() + "@#" +
+			govvieLabel1.fullyQualifiedName();
+
+		return _mapGovvieGovvieCorrelationSurface.containsKey (strCode21) ?
+			_mapGovvieGovvieCorrelationSurface.get (strCode21) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Govvie Currency Pair
+	 * (Re)-set the Correlation Surface for the Govvie Latent State Pair
 	 * 
-	 * @param strCurrency1 Govvie Currency #1
-	 * @param strCurrency2 Govvie Currency #2
+	 * @param govvieLabel1 The Govvie Curve Latent State Label #1
+	 * @param govvieLabel2 The Govvie Curve Latent State Label #2
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setGovvieGovvieCorrSurface (
-		final java.lang.String strCurrency1,
-		final java.lang.String strCurrency2,
+		final org.drip.state.identifier.GovvieLabel govvieLabel1,
+		final org.drip.state.identifier.GovvieLabel govvieLabel2,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty()
-			|| null == auCorrelation)
+		if (null == govvieLabel1 || null == govvieLabel2 || govvieLabel1.match (govvieLabel2) || null ==
+			auCorrelation)
 			return false;
 
-		_mapGovvieGovvieCorrelationSurface.put (strCurrency1 + "@#" + strCurrency2, auCorrelation);
+		java.lang.String strGovvieLabel1 = govvieLabel1.fullyQualifiedName();
 
-		_mapGovvieGovvieCorrelationSurface.put (strCurrency2 + "@#" + strCurrency1, auCorrelation);
+		java.lang.String strGovvieLabel2 = govvieLabel2.fullyQualifiedName();
+
+		_mapGovvieGovvieCorrelationSurface.put (strGovvieLabel1 + "@#" + strGovvieLabel2, auCorrelation);
+
+		_mapGovvieGovvieCorrelationSurface.put (strGovvieLabel2 + "@#" + strGovvieLabel1, auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Collateral Currency and Credit
+	 * Retrieve the Correlation Surface between the Collateral and the Credit Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strCreditCurveName The Credit Curve Name
+	 * @param creditLabel The Credit Curve Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Collateral Currency and Credit
+	 * @return The Correlation Surface between the Collateral and the Credit Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate collateralCreditCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strCreditCurveName)
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strCreditCurveName ||
-			strCreditCurveName.isEmpty())
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == creditLabel)
 			return null;
 
-		java.lang.String strCode = strCollateralCurrency + "@#" + strCreditCurveName;
+		java.lang.String strCode = strCollateralCurrency + "@#" + creditLabel.fullyQualifiedName();
 
-		if (!_mapCollateralCreditCorrelationSurface.containsKey (strCode)) return null;
-
-		return _mapCollateralCreditCorrelationSurface.get (strCode);
+		return _mapCollateralCreditCorrelationSurface.containsKey (strCode) ? null :
+			_mapCollateralCreditCorrelationSurface.get (strCode);
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Collateral Currency and Credit
+	 * (Re)-set the Correlation Surface between the Collateral and the Credit Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strCreditCurveName The Credit Curve Name
+	 * @param creditLabel The Credit Curve Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -1314,48 +1356,45 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	public boolean setCollateralCreditCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strCreditCurveName,
+		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strCreditCurveName ||
-			strCreditCurveName.isEmpty())
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == creditLabel)
 			return false;
 
-		_mapCollateralCreditCorrelationSurface.put (strCollateralCurrency + "@#" + strCreditCurveName,
-			auCorrelation);
+		_mapCollateralCreditCorrelationSurface.put (strCollateralCurrency + "@#" +
+			creditLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Collateral Currency and the Custom Metric
+	 * Retrieve the Correlation Surface between the Collateral and the Custom Metric Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strCustomMetric The Custom Metric
+	 * @param customMetricLabel The Custom Metric Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Collateral Currency and the Custom Metric
+	 * @return The Correlation Surface between the Collateral and the Custom Metric Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate collateralCustomMetricCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strCustomMetric)
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strCustomMetric ||
-			strCustomMetric.isEmpty())
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == customMetricLabel)
 			return null;
 
-		java.lang.String strCode = strCollateralCurrency + "@#" + strCustomMetric;
+		java.lang.String strCode = strCollateralCurrency + "@#" + customMetricLabel.fullyQualifiedName();
 
-		if (!_mapCollateralCustomMetricCorrelationSurface.containsKey (strCode)) return null;
-
-		return _mapCollateralCustomMetricCorrelationSurface.get (strCode);
+		return _mapCollateralCustomMetricCorrelationSurface.containsKey (strCode) ?
+			_mapCollateralCustomMetricCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Collateral Currency and the Custom Metric
+	 * (Re)-set the Correlation Surface between the Collateral and the Custom Metric Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strCustomMetric The Custom Metric
+	 * @param customMetricLabel The Custom Metric Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -1363,48 +1402,45 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	public boolean setCollateralCustomMetricCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strCustomMetric,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strCustomMetric ||
-			strCustomMetric.isEmpty())
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == customMetricLabel)
 			return false;
 
-		_mapCollateralCustomMetricCorrelationSurface.put (strCollateralCurrency + "@#" + strCustomMetric,
-			auCorrelation);
+		_mapCollateralCustomMetricCorrelationSurface.put (strCollateralCurrency + "@#" +
+			customMetricLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Collateral Currency and the FRI
+	 * Retrieve the Correlation Surface between the Collateral and the Forward Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param fri The Floating Rate Index
+	 * @param forwardLabel The Forward Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Collateral Currency and the FRI
+	 * @return The Correlation Surface between the Collateral and the Forward Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate collateralForwardCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fri) return null;
-
-		java.lang.String strCollateralForwardCorrelationCode = strCollateralCurrency + "@#" +
-			fri.fullyQualifiedName();
-
-		if (!_mapCollateralForwardCorrelationSurface.containsKey (strCollateralForwardCorrelationCode))
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == forwardLabel)
 			return null;
 
-		return _mapCollateralForwardCorrelationSurface.get (strCollateralForwardCorrelationCode);
+		java.lang.String strCode = strCollateralCurrency + "@#" + forwardLabel.fullyQualifiedName();
+
+		return _mapCollateralForwardCorrelationSurface.containsKey (strCode) ?
+			_mapCollateralForwardCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Collateral Currency and the FRI
+	 * (Re)-set the Correlation Surface between the Collateral and the Forward Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param fri The Floating Rate Index
+	 * @param forwardLabel The Forward Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -1412,48 +1448,46 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	public boolean setCollateralForwardCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fri || null ==
-			auCorrelation)
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == forwardLabel || null
+			== auCorrelation)
 			return false;
 
-		_mapCollateralForwardCorrelationSurface.put (strCollateralCurrency + "@#" + fri.fullyQualifiedName(),
-			auCorrelation);
+		_mapCollateralForwardCorrelationSurface.put (strCollateralCurrency + "@#" +
+			forwardLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Collateral and the Funding Currencies
+	 * Retrieve the Correlation Surface between the Collateral and the Funding Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strFundingCurrency The Funding Currency
+	 * @param fundingLabel The Funding Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Collateral and the Funding Curves
+	 * @return The Correlation Surface between the Collateral and the Funding Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate collateralFundingCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strFundingCurrency)
+		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strFundingCurrency ||
-			strFundingCurrency.isEmpty())
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fundingLabel)
 			return null;
 
-		java.lang.String strCode = strCollateralCurrency + "@#" + strFundingCurrency;
+		java.lang.String strCode = strCollateralCurrency + "@#" + fundingLabel.fullyQualifiedName();
 
-		if (!_mapCollateralFundingCorrelationSurface.containsKey (strCode)) return null;
-
-		return _mapCollateralFundingCorrelationSurface.get (strCode);
+		return _mapCollateralFundingCorrelationSurface.containsKey (strCode) ?
+			_mapCollateralFundingCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Collateral and the Funding Currencies
+	 * (Re)-set the Correlation Surface between the Collateral and the Funding Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strFundingCurrency The Funding Currency
+	 * @param fundingLabel The Funding Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -1461,45 +1495,45 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	public boolean setCollateralFundingCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strFundingCurrency,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strFundingCurrency ||
-			strFundingCurrency.isEmpty() || null == auCorrelation)
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fundingLabel || null
+			== auCorrelation)
 			return false;
 
-		_mapCollateralFundingCorrelationSurface.put (strCollateralCurrency + "@#" + strFundingCurrency,
-			auCorrelation);
+		_mapCollateralFundingCorrelationSurface.put (strCollateralCurrency + "@#" +
+			fundingLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Collateral and Currency Pair FX Combination
+	 * Retrieve the Correlation Surface for the specified Collateral and the FX Latent State Label
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param cp The Currency Pair
+	 * @param fxLabel The FX Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Collateral and Currency Pair FX Combination
+	 * @return The Correlation Surface for the specified Collateral and the FX Latent State Label
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate collateralFXCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final org.drip.product.params.CurrencyPair cp)
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == cp) return null;
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fxLabel) return null;
 
-		java.lang.String strCode = strCollateralCurrency + "@#" + cp.code();
+		java.lang.String strCode = strCollateralCurrency + "@#" + fxLabel.fullyQualifiedName();
 
 		return _mapCollateralFXCorrelationSurface.containsKey (strCode) ?
 			_mapCollateralFXCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Collateral and Currency Pair FX Combination
+	 * (Re)-set the Correlation Surface for the specified Collateral and FX Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param cp The Currency Pair
+	 * @param fxLabel The FX Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -1507,46 +1541,46 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	public boolean setCollateralFXCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == cp || null ==
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fxLabel || null ==
 			auCorrelation)
 			return false;
 
-		_mapCollateralFXCorrelationSurface.put (strCollateralCurrency + "@#" + cp.code(), auCorrelation);
+		_mapCollateralFXCorrelationSurface.put (strCollateralCurrency + "@#" + fxLabel.fullyQualifiedName(),
+			auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Collateral and Govvie Currencies
+	 * Retrieve the Correlation Surface for the specified Collateral and Govvie Latent State Labels
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param govvieLabel The Govvie Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Collateral and Govvie Curves
+	 * @return The Correlation Surface for the specified Collateral and Govvie Latent State Labels
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate collateralGovvieCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strGovvieCurrency)
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty())
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == govvieLabel)
 			return null;
 
-		java.lang.String strCode = strCollateralCurrency + "@#" + strGovvieCurrency;
+		java.lang.String strCode = strCollateralCurrency + "@#" + govvieLabel.fullyQualifiedName();
 
 		return _mapCollateralGovvieCorrelationSurface.containsKey (strCode) ?
 			_mapCollateralGovvieCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Collateral and Govvie Currencies
+	 * (Re)-set the Correlation Surface for the specified Collateral and Govvie Latent State Labels
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param govvieLabel The Govvie Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -1554,710 +1588,686 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	public boolean setCollateralGovvieCorrSurface (
 		final java.lang.String strCollateralCurrency,
-		final java.lang.String strGovvieCurrency,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty() || null == auCorrelation)
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == govvieLabel || null
+			== auCorrelation)
 			return false;
 
-		_mapCollateralGovvieCorrelationSurface.put (strCollateralCurrency + "@#" + strGovvieCurrency,
-			auCorrelation);
+		_mapCollateralGovvieCorrelationSurface.put (strCollateralCurrency + "@#" +
+			govvieLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Credit and the Custom Metric
+	 * Retrieve the Correlation Surface between the Credit and the Custom Metric Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param strCustomMetric The Custom Metric
+	 * @param creditLabel The Credit Latent State Label
+	 * @param customMetricLabel The Custom Metric Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Credit and the Custom Metric
+	 * @return The Correlation Surface between the Credit and the Custom Metric Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditCustomMetricCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final java.lang.String strCustomMetric)
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == strCustomMetric ||
-			strCustomMetric.isEmpty())
-			return null;
+		if (null == creditLabel || null == customMetricLabel) return null;
 
-		java.lang.String strCode = strCreditCurveName + "@#" + strCustomMetric;
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" +
+			customMetricLabel.fullyQualifiedName();
 
 		return _mapCreditCustomMetricCorrelationSurface.containsKey (strCode) ?
 			_mapCreditCustomMetricCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Credit and the Custom Metric
+	 * (Re)-set the Correlation Surface between the Credit and the Custom Metric Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param strCustomMetric The Custom Metric
+	 * @param creditLabel The Credit Latent State Label
+	 * @param customMetricLabel The Custom Metric Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCreditCustomMetricCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final java.lang.String strCustomMetric,
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == strCustomMetric ||
-			strCustomMetric.isEmpty() || null == auCorrelation)
-			return false;
+		if (null == creditLabel || null == customMetricLabel || null == auCorrelation) return false;
 
-		_mapCreditCustomMetricCorrelationSurface.put (strCreditCurveName + "@#" + strCustomMetric,
-			auCorrelation);
+		_mapCreditCustomMetricCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
+			customMetricLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Credit and the FRI
+	 * Retrieve the Correlation Surface between the Credit and the Forward Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param fri The FRI
+	 * @param creditLabel The Credit Curve Label
+	 * @param forwardLabel The Forward Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Credit and the FRI
+	 * @return The Correlation Surface between the Credit and the Forward Lsatent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditForwardCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == fri) return null;
+		if (null == creditLabel || null == forwardLabel) return null;
 
-		java.lang.String strCode = strCreditCurveName + "@#" + fri.fullyQualifiedName();
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" +
+			forwardLabel.fullyQualifiedName();
 
 		return _mapCreditForwardCorrelationSurface.containsKey (strCode) ?
 			_mapCreditForwardCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Credit and the FRI
+	 * (Re)-set the Correlation Surface between the Credit and the Forward Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param fri The FRI
+	 * @param creditLabel The Credit Curve Label
+	 * @param forwardLabel The Forward Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCreditForwardCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == fri || null ==
-			auCorrelation)
-			return false;
+		if (null == creditLabel || null == forwardLabel || null == auCorrelation) return false;
 
-		_mapCreditForwardCorrelationSurface.put (strCreditCurveName + "@#" + fri.fullyQualifiedName(),
-			auCorrelation);
+		_mapCreditForwardCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
+			forwardLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Credit and the Funding Currency
+	 * Retrieve the Correlation Surface between the Credit and the Funding Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param strFundingCurrency The Funding Currency
+	 * @param creditLabel The Credit Curve Latent State Label
+	 * @param fundingLabel The Funding Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Credit and the Funding Currency
+	 * @return The Correlation Surface between the Credit and the Funding Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditFundingCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final java.lang.String strFundingCurrency)
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == strFundingCurrency ||
-			strFundingCurrency.isEmpty())
-			return null;
+		if (null == creditLabel || null == fundingLabel) return null;
 
-		java.lang.String strCode = strCreditCurveName + "@#" + strFundingCurrency;
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName();
 
 		return _mapCreditFundingCorrelationSurface.containsKey (strCode) ?
 			_mapCreditFundingCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Credit and the Funding Currency
+	 * (Re)-set the Correlation Surface between the Credit and the Funding Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param strFundingCurrency The Funding Currency
+	 * @param creditLabel The Credit Curve Label
+	 * @param fundingLabel The Funding Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCreditFundingCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final java.lang.String strFundingCurrency,
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == strFundingCurrency ||
-			strFundingCurrency.isEmpty() || null == auCorrelation)
-			return false;
+		if (null == creditLabel || null == fundingLabel || null == auCorrelation) return false;
 
-		_mapCreditFundingCorrelationSurface.put (strCreditCurveName + "@#" + strFundingCurrency,
-			auCorrelation);
+		_mapCreditFundingCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Credit and the Currency Pair FX
+	 * Retrieve the Correlation Surface between the Credit and the FX Latent State Labels
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param cp The Currency Pair
+	 * @param creditLabel The Credit Curve Label
+	 * @param fxLabel The FX Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Credit and the Currency Pair FX
+	 * @return The Correlation Surface between the Credit and the FX Latent State Labels
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditFXCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final org.drip.product.params.CurrencyPair cp)
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == cp) return null;
+		if (null == creditLabel || null == fxLabel) return null;
 
-		java.lang.String strCode = strCreditCurveName + "@#" + cp.code();
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" + fxLabel.fullyQualifiedName();
 
 		return _mapCreditFXCorrelationSurface.containsKey (strCode) ? _mapCreditFXCorrelationSurface.get
 			(strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Credit and the Currency Pair FX
+	 * (Re)-set the Correlation Surface between the Credit and the FX Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param cp The Currency Pair
+	 * @param creditLabel The Credit Curve Label
+	 * @param fxLabel The FX Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCreditFXCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == cp || null ==
-			auCorrelation)
-			return false;
+		if (null == creditLabel || null == fxLabel || null == auCorrelation) return false;
 
-		_mapCreditFXCorrelationSurface.get (strCreditCurveName + "@#" + cp.code());
+		_mapCreditFXCorrelationSurface.get (creditLabel.fullyQualifiedName() + "@#" +
+			fxLabel.fullyQualifiedName());
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Credit and the Govvie Currencies
+	 * Retrieve the Correlation Surface between the Credit and the Govvie Latent State Labels
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param creditLabel The Credit Curve Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Credit and the Govvie Currencies
+	 * @return The Correlation Surface between the Credit and the Govvie Latent State Labels
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditGovvieCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final java.lang.String strGovvieCurrency)
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty())
-			return null;
+		if (null == creditLabel || null == govvieLabel) return null;
 
-		java.lang.String strCode = strCreditCurveName + "@#" + strGovvieCurrency;
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName();
 
 		return _mapCreditGovvieCorrelationSurface.containsKey (strCode) ?
 			_mapCreditGovvieCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Credit and the Govvie Currencies
+	 * (Re)-set the Correlation Surface between the Credit and the Govvie Latent States
 	 * 
-	 * @param strCreditCurveName The Credit Curve Name
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param creditLabel The Credit Curve Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCreditGovvieCorrSurface (
-		final java.lang.String strCreditCurveName,
-		final java.lang.String strGovvieCurrency,
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCreditCurveName || strCreditCurveName.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty() || null == auCorrelation)
-			return false;
+		if (null == creditLabel || null == govvieLabel || null == auCorrelation) return false;
 
-		_mapCreditGovvieCorrelationSurface.put (strCreditCurveName + "@#" + strGovvieCurrency,
-			auCorrelation);
+		_mapCreditGovvieCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Custom Metric and the FRI
+	 * Retrieve the Correlation Surface between the Custom Metric and the Forward Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param fri The FRI
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param forwardLabel The Forward Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Custom Metric and the FRI
+	 * @return The Correlation Surface between the Custom Metric and the Forward Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate customMetricForwardCorrSurface (
-		final java.lang.String strCustomMetric,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == fri) return null;
+		if (null == customMetricLabel || null == forwardLabel) return null;
 
-		java.lang.String strFRI = fri.fullyQualifiedName();
+		java.lang.String strCode = customMetricLabel.fullyQualifiedName() + "@#" +
+			forwardLabel.fullyQualifiedName();
 
-		if (!_mapCustomMetricForwardCorrelationSurface.containsKey (strCustomMetric + "@#" + strFRI))
-			return null;
-
-		return _mapCustomMetricForwardCorrelationSurface.get (strCustomMetric + "@#" + strFRI);
+		return _mapCustomMetricForwardCorrelationSurface.containsKey (strCode) ?
+			_mapCustomMetricForwardCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Custom Metric and the FRI
+	 * (Re)-set the Correlation Surface between the Custom Metric and the Forward Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param fri The FRI
+	 * @param customMetricLabel The Custom Metric Label
+	 * @param forwardLabel The Forward Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCustomMetricForwardCorrSurface (
-		final java.lang.String strCustomMetric,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == fri || null == auCorrelation)
-			return false;
+		if (null == customMetricLabel || null == forwardLabel || null == auCorrelation) return false;
 
-		_mapCustomMetricForwardCorrelationSurface.put (strCustomMetric + "@#" + fri.fullyQualifiedName(),
-			auCorrelation);
+		_mapCustomMetricForwardCorrelationSurface.put (customMetricLabel.fullyQualifiedName() + "@#" +
+			forwardLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Custom Metric and the Funding Currency
+	 * Retrieve the Correlation Surface between Custom Metric and the Funding Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param strFundingCurrency The Funding Currency
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param fundingLabel The Funding Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Custom Metric and the Funding Currency
+	 * @return The Correlation Surface between the Custom Metric and the Funding Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate customMetricFundingCorrSurface (
-		final java.lang.String strCustomMetric,
-		final java.lang.String strFundingCurrency)
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == strFundingCurrency ||
-			strFundingCurrency.isEmpty())
-			return null;
+		if (null == customMetricLabel || null == fundingLabel) return null;
 
-		java.lang.String strCode = strCustomMetric + "@#" + strFundingCurrency;
+		java.lang.String strCode = customMetricLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName();
 
-		if (!_mapCustomMetricFundingCorrelationSurface.containsKey (strCode)) return null;
-
-		return _mapCustomMetricFundingCorrelationSurface.get (strCode);
+		return _mapCustomMetricFundingCorrelationSurface.containsKey (strCode) ?
+			_mapCustomMetricFundingCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Custom Metric and the Funding Currency
+	 * (Re)-set the Correlation Surface between the Custom Metric and the Funding Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param strFundingCurrency The Funding Currency
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param fundingLabel The Funding Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCustomMetricFundingCorrSurface (
-		final java.lang.String strCustomMetric,
-		final java.lang.String strFundingCurrency,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == strFundingCurrency ||
-			strFundingCurrency.isEmpty())
-			return false;
+		if (null == customMetricLabel || null == fundingLabel) return false;
 
-		_mapCustomMetricFundingCorrelationSurface.put (strCustomMetric + "@#" + strFundingCurrency,
-			auCorrelation);
+		_mapCustomMetricFundingCorrelationSurface.put (customMetricLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Custom Metric and the Currency Pair FX
+	 * Retrieve the Correlation Surface between the Custom Metric and the FX Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param cp The Currency Pair
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param fxLabel The FX Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Custom Metric and the Currency Pair FX
+	 * @return The Correlation Surface between the Custom Metric and the FX Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate customMetricFXCorrSurface (
-		final java.lang.String strCustomMetric,
-		final org.drip.product.params.CurrencyPair cp)
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == cp) return null;
+		if (null == customMetricLabel || null == fxLabel) return null;
 
-		java.lang.String strCode = strCustomMetric + "@#" + cp.code();
+		java.lang.String strCode = customMetricLabel.fullyQualifiedName() + "@#" +
+			fxLabel.fullyQualifiedName();
 
 		return _mapCustomMetricFXCorrelationSurface.containsKey (strCode) ?
 			_mapCustomMetricFXCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Custom Metric and the Currency Pair FX
+	 * (Re)-set the Correlation Surface between the Custom Metric and the FX Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param cp The Currency Pair
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param fxLabel The FX Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCustomMetricFXCorrSurface (
-		final java.lang.String strCustomMetric,
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == cp || null == auCorrelation)
-			return false;
+		if (null == customMetricLabel || null == fxLabel || null == auCorrelation) return false;
 
-		_mapCustomMetricFXCorrelationSurface.get (strCustomMetric + "@#" + cp.code());
+		_mapCustomMetricFXCorrelationSurface.get (customMetricLabel.fullyQualifiedName() + "@#" +
+			fxLabel.fullyQualifiedName());
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Custom Metric and the Govvie Currency
+	 * Retrieve the Correlation Surface between the Custom Metric and the Govvie Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Custom Metric and the Govvie Currency
+	 * @return The Correlation Surface between the Custom Metric and the Govvie Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate customMetricGovvieCorrSurface (
-		final java.lang.String strCustomMetric,
-		final java.lang.String strGovvieCurrency)
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty())
-			return null;
+		if (null == customMetricLabel || null == govvieLabel) return null;
 
-		java.lang.String strCode = strCustomMetric + "@#" + strGovvieCurrency;
+		java.lang.String strCode = customMetricLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName();
 
 		return _mapCustomMetricGovvieCorrelationSurface.containsKey (strCode) ?
 			_mapCustomMetricGovvieCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Custom Metric and the Govvie Currency
+	 * (Re)-set the Correlation Surface between the Custom Metric and the Govvie Latent States
 	 * 
-	 * @param strCustomMetric The Custom Metric
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setCustomMetricGovvieCorrSurface (
-		final java.lang.String strCustomMetric,
-		final java.lang.String strGovvieCurrency,
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strCustomMetric || strCustomMetric.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty())
-			return false;
+		if (null == customMetricLabel || null == govvieLabel) return false;
 
-		_mapCustomMetricGovvieCorrelationSurface.put (strCustomMetric + "@#" + strGovvieCurrency,
-			auCorrelation);
+		_mapCustomMetricGovvieCorrelationSurface.put (customMetricLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified FRI and the Funding Currency
+	 * Retrieve the Correlation Surface between the Forward and the Funding Latent States
 	 * 
-	 * @param fri The FRI
-	 * @param strFundingCurrency The Funding Currency
+	 * @param forwardLabel The Forward Latent State Label
+	 * @param fundingLabel The Funding Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified FRI and the Funding Currency
+	 * @return The Correlation Surface between the Forward and the Funding Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate forwardFundingCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri,
-		final java.lang.String strFundingCurrency)
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
-		if (null == fri || null == strFundingCurrency || strFundingCurrency.isEmpty()) return null;
+		if (null == forwardLabel || null == fundingLabel) return null;
 
-		java.lang.String strCode = fri.fullyQualifiedName() + "@#" + strFundingCurrency;
+		java.lang.String strCode = forwardLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName();
 
-		if (!_mapForwardFundingCorrelationSurface.containsKey (strCode)) return null;
-
-		return _mapForwardFundingCorrelationSurface.get (strCode);
+		return _mapForwardFundingCorrelationSurface.containsKey (strCode) ?
+			_mapForwardFundingCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified FRI and the Funding Currency
+	 * (Re)-set the Correlation Surface between the Forward and the Funding Latent States
 	 * 
-	 * @param fri The FRI
-	 * @param strFundingCurrency The Funding Currency
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param fundingLabel The Funding Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setForwardFundingCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri,
-		final java.lang.String strFundingCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == fri || null == strFundingCurrency || strFundingCurrency.isEmpty() || null ==
-			auCorrelation)
-			return false;
+		if (null == forwardLabel || null == fundingLabel || null == auCorrelation) return false;
 
-		_mapForwardFundingCorrelationSurface.put (fri.fullyQualifiedName() + "@#" + strFundingCurrency,
-			auCorrelation);
+		_mapForwardFundingCorrelationSurface.put (forwardLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified FRI and the FX Currency Pair
+	 * Retrieve the Correlation Surface between the Forward and the FX Latent State Labels
 	 * 
-	 * @param fri The FRI
-	 * @param cp The FX Currency Pair
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param fxLabel The FX Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified FRI and the FX Currency Pair
+	 * @return The Correlation Surface between the Forward and the FX Latent State Labels
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate forwardFXCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.product.params.CurrencyPair cp)
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
-		if (null == fri || null == cp) return null;
+		if (null == forwardLabel || null == fxLabel) return null;
 
-		java.lang.String strCode = fri.fullyQualifiedName() + "@#" + cp.code();
+		java.lang.String strCode = forwardLabel.fullyQualifiedName() + "@#" + fxLabel.fullyQualifiedName();
 
 		return _mapForwardFXCorrelationSurface.containsKey (strCode) ? _mapForwardFXCorrelationSurface.get
 			(strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified FRI and the FX Currency Pair
+	 * (Re)-set the Correlation Surface between the Forward and the FX Latent State Labels
 	 * 
-	 * @param fri The FRI
-	 * @param cp The FX Currency Pair
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param fxLabel The FX Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setForwardFXCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri,
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == fri || null == cp || null == auCorrelation) return false;
+		if (null == forwardLabel || null == fxLabel || null == auCorrelation) return false;
 
-		_mapForwardFXCorrelationSurface.get (fri.fullyQualifiedName() + "@#" + cp.code());
+		_mapForwardFXCorrelationSurface.get (forwardLabel.fullyQualifiedName() + "@#" +
+			fxLabel.fullyQualifiedName());
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified FRI and the Govvie Currency
+	 * Retrieve the Correlation Surface between the Forward and the Govvie Latent States
 	 * 
-	 * @param fri The FRI
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified FRI and the Govvie Currency
+	 * @return The Correlation Surface between the Forward and the Govvie Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate forwardGovvieCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri,
-		final java.lang.String strGovvieCurrency)
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		if (null == fri || null == strGovvieCurrency || strGovvieCurrency.isEmpty()) return null;
+		if (null == forwardLabel || null == govvieLabel) return null;
 
-		java.lang.String strCode = fri.fullyQualifiedName() + "@#" + strGovvieCurrency;
+		java.lang.String strCode = forwardLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName();
 
 		return _mapForwardGovvieCorrelationSurface.containsKey (strCode) ?
 			_mapForwardGovvieCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified FRI and the Govvie Currency
+	 * (Re)-set the Correlation Surface between the Forward and the Govvie Latent States
 	 * 
-	 * @param fri The FRI
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setForwardGovvieCorrSurface (
-		final org.drip.product.params.FloatingRateIndex fri,
-		final java.lang.String strGovvieCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == fri || null == strGovvieCurrency || strGovvieCurrency.isEmpty() || null == auCorrelation)
-			return false;
+		if (null == forwardLabel || null == govvieLabel || null == auCorrelation) return false;
 
-		_mapForwardGovvieCorrelationSurface.put (fri.fullyQualifiedName() + "@#" + strGovvieCurrency,
-			auCorrelation);
+		_mapForwardGovvieCorrelationSurface.put (forwardLabel.fullyQualifiedName() + "@#" + 
+			govvieLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Funding Currency and the FX Currency Pair
+	 * Retrieve the Correlation Surface between the Funding and the FX Latent States
 	 * 
-	 * @param strFundingCurrency The Funding Currency
-	 * @param cp The FX Currency Pair
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param fxLabel The FX Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Funding Currency and the FX Currency Pair
+	 * @return The Correlation Surface between the Funding and the FX Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fundingFXCorrSurface (
-		final java.lang.String strFundingCurrency,
-		final org.drip.product.params.CurrencyPair cp)
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
-		if (null == strFundingCurrency || strFundingCurrency.isEmpty() || null == cp) return null;
+		if (null == fundingLabel || null == fxLabel) return null;
 
-		java.lang.String strCode = strFundingCurrency + "@#" + cp.code();
+		java.lang.String strCode = fundingLabel.fullyQualifiedName() + "@#" + fxLabel.fullyQualifiedName();
 
 		return _mapFundingFXCorrelationSurface.containsKey (strCode) ? _mapFundingFXCorrelationSurface.get
 			(strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Funding Currency and the FX Currency Pair
+	 * (Re)-set the Correlation Surface between the Funding and the FX Latent States
 	 * 
-	 * @param strFundingCurrency The Funding Currency
-	 * @param cp The FX Currency Pair
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param fxLabel The FX Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFundingFXCorrSurface (
-		final java.lang.String strFundingCurrency,
-		final org.drip.product.params.CurrencyPair cp,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strFundingCurrency || strFundingCurrency.isEmpty() || null == cp || null ==
-			auCorrelation)
-			return false;
+		if (null == fundingLabel || null == fxLabel || null == auCorrelation) return false;
 
-		_mapFundingFXCorrelationSurface.put (strFundingCurrency + "@#" + cp.code(), auCorrelation);
+		_mapFundingFXCorrelationSurface.put (fundingLabel.fullyQualifiedName() + "@#" +
+			fxLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified Funding and the Govvie Currencies
+	 * Retrieve the Correlation Surface between the Funding and the Govvie Latent States
 	 * 
-	 * @param strFundingCurrency The Funding Currency
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified Funding and the Govvie Currencies
+	 * @return The Correlation Surface between the Funding and the Govvie Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fundingGovvieCorrSurface (
-		final java.lang.String strFundingCurrency,
-		final java.lang.String strGovvieCurrency)
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		if (null == strFundingCurrency || strFundingCurrency.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty())
-			return null;
+		if (null == fundingLabel || null == govvieLabel) return null;
 
-		java.lang.String strCode = strFundingCurrency + "@#" + strGovvieCurrency;
+		java.lang.String strCode = fundingLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName();
 
 		return _mapFundingGovvieCorrelationSurface.containsKey (strCode) ?
 			_mapFundingGovvieCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified Funding and the Govvie Currencies
+	 * (Re)-set the Correlation Surface between the Funding and the Govvie Latent States
 	 * 
-	 * @param strFundingCurrency The Funding Currency
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFundingGovvieCorrSurface (
-		final java.lang.String strFundingCurrency,
-		final java.lang.String strGovvieCurrency,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == strFundingCurrency || strFundingCurrency.isEmpty() || null == strGovvieCurrency ||
-			strGovvieCurrency.isEmpty() || null == auCorrelation)
-			return false;
+		if (null == fundingLabel || null == govvieLabel || null == auCorrelation) return false;
 
-		_mapFundingGovvieCorrelationSurface.put (strFundingCurrency + "@#" + strGovvieCurrency,
-			auCorrelation);
+		_mapFundingGovvieCorrelationSurface.put (fundingLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the Correlation Surface for the specified FX Currency Pair and the Govvie Currency
+	 * Retrieve the Correlation Surface for the specified FX and the Govvie Latent States
 	 * 
-	 * @param cp The Currency Pair
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param fxLabel The FX Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * 
-	 * @return The Correlation Surface for the specified FX Currency Pair and the Govvie Currency
+	 * @return The Correlation Surface for the specified FX and the Govvie Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate fxGovvieCorrSurface (
-		final org.drip.product.params.CurrencyPair cp,
-		final java.lang.String strGovvieCurrency)
+		final org.drip.state.identifier.FXLabel fxLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
-		if (null == cp || null == strGovvieCurrency || strGovvieCurrency.isEmpty()) return null;
+		if (null == fxLabel || null == govvieLabel) return null;
 
-		java.lang.String strCode = cp.code() + "@#" + strGovvieCurrency;
+		java.lang.String strCode = fxLabel.fullyQualifiedName() + "@#" + govvieLabel.fullyQualifiedName();
 
 		return _mapFXGovvieCorrelationSurface.containsKey (strCode) ? _mapFXGovvieCorrelationSurface.get
 			(strCode) : null;
 	}
 
 	/**
-	 * (Re)-set the Correlation Surface for the specified FX Currency Pair and the Govvie Currency
+	 * (Re)-set the Correlation Surface for the specified FX and the Govvie Latent States
 	 * 
-	 * @param cp The Currency Pair
-	 * @param strGovvieCurrency The Govvie Currency
+	 * @param fxLabel The FX Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
 	 * @param auCorrelation The Correlation Surface
 	 * 
 	 * @return TRUE => Successfully set
 	 */
 
 	public boolean setFXGovvieCorrSurface (
-		final org.drip.product.params.CurrencyPair cp,
-		final java.lang.String strGovvieCurrency,
+		final org.drip.state.identifier.FXLabel fxLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
 	{
-		if (null == cp || null == strGovvieCurrency || strGovvieCurrency.isEmpty() || null == auCorrelation)
-			return false;
+		if (null == fxLabel || null == govvieLabel || null == auCorrelation) return false;
 
-		_mapFXGovvieCorrelationSurface.put (cp.code() + "@#" + strGovvieCurrency, auCorrelation);
+		_mapFXGovvieCorrelationSurface.put (fxLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}

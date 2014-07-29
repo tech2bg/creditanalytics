@@ -66,7 +66,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 
 		java.lang.String strIR = fs.couponCurrency()[0];
 
-		org.drip.product.params.FloatingRateIndex fri = fs.fri();
+		org.drip.state.identifier.ForwardLabel fri = fs.fri();
 
 		java.lang.String strFRACodePrefix = fri.fullyQualifiedName();
 

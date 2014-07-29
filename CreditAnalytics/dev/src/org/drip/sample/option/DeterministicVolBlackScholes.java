@@ -12,11 +12,11 @@ import org.drip.pricer.option.BlackScholesAlgorithm;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.stream.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.SABRLIBORCapVolatility;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -121,7 +121,7 @@ public class DeterministicVolBlackScholes {
 				-1.,
 				null,
 				lsFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 

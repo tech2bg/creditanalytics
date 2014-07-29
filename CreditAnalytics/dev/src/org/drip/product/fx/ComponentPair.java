@@ -104,14 +104,15 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		java.lang.String strReferenceCurrency = _rcReference.couponCurrency()[0];
 
 		java.lang.String strDerivedCurrency = _rcDerived.couponCurrency()[0];
 
-		return new java.lang.String[] {strReferenceCurrency + "/" + strDerivedCurrency, strDerivedCurrency +
-			"/" + strReferenceCurrency};
+		return new org.drip.state.identifier.FXLabel[] {org.drip.state.identifier.FXLabel.Standard
+			(strReferenceCurrency + "/" + strDerivedCurrency), org.drip.state.identifier.FXLabel.Standard
+				(strDerivedCurrency + "/" + strReferenceCurrency)};
 	}
 
 	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()

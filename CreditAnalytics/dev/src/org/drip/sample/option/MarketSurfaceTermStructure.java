@@ -69,7 +69,7 @@ public class MarketSurfaceTermStructure {
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		System.out.println ("\n\t\t  " + mktSurf.name());
+		System.out.println ("\n\t\t  " + mktSurf.label());
 
 		System.out.println ("\t|------------------------------------------------------------|");
 

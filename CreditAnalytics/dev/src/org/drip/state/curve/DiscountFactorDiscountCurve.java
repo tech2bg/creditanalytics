@@ -90,8 +90,8 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		}
 
 		try {
-			return new org.drip.state.curve.DiscountFactorDiscountCurve (name(), collateralParams(),
-				(_rcci.lcc().calibrateSpan (aRBSBumped, 1., _rcci.valuationParameter(),
+			return new org.drip.state.curve.DiscountFactorDiscountCurve (label().fullyQualifiedName(),
+				collateralParams(), (_rcci.lcc().calibrateSpan (aRBSBumped, 1., _rcci.valuationParameter(),
 					_rcci.pricerParameter(), _rcci.quotingParameter(), _rcci.marketParameters())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -170,7 +170,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 
 	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
 		final double dblDate,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
 		if (null == _span || !_span.isMergeState (dblDate, fri)) return null;
 

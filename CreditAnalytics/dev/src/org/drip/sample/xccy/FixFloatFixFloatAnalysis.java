@@ -12,12 +12,12 @@ import org.drip.param.valuation.*;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
-import org.drip.product.stream.FixedStream;
-import org.drip.product.stream.FloatingStream;
+import org.drip.product.stream.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -116,7 +116,7 @@ public class FixFloatFixFloatAnalysis {
 			1.,
 			null,
 			lsDerivedFloatPeriods,
-			FloatingRateIndex.Create (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			ForwardLabel.Create (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			false
 		);
 
@@ -135,9 +135,9 @@ public class FixFloatFixFloatAnalysis {
 
 	private static final void SetMarketParams (
 		final CurveSurfaceQuoteSet mktParams,
-		final FloatingRateIndex fri3MUSD,
-		final FloatingRateIndex fri3MEUR,
-		final CurrencyPair cp,
+		final ForwardLabel fri3MUSD,
+		final ForwardLabel fri3MEUR,
+		final FXLabel fxLabel,
 		final double dblUSDFundingVol,
 		final double dblEURFundingVol,
 		final double dblUSD3MForwardVol,
@@ -149,32 +149,36 @@ public class FixFloatFixFloatAnalysis {
 		final double dblEUR3MForwardUSDEURFXCorr)
 		throws Exception
 	{
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
+		FundingLabel fundingLabelUSD = FundingLabel.Standard ("USD");
 
-		mktParams.setFundingCurveVolSurface ("EUR", new FlatUnivariate (dblEURFundingVol));
+		FundingLabel fundingLabelEUR = FundingLabel.Standard ("EUR");
+
+		mktParams.setFundingCurveVolSurface (fundingLabelUSD, new FlatUnivariate (dblUSDFundingVol));
+
+		mktParams.setFundingCurveVolSurface (fundingLabelEUR, new FlatUnivariate (dblEURFundingVol));
 
 		mktParams.setForwardCurveVolSurface (fri3MUSD, new FlatUnivariate (dblUSD3MForwardVol));
 
 		mktParams.setForwardCurveVolSurface (fri3MEUR, new FlatUnivariate (dblEUR3MForwardVol));
 
-		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblUSDEURFXVol));
+		mktParams.setFXCurveVolSurface (fxLabel, new FlatUnivariate (dblUSDEURFXVol));
 
-		mktParams.setForwardFundingCorrSurface (fri3MUSD, "USD", new FlatUnivariate (dblUSDFundingUSD3MForwardCorr));
+		mktParams.setForwardFundingCorrSurface (fri3MUSD, fundingLabelUSD, new FlatUnivariate (dblUSDFundingUSD3MForwardCorr));
 
-		mktParams.setFundingFXCorrSurface ("EUR", cp, new FlatUnivariate (dblEURFundingUSDEURFXCorr));
+		mktParams.setFundingFXCorrSurface (fundingLabelEUR, fxLabel, new FlatUnivariate (dblEURFundingUSDEURFXCorr));
 
-		mktParams.setForwardFundingCorrSurface (fri3MEUR, "EUR", new FlatUnivariate (dblEURFundingEUR3MForwardCorr));
+		mktParams.setForwardFundingCorrSurface (fri3MEUR, fundingLabelEUR, new FlatUnivariate (dblEURFundingEUR3MForwardCorr));
 
-		mktParams.setForwardFXCorrSurface (fri3MEUR, cp, new FlatUnivariate (dblEUR3MForwardUSDEURFXCorr));
+		mktParams.setForwardFXCorrSurface (fri3MEUR, fxLabel, new FlatUnivariate (dblEUR3MForwardUSDEURFXCorr));
 	}
 
 	private static final void VolCorrScenario (
 		final ComponentPair[] aCP,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
-		final FloatingRateIndex fri3MUSD,
-		final FloatingRateIndex fri3MEUR,
-		final CurrencyPair cp,
+		final ForwardLabel fri3MUSD,
+		final ForwardLabel fri3MEUR,
+		final FXLabel fxLabel,
 		final double dblUSDFundingVol,
 		final double dblEURFundingVol,
 		final double dblUSD3MForwardVol,
@@ -190,7 +194,7 @@ public class FixFloatFixFloatAnalysis {
 			mktParams,
 			fri3MUSD,
 			fri3MEUR,
-			cp,
+			fxLabel,
 			dblUSDFundingVol,
 			dblEURFundingVol,
 			dblUSD3MForwardVol,
@@ -247,7 +251,7 @@ public class FixFloatFixFloatAnalysis {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		FloatingRateIndex fri3MUSD = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+		ForwardLabel fri3MUSD = ForwardLabel.Create ("USD", "LIBOR", "3M");
 
 		FixFloatComponent fixFloatUSD = MakeFixFloatSwap (
 			dtToday,
@@ -260,7 +264,7 @@ public class FixFloatFixFloatAnalysis {
 
 		CurrencyPair cp = CurrencyPair.FromCode ("USD/EUR");
 
-		FloatingRateIndex fri3MEUR = FloatingRateIndex.Create ("EUR", "LIBOR", "3M");
+		ForwardLabel fri3MEUR = ForwardLabel.Create ("EUR", "LIBOR", "3M");
 
 		FixFloatComponent fixFloatEURMTM = MakeFixFloatSwap (
 			dtToday,
@@ -291,6 +295,8 @@ public class FixFloatFixFloatAnalysis {
 			fixFloatUSD,
 			fixFloatEURNonMTM
 		);
+
+		FXLabel fxLabel = FXLabel.Standard (cp);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
@@ -331,7 +337,7 @@ public class FixFloatFixFloatAnalysis {
 		);
 
 		mktParams.setFXCurve (
-			cp,
+			fxLabel,
 			new FlatUnivariate (dblUSDEURFXRate)
 		);
 
@@ -360,7 +366,7 @@ public class FixFloatFixFloatAnalysis {
 												mktParams,
 												fri3MUSD,
 												fri3MEUR,
-												cp,
+												fxLabel,
 												dblUSDFundingVol,
 												dblEURFundingVol,
 												dblUSD3MForwardVol,

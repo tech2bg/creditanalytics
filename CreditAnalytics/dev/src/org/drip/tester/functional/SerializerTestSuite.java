@@ -298,7 +298,7 @@ public class SerializerTestSuite {
 
 		byte[] abFRA = new org.drip.product.fra.FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().julian(),
-				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01,
+				org.drip.state.identifier.ForwardLabel.Create ("JPY-LIBOR-6M"), 0.01,
 					"Act/360").serialize();
 
 		Verify (abFRA, new org.drip.product.fra.FRAStandardComponent (abFRA), "FloatingRateAgreement");
@@ -335,21 +335,21 @@ public class SerializerTestSuite {
 				4, "Act/360", false, false, "ABC", "DEF");
 
 		aFloatStream[0] = new org.drip.product.stream.FloatingStream ("DEF", null, 0.03, -1., null,
-			lsFloatPeriod3Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+			lsFloatPeriod3Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod5Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
 		aFloatStream[1] = new org.drip.product.stream.FloatingStream ("DEF", null, 0.05, -1., null,
-			lsFloatPeriod5Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+			lsFloatPeriod5Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod7Y =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap,
 				4, "Act/360", false, false, "ABC", "DEF");
 
 		aFloatStream[2] = new org.drip.product.stream.FloatingStream ("DEF", null, 0.07, -1., null,
-			lsFloatPeriod7Y, org.drip.product.params.FloatingRateIndex.Create ("ABC-RI-3M"), false);
+			lsFloatPeriod7Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
 			aFloatStream).serialize();

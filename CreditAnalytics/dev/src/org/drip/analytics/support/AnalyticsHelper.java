@@ -923,13 +923,12 @@ public class AnalyticsHelper {
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == comp || null == valParams || null == period || null == pricerParams || null == csqs ||
-			null == csqs.creditCurve (comp.creditCurveName()[0]) || !org.drip.quant.common.NumberUtil.IsValid
+			null == csqs.creditCurve (comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid
 				(dblWorkoutDate) || period.start() > dblWorkoutDate)
 			return null;
 
-		java.lang.String strCurrency = comp.couponCurrency()[0];
-
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve (strCurrency);
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (comp.couponCurrency()[0]));
 
 		if (null == dc) return null;
 
@@ -938,17 +937,17 @@ public class AnalyticsHelper {
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP ==
 			pricerParams.discretizationScheme())
 			return GenerateDayStepLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams.unitSize(), dc, csqs.creditCurve (comp.creditCurveName()[0]));
+				pricerParams.unitSize(), dc, csqs.creditCurve (comp.creditLabel()[0]));
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_PERIOD_STEP ==
 			pricerParams.discretizationScheme())
 			return GeneratePeriodUnitLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams.unitSize(), dc, csqs.creditCurve (comp.creditCurveName()[0]));
+				pricerParams.unitSize(), dc, csqs.creditCurve (comp.creditLabel()[0]));
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON ==
 			pricerParams.discretizationScheme())
 			return GenerateWholeLossPeriods (comp, valParams, period, dblPeriodEndDate, dc, csqs.creditCurve
-				(comp.creditCurveName()[0]));
+				(comp.creditLabel()[0]));
 
 		return null;
 	}

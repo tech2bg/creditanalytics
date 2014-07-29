@@ -74,12 +74,13 @@ public class ScenarioDeterministicVolatilityBuilder {
 			aSCBC[i] = scbc;
 
 		try {
-			return new org.drip.state.curve.BasisSplineDeterministicVolatility (dtStart.julian(), strName,
-				strCurrency, new org.drip.spline.grid.OverlappingStretchSpan
-					(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
-						(strName, adblDate, adblImpliedVolatility, aSCBC, null,
-							org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
-								org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE)), collatParams);
+			return new org.drip.state.curve.BasisSplineDeterministicVolatility (dtStart.julian(),
+				org.drip.state.identifier.CustomMetricLabel.Standard (strName), strCurrency, new
+					org.drip.spline.grid.OverlappingStretchSpan
+						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+							(strName, adblDate, adblImpliedVolatility, aSCBC, null,
+								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE)), collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -373,23 +373,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 		if (null == rvcLeading) return false;
 
-		org.drip.product.params.FloatingRateIndex[] aFRI = null;
-
-		java.lang.String[] astrForwardCurveName = cc.forwardCurveName();
-
-		if (null != astrForwardCurveName) {
-			int iNumFRI = astrForwardCurveName.length;
-
-			if (0 != iNumFRI) {
-				aFRI = new org.drip.product.params.FloatingRateIndex[iNumFRI];
-
-				for (int j = 0; j < iNumFRI; ++j)
-					aFRI[j] = org.drip.product.params.FloatingRateIndex.Create (astrForwardCurveName[j]);
-			}
-		}
-
 		return aCS[0].calibrate (rvcLeading, dblLeftSlope, _mapRVSC.get (dblSegmentRight).base(), null ==
-			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0, aFRI);
+			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0, cc.forwardLabel());
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -413,24 +398,9 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 				(iSegment).manifestMeasures()[0]))
 				return false;
 
-			org.drip.product.params.FloatingRateIndex[] aFRI = null;
-
-			java.lang.String[] astrForwardCurveName = cc.forwardCurveName();
-
-			if (null != astrForwardCurveName) {
-				int iNumFRI = astrForwardCurveName.length;
-
-				if (0 != iNumFRI) {
-					aFRI = new org.drip.product.params.FloatingRateIndex[iNumFRI];
-
-					for (int j = 0; j < iNumFRI; ++j)
-						aFRI[j] = org.drip.product.params.FloatingRateIndex.Create (astrForwardCurveName[j]);
-				}
-			}
-
 			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapRVSC.get
 				(dblSegmentRight).base(), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
-					!_stretch.setSegmentBuilt (iSegment, aFRI))
+					!_stretch.setSegmentBuilt (iSegment, cc.forwardLabel()))
 				return false;
 		}
 

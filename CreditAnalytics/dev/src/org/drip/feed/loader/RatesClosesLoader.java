@@ -372,7 +372,7 @@ public class RatesClosesLoader {
 
 			org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream
 				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
-					org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR",
+					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 						_mapFloatingTenor.get (strCurrency)), false);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
@@ -429,7 +429,7 @@ public class RatesClosesLoader {
 
 			org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream
 				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
-					org.drip.product.params.FloatingRateIndex.Create (strCurrency, "LIBOR",
+					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 						_mapFloatingTenor.get (strCurrency)), false);
 
 			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
@@ -544,7 +544,7 @@ public class RatesClosesLoader {
 				null, null, null, null)).nominal();
 
 		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.julian(),
-			org.drip.product.params.FloatingRateIndex.Create (irs.forwardCurveName()[0]).tenor());
+			irs.forwardLabel()[0].tenor());
 
 		int i1DFloatingAccrualDays = org.drip.analytics.daycount.Convention.DaysAccrued (dtPrev.julian(),
 			dtCurr.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
@@ -574,7 +574,7 @@ public class RatesClosesLoader {
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-		mapFixing.put (irs.getFloatStream().forwardCurveName()[0], dblProductFloatingRate);
+		mapFixing.put (irs.getFloatStream().forwardLabel()[0].fullyQualifiedName(), dblProductFloatingRate);
 
 		java.util.Map<org.drip.analytics.date.JulianDate,
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new

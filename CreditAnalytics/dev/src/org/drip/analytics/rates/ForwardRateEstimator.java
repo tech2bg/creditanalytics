@@ -45,7 +45,7 @@ public interface ForwardRateEstimator {
 	 * @return The Forward Rate Index
 	 */
 
-	public abstract org.drip.product.params.FloatingRateIndex index();
+	public abstract org.drip.state.identifier.ForwardLabel index();
 
 	/**
 	 * Retrieve the Forward Rate Tenor

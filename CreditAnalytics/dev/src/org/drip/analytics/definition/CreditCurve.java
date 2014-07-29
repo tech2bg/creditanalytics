@@ -49,9 +49,9 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	org.drip.analytics.definition.Curve {
 	private static final int NUM_DF_QUADRATURES = 5;
 
-	protected java.lang.String _strName = "";
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;
+	protected org.drip.state.identifier.CreditLabel _label = null;
 	protected double _dblSpecificDefaultDate = java.lang.Double.NaN;
 
 	/*
@@ -61,9 +61,9 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	protected boolean _bFlat = false;
 	protected double[] _adblCalibQuote = null;
 	protected java.lang.String[] _astrCalibMeasure = null;
-	protected org.drip.param.pricer.PricerParams _pricerParam = null;
 	protected org.drip.analytics.rates.DiscountCurve _dc = null;
 	protected org.drip.analytics.rates.DiscountCurve _dcTSY = null;
+	protected org.drip.param.pricer.PricerParams _pricerParam = null;
 	protected org.drip.param.valuation.ValuationParams _valParam = null;
 	protected org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 	protected org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
@@ -75,18 +75,18 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 
 	protected CreditCurve (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CreditLabel label,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_strName =
-			strName) || _strName.isEmpty() || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_label =
+			label) || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
 			throw new java.lang.Exception ("CreditCurve ctr: Invalid Inputs");
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
-		return _strName;
+		return _label;
 	}
 
 	@Override public java.lang.String currency()

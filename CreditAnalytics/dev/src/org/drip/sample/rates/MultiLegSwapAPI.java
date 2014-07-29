@@ -22,12 +22,12 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.product.stream.FixedStream;
 import org.drip.product.stream.FloatingStream;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
+import org.drip.state.identifier.ForwardLabel;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
@@ -239,7 +239,7 @@ public class MultiLegSwapAPI {
 			-1.,
 			null,
 			lsFloatPeriods3Y,
-			FloatingRateIndex.Create ("ABC-RI-3M"),
+			ForwardLabel.Create ("ABC-RI-3M"),
 			false
 		);
 
@@ -262,7 +262,7 @@ public class MultiLegSwapAPI {
 			-1.,
 			null,
 			lsFloatPeriods5Y,
-			FloatingRateIndex.Create ("ABC-RI-3M"),
+			ForwardLabel.Create ("ABC-RI-3M"),
 			false
 		);
 
@@ -285,7 +285,7 @@ public class MultiLegSwapAPI {
 			-1.,
 			null,
 			lsFloatPeriods7Y,
-			FloatingRateIndex.Create ("ABC-RI-3M"),
+			ForwardLabel.Create ("ABC-RI-3M"),
 			false
 		);
 

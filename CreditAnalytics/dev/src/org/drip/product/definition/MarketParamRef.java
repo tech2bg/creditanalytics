@@ -73,26 +73,26 @@ public interface MarketParamRef {
 	public abstract java.lang.String[] principalCurrency();
 
 	/**
-	 * Get the Array of Forward Curve Names
+	 * Get the Array of Forward Curve Latent State Labels
 	 * 
-	 * @return Array of the Forward Curve Names
+	 * @return Array of the Forward Curve Latent State Labels
 	 */
 
-	public abstract java.lang.String[] forwardCurveName();
+	public abstract org.drip.state.identifier.ForwardLabel[] forwardLabel();
 
 	/**
-	 * Get the credit curve name
+	 * Get the Array of Credit Curve Latent State Identifier Labels
 	 * 
-	 * @return The credit curve name
+	 * @return The Array of Credit Curve Latent State Identifier Labels
 	 */
 
-	public abstract java.lang.String[] creditCurveName();
+	public abstract org.drip.state.identifier.CreditLabel[] creditLabel();
 
 	/**
-	 * Get the Array of the Currency Pair Codes
+	 * Get the Array of the FX Latent State Identifier Labels
 	 * 
-	 * @return The Array of the Currency Pair Codes
+	 * @return The Array of the FX Latent State Identifier Labels
 	 */
 
-	public abstract java.lang.String[] currencyPairCode();
+	public abstract org.drip.state.identifier.FXLabel[] fxLabel();
 }

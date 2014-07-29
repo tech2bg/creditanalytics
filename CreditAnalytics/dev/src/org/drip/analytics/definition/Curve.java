@@ -44,12 +44,12 @@ package org.drip.analytics.definition;
 public interface Curve extends org.drip.state.representation.LatentState {
 
 	/**
-	 * Get the Curve Name
+	 * Get the Curve Latent State Identifier Label
 	 * 
-	 * @return The Curve Name
+	 * @return The Curve Latent State Identifier Label
 	 */
 
-	public abstract java.lang.String name();
+	public abstract org.drip.state.identifier.LatentStateLabel label();
 
 	/**
 	 * Get the Epoch Date
@@ -68,9 +68,9 @@ public interface Curve extends org.drip.state.representation.LatentState {
 	public abstract java.lang.String currency();
 
 	/**
-	 * Retrieve the Collaterlization Setting used to Construct the Curve
+	 * Retrieve the Collateralization Setting used to Construct the Curve
 	 * 
-	 * @return The Collaterlization Setting used to Construct the Curve
+	 * @return The Collateralization Setting used to Construct the Curve
 	 */
 
 	public abstract org.drip.param.valuation.CollateralizationParams collateralParams();

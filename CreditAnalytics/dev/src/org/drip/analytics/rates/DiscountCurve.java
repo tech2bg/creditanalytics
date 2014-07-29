@@ -98,9 +98,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		_collatParams = collatParams;
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
-		return _strCurrency;
+		return org.drip.state.identifier.FundingLabel.Standard (_strCurrency);
 	}
 
 	@Override public java.lang.String currency()
@@ -434,7 +434,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 	public abstract org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
 		final double dblDate,
-		final org.drip.product.params.FloatingRateIndex fri);
+		final org.drip.state.identifier.ForwardLabel fri);
 
 	/**
 	 * Retrieve the Latent State Quantification Metric

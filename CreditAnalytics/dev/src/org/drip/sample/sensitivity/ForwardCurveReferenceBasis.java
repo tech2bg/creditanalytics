@@ -12,7 +12,6 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
 import org.drip.product.stream.FixedStream;
 import org.drip.product.stream.FloatingStream;
@@ -20,6 +19,7 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -150,7 +150,7 @@ public class ForwardCurveReferenceBasis {
 				-1.,
 				null,
 				lsFloatPeriods,
-				FloatingRateIndex.Create ("USD-LIBOR-6M"),
+				ForwardLabel.Create ("USD-LIBOR-6M"),
 				false
 			);
 
@@ -296,7 +296,7 @@ public class ForwardCurveReferenceBasis {
 				-1.,
 				null,
 				lsReferenceFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -323,7 +323,7 @@ public class ForwardCurveReferenceBasis {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -435,7 +435,7 @@ public class ForwardCurveReferenceBasis {
 
 		ForwardCurve fcxMQuartic = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
+			ForwardLabel.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
 			mktParams,

@@ -99,9 +99,10 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		}
 
 		try {
-			return new org.drip.state.curve.ZeroRateDiscountCurve (name(), collateralParams(),
-				(_rcci.lcc().calibrateSpan (aRBSBumped, dblLeftMostZero, _rcci.valuationParameter(),
-					_rcci.pricerParameter(), _rcci.quotingParameter(), _rcci.marketParameters())));
+			return new org.drip.state.curve.ZeroRateDiscountCurve (label().fullyQualifiedName(),
+				collateralParams(), (_rcci.lcc().calibrateSpan (aRBSBumped, dblLeftMostZero,
+					_rcci.valuationParameter(), _rcci.pricerParameter(), _rcci.quotingParameter(),
+						_rcci.marketParameters())));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -180,7 +181,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 
 	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
 		final double dblDate,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
 		return null;
 	}

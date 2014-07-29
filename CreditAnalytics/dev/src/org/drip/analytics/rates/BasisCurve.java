@@ -52,13 +52,13 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 
 	private boolean _bBasisOnReference = false;
 	private double _dblEpochDate = java.lang.Double.NaN;
-	private org.drip.product.params.FloatingRateIndex _friDerived = null;
-	private org.drip.product.params.FloatingRateIndex _friReference = null;
+	private org.drip.state.identifier.ForwardLabel _friDerived = null;
+	private org.drip.state.identifier.ForwardLabel _friReference = null;
 
 	protected BasisCurve (
 		final double dblEpochDate,
-		final org.drip.product.params.FloatingRateIndex friReference,
-		final org.drip.product.params.FloatingRateIndex friDerived,
+		final org.drip.state.identifier.ForwardLabel friReference,
+		final org.drip.state.identifier.ForwardLabel friDerived,
 		final boolean bBasisOnReference)
 		throws java.lang.Exception
 	{
@@ -69,11 +69,11 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 		_bBasisOnReference = bBasisOnReference;
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
-		return _bBasisOnReference ? _friReference.fullyQualifiedName() + "::" +
-			_friDerived.fullyQualifiedName() : _friDerived.fullyQualifiedName() + "::" +
-				_friReference.fullyQualifiedName();
+		return org.drip.state.identifier.CustomMetricLabel.Standard (_bBasisOnReference ?
+			_friReference.fullyQualifiedName() + "::" + _friDerived.fullyQualifiedName() :
+				_friDerived.fullyQualifiedName() + "::" + _friReference.fullyQualifiedName());
 	}
 
 	@Override public java.lang.String currency()
@@ -92,12 +92,12 @@ public abstract class BasisCurve extends org.drip.service.stream.Serializer impl
 		return null;
 	}
 
-	@Override public org.drip.product.params.FloatingRateIndex referenceIndex()
+	@Override public org.drip.state.identifier.ForwardLabel referenceIndex()
 	{
 		return _friReference;
 	}
 
-	@Override public org.drip.product.params.FloatingRateIndex derivedIndex()
+	@Override public org.drip.state.identifier.ForwardLabel derivedIndex()
 	{
 		return _friDerived;
 	}

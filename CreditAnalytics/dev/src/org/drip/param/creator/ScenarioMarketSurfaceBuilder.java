@@ -110,10 +110,11 @@ public class ScenarioMarketSurfaceBuilder {
 		}
 
 		try {
-			return new org.drip.state.curve.BasisSplineMarketSurface (dtStart.julian(), strName,
-				strCurrency, new org.drip.spline.multidimensional.WireSurfaceStretch ("WireSurfaceStretch@" +
-					strName + "@" + org.drip.quant.common.StringUtil.GUID(), scbcSurface, mapWireSpan),
-						collatParams);
+			return new org.drip.state.curve.BasisSplineMarketSurface (dtStart.julian(),
+				org.drip.state.identifier.CustomMetricLabel.Standard (strName), strCurrency, new
+					org.drip.spline.multidimensional.WireSurfaceStretch ("WireSurfaceStretch@" + strName +
+						"@" + org.drip.quant.common.StringUtil.GUID(), scbcSurface, mapWireSpan),
+							collatParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

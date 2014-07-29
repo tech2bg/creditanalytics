@@ -12,14 +12,13 @@ import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.fra.FRAStandardCapFloor;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.product.stream.FixedStream;
-import org.drip.product.stream.FloatingStream;
+import org.drip.product.stream.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -124,7 +123,7 @@ public class FRAStdCapFloorVolAnalysis {
 				-1.,
 				null,
 				lsFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-3M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-3M"),
 				false
 			);
 
@@ -270,7 +269,7 @@ public class FRAStdCapFloorVolAnalysis {
 				-1.,
 				null,
 				lsReferenceFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -297,7 +296,7 @@ public class FRAStdCapFloorVolAnalysis {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -348,7 +347,7 @@ public class FRAStdCapFloorVolAnalysis {
 
 		return ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			FloatingRateIndex.Create (strCurrency, "LIBOR", strBasisTenor),
+			ForwardLabel.Create (strCurrency, "LIBOR", strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -506,7 +505,7 @@ public class FRAStdCapFloorVolAnalysis {
 	private static final void SetVolCorrSurface (
 		final FloatingStream floatstream,
 		final CurveSurfaceQuoteSet mktParams,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblFRIVol,
 		final double dblMultiplicativeQuantoExchangeVol,
 		final double dblFRIQuantoExchangeCorr)
@@ -521,13 +520,13 @@ public class FRAStdCapFloorVolAnalysis {
 			);
 
 			mktParams.setCustomMetricVolSurface (
-				"ForwardToDomesticExchangeVolatility",
+				CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
 				dtFRADate,
 				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 			);
 
 			mktParams.setCustomMetricVolSurface (
-				"FRIForwardToDomesticExchangeCorrelation",
+				CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
 				dtFRADate,
 				new FlatUnivariate (dblFRIQuantoExchangeCorr)
 			);
@@ -559,7 +558,7 @@ public class FRAStdCapFloorVolAnalysis {
 
 		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
 
-		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
 
 		JulianDate dtEffective = dtToday.addTenor (strTenor);
 

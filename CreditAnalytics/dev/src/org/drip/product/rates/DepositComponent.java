@@ -55,7 +55,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	private java.lang.String _strDayCount = "Act/360";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.params.FloatingRateIndex _fri = null;
+	private org.drip.state.identifier.ForwardLabel _fri = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
 	/**
@@ -73,7 +73,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	public DepositComponent (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
@@ -200,7 +200,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_fri = null;
 		else
-			_fri = org.drip.product.params.FloatingRateIndex.Create (astrField[8]);
+			_fri = org.drip.state.identifier.ForwardLabel.Create (astrField[8]);
 	}
 
 	@Override public java.lang.String primaryCode()
@@ -278,17 +278,17 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		return cashFlowPeriod().get (0).freq();
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return null == _fri ? null : new java.lang.String[] {_fri.fullyQualifiedName()};
+		return null == _fri ? null : new org.drip.state.identifier.ForwardLabel[] {_fri};
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		return null;
 	}
@@ -346,7 +346,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 		org.drip.analytics.rates.ForwardCurve fc = csqs.forwardCurve (_fri);
 
-		if (null != fc && null != _fri && fc.name().equalsIgnoreCase (_fri.fullyQualifiedName())) {
+		if (null != fc && null != _fri && fc.label().match (_fri)) {
 			try {
 				double dblForwardRate = fc.forward (_dblMaturity);
 
@@ -358,7 +358,8 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 			}
 		}
 
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dc) {
 			mapResult.put ("calctime", (System.nanoTime() - lStart) * 1.e-09);
@@ -419,7 +420,8 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -461,7 +463,8 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -729,7 +732,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	{
 		DepositComponent deposit = new DepositComponent (org.drip.analytics.date.JulianDate.Today(),
 			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"),
-				org.drip.product.params.FloatingRateIndex.Create ("USD-LIBOR-3M"), "AUD", "Act/360", "BMA");
+				org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-3M"), "AUD", "Act/360", "BMA");
 
 		byte[] abDeposit = deposit.serialize();
 

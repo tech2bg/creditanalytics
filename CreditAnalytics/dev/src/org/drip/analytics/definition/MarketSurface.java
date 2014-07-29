@@ -37,24 +37,24 @@ package org.drip.analytics.definition;
 
 public abstract class MarketSurface extends org.drip.service.stream.Serializer implements
 	org.drip.analytics.definition.Curve {
-	protected java.lang.String _strName = "";
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;
+	protected org.drip.state.identifier.CustomMetricLabel _label = null;
 
 	protected MarketSurface (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CustomMetricLabel label,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_strName =
-			strName) || _strName.isEmpty() || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_label =
+			label) || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
 			throw new java.lang.Exception ("MarketSurface ctr: Invalid Inputs");
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
-		return _strName;
+		return _label;
 	}
 
 	@Override public java.lang.String currency()

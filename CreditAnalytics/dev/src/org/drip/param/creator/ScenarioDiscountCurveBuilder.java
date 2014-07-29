@@ -262,7 +262,7 @@ public class ScenarioDiscountCurveBuilder {
 
 		if (null == esQMTruth || 0 == esQMTruth.size()) return null;
 
-		java.lang.String strName = dcShapePreserver.name();
+		java.lang.String strName = dcShapePreserver.label().fullyQualifiedName();
 
 		int i = 0;
 		double[] adblQM = new double[iTruthSize];
@@ -362,7 +362,7 @@ public class ScenarioDiscountCurveBuilder {
 
 		if (null == esQMTruth || 0 == esQMTruth.size()) return null;
 
-		java.lang.String strName = dcShapePreserver.name();
+		java.lang.String strName = dcShapePreserver.label().fullyQualifiedName();
 
 		int i = 0;
 		double[] adblQM = new double[iTruthSize];

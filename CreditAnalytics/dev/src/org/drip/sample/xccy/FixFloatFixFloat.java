@@ -12,12 +12,12 @@ import org.drip.param.valuation.*;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
-import org.drip.product.stream.FixedStream;
-import org.drip.product.stream.FloatingStream;
+import org.drip.product.stream.*;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -115,7 +115,7 @@ public class FixFloatFixFloat {
 			1.,
 			null,
 			lsDerivedFloatPeriods,
-			FloatingRateIndex.Create (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			ForwardLabel.Create (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			false
 		);
 
@@ -163,7 +163,9 @@ public class FixFloatFixFloat {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		FloatingRateIndex fri3MUSD = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+		ForwardLabel fri3MUSD = ForwardLabel.Create ("USD", "LIBOR", "3M");
+
+		FundingLabel fundingLabelUSD = FundingLabel.Standard ("USD");
 
 		FixFloatComponent fixFloatUSD = MakeFixFloatSwap (
 			dtToday,
@@ -176,7 +178,9 @@ public class FixFloatFixFloat {
 
 		CurrencyPair cp = CurrencyPair.FromCode ("USD/EUR");
 
-		FloatingRateIndex fri3MEUR = FloatingRateIndex.Create ("EUR", "LIBOR", "3M");
+		ForwardLabel fri3MEUR = ForwardLabel.Create ("EUR", "LIBOR", "3M");
+
+		FundingLabel fundingLabelEUR = FundingLabel.Standard ("EUR");
 
 		FixFloatComponent fixFloatEURMTM = MakeFixFloatSwap (
 			dtToday,
@@ -207,6 +211,8 @@ public class FixFloatFixFloat {
 			fixFloatUSD,
 			fixFloatEURNonMTM
 		);
+
+		FXLabel fxLabel = FXLabel.Standard (cp);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
@@ -247,17 +253,17 @@ public class FixFloatFixFloat {
 		);
 
 		mktParams.setFXCurve (
-			cp,
+			fxLabel,
 			new FlatUnivariate (dblUSDEURFXRate)
 		);
 
 		mktParams.setFundingCurveVolSurface (
-			"USD",
+			fundingLabelUSD,
 			new FlatUnivariate (dblUSDFundingVol)
 		);
 
 		mktParams.setFundingCurveVolSurface (
-			"EUR",
+			fundingLabelEUR,
 			new FlatUnivariate (dblEURFundingVol)
 		);
 
@@ -272,31 +278,31 @@ public class FixFloatFixFloat {
 		);
 
 		mktParams.setFXCurveVolSurface (
-			cp,
+			fxLabel,
 			new FlatUnivariate (dblUSDEURFXVol)
 		);
 
 		mktParams.setForwardFundingCorrSurface (
 			fri3MUSD,
-			"USD",
+			fundingLabelUSD,
 			new FlatUnivariate (dblUSDFundingUSD3MForwardCorr)
 		);
 
 		mktParams.setFundingFXCorrSurface (
-			"EUR",
-			cp,
+			fundingLabelEUR,
+			fxLabel,
 			new FlatUnivariate (dblEURFundingUSDEURFXCorr)
 		);
 
 		mktParams.setForwardFundingCorrSurface (
 			fri3MEUR,
-			"EUR",
+			fundingLabelEUR,
 			new FlatUnivariate (dblEURFundingEUR3MForwardCorr)
 		);
 
 		mktParams.setForwardFXCorrSurface (
 			fri3MEUR,
-			cp,
+			fxLabel,
 			new FlatUnivariate (dblEUR3MForwardUSDEURFXCorr)
 		);
 

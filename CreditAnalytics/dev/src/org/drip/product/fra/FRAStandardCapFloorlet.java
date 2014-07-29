@@ -91,7 +91,8 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 	{
 		if (null == valParams || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -124,9 +125,11 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 			double dblIntegratedQuantoDrift = java.lang.Math.exp (-1. *
 				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (auForwardVolSurface,
-					csqs.customMetricVolSurface ("ForwardToDomesticExchangeVolatility", dtEffective),
-						csqs.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
-							dtEffective), dblValueDate, dblExerciseDate));
+					csqs.customMetricVolSurface (org.drip.state.identifier.CustomMetricLabel.Standard
+						("ForwardToDomesticExchangeVolatility"), dtEffective), csqs.customMetricVolSurface
+							(org.drip.state.identifier.CustomMetricLabel.Standard
+								("FRIForwardToDomesticExchangeCorrelation"), dtEffective), dblValueDate,
+									dblExerciseDate));
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedQuantoDrift)) return null;
 

@@ -43,7 +43,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	private double _dblStrike = java.lang.Double.NaN;
 	private double _dblEffectiveDate = java.lang.Double.NaN;
 	private org.drip.analytics.date.JulianDate _dtMaturity = null;
-	private org.drip.product.params.FloatingRateIndex _fri = null;
+	private org.drip.state.identifier.ForwardLabel _fri = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -76,7 +76,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final java.lang.String strCode,
 		final java.lang.String strCalendar,
 		final double dblEffectiveDate,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final double dblStrike,
 		java.lang.String strDayCount)
 		throws java.lang.Exception
@@ -170,7 +170,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_fri = null;
 		else
-			_fri = new org.drip.product.params.FloatingRateIndex (astrField[6].getBytes());
+			_fri = new org.drip.state.identifier.ForwardLabel (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception
@@ -269,17 +269,17 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return cashFlowPeriod().get (0).freq();
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return new java.lang.String[] {_fri.fullyQualifiedName()};
+		return new org.drip.state.identifier.ForwardLabel[] {_fri};
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		return null;
 	}
@@ -331,7 +331,8 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	{
 		if (null == valParams || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -374,11 +375,12 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 			org.drip.analytics.date.JulianDate dtEffective = effective();
 
 			double dblMultiplicativeQuantoAdjustment = java.lang.Math.exp (-1. *
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-					(csqs.forwardCurveVolSurface (_fri), csqs.customMetricVolSurface
-						("ForwardToDomesticExchangeVolatility", dtEffective),
-							csqs.customMetricVolSurface ("FRIForwardToDomesticExchangeCorrelation",
-								dtEffective), dblValueDate, _dblEffectiveDate));
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs.forwardCurveVolSurface
+					(_fri), csqs.customMetricVolSurface (org.drip.state.identifier.CustomMetricLabel.Standard
+						("ForwardToDomesticExchangeVolatility"), dtEffective), csqs.customMetricVolSurface
+							(org.drip.state.identifier.CustomMetricLabel.Standard
+								("FRIForwardToDomesticExchangeCorrelation"), dtEffective), dblValueDate,
+									_dblEffectiveDate));
 
 			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffectiveDate,
 				dblMaturity, _strDayCount, false, dblMaturity, null, _strCalendar);
@@ -473,9 +475,6 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == csqs || null == csqs.fundingCurve (couponCurrency()[0]))
-			return null;
-
 		return null;
 	}
 
@@ -486,10 +485,6 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == strManifestMeasure || null == csqs || null ==
-			csqs.fundingCurve (couponCurrency()[0]))
-			return null;
-
 		return null;
 	}
 
@@ -619,7 +614,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	 * @return The Floating Rate Index
 	 */
 
-	public org.drip.product.params.FloatingRateIndex fri()
+	public org.drip.state.identifier.ForwardLabel fri()
 	{
 		return _fri;
 	}
@@ -663,7 +658,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	{
 		FRAStandardComponent fra = new FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().julian(),
-				org.drip.product.params.FloatingRateIndex.Create ("JPY-LIBOR-6M"), 0.01, "Act/360");
+				org.drip.state.identifier.ForwardLabel.Create ("JPY-LIBOR-6M"), 0.01, "Act/360");
 
 		byte[] abFRA = fra.serialize();
 

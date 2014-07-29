@@ -78,7 +78,7 @@ public class StochasticVolatilitySurfaceEvaluator {
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		System.out.println ("\n\t\t  " + volSurface.name());
+		System.out.println ("\n\t\t  " + volSurface.label());
 
 		System.out.println ("\t|------------------------------------------------------------|");
 

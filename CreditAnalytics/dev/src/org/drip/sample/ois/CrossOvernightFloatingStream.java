@@ -13,10 +13,8 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.product.stream.FixedStream;
-import org.drip.product.stream.FloatingStream;
+import org.drip.product.stream.*;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
@@ -24,6 +22,7 @@ import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -268,7 +267,7 @@ public class CrossOvernightFloatingStream {
 		final JulianDate dtStart,
 		final JulianDate dtEnd,
 		final JulianDate dtValue,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblFlatFixing,
 		final double dblNotional)
 		throws Exception
@@ -334,7 +333,7 @@ public class CrossOvernightFloatingStream {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
-		FloatingRateIndex fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
+		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
 		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 			dtCustomOISStart.julian(),
@@ -377,11 +376,13 @@ public class CrossOvernightFloatingStream {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
+		FundingLabel fundingLabelUSD = FundingLabel.Standard ("USD");
+
+		mktParams.setFundingCurveVolSurface (fundingLabelUSD, new FlatUnivariate (dblUSDFundingVol));
 
 		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
 
-		mktParams.setForwardFundingCorrSurface (fri, "USD", new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
+		mktParams.setForwardFundingCorrSurface (fri, fundingLabelUSD, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 
 		Map<String, Double> mapGeometricOutput = floatStream.value (
 			valParams,

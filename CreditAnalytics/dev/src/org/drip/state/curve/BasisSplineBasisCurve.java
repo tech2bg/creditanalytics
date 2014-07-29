@@ -54,8 +54,8 @@ public class BasisSplineBasisCurve extends org.drip.analytics.rates.BasisCurve {
 	 */
 
 	public BasisSplineBasisCurve (
-		final org.drip.product.params.FloatingRateIndex friReference,
-		final org.drip.product.params.FloatingRateIndex friDerived,
+		final org.drip.state.identifier.ForwardLabel friReference,
+		final org.drip.state.identifier.ForwardLabel friDerived,
 		final boolean bBasisOnReference,
 		final org.drip.spline.grid.Span span,
 		final org.drip.param.valuation.CollateralizationParams collatParams)

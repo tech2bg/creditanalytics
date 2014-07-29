@@ -17,6 +17,7 @@ import org.drip.quant.common.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -87,7 +88,7 @@ public class FloatFloatFloatFloat {
 			-1.,
 			null,
 			lsReferenceFloatPeriods,
-			FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			false
 		);
 
@@ -116,7 +117,7 @@ public class FloatFloatFloatFloat {
 			1.,
 			null,
 			lsDerivedFloatPeriods,
-			FloatingRateIndex.Create (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			false
 		);
 
@@ -169,13 +170,17 @@ public class FloatFloatFloatFloat {
 
 		CurrencyPair cp = CurrencyPair.FromCode ("EUR/USD");
 
-		FloatingRateIndex fri3MUSD = FloatingRateIndex.Create ("USD", "LIBOR", "3M");
+		ForwardLabel fri3MUSD = ForwardLabel.Create ("USD", "LIBOR", "3M");
 
-		FloatingRateIndex fri6MUSD = FloatingRateIndex.Create ("USD", "LIBOR", "6M");
+		ForwardLabel fri6MUSD = ForwardLabel.Create ("USD", "LIBOR", "6M");
 
-		FloatingRateIndex fri3MEUR = FloatingRateIndex.Create ("EUR", "LIBOR", "3M");
+		ForwardLabel fri3MEUR = ForwardLabel.Create ("EUR", "LIBOR", "3M");
 
-		FloatingRateIndex fri6MEUR = FloatingRateIndex.Create ("EUR", "LIBOR", "6M");
+		ForwardLabel fri6MEUR = ForwardLabel.Create ("EUR", "LIBOR", "6M");
+
+		FundingLabel fundingLabelUSD = FundingLabel.Standard ("USD");
+
+		FundingLabel fundingLabelEUR = FundingLabel.Standard ("EUR");
 
 		FloatFloatComponent floatFloatDerivedEUR = MakeFloatFloatSwap (
 			dtToday,
@@ -221,6 +226,8 @@ public class FloatFloatFloatFloat {
 			floatFloatReferenceUSDNonMTM,
 			floatFloatDerivedEUR
 		);
+
+		FXLabel fxLabel = FXLabel.Standard (cp);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
@@ -279,37 +286,37 @@ public class FloatFloatFloatFloat {
 		);
 
 		mktParams.setFXCurve (
-			cp,
+			fxLabel,
 			new FlatUnivariate (dblEURUSDFXRate)
 		);
 
-		mktParams.setFundingCurveVolSurface ("USD", new FlatUnivariate (dblUSDFundingVol));
+		mktParams.setFundingCurveVolSurface (fundingLabelUSD, new FlatUnivariate (dblUSDFundingVol));
 
 		mktParams.setForwardCurveVolSurface (fri3MUSD, new FlatUnivariate (dblUSD3MForwardVol));
 
 		mktParams.setForwardCurveVolSurface (fri6MUSD, new FlatUnivariate (dblUSD6MForwardVol));
 
-		mktParams.setFundingCurveVolSurface ("EUR", new FlatUnivariate (dblEURFundingVol));
+		mktParams.setFundingCurveVolSurface (fundingLabelEUR, new FlatUnivariate (dblEURFundingVol));
 
 		mktParams.setForwardCurveVolSurface (fri3MEUR, new FlatUnivariate (dblEUR3MForwardVol));
 
 		mktParams.setForwardCurveVolSurface (fri6MEUR, new FlatUnivariate (dblEUR6MForwardVol));
 
-		mktParams.setFXCurveVolSurface (cp, new FlatUnivariate (dblEURUSDFXVol));
+		mktParams.setFXCurveVolSurface (fxLabel, new FlatUnivariate (dblEURUSDFXVol));
 
-		mktParams.setForwardFundingCorrSurface (fri3MUSD, "USD", new FlatUnivariate (dblUSDFundingUSD3MForwardCorr));
+		mktParams.setForwardFundingCorrSurface (fri3MUSD, fundingLabelUSD, new FlatUnivariate (dblUSDFundingUSD3MForwardCorr));
 
-		mktParams.setForwardFundingCorrSurface (fri6MUSD, "USD", new FlatUnivariate (dblUSDFundingUSD6MForwardCorr));
+		mktParams.setForwardFundingCorrSurface (fri6MUSD, fundingLabelUSD, new FlatUnivariate (dblUSDFundingUSD6MForwardCorr));
 
-		mktParams.setForwardFundingCorrSurface (fri3MEUR, "EUR", new FlatUnivariate (dblEURFundingEUR3MForwardCorr));
+		mktParams.setForwardFundingCorrSurface (fri3MEUR, fundingLabelEUR, new FlatUnivariate (dblEURFundingEUR3MForwardCorr));
 
-		mktParams.setForwardFundingCorrSurface (fri6MEUR, "EUR", new FlatUnivariate (dblEURFundingEUR6MForwardCorr));
+		mktParams.setForwardFundingCorrSurface (fri6MEUR, fundingLabelEUR, new FlatUnivariate (dblEURFundingEUR6MForwardCorr));
 
-		mktParams.setForwardFXCorrSurface (fri3MUSD, cp, new FlatUnivariate (dblUSD3MForwardEURUSDFXCorr));
+		mktParams.setForwardFXCorrSurface (fri3MUSD, fxLabel, new FlatUnivariate (dblUSD3MForwardEURUSDFXCorr));
 
-		mktParams.setForwardFXCorrSurface (fri6MUSD, cp, new FlatUnivariate (dblUSD6MForwardEURUSDFXCorr));
+		mktParams.setForwardFXCorrSurface (fri6MUSD, fxLabel, new FlatUnivariate (dblUSD6MForwardEURUSDFXCorr));
 
-		mktParams.setFundingFXCorrSurface ("USD", cp, new FlatUnivariate (dblUSDFundingUSDEURFXCorr));
+		mktParams.setFundingFXCorrSurface (fundingLabelUSD, fxLabel, new FlatUnivariate (dblUSDFundingUSDEURFXCorr));
 
 		CaseInsensitiveTreeMap<Double> mapMTMOutput = cpMTM.value (valParams, null, mktParams, null);
 

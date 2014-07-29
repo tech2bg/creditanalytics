@@ -220,12 +220,14 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 			if (null != csqsTenorUp && null != compCurve && null != compCurve._cc && null !=
 				compCurve._strName && !compCurve._strName.isEmpty()) {
-				ccVirginUp = csqsTenorUp.creditCurve (compCurve._strName);
+				ccVirginUp = csqsTenorUp.creditCurve (org.drip.state.identifier.CreditLabel.Standard
+					(compCurve._strName));
 
 				csqsTenorUp.setCreditCurve (compCurve._cc);
 
 				if (null != csqsTenorDown) {
-					ccVirginDown = csqsTenorDown.creditCurve (compCurve._strName);
+					ccVirginDown = csqsTenorDown.creditCurve (org.drip.state.identifier.CreditLabel.Standard
+						(compCurve._strName));
 
 					csqsTenorDown.setCreditCurve (compCurve._cc);
 				}
@@ -306,7 +308,8 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 			if (null != csqs)
 				mapComponentTenorDGMM.put (strComponentName, accumulateTenorDeltaGammaMeasures (valParams,
 					pricerParams, mapTenorUpCSQS, mapTenorDownCSQS, quotingParams, mapBaseMeasures, new
-						ComponentCurve (strComponentName, csqs.creditCurve (strComponentName))));
+						ComponentCurve (strComponentName, csqs.creditCurve
+							(org.drip.state.identifier.CreditLabel.Standard (strComponentName)))));
 		}
 
 		if (0 == mapComponentTenorDGMM.size()) return null;
@@ -513,7 +516,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		return astrPrincipalCurrency;
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
 
@@ -523,41 +526,42 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (0 == iNumComp) return null;
 
-		java.util.Set<java.lang.String> setForwardCurveName = new java.util.HashSet<java.lang.String>();
+		java.util.Set<org.drip.state.identifier.ForwardLabel> setLSLForward = new
+			java.util.HashSet<org.drip.state.identifier.ForwardLabel>();
 
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.lang.String[] astrForwardCurveName = aComp[i].forwardCurveName();
+			org.drip.state.identifier.ForwardLabel[] aLSLForward = aComp[i].forwardLabel();
 
-			if (null == astrForwardCurveName) continue;
+			if (null == aLSLForward) continue;
 
-			int iNumForwardCurve = astrForwardCurveName.length;
+			int iNumForwardCurve = aLSLForward.length;
 
 			if (0 == iNumForwardCurve) continue;
 
 			for (int j = 0; j < iNumForwardCurve; ++j) {
-				java.lang.String strForwardCurve = astrForwardCurveName[j];
+				org.drip.state.identifier.ForwardLabel lslForward = aLSLForward[j];
 
-				if (null != strForwardCurve && !strForwardCurve.isEmpty())
-					setForwardCurveName.add (astrForwardCurveName[j]);
+				if (null != lslForward) setLSLForward.add (lslForward);
 			}
 		}
 
-		int iNumForward = setForwardCurveName.size();
+		int iNumForward = setLSLForward.size();
 
 		if (0 == iNumForward) return null;
 
 		int i = 0;
-		java.lang.String[] astrForwardCurveName = new java.lang.String[iNumForward];
+		org.drip.state.identifier.ForwardLabel[] aLSLForward = new
+			org.drip.state.identifier.ForwardLabel[iNumForward];
 
-		for (java.lang.String strForwardCurve : astrForwardCurveName)
-			astrForwardCurveName[i++] = strForwardCurve;
+		for (org.drip.state.identifier.ForwardLabel lslForward : setLSLForward)
+			aLSLForward[i++] = lslForward;
 
-		return astrForwardCurveName;
+		return aLSLForward;
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
 
@@ -567,41 +571,42 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (0 == iNumComp) return null;
 
-		java.util.Set<java.lang.String> sCC = new java.util.HashSet<java.lang.String>();
+		java.util.Set<org.drip.state.identifier.CreditLabel> sLSLCredit = new
+			java.util.HashSet<org.drip.state.identifier.CreditLabel>();
 
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.lang.String[] astrCreditCurveName = aComp[i].creditCurveName();
+			org.drip.state.identifier.CreditLabel[] aLSLCredit = aComp[i].creditLabel();
 
-			if (null == astrCreditCurveName) continue;
+			if (null == aLSLCredit) continue;
 
-			int iNumCreditCurve = astrCreditCurveName.length;
+			int iNumCreditCurve = aLSLCredit.length;
 
 			if (0 == iNumCreditCurve) continue;
 
 			for (int j = 0; j < iNumCreditCurve; ++j) {
-				java.lang.String strCreditCurveName = astrCreditCurveName[j];
+				org.drip.state.identifier.CreditLabel lslCredit = aLSLCredit[j];
 
-				if (null != strCreditCurveName && !strCreditCurveName.isEmpty())
-					sCC.add (strCreditCurveName);
+				if (null != lslCredit) sLSLCredit.add (lslCredit);
 			}
 		}
 
-		int iNumCreditCurve = sCC.size();
+		int iNumCreditCurve = sLSLCredit.size();
 
 		if (0 == iNumCreditCurve) return null;
 
 		int i = 0;
-		java.lang.String[] astrCreditCurveName = new java.lang.String[iNumCreditCurve];
+		org.drip.state.identifier.CreditLabel[] aLSLCredit = new
+			org.drip.state.identifier.CreditLabel[iNumCreditCurve];
 
-		for (java.lang.String strCreditCurveName : sCC)
-			astrCreditCurveName[i++] = strCreditCurveName;
+		for (org.drip.state.identifier.CreditLabel lslCredit : sLSLCredit)
+			aLSLCredit[i++] = lslCredit;
 
-		return astrCreditCurveName;
+		return aLSLCredit;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
 
@@ -611,38 +616,38 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (0 == iNumComp) return null;
 
-		java.util.Set<java.lang.String> setCurrencyPairCode = new java.util.HashSet<java.lang.String>();
+		java.util.Set<org.drip.state.identifier.FXLabel> setLabel = new
+			java.util.HashSet<org.drip.state.identifier.FXLabel>();
 
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.lang.String[] astrCurrencyPairCode = aComp[i].currencyPairCode();
+			org.drip.state.identifier.FXLabel[] aLabel = aComp[i].fxLabel();
 
-			if (null == astrCurrencyPairCode) continue;
+			if (null == aLabel) continue;
 
-			int iNumCurrencyPairCode = astrCurrencyPairCode.length;
+			int iNumLabel = aLabel.length;
 
-			if (0 == iNumCurrencyPairCode) continue;
+			if (0 == iNumLabel) continue;
 
-			for (int j = 0; j < iNumCurrencyPairCode; ++j) {
-				java.lang.String strCurrencyPairCode = astrCurrencyPairCode[j];
+			for (int j = 0; j < iNumLabel; ++j) {
+				org.drip.state.identifier.FXLabel label = aLabel[j];
 
-				if (null != strCurrencyPairCode && !strCurrencyPairCode.isEmpty())
-					setCurrencyPairCode.add (strCurrencyPairCode);
+				if (null != label) setLabel.add (label);
 			}
 		}
 
-		int iNumCurrencyPairCode = setCurrencyPairCode.size();
+		int iNumLabel = setLabel.size();
 
-		if (0 == iNumCurrencyPairCode) return null;
+		if (0 == iNumLabel) return null;
 
 		int i = 0;
-		java.lang.String[] astrCurrencyPairCode = new java.lang.String[iNumCurrencyPairCode];
+		org.drip.state.identifier.FXLabel[] aLabel = new org.drip.state.identifier.FXLabel[iNumLabel];
 
-		for (java.lang.String strCurrencyPairCode : setCurrencyPairCode)
-			astrCurrencyPairCode[i++] = strCurrencyPairCode;
+		for (org.drip.state.identifier.FXLabel label : setLabel)
+			aLabel[i++] = label;
 
-		return astrCurrencyPairCode;
+		return aLabel;
 	}
 
 	/**

@@ -242,17 +242,17 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return _fixStream.freq();
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return _floatStream.forwardCurveName();
+		return _floatStream.forwardLabel();
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		return null;
 	}
@@ -401,7 +401,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
 				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-					(couponCurrency()[0]);
+					(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 				if (null == dcFunding) return null;
 
@@ -572,7 +572,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
 				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-					(couponCurrency()[0]);
+					(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 				if (null == dcFunding) return null;
 
@@ -929,7 +929,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 				null, 4, "Act/360", false, true, "JPY", "JPY");
 
 		org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream ("JPY",
-			null, 0.01, -7., null, lsFloatCouponPeriod, org.drip.product.params.FloatingRateIndex.Create
+			null, 0.01, -7., null, lsFloatCouponPeriod, org.drip.state.identifier.ForwardLabel.Create
 				("JPY-LIBOR-3M"), false);
 
 		IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream, floatStream);

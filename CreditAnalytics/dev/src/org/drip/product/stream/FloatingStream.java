@@ -56,14 +56,14 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.params.FXMTMSetting _fxmtm = null;
-	private org.drip.product.params.FloatingRateIndex _fri = null;
+	private org.drip.state.identifier.ForwardLabel _fri = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
 
 	protected org.drip.analytics.output.PeriodCouponMeasures compoundFixing (
 		final double dblAccrualEndDate,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final org.drip.analytics.period.CashflowPeriod currentPeriod,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -133,7 +133,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		final double dblNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final boolean bIsReference)
 		throws java.lang.Exception
 	{
@@ -241,7 +241,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
 			_fri = null;
 		else
-			_fri = new org.drip.product.params.FloatingRateIndex (astrField[7].getBytes());
+			_fri = new org.drip.state.identifier.ForwardLabel (astrField[7].getBytes());
 
 		if (null == astrField[8] || astrField[8].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate notional schedule");
@@ -394,7 +394,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 			}
 		}
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -423,23 +424,24 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return cashFlowPeriod().get (0).freq();
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return new java.lang.String[] {_fri.fullyQualifiedName()};
+		return new org.drip.state.identifier.ForwardLabel[] {_fri};
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		if (null == _fxmtm) return null;
 
 		org.drip.product.params.CurrencyPair cp = _fxmtm.currencyPair();
 
-		return null == cp ? null : new java.lang.String[] {cp.code()};
+		return null == cp ? null : new org.drip.state.identifier.FXLabel[]
+			{org.drip.state.identifier.FXLabel.Standard (cp)};
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -495,11 +497,17 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		java.lang.String strCurrency = couponCurrency()[0];
 
-		org.drip.product.params.CurrencyPair cp = null == _fxmtm ? null : _fxmtm.currencyPair();
+		org.drip.state.identifier.FXLabel fxLabel = null;
+		org.drip.quant.function1D.AbstractUnivariate auFX = null;
 
-		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (cp);
+		org.drip.state.identifier.FXLabel[] aFXLabel = fxLabel();
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (strCurrency);
+		if (null != aFXLabel && 0 != aFXLabel.length) auFX = csqs.fxCurve (fxLabel = aFXLabel[0]);
+
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(strCurrency);
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 
 		if (null == dcFunding) return null;
 
@@ -591,21 +599,21 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 							"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
 								dblValueDate, dblPeriodStartDate) : java.lang.Math.exp
 									(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-										(csqs.fundingCurveVolSurface (strCurrency),
+										(csqs.fundingCurveVolSurface (fundingLabel),
 											csqs.forwardCurveVolSurface (_fri),
-												csqs.forwardFundingCorrSurface (_fri, strCurrency),
+												csqs.forwardFundingCorrSurface (_fri, fundingLabel),
 													dblValueDate, dblPeriodStartDate));
 
 					if (null != _fxmtm && _fxmtm.mtmMode())
 						dblPeriodQuantoAdjustment *= java.lang.Math.exp
 							(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-								(csqs.fundingCurveVolSurface (strCurrency), csqs.fxCurveVolSurface (cp),
-									csqs.fundingFXCorrSurface (strCurrency, cp), dblValueDate,
-										dblPeriodPayDate) +
+								(csqs.fundingCurveVolSurface (fundingLabel), csqs.fxCurveVolSurface
+									(fxLabel), csqs.fundingFXCorrSurface (fundingLabel, fxLabel),
+										dblValueDate, dblPeriodPayDate) +
 											org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
 												(csqs.forwardCurveVolSurface (_fri), csqs.fxCurveVolSurface
-													(cp), csqs.forwardFXCorrSurface (_fri, cp), dblValueDate,
-														dblPeriodStartDate));
+													(fxLabel), csqs.forwardFXCorrSurface (_fri, fxLabel),
+														dblValueDate, dblPeriodStartDate));
 				}
 
 				dblUnadjustedDirtyPeriodDV01 = 0.0001 * dblPeriodDCF * dcFunding.df (dblPeriodPayDate) *
@@ -965,7 +973,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -1034,7 +1043,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -1108,7 +1118,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		if (dblValueDate >= maturity().julian() || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -1289,7 +1300,8 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 
 		double dblValueDate = valParams.valueDate();
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (dblValueDate >= _dblMaturity || null == dcFunding) return null;
 
@@ -1462,7 +1474,7 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 	 * @return The Floating Rate Index
 	 */
 
-	public org.drip.product.params.FloatingRateIndex fri()
+	public org.drip.state.identifier.ForwardLabel fri()
 	{
 		return _fri;
 	}

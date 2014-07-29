@@ -9,17 +9,14 @@ import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.fra.FRAMarketComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.*;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.ExponentialTensionSetParams;
-import org.drip.spline.params.SegmentCustomBuilderControl;
-import org.drip.spline.params.SegmentInelasticDesignControl;
-import org.drip.spline.stretch.BoundarySettings;
-import org.drip.spline.stretch.MultiSegmentSequence;
-import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.spline.params.*;
+import org.drip.spline.stretch.*;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -121,7 +118,9 @@ public class FRAMktVolAnalysis {
 		double dblMultiplicativeQuantoExchangeVol = 0.1;
 		double dblFRIQuantoExchangeCorr = 0.2;
 
-		FloatingRateIndex fri = FloatingRateIndex.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+
+		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
 		JulianDate dtForward = dtValue.addTenor (strForwardStartTenor);
 
@@ -146,25 +145,25 @@ public class FRAMktVolAnalysis {
 		);
 
 		mktParams.setCustomMetricVolSurface (
-			"ForwardToDomesticExchangeVolatility",
+			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
 			dtForward,
 			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
 		);
 
 		mktParams.setCustomMetricVolSurface (
-			"FRIForwardToDomesticExchangeCorrelation",
+			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
 			dtForward,
 			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
 		mktParams.setFundingCurveVolSurface (
-			strCurrency,
+			fundingLabel,
 			auEONIAVolTS
 		);
 
 		mktParams.setForwardFundingCorrSurface (
 			fri,
-			strCurrency,
+			fundingLabel,
 			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
 		);
 

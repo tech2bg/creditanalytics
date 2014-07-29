@@ -58,7 +58,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 		final java.lang.String strCode,
 		final java.lang.String strCalendar,
 		final double dblEffectiveDate,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final double dblStrike,
 		java.lang.String strDayCount)
 		throws java.lang.Exception
@@ -84,7 +84,8 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -92,7 +93,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		double dblMaturity = dtMaturity.julian();
 
-		org.drip.product.params.FloatingRateIndex fri = fri();
+		org.drip.state.identifier.ForwardLabel fri = fri();
 
 		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (fri);
 
@@ -133,8 +134,9 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 			double dblShiftedLogNormalConvexityAdjustmentExponent =
 				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (csqs,
-					dcFunding.name(), fri.fullyQualifiedName(), "ab", dblShiftedLogNormalScaler,
-						dblShiftedLogNormalScaler, dblValueDate, dblEffectiveDate);
+					dcFunding.label().fullyQualifiedName(), fri.fullyQualifiedName(), "ab",
+						dblShiftedLogNormalScaler, dblShiftedLogNormalScaler, dblValueDate,
+							dblEffectiveDate);
 
 			double dblShiftedLogNormalParMarketFRA = ((dblForwardDCF * dblParStandardFRA + 1.) *
 				java.lang.Math.exp (dblShiftedLogNormalConvexityAdjustmentExponent) - 1.) / dblForwardDCF;

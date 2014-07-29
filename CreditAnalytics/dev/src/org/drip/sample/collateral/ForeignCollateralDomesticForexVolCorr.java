@@ -6,14 +6,14 @@ import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.valuation.CollateralizationParams;
-import org.drip.param.valuation.ValuationParams;
+import org.drip.param.valuation.*;
 import org.drip.product.fx.ForeignCollateralizedDomesticForward;
 import org.drip.product.params.CurrencyPair;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 import org.drip.state.curve.ForeignCollateralizedDiscountCurve;
+import org.drip.state.identifier.FXLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -95,7 +95,7 @@ public class ForeignCollateralDomesticForexVolCorr {
 
 		mktParams.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
 
-		mktParams.setFXCurve (cp, auFX);
+		mktParams.setFXCurve (FXLabel.Standard (cp), auFX);
 
 		ForeignCollateralizedDomesticForward fcff = new ForeignCollateralizedDomesticForward (
 			cp,

@@ -13,10 +13,8 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.params.FloatingRateIndex;
 import org.drip.product.rates.*;
-import org.drip.product.stream.FixedStream;
-import org.drip.product.stream.FloatingStream;
+import org.drip.product.stream.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
@@ -24,6 +22,7 @@ import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
+import org.drip.state.identifier.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -269,7 +268,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		final JulianDate dtStart,
 		final JulianDate dtEnd,
 		final JulianDate dtValue,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblFlatFixing,
 		final double dblNotional)
 		throws Exception
@@ -294,23 +293,25 @@ public class OvernightArithmeticCompoundingConvexity {
 	private static final void SetMarketParams (
 		final CurveSurfaceQuoteSet mktParams,
 		final String strCurrency,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblOISVol,
 		final double dblUSDFundingVol,
 		final double dblUSDFundingUSDOISCorrelation)
 		throws Exception
 	{
-		mktParams.setFundingCurveVolSurface (strCurrency, new FlatUnivariate (dblUSDFundingVol));
+		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
+
+		mktParams.setFundingCurveVolSurface (fundingLabel, new FlatUnivariate (dblUSDFundingVol));
 
 		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
 
-		mktParams.setForwardFundingCorrSurface (fri, strCurrency, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
+		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 	}
 
 	private static final void VolCorrScenario (
 		final FloatingStream[] aFloatStream,
 		final String strCurrency,
-		final FloatingRateIndex fri,
+		final ForwardLabel fri,
 		final double dblAccrualEndDate,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
@@ -373,7 +374,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
-		FloatingRateIndex fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
+		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
 		fri.setArithmeticCompounding (true);
 

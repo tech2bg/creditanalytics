@@ -333,17 +333,17 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		return null;
 	}
@@ -394,7 +394,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	{
 		if (null == valParams || null == csqs || valParams.valueDate() >= _dblMaturity) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -453,7 +454,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == csqs)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -511,7 +513,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			strManifestMeasure || strManifestMeasure.isEmpty() || null == csqs)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (couponCurrency()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -565,7 +568,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 		double dblValueDate = valParams.valueDate();
 
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve (_strCurrency);
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (_strCurrency));
 
 		if (null == dc || dblValueDate > _dblEffective) return null;
 

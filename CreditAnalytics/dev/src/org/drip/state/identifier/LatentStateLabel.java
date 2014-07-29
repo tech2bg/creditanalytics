@@ -1,5 +1,5 @@
 
-package org.drip.state.representation;
+package org.drip.state.identifier;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

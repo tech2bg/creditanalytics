@@ -190,7 +190,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 
 	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
 		final double dblDate,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
 		return _dc.forwardRateEstimator (dblDate, fri);
 	}
@@ -251,8 +251,9 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return _dc.calibComp();
 	}
 
-	@Override public java.lang.String name() {
-		return _dc.name();
+	@Override public org.drip.state.identifier.LatentStateLabel label()
+	{
+		return _dc.label();
 	}
 
 	@Override public org.drip.analytics.definition.Curve parallelShiftManifestMeasure (

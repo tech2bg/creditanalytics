@@ -44,7 +44,7 @@ public class BasisSplineDeterministicVolatility extends org.drip.analytics.defin
 	 * BasisSplineDeterministicVolatility Constructor
 	 * 
 	 * @param dblEpochDate The Epoch Date
-	 * @param strName Name of the Surface
+	 * @param label Latent State Label
 	 * @param strCurrency The Currency
 	 * @param spanImpliedVolatility The Implied Volatility Span
 	 * @param collatParams Collateral Parameters
@@ -54,13 +54,13 @@ public class BasisSplineDeterministicVolatility extends org.drip.analytics.defin
 
 	public BasisSplineDeterministicVolatility (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CustomMetricLabel label,
 		final java.lang.String strCurrency,
 		final org.drip.spline.grid.Span spanImpliedVolatility,
 		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strName, strCurrency);
+		super (dblEpochDate, label, strCurrency);
 
 		if (null == (_spanImpliedVolatility = spanImpliedVolatility))
 			throw new java.lang.Exception ("BasisSplineDeterministicVolatility ctr: Invalid Inputs");

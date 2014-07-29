@@ -61,20 +61,20 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 		"QUANTIFICATION_METRIC_FORWARD_RATE";
 
 	private double _dblEpochDate = java.lang.Double.NaN;
-	private org.drip.product.params.FloatingRateIndex _fri = null;
+	private org.drip.state.identifier.ForwardLabel _fri = null;
 
 	protected ForwardCurve (
 		final double dblEpochDate,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochDate = dblEpochDate) || null == (_fri = fri))
 			throw new java.lang.Exception ("ForwardCurve ctr: Invalid Inputs");
 	}
 
-	@Override public java.lang.String name()
+	@Override public org.drip.state.identifier.LatentStateLabel label()
 	{
-		return _fri.fullyQualifiedName();
+		return _fri;
 	}
 
 	@Override public java.lang.String currency()
@@ -98,13 +98,7 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 		return _fri.tenor();
 	}
 
-	/**
-	 * Retrieve the Forward Rate Index
-	 * 
-	 * @return The Forward Rate Index
-	 */
-
-	@Override public org.drip.product.params.FloatingRateIndex index()
+	@Override public org.drip.state.identifier.ForwardLabel index()
 	{
 		return _fri;
 	}
@@ -117,16 +111,6 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 
 		return forward (dt.julian());
 	}
-
-	/**
-	 * Calculate the Forward Rate to the tenor implied by the given date
-	 * 
-	 * @param strTenor The Tenor
-	 * 
-	 * @return The Forward Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the Forward Rate cannot be calculated
-	 */
 
 	@Override public double forward (
 		final java.lang.String strTenor)

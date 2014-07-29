@@ -99,8 +99,9 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		java.lang.String strComponentName = name();
 
-		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface =
-			csqs.customMetricVolSurface (strComponentName + "SwapRateVolatility", exercise());
+		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface = csqs.customMetricVolSurface
+			(org.drip.state.identifier.CustomMetricLabel.Standard (strComponentName + "SwapRateVolatility"),
+				exercise());
 
 		if (null == auSTIRSwapRateVolSurface) return null;
 

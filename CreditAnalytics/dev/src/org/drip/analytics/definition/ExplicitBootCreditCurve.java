@@ -41,10 +41,10 @@ public abstract class ExplicitBootCreditCurve extends org.drip.analytics.definit
 
 	protected ExplicitBootCreditCurve (
 		final double dblEpochDate,
-		final java.lang.String strName,
+		final org.drip.state.identifier.CreditLabel label,
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		super (dblEpochDate, strName, strCurrency);
+		super (dblEpochDate, label, strCurrency);
 	}
 }

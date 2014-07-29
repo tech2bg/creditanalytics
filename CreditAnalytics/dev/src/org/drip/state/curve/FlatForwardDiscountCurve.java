@@ -295,7 +295,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
 		final double dblDate,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
 		return null;
 	}

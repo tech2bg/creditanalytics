@@ -52,7 +52,7 @@ public class FlatForwardForwardCurve extends org.drip.analytics.rates.ForwardCur
 
 	public FlatForwardForwardCurve (
 		final org.drip.analytics.date.JulianDate dtEpoch,
-		final org.drip.product.params.FloatingRateIndex fri,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final double dblFlatForwardRate,
 		final org.drip.param.valuation.CollateralizationParams collatParams)
 		throws java.lang.Exception

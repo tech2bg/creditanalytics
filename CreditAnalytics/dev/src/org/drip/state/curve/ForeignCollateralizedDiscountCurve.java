@@ -126,7 +126,7 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 
 	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
 		final double dblDate,
-		final org.drip.product.params.FloatingRateIndex fri)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
 		return null;
 	}

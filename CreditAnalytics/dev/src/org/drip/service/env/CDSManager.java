@@ -147,8 +147,9 @@ public class CDSManager {
 		for (int i = 0; i < aCDS.length; ++i) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc = aCDS[1].value
 				(valParams, pricerParams, org.drip.param.creator.MarketParamsBuilder.Create
-					(mpc.getScenMarketParams (aCDS[i], "Base").fundingCurve (aCDS[1].couponCurrency()[0]),
-						null, null, cc, null, null, null, null), null);
+					(mpc.getScenMarketParams (aCDS[i], "Base").fundingCurve
+						(org.drip.state.identifier.FundingLabel.Standard (aCDS[1].couponCurrency()[0])),
+							null, null, cc, null, null, null, null), null);
 
 			if (null == mapCalc) {
 				System.out.println ("CDS Calc for " + strSPN + " and " + aCDS[1].name() + "failed");
@@ -216,8 +217,9 @@ public class CDSManager {
 				try {
 					dblFlatSpread100 = aCDS[i].calibFlatSpread (valParams, pricerParams,
 						org.drip.param.creator.MarketParamsBuilder.Create (mpc.getScenMarketParams (aCDS[i],
-							"Base").fundingCurve (aCDS[i].couponCurrency()[0]), null, null, cc, null, null,
-								null, null), null);
+							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
+								(aCDS[i].couponCurrency()[0])), null, null, cc, null, null, null, null),
+									null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +
 						e.getMessage());
@@ -268,8 +270,9 @@ public class CDSManager {
 				try {
 					dblFlatSpread500 = aCDS[i].calibFlatSpread (valParams, pricerParams, 
 						org.drip.param.creator.MarketParamsBuilder.Create (mpc.getScenMarketParams (aCDS[i],
-							"Base").fundingCurve (aCDS[i].couponCurrency()[0]), null, null, cc, null, null,
-								null, null), null);
+							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
+								(aCDS[i].couponCurrency()[0])), null, null, cc, null, null, null, null),
+									null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +
 						e.getMessage());

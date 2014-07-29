@@ -50,7 +50,7 @@ public class DeterministicVolTermStructure {
 		final double[] dblNodeInput)
 		throws Exception
 	{
-		System.out.println ("\n\t" + vts.name());
+		System.out.println ("\n\t" + vts.label());
 
 		System.out.println ("\n\t|------------------------------------|");
 

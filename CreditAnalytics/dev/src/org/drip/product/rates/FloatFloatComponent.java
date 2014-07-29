@@ -244,18 +244,18 @@ public class FloatFloatComponent extends org.drip.product.stream.DualStreamCompo
 		return _floatReference.freq();
 	}
 
-	@Override public java.lang.String[] forwardCurveName()
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return new java.lang.String[] {_floatReference.forwardCurveName()[0],
-			_floatDerived.forwardCurveName()[0]};
+		return new org.drip.state.identifier.ForwardLabel[] {_floatReference.forwardLabel()[0],
+			_floatDerived.forwardLabel()[0]};
 	}
 
-	@Override public java.lang.String[] creditCurveName()
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public java.lang.String[] currencyPairCode()
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		return null;
 	}
