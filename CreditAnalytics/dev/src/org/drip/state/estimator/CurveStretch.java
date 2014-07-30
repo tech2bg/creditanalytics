@@ -69,17 +69,17 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 	}
 
 	/**
-	 * Mark the Range of the "built" Segments
+	 * Mark the Range of the "built" Segments, and set the set of Merge Latent States
 	 * 
 	 * @param iSegment The Current Segment Range Built
-	 * @param aFRI Array of the Floating Rate Indices
+	 * @param setLSL Set of the merging Latent State Labels
 	 * 
 	 * @return TRUE => Range successfully marked as "built"
 	 */
 
 	public boolean setSegmentBuilt (
 		final int iSegment,
-		final org.drip.state.identifier.ForwardLabel[] aFRI)
+		final java.util.Set<org.drip.state.identifier.LatentStateLabel> setLSL)
 	{
 		org.drip.spline.segment.LatentStateResponseModel[] aCS = segments();
 
@@ -87,14 +87,14 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 
 		_dblBuiltPredictorOrdinateRight = aCS[iSegment].right();
 
+		if (null == setLSL || 0 == setLSL.size()) return true;
+
 		if (null == _msm) _msm = new org.drip.state.representation.MergeSubStretchManager();
 
-		int iNumFRI = null == aFRI ? 0 : aFRI.length;
-
-		for (int j = 0; j < iNumFRI; ++j) {
+		for (org.drip.state.identifier.LatentStateLabel lsl : setLSL) {
 			try {
 				if (!_msm.addMergeStretch (new org.drip.state.representation.LatentStateMergeSubStretch
-					(aCS[iSegment].left(), aCS[iSegment].right(), aFRI[j])))
+					(aCS[iSegment].left(), aCS[iSegment].right(), lsl)))
 					return false;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

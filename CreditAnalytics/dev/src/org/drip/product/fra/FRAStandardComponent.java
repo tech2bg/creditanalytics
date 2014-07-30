@@ -42,8 +42,8 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	private java.lang.String _strCurrency = "";
 	private double _dblStrike = java.lang.Double.NaN;
 	private double _dblEffectiveDate = java.lang.Double.NaN;
-	private org.drip.analytics.date.JulianDate _dtMaturity = null;
 	private org.drip.state.identifier.ForwardLabel _fri = null;
+	private org.drip.analytics.date.JulianDate _dtMaturity = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -488,7 +488,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -531,6 +531,50 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return prwc.addPredictorResponseWeight (_dblEffectiveDate, 1.) &&
 			prwc.addDResponseWeightDManifestMeasure ("Rate", _dblEffectiveDate, 1.) && prwc.updateValue
 				(dblForwardRate) ? prwc : null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FRAComponentQuoteSet)
+			|| !pqs.contains (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+				org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+					org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) || !pqs.contains
+						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
+							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE, _fri))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate > _dblEffectiveDate) return null;
+
+		org.drip.product.calib.FRAComponentQuoteSet fcqs = (org.drip.product.calib.FRAComponentQuoteSet) pqs;
+
+		if (!fcqs.containsFRARate()) return null;
+
+		double dblForwardDF = java.lang.Double.NaN;
+
+		double dblMaturity = _dtMaturity.julian();
+
+		try {
+			dblForwardDF = 1. / (1. + (fcqs.fraRate() * org.drip.analytics.daycount.Convention.YearFraction
+				(_dblEffectiveDate, dblMaturity, _strDayCount, false, dblMaturity, null, _strCalendar)));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		return prwc.addPredictorResponseWeight (_dblEffectiveDate, dblForwardDF) &&
+			prwc.addPredictorResponseWeight (dblMaturity, -1.) && prwc.addDResponseWeightDManifestMeasure
+				("PV", dblMaturity, 1.) ? prwc : null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (

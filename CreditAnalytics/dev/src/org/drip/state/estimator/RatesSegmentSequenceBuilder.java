@@ -374,7 +374,8 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 		if (null == rvcLeading) return false;
 
 		return aCS[0].calibrate (rvcLeading, dblLeftSlope, _mapRVSC.get (dblSegmentRight).base(), null ==
-			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0, cc.forwardLabel());
+			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
+				prlc.mergeLabelSet());
 	}
 
 	@Override public boolean calibSegmentSequence (
@@ -400,7 +401,7 @@ public class RatesSegmentSequenceBuilder implements org.drip.spline.stretch.Segm
 
 			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapRVSC.get
 				(dblSegmentRight).base(), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
-					!_stretch.setSegmentBuilt (iSegment, cc.forwardLabel()))
+					!_stretch.setSegmentBuilt (iSegment, prlc.mergeLabelSet()))
 				return false;
 		}
 

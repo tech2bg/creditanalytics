@@ -38,6 +38,21 @@ package org.drip.product.calib;
 public class EDFComponentQuoteSet extends org.drip.product.calib.ProductQuoteSet {
 
 	/**
+	 * EDFComponentQuoteSet Constructor
+	 * 
+	 * @param aLSS Array of Latent State Specification
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are invalid
+	 */
+
+	public EDFComponentQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+		throws java.lang.Exception
+	{
+		super (aLSS);
+	}
+
+	/**
 	 * Set the Price
 	 * 
 	 * @param dblPrice The Price

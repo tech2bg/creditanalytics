@@ -109,8 +109,8 @@ public class EDFutureBuilder {
 				org.drip.analytics.date.JulianDate dtEDFMaturity = dtEDFStart.addMonths (3);
 
 				(aEDF[i] = new org.drip.product.rates.EDFComponent (dtEDFStart, dtEDFMaturity,
-					strCurrency, "Act/360", strCurrency)).setPrimaryCode (MakeBaseEDFCode
-						(dtEDFStart.julian()));
+					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", "3M"), strCurrency,
+						"Act/360", strCurrency)).setPrimaryCode (MakeBaseEDFCode (dtEDFStart.julian()));
 
 				dtEDFStart = dtEDFStart.addMonths (3);
 			}
@@ -140,7 +140,8 @@ public class EDFutureBuilder {
 	{
 		try {
 			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
-				(dtEffective, dtMaturity, strIR, "Act/360", strIR);
+				(dtEffective, dtMaturity, org.drip.state.identifier.ForwardLabel.Create (strIR, "LIBOR",
+					"3M"), strIR, "Act/360", strIR);
 
 			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
 
@@ -169,7 +170,8 @@ public class EDFutureBuilder {
 	{
 		try {
 			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
-				(dtEffective, dtEffective.addTenor (strTenor), strIR, "Act/360", strIR);
+				(dtEffective, dtEffective.addTenor (strTenor), org.drip.state.identifier.ForwardLabel.Create
+					(strIR, "LIBOR", strTenor), strIR, "Act/360", strIR);
 
 			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
 

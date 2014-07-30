@@ -36,6 +36,60 @@ package org.drip.product.calib;
  */
 
 public abstract class ProductQuoteSet {
+	private org.drip.state.representation.LatentStateSpecification[] _aLSS = null;
+
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mapQuote = new
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+
+	protected ProductQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+		throws java.lang.Exception
+	{
+		if (null == (_aLSS = aLSS) || 0 == _aLSS.length)
+			throw new java.lang.Exception ("ProductQuoteSet ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Array of Latent State Specification
+	 * 
+	 * @return The Array of Latent State Specification
+	 */
+
+	public org.drip.state.representation.LatentStateSpecification[] lss()
+	{
+		return _aLSS;
+	}
+
+	/**
+	 * Indicates if the Specified External Latent State Specification is contained in the Array
+	 * 
+	 * @param strLatentState The Latent State
+	 * @param strLatentStateQuantificationMetric The Latent State Quantification Metric
+	 * @param label The Specific Latent State Label
+	 * 
+	 * @return TRUE => The Specified External Latent State Specification is contained in the Array
+	 */
+
+	public boolean contains (
+		final java.lang.String strLatentState,
+		final java.lang.String strLatentStateQuantificationMetric,
+		final org.drip.state.identifier.LatentStateLabel label)
+	{
+		org.drip.state.representation.LatentStateSpecification lssExternal = null;
+
+		try {
+			lssExternal = new org.drip.state.representation.LatentStateSpecification (strLatentState,
+				strLatentStateQuantificationMetric, label);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return false;
+		}
+
+		for (org.drip.state.representation.LatentStateSpecification lss : _aLSS) {
+			if (lss.match (lssExternal)) return true;
+		}
+
+		return false;
+	}
 }

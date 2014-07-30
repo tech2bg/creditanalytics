@@ -122,14 +122,7 @@ public class OverlappingStretchSpan implements org.drip.spline.grid.Span {
 		throws java.lang.Exception
 	{
 		for (org.drip.spline.stretch.MultiSegmentSequence mss : _lsMSS) {
-			if (mss.in (dblPredictorOrdinate)) {
-				double dblResponseValue =  mss.responseValue (dblPredictorOrdinate);
-
-				/* System.out.println ("\t" + new org.drip.analytics.date.JulianDate (dblPredictorOrdinate) +
-					" | " + mss.name() + " => " + dblResponseValue); */
-
-				return dblResponseValue;
-			}
+			if (mss.in (dblPredictorOrdinate)) return mss.responseValue (dblPredictorOrdinate);
 		}
 
 		throw new java.lang.Exception ("OverlappingStretchSpan::calcResponseValue => Cannot Calculate!");

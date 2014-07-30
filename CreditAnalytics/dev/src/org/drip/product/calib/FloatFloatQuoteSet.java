@@ -39,6 +39,21 @@ package org.drip.product.calib;
 public class FloatFloatQuoteSet extends org.drip.product.calib.ProductQuoteSet {
 
 	/**
+	 * FloatFloatQuoteSet Constructor
+	 * 
+	 * @param aLSS Array of Latent State Specification
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are invalid
+	 */
+
+	public FloatFloatQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+		throws java.lang.Exception
+	{
+		super (aLSS);
+	}
+
+	/**
 	 * Set the PV
 	 * 
 	 * @param dblPV The PV

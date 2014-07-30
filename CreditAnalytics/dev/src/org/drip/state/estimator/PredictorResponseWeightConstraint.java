@@ -46,6 +46,8 @@ package org.drip.state.estimator;
  */
 
 public class PredictorResponseWeightConstraint {
+	private java.util.Set<org.drip.state.identifier.LatentStateLabel> _setLSL = null;
+
 	private org.drip.state.estimator.PredictorResponseRelationSetup _prrsCalib = new
 		org.drip.state.estimator.PredictorResponseRelationSetup();
 
@@ -170,6 +172,37 @@ public class PredictorResponseWeightConstraint {
 					+ strManifestMeasure);
 
 		return _mapPRRSSens.get (strManifestMeasure).getValue();
+	}
+
+	/**
+	 * Add a Merging Latent State Label
+	 * 
+	 * @param lslMerge The Merging Latent State Label
+	 * 
+	 * @return TRUE => The Latent State Label Successfully Added
+	 */
+
+	public boolean addMergeLabel (
+		final org.drip.state.identifier.LatentStateLabel lslMerge)
+	{
+		if (null == lslMerge) return false;
+
+		if (null == _setLSL) _setLSL = new java.util.HashSet<org.drip.state.identifier.LatentStateLabel>();
+
+		_setLSL.add (lslMerge);
+
+		return true;
+	}
+
+	/**
+	 * Return the Set of Merged Latent State Labels
+	 * 
+	 * @return The Set of Merged Latent State Labels
+	 */
+
+	public java.util.Set<org.drip.state.identifier.LatentStateLabel> mergeLabelSet()
+	{
+		return _setLSL;
 	}
 
 	/**

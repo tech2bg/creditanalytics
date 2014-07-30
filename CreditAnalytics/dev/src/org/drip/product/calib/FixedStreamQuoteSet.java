@@ -38,6 +38,21 @@ package org.drip.product.calib;
 public class FixedStreamQuoteSet extends org.drip.product.calib.ProductQuoteSet {
 
 	/**
+	 * FixedStreamQuoteSet Constructor
+	 * 
+	 * @param aLSS Array of Latent State Specification
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are invalid
+	 */
+
+	public FixedStreamQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+		throws java.lang.Exception
+	{
+		super (aLSS);
+	}
+
+	/**
 	 * Set the PV
 	 * 
 	 * @param dblPV The PV

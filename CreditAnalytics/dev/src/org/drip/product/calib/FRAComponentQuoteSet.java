@@ -38,6 +38,21 @@ package org.drip.product.calib;
 public class FRAComponentQuoteSet extends org.drip.product.calib.ProductQuoteSet {
 
 	/**
+	 * FRAComponentQuoteSet Constructor
+	 * 
+	 * @param aLSS Array of Latent State Specification
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are invalid
+	 */
+
+	public FRAComponentQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+		throws java.lang.Exception
+	{
+		super (aLSS);
+	}
+
+	/**
 	 * Set the FRA Rate
 	 * 
 	 * @param dblFRARate The FRA Rate

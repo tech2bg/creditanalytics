@@ -255,7 +255,7 @@ public class CDSW {
 		DisplayInstrumentMaturitySurvival (cc);
 
 		/*
-		 * Create the CDS to price
+		 * Create the CDS to price. Contract Maturity is 6Y. Traded Spread Input is 0.05 (500 bp).
 		 */
 
 		CreditDefaultSwap cds = CreateCDS (dtValue, "6Y", 0.05, "MS");

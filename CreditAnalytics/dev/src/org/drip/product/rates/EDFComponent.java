@@ -55,6 +55,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	private java.lang.String _strCalendar = "USD";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
+	private org.drip.state.identifier.ForwardLabel _fri = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
@@ -72,6 +73,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	 * 
 	 * @param dtEffective Effective Date
 	 * @param dtMaturity Maturity Date
+	 * @param fri The Forward Latent State Label (i.e., the Floating Rate Index)
 	 * @param strCurrency The Currency
 	 * @param strDC Day Count
 	 * @param strCalendar Calendar
@@ -82,14 +84,15 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 	public EDFComponent (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
+		final org.drip.state.identifier.ForwardLabel fri,
 		final java.lang.String strCurrency,
 		final java.lang.String strDC,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
 		if (null == dtEffective || null == dtMaturity || null == (_strCurrency = strCurrency) ||
-			_strCurrency.isEmpty() || (_dblMaturity = dtMaturity.julian()) <= (_dblEffective =
-				dtEffective.julian()))
+			_strCurrency.isEmpty() || null == (_fri = fri) || (_dblMaturity = dtMaturity.julian()) <=
+				(_dblEffective = dtEffective.julian()))
 			throw new java.lang.Exception ("EDFComponent ctr:: Invalid Params!");
 
 		_strDC = strDC;
@@ -156,6 +159,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		_dblMaturity = dtEffective.addMonths (3).julian();
 
 		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+
+		_fri = org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", "3M");
 	}
 
 	/**
@@ -555,53 +560,14 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		if (null == valParams || null == csqs || null == pqs || !(pqs instanceof
-			org.drip.product.calib.EDFComponentQuoteSet))
-			return null;
-
-		double dblValueDate = valParams.valueDate();
-
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (_strCurrency));
-
-		if (null == dc || dblValueDate > _dblEffective) return null;
-
-		org.drip.product.calib.EDFComponentQuoteSet ecqs = (org.drip.product.calib.EDFComponentQuoteSet) pqs;
-
-		if (!ecqs.containsPrice() && !ecqs.containsRate()) return null;
-
-		double dblDCF = java.lang.Double.NaN;
-		double dblForwardPV = java.lang.Double.NaN;
-		double dblEffectiveDF = java.lang.Double.NaN;
-
-		try {
-			dblEffectiveDF = dc.df (_dblEffective);
-
-			dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
-				_strDC, false, _dblMaturity, null, _strCalendar);
-
-			if (ecqs.containsPrice())
-				dblForwardPV = ecqs.price();
-			else if (ecqs.containsRate())
-				dblForwardPV = 1. / (1. + dblDCF * ecqs.rate());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
-			org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-		return prwc.addPredictorResponseWeight (_dblMaturity, 1.) && prwc.addDResponseWeightDManifestMeasure
-			("PV", _dblMaturity, 1.) && prwc.updateValue (dblForwardPV * dblEffectiveDF) ? prwc : null;
+		return null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
@@ -643,6 +609,61 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 		return prwc.addPredictorResponseWeight (_dblEffective, 1.) && prwc.addDResponseWeightDManifestMeasure
 			("Rate", _dblEffective, 1.) && prwc.updateValue (dblForwardRate) ? prwc : null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == csqs || null == pqs || !(pqs instanceof
+			org.drip.product.calib.EDFComponentQuoteSet) || !pqs.contains
+				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) || !pqs.contains
+							(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
+								org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+									_fri))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (_strCurrency));
+
+		if (null == dc || dblValueDate > _dblEffective) return null;
+
+		org.drip.product.calib.EDFComponentQuoteSet ecqs = (org.drip.product.calib.EDFComponentQuoteSet) pqs;
+
+		if (!ecqs.containsPrice() && !ecqs.containsRate()) return null;
+
+		double dblDCF = java.lang.Double.NaN;
+		double dblForwardPV = java.lang.Double.NaN;
+		double dblEffectiveDF = java.lang.Double.NaN;
+
+		try {
+			dblEffectiveDF = dc.df (_dblEffective);
+
+			dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
+				_strDC, false, _dblMaturity, null, _strCalendar);
+
+			if (ecqs.containsPrice())
+				dblForwardPV = ecqs.price();
+			else if (ecqs.containsRate())
+				dblForwardPV = 1. / (1. + dblDCF * ecqs.rate());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		return prwc.addPredictorResponseWeight (_dblMaturity, 1.) && prwc.addDResponseWeightDManifestMeasure
+			("PV", _dblMaturity, 1.) && prwc.updateValue (dblForwardPV * dblEffectiveDF) ? prwc : null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
@@ -775,7 +796,8 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		throws java.lang.Exception
 	{
 		EDFComponent edf = new EDFComponent (org.drip.analytics.date.JulianDate.Today(),
-			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"), "GBP", "Act/360", "GBP");
+			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"),
+				org.drip.state.identifier.ForwardLabel.Create ("GBP", "LIBOR", "3M"), "GBP", "Act/360", "GBP");
 
 		byte[] abEDF = edf.serialize();
 

@@ -690,7 +690,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return false;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint discountPRWC (
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -703,17 +703,19 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (valParams.valueDate() >= maturity().julian()) return null;
 
 		double dblPV = 0.;
+		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = null;
+		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
 		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
 
-		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = new
-			org.drip.product.calib.FloatingStreamQuoteSet();
-
-		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = new
-			org.drip.product.calib.FixedStreamQuoteSet();
+		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
 		try {
+			fsqsDerived = new org.drip.product.calib.FloatingStreamQuoteSet (aLSS);
+
+			fsqsReference = new org.drip.product.calib.FixedStreamQuoteSet (aLSS);
+
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
 			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
@@ -725,10 +727,10 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			return null;
 		}
 
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwcDerived = _floatStream.discountPRWC
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcDerived = _floatStream.fundingPRWC
 			(valParams, pricerParams, csqs, quotingParams, fsqsDerived);
 
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwcReference = _fixStream.discountPRWC
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcReference = _fixStream.fundingPRWC
 			(valParams, pricerParams, csqs, quotingParams, fsqsReference);
 
 		if (null == prwcDerived && null == prwcReference) return null;
@@ -756,17 +758,19 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (valParams.valueDate() >= maturity().julian()) return null;
 
 		double dblPV = 0.;
+		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = null;
+		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
 		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
 
-		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = new
-			org.drip.product.calib.FloatingStreamQuoteSet();
-
-		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = new
-			org.drip.product.calib.FixedStreamQuoteSet();
+		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
 		try {
+			fsqsDerived = new org.drip.product.calib.FloatingStreamQuoteSet (aLSS);
+
+			fsqsReference = new org.drip.product.calib.FixedStreamQuoteSet (aLSS);
+
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
 			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
@@ -783,6 +787,61 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwcReference = _fixStream.forwardPRWC
 			(valParams, pricerParams, csqs, quotingParams, fsqsReference);
+
+		if (null == prwcDerived && null == prwcReference) return null;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		if (null != prwcDerived && !prwc.absorb (prwcDerived)) return null;
+
+		if (null != prwcReference && !prwc.absorb (prwcReference)) return null;
+
+		return !prwc.updateValue (dblPV) ? null : prwc;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FixFloatQuoteSet))
+			return null;
+
+		if (valParams.valueDate() >= maturity().julian()) return null;
+
+		double dblPV = 0.;
+		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = null;
+		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
+		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
+
+		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+
+		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
+
+		try {
+			fsqsDerived = new org.drip.product.calib.FloatingStreamQuoteSet (aLSS);
+
+			fsqsReference = new org.drip.product.calib.FixedStreamQuoteSet (aLSS);
+
+			if (ffqs.containsPV()) dblPV = ffqs.pv();
+
+			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
+
+			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcDerived =
+			_floatStream.fundingForwardPRWC (valParams, pricerParams, csqs, quotingParams, fsqsDerived);
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwcReference =
+			_fixStream.fundingForwardPRWC (valParams, pricerParams, csqs, quotingParams, fsqsReference);
 
 		if (null == prwcDerived && null == prwcReference) return null;
 
