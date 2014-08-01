@@ -7,14 +7,13 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.output.PeriodCouponMeasures;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
-import org.drip.product.stream.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
@@ -264,7 +263,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			1.);
 	}
 
-	private static final Map<JulianDate, CaseInsensitiveTreeMap<Double>> SetFlatOvernightFixings (
+	private static final LatentStateFixingsContainer SetFlatOvernightFixings (
 		final JulianDate dtStart,
 		final JulianDate dtEnd,
 		final JulianDate dtValue,
@@ -273,21 +272,17 @@ public class OvernightArithmeticCompoundingConvexity {
 		final double dblNotional)
 		throws Exception
 	{
-		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mapFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
+		LatentStateFixingsContainer lsfc = new LatentStateFixingsContainer();
 
 		JulianDate dt = dtStart.addDays (1);
 
 		while (dt.julian() <= dtEnd.julian()) {
-			CaseInsensitiveTreeMap<Double> mapFixing = new CaseInsensitiveTreeMap<Double>();
-
-			mapFixing.put (fri.fullyQualifiedName(), dblFlatFixing);
-
-			mapFixings.put (dt, mapFixing);
+			lsfc.add (dt, fri, dblFlatFixing);
 
 			dt = dt.addBusDays (1, "USD");
 		}
 
-		return mapFixings;
+		return lsfc;
 	}
 
 	private static final void SetMarketParams (

@@ -712,7 +712,7 @@ public class EODCurves {
 	 * Build the closing IRCurveScenarioContainer for the specific discount curve instruments given the EOD
 	 *  and the currency
 	 *  
-	 * @param mmFixings The fixings object
+	 * @param lsfc The Latent State Fixings Container
 	 * @param stmt SQL Statement containing the executable query
 	 * @param dtEOD EOD date
 	 * @param strCurrency Currency string
@@ -724,8 +724,7 @@ public class EODCurves {
 	 */
 
 	public static final org.drip.param.definition.ScenarioDiscountCurve BuildEODIRCurveOfCode (
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency,
@@ -870,7 +869,7 @@ public class EODCurves {
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
 						dtEOD.addBusDays (3, strCurrency), "USD"), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mmFixings, null, s_iIRCalibMode);
+							astrCalibMeasure, lsfc, null, s_iIRCalibMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -884,7 +883,7 @@ public class EODCurves {
 	 * Build the closing IRCurveScenarioContainer for the specific discount curve instrument set type
 	 * 	(treasury or rates instruments), given the EOD and the currency
 	 *  
-	 * @param mmFixings The fixings object
+	 * @param lsfc The Latent State Fixings Container
 	 * @param stmt SQL Statement containing the executable query
 	 * @param dtEOD EOD date
 	 * @param strCurrency Currency string
@@ -895,17 +894,16 @@ public class EODCurves {
 	 */
 
 	public static final org.drip.param.definition.ScenarioDiscountCurve BuildEODIRCurve (
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final java.sql.Statement stmt,
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency,
 		final java.lang.String strInstrSetType,
 		final java.lang.String strCurveName)
 	{
-		if (null == mmFixings || null == stmt || null == dtEOD || null == strCurrency ||
-			strCurrency.isEmpty() || null == strInstrSetType || strInstrSetType.isEmpty() || null ==
-				strCurveName || strCurveName.isEmpty())
+		if (null == lsfc || null == stmt || null == dtEOD || null == strCurrency || strCurrency.isEmpty() ||
+			null == strInstrSetType || strInstrSetType.isEmpty() || null == strCurveName ||
+				strCurveName.isEmpty())
 			return null;
 
 		int i = 0;
@@ -1089,7 +1087,7 @@ public class EODCurves {
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
 						dtEOD.addBusDays (3, strCurrency), "USD"), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mmFixings, null, s_iIRCalibMode);
+							astrCalibMeasure, lsfc, null, s_iIRCalibMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1122,19 +1120,13 @@ public class EODCurves {
 			strInstrType || strInstrType.isEmpty() || null == strCurveName || strCurveName.isEmpty())
 			return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put (strCurrency + "-LIBOR-6M", 0.0042);
+		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strCurrency +
+			"-LIBOR-6M"), 0.0042);
 
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (dtEOD.addDays (2), mIndexFixings);
-
-		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (mmFixings, stmt, dtEOD,
+		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (lsfc, stmt, dtEOD,
 			strCurrency, strInstrType, strCurveName);
 
 		if (null == ircsg || null == ircsg.getDCBase()) return null;
@@ -1170,7 +1162,7 @@ public class EODCurves {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (mpc.getFixings(), stmt, dtEOD,
+		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (mpc.fixings(), stmt, dtEOD,
 			strCurrency, strInstrType, strCurveName);
 
 		if (null == ircsg) return false;
@@ -1217,7 +1209,7 @@ public class EODCurves {
 
 		long lStart = System.nanoTime();
 
-		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurveOfCode (mpc.getFixings(), stmt,
+		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurveOfCode (mpc.fixings(), stmt,
 			dtEOD, strCurrency, strInstrCode, strInstrType, strCurveName);
 
 		if (null == ircsg) {
@@ -1281,7 +1273,8 @@ public class EODCurves {
 		if (null == mpc || null == stmt || null == dtEOD || null == strCurrency || strCurrency.isEmpty())
 			return false;
 
-		mpc.addFixings (dtEOD.addDays (2), strCurrency + "-LIBOR-6M", 0.0042);
+		mpc.addFixings (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strCurrency +
+			"-LIBOR-6M"), 0.0042);
 
 		if (!LoadEODIRToMPC (mpc, stmt, dtEOD, strCurrency, "swap", strCurrency)) {
 			if (s_bStatBlog) System.out.println ("Cannot load Full DC for " + strCurrency);

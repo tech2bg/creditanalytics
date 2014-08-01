@@ -410,7 +410,7 @@ public class BondManager {
 						System.out.println ("Setting rate for index " + bond.getRateIndex() + " and date " +
 							bond.getPeriodResetDate (valParams.valueDate()));
 
-					mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
+					mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.forwardLabel()[0],
 						0.0042);
 				}
 
@@ -478,8 +478,8 @@ public class BondManager {
 							(org.drip.analytics.date.JulianDate.Year (bond.maturity().julian()) - 2000);
 
 					if (bond.isFloater())
-						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
-							0.0042);
+						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()),
+							bond.forwardLabel()[0], 0.0042);
 
 					CalcBondMeasures (strRunName, bond, valParams, mpc, 0.01 * dblBidPrice, 0.01 *
 						dblAskPrice);
@@ -546,8 +546,8 @@ public class BondManager {
 						org.drip.param.valuation.ValuationParams (dt, dt.addBusDays (3, "USD"), "USD");
 
 					if (bond.isFloater())
-						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
-							0.0042);
+						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()),
+							bond.forwardLabel()[0], 0.0042);
 
 					double dblMidPrice = java.lang.Double.NaN;
 
@@ -1275,8 +1275,8 @@ public class BondManager {
 
 				try {
 					if (bond.isFloater())
-						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.getRateIndex(),
-							0.0042);
+						mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()),
+							bond.forwardLabel()[0], 0.0042);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

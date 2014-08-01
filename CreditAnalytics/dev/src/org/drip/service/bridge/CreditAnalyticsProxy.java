@@ -180,21 +180,15 @@ public class CreditAnalyticsProxy {
 			}
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-3M", 0.0042);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
+		lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"),
+			0.0402);
 
 		return org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
 			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
-				adblCompCalibValue, astrCalibMeasure, mmFixings);
+				adblCompCalibValue, astrCalibMeasure, lsfc);
 	}
 
 	public static org.drip.analytics.definition.CreditCurve MakeCC (
@@ -398,23 +392,17 @@ public class CreditAnalyticsProxy {
 			return null;
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote> mapTSYQuotes
-			= new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
+			mapTSYQuotes = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>();
 
 		mapTSYQuotes.put ("TSY2ON", cqTSY2ON);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
+		lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"),
+			0.0402);
 
 		org.drip.param.market.ProductMultiMeasureQuote cqBond = new
 			org.drip.param.market.ProductMultiMeasureQuote();
@@ -429,7 +417,7 @@ public class CreditAnalyticsProxy {
 		}
 
 		return org.drip.param.creator.MarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
-			cqBond, mapTSYQuotes, mmFixings);
+			cqBond, mapTSYQuotes, lsfc);
 	}
 
 	private static final org.drip.service.bridge.CreditAnalyticsRequest CreateRequest (

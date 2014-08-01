@@ -719,21 +719,15 @@ public class CreditAnalytics {
 	{
 		if (null == dtEOD || null == strName || strName.isEmpty() || null == s_stmt) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put (strName + "-LIBOR-6M", 0.0042);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (dtEOD.addDays (2), mIndexFixings);
+		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strName + "-LIBOR-6M"),
+			0.0042);
 
 		org.drip.param.definition.ScenarioDiscountCurve ircsc =
-			org.drip.service.env.EODCurves.BuildEODIRCurveOfCode (mmFixings, s_stmt, dtEOD, strName, "S",
-				"swap", strName);
+			org.drip.service.env.EODCurves.BuildEODIRCurveOfCode (lsfc, s_stmt, dtEOD, strName, "S", "swap",
+				strName);
 
 		if (null == ircsc) return null;
 
@@ -1326,25 +1320,6 @@ public class CreditAnalytics {
 		if (null == s_stmt) return null;
 
 		return org.drip.service.env.BondManager.GetAvailableTickers (s_stmt);
-	}
-
-	/**
-	 * Creates the fixings object for the given bond and fix coupon, based off of the period represented by
-	 *  the specified date
-	 *  
-	 * @param bond Bond object
-	 * @param dtValue Valuation date (Date representing the period whose fixing is set)
-	 * @param dblFix Fix coupon
-	 * 
-	 * @return The fixings object map
-	 */
-
-	public static final java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> CreateFixingsObject (
-			final org.drip.product.credit.BondComponent bond,
-			final org.drip.analytics.date.JulianDate dtValue, final double dblFix)
-	{
-		return org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond, dtValue, dblFix);
 	}
 
 	/**

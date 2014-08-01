@@ -10,10 +10,10 @@ import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.rates.*;
-import org.drip.product.stream.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -573,7 +573,7 @@ public class IRSVolCorrAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CashflowPeriod period : irs.getFixedStream().cashFlowPeriod()) {
+		for (org.drip.analytics.period.CashflowPeriod period : irs.getFloatStream().cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.start());
 
 			mktParams.setCustomMetricVolSurface (

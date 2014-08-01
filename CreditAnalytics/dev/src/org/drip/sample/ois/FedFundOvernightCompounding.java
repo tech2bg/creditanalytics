@@ -7,14 +7,13 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
-import org.drip.product.stream.*;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -262,7 +261,7 @@ public class FedFundOvernightCompounding {
 			1.);
 	}
 
-	private static final Map<JulianDate, CaseInsensitiveTreeMap<Double>> SetFlatOvernightFixings (
+	private static final LatentStateFixingsContainer SetFlatOvernightFixings (
 		final JulianDate dtStart,
 		final JulianDate dtEnd,
 		final JulianDate dtValue,
@@ -271,7 +270,7 @@ public class FedFundOvernightCompounding {
 		final double dblNotional)
 		throws Exception
 	{
-		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mapFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
+		LatentStateFixingsContainer lsfc = new LatentStateFixingsContainer();
 
 		double dblAccount = 1.;
 
@@ -280,11 +279,7 @@ public class FedFundOvernightCompounding {
 		JulianDate dt = dtStart.addDays (1);
 
 		while (dt.julian() <= dtEnd.julian()) {
-			CaseInsensitiveTreeMap<Double> mapFixing = new CaseInsensitiveTreeMap<Double>();
-
-			mapFixing.put (fri.fullyQualifiedName(), dblFlatFixing);
-
-			mapFixings.put (dt, mapFixing);
+			lsfc.add (dt, fri, dblFlatFixing);
 
 			if (dt.julian() <= dtValue.julian()) {
 				double dblAccrualFraction = Convention.YearFraction (dblPrevDate, dt.julian(), "Act/360", false, Double.NaN, null, "USD");
@@ -302,7 +297,7 @@ public class FedFundOvernightCompounding {
 		System.out.println ("\tManual Calc Float Accrued (Arithmetic Compounding): " +
 			((dtValue.julian() - dtStart.julian()) * dblNotional * dblFlatFixing / 360.));
 
-		return mapFixings;
+		return lsfc;
 	}
 
 	public static final void main (

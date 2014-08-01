@@ -37,18 +37,17 @@ package org.drip.analytics.definition;
  *  - Array of Calibration Instruments
  *  - Map of Calibration Quotes
  *  - Map of Calibration Measures
- *  - Double Map of the Date/Index Fixings
+ *  - Latent State Fixings Container
  *
  * @author Lakshmi Krishnamurthy
  */
 
 public class BootCurveConstructionInput implements org.drip.analytics.definition.CurveConstructionInputSet {
 	private org.drip.param.valuation.ValuationParams _valParam = null;
+	private org.drip.param.market.LatentStateFixingsContainer _lsfc = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
 	private org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
-	private java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
 			_mapQuote = null;
@@ -61,7 +60,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 	 * @param aCalibInst Array of the Calibration Instruments
 	 * @param adblCalibQuote Array of the Calibration Quotes
 	 * @param astrCalibMeasure Array of the Calibration Measures
-	 * @param mmFixing Double Map of the Date/Index Fixings
+	 * @param lsfc Latent State Fixings Container
 	 * 
 	 * @return Instance of BootCurveConstructionInput
 	 */
@@ -72,8 +71,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 	{
 		if (null == aCalibInst || null == adblCalibQuote || null == astrCalibMeasure) return null;
 
@@ -124,7 +122,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 
 		try {
 			return new BootCurveConstructionInput (valParam, quotingParam, aCalibInst, mapQuote, mapMeasures,
-				mmFixing);
+				lsfc);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -140,7 +138,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 	 * @param aCalibInst Array of Calibration Instruments
 	 * @param mapQuote Map of the Calibration Instrument Quotes
 	 * @param mapMeasures Map containing the Array of the Calibration Instrument Measures
-	 * @param mmFixing Double Map of the Date/Index Fixings
+	 * @param lsfc Latent State Fixings Container
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -153,8 +151,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
 				mapQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 		throws java.lang.Exception
 	{
 		if (null == (_valParam = valParam) || null == (_aCalibInst = aCalibInst) || null == (_mapQuote =
@@ -166,7 +163,7 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		if (0 == iNumInst || iNumInst > _mapQuote.size() || iNumInst > _mapMeasures.size())
 			throw new java.lang.Exception ("BootCurveConstructionInput ctr: Invalid Inputs");
 
-		_mmFixing = mmFixing;
+		_lsfc = lsfc;
 		_quotingParam = quotingParam;
 	}
 
@@ -197,10 +194,8 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 		return _mapMeasures;
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			fixing()
+	@Override public org.drip.param.market.LatentStateFixingsContainer fixing()
 	{
-		return _mmFixing;
+		return _lsfc;
 	}
 }

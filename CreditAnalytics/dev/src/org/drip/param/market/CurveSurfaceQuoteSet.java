@@ -211,8 +211,8 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 		_mapProductQuote = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>();
 
-	private java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
+	private org.drip.param.market.LatentStateFixingsContainer _lsfc = new
+		org.drip.param.market.LatentStateFixingsContainer();
 
 	/**
 	 * Empty CurveSurfaceQuoteSet Constructor
@@ -251,74 +251,16 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
 			(strSerializedCurveSurfaceQuoteSet, fieldDelimiter());
 
-		if (null == astrField || 4 > astrField.length)
+		if (null == astrField || 2 > astrField.length)
 			throw new java.lang.Exception ("CurveSurfaceQuoteSet de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception
-				("CurveSurfaceQuoteSet de-serializer: Cannot locate forward curve");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_mapForwardCurve = null;
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("CurveSurfaceQuoteSet de-serializer: Cannot locate fixings");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2])) {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[2],
-				collectionRecordDelimiter());
-
-			if (null != astrRecord && 0 != astrRecord.length) {
-				for (int i = 0; i < astrRecord.length; ++i) {
-					if (null == astrRecord[i] || astrRecord[i].isEmpty()) continue;
-
-					java.lang.String[] astrKVPair = org.drip.quant.common.StringUtil.Split (astrRecord[i],
-						collectionKeyValueDelimiter());
-					
-					if (null == astrKVPair || 2 != astrKVPair.length || null == astrKVPair[0] ||
-						astrKVPair[0].isEmpty() ||
-							org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
-								(astrKVPair[0]) || null == astrKVPair[1] || astrKVPair[1].isEmpty() ||
-									org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
-										(astrKVPair[1]))
-						continue;
-
-					java.lang.String[] astrKeySet = org.drip.quant.common.StringUtil.Split (astrKVPair[0],
-						collectionMultiLevelKeyDelimiter());
-
-					if (null == astrKeySet || 2 != astrKeySet.length || null == astrKeySet[0] ||
-						astrKeySet[0].isEmpty() ||
-							org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
-								(astrKeySet[0]) || null == astrKeySet[1] || astrKeySet[1].isEmpty() ||
-									org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
-										(astrKeySet[1]))
-						continue;
-
-					if (null == _mmFixings)
-						_mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> map2D =
-						_mmFixings.get (astrKeySet[0]);
-
-					if (null == map2D)
-						map2D = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-					map2D.put (astrKeySet[1], new java.lang.Double (astrKVPair[1]));
-
-					_mmFixings.put (new org.drip.analytics.date.JulianDate (new java.lang.Double
-						(astrKeySet[0])), map2D);
-				}
-			}
-		}
-
-		if (null == astrField[3] || astrField[3].isEmpty())
 			throw new java.lang.Exception ("CurveSurfaceQuoteSet de-serializer: Cannot locate TSY quotes");
 
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])) {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[3],
+		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1])) {
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[1],
 				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -2354,30 +2296,166 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieve the Fixings
+	 * Set the Fixing corresponding to the Date/Label Pair
 	 * 
-	 * @return The Fixings Object
+	 * @param dt The Fixing Date
+	 * @param lsl The Fixing Label
+	 * @param dblFixing The Fixing Amount
+	 * 
+	 * @return TRUE => Entry successfully added
 	 */
 
-	public java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixings()
+	public boolean setFixing (
+		final org.drip.analytics.date.JulianDate dt,
+		final org.drip.state.identifier.LatentStateLabel lsl,
+		final double dblFixing)
 	{
-		return _mmFixings;
+		return _lsfc.add (dt, lsl, dblFixing);
 	}
 
 	/**
-	 * (Re)-set the Fixings
+	 * Set the Fixing corresponding to the Date/Label Pair
 	 * 
-	 * @param mmFixings Fixings
+	 * @param dblDate The Fixing Date
+	 * @param lsl The Fixing Label
+	 * @param dblFixing The Fixing Amount
 	 * 
-	 * @return TRUE => Successfully set
+	 * @return TRUE => Entry successfully added
+	 */
+
+	public boolean setFixing (
+		final double dblDate,
+		final org.drip.state.identifier.LatentStateLabel lsl,
+		final double dblFixing)
+	{
+		return _lsfc.add (dblDate, lsl, dblFixing);
+	}
+
+	/**
+	 * Remove the Fixing corresponding to the Date/Label Pair it if exists
+	 * 
+	 * @param dt The Fixing Date
+	 * @param lsl The Fixing Label
+	 * 
+	 * @return TRUE => Entry successfully removed if it existed
+	 */
+
+	public boolean removeFixing (
+		final org.drip.analytics.date.JulianDate dt,
+		final org.drip.state.identifier.LatentStateLabel lsl)
+	{
+		return _lsfc.remove (dt, lsl);
+	}
+
+	/**
+	 * Remove the Fixing corresponding to the Date/Label Pair it if exists
+	 * 
+	 * @param dblDate The Fixing Date
+	 * @param lsl The Fixing Label
+	 * 
+	 * @return TRUE => Entry successfully removed if it existed
+	 */
+
+	public boolean removeFixing (
+		final double dblDate,
+		final org.drip.state.identifier.LatentStateLabel lsl)
+	{
+		return _lsfc.remove (dblDate, lsl);
+	}
+
+	/**
+	 * Retrieve the Fixing for the Specified Date/LSL Combination
+	 * 
+	 * @param dt Date
+	 * @param lsl The Latent State Label
+	 * 
+	 * @return The Fixing for the Specified Date/LSL Combination
+	 * 
+	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
+	 */
+
+	public double getFixing (
+		final org.drip.analytics.date.JulianDate dt,
+		final org.drip.state.identifier.LatentStateLabel lsl)
+		throws java.lang.Exception
+	{
+		return _lsfc.get (dt, lsl);
+	}
+
+	/**
+	 * Retrieve the Fixing for the Specified Date/LSL Combination
+	 * 
+	 * @param dblDate Date
+	 * @param lsl The Latent State Label
+	 * 
+	 * @return The Fixing for the Specified Date/LSL Combination
+	 * 
+	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
+	 */
+
+	public double getFixing (
+		final double dblDate,
+		final org.drip.state.identifier.LatentStateLabel lsl)
+		throws java.lang.Exception
+	{
+		return _lsfc.get (dblDate, lsl);
+	}
+
+	/**
+	 * Indicates the Availability of the Fixing for the Specified LSL Label on the specified Date
+	 * 
+	 * @param dt The Date
+	 * @param lsl The Label
+	 * 
+	 * @return TRUE => The Fixing for the Specified LSL Label on the specified Date 
+	 */
+
+	public boolean available (
+		final org.drip.analytics.date.JulianDate dt,
+		final org.drip.state.identifier.LatentStateLabel lsl)
+	{
+		return _lsfc.available (dt, lsl);
+	}
+
+	/**
+	 * Indicates the Availability of the Fixing for the Specified LSL Label on the specified Date
+	 * 
+	 * @param dblDate The Date
+	 * @param lsl The Label
+	 * 
+	 * @return TRUE => The Fixing for the Specified LSL Label on the specified Date 
+	 */
+
+	public boolean available (
+		final double dblDate,
+		final org.drip.state.identifier.LatentStateLabel lsl)
+	{
+		return _lsfc.available (dblDate, lsl);
+	}
+
+	/**
+	 * Retrieve the Latent State Fixings
+	 * 
+	 * @return The Latent State Fixings
+	 */
+
+	public org.drip.param.market.LatentStateFixingsContainer fixings()
+	{
+		return _lsfc;
+	}
+
+	/**
+	 * Set the Latent State Fixings Container Instance
+	 * 
+	 * @param lsfc The Latent State Fixings Container Instance
+	 * 
+	 * @return The Latent State Fixings Container Instance successfully set
 	 */
 
 	public boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 	{
-		_mmFixings = mmFixings;
+		_lsfc = lsfc;
 		return true;
 	}
 
@@ -2386,41 +2464,6 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-
-		if (null == _mmFixings || null == _mmFixings.entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else {
-			boolean bFirstEntry = true;
-
-			java.lang.StringBuffer sbFixings = new java.lang.StringBuffer();
-
-			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meOut :
-					_mmFixings.entrySet()) {
-				if (null == meOut || null == meOut.getValue() || null == meOut.getValue().entrySet())
-					continue;
-
-				for (java.util.Map.Entry<java.lang.String, java.lang.Double> meIn :
-					meOut.getValue().entrySet()) {
-					if (null == meIn || null == meIn.getKey() || meIn.getKey().isEmpty()) continue;
-
-					if (bFirstEntry)
-						bFirstEntry = false;
-					else
-						sb.append (collectionRecordDelimiter());
-
-					sbFixings.append (meOut.getKey().julian() + collectionMultiLevelKeyDelimiter() +
-						meIn.getKey() + collectionKeyValueDelimiter() + meIn.getValue());
-				}
-			}
-
-			if (sbFixings.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-			else
-				sb.append (sbFixings.toString() + fieldDelimiter());
-		}
 
 		if (null == _mapProductQuote || 0 == _mapProductQuote.size())
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
@@ -2445,7 +2488,7 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			if (!sbMapTSYQuotes.toString().isEmpty()) sb.append (sbMapTSYQuotes);
 		}
 
-		return sb.append (objectTrailer()).toString().getBytes();
+		return sb.append (fieldDelimiter()).append (objectTrailer()).toString().getBytes();
 	}
 
 	@Override public org.drip.service.stream.Serializer deserialize (
@@ -2509,18 +2552,6 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 		mapTSYQuotes.put ("TSY2ON", cq);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
-
 		org.drip.param.market.CurveSurfaceQuoteSet csqs = new
 			org.drip.param.market.CurveSurfaceQuoteSet();
 
@@ -2532,7 +2563,8 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 		csqs.setFundingCurve (dc);
 
-		csqs.setFixings (mmFixings);
+		csqs.setFixing (org.drip.analytics.date.JulianDate.Today().addDays (2),
+			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0042);
 
 		csqs.setQuoteMap (mapTSYQuotes);
 

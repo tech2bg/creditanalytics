@@ -362,7 +362,7 @@ public class RatesClosesLoader {
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
 						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency);
 
-			org.drip.product.stream.FixedStream fixStream = new org.drip.product.stream.FixedStream
+			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
@@ -370,7 +370,7 @@ public class RatesClosesLoader {
 					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
 						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency);
 
-			org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream
+			org.drip.product.cashflow.FloatingStream floatStream = new org.drip.product.cashflow.FloatingStream
 				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
 					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 						_mapFloatingTenor.get (strCurrency)), false);
@@ -420,14 +420,14 @@ public class RatesClosesLoader {
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
 						strCurrency, strCurrency);
 
-			org.drip.product.stream.FixedStream fixStream = new org.drip.product.stream.FixedStream
+			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (dtEffective.julian(),
 					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency);
 
-			org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream
+			org.drip.product.cashflow.FloatingStream floatStream = new org.drip.product.cashflow.FloatingStream
 				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
 					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 						_mapFloatingTenor.get (strCurrency)), false);
@@ -451,15 +451,14 @@ public class RatesClosesLoader {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strMeasure,
 		final java.lang.String strCurrency,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 		throws java.lang.Exception
 	{
 		if (comp.maturity().julian() <= dt.julian()) return 0.;
 
 		return comp.value (new org.drip.param.valuation.ValuationParams (dt, dt, strCurrency), null,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null, null, null,
-				mmFixings), null).get (strMeasure);
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc),
+				null).get (strMeasure);
 	}
 
 	private static final double calcCleanPnL (
@@ -469,12 +468,11 @@ public class RatesClosesLoader {
 		final org.drip.analytics.rates.DiscountCurve dc1,
 		final org.drip.analytics.rates.DiscountCurve dc2,
 		final java.lang.String strCurrency,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 		throws java.lang.Exception
 	{
-		return calcMeasure (comp, dt2, dc2, "CleanPV", strCurrency, mmFixings) - calcMeasure (comp, dt1, dc1,
-			"CleanPV", strCurrency, mmFixings);
+		return calcMeasure (comp, dt2, dc2, "CleanPV", strCurrency, lsfc) - calcMeasure (comp, dt1, dc1,
+			"CleanPV", strCurrency, lsfc);
 	}
 
 	private static final double calcDirtyPnL (
@@ -484,12 +482,11 @@ public class RatesClosesLoader {
 		final org.drip.analytics.rates.DiscountCurve dc1,
 		final org.drip.analytics.rates.DiscountCurve dc2,
 		final java.lang.String strCurrency,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 		throws java.lang.Exception
 	{
-		return calcMeasure (comp, dt2, dc2, "DirtyPV", strCurrency, mmFixings) - calcMeasure (comp, dt1, dc1,
-			"DirtyPV", strCurrency, mmFixings);
+		return calcMeasure (comp, dt2, dc2, "DirtyPV", strCurrency, lsfc) - calcMeasure (comp, dt1, dc1,
+			"DirtyPV", strCurrency, lsfc);
 	}
 
 	private static final double Forward (
@@ -571,32 +568,25 @@ public class RatesClosesLoader {
 
 		double dbl1DTotalPnL = dbl1DCleanPnL + dbl1DCarry;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mapFixing.put (irs.getFloatStream().forwardLabel()[0].fullyQualifiedName(), dblProductFloatingRate);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.TreeMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (dtPrev, mapFixing);
+		lsfc.add (dtPrev, irs.getFloatStream().forwardLabel()[0], dblProductFloatingRate);
 
 		double dbl1DCleanPnLWithFixing = calcCleanPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev,
-			dcDateCurrQuoteCurr, strCurrency, mmFixings);
+			dcDateCurrQuoteCurr, strCurrency, lsfc);
 
 		double dbl1DDirtyPnLWithFixing = calcDirtyPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev,
-			dcDateCurrQuoteCurr, strCurrency, mmFixings);
+			dcDateCurrQuoteCurr, strCurrency, lsfc);
 
 		double dbl1DTotalPnLWithFixing = dbl1DCleanPnLWithFixing + dbl1DCarry;
 
 		double dblFloatingRateUsed = irs.getFloatStream().coupon (dtPrev.julian(), null,
-			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
-				null, null, null, mmFixings)).nominal();
+			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null, null, null,
+				null, lsfc)).nominal();
 
 		double dblCleanFloatDV01WithFixing = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01",
-			strCurrency, mmFixings);
+			strCurrency, lsfc);
 
 		double dblDV01WithFixing = dblCleanFixedDV01 + dblCleanFloatDV01WithFixing;
 
@@ -624,7 +614,7 @@ public class RatesClosesLoader {
 			10000. * dblDV01;
 
 		double dbl1DMaturityRollUpFairPremiumWithFixing = calcMeasure (comp, dtCurr, dcDatePrevQuotePrev,
-			"FairPremium", strCurrency, mmFixings);
+			"FairPremium", strCurrency, lsfc);
 
 		double dbl1DMaturityRollUpFairPremiumWithFixingPnL = (dblBaselineSwapRate -
 			dbl1DMaturityRollUpFairPremiumWithFixing) * 10000. * dblDV01;

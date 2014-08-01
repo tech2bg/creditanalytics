@@ -65,11 +65,10 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	protected org.drip.analytics.rates.DiscountCurve _dcTSY = null;
 	protected org.drip.param.pricer.PricerParams _pricerParam = null;
 	protected org.drip.param.valuation.ValuationParams _valParam = null;
+	protected org.drip.param.market.LatentStateFixingsContainer _lsfc = null;
 	protected org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
 	protected org.drip.product.definition.CalibratableFixedIncomeComponent[] _aCalibInst = null;
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> _mapMeasure = null;
-	protected java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
 		_mapQuote = null;
 
@@ -477,7 +476,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	 * @param aCalibInst Array of calibration instruments
 	 * @param adblCalibQuote Array of calibration quotes
 	 * @param astrCalibMeasure Array of calibration measures
-	 * @param mmFixing Fixings object
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 */
 
@@ -490,15 +489,14 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double[] adblCalibQuote,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		_dc = dc;
+		_lsfc = lsfc;
 		_bFlat = bFlat;
 		_dcTSY = dcTSY;
 		_valParam = valParam;
-		_mmFixing = mmFixing;
 		_aCalibInst = aCalibInst;
 		_pricerParam = pricerParam;
 		_quotingParams = quotingParams;

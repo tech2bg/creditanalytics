@@ -146,15 +146,13 @@ public interface BondProduct {
 	/**
 	 * Set the bond fixings
 	 * 
-	 * @param mmFixings Bond fixings
+	 * @param lsfc Latent State Fixings Container
 	 * 
 	 * @return True if succeeded
 	 */
 
 	public abstract boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings
-	);
+		final org.drip.param.market.LatentStateFixingsContainer lsfc);
 
 	/**
 	 * Retrieve the bond fixings
@@ -162,8 +160,7 @@ public interface BondProduct {
 	 * @return Bond fixings
 	 */
 
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixings();
+	public abstract org.drip.param.market.LatentStateFixingsContainer fixings();
 
 	/**
 	 * Set the Bond's Market Convention

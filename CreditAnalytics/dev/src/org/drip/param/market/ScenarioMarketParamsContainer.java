@@ -61,8 +61,8 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 		_mapCQTSY = null;
-	private java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
+	private org.drip.param.market.LatentStateFixingsContainer _lsfc = new
+		org.drip.param.market.LatentStateFixingsContainer();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioDiscountCurve>
 		_mapIRCSC = new
@@ -284,7 +284,7 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 			}
 		}
 
-		mp.setFixings (_mmFixings);
+		mp.setFixings (_lsfc);
 
 		return mp;
 	}
@@ -422,55 +422,22 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 
 	@Override public boolean addFixings (
 		final org.drip.analytics.date.JulianDate dtFix,
-		final java.lang.String strIndex,
+		final org.drip.state.identifier.LatentStateLabel lsl,
 		final double dblFixing)
 	{
-		if (null == dtFix || null == strIndex || strIndex.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblFixing))
-			return false;
-
-		if (null == _mmFixings)
-			_mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = _mmFixings.get
-			(dtFix);
-
-		if (null == mIndexFixings)
-			mIndexFixings = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-		mIndexFixings.put (strIndex, dblFixing);
-
-		_mmFixings.put (dtFix, mIndexFixings);
-
-		return true;
+		return _lsfc.add (dtFix, lsl, dblFixing);
 	}
 
 	@Override public boolean removeFixings (
 		final org.drip.analytics.date.JulianDate dtFix,
-		final java.lang.String strIndex)
+		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
-		if (null == dtFix || null == strIndex || strIndex.isEmpty()) return false;
-
-		if (null == _mmFixings) return true;
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = _mmFixings.get
-			(dtFix);
-
-		if (null == mIndexFixings) return true;
-
-		mIndexFixings.remove (strIndex);
-
-		_mmFixings.put (dtFix, mIndexFixings);
-
-		return true;
+		return _lsfc.remove (dtFix, lsl);
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getFixings()
+	@Override public org.drip.param.market.LatentStateFixingsContainer fixings()
 	{
-		return _mmFixings;
+		return _lsfc;
 	}
 
 	@Override public boolean addCompQuote (
@@ -588,8 +555,8 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 			_mapCCSC.get (comp.creditLabel()))
 			cc = _mapCCSC.get (comp.creditLabel()).getCCBumpDn();
 
-		return org.drip.param.creator.MarketParamsBuilder.Create (dc, fc,
-			dcTSY, cc, comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY, _mmFixings);
+		return org.drip.param.creator.MarketParamsBuilder.Create (dc, fc, dcTSY, cc, comp.name(),
+			_mapCQComp.get (comp.name()), _mapCQTSY, _lsfc);
 	}
 
 	@Override public
@@ -638,7 +605,7 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 
 				mapCSQS.put (meDC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create
 					(meDC.getValue(), fc, dcTSY, cc, comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY,
-						_mmFixings));
+						_lsfc));
 			}
 		} else {
 			if (null == _mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpDn() || null == _mapIRCSC.get
@@ -651,7 +618,7 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 
 				mapCSQS.put (meDC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create
 					(meDC.getValue(), fc, dcTSY, cc, comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY,
-						_mmFixings));
+						_lsfc));
 			}
 		}
 
@@ -704,7 +671,7 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 
 				mapCSQS.put (meFC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create (dc,
 					meFC.getValue(), dcTSY, cc, comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY,
-						_mmFixings));
+						_lsfc));
 			}
 		} else {
 			if (null == _mapSFC.get (comp.forwardLabel()).getTenorFCBumpDn() || null == _mapSFC.get
@@ -717,7 +684,7 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 
 				mapCSQS.put (meFC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create (dc,
 					meFC.getValue(), dcTSY, cc, comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY,
-						_mmFixings));
+						_lsfc));
 			}
 		}
 
@@ -768,7 +735,7 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 				if (null == meCC || null == meCC.getKey() || meCC.getKey().isEmpty()) continue;
 
 				mapCSQS.put (meCC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create (dc, fc, dcTSY,
-					meCC.getValue(), comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY, _mmFixings));
+					meCC.getValue(), comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY, _lsfc));
 			}
 		} else {
 			if (null == _mapCCSC.get (comp.creditLabel()).getTenorCCBumpDn() || null == _mapCCSC.get
@@ -780,7 +747,7 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 				if (null == meCC || null == meCC.getKey() || meCC.getKey().isEmpty()) continue;
 
 				mapCSQS.put (meCC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create (dc, fc, dcTSY,
-					meCC.getValue(), comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY, _mmFixings));
+					meCC.getValue(), comp.name(), _mapCQComp.get (comp.name()), _mapCQTSY, _lsfc));
 			}
 		}
 

@@ -58,6 +58,55 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 	private org.drip.state.identifier.ForwardLabel _fri = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 
+	private org.drip.state.estimator.PredictorResponseWeightConstraint discountFactorPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate > _dblEffective) return null;
+
+		org.drip.product.calib.DepositComponentQuoteSet dcqs =
+			(org.drip.product.calib.DepositComponentQuoteSet) pqs;
+
+		if (!dcqs.containsPV() && !dcqs.containsRate()) return null;
+
+		double dblForwardDF = java.lang.Double.NaN;
+
+		try {
+			if (dcqs.containsPV())
+				dblForwardDF = dcqs.pv();
+			else if (dcqs.containsRate())
+				dblForwardDF = 1. / (1. + org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
+					_dblMaturity, _strDayCount, false, _dblMaturity, null, _strCalendar) * dcqs.rate());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		if (!prwc.addPredictorResponseWeight (_dblEffective, _dblNotional * dblForwardDF)) return null;
+
+		if (!prwc.addDResponseWeightDManifestMeasure ("PV", _dblEffective, _dblNotional * dblForwardDF))
+			return null;
+
+		if (!prwc.addPredictorResponseWeight (_dblMaturity, -1. * _dblNotional)) return null;
+
+		if (!prwc.addDResponseWeightDManifestMeasure ("PV", _dblMaturity, -1. * _dblNotional)) return null;
+
+		if (!prwc.updateValue (0.)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
 	/**
 	 * Construct a DepositComponent instance
 	 * 
@@ -500,7 +549,12 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		return null;
+		return null == valParams || null == pqs || !(pqs instanceof
+			org.drip.product.calib.DepositComponentQuoteSet) || !pqs.contains
+				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) ? null :
+							discountFactorPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
@@ -518,7 +572,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= _dblMaturity) return null;
+		if (dblValueDate >= _dblEffective) return null;
 
 		org.drip.product.calib.DepositComponentQuoteSet dcqs =
 			(org.drip.product.calib.DepositComponentQuoteSet) pqs;
@@ -528,12 +582,12 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		double dblForwardRate = java.lang.Double.NaN;
 
 		try {
-			if (dcqs.containsPV())
+			if (dcqs.containsRate())
+				dblForwardRate = dcqs.rate();
+			else if (dcqs.containsPV())
 				dblForwardRate = ((1. / dcqs.pv()) - 1.) /
 					org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
 						_strDayCount, false, _dblMaturity, null, _strCalendar);
-			else if (dcqs.containsRate())
-				dblForwardRate = dcqs.rate();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -543,8 +597,15 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		return prwc.addPredictorResponseWeight (_dblEffective, 1.) && prwc.addDResponseWeightDManifestMeasure
-			("Rate", _dblEffective, 1.) && prwc.updateValue (dblForwardRate) ? prwc : null;
+		if (!prwc.addPredictorResponseWeight (_dblEffective, 1.)) return null;
+
+		if (!prwc.addDResponseWeightDManifestMeasure ("Rate", _dblEffective, 1.)) return null;
+
+		if (!prwc.updateValue (dblForwardRate)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("Rate", 1.)) return null;
+
+		return prwc;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
@@ -564,34 +625,10 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 									_fri))
 			return null;
 
-		double dblValueDate = valParams.valueDate();
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = discountFactorPRWC (valParams,
+			pricerParams, csqs, quotingParams, pqs);
 
-		if (dblValueDate >= _dblMaturity) return null;
-
-		org.drip.product.calib.DepositComponentQuoteSet dcqs =
-			(org.drip.product.calib.DepositComponentQuoteSet) pqs;
-
-		if (!dcqs.containsPV() && !dcqs.containsRate()) return null;
-
-		double dblPV = java.lang.Double.NaN;
-
-		try {
-			if (dcqs.containsPV())
-				dblPV = dcqs.pv();
-			else if (dcqs.containsRate())
-				dblPV = 1. / (1. + org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-					_dblMaturity, _strDayCount, false, _dblMaturity, null, _strCalendar) * dcqs.rate());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
-			org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-		return prwc.addPredictorResponseWeight (_dblMaturity, 1.) && prwc.addDResponseWeightDManifestMeasure
-			("PV", _dblMaturity, 1.) && prwc.updateValue (dblPV) ? prwc : null;
+		return null != prwc && prwc.addMergeLabel (_fri) ? prwc : null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (

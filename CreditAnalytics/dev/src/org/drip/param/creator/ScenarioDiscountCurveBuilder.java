@@ -150,7 +150,7 @@ public class ScenarioDiscountCurveBuilder {
 	 * @param aCalibInst Input Rates Calibration Instruments
 	 * @param adblQuotes Input Calibration Quotes
 	 * @param astrCalibMeasure Input Calibration Measures
-	 * @param mmFixings (Optional) Input Fixings
+	 * @param lsfc Latent State Fixings Container
 	 * 
 	 * @return The Calibrated Discount Curve
 	 */
@@ -162,15 +162,14 @@ public class ScenarioDiscountCurveBuilder {
 		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibInst,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 	{
 		org.drip.param.definition.ScenarioDiscountCurve irsg = FromIRCSG (strCurrency, strBootstrapMode,
 			aCalibInst);
 
 		if (null == irsg || !irsg.cookScenarioDC (org.drip.param.valuation.ValuationParams.CreateValParams
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, adblQuotes, 0.,
-				astrCalibMeasure, mmFixings, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
+				astrCalibMeasure, lsfc, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
 			return null;
 
 		return irsg.getDCBase();

@@ -76,8 +76,6 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		long lStart = System.nanoTime();
 
-		double dblParStandardFRA = java.lang.Double.NaN;
-
 		double dblValueDate = valParams.valueDate();
 
 		double dblEffectiveDate = effective().julian();
@@ -99,26 +97,14 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		if (null == fc || !fri.match (fc.index())) return null;
 
-		java.lang.String strFRI = fri.fullyQualifiedName();
-
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = super.value
 			(valParams, pricerParams, csqs, quotingParams);
 
 		if (null == mapResult || 0 == mapResult.size()) return null;
 
 		try {
-			java.util.Map<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-					csqs.fixings();
-
-			if (null != mapFixings && mapFixings.containsKey (dtMaturity)) {
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing =
-					mapFixings.get (dtMaturity);
-
-				dblParStandardFRA = null != mapFixing && mapFixing.containsKey (strFRI) ? mapFixing.get
-					(strFRI) : fc.forward (dblMaturity);
-			} else
-				dblParStandardFRA = fc.forward (dblMaturity);
+			double dblParStandardFRA = csqs.available (dtMaturity, fri) ? csqs.getFixing (dtMaturity, fri) :
+				fc.forward (dblMaturity);
 
 			double dblForwardDCF = org.drip.analytics.daycount.Convention.YearFraction (dblMaturity, new
 				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (fri.tenor()).julian(),

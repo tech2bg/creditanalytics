@@ -47,10 +47,10 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloatFloatComponent extends org.drip.product.stream.DualStreamComponent {
+public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.stream.FloatingStream _floatDerived = null;
-	private org.drip.product.stream.FloatingStream _floatReference = null;
+	private org.drip.product.cashflow.FloatingStream _floatDerived = null;
+	private org.drip.product.cashflow.FloatingStream _floatReference = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -71,8 +71,8 @@ public class FloatFloatComponent extends org.drip.product.stream.DualStreamCompo
 	 */
 
 	public FloatFloatComponent (
-		final org.drip.product.stream.FloatingStream floatReference,
-		final org.drip.product.stream.FloatingStream floatDerived)
+		final org.drip.product.cashflow.FloatingStream floatReference,
+		final org.drip.product.cashflow.FloatingStream floatDerived)
 		throws java.lang.Exception
 	{
 		if (null == (_floatReference = floatReference) || null == (_floatDerived = floatDerived))
@@ -121,7 +121,7 @@ public class FloatFloatComponent extends org.drip.product.stream.DualStreamCompo
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_floatReference = null;
 		else
-			_floatReference = new org.drip.product.stream.FloatingStream (astrField[1].getBytes());
+			_floatReference = new org.drip.product.cashflow.FloatingStream (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
@@ -130,7 +130,7 @@ public class FloatFloatComponent extends org.drip.product.stream.DualStreamCompo
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_floatDerived = null;
 		else
-			_floatDerived = new org.drip.product.stream.FloatingStream (astrField[2].getBytes());
+			_floatDerived = new org.drip.product.cashflow.FloatingStream (astrField[2].getBytes());
 	}
 
 	@Override public void setPrimaryCode (

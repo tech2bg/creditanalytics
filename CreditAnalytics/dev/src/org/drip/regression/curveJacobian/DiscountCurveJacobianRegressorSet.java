@@ -55,12 +55,13 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 				_strRegressionScenario)
 			{
 				org.drip.analytics.date.JulianDate dtStart = null;
+				org.drip.analytics.rates.DiscountCurve dcIRS = null;
 				org.drip.quant.calculus.WengertJacobian wjPVDF = null;
 				org.drip.quant.calculus.WengertJacobian aWJComp[] = null;
-				org.drip.analytics.rates.DiscountCurve dcIRS = null;
 				org.drip.product.definition.CalibratableFixedIncomeComponent aCompCalib[] = null;
-				java.util.Map<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null;
+
+				org.drip.param.market.LatentStateFixingsContainer lsfc = new
+					org.drip.param.market.LatentStateFixingsContainer();
 
 				@Override public boolean preRegression()
 				{
@@ -136,19 +137,13 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						}
 					}
 
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-					mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
-
-					(mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>()).put
-							(dtStart.addDays (2), mIndexFixings);
+					lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create
+						("USD-LIBOR-6M"), 0.0042);
 
 					return null != (dcIRS = org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild
 						(dtStart, "USD",
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-								aCompCalib, adblCompCalibValue, astrCalibMeasure, mmFixings));
+								aCompCalib, adblCompCalibValue, astrCalibMeasure, lsfc));
 				}
 
 				@Override public boolean execRegression()
@@ -157,8 +152,8 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						try {
 							if (null == (aWJComp[i] = aCompCalib[i].jackDDirtyPVDManifestMeasure (new
 								org.drip.param.valuation.ValuationParams (dtStart, dtStart, "USD"), null,
-									org.drip.param.creator.MarketParamsBuilder.Create (dcIRS, null,
-										null, null, null, null, mmFixings), null)))
+									org.drip.param.creator.MarketParamsBuilder.Create (dcIRS, null, null,
+										null, null, null, lsfc), null)))
 								return false;
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();

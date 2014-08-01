@@ -67,12 +67,6 @@ public class CompoundingUtil {
 			return null;
 		}
 
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-				csqs.fixings();
-
-		if (null == mapFixings || 0 == mapFixings.size()) return null;
-
 		double dblValueDate = valParams.valueDate();
 
 		double dblPrevDate = currentPeriod.start();
@@ -80,8 +74,6 @@ public class CompoundingUtil {
 		java.lang.String strCalendar = currentPeriod.calendar();
 
 		java.lang.String strAccrualDC = currentPeriod.accrualDC();
-
-		java.lang.String strFRIFullName = fri.fullyQualifiedName();
 
 		double dblNominalAccrued = 0.;
 		double dblConvexityAdjustedAccrued = 0.;
@@ -104,51 +96,37 @@ public class CompoundingUtil {
 			(strCurrency);
 
 		while (dblDate <= dblAccrualEndDate) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = null;
+			if (csqs.available (dblDate, fri)) {
+				double dblAccrualConvexityAdjustment = 1.;
+				double dblIncrementalAccrued = java.lang.Double.NaN;
 
-			try {
-				mapFRIFixing = mapFixings.get (new org.drip.analytics.date.JulianDate (dblDate));
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-
-			if (null != mapFRIFixing && mapFRIFixing.containsKey (strFRIFullName)) {
-				java.lang.Double dblFixing = mapFRIFixing.get (strFRIFullName);
-
-				if (null != dblFixing && org.drip.quant.common.NumberUtil.IsValid (dblFixing)) {
-					double dblAccrualConvexityAdjustment = 1.;
-					double dblIncrementalAccrued = java.lang.Double.NaN;
-
-					if (dblValueDate < dblDate) {
-						try {
-							dblAccrualConvexityAdjustment = java.lang.Math.exp
-								(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-									(csqs.fundingCurveVolSurface (fundingLabel), csqs.forwardCurveVolSurface
-										(fri), csqs.forwardFundingCorrSurface (fri, fundingLabel),
-											dblValueDate, dblDate));
-						} catch (java.lang.Exception e) {
-							e.printStackTrace();
-
-							return null;
-						}
-					}
-
+				if (dblValueDate < dblDate) {
 					try {
-						dblIncrementalAccrued = org.drip.analytics.daycount.Convention.YearFraction
-							(dblPrevDate, dblDate, strAccrualDC, false, java.lang.Double.NaN, null,
-								strCalendar) * (dblLastCoupon = dblFixing);
+						dblAccrualConvexityAdjustment = java.lang.Math.exp
+							(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+								(csqs.fundingCurveVolSurface (fundingLabel), csqs.forwardCurveVolSurface
+									(fri), csqs.forwardFundingCorrSurface (fri, fundingLabel), dblValueDate,
+										dblDate));
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 
 						return null;
 					}
-
-					dblPrevDate = dblDate;
-					dblNominalAccrued += dblIncrementalAccrued;
-					dblConvexityAdjustedAccrued += dblIncrementalAccrued * dblAccrualConvexityAdjustment;
 				}
+
+				try {
+					dblIncrementalAccrued = org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate,
+						dblDate, strAccrualDC, false, java.lang.Double.NaN, null, strCalendar) *
+							(dblLastCoupon = csqs.getFixing (dblDate, fri));
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+
+				dblPrevDate = dblDate;
+				dblNominalAccrued += dblIncrementalAccrued;
+				dblConvexityAdjustedAccrued += dblIncrementalAccrued * dblAccrualConvexityAdjustment;
 			}
 
 			dblDate = (dt = dt.addBusDays (1, strCalendar)).julian();
@@ -201,19 +179,11 @@ public class CompoundingUtil {
 			return null;
 		}
 
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapFixings =
-				csqs.fixings();
-
-		if (null == mapFixings || 0 == mapFixings.size()) return null;
-
 		double dblPrevDate = currentPeriod.start();
 
 		java.lang.String strCalendar = currentPeriod.calendar();
 
 		java.lang.String strAccrualDC = currentPeriod.accrualDC();
-
-		java.lang.String strFRIFullName = fri.fullyQualifiedName();
 
 		double dblAccruedAccount = 1.;
 		double dblLastCoupon = java.lang.Double.NaN;
@@ -230,32 +200,18 @@ public class CompoundingUtil {
 		double dblDate = dt.julian();
 
 		while (dblDate <= dblAccrualEndDate) {
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRIFixing = null;
+			if (csqs.available (dblDate, fri)) {
+				try {
+					dblAccruedAccount *= (1. + org.drip.analytics.daycount.Convention.YearFraction
+						(dblPrevDate, dblDate, strAccrualDC, false, java.lang.Double.NaN, null, strCalendar)
+							* (dblLastCoupon = csqs.getFixing (dblDate, fri)));
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
 
-			try {
-				mapFRIFixing = mapFixings.get (new org.drip.analytics.date.JulianDate (dblDate));
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-
-			if (null != mapFRIFixing && mapFRIFixing.containsKey (strFRIFullName)) {
-				java.lang.Double dblFixing = mapFRIFixing.get (strFRIFullName);
-
-				if (null != dblFixing && org.drip.quant.common.NumberUtil.IsValid (dblFixing)) {
-					try {
-						dblAccruedAccount *= (1. + org.drip.analytics.daycount.Convention.YearFraction
-							(dblPrevDate, dblDate, strAccrualDC, false, java.lang.Double.NaN, null,
-								strCalendar) * (dblLastCoupon = dblFixing));
-					} catch (java.lang.Exception e) {
-						e.printStackTrace();
-
-						return null;
-					}
-
-					dblPrevDate = dblDate;
+					return null;
 				}
+
+				dblPrevDate = dblDate;
 			}
 
 			dblDate = (dt = dt.addBusDays (1, strCalendar)).julian();

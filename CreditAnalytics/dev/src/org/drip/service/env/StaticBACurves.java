@@ -276,7 +276,7 @@ public class StaticBACurves {
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
 						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mpc.getFixings(), null, 15)) {
+							astrCalibMeasure, mpc.fixings(), null, 15)) {
 				System.out.println ("Cannot cook " + strCurrency + "TSY curve!");
 
 				return false;
@@ -349,7 +349,7 @@ public class StaticBACurves {
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
 						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mpc.getFixings(), null, 15)) {
+							astrCalibMeasure, mpc.fixings(), null, 15)) {
 				System.out.println ("Cannot cook " + strCurrency + " curve!");
 
 				return false;
@@ -557,18 +557,20 @@ public class StaticBACurves {
 
 		long lStart = System.nanoTime();
 
-		if (!mpc.addFixings (dt.addDays (2), strCurrency + "-LIBOR-6M", 0.0042)) return false;
+		if (!mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strCurrency +
+			"-LIBOR-6M"), 0.0042))
+			return false;
 
 		try {
-			if (!mpc.addFixings (org.drip.analytics.date.JulianDate.CreateFromYMD (2010, 12, 14), "US0003M",
-				0.0042))
+			if (!mpc.addFixings (org.drip.analytics.date.JulianDate.CreateFromYMD (2010, 12, 14),
+				org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-3M"), 0.0042))
 				return false;
 
 			(irsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
 						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mpc.getFixings(), null, 15);
+							astrCalibMeasure, mpc.fixings(), null, 15);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

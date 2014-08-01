@@ -222,21 +222,15 @@ public class CreditAnalyticsStub {
 			}
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-3M", 0.0042);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (dtStart.addDays (2), mIndexFixings);
+		lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"),
+			0.0402);
 
 		return org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
 			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib,
-				adblCompCalibValue, astrCalibMeasure, mmFixings);
+				adblCompCalibValue, astrCalibMeasure, lsfc);
 	}
 
 	private static final org.drip.analytics.output.BondRVMeasures ProcessRequest (

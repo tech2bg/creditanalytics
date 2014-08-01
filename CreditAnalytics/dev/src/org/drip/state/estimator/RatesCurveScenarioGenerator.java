@@ -100,7 +100,7 @@ public class RatesCurveScenarioGenerator {
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Quote bump
 	 * @param astrCalibMeasure Array of the calibration measures
-	 * @param mmFixings Map of fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * 
 	 * @return DiscountCurve
@@ -112,8 +112,7 @@ public class RatesCurveScenarioGenerator {
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
@@ -151,7 +150,7 @@ public class RatesCurveScenarioGenerator {
 		}
 
 		if (!_compCalib.bootstrapInterestRateSequence (dc, dcTSY, _aCalibInst, valParams, astrCalibMeasure,
-			adblQuotes, dblBump, mmFixings, quotingParams, false))
+			adblQuotes, dblBump, lsfc, quotingParams, false))
 			return null;
 
 		if (s_bBlog) {
@@ -159,7 +158,7 @@ public class RatesCurveScenarioGenerator {
 				try {
 					System.out.println (i + "=" +_aCalibInst[i].measureValue (valParams, null,
 						org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null,
-							null, null, mmFixings), null, astrCalibMeasure[i]));
+							null, null, lsfc), null, astrCalibMeasure[i]));
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}
@@ -167,7 +166,7 @@ public class RatesCurveScenarioGenerator {
 		}
 
 		dc.setCCIS (org.drip.analytics.definition.BootCurveConstructionInput.Create (valParams, quotingParams,
-			_aCalibInst, adblQuotes, astrCalibMeasure, mmFixings));
+			_aCalibInst, adblQuotes, astrCalibMeasure, lsfc));
 
 		return dc;
 	}
@@ -180,7 +179,7 @@ public class RatesCurveScenarioGenerator {
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Quote bump
 	 * @param astrCalibMeasure Array of the calibration measures
-	 * @param mmFixings Map of fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * 
 	 * @return Array of tenor bumped discount curves
@@ -192,8 +191,7 @@ public class RatesCurveScenarioGenerator {
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == _aCalibInst || 0 == _aCalibInst.length || null == adblQuotes || null == astrCalibMeasure
@@ -217,8 +215,8 @@ public class RatesCurveScenarioGenerator {
 					adblTenorQuotes[j] = adblQuotes[j];
 			}
 
-			if (null == (aDC[i] = createIRCurve (valParams, dcTSY, adblQuotes, 0., astrCalibMeasure,
-				mmFixings, quotingParams)))
+			if (null == (aDC[i] = createIRCurve (valParams, dcTSY, adblQuotes, 0., astrCalibMeasure, lsfc,
+				quotingParams)))
 				return null;
 		}
 
@@ -233,7 +231,7 @@ public class RatesCurveScenarioGenerator {
 	 * @param adblQuotes Array of component quotes
 	 * @param dblBump Quote bump
 	 * @param astrCalibMeasure Array of the calibration measures
-	 * @param mmFixings Map of fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * 
 	 * @return Tenor map of tenor bumped discount curves
@@ -246,8 +244,7 @@ public class RatesCurveScenarioGenerator {
 			final double[] adblQuotes,
 			final double dblBump,
 			final java.lang.String[] astrCalibMeasure,
-			final java.util.Map<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+			final org.drip.param.market.LatentStateFixingsContainer lsfc,
 			final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		if (null == adblQuotes || null == astrCalibMeasure || adblQuotes.length != astrCalibMeasure.length ||
@@ -273,8 +270,8 @@ public class RatesCurveScenarioGenerator {
 			}
 
 			mapTenorDC.put (org.drip.analytics.date.JulianDate.fromJulian
-				(_aCalibInst[i].maturity().julian()), createIRCurve (valParams, dcTSY,
-					adblTenorQuotes, 0., astrCalibMeasure, mmFixings, quotingParams));
+				(_aCalibInst[i].maturity().julian()), createIRCurve (valParams, dcTSY, adblTenorQuotes, 0.,
+					astrCalibMeasure, lsfc, quotingParams));
 		}
 
 		return mapTenorDC;

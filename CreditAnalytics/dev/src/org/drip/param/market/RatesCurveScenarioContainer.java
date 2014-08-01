@@ -77,8 +77,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final int iDCMode)
 	{
@@ -91,8 +90,8 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 			return false;
 		}
 
-		if (null == (_dcBase = _irsg.createIRCurve (valParams, dcTSY, adblQuotes, 0., astrCalibMeasure,
-			mmFixings, quotingParams))) {
+		if (null == (_dcBase = _irsg.createIRCurve (valParams, dcTSY, adblQuotes, 0., astrCalibMeasure, lsfc,
+			quotingParams))) {
 			if (s_bBlog)
 				System.out.println ("Base DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
 
@@ -101,7 +100,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_FLAT_UP & iDCMode)) {
 			if (null == (_dcBumpUp = _irsg.createIRCurve (valParams, dcTSY, adblQuotes, dblBump,
-				astrCalibMeasure, mmFixings, quotingParams))) {
+				astrCalibMeasure, lsfc, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
 						("Flat bump up DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
@@ -112,7 +111,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_FLAT_DN & iDCMode)) {
 			if (null == (_dcBumpDn = _irsg.createIRCurve (valParams, dcTSY, adblQuotes, -dblBump,
-				astrCalibMeasure, mmFixings, quotingParams))) {
+				astrCalibMeasure, lsfc, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
 						("Flat bump dn DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
@@ -123,7 +122,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_TENOR_UP & iDCMode)) {
 			if (null == (_mapDCBumpUp = _irsg.createTenorIRCurveMap (valParams, dcTSY, adblQuotes, dblBump,
-				astrCalibMeasure, mmFixings, quotingParams))) {
+				astrCalibMeasure, lsfc, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
 						("Partial bump up DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
@@ -134,7 +133,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 
 		if (0 != (org.drip.param.definition.ScenarioDiscountCurve.DC_TENOR_DN & iDCMode)) {
 			if (null == (_mapDCBumpDn = _irsg.createTenorIRCurveMap (valParams, dcTSY, adblQuotes, -dblBump,
-				astrCalibMeasure, mmFixings, quotingParams))) {
+				astrCalibMeasure, lsfc, quotingParams))) {
 				if (s_bBlog)
 					System.out.println
 						("Partial bump dn DC cook problem in RatesCurveScenarioContainer.cookScenarioDC");
@@ -153,8 +152,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpTSY,
 		final org.drip.param.definition.ResponseValueTweakParams mmtpDC)
@@ -170,7 +168,7 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		if (null == dcTSYAdj) dcTSYAdj = dcTSY;
 
 		org.drip.analytics.rates.DiscountCurve dcBaseCustom = _irsg.createIRCurve (valParams, dcTSYAdj,
-			adblQuotes, 0., astrCalibMeasure, mmFixings, quotingParams);
+			adblQuotes, 0., astrCalibMeasure, lsfc, quotingParams);
 
 		if (null == dcBaseCustom) return false;
 

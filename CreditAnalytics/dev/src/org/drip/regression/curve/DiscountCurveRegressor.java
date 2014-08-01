@@ -88,10 +88,8 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 				private org.drip.product.definition.CalibratableFixedIncomeComponent _aCompCalib[] = new
 					org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
-				java.util.Map<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = new
-						java.util.HashMap<org.drip.analytics.date.JulianDate,
-							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+				private org.drip.param.market.LatentStateFixingsContainer _lsfc = new
+					org.drip.param.market.LatentStateFixingsContainer();
 
 				@Override public boolean preRegression()
 				{
@@ -222,23 +220,18 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						}
 					}
 
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-					mIndexFixings.put (_strCurrency + "-LIBOR-6M", 0.0042);
-
-					_mmFixings.put (_dtStart.addDays (2), mIndexFixings);
+					_lsfc.add (_dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create
+						(_strCurrency + "_LIBOR-6M"), 0.0042);
 
 					return true;
 				}
 
 				@Override public boolean execRegression()
 				{
-					return null != (_dc =
-						org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild (_dtStart,
-							_strCurrency,
-								org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-									_aCompCalib, _adblCompCalibValue, _astrCalibMeasure, _mmFixings));
+					return null != (_dc = org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild
+						(_dtStart, _strCurrency,
+							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+								_aCompCalib, _adblCompCalibValue, _astrCalibMeasure, _lsfc));
 				}
 			});
 

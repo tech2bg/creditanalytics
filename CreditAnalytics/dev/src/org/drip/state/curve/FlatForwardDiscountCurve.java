@@ -69,8 +69,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
 			_ccis.measures();
 
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing = _ccis.fixing();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = _ccis.fixing();
 
 		org.drip.state.estimator.NonlinearCurveCalibrator calibrator = new
 			org.drip.state.estimator.NonlinearCurveCalibrator();
@@ -91,12 +90,12 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 				calibrator.calibrateIRNode (frdc, null, aCalibInst[i], i, valParam, astrCalibMeasure[i] =
 					mapMeasures.get (strInstrumentCode)[0], adblCalibQuoteShifted[i] = mapQuote.get
-						(strInstrumentCode).get (astrCalibMeasure[i]) + adblShift[i], mmFixing, quotingParam,
+						(strInstrumentCode).get (astrCalibMeasure[i]) + adblShift[i], lsfc, quotingParam,
 							false, java.lang.Double.NaN);
 			}
 
 			return frdc.setCCIS (new org.drip.analytics.definition.BootCurveConstructionInput (valParam,
-				quotingParam, aCalibInst, mapQuote, mapMeasures, mmFixing)) ? frdc : null;
+				quotingParam, aCalibInst, mapQuote, mapMeasures, lsfc)) ? frdc : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

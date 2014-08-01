@@ -181,10 +181,10 @@ public abstract class ScenarioMarketParams {
 		getTSYQuotes();
 
 	/**
-	 * Add the fixing for the given rate index and the given date
+	 * Add the fixing for the given Latent State Label and the given date
 	 * 
 	 * @param dtFix The fixing date
-	 * @param strIndex The Rate Index
+	 * @param lsl The Latent State Label
 	 * @param dblFixing The fixing
 	 * 
 	 * @return Added successfully (true)
@@ -192,31 +192,29 @@ public abstract class ScenarioMarketParams {
 
 	public abstract boolean addFixings (
 		final org.drip.analytics.date.JulianDate dtFix,
-		final java.lang.String strIndex,
+		final org.drip.state.identifier.LatentStateLabel lsl,
 		final double dblFixing);
 
 	/**
-	 * Remove the fixing corresponding to the given date and index
+	 * Remove the fixing corresponding to the given date and the Latent State Label
 	 * 
 	 * @param dtFix Fixing date
-	 * @param strIndex Rate Index
+	 * @param lsl The Latent State label
 	 * 
 	 * @return Successfully removed (true)
 	 */
 
 	public abstract boolean removeFixings (
 		final org.drip.analytics.date.JulianDate dtFix,
-		final java.lang.String strIndex);
+		final org.drip.state.identifier.LatentStateLabel lsl);
 
 	/**
-	 * Retrieve the fixings double map
+	 * Retrieve the Latent State Fixings Container
 	 * 
-	 * @return The fixings Map
+	 * @return The Latent State Fixings Container
 	 */
 
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			getFixings();
+	public abstract org.drip.param.market.LatentStateFixingsContainer fixings();
 
 	/**
 	 * Add the component quote

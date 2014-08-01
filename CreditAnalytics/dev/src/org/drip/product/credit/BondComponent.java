@@ -85,8 +85,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	private org.drip.product.params.CreditSetting _crValParams = null;
 	private org.drip.product.params.TerminationSetting _cfteParams = null;
 	private org.drip.product.params.PeriodSet _periodParams = null;
-	private java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
+	private org.drip.param.market.LatentStateFixingsContainer _lsfc = null;
 
 	/*
 	 * Bond EOS Params
@@ -280,17 +279,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.analytics.period.Period period)
 		throws java.lang.Exception
 	{
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = null ==
-				_mmFixings ? csqs.fixings() : _mmFixings;
-
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
 			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null != period) {
-			if (null == mmFixings || null == mmFixings.get (new org.drip.analytics.date.JulianDate
-				(period.reset())) || null == mmFixings.get (new org.drip.analytics.date.JulianDate
-					(period.reset())).get (_fltParams._fri.fullyQualifiedName())) {
+			if (!csqs.available (period.reset(), _fltParams._fri)) {
 				if (s_bBlog)
 					System.out.println ("IRS reset for index " + _fltParams._fri.fullyQualifiedName() +
 						" and reset date " + org.drip.analytics.date.JulianDate.fromJulian (period.reset()) +
@@ -313,8 +306,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				return dc.libor (period.start(), period.end());
 			}
 
-			return mmFixings.get (new org.drip.analytics.date.JulianDate (period.reset())).get
-				(_fltParams._fri.fullyQualifiedName());
+			return csqs.getFixing (period.reset(), _fltParams._fri);
 		}
 
 		double dblRateRefEndDate = dblValue + LOCAL_FORWARD_RATE_WIDTH;
@@ -927,20 +919,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 										(astrKeySet[1]))
 						continue;
 
-					if (null == fixings())
-						_mmFixings = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> map2D =
-						fixings().get (astrKeySet[0]);
-
-					if (null == map2D)
-						map2D = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-					map2D.put (astrKeySet[1], new java.lang.Double (astrKVPair[1]));
-
-					fixings().put (new org.drip.analytics.date.JulianDate (new java.lang.Double
-						(astrKeySet[0])), map2D);
+					if (null == fixings()) _lsfc = new org.drip.param.market.LatentStateFixingsContainer();
 				}
 			}
 		}
@@ -1160,18 +1139,15 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	}
 
 	@Override public boolean setFixings (
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 	{
-		_mmFixings = mmFixings;
+		_lsfc = lsfc;
 		return true;
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			fixings()
+	@Override public org.drip.param.market.LatentStateFixingsContainer fixings()
 	{
-		return _mmFixings;
+		return _lsfc;
 	}
 
 	@Override public boolean setMarketConvention (
@@ -13000,38 +12976,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		else
 			sb.append (new java.lang.String (_fltParams.serialize()) + fieldDelimiter());
 
-		if (null == fixings() || null == fixings().entrySet())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else {
-			boolean bFirstEntry = true;
-
-			java.lang.StringBuffer sbFixings = new java.lang.StringBuffer();
-
-			for (java.util.Map.Entry<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meOut :
-					fixings().entrySet()) {
-				if (null == meOut || null == meOut.getValue() || null == meOut.getValue().entrySet())
-					continue;
-
-				for (java.util.Map.Entry<java.lang.String, java.lang.Double> meIn :
-					meOut.getValue().entrySet()) {
-					if (null == meIn || null == meIn.getKey() || meIn.getKey().isEmpty()) continue;
-
-					if (bFirstEntry)
-						bFirstEntry = false;
-					else
-						sb.append (collectionRecordDelimiter());
-
-					sbFixings.append (meOut.getKey().julian() + collectionMultiLevelKeyDelimiter() +
-						meIn.getKey() + collectionKeyValueDelimiter() + meIn.getValue());
-				}
-			}
-
-			if (sbFixings.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-			else
-				sb.append (sbFixings.toString() + fieldDelimiter());
-		}
+		sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 
 		if (null == _ccyParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
@@ -13128,17 +13073,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			adblDate[i] = dblStart + 365. * (i + 1);
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0402);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
+		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
+			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new
 			org.drip.product.params.PeriodGenerator (dblStart + 3653., dblStart, dblStart + 3653., dblStart +
@@ -13183,7 +13122,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			System.exit (129);
 		}
 
-		if (!bond.setFixings (mmFixings)) {
+		if (!bond.setFixings (lsfc)) {
 			System.out.println ("Cannot initialize bond Fixings!");
 
 			System.exit (130);

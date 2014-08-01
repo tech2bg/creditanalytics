@@ -101,8 +101,6 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 			org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
 				org.drip.spline.params.SegmentCustomBuilderControl[iNumCalibComp];
 
-			// if (0 == iNumCalibComp) continue;
-
 			for (int i = 0; i <= iNumCalibComp; ++i) {
 				adblPredictorOrdinate[i] = 0 == i ? valParams.valueDate() :
 					aCalibComp[i - 1].maturity().julian();
@@ -116,8 +114,8 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 						(adblPredictorOrdinate, aSCBC), aSCBC);
 
 				if (!cs.setup (org.drip.state.estimator.RatesSegmentSequenceBuilder.Create (dblEpochResponse,
-					srs, valParams, pricerParams, mktParams, quotingParams, csPrev, oss, bestFitWeightedResponse(),
-						aSCBC[0].preceedingManifestSensitivityControl(),
+					srs, valParams, pricerParams, mktParams, quotingParams, csPrev, oss,
+						bestFitWeightedResponse(), aSCBC[0].preceedingManifestSensitivityControl(),
 							bestFitWeightedResponseSensitivity(), calibrationBoundaryCondition()),
 								calibrationDetail())) {
 					System.out.println ("\tMSS Setup Failed!");

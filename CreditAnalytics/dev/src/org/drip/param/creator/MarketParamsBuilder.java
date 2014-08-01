@@ -42,7 +42,7 @@ public class MarketParamsBuilder {
 	/**
 	 * Create a Market Parameters instance with the funding discount curve, the forward discount curve, the
 	 *  treasury discount curve, the credit curve, the component quote, the map of treasury benchmark quotes,
-	 *  and the double map of date/rate index and fixings.
+	 *  and the Latent State Fixings Instance.
 	 * 
 	 * @param dcFunding Funding Discount Curve
 	 * @param fc Forward Curve
@@ -51,7 +51,7 @@ public class MarketParamsBuilder {
 	 * @param strComponentCode Component Code
 	 * @param compQuote Component quote
 	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
-	 * @param mmFixings Double map of date/rate index and fixings
+	 * @param lsfc The Latent State Fixings Instance
 	 * 
 	 * @return Market Parameters Instance
 	 */
@@ -65,8 +65,7 @@ public class MarketParamsBuilder {
 		final org.drip.param.definition.ProductQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 			mTSYQuotes,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 	{
 		org.drip.param.market.CurveSurfaceQuoteSet csqs = new
 			org.drip.param.market.CurveSurfaceQuoteSet();
@@ -75,7 +74,7 @@ public class MarketParamsBuilder {
 
 		if (null != dcTSY && !csqs.setGovvieCurve (dcTSY)) return null;
 
-		if (null != mmFixings && !csqs.setFixings (mmFixings)) return null;
+		if (null != lsfc && !csqs.setFixings (lsfc)) return null;
 
 		if (null != dcFunding && !csqs.setFundingCurve (dcFunding)) return null;
 
@@ -154,8 +153,8 @@ public class MarketParamsBuilder {
 
 	/**
 	 * Create a Market Parameters Instance with the rates discount curve, the treasury discount curve, the
-	 *  credit curve, the component quote, the map of treasury benchmark quotes, and the double map of
-	 *  date/rate index and fixings
+	 *  credit curve, the component quote, the map of treasury benchmark quotes, and the Latent State Fixings
+	 *  Container
 	 * 
 	 * @param dc Rates Discount Curve
 	 * @param dcTSY Treasury Discount Curve
@@ -163,7 +162,7 @@ public class MarketParamsBuilder {
 	 * @param strComponentCode Component Code
 	 * @param compQuote Component quote
 	 * @param mTSYQuotes Map of Treasury Benchmark Quotes
-	 * @param mmFixings Double map of date/rate index and fixings
+	 * @param lsfc Latent State Fixings Container
 	 * 
 	 * @return Market Parameters Instance
 	 */
@@ -176,10 +175,9 @@ public class MarketParamsBuilder {
 		final org.drip.param.definition.ProductQuote compQuote,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 			mTSYQuotes,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings)
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 	{
-		return Create (dc, null, dcTSY, cc, strComponentCode, compQuote, mTSYQuotes, mmFixings);
+		return Create (dc, null, dcTSY, cc, strComponentCode, compQuote, mTSYQuotes, lsfc);
 	}
 
 	/**

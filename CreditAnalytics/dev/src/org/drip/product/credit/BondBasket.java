@@ -886,17 +886,11 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			adblDate[i] = dblStart + 365. * (i + 1);
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0402);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
+		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
+			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
@@ -940,7 +934,7 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			System.exit (129);
 		}
 
-		if (!bond.setFixings (mmFixings)) {
+		if (!bond.setFixings (lsfc)) {
 			System.out.println ("Cannot initialize bond Fixings!");
 
 			System.exit (130);

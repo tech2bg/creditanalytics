@@ -323,33 +323,21 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.analytics.date.JulianDate dtStart = epoch().addDays (2);
 
-		java.lang.String strCurrency = currency();
-
-		java.lang.String strIndex = strCurrency + "-LIBOR-6M";
-
 		org.drip.product.definition.RatesComponent irs =
 			org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtStart, new
 				org.drip.analytics.date.JulianDate (dblDate), 0., 2, "Act/360", 0., 4, "Act/360", currency(),
 					currency());
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put (strIndex, 0.);
+		lsfc.add (dtStart.addDays (2), irs.forwardLabel()[0], 0.);
 
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+		org.drip.param.market.CurveSurfaceQuoteSet csqs = org.drip.param.creator.MarketParamsBuilder.Create
+			(this, null, null, null, null, null, null, lsfc);
 
-		mmFixings.put (dtStart, mIndexFixings);
-
-		org.drip.param.market.CurveSurfaceQuoteSet csqs =
-			org.drip.param.creator.MarketParamsBuilder.Create (this, null, null, null, null, null,
-				null, mmFixings);
-
-		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0,
-			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), null, csqs, null, "FixedDV01");
+		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0, "",
+			org.drip.analytics.daycount.Convention.DR_ACTUAL), null, csqs, null, "FixedDV01");
 	}
 
 	@Override public double estimateManifestMeasure (

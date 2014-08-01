@@ -1,5 +1,5 @@
 
-package org.drip.product.stream;
+package org.drip.product.cashflow;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -96,8 +96,9 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 
 				double dblPeriodPayDate = period.pay();
 
-				if (!prwc.addPredictorResponseWeight (dblPeriodPayDate, dblPeriodCV100) ||
-					!prwc.addDResponseWeightDManifestMeasure ("PV", dblPeriodPayDate, dblPeriodCV100))
+				if (!prwc.addPredictorResponseWeight (dblPeriodPayDate, dblPeriodCV100)) return null;
+
+				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblPeriodPayDate, dblPeriodCV100))
 					return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -106,7 +107,11 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			}
 		}
 
-		return prwc.updateValue (dblPV) && prwc.updateDValueDManifestMeasure ("PV", 1.) ? prwc : null;
+		if (prwc.updateValue (dblPV)) return null;
+
+		if (prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
 	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -845,7 +850,51 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		return null;
+		double dblValueDate = valParams.valueDate();
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+
+		if (dblValueDate >= _dblMaturity || null == dcFunding) return null;
+
+		double dblPV = 0.;
+		double dblCoupon = _dblCoupon;
+		org.drip.product.calib.FixedStreamQuoteSet fsqs = (org.drip.product.calib.FixedStreamQuoteSet) pqs;
+
+		try {
+			if (fsqs.containsPV()) dblPV = fsqs.pv();
+
+			if (fsqs.containsCoupon()) dblCoupon = fsqs.coupon();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+			double dblPeriodEndDate = period.end();
+
+			if (dblPeriodEndDate < dblValueDate) continue;
+
+			try {
+				dblPV -= _dblNotional * notional (dblPeriodEndDate) * (period.contains (dblValueDate) ?
+					period.accrualDCF (dblValueDate) : period.couponDCF()) * dblCoupon * dcFunding.df
+						(period.pay());
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		if (!prwc.updateValue (dblPV)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
@@ -965,7 +1014,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "4Y", null,
 				2, "30/360", false, true, "JPY", "JPY");
 
-		FixedStream fs = new org.drip.product.stream.FixedStream ("JPY", null, 0.03, 100., null,
+		FixedStream fs = new org.drip.product.cashflow.FixedStream ("JPY", null, 0.03, 100., null,
 			lsCouponPeriod);
 
 		byte[] abFS = fs.serialize();

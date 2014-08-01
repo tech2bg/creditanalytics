@@ -80,7 +80,7 @@ public abstract class ScenarioDiscountCurve {
 	 * @param adblQuotes Matched array of the calibration instrument quotes
 	 * @param dblBump Amount of bump to be applied
 	 * @param astrCalibMeasure Matched array of the calibration instrument measures
-	 * @param mmFixings Double map of date/rate index and fixings
+	 * @param lsfc Latent State Fixings COntainer
 	 * @param quotingParams Quoting Parameters
 	 * @param iDCMode One of the values in the DC_ enum listed above.
 	 * 
@@ -93,8 +93,7 @@ public abstract class ScenarioDiscountCurve {
 		final double[] adblQuotes,
 		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final int iDCMode);
 
@@ -107,7 +106,7 @@ public abstract class ScenarioDiscountCurve {
 	 * @param dcTSY TSY Discount Curve
 	 * @param adblQuotes Double array of input quotes
 	 * @param astrCalibMeasure Array of calibration measures
-	 * @param mmFixings Date/Index fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Calibration quoting parameters
 	 * @param ntpTSY Node Tweak Parameters for the TSY Discount Curve
 	 * @param ntpDC Node Tweak Parameters for the Base Discount Curve
@@ -122,8 +121,7 @@ public abstract class ScenarioDiscountCurve {
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
 		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
 		final org.drip.param.definition.ResponseValueTweakParams ntpDC);

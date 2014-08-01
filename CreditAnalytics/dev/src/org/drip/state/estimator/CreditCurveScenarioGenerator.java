@@ -121,7 +121,7 @@ public class CreditCurveScenarioGenerator {
 	 * @param adblQuotes Array of component quotes
 	 * @param dblRecovery Component recovery
 	 * @param astrCalibMeasure Array of the calibration measures
-	 * @param mmFixings Map of fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat Flat Calibration (True), or real bootstrapping (false)
 	 * 
@@ -136,8 +136,7 @@ public class CreditCurveScenarioGenerator {
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
@@ -180,12 +179,12 @@ public class CreditCurveScenarioGenerator {
 			if (null == tqm) return null;
 
 			if (!_compCalib.bootstrapHazardRate (cc, _aCalibInst[i], i, valParams, dc, dcTSY, pricerParams,
-				tqm._strMeasure, tqm._dblQuote, mmFixings, quotingParams, bFlat))
+				tqm._strMeasure, tqm._dblQuote, lsfc, quotingParams, bFlat))
 				return null;
 		}
 
 		cc.setInstrCalibInputs (valParams, bFlat, dc, dcTSY, pricerParams, _aCalibInst, adblQuotes,
-			astrCalibMeasure, mmFixings, quotingParams);
+			astrCalibMeasure, lsfc, quotingParams);
 
 		return cc;
 	}
@@ -201,7 +200,7 @@ public class CreditCurveScenarioGenerator {
 	 * @param dblBump Amount of bump applied to the tenor
 	 * @param dblRecovery Component recovery
 	 * @param astrCalibMeasure Array of the calibration measures
-	 * @param mmFixings Map of fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat Flat Calibration (True), or real bootstrapping (false)
 	 * 
@@ -217,8 +216,7 @@ public class CreditCurveScenarioGenerator {
 		final double dblBump,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
@@ -240,7 +238,7 @@ public class CreditCurveScenarioGenerator {
 			}
 
 			if (null == (aCC[i] = createCC (strName, valParams, dc, dcTSY, adblTenorQuotes, dblRecovery,
-				astrCalibMeasure, mmFixings, quotingParams, bFlat)))
+				astrCalibMeasure, lsfc, quotingParams, bFlat)))
 				return null;
 		}
 
@@ -258,7 +256,7 @@ public class CreditCurveScenarioGenerator {
 	 * @param dblBump Amount of bump applied to the tenor
 	 * @param dblRecovery Component recovery
 	 * @param astrCalibMeasure Array of the calibration measures
-	 * @param mmFixings Map of fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat Flat Calibration (True), or real bootstrapping (false)
 	 * 
@@ -275,8 +273,7 @@ public class CreditCurveScenarioGenerator {
 			final double dblBump,
 			final double dblRecovery,
 			final java.lang.String[] astrCalibMeasure,
-			final java.util.Map<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+			final org.drip.param.market.LatentStateFixingsContainer lsfc,
 			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 			final boolean bFlat)
 	{
@@ -285,8 +282,9 @@ public class CreditCurveScenarioGenerator {
 				astrCalibMeasure.length || !org.drip.quant.common.NumberUtil.IsValid (dblRecovery))
 			return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve> mapTenorCC =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+			mapTenorCC = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
 
 		for (int i = 0; i < _aCalibInst.length; ++i) {
 			org.drip.analytics.definition.CreditCurve cc = null;
@@ -300,7 +298,7 @@ public class CreditCurveScenarioGenerator {
 			}
 
 			if (null == (cc = createCC (strName, valParams, dc, dcTSY, adblTenorQuotes, dblRecovery,
-				astrCalibMeasure, mmFixings, quotingParams, bFlat)))
+				astrCalibMeasure, lsfc, quotingParams, bFlat)))
 				return null;
 
 			mapTenorCC.put (org.drip.analytics.date.JulianDate.fromJulian

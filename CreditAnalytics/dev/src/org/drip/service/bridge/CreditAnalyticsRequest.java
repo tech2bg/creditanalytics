@@ -342,17 +342,11 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			adblDate[i] = dblStart + 365. * (i + 1);
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0402);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
+		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
+			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new
 			org.drip.product.params.PeriodGenerator (dblStart + 3653., dblStart, dblStart + 3653.,
@@ -390,7 +384,7 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 			System.exit (128);
 		}
 
-		if (!bond.setFixings (mmFixings)) {
+		if (!bond.setFixings (lsfc)) {
 			System.out.println ("Cannot initialize bond Fixings!");
 
 			System.exit (130);
@@ -492,17 +486,11 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 
 		mapTSYQuotes.put ("TSY2ON", cqTSY2ON);
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0042);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
+		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
+			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.param.market.ProductMultiMeasureQuote cqBond = new
 			org.drip.param.market.ProductMultiMeasureQuote();
@@ -510,8 +498,8 @@ public class CreditAnalyticsRequest extends org.drip.service.stream.Serializer {
 		cqBond.addQuote ("Price", new org.drip.param.market.MultiSidedQuote ("ASK", 100.,
 			java.lang.Double.NaN), true);
 
-		return org.drip.param.creator.MarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(),
-			cqBond, mapTSYQuotes, mmFixings);
+		return org.drip.param.creator.MarketParamsBuilder.Create (dc, null, dcTSY, cc, fic.name(), cqBond,
+			mapTSYQuotes, lsfc);
 	}
 
 	public static final void main (

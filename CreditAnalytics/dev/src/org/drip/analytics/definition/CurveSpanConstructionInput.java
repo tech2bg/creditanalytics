@@ -53,11 +53,10 @@ public abstract class CurveSpanConstructionInput implements
 	private org.drip.param.pricer.PricerParams _pricerParam = null;
 	private org.drip.param.market.CurveSurfaceQuoteSet _csqs = null;
 	private org.drip.param.valuation.ValuationParams _valParam = null;
+	private org.drip.param.market.LatentStateFixingsContainer _lsfc = null;
 	private org.drip.state.estimator.StretchRepresentationSpec[] _aSRS = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> _mapMeasures = null;
-	private java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixing = null;
 	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
 			_mapQuote = null;
@@ -194,11 +193,9 @@ public abstract class CurveSpanConstructionInput implements
 		return _mapMeasures;
 	}
 
-	@Override public java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			fixing()
+	@Override public org.drip.param.market.LatentStateFixingsContainer fixing()
 	{
-		return _mmFixing;
+		return _lsfc;
 	}
 
 	/**

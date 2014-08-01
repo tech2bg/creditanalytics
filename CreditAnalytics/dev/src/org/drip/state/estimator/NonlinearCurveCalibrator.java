@@ -54,15 +54,14 @@ public class NonlinearCurveCalibrator {
 		private boolean _bFlat = false;
 		private java.lang.String _strMeasure = "";
 		private double _dblCalibValue = java.lang.Double.NaN;
-		private org.drip.product.definition.FixedIncomeComponent _comp = null;
-		private org.drip.analytics.definition.ExplicitBootCreditCurve _cc = null;
 		private org.drip.analytics.rates.DiscountCurve _dc = null;
-		private org.drip.param.pricer.PricerParams _pricerParams = null;
 		private org.drip.analytics.rates.DiscountCurve _dcTSY = null;
+		private org.drip.param.pricer.PricerParams _pricerParams = null;
 		private org.drip.param.valuation.ValuationParams _valParams = null;
+		private org.drip.product.definition.FixedIncomeComponent _comp = null;
+		private org.drip.param.market.LatentStateFixingsContainer _lsfc = null;
+		private org.drip.analytics.definition.ExplicitBootCreditCurve _cc = null;
 		private org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
-		private java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = null;
 
 		public CreditCurveCalibrator (
 			org.drip.analytics.definition.ExplicitBootCreditCurve cc,
@@ -74,8 +73,7 @@ public class NonlinearCurveCalibrator {
 			final org.drip.param.pricer.PricerParams pricerParamsIn,
 			final java.lang.String strMeasure,
 			final double dblCalibValue,
-			final java.util.Map<org.drip.analytics.date.JulianDate,
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+			final org.drip.param.market.LatentStateFixingsContainer lsfc,
 			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 			final boolean bFlat)
 			throws java.lang.Exception
@@ -85,10 +83,10 @@ public class NonlinearCurveCalibrator {
 			_cc = cc;
 			_dc = dc;
 			_comp = comp;
+			_lsfc = lsfc;
 			_bFlat = bFlat;
 			_dcTSY = dcTSY;
 			_iInstr = iInstr;
-			_mmFixings = mmFixings;
 			_valParams = valParams;
 			_strMeasure = strMeasure;
 			_dblCalibValue = dblCalibValue;
@@ -108,8 +106,8 @@ public class NonlinearCurveCalibrator {
 				throw new java.lang.Exception ("Cannot set CC = " + dblRate + " for node #" + _iInstr);
 
 			return _dblCalibValue - _comp.measureValue (_valParams, _pricerParams,
-				org.drip.param.creator.MarketParamsBuilder.Create (_dc, _dcTSY, _cc, null, null,
-					null, _mmFixings), _quotingParams, _strMeasure);
+				org.drip.param.creator.MarketParamsBuilder.Create (_dc, _dcTSY, _cc, null, null, null,
+					_lsfc), _quotingParams, _strMeasure);
 		}
 
 		@Override public double integrate (
@@ -140,8 +138,7 @@ public class NonlinearCurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final double dblCalibLeftSlope)
 		throws java.lang.Exception
@@ -154,7 +151,7 @@ public class NonlinearCurveCalibrator {
 
 		for (int i = 0; i < aCalibComp.length; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (adblNodeCalibOP[i] = calibrateIRNode (dc, dcTSY,
-				aCalibComp[i], i, valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump, mmFixings,
+				aCalibComp[i], i, valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump, lsfc,
 					quotingParams, false, 0 == i ? java.lang.Double.NaN : adblNodeCalibOP[i - 1]))) {
 				System.out.println ("\t\tCalibration failed for node #" + i);
 
@@ -175,8 +172,7 @@ public class NonlinearCurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
@@ -187,7 +183,7 @@ public class NonlinearCurveCalibrator {
 				throws java.lang.Exception
 			{
 				return calcCalibrationMetric (dc, dcTSY, aCalibComp, valParams, astrCalibMeasure,
-					adblCalibValue, dblBump, mmFixings, quotingParams, dblShiftedLeftSlope);
+					adblCalibValue, dblBump, lsfc, quotingParams, dblShiftedLeftSlope);
 			}
 
 			@Override public double integrate (
@@ -228,7 +224,7 @@ public class NonlinearCurveCalibrator {
 	 * @param pricerParamsIn Input Pricer Parameters
 	 * @param strMeasure The Calibration Measure
 	 * @param dblCalibValue The Value to be Calibrated to
-	 * @param mmFixings Fixings Double Map
+	 * @param lsfc The Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat TRUE => Calibrate a Flat Curve across all Tenors
 	 * 
@@ -247,8 +243,7 @@ public class NonlinearCurveCalibrator {
 		final org.drip.param.pricer.PricerParams pricerParamsIn,
 		final java.lang.String strMeasure,
 		final double dblCalibValue,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
@@ -264,7 +259,7 @@ public class NonlinearCurveCalibrator {
 		try {
 			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
 				org.drip.quant.solver1D.FixedPointFinderZheng (0., new CreditCurveCalibrator (cc, comp,
-					iInstr, valParams, dc, dcTSY, pricerParamsIn, strMeasure, dblCalibValue, mmFixings,
+					iInstr, valParams, dc, dcTSY, pricerParamsIn, strMeasure, dblCalibValue, lsfc,
 						quotingParams, bFlat), true).findRoot();
 
 			return null != rfop && rfop.containsRoot();
@@ -285,7 +280,7 @@ public class NonlinearCurveCalibrator {
 	 * @param valParams Calibration Valuation Parameters
 	 * @param strMeasure The Calibration Measure
 	 * @param dblCalibValue The Value to be Calibrated to
-	 * @param mmFixings Fixings Double Map
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat TRUE => Calibrate a Flat Curve across all Tenors
 	 * @param dblSearchStart State IR Start Point
@@ -303,8 +298,7 @@ public class NonlinearCurveCalibrator {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final java.lang.String strMeasure,
 		final double dblCalibValue,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat,
 		final double dblSearchStart)
@@ -328,7 +322,7 @@ public class NonlinearCurveCalibrator {
 				return dblCalibValue - comp.measureValue (valParams, new org.drip.param.pricer.PricerParams
 					(1, new org.drip.param.definition.CalibrationParams (strMeasure, 0, null), true, 0,
 						false), org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null, null,
-							null, null, mmFixings), quotingParams, strMeasure);
+							null, null, lsfc), quotingParams, strMeasure);
 			}
 
 			@Override public double integrate (
@@ -361,7 +355,7 @@ public class NonlinearCurveCalibrator {
 	 * @param astrCalibMeasure Array of Calibration Measures
 	 * @param adblCalibValue Array of Calibration Values
 	 * @param dblBump Amount to bump the Quotes by
-	 * @param mmFixings Fixings Double Map
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat TRUE => Calibrate a Flat Curve across all Tenors
 	 * 
@@ -376,8 +370,7 @@ public class NonlinearCurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
@@ -389,12 +382,12 @@ public class NonlinearCurveCalibrator {
 		if (dc instanceof org.drip.state.curve.NonlinearDiscountFactorDiscountCurve)
 			return bootstrapNonlinearInterestRateSequence
 				((org.drip.state.curve.NonlinearDiscountFactorDiscountCurve) dc, dcTSY, aCalibComp,
-					valParams, astrCalibMeasure, adblCalibValue, dblBump, mmFixings, quotingParams, bFlat);
+					valParams, astrCalibMeasure, adblCalibValue, dblBump, lsfc, quotingParams, bFlat);
 
 		for (int i = 0; i < adblCalibValue.length; ++i) {
 			try {
 				if (!org.drip.quant.common.NumberUtil.IsValid (calibrateIRNode (dc, dcTSY, aCalibComp[i], i,
-					valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump, mmFixings, quotingParams,
+					valParams, astrCalibMeasure[i], adblCalibValue[i] + dblBump, lsfc, quotingParams,
 						false, java.lang.Double.NaN)))
 					return false;
 			} catch (java.lang.Exception e) {
@@ -417,7 +410,7 @@ public class NonlinearCurveCalibrator {
 	 * @param astrCalibMeasure Array of Calibration Measures
 	 * @param adblCalibValue Array of Calibration Values
 	 * @param dblBump Amount to bump the Quotes by
-	 * @param mmFixings Fixings Double Map
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat TRUE => Calibrate a Flat Curve across all Tenors
 	 * 
@@ -432,8 +425,7 @@ public class NonlinearCurveCalibrator {
 		final java.lang.String[] astrCalibMeasure,
 		final double[] adblCalibValue,
 		final double dblBump,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat)
 	{
@@ -444,7 +436,7 @@ public class NonlinearCurveCalibrator {
 
 		try {
 			calibrateIRCurve (nldfdc, dcTSY, aCalibComp, valParams, astrCalibMeasure, adblCalibValue,
-				dblBump, mmFixings, quotingParams);
+				dblBump, lsfc, quotingParams);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

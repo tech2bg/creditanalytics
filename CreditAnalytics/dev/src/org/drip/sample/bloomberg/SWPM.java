@@ -1,14 +1,12 @@
 
 package org.drip.sample.bloomberg;
 
-import java.util.*;
-
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.Period;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
-import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -245,15 +243,11 @@ public class SWPM {
 		 * Set up the base market parameters, including base discount curves and the base fixings
 		 */
 
-		CaseInsensitiveTreeMap<Double> mapIndexFixing = new CaseInsensitiveTreeMap<Double>();
+		LatentStateFixingsContainer lsfc = new LatentStateFixingsContainer();
 
-		mapIndexFixing.put ("USD-LIBOR-3M", dblFixing);
+		lsfc.add (dtEffective, swap.getFloatStream().forwardLabel()[0], dblFixing);
 
-		Map<JulianDate, CaseInsensitiveTreeMap<Double>> mmFixings = new HashMap<JulianDate, CaseInsensitiveTreeMap<Double>>();
-
-		mmFixings.put (dtEffective, mapIndexFixing);
-
-		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, mmFixings);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 
 		/*
 		 * Set up the valuation parameters
@@ -283,11 +277,9 @@ public class SWPM {
 		 * Set up the fixings bumped market parameters - these use base discount curve and the bumped fixing
 		 */
 
-		mapIndexFixing.put ("USD-LIBOR-3M", dblFixing + 0.0001);
+		lsfc.add (dtEffective, swap.getFloatStream().forwardLabel()[0], dblFixing + 0.0001);
 
-		mmFixings.put (dtEffective, mapIndexFixing);
-
-		CurveSurfaceQuoteSet mktParamsFixingsBumped = MarketParamsBuilder.Create (dc, null, null, null, null, null, mmFixings);
+		CurveSurfaceQuoteSet mktParamsFixingsBumped = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 
 		/*
 		 * Generate the fixing bumped scenario measures for the swap
@@ -307,11 +299,9 @@ public class SWPM {
 
 		DiscountCurve dcBumped = MakeDC (dtValue, "USD", -0.0001);
 
-		mapIndexFixing.put ("USD-LIBOR-3M", dblFixing - 0.0001);
+		lsfc.add (dtEffective, swap.getFloatStream().forwardLabel()[0], dblFixing - 0.0001);
 
-		mmFixings.put (dtEffective, mapIndexFixing);
-
-		CurveSurfaceQuoteSet mktParamsRateBumped = MarketParamsBuilder.Create (dcBumped, null, null, null, null, null, mmFixings);
+		CurveSurfaceQuoteSet mktParamsRateBumped = MarketParamsBuilder.Create (dcBumped, null, null, null, null, null, lsfc);
 
 		/*
 		 * Generate the rate flat bumped scenario measures for the swap

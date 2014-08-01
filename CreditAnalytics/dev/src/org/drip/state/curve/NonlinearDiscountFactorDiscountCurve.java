@@ -70,8 +70,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> mapMeasures =
 			_ccis.measures();
 
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixing = _ccis.fixing();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = _ccis.fixing();
 
 		org.drip.state.estimator.NonlinearCurveCalibrator calibrator = new
 			org.drip.state.estimator.NonlinearCurveCalibrator();
@@ -88,12 +87,12 @@ public class NonlinearDiscountFactorDiscountCurve extends
 				java.lang.String strInstrumentCode = aCalibInst[i].primaryCode();
 
 				calibrator.calibrateIRNode (nldfdc, null, aCalibInst[i], i, valParam, astrCalibMeasure[i] =
-					mapMeasures.get (strInstrumentCode)[0], adblShiftedManifestMeasure[i], mmFixing,
+					mapMeasures.get (strInstrumentCode)[0], adblShiftedManifestMeasure[i], lsfc,
 						quotingParam, false, java.lang.Double.NaN);
 			}
 
 			return nldfdc.setCCIS (org.drip.analytics.definition.BootCurveConstructionInput.Create (valParam,
-				quotingParam, aCalibInst, adblShiftedManifestMeasure, astrCalibMeasure, mmFixing)) ? nldfdc :
+				quotingParam, aCalibInst, adblShiftedManifestMeasure, astrCalibMeasure, lsfc)) ? nldfdc :
 					null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

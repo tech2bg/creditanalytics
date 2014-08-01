@@ -87,11 +87,10 @@ public interface CurveConstructionInputSet {
 	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String[]> measures();
 
 	/**
-	 * Retrieve the Calibration Fixing
+	 * Retrieve the Latent State Fixings Container
 	 * 
-	 * @return The Calibration Fixing
+	 * @return The Latent State Fixings Container
 	 */
 
-	public abstract java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> fixing();
+	public abstract org.drip.param.market.LatentStateFixingsContainer fixing();
 }

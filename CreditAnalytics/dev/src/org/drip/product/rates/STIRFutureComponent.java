@@ -57,8 +57,8 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 	 */
 
 	public STIRFutureComponent (
-		final org.drip.product.stream.FixedStream fixStream,
-		final org.drip.product.stream.FloatingStream floatStream)
+		final org.drip.product.cashflow.FixedStream fixStream,
+		final org.drip.product.cashflow.FloatingStream floatStream)
 		throws java.lang.Exception
 	{
 		super (fixStream, floatStream);

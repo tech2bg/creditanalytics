@@ -851,53 +851,26 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Create the fixings object from the bond, the valuation date, and the fixing.
+	 * Create the Latent State Fixings object from the bond, the fixings date, and the fixing.
 	 * 
 	 * @param bond The input bond
-	 * @param dtValue The valuation JulianDate
-	 * @param dblFix Double representing the fixing
+	 * @param dtFixing The Fixings Date
+	 * @param dblFixing Double representing the fixing
 	 * 
-	 * @return Map representing the fixing
+	 * @return The Latent State Fixings Instance
 	 */
 	
-	public static final java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> CreateFixingsObject (
-			final org.drip.product.definition.Bond bond,
-			final org.drip.analytics.date.JulianDate dtValue,
-			final double dblFix)
+	public static final org.drip.param.market.LatentStateFixingsContainer CreateFixingsObject (
+		final org.drip.product.definition.Bond bond,
+		final org.drip.analytics.date.JulianDate dtFixing,
+		final double dblFixing)
 	{
-		if (null == dtValue || null == bond || !org.drip.quant.common.NumberUtil.IsValid (dblFix))
-			return null;
+		if (!bond.isFloater()) return null;
 
-		org.drip.analytics.date.JulianDate dtReset = null;
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		try {
-			dtReset = bond.getPeriodResetDate (dtValue.julian());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		if (null == dtReset) return null;
-
-		java.lang.String strIndex = bond.getRateIndex();
-
-		if (null == strIndex || strIndex.isEmpty()) return null;
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixing = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-		mapFixing.put (strIndex, dblFix);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mapReset = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mapReset.put (dtReset, mapFixing);
-
-		return mapReset;
+		return lsfc.add (dtFixing, bond.forwardLabel()[0], dblFixing) ? lsfc : null;
 	}
 
 	/**

@@ -460,7 +460,7 @@ public class ProductTestSuite {
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSDTSY.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);
+			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.fixings(), null, 15);
 
 		System.out.println ("TSYDC Cook in: " + (System.nanoTime() - lStart) * 1.e-09 + " sec");
 
@@ -486,7 +486,7 @@ public class ProductTestSuite {
 				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
 					(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 						org.drip.param.creator.MarketParamsBuilder.Create (dcBaseTSY, null, null,
-							null, null, null, mpc.getFixings()), null, astrCalibMeasure[i]));
+							null, null, null, mpc.fixings()), null, astrCalibMeasure[i]));
 			}
 		}
 
@@ -508,12 +508,10 @@ public class ProductTestSuite {
 					("\n\n----------\nMeasures for Parallel Bump Up TSY DC Curve\n------\n");
 
 				for (int i = 0; i < aCompCalib.length; ++i)
-					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
-							"USD"), null,
-								org.drip.param.creator.MarketParamsBuilder.Create
-						(dcBumpUp, null, null, null, null, null, mpc.getFixings()), null,
-							astrCalibMeasure[i]));
+					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
+						(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
+							org.drip.param.creator.MarketParamsBuilder.Create (dcBumpUp, null, null, null,
+								null, null, mpc.fixings()), null, astrCalibMeasure[i]));
 			}
 		}
 
@@ -530,12 +528,10 @@ public class ProductTestSuite {
 				System.out.println ("\n\n---------\nMeasures for Parallel Bump Dn TSY Curve\n------\n");
 
 				for (int i = 0; i < aCompCalib.length; ++i)
-					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
-							"USD"), null,
-								org.drip.param.creator.MarketParamsBuilder.Create
-						(dcBumpDn, null, null, null, null, null, mpc.getFixings()), null,
-							astrCalibMeasure[i]));
+					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
+						(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
+							org.drip.param.creator.MarketParamsBuilder.Create (dcBumpDn, null, null, null,
+								null, null, mpc.fixings()), null, astrCalibMeasure[i]));
 			}
 		}
 
@@ -562,9 +558,10 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.MarketParamsBuilder.Create
-							(meCSQS.getValue().fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-								(aCompCalib[i].couponCurrency()[0])), null, null, null, null, null,
-									mpc.getFixings()), null, astrCalibMeasure[i]));
+										(meCSQS.getValue().fundingCurve
+											(org.drip.state.identifier.FundingLabel.Standard
+												(aCompCalib[i].couponCurrency()[0])), null, null, null, null,
+													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -590,9 +587,10 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.MarketParamsBuilder.Create
-							(meCSQS.getValue().fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-								(aCompCalib[i].couponCurrency()[0])), null, null, null, null, null,
-									mpc.getFixings()), null, astrCalibMeasure[i]));
+										(meCSQS.getValue().fundingCurve
+											(org.drip.state.identifier.FundingLabel.Standard
+												(aCompCalib[i].couponCurrency()[0])), null, null, null, null,
+													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -737,7 +735,8 @@ public class ProductTestSuite {
 			);
 		}
 
-		mpc.addFixings (dt.addDays (2), "USD-LIBOR-6M", 0.0042);
+		mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"),
+			0.0042);
 
 		long lStart = System.nanoTime();
 
@@ -746,7 +745,7 @@ public class ProductTestSuite {
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib);
 
 		irscUSD.cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.getFixings(), null, 15);
+			adblCompCalibValue, 0.0001, astrCalibMeasure, mpc.fixings(), null, 15);
 
 		System.out.println ("DC Cook in: " + (System.nanoTime() - lStart) * 1.e-09 + " sec");
 
@@ -768,11 +767,10 @@ public class ProductTestSuite {
 			System.out.println ("\n\n------------------\nTesting Base DC Curve\n--------\n");
 
 			for (int i = 0; i < aCompCalib.length; ++i)
-				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
-					(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
-						org.drip.param.creator.MarketParamsBuilder.Create
-						(dcBase, null, null, null, null, null,
-							mpc.getFixings()), null, astrCalibMeasure[i]));
+				System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue (new
+					org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
+						org.drip.param.creator.MarketParamsBuilder.Create (dcBase, null, null, null, null,
+							null, mpc.fixings()), null, astrCalibMeasure[i]));
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
@@ -792,12 +790,10 @@ public class ProductTestSuite {
 				System.out.println ("\n\n----------\nMeasures for Parallel Bump Up DC Curve\n------\n");
 
 				for (int i = 0; i < aCompCalib.length; ++i)
-					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
-							"USD"), null,
-								org.drip.param.creator.MarketParamsBuilder.Create
-									(dcBumpUp, null, null, null, null, null, mpc.getFixings()), null,
-										astrCalibMeasure[i]));
+					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
+						(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
+							org.drip.param.creator.MarketParamsBuilder.Create (dcBumpUp, null, null, null,
+								null, null, mpc.fixings()), null, astrCalibMeasure[i]));
 			}
 		}
 
@@ -814,12 +810,10 @@ public class ProductTestSuite {
 				System.out.println ("\n\n---------\nMeasures for Parallel  Bump Dn IR Curve\n------\n");
 
 				for (int i = 0; i < aCompCalib.length; ++i)
-					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-						aCompCalib[i].measureValue (new org.drip.param.valuation.ValuationParams (dt, dt,
-							"USD"), null,
-								org.drip.param.creator.MarketParamsBuilder.Create
-									(dcBumpDn, null, null, null, null, null, mpc.getFixings()), null,
-										astrCalibMeasure[i]));
+					System.out.println (astrCalibMeasure[i] + "[" + i + "] = " + aCompCalib[i].measureValue
+						(new org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
+							org.drip.param.creator.MarketParamsBuilder.Create (dcBumpDn, null, null, null,
+								null, null, mpc.fixings()), null, astrCalibMeasure[i]));
 			}
 		}
 
@@ -846,9 +840,10 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.MarketParamsBuilder.Create
-							(meCSCQ.getValue().fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-								(aCompCalib[0].couponCurrency()[0])), null, null, null, null, null,
-									mpc.getFixings()), null, astrCalibMeasure[i]));
+										(meCSCQ.getValue().fundingCurve
+											(org.drip.state.identifier.FundingLabel.Standard
+												(aCompCalib[0].couponCurrency()[0])), null, null, null, null,
+													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -874,9 +869,10 @@ public class ProductTestSuite {
 							aCompCalib[i].primaryCode() + "] = " + aCompCalib[i].measureValue (new
 								org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null,
 									org.drip.param.creator.MarketParamsBuilder.Create
-							(meCSQS.getValue().fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-								(aCompCalib[0].couponCurrency()[0])), null, null, null, null, null,
-									mpc.getFixings()), null, astrCalibMeasure[i]));
+										(meCSQS.getValue().fundingCurve
+											(org.drip.state.identifier.FundingLabel.Standard
+												(aCompCalib[0].couponCurrency()[0])), null, null, null, null,
+													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
 		}
@@ -2254,17 +2250,11 @@ public class ProductTestSuite {
 			adblDate[i] = dblStart + 365. * (i + 1);
 		}
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mIndexFixings = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+		org.drip.param.market.LatentStateFixingsContainer lsfc = new
+			org.drip.param.market.LatentStateFixingsContainer();
 
-		mIndexFixings.put ("USD-LIBOR-6M", 0.0402);
-
-		java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings = new
-				java.util.HashMap<org.drip.analytics.date.JulianDate,
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-		mmFixings.put (org.drip.analytics.date.JulianDate.Today().addDays (2), mIndexFixings);
+		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
+			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
@@ -2308,7 +2298,7 @@ public class ProductTestSuite {
 			System.exit (129);
 		}
 
-		if (!bond.setFixings (mmFixings)) {
+		if (!bond.setFixings (lsfc)) {
 			System.out.println ("Cannot initialize bond Fixings!");
 
 			System.exit (130);

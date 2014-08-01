@@ -50,8 +50,8 @@ package org.drip.product.rates;
 
 public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.stream.FixedStream _fixStream = null;
-	private org.drip.product.stream.FloatingStream _floatStream = null;
+	private org.drip.product.cashflow.FixedStream _fixStream = null;
+	private org.drip.product.cashflow.FloatingStream _floatStream = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -72,8 +72,8 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	 */
 
 	public IRSComponent (
-		final org.drip.product.stream.FixedStream fixStream,
-		final org.drip.product.stream.FloatingStream floatStream)
+		final org.drip.product.cashflow.FixedStream fixStream,
+		final org.drip.product.cashflow.FloatingStream floatStream)
 		throws java.lang.Exception
 	{
 		if (null == (_fixStream = fixStream) || null == (_floatStream = floatStream))
@@ -120,7 +120,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_fixStream = null;
 		else
-			_fixStream = new org.drip.product.stream.FixedStream (astrField[1].getBytes());
+			_fixStream = new org.drip.product.cashflow.FixedStream (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("InterestRateSwap de-serializer: Cannot locate floating stream");
@@ -128,7 +128,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_floatStream = null;
 		else
-			_floatStream = new org.drip.product.stream.FloatingStream (astrField[2].getBytes());
+			_floatStream = new org.drip.product.cashflow.FloatingStream (astrField[2].getBytes());
 	}
 
 	@Override public java.lang.String primaryCode()
@@ -954,7 +954,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	 * @return The Fixed Stream
 	 */
 
-	public org.drip.product.stream.FixedStream getFixedStream()
+	public org.drip.product.cashflow.FixedStream getFixedStream()
 	{
 		return _fixStream;
 	}
@@ -965,7 +965,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 	 * @return The Floating Stream
 	 */
 
-	public org.drip.product.stream.FloatingStream getFloatStream()
+	public org.drip.product.cashflow.FloatingStream getFloatStream()
 	{
 		return _floatStream;
 	}
@@ -980,14 +980,14 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "4Y",
 				null, 2, "30/360", false, true, "JPY", "JPY");
 
-		org.drip.product.stream.FixedStream fixStream = new org.drip.product.stream.FixedStream ("JPY", null,
+		org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream ("JPY", null,
 			0.05, 7., null, lsFixedCouponPeriod);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatCouponPeriod =
 			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(), "4Y",
 				null, 4, "Act/360", false, true, "JPY", "JPY");
 
-		org.drip.product.stream.FloatingStream floatStream = new org.drip.product.stream.FloatingStream ("JPY",
+		org.drip.product.cashflow.FloatingStream floatStream = new org.drip.product.cashflow.FloatingStream ("JPY",
 			null, 0.01, -7., null, lsFloatCouponPeriod, org.drip.state.identifier.ForwardLabel.Create
 				("JPY-LIBOR-3M"), false);
 

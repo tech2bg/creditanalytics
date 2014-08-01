@@ -94,7 +94,7 @@ public abstract class ScenarioCreditCurve {
 	 * @param adblQuotes Matched array of Quotes
 	 * @param dblRecovery Curve Recovery
 	 * @param astrCalibMeasure Matched array of Calibration measures
-	 * @param mmFixings Double map of date/rate index and fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Quoting Parameters
 	 * @param bFlat Whether the calibration is to a flat curve
 	 * @param iCCScenario One of the values in the CC_ enum listed above. 
@@ -110,8 +110,7 @@ public abstract class ScenarioCreditCurve {
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat,
 		final int iCCScenario);
@@ -127,7 +126,7 @@ public abstract class ScenarioCreditCurve {
 	 * @param adblQuotes Double array of input quotes
 	 * @param dblRecovery Recovery Rate
 	 * @param astrCalibMeasure Array of calibration measures
-	 * @param mmFixings Date/Index fixings
+	 * @param lsfc Latent State Fixings Container
 	 * @param quotingParams Calibration quoting parameters
 	 * @param bFlat Whether the calibration is flat
 	 * @param ntpDC Node Tweak Parameters for the Base Discount Curve
@@ -146,8 +145,7 @@ public abstract class ScenarioCreditCurve {
 		final double[] adblQuotes,
 		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
-		final java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> mmFixings,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final boolean bFlat,
 		final org.drip.param.definition.ResponseValueTweakParams ntpDC,
