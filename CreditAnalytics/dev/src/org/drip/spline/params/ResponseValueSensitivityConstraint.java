@@ -105,4 +105,15 @@ public class ResponseValueSensitivityConstraint {
 		return null != strManifestMeasure && _mapSRVCManifestMeasure.containsKey (strManifestMeasure) ?
 			_mapSRVCManifestMeasure.get (strManifestMeasure) : null;
 	}
+
+	/**
+	 * Return the Set of Available Manifest Measures (if any)
+	 * 
+	 * @return The Set of Available Manifest Measures
+	 */
+
+	public java.util.Set<java.lang.String> manifestMeasures()
+	{
+		return _mapSRVCManifestMeasure.keySet();
+	}
 }

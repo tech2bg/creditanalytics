@@ -441,7 +441,11 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		mapResult.put ("DerivedParBasisSpread", -1. * (dblReferenceCleanPV + dblDerivedCleanPV) /
 			dblDerivedCleanDV01);
 
-		mapResult.put ("ParSwapRate", -1. * dblDerivedCleanPV / dblReferenceCleanDV01);
+		double dblSwapRate = -1. * dblDerivedCleanPV / dblReferenceCleanDV01;
+
+		mapResult.put ("ParSwapRate", dblSwapRate);
+
+		mapResult.put ("SwapRate", dblSwapRate);
 
 		double dblValueNotional = java.lang.Double.NaN;
 
@@ -455,9 +459,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
-				mapResult.put ("Price", dblCleanPrice);
-
 				mapResult.put ("CleanPrice", dblCleanPrice);
+
+				mapResult.put ("Price", dblCleanPrice);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -568,6 +572,18 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		return null;
 	}
 
+	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+	{
+		try {
+			return new org.drip.product.calib.FixFloatQuoteSet (aLSS);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -575,17 +591,18 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FixFloatQuoteSet))
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == pqs || !(pqs
+			instanceof org.drip.product.calib.FixFloatQuoteSet))
 			return null;
-
-		if (valParams.valueDate() >= maturity().julian()) return null;
 
 		double dblPV = 0.;
 		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = null;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
-		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+		if (!ffqs.containsPV() && !ffqs.containsSwapRate() && !ffqs.containsDerivedParBasisSpread() &&
+			!ffqs.containsReferenceParBasisSpread())
+			return null;
 
 		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
@@ -596,9 +613,12 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
-			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
-
 			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+
+			if (ffqs.containsDerivedParBasisSpread()) fsqsDerived.setSpread (ffqs.derivedParBasisSpread());
+
+			if (ffqs.containsReferenceParBasisSpread())
+				fsqsReference.setCouponBasis (ffqs.referenceParBasisSpread());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -616,9 +636,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (null != prwcDerived && !prwc.absorb (prwcDerived)) return null;
+		if (!prwc.absorb (prwcDerived)) return null;
 
-		if (null != prwcReference && !prwc.absorb (prwcReference)) return null;
+		if (!prwc.absorb (prwcReference)) return null;
 
 		return !prwc.updateValue (dblPV) ? null : prwc;
 	}
@@ -630,17 +650,18 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FixFloatQuoteSet))
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == pqs || !(pqs
+			instanceof org.drip.product.calib.FixFloatQuoteSet))
 			return null;
-
-		if (valParams.valueDate() >= maturity().julian()) return null;
 
 		double dblPV = 0.;
 		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = null;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
-		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+		if (!ffqs.containsPV() && !ffqs.containsSwapRate() && !ffqs.containsDerivedParBasisSpread() &&
+			!ffqs.containsReferenceParBasisSpread())
+			return null;
 
 		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
@@ -651,9 +672,12 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
-			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
-
 			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+
+			if (ffqs.containsDerivedParBasisSpread()) fsqsDerived.setSpread (ffqs.derivedParBasisSpread());
+
+			if (ffqs.containsReferenceParBasisSpread())
+				fsqsReference.setCouponBasis (ffqs.referenceParBasisSpread());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -671,9 +695,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (null != prwcDerived && !prwc.absorb (prwcDerived)) return null;
+		if (!prwc.absorb (prwcDerived)) return null;
 
-		if (null != prwcReference && !prwc.absorb (prwcReference)) return null;
+		if (!prwc.absorb (prwcReference)) return null;
 
 		return !prwc.updateValue (dblPV) ? null : prwc;
 	}
@@ -685,17 +709,18 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FixFloatQuoteSet))
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == pqs || !(pqs
+			instanceof org.drip.product.calib.FixFloatQuoteSet))
 			return null;
-
-		if (valParams.valueDate() >= maturity().julian()) return null;
 
 		double dblPV = 0.;
 		org.drip.product.calib.FixedStreamQuoteSet fsqsReference = null;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
-		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+		if (!ffqs.containsPV() && !ffqs.containsSwapRate() && !ffqs.containsDerivedParBasisSpread() &&
+			!ffqs.containsReferenceParBasisSpread())
+			return null;
 
 		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
@@ -706,9 +731,12 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
-			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
-
 			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+
+			if (ffqs.containsDerivedParBasisSpread()) fsqsDerived.setSpread (ffqs.derivedParBasisSpread());
+
+			if (ffqs.containsReferenceParBasisSpread())
+				fsqsReference.setCouponBasis (ffqs.referenceParBasisSpread());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -726,69 +754,11 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (null != prwcDerived && !prwc.absorb (prwcDerived)) return null;
+		if (!prwc.absorb (prwcDerived)) return null;
 
-		if (null != prwcReference && !prwc.absorb (prwcReference)) return null;
+		if (!prwc.absorb (prwcReference)) return null;
 
 		return !prwc.updateValue (dblPV) ? null : prwc;
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
-	{
-		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == lsmm || null ==
-			csqs)
-			return null;
-
-		java.lang.String strQuantificationMetric = lsmm.quantificationMetric();
-
-		if (null == strQuantificationMetric) return null;
-
-		if (!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
-			(strQuantificationMetric) &&
-				!org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-					(strQuantificationMetric))
-			return null;
-
-		java.lang.String[] astrManifestMeasure = lsmm.manifestMeasures();
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = _floatDerived.generateCalibPRWC
-			(valParams, pricerParams, csqs, quotingParams, lsmm);
-
-		if (null == prwc) return null;
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapReferenceValue =
-			_fixReference.value (valParams, pricerParams, csqs, quotingParams);
-
-		if (org.drip.quant.common.StringUtil.MatchInStringArray ("DerivedParBasisSpread",
-			astrManifestMeasure, false))
-			return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
-				!prwc.updateValue (-1. * mapReferenceValue.get ("CleanPV")) ? null : prwc;
-
-		try {
-			if (org.drip.quant.common.StringUtil.MatchInStringArray ("ReferenceParBasisSpread",
-				astrManifestMeasure, false))
-				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanPV") ||
-					!mapReferenceValue.containsKey ("CleanDV01") || !prwc.updateValue (-1. *
-						mapReferenceValue.get ("CleanPV") - (mapReferenceValue.get ("CleanDV01") * 10000. *
-							lsmm.measureQuoteValue ("ReferenceParBasisSpread"))) ||
-								!prwc.updateDValueDManifestMeasure ("ReferenceParBasisSpread", -10000. *
-									mapReferenceValue.get ("CleanDV01")) ? null : prwc;
-
-			if (org.drip.quant.common.StringUtil.MatchInStringArray ("SwapRate", astrManifestMeasure, false))
-				return null == mapReferenceValue || !mapReferenceValue.containsKey ("CleanDV01") ||
-					!prwc.updateValue (-10000. * mapReferenceValue.get ("CleanDV01") * lsmm.measureQuoteValue
-						("SwapRate")) || !prwc.updateDValueDManifestMeasure ("SwapRate", -10000. *
-							mapReferenceValue.get ("CleanDV01")) ? null : prwc;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	@Override public java.lang.String fieldDelimiter()

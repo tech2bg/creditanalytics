@@ -588,14 +588,13 @@ public class GBP3M6MUSD3M6M {
 
 		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialFunctionSetParams (4),
+			new PolynomialFunctionSetParams (5),
 			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 			null);
 
 		DiscountCurve dcReference = OvernightIndexCurve.MakeDC (
 			strReferenceCurrency,
-			false,
 			dtValue,
 			s_aiUSDOISDepositMaturityDays,
 			s_adblUSDOISDepositQuote,
@@ -657,7 +656,6 @@ public class GBP3M6MUSD3M6M {
 
 		DiscountCurve dcDerived = OvernightIndexCurve.MakeDC (
 			strDerivedCurrency,
-			false,
 			dtValue,
 			s_aiSONIADepositMaturityDays,
 			s_adblSONIADepositQuote,

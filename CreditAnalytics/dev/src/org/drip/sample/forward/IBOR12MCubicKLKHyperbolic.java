@@ -64,8 +64,8 @@ public class IBOR12MCubicKLKHyperbolic {
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
-			strCurrency,
-			false);
+			strCurrency
+		);
 
 		SegmentCustomBuilderControl scbcCubicKLKHyperbolic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
@@ -178,7 +178,7 @@ public class IBOR12MCubicKLKHyperbolic {
 			"6M",
 			true);
 
-		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
+		IBOR.CustomIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
@@ -191,7 +191,7 @@ public class IBOR12MCubicKLKHyperbolic {
 			"ParForwardRate",
 			null,
 			null,
-			"ReferenceParBasisSpread",
+			"SwapRate",
 			astrFloatFloatTenor,
 			adblFloatFloatQuote,
 			"ReferenceParBasisSpread",
@@ -201,11 +201,11 @@ public class IBOR12MCubicKLKHyperbolic {
 			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
 			true);
 
-			IBOR.ForwardJack (
-				dtValue,
-				"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
-				fc,
-				"DerivedParBasisSpread"
-			);
+		/* IBOR.ForwardJack (
+			dtValue,
+			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
+			fc,
+			"DerivedParBasisSpread"
+		); */
 	}
 }

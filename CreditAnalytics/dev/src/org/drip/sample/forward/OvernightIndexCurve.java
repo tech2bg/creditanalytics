@@ -5,19 +5,20 @@ import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
-import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.FixedStream;
-import org.drip.product.cashflow.FloatingStream;
+import org.drip.product.calib.*;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.DepositBuilder;
-import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.estimator.*;
+import org.drip.state.identifier.FundingLabel;
+import org.drip.state.inference.*;
+import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -60,22 +61,57 @@ public class OvernightIndexCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
+	private static final DepositComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aDepositComp = new CalibratableFixedIncomeComponent[aiDay.length];
+		DepositComponent[] aDeposit = new DepositComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDepositComp[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				strCurrency);
+				strCurrency
+			);
 
-		return aDepositComp;
+		return aDeposit;
+	}
+
+	private static final LatentStateStretchSpec DepositStretch (
+		final DepositComponent[] aDeposit,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
+
+		String strCurrency = aDeposit[0].couponCurrency()[0];
+
+		for (int i = 0; i < aDeposit.length; ++i) {
+			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (strCurrency)
+					)
+				}
+			);
+
+			depositQuote.setRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aDeposit[i],
+				depositQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"DEPOSIT",
+			aSegmentSpec
+		);
 	}
 
 	/*
@@ -84,23 +120,21 @@ public class OvernightIndexCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] OvernightIndexFromMaturityTenor (
+	private static final IRSComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
-		final String[] astrTenor,
+		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
+		IRSComponent[] aOIS = new IRSComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
-
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 				dtEffective.julian(),
-				astrTenor[i],
+				astrMaturityTenor[i],
 				null,
-				2,
+				4,
 				"Act/360",
 				false,
 				false,
@@ -111,7 +145,7 @@ public class OvernightIndexCurve {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				null,
-				adblCoupon[i],
+				0.,
 				-1.,
 				null,
 				lsFloatPeriods,
@@ -121,7 +155,7 @@ public class OvernightIndexCurve {
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
 				dtEffective.julian(),
-				astrTenor[i],
+				astrMaturityTenor[i],
 				null,
 				2,
 				"Act/360",
@@ -142,82 +176,12 @@ public class OvernightIndexCurve {
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
-			ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
+			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
-			aCalibComp[i] = ois;
+			aOIS[i] = ois;
 		}
 
-		return aCalibComp;
-	}
-
-	/*
-	 * Construct the Array of Overnight Fund Instruments from the given set of parameters
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	private static final CalibratableFixedIncomeComponent[] OvernightFundFromMaturityTenor (
-		final JulianDate dtEffective,
-		final String[] astrTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
-		throws Exception
-	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
-
-		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
-
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.julian(),
-				dtMaturity.julian(),
-				null,
-				null,
-				"Act/360",
-				strCurrency,
-				strCurrency
-			);
-
-			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				null,
-				adblCoupon[i],
-				-1.,
-				null,
-				lsFloatPeriods,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				false
-			);
-
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.julian(),
-				astrTenor[i],
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				strCurrency
-			);
-
-			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				null,
-				adblCoupon[i],
-				1.,
-				null,
-				lsFixedPeriods
-			);
-
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
-
-			ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
-
-			aCalibComp[i] = ois;
-		}
-
-		return aCalibComp;
+		return aOIS;
 	}
 
 	/*
@@ -226,26 +190,24 @@ public class OvernightIndexCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final IRSComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
-		final String[] astrTenor,
+		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrStartTenor.length];
+		IRSComponent[] aOIS = new IRSComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
-
-			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 				dtEffective.julian(),
-				astrTenor[i],
+				astrMaturityTenor[i],
 				null,
-				2,
+				4,
 				"Act/360",
 				false,
 				false,
@@ -256,7 +218,7 @@ public class OvernightIndexCurve {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				null,
-				adblCoupon[i],
+				0.,
 				-1.,
 				null,
 				lsFloatPeriods,
@@ -266,7 +228,7 @@ public class OvernightIndexCurve {
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
 				dtEffective.julian(),
-				astrTenor[i],
+				astrMaturityTenor[i],
 				null,
 				2,
 				"Act/360",
@@ -287,90 +249,56 @@ public class OvernightIndexCurve {
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
-			ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
+			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
-			aCalibComp[i] = ois;
+			aOIS[i] = ois;
 		}
 
-		return aCalibComp;
+		return aOIS;
 	}
 
-	/*
-	 * Construct the Array of Overnight Fund Future Instruments from the given set of parameters
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	private static final CalibratableFixedIncomeComponent[] OvernightFundFutureFromMaturityTenor (
-		final JulianDate dtSpot,
-		final String[] astrStartTenor,
-		final String[] astrTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
+	private static final LatentStateStretchSpec OISStretch (
+		final String strName,
+		final IRSComponent[] aOIS,
+		final double[] adblQuote)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrStartTenor.length];
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
 
-		for (int i = 0; i < astrStartTenor.length; ++i) {
-			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
+		String strCurrency = aOIS[0].couponCurrency()[0];
 
-			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
-
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
-				dtEffective.julian(),
-				dtMaturity.julian(),
-				null,
-				null,
-				"Act/360",
-				strCurrency,
-				strCurrency
+		for (int i = 0; i < aOIS.length; ++i) {
+			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (strCurrency)
+					),
+					new LatentStateSpecification (
+						ForwardCurve.LATENT_STATE_FORWARD,
+						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						aOIS[i].forwardLabel()[0]
+					)
+				}
 			);
 
-			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				null,
-				adblCoupon[i],
-				-1.,
-				null,
-				lsFloatPeriods,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				false
+			oisQuote.setSwapRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aOIS[i],
+				oisQuote
 			);
-
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.julian(),
-				astrTenor[i],
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				strCurrency
-			);
-
-			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				null,
-				adblCoupon[i],
-				1.,
-				null,
-				lsFixedPeriods
-			);
-
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
-
-			ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
-
-			aCalibComp[i] = ois;
 		}
 
-		return aCalibComp;
+		return new LatentStateStretchSpec (
+			strName,
+			aSegmentSpec
+		);
 	}
 
 	public static final DiscountCurve MakeDC (
 		final String strCurrency,
-		final boolean bOvernightIndex,
 		final JulianDate dtSpot,
 		final int[] aiDepositMaturityDays,
 		final double[] adblDepositQuote,
@@ -388,7 +316,7 @@ public class OvernightIndexCurve {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
+		DepositComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			aiDepositMaturityDays,
 			strCurrency
@@ -398,109 +326,80 @@ public class OvernightIndexCurve {
 		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsDeposit = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"CASH",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-			aDepositComp,
-			"Rate",
-			adblDepositQuote,
-			null);
+		LatentStateStretchSpec depositStretch = DepositStretch (
+			aDeposit,
+			adblDepositQuote
+		);
 
 		/*
 		 * Construct the Array of Short End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aShortEndOISComp = bOvernightIndex ?
-			OvernightIndexFromMaturityTenor (
-				dtSpot,
-				astrShortEndOISMaturityTenor,
-				adblShortEndOISQuote,
-				strCurrency) :
-			OvernightFundFromMaturityTenor (
-				dtSpot,
-				astrShortEndOISMaturityTenor,
-				adblShortEndOISQuote,
-				strCurrency);
+		IRSComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+			dtSpot,
+			astrShortEndOISMaturityTenor,
+			adblShortEndOISQuote,
+			strCurrency
+		);
 
 		/*
 		 * Construct the Short End OIS Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsShortEndOIS = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"OIS SHORT END",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+		LatentStateStretchSpec oisShortEndStretch = OISStretch (
+			"SHORT_END_OIS",
 			aShortEndOISComp,
-			"Rate",
-			adblShortEndOISQuote,
-			null);
+			adblShortEndOISQuote
+		);
 
 		/*
 		 * Construct the Array of OIS Futures Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aOISFutureComp = bOvernightIndex ?
-			OvernightIndexFutureFromMaturityTenor (
-				dtSpot,
-				astrOISFutureMaturityTenor,
-				astrOISFutureTenor,
-				adblOISFutureQuote,
-				strCurrency) :
-			OvernightFundFutureFromMaturityTenor (
-				dtSpot,
-				astrOISFutureMaturityTenor,
-				astrOISFutureTenor,
-				adblOISFutureQuote,
-				strCurrency);
+		IRSComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+			dtSpot,
+			astrOISFutureMaturityTenor,
+			astrOISFutureTenor,
+			adblOISFutureQuote,
+			strCurrency
+		);
 
 		/*
 		 * Construct the OIS Future Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsOISFuture = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"OIS FUTURE",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+		LatentStateStretchSpec oisFutureStretch = OISStretch (
+			"OIS_FUTURE",
 			aOISFutureComp,
-			"Rate",
-			adblOISFutureQuote,
-			null);
+			adblOISFutureQuote
+		);
 
 		/*
 		 * Construct the Array of Long End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aLongEndOISComp = bOvernightIndex ?
-			OvernightIndexFromMaturityTenor (
-				dtSpot,
-				astrLongEndOISMaturityTenor,
-				adblLongEndOISQuote,
-				strCurrency) :
-			OvernightFundFromMaturityTenor (
-				dtSpot,
-				astrLongEndOISMaturityTenor,
-				adblLongEndOISQuote,
-				strCurrency);
+		IRSComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+			dtSpot,
+			astrLongEndOISMaturityTenor,
+			adblLongEndOISQuote,
+			strCurrency
+		);
 
 		/*
 		 * Construct the Long End OIS Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsLongEndOIS = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"OIS LONG END",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+		LatentStateStretchSpec oisLongEndStretch = OISStretch (
+			"LONG_END_OIS",
 			aLongEndOISComp,
-			"Rate",
-			adblLongEndOISQuote,
-			null);
+			adblLongEndOISQuote
+		);
 
-		StretchRepresentationSpec[] aRBS = new StretchRepresentationSpec[] {
-			srsDeposit,
-			srsShortEndOIS,
-			srsOISFuture,
-			srsLongEndOIS
+		LatentStateStretchSpec[] aStretchSpec = new LatentStateStretchSpec[] {
+			depositStretch,
+			oisShortEndStretch,
+			oisFutureStretch,
+			oisLongEndStretch
 		};
 
 		/*
@@ -511,12 +410,13 @@ public class OvernightIndexCurve {
 		 * 	- Natural Boundary Setting
 		 */
 
-		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
+		LinearLatentStateCalibrator lcc = new LinearLatentStateCalibrator (
 			scbc,
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
 		/*
 		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
@@ -525,12 +425,13 @@ public class OvernightIndexCurve {
 
 		return ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
-			aRBS,
+			aStretchSpec,
 			new ValuationParams (dtSpot, dtSpot, strCurrency),
 			null,
 			null,
 			null,
-			1.);
+			1.
+		);
 	}
 
 	/**
@@ -538,7 +439,6 @@ public class OvernightIndexCurve {
 	 * 
 	 * @param dtSpot The Spot Date
 	 * @param strCurrency The Currency
-	 * @param bOvernightIndex TRUE => Use the Overnight Index; FALSE => Use the Fund
 	 * 
 	 * @return Instance of the EONIA Discount Curve
 	 * 
@@ -547,8 +447,7 @@ public class OvernightIndexCurve {
 
 	public static final DiscountCurve MakeDC (
 		final JulianDate dtSpot,
-		final String strCurrency,
-		final boolean bOvernightIndex)
+		final String strCurrency)
 		throws Exception
 	{
 		/*
@@ -668,7 +567,6 @@ public class OvernightIndexCurve {
 
 		return MakeDC (
 			strCurrency,
-			bOvernightIndex,
 			dtSpot,
 			aiDepositMaturityDays,
 			adblDepositQuote,

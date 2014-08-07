@@ -64,8 +64,8 @@ public class IBOR1MCubicPolyVanilla {
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
-			strCurrency,
-			false);
+			strCurrency
+		);
 
 		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
@@ -201,7 +201,7 @@ public class IBOR1MCubicPolyVanilla {
 			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			astrFloatFloatTenor,
 			adblFloatFloatQuote,
 			"DerivedParBasisSpread",

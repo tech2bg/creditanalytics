@@ -1,5 +1,5 @@
 
-package org.drip.analytics.definition;
+package org.drip.analytics.input;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -51,6 +51,22 @@ public interface CurveConstructionInputSet {
 	 */
 
 	public abstract org.drip.param.valuation.ValuationParams valuationParameter();
+
+	/**
+	 * Retrieve the Market Parameters
+	 * 
+	 * @return The Market Parameters
+	 */
+
+	public abstract org.drip.param.market.CurveSurfaceQuoteSet marketParameters();
+
+	/**
+	 * Retrieve the Pricer Parameters
+	 * 
+	 * @return The Pricer Parameters
+	 */
+
+	public abstract org.drip.param.pricer.PricerParams pricerParameter();
 
 	/**
 	 * Retrieve the Quoting Parameter

@@ -77,7 +77,7 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 	 * @return TRUE => Range successfully marked as "built"
 	 */
 
-	public boolean setSegmentBuilt (
+	public boolean markSegmentBuilt (
 		final int iSegment,
 		final java.util.Set<org.drip.state.identifier.LatentStateLabel> setLSL)
 	{
@@ -110,10 +110,11 @@ public class CurveStretch extends org.drip.spline.stretch.CalibratableMultiSegme
 	 * @return TRUE => Built Range successfully cleared
 	 */
 
-	public boolean setClearBuiltRange()
+	public boolean clearBuiltRange()
 	{
 		_dblBuiltPredictorOrdinateRight = getLeftPredictorOrdinateEdge();
 
+		_msm = null;
 		return true;
 	}
 

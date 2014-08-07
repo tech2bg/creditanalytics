@@ -49,8 +49,8 @@ public class ScenarioForwardCurveBuilder {
 	/**
 	 * Build the Shape Preserving Forward Curve using the Custom Parameters
 	 * 
-	 * @param lcc The Linear Curve Calibrator Instance
-	 * @param aSRS Array of the Instrument Representation Stretches
+	 * @param llsc The Linear Latent State Calibrator Instance
+	 * @param aStretchSpec Array of the Latent State Stretches
 	 * @param fri The Floating Rate Index
 	 * @param valParam Valuation Parameters
 	 * @param pricerParam Pricer Parameters
@@ -62,8 +62,8 @@ public class ScenarioForwardCurveBuilder {
 	 */
 
 	public static final org.drip.analytics.rates.ForwardCurve ShapePreservingForwardCurve (
-		final org.drip.state.estimator.LinearCurveCalibrator lcc,
-		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
+		final org.drip.state.inference.LinearLatentStateCalibrator llsc,
+		final org.drip.state.inference.LatentStateStretchSpec[] aStretchSpec,
 		final org.drip.state.identifier.ForwardLabel fri,
 		final org.drip.param.valuation.ValuationParams valParam,
 		final org.drip.param.pricer.PricerParams pricerParam,
@@ -71,14 +71,15 @@ public class ScenarioForwardCurveBuilder {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParam,
 		final double dblEpochResponse)
 	{
-		if (null == lcc) return null;
+		if (null == llsc) return null;
 
 		try {
 			org.drip.analytics.rates.ForwardCurve fc = new org.drip.state.curve.BasisSplineForwardRate (fri,
-				lcc.calibrateSpan (aSRS, dblEpochResponse, valParam, pricerParam, quotingParam, csqs));
+				llsc.calibrateSpan (aStretchSpec, dblEpochResponse, valParam, pricerParam, quotingParam,
+					csqs));
 
-			return fc.setCCIS (new org.drip.analytics.definition.ShapePreservingCCIS (lcc, aSRS, valParam,
-				pricerParam, quotingParam, csqs)) ? fc : null;
+			return fc.setCCIS (new org.drip.analytics.input.LatentStateShapePreservingCCIS (llsc,
+				aStretchSpec, valParam, pricerParam, quotingParam, csqs)) ? fc : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -129,18 +130,38 @@ public class ScenarioForwardCurveBuilder {
 
 		if (0 == iNumComp || iNumComp != iNumQuote) return null;
 
-		org.drip.state.estimator.StretchRepresentationSpec srs =
-			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet (strName + "_COMP1",
-				org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
-					org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE, aCalibComp,
-						strManifestMeasure, adblQuote, null);
-
-		org.drip.state.estimator.StretchRepresentationSpec[] aSRS = new
-			org.drip.state.estimator.StretchRepresentationSpec[] {srs};
-
 		try {
-			org.drip.state.estimator.LinearCurveCalibrator lcc = new
-				org.drip.state.estimator.LinearCurveCalibrator (new
+			org.drip.state.identifier.ForwardLabel[] aForwardLabel = aCalibComp[0] instanceof
+				org.drip.product.cashflow.DualStreamComponent ?
+					((org.drip.product.cashflow.DualStreamComponent)
+						aCalibComp[0]).derivedStream().forwardLabel() : aCalibComp[0].forwardLabel();
+
+			if (null == aForwardLabel || 0 == aForwardLabel.length) return null;
+
+			org.drip.state.representation.LatentStateSpecification[] aLSS = new
+				org.drip.state.representation.LatentStateSpecification[] {new
+					org.drip.state.representation.LatentStateSpecification
+						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
+							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+								aForwardLabel[0])};
+
+			org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
+				org.drip.state.inference.LatentStateSegmentSpec[iNumComp];
+
+			for (int i = 0; i < iNumComp; ++i) {
+				org.drip.product.calib.ProductQuoteSet pqs = aCalibComp[i].calibQuoteSet (aLSS);
+
+				if (null == pqs || !pqs.set (strManifestMeasure, adblQuote[i])) return null;
+
+				aSegmentSpec[i] = new org.drip.state.inference.LatentStateSegmentSpec (aCalibComp[i], pqs);
+			}
+
+			org.drip.state.inference.LatentStateStretchSpec[] aStretchSpec = new
+				org.drip.state.inference.LatentStateStretchSpec[] {new
+					org.drip.state.inference.LatentStateStretchSpec (strName, aSegmentSpec)};
+
+			org.drip.state.inference.LinearLatentStateCalibrator llsc = new
+				org.drip.state.inference.LinearLatentStateCalibrator (new
 					org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
 						org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 							org.drip.spline.params.ResponseScalingShapeControl (true, new
@@ -148,8 +169,8 @@ public class ScenarioForwardCurveBuilder {
 									org.drip.spline.stretch.BoundarySettings.FinancialStandard(),
 										org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
-			return ShapePreservingForwardCurve (lcc, aSRS, fri, valParams, pricerParam, csqs, quotingParam,
-				dblEpochResponse);
+			return ShapePreservingForwardCurve (llsc, aStretchSpec, fri, valParams, pricerParam, csqs,
+				quotingParam, dblEpochResponse);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

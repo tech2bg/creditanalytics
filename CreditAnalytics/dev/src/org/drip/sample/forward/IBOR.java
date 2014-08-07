@@ -9,17 +9,18 @@ import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.FixedStream;
-import org.drip.product.cashflow.FloatingStream;
+import org.drip.product.calib.*;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.DepositBuilder;
-import org.drip.product.definition.*;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.estimator.*;
 import org.drip.state.identifier.ForwardLabel;
+import org.drip.state.inference.*;
+import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -55,6 +56,42 @@ import org.drip.state.identifier.ForwardLabel;
  */
 
 public class IBOR {
+	private static final LatentStateStretchSpec ConstructStretch (
+		final String strStretchName,
+		final CalibratableFixedIncomeComponent[] aCalibComp,
+		final String strManifestMeasure,
+		final double[] adblQuote)
+		throws Exception
+	{
+		if (null == aCalibComp || 0 == aCalibComp.length) return null;
+
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aCalibComp.length];
+
+		for (int i = 0; i < aCalibComp.length; ++i) {
+			ProductQuoteSet pqs = aCalibComp[i].calibQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						ForwardCurve.LATENT_STATE_FORWARD,
+						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						aCalibComp[i] instanceof DualStreamComponent ?
+							((DualStreamComponent) aCalibComp[i]).derivedStream().forwardLabel()[0] : aCalibComp[i].forwardLabel()[0]
+					)
+				}
+			);
+
+			pqs.set (strManifestMeasure, adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aCalibComp[i],
+				pqs
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			strStretchName,
+			aSegmentSpec
+		);
+	}
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -62,7 +99,7 @@ public class IBOR {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final RatesComponent[] DepositFromMaturityDays (
+	private static final DepositComponent[] DepositFromMaturityDays (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final ForwardLabel fri)
@@ -70,7 +107,7 @@ public class IBOR {
 	{
 		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
 
-		RatesComponent[] aDeposit = new RatesComponent[astrMaturityTenor.length];
+		DepositComponent[] aDeposit = new DepositComponent[astrMaturityTenor.length];
 
 		String strCurrency = fri.currency();
 
@@ -79,7 +116,8 @@ public class IBOR {
 				dtEffective,
 				dtEffective.addTenor (astrMaturityTenor[i]),
 				fri,
-				strCurrency);
+				strCurrency
+			);
 
 		return aDeposit;
 	}
@@ -90,7 +128,7 @@ public class IBOR {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final RatesComponent[] FRAFromMaturityDays (
+	private static final FRAStandardComponent[] FRAFromMaturityDays (
 		final JulianDate dtEffective,
 		final ForwardLabel fri,
 		final String[] astrMaturityTenor,
@@ -99,7 +137,7 @@ public class IBOR {
 	{
 		if (null == astrMaturityTenor || null == adblFRAStrike || 0 == astrMaturityTenor.length) return null;
 
-		RatesComponent[] aFRA = new RatesComponent[astrMaturityTenor.length];
+		FRAStandardComponent[] aFRA = new FRAStandardComponent[astrMaturityTenor.length];
 
 		String strCurrency = fri.currency();
 
@@ -112,7 +150,8 @@ public class IBOR {
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				fri,
 				adblFRAStrike[i],
-				"Act/365");
+				"Act/365"
+			);
 
 		return aFRA;
 	}
@@ -126,11 +165,10 @@ public class IBOR {
 	private static final FixFloatComponent[] FixFloatSwap (
 		final JulianDate dtEffective,
 		final ForwardLabel fri,
-		final String[] astrMaturityTenor,
-		final double[] adblCoupon)
+		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		if (null == astrMaturityTenor || null == adblCoupon || 0 == astrMaturityTenor.length) return null;
+		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
 
 		String strCurrency = fri.currency();
 
@@ -159,7 +197,7 @@ public class IBOR {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				null,
-				adblCoupon[i],
+				0.,
 				1.,
 				null,
 				lsFixedPeriods
@@ -184,7 +222,7 @@ public class IBOR {
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
 				null,
-				adblCoupon[i],
+				0.,
 				-1.,
 				null,
 				lsFloatPeriods,
@@ -322,7 +360,7 @@ public class IBOR {
 
 		JulianDate dtValue = dc.epoch();
 
-		CalibratableFixedIncomeComponent[] aDeposit = DepositFromMaturityDays (
+		DepositComponent[] aDeposit = DepositFromMaturityDays (
 			dtValue,
 			astrDepositTenor,
 			fri
@@ -332,16 +370,14 @@ public class IBOR {
 		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsDeposit = StretchRepresentationSpec.CreateStretchBuilderSet (
+		LatentStateStretchSpec depositStretch = ConstructStretch (
 			"DEPOSIT",
-			ForwardCurve.LATENT_STATE_FORWARD,
-			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aDeposit,
 			strDepositCalibMeasure,
-			adblDepositQuote,
-			null);
+			adblDepositQuote
+		);
 
-		CalibratableFixedIncomeComponent[] aFRA = FRAFromMaturityDays (
+		FRAStandardComponent[] aFRA = FRAFromMaturityDays (
 			dtValue,
 			fri,
 			astrFRATenor,
@@ -352,42 +388,28 @@ public class IBOR {
 		 * Construct the FRA Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsFRA = StretchRepresentationSpec.CreateStretchBuilderSet (
+		LatentStateStretchSpec fraStretch = ConstructStretch (
 			"FRA",
-			ForwardCurve.LATENT_STATE_FORWARD,
-			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aFRA,
 			strFRACalibMeasure,
-			adblFRAQuote,
-			null);
-
-		double[] adblFixFloatDerivedParBasisSpread = null;
-
-		if (null != adblFixFloatQuote && 0 != adblFixFloatQuote.length) {
-			adblFixFloatDerivedParBasisSpread = new double[adblFixFloatQuote.length];
-
-			for (int j = 0; j < adblFixFloatQuote.length; ++j)
-				adblFixFloatDerivedParBasisSpread[j] = 0.;
-		}
+			adblFRAQuote
+		);
 
 		FixFloatComponent[] aFixFloat = FixFloatSwap (
 			dtValue,
 			fri,
-			astrFixFloatTenor,
-			adblFixFloatQuote);
+			astrFixFloatTenor);
 
 		/*
 		 * Construct the Fix-Float Component Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsFixFloat = StretchRepresentationSpec.CreateStretchBuilderSet (
+		LatentStateStretchSpec fixFloatStretch = ConstructStretch (
 			"FIXFLOAT",
-			ForwardCurve.LATENT_STATE_FORWARD,
-			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aFixFloat,
 			strFixFloatCalibMeasure,
-			adblFixFloatDerivedParBasisSpread,
-			null);
+			adblFixFloatQuote
+		);
 
 		FloatFloatComponent[] aFloatFloat = FloatFloatSwap (
 			dtValue,
@@ -399,14 +421,12 @@ public class IBOR {
 		 * Construct the Float-Float Component Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsFloatFloat = StretchRepresentationSpec.CreateStretchBuilderSet (
+		LatentStateStretchSpec floatFloatStretch = ConstructStretch (
 			"FLOATFLOAT",
-			ForwardCurve.LATENT_STATE_FORWARD,
-			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aFloatFloat,
 			strFloatFloatCalibMeasure,
-			adblFloatFloatQuote,
-			null);
+			adblFloatFloatQuote
+		);
 
 		FloatFloatComponent[] aSyntheticFloatFloat = FloatFloatSwap (
 			dtValue,
@@ -418,21 +438,19 @@ public class IBOR {
 		 * Construct the Synthetic Float-Float Component Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsSyntheticFloatFloat = StretchRepresentationSpec.CreateStretchBuilderSet (
+		LatentStateStretchSpec syntheticFloatFloatStretch = ConstructStretch (
 			"SYNTHETICFLOATFLOAT",
-			ForwardCurve.LATENT_STATE_FORWARD,
-			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aSyntheticFloatFloat,
 			strSyntheticFloatFloatCalibMeasure,
-			adblSyntheticFloatFloatQuote,
-			null);
+			adblSyntheticFloatFloatQuote
+		);
 
-		StretchRepresentationSpec[] aSRS = new StretchRepresentationSpec[] {
-			srsDeposit,
-			srsFRA,
-			srsFixFloat,
-			srsFloatFloat,
-			srsSyntheticFloatFloat
+		LatentStateStretchSpec[] aStretchSpec = new LatentStateStretchSpec[] {
+			depositStretch,
+			fraStretch,
+			fixFloatStretch,
+			floatFloatStretch,
+			syntheticFloatFloatStretch
 		};
 
 		/*
@@ -443,12 +461,13 @@ public class IBOR {
 		 * 	- Natural Boundary Setting
 		 */
 
-		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
+		LinearLatentStateCalibrator lcc = new LinearLatentStateCalibrator (
 			scbc,
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, fri.currency());
 
@@ -466,7 +485,7 @@ public class IBOR {
 
 		ForwardCurve fcDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			lcc,
-			aSRS,
+			aStretchSpec,
 			fri,
 			valParams,
 			null,
@@ -530,7 +549,7 @@ public class IBOR {
 
 				for (int i = 0; i < aFixFloat.length; ++i)
 					System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, mktParams, null, strFixFloatCalibMeasure), 1, 2, -0.01) +
+						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, mktParams, null, strFixFloatCalibMeasure), 1, 2, 0.01) +
 							"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
 			}

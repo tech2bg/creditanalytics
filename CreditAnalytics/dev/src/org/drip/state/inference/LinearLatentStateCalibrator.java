@@ -1,5 +1,5 @@
 
-package org.drip.state.estimator;
+package org.drip.state.inference;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -7,7 +7,6 @@ package org.drip.state.estimator;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -30,16 +29,17 @@ package org.drip.state.estimator;
  */
 
 /**
- * LinearCurveCalibrator creates the discount curve span from the instrument cash flows. The span
- * 	construction may be customized using specific settings provided in GlobalControlCurveParams.
+ * LinearLatentStateCalibrator calibrates/constructs the Latent State Stretch/Span from the calibration
+ * 	instrument details. The span construction may be customized using specific settings provided in
+ * 	GlobalControlCurveParams.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalControlCurveParams {
+public class LinearLatentStateCalibrator extends org.drip.state.estimator.GlobalControlCurveParams {
 
 	/**
-	 * LinearCurveCalibrator constructor
+	 * LinearLatentStateCalibrator constructor
 	 * 
 	 * @param scbc Segment Builder Control Parameters
 	 * @param bs The Calibration Boundary Condition
@@ -50,7 +50,7 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public LinearCurveCalibrator (
+	public LinearLatentStateCalibrator (
 		final org.drip.spline.params.SegmentCustomBuilderControl scbc,
 		final org.drip.spline.stretch.BoundarySettings bs,
 		final int iCalibrationDetail,
@@ -62,40 +62,39 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 	}
 
 	/**
-	 * Calibrate the Span from the Instruments in the Stretches, and their Cash Flows.
+	 * Calibrate the Span from the Instruments in the Stretches and their Details.
 	 * 
-	 * @param aSRS Array of the Stretch Builder Parameters
+	 * @param aStretchSpec The Stretch Sequence constituting the Span
 	 * @param dblEpochResponse Segment Sequence Left-most Response Value
 	 * @param valParams Valuation Parameter
 	 * @param pricerParams Pricer Parameter
-	 * @param quotingParams Quoting Parameter
-	 * @param mktParams Component Market Parameter
+	 * @param vcp The Valuation Customization Parameters
+	 * @param csqs The Market Parameters Surface and Quote
 	 * 
-	 * @return Instance of the Discount Curve Span
+	 * @return Instance of the Latent State Span
 	 */
 
 	public org.drip.spline.grid.OverlappingStretchSpan calibrateSpan (
-		final org.drip.state.estimator.StretchRepresentationSpec[] aSRS,
+		final org.drip.state.inference.LatentStateStretchSpec[] aStretchSpec,
 		final double dblEpochResponse,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet mktParams)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		if (null == aSRS || null == valParams) return null;
+		if (null == aStretchSpec || null == valParams) return null;
 
-		int iNumStretch = aSRS.length;
-		org.drip.state.estimator.CurveStretch csPrev = null;
+		int iNumStretch = aStretchSpec.length;
 		org.drip.spline.grid.OverlappingStretchSpan oss = null;
 
 		if (0 == iNumStretch) return null;
 
-		for (org.drip.state.estimator.StretchRepresentationSpec srs : aSRS) {
-			if (null == srs) continue;
+		for (org.drip.state.inference.LatentStateStretchSpec stretchSpec : aStretchSpec) {
+			if (null == stretchSpec) continue;
 
-			org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = srs.getCalibComp();
+			org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = stretchSpec.segmentSpec();
 
-			int iNumCalibComp = aCalibComp.length;
+			int iNumCalibComp = aSegmentSpec.length;
 			org.drip.state.estimator.CurveStretch cs = null;
 			double[] adblPredictorOrdinate = new double[iNumCalibComp + 1];
 			org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
@@ -103,21 +102,21 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 
 			for (int i = 0; i <= iNumCalibComp; ++i) {
 				adblPredictorOrdinate[i] = 0 == i ? valParams.valueDate() :
-					aCalibComp[i - 1].maturity().julian();
+					aSegmentSpec[i - 1].component().maturity().julian();
 
-				if (i != iNumCalibComp) aSCBC[i] = segmentBuilderControl (srs.getName());
+				if (i != iNumCalibComp) aSCBC[i] = segmentBuilderControl (stretchSpec.name());
 			}
 
 			try {
-				cs = new org.drip.state.estimator.CurveStretch (srs.getName(),
+				cs = new org.drip.state.estimator.CurveStretch (stretchSpec.name(),
 					org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateSegmentSet
 						(adblPredictorOrdinate, aSCBC), aSCBC);
 
-				if (!cs.setup (org.drip.state.estimator.RatesSegmentSequenceBuilder.Create (dblEpochResponse,
-					srs, valParams, pricerParams, mktParams, quotingParams, csPrev, oss,
-						bestFitWeightedResponse(), aSCBC[0].preceedingManifestSensitivityControl(),
-							bestFitWeightedResponseSensitivity(), calibrationBoundaryCondition()),
-								calibrationDetail())) {
+				if (!cs.setup (new org.drip.state.inference.LatentStateSequenceBuilder (dblEpochResponse,
+					stretchSpec, valParams, pricerParams, csqs, vcp, oss, bestFitWeightedResponse(), new
+						org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>(),
+					bestFitWeightedResponseSensitivity(), calibrationBoundaryCondition()),
+						calibrationDetail())) {
 					System.out.println ("\tMSS Setup Failed!");
 
 					return null;
@@ -139,8 +138,6 @@ public class LinearCurveCalibrator extends org.drip.state.estimator.GlobalContro
 			} else {
 				if (!oss.addStretch (cs)) return null;
 			}
-
-			csPrev = cs;
 		}
 
 		return oss;

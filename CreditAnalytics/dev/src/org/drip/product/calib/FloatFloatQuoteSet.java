@@ -99,96 +99,96 @@ public class FloatFloatQuoteSet extends org.drip.product.calib.ProductQuoteSet {
 	}
 
 	/**
-	 * Set the Derived Basis
+	 * Set the Derived Par Basis Spread
 	 * 
-	 * @param dblDerivedBasis The Derived Basis
+	 * @param dblDerivedParBasisSpread The Derived Par Basis Spread
 	 * 
-	 * @return TRUE => The Derived Basis successfully set
+	 * @return TRUE => The Derived Par Basis Spread successfully set
 	 */
 
-	public boolean setDerivedBasis (
-		final double dblDerivedBasis)
+	public boolean setDerivedParBasisSpread (
+		final double dblDerivedParBasisSpread)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDerivedBasis)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDerivedParBasisSpread)) return false;
 
-		_mapQuote.put ("DerivedBasis", dblDerivedBasis);
+		_mapQuote.put ("DerivedParBasisSpread", dblDerivedParBasisSpread);
 
 		return true;
 	}
 
 	/**
-	 * Indicate if the Derived Basis Field exists
+	 * Indicate if the Derived Par Basis Spread Field exists
 	 * 
-	 * @return TRUE => The Derived Basis Field Exists
+	 * @return TRUE => The Derived Par Basis Spread Field Exists
 	 */
 
-	public boolean containsDerivedBasis()
+	public boolean containsDerivedParBasisSpread()
 	{
-		return _mapQuote.containsKey ("DerivedBasis");
+		return _mapQuote.containsKey ("DerivedParBasisSpread");
 	}
 
 	/**
-	 * Retrieve the Derived Basis
+	 * Retrieve the Derived Par Basis Spread
 	 * 
-	 * @return The Derived Basis
+	 * @return The Derived Par Basis Spread
 	 * 
-	 * @throws java.lang.Exception Thrown if the Derived Basis Field does not exist
+	 * @throws java.lang.Exception Thrown if the Derived Par Basis Spread Field does not exist
 	 */
 
-	public double derivedBasis()
+	public double derivedParBasisSpread()
 		throws java.lang.Exception
 	{
-		if (!containsDerivedBasis())
+		if (!containsDerivedParBasisSpread())
 			throw new java.lang.Exception
-				("FloatFloatQuoteSet::derivedBasis => Does not contain the Derived Basis");
+				("FloatFloatQuoteSet::derivedParBasisSpread => Does not contain the Derived Par Basis Spread");
 
-		return _mapQuote.get ("DerivedBasis");
+		return _mapQuote.get ("DerivedParBasisSpread");
 	}
 
 	/**
-	 * Set the Reference Basis
+	 * Set the Reference Par Basis Spread
 	 * 
-	 * @param dblReferenceBasis The Reference Basis
+	 * @param dblReferenceParBasisSpread The Reference Par Basis Spread
 	 * 
-	 * @return TRUE => The Reference Basis successfully set
+	 * @return TRUE => The Reference Par Basis Spread successfully set
 	 */
 
-	public boolean setReferenceBasis (
-		final double dblReferenceBasis)
+	public boolean setReferenceParBasisSpread (
+		final double dblReferenceParBasisSpread)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblReferenceBasis)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblReferenceParBasisSpread)) return false;
 
-		_mapQuote.put ("ReferenceBasis", dblReferenceBasis);
+		_mapQuote.put ("ReferenceParBasisSpread", dblReferenceParBasisSpread);
 
 		return true;
 	}
 
 	/**
-	 * Indicate if the Reference Basis Field exists
+	 * Indicate if the Reference Par Basis Spread Field exists
 	 * 
-	 * @return TRUE => The Reference Basis Field Exists
+	 * @return TRUE => The Reference Par Basis Spread Field Exists
 	 */
 
-	public boolean containsReferenceBasis()
+	public boolean containsReferenceParBasisSpread()
 	{
-		return _mapQuote.containsKey ("ReferenceBasis");
+		return _mapQuote.containsKey ("ReferenceParBasisSpread");
 	}
 
 	/**
-	 * Retrieve the Reference Basis
+	 * Retrieve the Reference Par Basis Spread
 	 * 
-	 * @return The Reference Basis
+	 * @return The Reference Par Basis Spread
 	 * 
-	 * @throws java.lang.Exception Thrown if the Reference Basis Field does not exist
+	 * @throws java.lang.Exception Thrown if the Reference Par Basis Spread Field does not exist
 	 */
 
-	public double referenceBasis()
+	public double referenceParBasisSpread()
 		throws java.lang.Exception
 	{
-		if (!containsReferenceBasis())
+		if (!containsReferenceParBasisSpread())
 			throw new java.lang.Exception
-				("FloatFloatQuoteSet::referenceBasis => Does not contain the Reference Basis");
+				("FloatFloatQuoteSet::referenceParBasisSpread => Does not contain the Reference Par Basis Spread");
 
-		return _mapQuote.get ("ReferenceBasis");
+		return _mapQuote.get ("ReferenceParBasisSpread");
 	}
 }

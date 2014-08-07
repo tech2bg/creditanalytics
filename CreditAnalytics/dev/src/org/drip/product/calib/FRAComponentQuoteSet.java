@@ -97,4 +97,51 @@ public class FRAComponentQuoteSet extends org.drip.product.calib.ProductQuoteSet
 
 		return _mapQuote.get ("FRARate");
 	}
+
+	/**
+	 * Set the Par Forward Rate
+	 * 
+	 * @param dblParForwardRate The Par Forward Rate
+	 * 
+	 * @return TRUE => The Par Forward Rate successfully set
+	 */
+
+	public boolean setParForwardRate (
+		final double dblParForwardRate)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblParForwardRate)) return false;
+
+		_mapQuote.put ("ParForwardRate", dblParForwardRate);
+
+		return true;
+	}
+
+	/**
+	 * Indicate if the Par Forward Rate Field exists
+	 * 
+	 * @return TRUE => Par Forward Rate Field Exists
+	 */
+
+	public boolean containsParForwardRate()
+	{
+		return _mapQuote.containsKey ("ParForwardRate");
+	}
+
+	/**
+	 * Retrieve the Par Forward Rate
+	 * 
+	 * @return The Par Forward Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Par Forward Rate Field does not exist
+	 */
+
+	public double parForwardRate()
+		throws java.lang.Exception
+	{
+		if (!containsParForwardRate())
+			throw new java.lang.Exception
+				("FRAComponentQuoteSet::parForwardRate => Does not contain the Par Forward Rate");
+
+		return _mapQuote.get ("ParForwardRate");
+	}
 }

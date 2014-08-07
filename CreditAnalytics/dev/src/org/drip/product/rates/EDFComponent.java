@@ -388,7 +388,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return null;
+		return new org.drip.state.identifier.ForwardLabel[] {_fri};
 	}
 
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
@@ -608,6 +608,18 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
+	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+	{
+		try {
+			return new org.drip.product.calib.EDFComponentQuoteSet (aLSS);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -615,12 +627,16 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		return null == valParams || null == pqs || !(pqs instanceof
-			org.drip.product.calib.EDFComponentQuoteSet) || !pqs.contains
-				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) ? null :
-							discountFactorPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.EDFComponentQuoteSet)
+			|| !pqs.contains (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+				org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+					org.drip.state.identifier.FundingLabel.Standard (_strCurrency)))
+			return null;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = discountFactorPRWC (valParams,
+			pricerParams, csqs, quotingParams, pqs);
+
+		return null != prwc && prwc.addMergeLabel (_fri) ? prwc : null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
@@ -660,9 +676,9 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (!prwc.addPredictorResponseWeight (_dblEffective, 1.)) return null;
+		if (!prwc.addPredictorResponseWeight (_dblMaturity, 1.)) return null;
 
-		if (!prwc.addDResponseWeightDManifestMeasure ("Rate", _dblEffective, 1.)) return null;
+		if (!prwc.addDResponseWeightDManifestMeasure ("Rate", _dblMaturity, 1.)) return null;
 
 		if (!prwc.updateValue (dblForwardRate)) return null;
 
@@ -690,84 +706,6 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 			pricerParams, csqs, quotingParams, pqs);
 
 		return null != prwc && prwc.addMergeLabel (_fri) ? prwc : null;
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
-	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == lsmm || !(lsmm instanceof
-			org.drip.analytics.rates.RatesLSMM) ||
-				!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (lsmm.id()))
-			return null;
-
-		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
-
-		java.lang.String[] astrManifestMeasure = ratesLSMM.manifestMeasures();
-
-		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(ratesLSMM.quantificationMetric())) {
-			try {
-				org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
-
-				double dblTurnMaturityDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
-					_dblMaturity);
-
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
-					java.lang.String[] {"Price"}, false)) {
-					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
-						prlc.addPredictorResponseWeight (_dblEffective, 0.01 *
-							ratesLSMM.measureQuoteValue ("Price")) && prlc.updateValue (0.) &&
-								prlc.addDResponseWeightDManifestMeasure ("Price", _dblMaturity, 0.) &&
-									prlc.addDResponseWeightDManifestMeasure ("Price", _dblEffective, 0.01) &&
-										prlc.updateDValueDManifestMeasure ("Price", 0.) ? prlc : null;
-				}
-
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
-					java.lang.String[] {"PV"}, false)) {
-					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
-						prlc.addPredictorResponseWeight (_dblEffective, ratesLSMM.measureQuoteValue ("PV"))
-							&& prlc.updateValue (0.) && prlc.addDResponseWeightDManifestMeasure ("PV",
-								_dblMaturity, 0.) && prlc.addDResponseWeightDManifestMeasure ("PV",
-									_dblEffective, 1.) && prlc.updateDValueDManifestMeasure ("PV", 0.) ? prlc
-										: null;
-				}
-
-				if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
-					java.lang.String[] {"Rate"}, false)) {
-					org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
-						org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-					double dblTurnEffectiveDF = null == tldf ? 1. : tldf.turnAdjust (valParams.valueDate(),
-						_dblMaturity);
-
-					double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-						_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar);
-
-					double dblDF = 1. / (1. + (ratesLSMM.measureQuoteValue ("Rate") * dblDCF));
-
-					return prlc.addPredictorResponseWeight (_dblMaturity, -dblTurnMaturityDF) &&
-						prlc.addPredictorResponseWeight (_dblEffective, dblTurnEffectiveDF * dblDF) &&
-							prlc.updateValue (0.) && prlc.addDResponseWeightDManifestMeasure ("Rate",
-								_dblMaturity, 0.) && prlc.addDResponseWeightDManifestMeasure ("Rate",
-									_dblEffective, -1. * dblDCF * dblTurnEffectiveDF * dblDF * dblDF) &&
-										prlc.updateDValueDManifestMeasure ("Rate", 0.) ? prlc : null;
-				}
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		return null;
 	}
 
 	@Override public byte[] serialize()

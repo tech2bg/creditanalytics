@@ -123,7 +123,7 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 	}
 
 	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+		final org.drip.analytics.input.CurveConstructionInputSet ccis)
 	{
 		return true;
 	}
@@ -135,11 +135,6 @@ public abstract class ForwardCurve extends org.drip.service.stream.Serializer im
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstrumentCode)
-	{
-		return null;
-	}
-
-	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
 	{
 		return null;
 	}

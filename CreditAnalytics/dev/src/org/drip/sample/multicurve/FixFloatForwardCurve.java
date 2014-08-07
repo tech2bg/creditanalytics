@@ -10,8 +10,7 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.FixedStream;
-import org.drip.product.cashflow.FloatingStream;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
@@ -58,12 +57,12 @@ import org.drip.state.identifier.ForwardLabel;
 public class FixFloatForwardCurve {
 
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures,
@@ -176,16 +175,16 @@ public class FixFloatForwardCurve {
 		throws Exception
 	{
 		/*
-		 * Construct the array of cash instruments and their quotes.
+		 * Construct the array of Deposit instruments and their quotes.
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			new int[] {},
 			0,
 			strCurrency);
 
-		double[] adblCashQuote = new double[] {}; // Futures
+		double[] adblDepositQuote = new double[] {}; // Futures
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
@@ -203,6 +202,18 @@ public class FixFloatForwardCurve {
 			0.02597 + dblBump      // 10Y
 		};
 
+		String[] astrSwapManifestMeasure = new String[] {
+			"SwapRate",     //  6M
+			"SwapRate",		//  9M
+			"SwapRate",     //  1Y
+			"SwapRate",     // 18M
+			"SwapRate",     //  2Y
+			"SwapRate",     //  3Y
+			"SwapRate",     //  4Y
+			"SwapRate",     //  5Y
+			"SwapRate"      // 10Y
+		};
+
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
@@ -216,10 +227,12 @@ public class FixFloatForwardCurve {
 		return ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			new ValuationParams (dtSpot, dtSpot, "USD"),
-			aCashComp,
-			adblCashQuote,
+			aDepositComp,
+			adblDepositQuote,
+			null,
 			aSwapComp,
 			adblSwapQuote,
+			astrSwapManifestMeasure,
 			true);
 	}
 
@@ -333,7 +346,8 @@ public class FixFloatForwardCurve {
 			strCurrency,
 			astrxM6MFwdTenor,
 			adblSwapCoupon,
-			iTenorInMonths);
+			iTenorInMonths
+		);
 
 		String strBasisTenor = iTenorInMonths + "M";
 
@@ -372,7 +386,8 @@ public class FixFloatForwardCurve {
 			aFFC,
 			strManifestMeasure,
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 
 		mapForward.put ("   CUBIC_FWD" + strBasisTenor, fcxMCubic);
 
@@ -380,8 +395,16 @@ public class FixFloatForwardCurve {
 		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
 		 */
 
-		CurveSurfaceQuoteSet mktParamsCubicFwd = MarketParamsBuilder.Create
-			(dc, fcxMCubic, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParamsCubicFwd = MarketParamsBuilder.Create (
+			dc,
+			fcxMCubic,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -399,7 +422,8 @@ public class FixFloatForwardCurve {
 			aFFC,
 			strManifestMeasure,
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 
 		mapForward.put (" QUARTIC_FWD" + strBasisTenor, fcxMQuartic);
 
@@ -407,8 +431,16 @@ public class FixFloatForwardCurve {
 		 * Set the discount curve + quartic polynomial forward curve based component market parameters.
 		 */
 
-		CurveSurfaceQuoteSet mktParamsQuarticFwd = MarketParamsBuilder.Create
-			(dc, fcxMQuartic, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParamsQuarticFwd = MarketParamsBuilder.Create (
+			dc,
+			fcxMQuartic,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
 		/*
 		 * Construct the shape preserving forward curve off of Hyperbolic Tension Based Basis Spline.
@@ -426,7 +458,8 @@ public class FixFloatForwardCurve {
 			aFFC,
 			strManifestMeasure,
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 
 		mapForward.put ("KLKHYPER_FWD" + strBasisTenor, fcxMKLKHyper);
 
@@ -434,8 +467,16 @@ public class FixFloatForwardCurve {
 		 * Set the discount curve + hyperbolic tension forward curve based component market parameters.
 		 */
 
-		CurveSurfaceQuoteSet mktParamsKLKHyperFwd = MarketParamsBuilder.Create
-			(dc, fcxMKLKHyper, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParamsKLKHyperFwd = MarketParamsBuilder.Create (
+			dc,
+			fcxMKLKHyper,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
 		int i = 0;
 		int iFreq = 12 / iTenorInMonths;
@@ -464,13 +505,13 @@ public class FixFloatForwardCurve {
 			CaseInsensitiveTreeMap<Double> mapKLKHyperValue = ffc.value (valParams, null, mktParamsKLKHyperFwd, null);
 
 			System.out.println (" " + strMaturityTenor + " =>  " +
-				FormatUtil.FormatDouble (fcxMCubic.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +
+				FormatUtil.FormatDouble (fcxMCubic.forward (dblFwdStartDate), 2, 2, 100.) + "  |  " +
 				FormatUtil.FormatDouble (mapCubicValue.get ("ReferenceParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (mapCubicValue.get ("DerivedParBasisSpread"), 2, 2, 1.) + "  |  " +
-				FormatUtil.FormatDouble (fcxMQuartic.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +
+				FormatUtil.FormatDouble (fcxMQuartic.forward (dblFwdStartDate), 2, 2, 100.) + "  |  " +
 				FormatUtil.FormatDouble (mapQuarticValue.get ("ReferenceParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (mapQuarticValue.get ("DerivedParBasisSpread"), 2, 2, 1.) + "  |  " +
-				FormatUtil.FormatDouble (fcxMKLKHyper.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +
+				FormatUtil.FormatDouble (fcxMKLKHyper.forward (dblFwdStartDate), 2, 2, 100.) + "  |  " +
 				FormatUtil.FormatDouble (mapKLKHyperValue.get ("ReferenceParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (mapKLKHyperValue.get ("DerivedParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (iFreq * java.lang.Math.log (dc.df (dblFwdStartDate) / dc.df (dblFwdEndDate)), 1, 2, 100.) + "  |  " +
@@ -497,21 +538,21 @@ public class FixFloatForwardCurve {
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
 			strCalibMeasure,
 			new double[] {
-				0.00000,    //  4Y
-				0.00000,    //  5Y
-				0.00000,    //  6Y
-				0.00000,    //  7Y
-				0.00000,    //  8Y
-				0.00000,    //  9Y
-				0.00000,    // 10Y
-				0.00000,    // 11Y
-				0.00000,    // 12Y
-				0.00000,    // 15Y
-				0.00000,    // 20Y
-				0.00000,    // 25Y
-				0.00000,    // 30Y
-				0.00000,    // 40Y
-				0.00000     // 50Y
+				0.0005,    //  4Y
+				0.0005,    //  5Y
+				0.0005,    //  6Y
+				0.0005,    //  7Y
+				0.0005,    //  8Y
+				0.0005,    //  9Y
+				0.0005,    // 10Y
+				0.0005,    // 11Y
+				0.0005,    // 12Y
+				0.0005,    // 15Y
+				0.0005,    // 20Y
+				0.0005,    // 25Y
+				0.0005,    // 30Y
+				0.0005,    // 40Y
+				0.0005     // 50Y
 			},
 			new double[] {
 				0.02604,    //  4Y
@@ -530,7 +571,7 @@ public class FixFloatForwardCurve {
 				0.03266,    // 40Y
 				0.03145     // 50Y
 				}
-			);
+		);
 	}
 
 	public static final void main (
@@ -558,13 +599,15 @@ public class FixFloatForwardCurve {
 			strCurrency,
 			dc,
 			"DerivedParBasisSpread",
-			3);
+			3
+		);
 
 		CustomFixFloatForwardCurveSample (
 			dtToday,
 			strCurrency,
 			dc,
 			"ReferenceParBasisSpread",
-			3);
+			3
+		);
 	}
 }

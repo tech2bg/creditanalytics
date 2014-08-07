@@ -180,12 +180,16 @@ public class FRAStdOptionVolAnalysis {
 		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtSpot,
 			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
-			4,
+			0,
 			strCurrency);
 
 		double[] adblCashQuote = new double[] {
-			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850, // Cash
-			0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850}; // Cash
+			// 0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+
+		String[] astrCashManifestMeasure = new String[] {
+			"Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate"}; // Cash
+			// "Rate", "Rate", "Rate", "Rate"}; // Futures
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
@@ -209,6 +213,24 @@ public class FRAStdOptionVolAnalysis {
 			0.03145     // 50Y
 		};
 
+		String[] astrSwapManifestMeasure = new String[] {
+			"SwapRate",    //  4Y
+			"SwapRate",    //  5Y
+			"SwapRate",    //  6Y
+			"SwapRate",    //  7Y
+			"SwapRate",    //  8Y
+			"SwapRate",    //  9Y
+			"SwapRate",    // 10Y
+			"SwapRate",    // 11Y
+			"SwapRate",    // 12Y
+			"SwapRate",    // 15Y
+			"SwapRate",    // 20Y
+			"SwapRate",    // 25Y
+			"SwapRate",    // 30Y
+			"SwapRate",    // 40Y
+			"SwapRate"     // 50Y
+		};
+
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
@@ -224,8 +246,10 @@ public class FRAStdOptionVolAnalysis {
 			new ValuationParams (dtSpot, dtSpot, "USD"),
 			aCashComp,
 			adblCashQuote,
+			astrCashManifestMeasure,
 			aSwapComp,
 			adblSwapQuote,
+			astrSwapManifestMeasure,
 			true);
 	}
 
@@ -432,37 +456,6 @@ public class FRAStdOptionVolAnalysis {
 
 		mapFC.put ("3M", fc3M);
 
-		/*
-		 * Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
-		 */
-
-		ForwardCurve fc6M = MakeFC (
-			dt,
-			strCurrency,
-			dc,
-			6,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
-			new double[] {
-				0.00000,    //  1Y
-				0.00000,    //  2Y
-				0.00000,    //  3Y
-				0.00000,    //  4Y
-				0.00000,    //  5Y
-				0.00000,    //  6Y
-				0.00000,    //  7Y
-				0.00000,    //  8Y
-				0.00000,    //  9Y
-				0.00000,    // 10Y
-				0.00000,    // 11Y
-				0.00000,    // 12Y
-				0.00000,    // 15Y
-				0.00000,    // 20Y
-				0.00000,    // 25Y
-				0.00000     // 30Y
-				}
-			);
-
-		mapFC.put ("6M", fc6M);
 
 		/*
 		 * Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.

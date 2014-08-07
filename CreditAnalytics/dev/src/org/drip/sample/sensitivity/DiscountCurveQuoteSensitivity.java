@@ -1,12 +1,18 @@
 
 package org.drip.sample.sensitivity;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.calib.*;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.rates.*;
 import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -14,7 +20,9 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.estimator.*;
+import org.drip.state.identifier.*;
+import org.drip.state.inference.*;
+import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -72,21 +80,92 @@ public class DiscountCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
+	private static final DepositComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
+		final String strCurrency,
 		final int[] aiDay)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length];
+		DepositComponent[] aDeposit = new DepositComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
-				dtEffective.addBusDays (aiDay[i], "USD"),
+				dtEffective.addBusDays (aiDay[i], strCurrency),
 				null,
-				"USD");
+				strCurrency
+			);
 
-		return aCalibComp;
+		return aDeposit;
+	}
+
+	private static final LatentStateStretchSpec DepositStretch (
+		final DepositComponent[] aDeposit,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
+
+		for (int i = 0; i < aDeposit.length; ++i) {
+			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (aDeposit[i].couponCurrency()[0])
+					)
+				}
+			);
+
+			depositQuote.setRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aDeposit[i],
+				depositQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"DEPOSIT",
+			aSegmentSpec
+		);
+	}
+
+	private static final LatentStateStretchSpec EDFStretch (
+		final EDFComponent[] aEDF,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
+
+		for (int i = 0; i < aEDF.length; ++i) {
+			EDFComponentQuoteSet edfQuote = new EDFComponentQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (aEDF[i].couponCurrency()[0])
+					),
+					new LatentStateSpecification (
+						ForwardCurve.LATENT_STATE_FORWARD,
+						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						aEDF[i].forwardLabel()[0]
+					)
+				}
+			);
+
+			edfQuote.setRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aEDF[i],
+				edfQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"EDF",
+			aSegmentSpec
+		);
 	}
 
 	/*
@@ -95,28 +174,106 @@ public class DiscountCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final IRSComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
-		final String[] astrTenor)
+		final String strCurrency,
+		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
+		IRSComponent[] aIRS = new IRSComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = RatesStreamBuilder.CreateIRS (
-				dtEffective,
-				astrTenor[i],
-				0.,
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.julian(),
+				astrMaturityTenor[i],
+				null,
 				2,
 				"Act/360",
-				0.,
-				4,
-				"Act/360",
-				"USD",
-				"USD"
+				false,
+				false,
+				strCurrency,
+				strCurrency
 			);
 
-		return aCalibComp;
+			FloatingStream floatStream = new FloatingStream (
+				strCurrency,
+				null,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.julian(),
+				astrMaturityTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				null,
+				0.,
+				1.,
+				null,
+				lsFixedPeriods
+			);
+
+			IRSComponent irs = new IRSComponent (fixStream, floatStream);
+
+			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
+
+			aIRS[i] = irs;
+		}
+
+		return aIRS;
+	}
+
+	private static final LatentStateStretchSpec SwapStretch (
+		final IRSComponent[] aIRS,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aIRS.length];
+
+		for (int i = 0; i < aIRS.length; ++i) {
+			FixFloatQuoteSet fixFloatQuote = new FixFloatQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (aIRS[i].couponCurrency()[0])
+					),
+					new LatentStateSpecification (
+						ForwardCurve.LATENT_STATE_FORWARD,
+						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						aIRS[i].forwardLabel()[0]
+					)
+				}
+			);
+
+			fixFloatQuote.setPV (0.);
+
+			fixFloatQuote.setSwapRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aIRS[i],
+				fixFloatQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"SWAP",
+			aSegmentSpec
+		);
 	}
 
 	private static final void TenorJack (
@@ -180,87 +337,88 @@ public class DiscountCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final void DiscountCurveQuoteSensitivitySample()
+	private static final void DiscountCurveQuoteSensitivitySample (
+		final JulianDate dtSpot,
+		final String strCurrency)
 		throws Exception
 	{
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
-
-		CreditAnalytics.Init ("");
-
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
-
 		/*
 		 * Construct the Array of DEPOSIT Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
-			dtToday,
-			new int[] {1, 2, 7, 14, 30, 60});
+		DepositComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
+			dtSpot,
+			strCurrency,
+			new int[] {
+				1, 2, 7, 14, 30, 60
+			}
+		);
 
 		double[] adblDepositQuote = new double[] {
 			0.0013, 0.0017, 0.0017, 0.0018, 0.0020, 0.0023}; // Cash Rate
 
 		/*
-		 * Construct the DEPOSIT Instrument Set Stretch Builder
+		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec rbsDeposit = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"DEPOSIT",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-			aDepositComp,
-			"Rate",
-			adblDepositQuote,
-			null);
+		LatentStateStretchSpec depositStretch = DepositStretch (
+			aDeposit,
+			adblDepositQuote
+		);
 
 		/*
 		 * Construct the Array of FUTURE Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aFutureComp = EDFutureBuilder.GenerateEDPack (dtToday, 8, "USD");
+		EDFComponent[] aEDF = EDFutureBuilder.GenerateEDPack (
+			dtSpot,
+			8,
+			strCurrency
+		);
 
-		double[] adblFutureQuote = new double[] {
-			0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160}; // EDF Rate;
+		double[] adblEDFQuote = new double[] {
+			0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160
+		};
 
 		/*
-		 * Construct the FUTURE Instrument Set Stretch Builder
+		 * Construct the EDF Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec rbsFuture = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"FUTURE",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-			aFutureComp,
-			"Rate",
-			adblFutureQuote,
-			null);
+		LatentStateStretchSpec edfStretch = EDFStretch (
+			aEDF,
+			adblEDFQuote
+		);
 
 		/*
 		 * Construct the Array of SWAP Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (dtToday, new java.lang.String[]
-			{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"});
+		IRSComponent[] aSwap = SwapInstrumentsFromMaturityTenor (
+			dtSpot,
+			strCurrency,
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			}
+		);
 
-		double[] adblSwapQuote = new double[]
-			{0.0166, 0.0206, 0.0241, 0.0269, 0.0292, 0.0311, 0.0326, 0.0340, 0.0351, 0.0375, 0.0393, 0.0402, 0.0407, 0.0409, 0.0409};
+		double[] adblSwapQuote = new double[] {
+			0.0166, 0.0206, 0.0241, 0.0269, 0.0292, 0.0311, 0.0326, 0.0340, 0.0351, 0.0375, 0.0393, 0.0402, 0.0407, 0.0409, 0.0409
+		};
 
 		/*
-		 * Construct the SWAP Instrument Set Stretch Builder
+		 * Construct the Swap Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec rbsSwap = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"SWAP",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-			aSwapComp,
-			"Rate",
-			adblSwapQuote,
-			null);
+		LatentStateStretchSpec swapStretch = SwapStretch (
+			aSwap,
+			adblSwapQuote
+		);
 
-		StretchRepresentationSpec[] aSRS = new StretchRepresentationSpec[] {rbsDeposit, rbsFuture, rbsSwap};
+		LatentStateStretchSpec[] aStretchSpec = new LatentStateStretchSpec[] {
+			depositStretch,
+			edfStretch,
+			swapStretch
+		};
 
 		/*
 		 * Set up the Linear Curve Calibrator using the following Default Segment Control parameters:
@@ -271,7 +429,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * 	- Natural Boundary Setting
 		 */
 
-		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
+		LinearLatentStateCalibrator lcc = new LinearLatentStateCalibrator (
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new ExponentialTensionSetParams (2.),
@@ -281,7 +439,8 @@ public class DiscountCurveQuoteSensitivity {
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
 		/*
 		 * Set up the DEPOSIT Segment Control parameters with the following details:
@@ -293,13 +452,14 @@ public class DiscountCurveQuoteSensitivity {
 		 */
 
 		lcc.setStretchSegmentBuilderControl (
-			rbsDeposit.getName(),
+			depositStretch.name(),
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null)));
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null))
+		);
 
 		/*
 		 * Set up the FUTURE Segment Control parameters with the following details:
@@ -311,13 +471,14 @@ public class DiscountCurveQuoteSensitivity {
 		 */
 
 		lcc.setStretchSegmentBuilderControl (
-			rbsFuture.getName(),
+			edfStretch.name(),
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (false, 1, null)));
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (false, 1, null))
+		);
 
 		/*
 		 * Set up the SWAP Segment Control parameters with the following details:
@@ -329,27 +490,35 @@ public class DiscountCurveQuoteSensitivity {
 		 */
 
 		lcc.setStretchSegmentBuilderControl (
-			rbsSwap.getName(),
+			swapStretch.name(),
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null)));
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null))
+		);
+
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
 
 		/*
 		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
-		 *  of DEPOSIT, FUTURE, and SWAP Stretches.
+		 *  of Deposit, Futures, and Swap Stretches.
 		 */
 
 		DiscountCurve dc = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
-			aSRS,
-			new ValuationParams (dtToday, dtToday, "USD"),
+			aStretchSpec,
+			valParams,
 			null,
 			null,
 			null,
-			1.);
+			1.
+		);
 
 		/*
 		 * Cross-Comparison of the DEPOSIT Calibration Instrument "Rate" metric across the different curve
@@ -362,9 +531,9 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
-				FormatUtil.FormatDouble (aDepositComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
+		for (int i = 0; i < aDeposit.length; ++i)
+			System.out.println ("\t[" + aDeposit[i].maturity() + "] = " +
+				FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
@@ -379,11 +548,11 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aFutureComp.length; ++i)
-			System.out.println ("\t[" + aFutureComp[i].maturity() + "] = " +
-				FormatUtil.FormatDouble (aFutureComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
+		for (int i = 0; i < aEDF.length; ++i)
+			System.out.println ("\t[" + aEDF[i].maturity() + "] = " +
+				FormatUtil.FormatDouble (aEDF[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblFutureQuote[i], 1, 6, 1.));
+						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblEDFQuote[i], 1, 6, 1.));
 
 		/*
 		 * Cross-Comparison of the SWAP Calibration Instrument "Rate" metric across the different curve
@@ -396,9 +565,9 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aSwapComp.length; ++i)
-			System.out.println ("\t[" + aSwapComp[i].maturity() + "] = " +
-				FormatUtil.FormatDouble (aSwapComp[i].measureValue (new ValuationParams (dtToday, dtToday, "USD"), null,
+		for (int i = 0; i < aSwap.length; ++i)
+			System.out.println ("\t[" + aSwap[i].maturity() + "] = " +
+				FormatUtil.FormatDouble (aSwap[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
 
@@ -412,10 +581,10 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aDepositComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDepositComp[i].maturity(), "Rate");
+		for (int i = 0; i < aDeposit.length; ++i) {
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDeposit[i].maturity(), "PV");
 
-			System.out.println (aDepositComp[i].maturity() + " => " + wj.displayString());
+			System.out.println (aDeposit[i].maturity() + " => " + wj.displayString());
 		}
 
 		/*
@@ -428,10 +597,10 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aFutureComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aFutureComp[i].maturity(), "Rate");
+		for (int i = 0; i < aEDF.length; ++i) {
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aEDF[i].maturity(), "PV");
 
-			System.out.println (aFutureComp[i].maturity() + " => " + wj.displayString());
+			System.out.println (aEDF[i].maturity() + " => " + wj.displayString());
 		}
 
 		/*
@@ -444,10 +613,10 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aSwapComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aSwapComp[i].maturity(), "Rate");
+		for (int i = 0; i < aSwap.length; ++i) {
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aSwap[i].maturity(), "PV");
 
-			System.out.println (aSwapComp[i].maturity() + " => " + wjDFQuote.displayString());
+			System.out.println (aSwap[i].maturity() + " => " + wjDFQuote.displayString());
 		}
 
 		System.out.println ("\n\t----------------------------------------------------------------");
@@ -456,7 +625,7 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		WengertJacobian wj = dc.compJackDPVDManifestMeasure (dtToday);
+		WengertJacobian wj = dc.compJackDPVDManifestMeasure (dtSpot);
 
 		System.out.println (wj.displayString());
 
@@ -467,7 +636,7 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		RatesComponent irs35Y = RatesStreamBuilder.CreateIRS (
-			dtToday,
+			dtSpot,
 			"35Y",
 			0.,
 			2,
@@ -475,14 +644,16 @@ public class DiscountCurveQuoteSensitivity {
 			0.,
 			2,
 			"30/360",
-			"USD",
-			"USD");
+			strCurrency,
+			strCurrency
+		);
 
 		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDManifestMeasure (
-			new ValuationParams (dtToday, dtToday, "USD"),
+			valParams,
 			null,
 			MarketParamsBuilder.Create (dc, null, null, null, null, null, null, null),
-			null);
+			null
+		);
 
 		System.out.println (wjIRSBespokeQuoteJack.displayString());
 
@@ -492,17 +663,17 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		TenorJack (dtToday, "30Y", "USD", "Rate", dc);
+		TenorJack (dtSpot, "30Y", strCurrency, "PV", dc);
 
-		TenorJack (dtToday, "32Y", "USD", "Rate", dc);
+		TenorJack (dtSpot, "32Y", strCurrency, "PV", dc);
 
-		TenorJack (dtToday, "34Y", "USD", "Rate", dc);
+		TenorJack (dtSpot, "34Y", strCurrency, "PV", dc);
 
-		TenorJack (dtToday, "36Y", "USD", "Rate", dc);
+		TenorJack (dtSpot, "36Y", strCurrency, "PV", dc);
 
-		TenorJack (dtToday, "38Y", "USD", "Rate", dc);
+		TenorJack (dtSpot, "38Y", strCurrency, "PV", dc);
 
-		TenorJack (dtToday, "40Y", "USD", "Rate", dc);
+		TenorJack (dtSpot, "40Y", strCurrency, "PV", dc);
 
 		System.out.println ("\n\t----------------------------------------------------------------");
 
@@ -510,23 +681,31 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		Forward6MRateJack (dtToday, "1D", "Rate", dc);
+		Forward6MRateJack (dtSpot, "1D", "PV", dc);
 
-		Forward6MRateJack (dtToday, "3M", "Rate", dc);
+		Forward6MRateJack (dtSpot, "3M", "PV", dc);
 
-		Forward6MRateJack (dtToday, "6M", "Rate", dc);
+		Forward6MRateJack (dtSpot, "6M", "PV", dc);
 
-		Forward6MRateJack (dtToday, "1Y", "Rate", dc);
+		Forward6MRateJack (dtSpot, "1Y", "PV", dc);
 
-		Forward6MRateJack (dtToday, "2Y", "Rate", dc);
+		Forward6MRateJack (dtSpot, "2Y", "PV", dc);
 
-		Forward6MRateJack (dtToday, "5Y", "Rate", dc);
+		Forward6MRateJack (dtSpot, "5Y", "PV", dc);
 	}
 
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
 	{
-		DiscountCurveQuoteSensitivitySample();
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
+		CreditAnalytics.Init ("");
+
+		String strCurrency = "USD";
+
+		DiscountCurveQuoteSensitivitySample (JulianDate.Today(), strCurrency);
 	}
 }

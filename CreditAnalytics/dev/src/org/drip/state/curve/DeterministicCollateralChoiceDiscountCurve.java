@@ -206,17 +206,12 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 	}
 
 	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+		final org.drip.analytics.input.CurveConstructionInputSet ccis)
 	{
 		return false;
 	}
 
 	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
-	{
-		return null;
-	}
-
-	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
 	{
 		return null;
 	}

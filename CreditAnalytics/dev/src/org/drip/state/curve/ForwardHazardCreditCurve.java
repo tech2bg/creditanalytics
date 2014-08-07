@@ -37,7 +37,7 @@ package org.drip.state.curve;
  *  - Boot Methods - Set/Bump Specific Node Quantification Metric, or Set Flat Value
  *  - Boot Calibration - Initialize Run, Compute Calibration Metric
  *  - Compute the survival probability, recovery rate, or the hazard rate from the Hazard Rate Latent State
- *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve Array of the Calibration Components
  *  - Retrieve the Curve Construction Input Set
  *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
  *  - Synthesize scenario Latent State by parallel/custom shifting/custom tweaking the manifest measure

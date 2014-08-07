@@ -23,6 +23,8 @@ import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
+import org.drip.state.inference.LatentStateStretchSpec;
+import org.drip.state.inference.LinearLatentStateCalibrator;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -287,17 +289,15 @@ public class CCBSDiscountCurve {
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
-		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
+		LinearLatentStateCalibrator llsc = new LinearLatentStateCalibrator (
 			scbc,
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null);
 
-		StretchRepresentationSpec srsIRS = CCBSStretchRepresentationBuilder.DiscountCurveSRS (
+		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.DiscountStretch (
 			"FIXFLOAT",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 			aCCSP,
 			valParams,
 			mktParams,
@@ -307,8 +307,8 @@ public class CCBSDiscountCurve {
 		);
 
 		DiscountCurve dcDerived = ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
-			lcc,
-			new StretchRepresentationSpec[] {srsIRS},
+			llsc,
+			new LatentStateStretchSpec[] {stretchSpec},
 			valParams,
 			null,
 			null,
@@ -354,7 +354,7 @@ public class CCBSDiscountCurve {
 			TenorJack (
 				dtValue,
 				astrTenor[i],
-				"Rate",
+				"PV",
 				dcDerived
 			);
 	}

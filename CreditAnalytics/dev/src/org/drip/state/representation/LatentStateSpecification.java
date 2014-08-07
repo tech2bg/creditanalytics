@@ -111,4 +111,17 @@ public class LatentStateSpecification {
 			_strLatentStateQuantificationMetric.equalsIgnoreCase (lssOther.latentStateQuantificationMetric())
 				&& _label.match (lssOther.label());
 	}
+
+	/**
+	 * Display the Latent State Details
+	 * 
+	 * @param strComment The Comment Prefix
+	 */
+
+	public void displayString (
+		final java.lang.String strComment)
+	{
+		System.out.println ("\t[LatentStateSpecification]: " + _strLatentState + " | " +
+			_strLatentStateQuantificationMetric + " | " + _label.fullyQualifiedName());
+	}
 }

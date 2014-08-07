@@ -36,7 +36,7 @@ package org.drip.state.curve;
  *  - Boot Calibration - Initialize Run, Compute Calibration Metric
  *  - Compute the discount factor, forward rate, or the zero rate from the Forward Rate Latent State
  *  - Create a ForwardRateEstimator instance for the given Index
- *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve Array of the Calibration Components
  *  - Retrieve the Curve Construction Input Set
  *  - Compute the Jacobian of the Discount Factor Latent State to the input Quote
  *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
@@ -91,7 +91,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 						quotingParam, false, java.lang.Double.NaN);
 			}
 
-			return nldfdc.setCCIS (org.drip.analytics.definition.BootCurveConstructionInput.Create (valParam,
+			return nldfdc.setCCIS (org.drip.analytics.input.BootCurveConstructionInput.Create (valParam,
 				quotingParam, aCalibInst, adblShiftedManifestMeasure, astrCalibMeasure, lsfc)) ? nldfdc :
 					null;
 		} catch (java.lang.Exception e) {

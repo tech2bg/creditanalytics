@@ -6,13 +6,13 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.output.PeriodCouponMeasures;
 import org.drip.analytics.period.CashflowPeriod;
-import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.calib.*;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
-import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.*;
@@ -20,8 +20,9 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
+import org.drip.state.inference.*;
+import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -61,59 +62,88 @@ import org.drip.state.identifier.*;
 public class OvernightArithmeticCompoundingConvexity {
 
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final DepositComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
-		final int iNumFutures,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
+		DepositComponent[] aDeposit = new DepositComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
-				strCurrency);
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				strCurrency
+			);
 
-		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
+		return aDeposit;
+	}
 
-		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
-			aCalibComp[i] = aEDF[i - aiDay.length];
+	private static final LatentStateStretchSpec DepositStretch (
+		final DepositComponent[] aDeposit,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		return aCalibComp;
+		String strCurrency = aDeposit[0].couponCurrency()[0];
+
+		for (int i = 0; i < aDeposit.length; ++i) {
+			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (strCurrency)
+					)
+				}
+			);
+
+			depositQuote.setRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aDeposit[i],
+				depositQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"DEPOSIT",
+			aSegmentSpec
+		);
 	}
 
 	/*
-	 * Construct the Array of OIS Instruments from the given set of parameters
+	 * Construct the Array of Overnight Index Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] OISInstrumentsFromMaturityTenor (
+	private static final IRSComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
-		final String[] astrTenor,
+		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
+		IRSComponent[] aOIS = new IRSComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
-
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
 				dtEffective.julian(),
-				dtMaturity.julian(),
+				astrMaturityTenor[i],
 				null,
-				null,
+				4,
 				"Act/360",
+				false,
+				false,
 				strCurrency,
 				strCurrency
 			);
@@ -121,7 +151,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				null,
-				adblCoupon[i],
+				0.,
 				-1.,
 				null,
 				lsFloatPeriods,
@@ -131,7 +161,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
 				dtEffective.julian(),
-				astrTenor[i],
+				astrMaturityTenor[i],
 				null,
 				2,
 				"Act/360",
@@ -152,12 +182,125 @@ public class OvernightArithmeticCompoundingConvexity {
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
-			ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
+			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
-			aCalibComp[i] = ois;
+			aOIS[i] = ois;
 		}
 
-		return aCalibComp;
+		return aOIS;
+	}
+
+	/*
+	 * Construct the Array of Overnight Index Future Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final IRSComponent[] OvernightIndexFutureFromMaturityTenor (
+		final JulianDate dtSpot,
+		final String[] astrStartTenor,
+		final String[] astrMaturityTenor,
+		final double[] adblCoupon,
+		final String strCurrency)
+		throws Exception
+	{
+		IRSComponent[] aOIS = new IRSComponent[astrStartTenor.length];
+
+		for (int i = 0; i < astrStartTenor.length; ++i) {
+			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
+
+			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.julian(),
+				astrMaturityTenor[i],
+				null,
+				4,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FloatingStream floatStream = new FloatingStream (
+				strCurrency,
+				null,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				false
+			);
+
+			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+				dtEffective.julian(),
+				astrMaturityTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				null,
+				adblCoupon[i],
+				1.,
+				null,
+				lsFixedPeriods
+			);
+
+			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+
+			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
+
+			aOIS[i] = ois;
+		}
+
+		return aOIS;
+	}
+
+	private static final LatentStateStretchSpec OISStretch (
+		final String strName,
+		final IRSComponent[] aOIS,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
+
+		String strCurrency = aOIS[0].couponCurrency()[0];
+
+		for (int i = 0; i < aOIS.length; ++i) {
+			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (strCurrency)
+					),
+					new LatentStateSpecification (
+						ForwardCurve.LATENT_STATE_FORWARD,
+						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						aOIS[i].forwardLabel()[0]
+					)
+				}
+			);
+
+			oisQuote.setSwapRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aOIS[i],
+				oisQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			strName,
+			aSegmentSpec
+		);
 	}
 
 	private static final DiscountCurve CustomOISCurveBuilderSample (
@@ -166,67 +309,144 @@ public class OvernightArithmeticCompoundingConvexity {
 		throws Exception
 	{
 		/*
-		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
+		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		DepositComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
-			4,
-			strCurrency);
+			new int[] {
+				1, 2, 3
+			},
+			strCurrency
+		);
 
-		double[] adblCashQuote = new double[] {
-			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850, // Cash
-			0.01612, 0.01580, 0.01589, 0.01598}; // Futures
-
-		/*
-		 * Construct the Cash Instrument Set Stretch Builder
-		 */
-
-		StretchRepresentationSpec srsCash = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"CASH",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-			aCashComp,
-			"Rate",
-			adblCashQuote,
-			null);
-
-		/*
-		 * Construct the Array of OIS Instruments and their Quotes from the given set of parameters
-		 */
-
-		double[] adblOISQuote = new double[] {
-			0.02604,    //  4Y
-			0.02808,    //  5Y
-			0.02983,    //  6Y
-			0.03136,    //  7Y
-			0.03268,    //  8Y
-			0.03383,    //  9Y
-			0.03488     // 10Y
+		double[] adblDepositQuote = new double[] {
+			0.0004, 0.0004, 0.0004		 // Deposit
 		};
 
-		CalibratableFixedIncomeComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
-			dtSpot,
-			new java.lang.String[]
-				{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"},
-			adblOISQuote,
-			strCurrency);
-
 		/*
-		 * Construct the OIS Instrument Set Stretch Builder
+		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsOIS = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"OIS",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-			aOISComp,
-			"Rate",
-			adblOISQuote,
-			null);
+		LatentStateStretchSpec depositStretch = DepositStretch (
+			aDeposit,
+			adblDepositQuote
+		);
 
-		StretchRepresentationSpec[] aRBS = new StretchRepresentationSpec[] {srsCash, srsOIS};
+		/*
+		 * Construct the Array of Short End OIS Instruments and their Quotes from the given set of parameters
+		 */
+
+		double[] adblShortEndOISQuote = new double[] {
+			0.00070,    //   1W
+			0.00069,    //   2W
+			0.00078,    //   3W
+			0.00074     //   1M
+		};
+
+		IRSComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+			dtSpot,
+			new java.lang.String[] {
+				"1W", "2W", "3W", "1M"
+			},
+			adblShortEndOISQuote,
+			strCurrency
+		);
+
+		/*
+		 * Construct the Short End OIS Instrument Set Stretch Builder
+		 */
+
+		LatentStateStretchSpec oisShortEndStretch = OISStretch (
+			"SHORT_END_OIS",
+			aShortEndOISComp,
+			adblShortEndOISQuote
+		);
+
+		/*
+		 * Construct the Array of OIS Futures Instruments and their Quotes from the given set of parameters
+		 */
+
+		double[] adblOISFutureQuote = new double[] {
+			 0.00046,    //   1M x 1M
+			 0.00016,    //   2M x 1M
+			-0.00007,    //   3M x 1M
+			-0.00013,    //   4M x 1M
+			-0.00014     //   5M x 1M
+		};
+
+		IRSComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+			dtSpot,
+			new java.lang.String[] {
+				"1M", "2M", "3M", "4M", "5M"
+			},
+			new java.lang.String[] {
+				"1M", "1M", "1M", "1M", "1M"
+			},
+			adblOISFutureQuote,
+			strCurrency
+		);
+
+		/*
+		 * Construct the OIS Future Instrument Set Stretch Builder
+		 */
+
+		LatentStateStretchSpec oisFutureStretch = OISStretch (
+			"OIS_FUTURE",
+			aOISFutureComp,
+			adblOISFutureQuote
+		);
+
+		/*
+		 * Construct the Array of Long End OIS Instruments and their Quotes from the given set of parameters
+		 */
+
+		double[] adblLongEndOISQuote = new double[] {
+			0.00002,    //  15M
+			0.00008,    //  18M
+			0.00021,    //  21M
+			0.00036,    //   2Y
+			0.00127,    //   3Y
+			0.00274,    //   4Y
+			0.00456,    //   5Y
+			0.00647,    //   6Y
+			0.00827,    //   7Y
+			0.00996,    //   8Y
+			0.01147,    //   9Y
+			0.01280,    //  10Y
+			0.01404,    //  11Y
+			0.01516,    //  12Y
+			0.01764,    //  15Y
+			0.01939,    //  20Y
+			0.02003,    //  25Y
+			0.02038     //  30Y
+		};
+
+		IRSComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+			dtSpot,
+			new java.lang.String[] {
+				"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
+			adblLongEndOISQuote,
+			strCurrency
+		);
+
+		/*
+		 * Construct the Long End OIS Instrument Set Stretch Builder
+		 */
+
+		LatentStateStretchSpec oisLongEndStretch = OISStretch (
+			"LONG_END_OIS",
+			aLongEndOISComp,
+			adblLongEndOISQuote
+		);
+
+		LatentStateStretchSpec[] aStretchSpec = new LatentStateStretchSpec[] {
+			depositStretch,
+			oisShortEndStretch,
+			oisFutureStretch,
+			oisLongEndStretch
+		};
 
 		/*
 		 * Set up the Linear Curve Calibrator using the following parameters:
@@ -236,7 +456,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		 * 	- Natural Boundary Setting
 		 */
 
-		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
+		LinearLatentStateCalibrator lcc = new LinearLatentStateCalibrator (
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -246,7 +466,8 @@ public class OvernightArithmeticCompoundingConvexity {
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
 		/*
 		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
@@ -255,12 +476,13 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		return ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
-			aRBS,
+			aStretchSpec,
 			new ValuationParams (dtSpot, dtSpot, strCurrency),
 			null,
 			null,
 			null,
-			1.);
+			1.
+		);
 	}
 
 	private static final LatentStateFixingsContainer SetFlatOvernightFixings (

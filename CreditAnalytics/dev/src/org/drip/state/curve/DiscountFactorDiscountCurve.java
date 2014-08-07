@@ -34,7 +34,7 @@ package org.drip.state.curve;
  *  Response Representation. It exports the following functionality:
  *  - Compute the discount factor, forward rate, or the zero rate from the Discount Factor Latent State
  *  - Create a ForwardRateEstimator instance for the given Index
- *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve Array of the Calibration Components
  *  - Retrieve the Curve Construction Input Set
  *  - Compute the Jacobian of the Discount Factor Latent State to the input Quote
  *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
@@ -47,56 +47,10 @@ package org.drip.state.curve;
 public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.DiscountCurve {
 	private org.drip.spline.grid.Span _span = null;
 	private double _dblRightFlatForwardRate = java.lang.Double.NaN;
-	private org.drip.analytics.definition.CurveSpanConstructionInput _rcci = null;
 
 	private DiscountFactorDiscountCurve shiftManifestMeasure (
 		final double[] adblShiftedManifestMeasure)
 	{
-		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.srs();
-
-		int iRBSIndex = 0;
-		int iCalibInstrIndex = 0;
-		org.drip.state.estimator.StretchRepresentationSpec[] aRBSBumped = new
-			org.drip.state.estimator.StretchRepresentationSpec[aRBS.length];
-
-		for (org.drip.state.estimator.StretchRepresentationSpec rbs : aRBS) {
-			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
-
-			int iNumLSMM = aLSMM.length;
-
-			java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-				lsMapManifestQuote = new
-					java.util.ArrayList<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
-
-			for (int i = 0; i < iNumLSMM; ++i) {
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
-
-				mapManifestQuote.put (aLSMM[i].manifestMeasures()[0],
-					adblShiftedManifestMeasure[iCalibInstrIndex++]);
-
-				lsMapManifestQuote.add (mapManifestQuote);
-			}
-
-			try {
-				aRBSBumped[iRBSIndex++] = new org.drip.state.estimator.StretchRepresentationSpec
-					(rbs.getName(), aLSMM[0].id(), aLSMM[0].quantificationMetric(), rbs.getCalibComp(),
-						lsMapManifestQuote, null);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
-		try {
-			return new org.drip.state.curve.DiscountFactorDiscountCurve (label().fullyQualifiedName(),
-				collateralParams(), (_rcci.lcc().calibrateSpan (aRBSBumped, 1., _rcci.valuationParameter(),
-					_rcci.pricerParameter(), _rcci.quotingParameter(), _rcci.marketParameters())));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
 		return null;
 	}
 
@@ -240,7 +194,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		if (null == aCC) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _rcci.quoteMap();
+			mapQuote = _ccis.quoteMap();
 
 		int iNumComp = aCC.length;
 		double[] adblQuote = new double[iNumComp];
@@ -273,56 +227,18 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 		return null == _span ? null : _span.jackDResponseDManifestMeasure (strManifestMeasure, dblDate, 1);
 	}
 
-	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
-	{
-		if (null == ccis || !(ccis instanceof org.drip.analytics.definition.CurveSpanConstructionInput))
-			return false;
-
-		return super.setCCIS (_rcci = (org.drip.analytics.definition.CurveSpanConstructionInput) ccis);
-	}
-
 	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
-		return null == _rcci ? null : _rcci.components();
-	}
-
-	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
-	{
-		if (null == _rcci) return null;
-
-		java.util.List<org.drip.state.representation.LatentStateMetricMeasure> lsLSMM = new
-			java.util.ArrayList<org.drip.state.representation.LatentStateMetricMeasure>();
-
-		org.drip.state.estimator.StretchRepresentationSpec[] aRBS = _rcci.srs();
-
-		for (org.drip.state.estimator.StretchRepresentationSpec rbs : aRBS) {
-			org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = rbs.getLSMM();
-
-			int iNumLSMM = aLSMM.length;
-
-			for (int i = 0; i < iNumLSMM; ++i)
-				lsLSMM.add (aLSMM[i]);
-		}
-
-		int iNumLSMM = lsLSMM.size();
-
-		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = new
-			org.drip.state.representation.LatentStateMetricMeasure[iNumLSMM];
-
-		for (int i = 0; i < iNumLSMM; ++i)
-			aLSMM[i] = lsLSMM.get (i);
-
-		return aLSMM;
+		return null == _ccis ? null : _ccis.components();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstrumentCode)
 	{
-		if (null == _rcci) return null;
+		if (null == _ccis) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _rcci.quoteMap();
+			mapQuote = _ccis.quoteMap();
 
 		if (null == mapQuote || !mapQuote.containsKey (strInstrumentCode)) return null;
 

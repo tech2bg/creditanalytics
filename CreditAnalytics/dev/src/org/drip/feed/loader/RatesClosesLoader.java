@@ -775,6 +775,128 @@ public class RatesClosesLoader {
 		return lsstrDump;
 	}
 
+	private static final org.drip.state.representation.LatentStateSpecification[] FundingLSS (
+		final org.drip.product.definition.CalibratableFixedIncomeComponent comp)
+	{
+		if (null == comp) return null;
+
+		org.drip.state.representation.LatentStateSpecification lssForward = null;
+		org.drip.state.representation.LatentStateSpecification lssDiscount = null;
+
+		org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp instanceof
+			org.drip.product.cashflow.DualStreamComponent ? ((org.drip.product.cashflow.DualStreamComponent)
+				comp).derivedStream().forwardLabel() : comp.forwardLabel();
+
+		if (null != aForwardLabel && 0 != aForwardLabel.length) {
+			try {
+				lssForward = new org.drip.state.representation.LatentStateSpecification
+					(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
+						org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+							aForwardLabel[0]);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		try {
+			lssDiscount = new org.drip.state.representation.LatentStateSpecification
+				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						org.drip.state.identifier.FundingLabel.Standard (comp instanceof
+							org.drip.product.cashflow.DualStreamComponent ?
+								((org.drip.product.cashflow.DualStreamComponent)
+									comp).derivedStream().couponCurrency()[0] :
+										comp.couponCurrency()[0]));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		return null == lssForward ? new org.drip.state.representation.LatentStateSpecification[]
+			{lssDiscount} : new org.drip.state.representation.LatentStateSpecification[] {lssDiscount,
+				lssForward};
+	}
+
+	private static final org.drip.state.inference.LatentStateStretchSpec LatentStateStretch (
+		final java.lang.String strStretchName,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aComp,
+		final java.lang.String strManifestMeasure,
+		final double[] adblCalibQuote)
+	{
+		if (null == aComp || null == adblCalibQuote) return null;
+
+		int iNumComp = aComp.length;
+
+		if (0 == iNumComp || iNumComp != adblCalibQuote.length) return null;
+
+		org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
+			org.drip.state.inference.LatentStateSegmentSpec[iNumComp];
+
+		for (int i = 0; i < iNumComp; ++i) {
+			org.drip.product.calib.ProductQuoteSet pqs = aComp[i].calibQuoteSet (FundingLSS (aComp[i]));
+
+			if (null == pqs || !pqs.set (strManifestMeasure, adblCalibQuote[i])) return null;
+
+			try {
+				aSegmentSpec[i] = new org.drip.state.inference.LatentStateSegmentSpec (aComp[i], pqs);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		try {
+			return new org.drip.state.inference.LatentStateStretchSpec (strStretchName, aSegmentSpec);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	private static final org.drip.state.inference.LatentStateStretchSpec LatentStateStretch (
+		final java.lang.String strStretchName,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent[] aComp,
+		final java.lang.String[] astrManifestMeasure,
+		final double[] adblCalibQuote)
+	{
+		if (null == aComp || null == adblCalibQuote || null == astrManifestMeasure) return null;
+
+		int iNumComp = aComp.length;
+
+		if (0 == iNumComp || iNumComp != adblCalibQuote.length || iNumComp != astrManifestMeasure.length)
+			return null;
+
+		org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
+			org.drip.state.inference.LatentStateSegmentSpec[iNumComp];
+
+		for (int i = 0; i < iNumComp; ++i) {
+			org.drip.product.calib.ProductQuoteSet pqs = aComp[i].calibQuoteSet (FundingLSS (aComp[i]));
+
+			if (null == pqs || !pqs.set (astrManifestMeasure[i], adblCalibQuote[i])) return null;
+
+			try {
+				aSegmentSpec[i] = new org.drip.state.inference.LatentStateSegmentSpec (aComp[i], pqs);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		try {
+			return new org.drip.state.inference.LatentStateStretchSpec (strStretchName, aSegmentSpec);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
 		CashInstrumentsFromTenor (
 			final org.drip.analytics.date.JulianDate dtEffective,
@@ -856,32 +978,24 @@ public class RatesClosesLoader {
 		final double[] adblSwapQuote,
 		final java.lang.String strCurrency)
 	{
-		org.drip.state.estimator.StretchRepresentationSpec rbsCash =
-			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet ("CASH",
-				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						CashInstrumentsFromTenor (dt, astrCashTenor, strCurrency), "Rate", adblCashQuote,
-							null);
+		org.drip.state.inference.LatentStateStretchSpec depositStretch = LatentStateStretch ("DEPOSIT",
+			CashInstrumentsFromTenor (dt, astrCashTenor, strCurrency), "Rate", adblCashQuote);
 
-		org.drip.state.estimator.StretchRepresentationSpec rbsSwap =
-			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet ("SWAP",
-				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						SwapInstrumentsFromTenor (dt, astrSwapTenor, adblSwapQuote, strCurrency), "Rate",
-							adblSwapQuote, null);
+		org.drip.state.inference.LatentStateStretchSpec swapStretch = LatentStateStretch ("SWAP",
+			SwapInstrumentsFromTenor (dt, astrSwapTenor, adblSwapQuote, strCurrency), "SwapRate", adblSwapQuote);
 
-		if (null == rbsCash && null == rbsSwap) return null;
-
-		org.drip.state.estimator.StretchRepresentationSpec[] aRRS = null;
-
-		if (null == rbsCash)
-			aRRS = new org.drip.state.estimator.StretchRepresentationSpec[] {rbsSwap};
-		else if (null == rbsSwap)
-			aRRS = new org.drip.state.estimator.StretchRepresentationSpec[] {rbsCash};
-		else
-			aRRS = new org.drip.state.estimator.StretchRepresentationSpec[] {rbsCash, rbsSwap};
+		if (null == depositStretch && null == swapStretch) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcShapePreserving = null;
+		org.drip.state.inference.LatentStateStretchSpec[] aStretchSpec = null;
+
+		if (null == depositStretch)
+			aStretchSpec = new org.drip.state.inference.LatentStateStretchSpec[] {swapStretch};
+		else if (null == swapStretch)
+			aStretchSpec = new org.drip.state.inference.LatentStateStretchSpec[] {depositStretch};
+		else
+			aStretchSpec = new org.drip.state.inference.LatentStateStretchSpec[] {depositStretch,
+				swapStretch};
 
 		try {
 			org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
@@ -894,8 +1008,8 @@ public class RatesClosesLoader {
 			org.drip.spline.params.SegmentInelasticDesignControl sdic =
 				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2);
 
-			org.drip.state.estimator.LinearCurveCalibrator lcc = new
-				org.drip.state.estimator.LinearCurveCalibrator (new
+			org.drip.state.inference.LinearLatentStateCalibrator llsc = new
+				org.drip.state.inference.LinearLatentStateCalibrator (new
 					org.drip.spline.params.SegmentCustomBuilderControl
 						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc, null),
@@ -903,8 +1017,8 @@ public class RatesClosesLoader {
 						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
 			if (null == (dcShapePreserving =
-				org.drip.param.creator.ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (lcc, aRRS,
-					valParams, null, null, null, 1.0)))
+				org.drip.param.creator.ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (llsc,
+					aStretchSpec, valParams, null, null, null, 1.)))
 				return null;
 
 			/* org.drip.analytics.rates.DiscountCurve dcHyman83Smooth =
@@ -950,6 +1064,7 @@ public class RatesClosesLoader {
 		int iNumSwap = null == aCFICSwap ? 0 : aCFICSwap.length;
 		int iNumCFIC = iNumCash + iNumFuture + iNumSwap;
 		double[] adblQuote = new double[iNumCFIC];
+		java.lang.String[] astrManifestMeasure = new java.lang.String[iNumCFIC];
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCFIC = new
 			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumCFIC];
 
@@ -957,11 +1072,13 @@ public class RatesClosesLoader {
 			for (int i = 0; i < iNumCash; ++i) {
 				aCFIC[i] = aCFICCash[i];
 				adblQuote[i] = adblCashQuote[i];
+				astrManifestMeasure[i] = "Rate";
 			}
 		}
 
 		if (0 != iNumFuture) {
 			for (int i = iNumCash; i < iNumCash + iNumFuture; ++i) {
+				astrManifestMeasure[i] = "Rate";
 				aCFIC[i] = aCFICFuture[i - iNumCash];
 				adblQuote[i] = adblFutureQuote[i - iNumCash];
 			}
@@ -969,21 +1086,19 @@ public class RatesClosesLoader {
 
 		if (0 != iNumSwap) {
 			for (int i = iNumCash + iNumFuture; i < iNumCFIC; ++i) {
+				astrManifestMeasure[i] = "SwapRate";
 				aCFIC[i] = aCFICSwap[i - iNumCash - iNumFuture];
 				adblQuote[i] = adblSwapQuote[i - iNumCash - iNumFuture];
 			}
 		}
 
-		org.drip.state.estimator.StretchRepresentationSpec srs =
-			org.drip.state.estimator.StretchRepresentationSpec.CreateStretchBuilderSet ("SINGLE_STRETCH",
-				org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR, aCFIC,
-						"Rate", adblQuote, null);
+		org.drip.state.inference.LatentStateStretchSpec singleStretch = LatentStateStretch ("SINGLE_STRETCH",
+			aCFIC, astrManifestMeasure, adblQuote);
 
-		if (null == srs) return null;
+		if (null == singleStretch) return null;
 
-		org.drip.state.estimator.StretchRepresentationSpec[] aRRS = new
-			org.drip.state.estimator.StretchRepresentationSpec[] {srs};
+		org.drip.state.inference.LatentStateStretchSpec[] aStretchSpec = new
+			org.drip.state.inference.LatentStateStretchSpec[] {singleStretch};
 
 		org.drip.analytics.rates.DiscountCurve dcShapePreserving = null;
 
@@ -998,8 +1113,8 @@ public class RatesClosesLoader {
 			org.drip.spline.params.SegmentInelasticDesignControl sdic =
 				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2);
 
-			org.drip.state.estimator.LinearCurveCalibrator lcc = new
-				org.drip.state.estimator.LinearCurveCalibrator (new
+			org.drip.state.inference.LinearLatentStateCalibrator llsc = new
+				org.drip.state.inference.LinearLatentStateCalibrator (new
 					org.drip.spline.params.SegmentCustomBuilderControl
 						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 				new org.drip.spline.basis.ExponentialTensionSetParams (1.), sdic, rssc, null),
@@ -1007,8 +1122,8 @@ public class RatesClosesLoader {
 						org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
 			if (null == (dcShapePreserving =
-				org.drip.param.creator.ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (lcc, aRRS,
-					valParams, null, null, null, 1.0))) {
+				org.drip.param.creator.ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (llsc,
+					aStretchSpec, valParams, null, null, null, 1.0))) {
 				System.out.println ("iNumCash = " + iNumCash);
 
 				System.out.println ("iNumFuture = " + iNumFuture);

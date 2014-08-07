@@ -36,7 +36,7 @@ package org.drip.state.curve;
  *  following functionality:
  *  - Extract currency, currency pair, spot epoch, spot FX, and whether the basis is boot-strapped
  *  - Compute the FX Forward Array
- *  - Retrieve Array of the Calibration Components and their LatentStateMetricMeasure's
+ *  - Retrieve Array of the Calibration Components
  *  - Retrieve the Curve Construction Input Set
  *  - Synthesize scenario Latent State by parallel shifting/custom tweaking the quantification metric
  *  - Synthesize scenario Latent State by parallel/custom shifting/custom tweaking the manifest measure
@@ -298,11 +298,6 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		return adblFXFwd;
 	}
 
-	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
-	{
-		return null;
-	}
-
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstr)
 	{
@@ -310,7 +305,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	}
 
 	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+		final org.drip.analytics.input.CurveConstructionInputSet ccis)
 	{
 		return false;
 	}

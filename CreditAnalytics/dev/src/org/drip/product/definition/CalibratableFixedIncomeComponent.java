@@ -125,6 +125,17 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
 
 	/**
+	 * Generate the Product Specific Calibration Quote Set
+	 * 
+	 * @param aLSS Array of Latent State Specification
+	 * 
+	 * @return The Product Specific Calibration Quote Set
+	 */
+
+	public abstract org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS);
+
+	/**
 	 * Generate the Calibratable Linearized Predictor/Response Constraint Weights for the Non-merged Funding
 	 * 	Curve Discount Factor Latent State from the Component's Cash Flows. The Constraints here typically
 	 *  correspond to Date/Cash Flow pairs and the corresponding leading PV.
@@ -199,18 +210,41 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param pricerParams Pricer Parameters
 	 * @param csqs Component Market Parameters
 	 * @param quotingParams Component Quoting Parameters
-	 * @param lsmm The Latent State Metric and the Component Measure
+	 * @param pqs The Product Calibration Quote Set
 	 * 
 	 * @return The Calibratable Linearized Predictor/Response Constraints (Date/Cash Flow pairs and the
 	 * 	corresponding PV)
 	 */
 
-	public abstract org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
+	public org.drip.state.estimator.PredictorResponseWeightConstraint calibPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.state.representation.LatentStateMetricMeasure lsmm);
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs) return null;
+
+		if (pqs.containsLatentStateType (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT) &&
+			pqs.containsLatentStateQuantificationMetric
+				(org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR) &&
+					pqs.containsLatentStateType (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD)
+						&& pqs.containsLatentStateQuantificationMetric
+							(org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE))
+			return fundingForwardPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+
+		if (pqs.containsLatentStateType (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT) &&
+			pqs.containsLatentStateQuantificationMetric
+				(org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR))
+			return fundingPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+
+		if (pqs.containsLatentStateType (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD) &&
+			pqs.containsLatentStateQuantificationMetric
+				(org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE))
+			return forwardPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+
+		return null;
+	}
 
 	/**
 	 * Return the last Date that is relevant for the Calibration

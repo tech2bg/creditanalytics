@@ -61,7 +61,7 @@ public class PredictorResponseWeightConstraint {
 		if (null == strManifestMeasure || strManifestMeasure.isEmpty()) return null;
 
 		if (!_mapPRRSSens.containsKey (strManifestMeasure))
-			_mapPRRSSens.put(strManifestMeasure, new
+			_mapPRRSSens.put (strManifestMeasure, new
 				org.drip.state.estimator.PredictorResponseRelationSetup());
 
 		return _mapPRRSSens.get (strManifestMeasure);
@@ -244,14 +244,16 @@ public class PredictorResponseWeightConstraint {
 	{
 		if (null == prwcOther || !_prrsCalib.absorb (prwcOther._prrsCalib)) return false;
 
-		if (0 == _mapPRRSSens.size() || 0 == prwcOther._mapPRRSSens.size()) return true;
+		if (0 == prwcOther._mapPRRSSens.size()) return true;
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.state.estimator.PredictorResponseRelationSetup>
-			me : _mapPRRSSens.entrySet()) {
-			java.lang.String strKey = me.getKey();
+		if (0 != _mapPRRSSens.size()) {
+			for (java.util.Map.Entry<java.lang.String, org.drip.state.estimator.PredictorResponseRelationSetup>
+				me : _mapPRRSSens.entrySet()) {
+				java.lang.String strKey = me.getKey();
 
-			if (prwcOther._mapPRRSSens.containsKey (strKey))
-				me.getValue().absorb (prwcOther._mapPRRSSens.get (strKey));
+				if (prwcOther._mapPRRSSens.containsKey (strKey))
+					me.getValue().absorb (prwcOther._mapPRRSSens.get (strKey));
+			}
 		}
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.state.estimator.PredictorResponseRelationSetup>
@@ -265,21 +267,38 @@ public class PredictorResponseWeightConstraint {
 	}
 
 	/**
+	 * Return the Set of Available Sensitivities (if any)
+	 * 
+	 * @return The Set of Available Sensitivities
+	 */
+
+	public java.util.Set<java.lang.String> sensitivityKeys()
+	{
+		return _mapPRRSSens.keySet();
+	}
+
+	/**
 	 * Display the Constraints and the corresponding Weights
 	 */
 
-	public void displayString()
+	public void displayString (
+		final java.lang.String strComment)
 	{
-		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me :
-			_prrsCalib.getPredictorResponseWeight().entrySet()) {
-			try {
-				System.out.println ("\t\t" + new org.drip.analytics.date.JulianDate (me.getKey()) + " => " +
-					me.getValue());
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
+		java.util.Map<java.lang.Double, java.lang.Double> mapPRW = _prrsCalib.getPredictorResponseWeight();
+
+		if (null != mapPRW && 0 != mapPRW.size()) {
+			for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : mapPRW.entrySet()) {
+				try {
+					System.out.println ("\t\t" + strComment + " - " + new org.drip.analytics.date.JulianDate
+						(me.getKey()) + " => " + me.getValue());
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
-		System.out.println ("\tConstraint: " + _prrsCalib.getValue());
+		System.out.println ("\t" + strComment + " Constraint: " + _prrsCalib.getValue());
+
+		System.out.flush();
 	}
 }

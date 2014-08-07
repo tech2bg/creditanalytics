@@ -80,8 +80,9 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;
 	protected org.drip.analytics.rates.TurnListDiscountFactor _tldf = null;
+	protected org.drip.analytics.input.CurveConstructionInputSet _ccis = null;
+
 	private org.drip.param.valuation.CollateralizationParams _collatParams = null;
-	protected org.drip.analytics.definition.CurveConstructionInputSet _ccis = null;
 
 	protected DiscountCurve (
 		final double dblEpochDate,
@@ -371,12 +372,6 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			throw new java.lang.Exception
 				("DiscountCurve.estimateManifestMeasure => Calib Components not available");
 
-		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = lsmm();
-
-		if (null == aLSMM || iNumComponent != aLSMM.length)
-			throw new java.lang.Exception
-				("DiscountCurve.estimateManifestMeasure => Calib Quotes not available");
-
 		for (int i = 0; i < iNumComponent; ++i) {
 			if (0 != i) aSBP[i - 1] = sbp;
 
@@ -384,7 +379,14 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 				throw new java.lang.Exception
 					("DiscountCurve.estimateManifestMeasure => Cannot locate a component");
 
-			adblQuote[i] = aLSMM[i].measureQuoteValue (strManifestMeasure);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestMeasure =
+				manifestMeasure (aCalibComp[i].primaryCode());
+
+			if (null == mapManifestMeasure || !mapManifestMeasure.containsKey (strManifestMeasure))
+				throw new java.lang.Exception
+					("DiscountCurve.estimateManifestMeasure => Cannot locate the manifest measure");
+
+			adblQuote[i] = mapManifestMeasure.get (strManifestMeasure);
 
 			adblDate[i] = aCalibComp[i].maturity().julian();
 		}
@@ -403,7 +405,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	}
 
 	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+		final org.drip.analytics.input.CurveConstructionInputSet ccis)
 	{
 		if (null == ccis) return false;
 
@@ -522,10 +524,12 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 			if (null == wjCompDDirtyPVDManifestMeasure) return null;
 
+			iNumParameters = wjCompDDirtyPVDManifestMeasure.numParameters();
+
 			if (null == wjCompPVDF) {
 				try {
-					wjCompPVDF = new org.drip.quant.calculus.WengertJacobian (iNumComponents, iNumParameters
-						= wjCompDDirtyPVDManifestMeasure.numParameters());
+					wjCompPVDF = new org.drip.quant.calculus.WengertJacobian (iNumComponents,
+						iNumParameters);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

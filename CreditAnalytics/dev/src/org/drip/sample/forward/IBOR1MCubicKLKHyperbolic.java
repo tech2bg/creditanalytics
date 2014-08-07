@@ -64,8 +64,8 @@ public class IBOR1MCubicKLKHyperbolic {
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
-			strCurrency,
-			false);
+			strCurrency
+		);
 
 		SegmentCustomBuilderControl scbcCubicKLKHyperbolic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
@@ -201,7 +201,7 @@ public class IBOR1MCubicKLKHyperbolic {
 			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			astrFloatFloatTenor,
 			adblFloatFloatQuote,
 			"DerivedParBasisSpread",

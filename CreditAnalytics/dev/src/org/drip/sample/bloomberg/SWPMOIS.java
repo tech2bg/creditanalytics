@@ -161,6 +161,18 @@ public class SWPMOIS {
 			0.02597 + dblBump      // 10Y
 		};
 
+		String[] astrSwapManifestMeasure = new String[] {
+			"SwapRate",     //  6M
+			"SwapRate",		//  9M
+			"SwapRate",     //  1Y
+			"SwapRate",     // 18M
+			"SwapRate",     //  2Y
+			"SwapRate",     //  3Y
+			"SwapRate",     //  4Y
+			"SwapRate",     //  5Y
+			"SwapRate"      // 10Y
+		};
+
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
@@ -176,9 +188,12 @@ public class SWPMOIS {
 			new ValuationParams (dtSpot, dtSpot, "USD"),
 			aCashComp,
 			adblCashQuote,
+			null,
 			aSwapComp,
 			adblSwapQuote,
-			true);
+			astrSwapManifestMeasure,
+			true
+		);
 	}
 
 	public static void main (

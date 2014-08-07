@@ -70,8 +70,8 @@ public class FRAMkt {
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtToday,
-			strCurrency,
-			false);
+			strCurrency
+		);
 
 		ForwardCurve fcEURIBOR6M = IBOR6MQuarticPolyVanilla.Make6MForward (
 			dtToday,

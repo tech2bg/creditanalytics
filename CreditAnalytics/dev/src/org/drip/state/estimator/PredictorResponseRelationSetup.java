@@ -47,7 +47,9 @@ package org.drip.state.estimator;
 
 public class PredictorResponseRelationSetup {
 	private double _dblValue = 0.;
-	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapPredictorResponseWeight = null;
+
+	private java.util.TreeMap<java.lang.Double, java.lang.Double> _mapPredictorResponseWeight = new
+		java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
 	/**
 	 * Empty PredictorResponseRelationSetup constructor
@@ -91,14 +93,10 @@ public class PredictorResponseRelationSetup {
 			!org.drip.quant.common.NumberUtil.IsValid (dblResponseWeight))
 			return false;
 
-		if (null == _mapPredictorResponseWeight)
-			_mapPredictorResponseWeight = new java.util.TreeMap<java.lang.Double, java.lang.Double>();
+		double dblResponseWeightPrior = _mapPredictorResponseWeight.containsKey (dblPredictor) ?
+			_mapPredictorResponseWeight.get (dblPredictor) : 0.;
 
-		if (!_mapPredictorResponseWeight.containsKey (dblPredictor))
-			_mapPredictorResponseWeight.put (dblPredictor, dblResponseWeight);
-		else
-			_mapPredictorResponseWeight.put (dblPredictor, dblResponseWeight +
-				_mapPredictorResponseWeight.get (dblPredictor));
+		_mapPredictorResponseWeight.put (dblPredictor, dblResponseWeight + dblResponseWeightPrior);
 
 		return true;
 	}
@@ -136,17 +134,15 @@ public class PredictorResponseRelationSetup {
 	public boolean absorb (
 		final PredictorResponseRelationSetup prrsOther)
 	{
-		if (null == prrsOther) return false;
+		if (null == prrsOther || !updateValue (prrsOther.getValue())) return false;
 
-		if (!updateValue (prrsOther.getValue())) return false;
-
-		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPRW =
+		java.util.TreeMap<java.lang.Double, java.lang.Double> mapPRWOther =
 			prrsOther.getPredictorResponseWeight();
 
-		if (null == mapPRW || 0 == mapPRW.size()) return true;
+		if (null == mapPRWOther || 0 == mapPRWOther.size()) return true;
 
-		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : mapPRW.entrySet()) {
-			if (null != me) addPredictorResponseWeight (me.getKey(), me.getValue());
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : mapPRWOther.entrySet()) {
+			if (null != me && !addPredictorResponseWeight (me.getKey(), me.getValue())) return false;
 		}
 
 		return true;

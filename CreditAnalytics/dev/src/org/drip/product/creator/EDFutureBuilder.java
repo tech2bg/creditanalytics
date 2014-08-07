@@ -93,14 +93,14 @@ public class EDFutureBuilder {
 	 * @return Array of EDF product
 	 */
 
-	public static org.drip.product.definition.RatesComponent[] GenerateEDPack (
+	public static org.drip.product.rates.EDFComponent[] GenerateEDPack (
 		final org.drip.analytics.date.JulianDate dt,
 		final int iNumEDF,
 		final java.lang.String strCurrency)
 	{
 		if (0 == iNumEDF || null == dt) return null;
 
-		org.drip.product.definition.RatesComponent[] aEDF = new org.drip.product.rates.EDFComponent[iNumEDF];
+		org.drip.product.rates.EDFComponent[] aEDF = new org.drip.product.rates.EDFComponent[iNumEDF];
 
 		try {
 			org.drip.analytics.date.JulianDate dtEDFStart = dt.firstEDFStartDate (3);

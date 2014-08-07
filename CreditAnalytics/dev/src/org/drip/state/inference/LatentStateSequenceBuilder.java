@@ -40,13 +40,16 @@ package org.drip.state.inference;
 
 public class LatentStateSequenceBuilder implements org.drip.spline.stretch.SegmentSequenceBuilder {
 	private org.drip.spline.grid.Span _span = null;
+	private double _dblEpochResponse = java.lang.Double.NaN;
 	private org.drip.spline.stretch.BoundarySettings _bs = null;
 	private org.drip.state.estimator.CurveStretch _stretch = null;
 	private org.drip.param.pricer.PricerParams _pricerParams = null;
 	private org.drip.param.market.CurveSurfaceQuoteSet _csqs = null;
 	private org.drip.param.valuation.ValuationParams _valParams = null;
+	private org.drip.spline.params.StretchBestFitResponse _sbfr = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _vcp = null;
 	private org.drip.state.inference.LatentStateStretchSpec _stretchSpec = null;
+	private org.drip.spline.params.StretchBestFitResponse _sbfrQuoteSensitivity = null;
 	private
 		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
 			_mapPMSC = null;
@@ -188,34 +191,90 @@ public class LatentStateSequenceBuilder implements org.drip.spline.stretch.Segme
 
 	private boolean generateSegmentConstraintSet (
 		final double dblSegmentRight,
-		final org.drip.state.estimator.PredictorResponseWeightConstraint prwc,
-		final java.lang.String strManifestMeasure)
+		final org.drip.state.estimator.PredictorResponseWeightConstraint prwc)
 	{
 		org.drip.spline.params.SegmentResponseValueConstraint srvcBase = segmentCalibResponseConstraint
 			(prwc);
 
 		if (null == srvcBase) return false;
 
-		org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity = segmentSensResponseConstraint
-			(prwc, strManifestMeasure);
-
-		if (null == srvcSensitivity) return false;
-
 		org.drip.spline.params.ResponseValueSensitivityConstraint rvsc = null;
 
 		try {
-			if (!(rvsc = new org.drip.spline.params.ResponseValueSensitivityConstraint
-				(srvcBase)).addManifestMeasureSensitivity (strManifestMeasure, srvcSensitivity))
-				return false;
+			rvsc = new org.drip.spline.params.ResponseValueSensitivityConstraint (srvcBase);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
 			return false;
 		}
 
+		java.util.Set<java.lang.String> setstrSensitivity = prwc.sensitivityKeys();
+
+		if (null == setstrSensitivity || 0 == setstrSensitivity.size()) {
+			_mapRVSC.put (dblSegmentRight, rvsc);
+
+			return true;
+		}
+
+		for (java.lang.String strManifestMeasure : setstrSensitivity) {
+			org.drip.spline.params.SegmentResponseValueConstraint srvcSensitivity =
+				segmentSensResponseConstraint (prwc, strManifestMeasure);
+
+			if (null == srvcSensitivity || !rvsc.addManifestMeasureSensitivity (strManifestMeasure,
+				srvcSensitivity))
+				continue;
+		}
+
 		_mapRVSC.put (dblSegmentRight, rvsc);
 
 		return true;
+	}
+
+	/**
+	 * LatentStateSequenceBuilder constructor
+	 * 
+	 * @param dblEpochResponse Segment Sequence Left-most Response Value
+	 * @param stretchSpec The Latent State Stretch Specification
+	 * @param valParams Valuation Parameter
+	 * @param pricerParams Pricer Parameter
+	 * @param csqs The Market Parameter Set
+	 * @param vcp Valuation Customization Parameters
+	 * @param span The Containing Span this Stretch will become a part of
+	 * @param sbfr Stretch Fitness Weighted Response
+	 * @param pmsc Preceeding Manifest Sensitivity Control Parameters
+	 * @param sbfrQuoteSensitivity Stretch Fitness Weighted Response Quote Sensitivity
+	 * @param bs The Calibration Boundary Condition
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public LatentStateSequenceBuilder (
+		final double dblEpochResponse,
+		final org.drip.state.inference.LatentStateStretchSpec stretchSpec,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final org.drip.spline.grid.Span span,
+		final org.drip.spline.params.StretchBestFitResponse sbfr,
+		final
+			org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.spline.params.PreceedingManifestSensitivityControl>
+				mapPMSC,
+		final org.drip.spline.params.StretchBestFitResponse sbfrQuoteSensitivity,
+		final org.drip.spline.stretch.BoundarySettings bs)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEpochResponse = dblEpochResponse) || null ==
+			(_stretchSpec = stretchSpec) || null == (_valParams = valParams) || null == (_bs = bs) || null ==
+				(_mapPMSC = mapPMSC))
+			throw new java.lang.Exception ("LatentStateSequenceBuilder ctr: Invalid Inputs");
+
+		_vcp = vcp;
+		_csqs = csqs;
+		_sbfr = sbfr;
+		_span = span;
+		_pricerParams = pricerParams;
+		_sbfrQuoteSensitivity = sbfrQuoteSensitivity;
 	}
 
 	@Override public boolean setStretch (
@@ -240,7 +299,7 @@ public class LatentStateSequenceBuilder implements org.drip.spline.stretch.Segme
 	@Override public boolean calibStartingSegment (
 		final double dblLeftSlope)
 	{
-		if (null == _stretch || !_stretch.setClearBuiltRange()) return false;
+		if (null == _stretch || !_stretch.clearBuiltRange()) return false;
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent cfic =
 			_stretchSpec.segmentSpec()[0].component();
@@ -251,14 +310,12 @@ public class LatentStateSequenceBuilder implements org.drip.spline.stretch.Segme
 
 		if (null == aLSRM || 0 == aLSRM.length) return false;
 
-		/* org.drip.state.estimator.PredictorResponseWeightConstraint prwc = cfic.calibPRWC (_valParams,
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = cfic.calibPRWC (_valParams,
 			_pricerParams, _csqs, _vcp, _stretchSpec.segmentSpec()[0].manifestMeasures());
 
 		double dblSegmentRight = aLSRM[0].right();
 
-		if (null == prwc || !generateSegmentConstraintSet (dblSegmentRight, prwc, _srs.getLSMM
-			(0).manifestMeasures()[0]))
-			return false;
+		if (null == prwc || !generateSegmentConstraintSet (dblSegmentRight, prwc)) return false;
 
 		org.drip.spline.params.SegmentResponseValueConstraint rvcLeading =
 			org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
@@ -266,83 +323,84 @@ public class LatentStateSequenceBuilder implements org.drip.spline.stretch.Segme
 
 		if (null == rvcLeading) return false;
 
-		return aCS[0].calibrate (rvcLeading, dblLeftSlope, _mapRVSC.get (dblSegmentRight).base(), null ==
-			_sbfr ? null : _sbfr.sizeToSegment (aCS[0])) && _stretch.setSegmentBuilt (0,
-				prlc.mergeLabelSet()); */
-
-		return false;
+		return aLSRM[0].calibrate (rvcLeading, dblLeftSlope, _mapRVSC.get (dblSegmentRight).base(), null ==
+			_sbfr ? null : _sbfr.sizeToSegment (aLSRM[0])) && _stretch.markSegmentBuilt (0,
+				prwc.mergeLabelSet());
 	}
 
 	@Override public boolean calibSegmentSequence (
 		final int iStartingSegment)
 	{
-		/* org.drip.spline.segment.LatentStateResponseModel[] aCS = _stretch.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aLSRM = _stretch.segments();
 
-		int iNumSegment = aCS.length;
+		org.drip.state.inference.LatentStateSegmentSpec[] aLSSS = _stretchSpec.segmentSpec();
+
+		int iNumSegment = aLSRM.length;
+
+		if (null == aLSSS || aLSSS.length != iNumSegment) return false;
 
 		for (int iSegment = iStartingSegment; iSegment < iNumSegment; ++iSegment) {
-			org.drip.product.definition.CalibratableFixedIncomeComponent cc = _srs.getCalibComp (iSegment);
+			org.drip.product.definition.CalibratableFixedIncomeComponent cfic = aLSSS[iSegment].component();
 
-			if (null == cc) return false;
+			if (null == cfic) return false;
 
-			org.drip.state.estimator.PredictorResponseWeightConstraint prlc = cc.generateCalibPRWC
-				(_valParams, _pricerParams, _mktParams, _quotingParams, _srs.getLSMM (iSegment));
+			org.drip.state.estimator.PredictorResponseWeightConstraint prwc = cfic.calibPRWC (_valParams,
+				_pricerParams, _csqs, _vcp, aLSSS[iSegment].manifestMeasures());
 
-			double dblSegmentRight = aCS[iSegment].right();
+			double dblSegmentRight = aLSRM[iSegment].right();
 
-			if (null == prlc || !generateSegmentConstraintSet (dblSegmentRight, prlc, _srs.getLSMM
-				(iSegment).manifestMeasures()[0]))
-				return false;
+			if (null == prwc || !generateSegmentConstraintSet (dblSegmentRight, prwc)) return false;
 
-			if (!aCS[iSegment].calibrate (0 == iSegment ? null : aCS[iSegment - 1], _mapRVSC.get
-				(dblSegmentRight).base(), null == _sbfr ? null : _sbfr.sizeToSegment (aCS[iSegment])) ||
-					!_stretch.setSegmentBuilt (iSegment, prlc.mergeLabelSet()))
+			if (!aLSRM[iSegment].calibrate (0 == iSegment ? null : aLSRM[iSegment - 1], _mapRVSC.get
+				(dblSegmentRight).base(), null == _sbfr ? null : _sbfr.sizeToSegment (aLSRM[iSegment])) ||
+					!_stretch.markSegmentBuilt (iSegment, prwc.mergeLabelSet()))
 				return false;
 		}
 
-		return true; */
-
-		return false;
+		return true;
 	}
 
 	@Override public boolean manifestMeasureSensitivity (
 		final double dblLeftSlopeSensitivity)
 	{
-		/* org.drip.spline.segment.LatentStateResponseModel[] aCS = _stretch.segments();
+		org.drip.spline.segment.LatentStateResponseModel[] aLSRM = _stretch.segments();
 
-		int iNumSegment = aCS.length;
+		int iNumSegment = aLSRM.length;
 
 		for (int iSegment = 0; iSegment < iNumSegment; ++iSegment) {
-			double dblSegmentRight = aCS[iSegment].right();
+			double dblSegmentRight = aLSRM[iSegment].right();
 
-			for (java.lang.String strManifestMeasure : _srs.getLSMM (iSegment).manifestMeasures()) {
-				if (!aCS[iSegment].setPreceedingManifestSensitivityControl (strManifestMeasure, getPMSC
+			org.drip.spline.params.ResponseValueSensitivityConstraint rvsc = _mapRVSC.get (dblSegmentRight);
+
+			java.util.Set<java.lang.String> setstrManifestMeasures = rvsc.manifestMeasures();
+
+			if (null == setstrManifestMeasures || 0 == setstrManifestMeasures.size()) return false;
+
+			for (java.lang.String strManifestMeasure : setstrManifestMeasures) {
+				if (!aLSRM[iSegment].setPreceedingManifestSensitivityControl (strManifestMeasure, getPMSC
 					(strManifestMeasure)))
 					return false;
 
 				if (0 == iSegment) {
-					if (!aCS[0].manifestMeasureSensitivity (strManifestMeasure,
+					if (!aLSRM[0].manifestMeasureSensitivity (strManifestMeasure,
 						org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-							(_valParams.valueDate(), _dblEpochResponse), _mapRVSC.get
-								(dblSegmentRight).base(), dblLeftSlopeSensitivity,
+							(_valParams.valueDate(), _dblEpochResponse), rvsc.base(),
+								dblLeftSlopeSensitivity,
 									org.drip.spline.params.SegmentResponseValueConstraint.FromPredictorResponsePair
-						(_valParams.valueDate(), 0.), _mapRVSC.get
-							(dblSegmentRight).manifestMeasureSensitivity (strManifestMeasure), null ==
-								_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment (aCS[0])))
+						(_valParams.valueDate(), 0.), rvsc.manifestMeasureSensitivity (strManifestMeasure),
+							null == _sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment
+								(aLSRM[0])))
 						return false;
 				} else {
-					if (!aCS[iSegment].manifestMeasureSensitivity (aCS[iSegment - 1], strManifestMeasure,
-						_mapRVSC.get (dblSegmentRight).base(), _mapRVSC.get
-							(dblSegmentRight).manifestMeasureSensitivity (strManifestMeasure), null ==
-								_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment
-									(aCS[iSegment])))
+					if (!aLSRM[iSegment].manifestMeasureSensitivity (aLSRM[iSegment - 1], strManifestMeasure,
+						rvsc.base(), rvsc.manifestMeasureSensitivity (strManifestMeasure), null ==
+							_sbfrQuoteSensitivity ? null : _sbfrQuoteSensitivity.sizeToSegment
+								(aLSRM[iSegment])))
 						return false;
 				}
 			}
 		}
 
-		return true; */
-
-		return false;
+		return true;
 	}
 }

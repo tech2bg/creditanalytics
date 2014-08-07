@@ -22,6 +22,8 @@ import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
+import org.drip.state.inference.LatentStateStretchSpec;
+import org.drip.state.inference.LinearLatentStateCalibrator;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -219,32 +221,33 @@ public class CCBSForwardCurve {
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
-		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
+		LinearLatentStateCalibrator llsc = new LinearLatentStateCalibrator (
 			scbc,
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
-		StretchRepresentationSpec srsFloatFloat = CCBSStretchRepresentationBuilder.ForwardCurveSRS (
+		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.ForwardStretch (
 			"FLOATFLOAT",
-			ForwardCurve.LATENT_STATE_FORWARD,
-			ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 			aCCSP,
 			valParams,
 			mktParams,
 			adblCrossCurrencyBasis,
-			bBasisOnDerivedLeg);
+			bBasisOnDerivedLeg
+		);
 
 		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
-			lcc,
-			new StretchRepresentationSpec[] {srsFloatFloat},
+			llsc,
+			new LatentStateStretchSpec[] {stretchSpec},
 			ForwardLabel.Create (strDerivedCurrency + "-LIBOR-3M"),
 			valParams,
 			null,
 			MarketParamsBuilder.Create (dcDerived, fc6MDerived, null, null, null, null, null, null),
 			null,
-			dcDerived.forward (dtValue.julian(), dtValue.addTenor ("3M").julian()));
+			dcDerived.forward (dtValue.julian(), dtValue.addTenor ("3M").julian())
+		);
 
 		CurveSurfaceQuoteSet mktParamsDerived = MarketParamsBuilder.Create
 			(dcDerived, fc3MDerived, null, null, null, null, null, null);

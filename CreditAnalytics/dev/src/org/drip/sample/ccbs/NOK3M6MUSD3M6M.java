@@ -592,7 +592,6 @@ public class NOK3M6MUSD3M6M {
 
 		DiscountCurve dcReference = OvernightIndexCurve.MakeDC (
 			strReferenceCurrency,
-			false,
 			dtValue,
 			s_aiUSDOISDepositMaturityDays,
 			s_adblUSDOISDepositQuote,
@@ -654,7 +653,6 @@ public class NOK3M6MUSD3M6M {
 
 		DiscountCurve dcDerived = OvernightIndexCurve.MakeDC (
 			strDerivedCurrency,
-			false,
 			dtValue,
 			s_aiNOKOISDepositMaturityDays,
 			s_adblNOKOISDepositQuote,

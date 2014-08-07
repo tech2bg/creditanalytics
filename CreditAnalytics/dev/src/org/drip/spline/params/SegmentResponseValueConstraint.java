@@ -131,13 +131,8 @@ public class SegmentResponseValueConstraint {
 
 		int iNumPredictorOrdinate = adblPredictorOrdinate.length;
 
-		if (0 == iNumPredictorOrdinate || _adblResponseValueWeight.length != iNumPredictorOrdinate) {
-			System.out.println ("iNumPredictorOrdinate = " + iNumPredictorOrdinate);
-
-			System.out.println ("_adblResponseValueWeight.length = " + _adblResponseValueWeight.length);
-
+		if (0 == iNumPredictorOrdinate || _adblResponseValueWeight.length != iNumPredictorOrdinate)
 			throw new java.lang.Exception ("SegmentResponseValueConstraint ctr: Invalid Inputs");
-		}
 	}
 
 	/**
@@ -171,6 +166,21 @@ public class SegmentResponseValueConstraint {
 	public double constraintValue()
 	{
 		return _dblWeightedResponseValueConstraint;
+	}
+
+	public void display (
+		final java.lang.String strComment)
+	{
+		for (int i = 0; i < _adblPredictorOrdinate.length; ++i) {
+			try {
+				System.out.println ("\t\t" + strComment + " - " + new org.drip.analytics.date.JulianDate
+					(_adblPredictorOrdinate[i]) + " => " + _adblResponseValueWeight[i]);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println ("\tConstraint: " + _dblWeightedResponseValueConstraint);
 	}
 
 	/**

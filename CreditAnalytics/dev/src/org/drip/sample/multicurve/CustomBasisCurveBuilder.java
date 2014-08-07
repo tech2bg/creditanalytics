@@ -56,8 +56,9 @@ public class CustomBasisCurveBuilder {
 
 		JulianDate dtToday = JulianDate.Today();
 
-		String[] astrTenor = new String[]
-			{"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"};
+		String[] astrTenor = new String[] {
+			"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+		};
 
 		double[] adblBasis = new double[] {
 			0.00186,    //  1Y
@@ -86,7 +87,8 @@ public class CustomBasisCurveBuilder {
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
-			adblBasis);
+			adblBasis
+		);
 
 		BasisCurve bcQuinticPolynomial = ScenarioBasisCurveBuilder.QuarticPolynomialBasisCurve (
 			"USD3M6MBasis_QuinticPolynomial",
@@ -96,7 +98,8 @@ public class CustomBasisCurveBuilder {
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
-			adblBasis);
+			adblBasis
+		);
 
 		BasisCurve bcKaklisPandelis = ScenarioBasisCurveBuilder.KaklisPandelisBasisCurve (
 			"USD3M6MBasis_KaklisPandelis",
@@ -106,7 +109,8 @@ public class CustomBasisCurveBuilder {
 			false,
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
-			adblBasis);
+			adblBasis
+		);
 
 		BasisCurve bcKLKHyperbolic = ScenarioBasisCurveBuilder.KLKHyperbolicBasisCurve (
 			"USD3M6MBasis_KLKHyperbolic",
@@ -117,7 +121,8 @@ public class CustomBasisCurveBuilder {
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
 			adblBasis,
-			1.);
+			1.
+		);
 
 		BasisCurve bcKLKRationalLinear = ScenarioBasisCurveBuilder.KLKRationalLinearBasisCurve (
 			"USD3M6MBasis_KLKRationalLinear",
@@ -128,7 +133,8 @@ public class CustomBasisCurveBuilder {
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
 			adblBasis,
-			0.1);
+			0.1
+		);
 
 		BasisCurve bcKLKRationalQuadratic = ScenarioBasisCurveBuilder.KLKRationalLinearBasisCurve (
 			"USD3M6MBasis_KLKRationalQuadratic",
@@ -139,7 +145,8 @@ public class CustomBasisCurveBuilder {
 			new CollateralizationParams ("OVERNIGHT", "USD"),
 			astrTenor,
 			adblBasis,
-			2.);
+			2.
+		);
 
 		System.out.println ("\tPrinting the Basis Node Values in Order (Left -> Right):");
 
@@ -169,7 +176,8 @@ public class CustomBasisCurveBuilder {
 				FormatUtil.FormatDouble (bcKLKHyperbolic.basis (astrTenor[i]), 1, 2, 10000.) + " | " +
 				FormatUtil.FormatDouble (bcKLKRationalLinear.basis (astrTenor[i]), 1, 2, 10000.) + " | " +
 				FormatUtil.FormatDouble (bcKLKRationalQuadratic.basis (astrTenor[i]), 1, 2, 10000.) + " | " +
-				FormatUtil.FormatDouble (adblBasis[i], 1, 2, 10000.));
+				FormatUtil.FormatDouble (adblBasis[i], 1, 2, 10000.)
+			);
 
 		System.out.println ("\n\t|----------------------------------------------------------------------------|");
 
@@ -186,7 +194,8 @@ public class CustomBasisCurveBuilder {
 				FormatUtil.FormatDouble (bcKaklisPandelis.basis (dt), 1, 2, 10000.) + "  |  " +
 				FormatUtil.FormatDouble (bcKLKHyperbolic.basis (dt), 1, 2, 10000.) + "   |  " +
 				FormatUtil.FormatDouble (bcKLKRationalLinear.basis (dt), 1, 2, 10000.) + "    |  " +
-				FormatUtil.FormatDouble (bcKLKRationalQuadratic.basis (dt), 1, 2, 10000.) + "    |  ");
+				FormatUtil.FormatDouble (bcKLKRationalQuadratic.basis (dt), 1, 2, 10000.) + "    |  "
+			);
 		}
 
 		System.out.println ("\n\t|----------------------------------------------------------------------------|");

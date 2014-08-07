@@ -139,7 +139,7 @@ public class EDFComponentQuoteSet extends org.drip.product.calib.ProductQuoteSet
 		throws java.lang.Exception
 	{
 		if (!containsRate())
-			throw new java.lang.Exception ("EDFComponentQuoteSet::coupon => Does not contain rate");
+			throw new java.lang.Exception ("EDFComponentQuoteSet::rate => Does not contain rate");
 
 		return _mapQuote.get ("Rate");
 	}

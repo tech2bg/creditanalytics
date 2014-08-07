@@ -66,37 +66,8 @@ public abstract class ExplicitBootDiscountCurve extends org.drip.analytics.rates
 		final double[] adblDate,
 		final double[] adblBasis);
 
-	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
-	{
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = calibComp();
-
-		if (null == aCalibComp) return null;
-
-		int iNumLSMM = aCalibComp.length;
-		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = new
-			org.drip.state.representation.LatentStateMetricMeasure[iNumLSMM];
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			mapQuote = _ccis.quoteMap();
-
-		for (int i = 0; i < iNumLSMM; ++i) {
-			try {
-				aLSMM[i] = new org.drip.analytics.rates.RatesLSMM
-					(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-						org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-							mapQuote.get (_ccis.components()[i].primaryCode()), null);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
-		return aLSMM;
-	}
-
 	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+		final org.drip.analytics.input.CurveConstructionInputSet ccis)
 	{
 		return null != (_ccis = ccis);
 	}

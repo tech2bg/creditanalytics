@@ -10,7 +10,6 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.FixedStream;
 import org.drip.product.cashflow.FloatingStream;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -129,56 +128,22 @@ public class ForwardCurveDerivedBasis {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
+			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.julian(),
+			org.drip.product.rates.IRSComponent irs = RatesStreamBuilder.CreateIRS (
+				dtEffective,
 				astrTenor[i],
-				null,
+				adblCoupon[i],
 				2,
 				"Act/360",
-				false,
-				false,
-				"USD",
-				"USD"
-			);
-
-			FloatingStream floatStream = new FloatingStream (
-				"USD",
-				null,
 				0.,
-				-1.,
-				null,
-				lsFloatPeriods,
-				ForwardLabel.Create ("USD-LIBOR-6M"),
-				false
-			);
-
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
-				dtEffective.julian(),
-				astrTenor[i],
-				null,
-				2,
+				4,
 				"Act/360",
-				false,
-				false,
-				"USD",
-				"USD"
+				strCurrency,
+				strCurrency
 			);
 
-			FixedStream fixStream = new FixedStream (
-				"USD",
-				null,
-				0.,
-				1.,
-				null,
-				lsFixedPeriods
-			);
-
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
-
-			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + ".USD");
+			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
 			aCalibComp[i] = irs;
 		}
@@ -197,7 +162,8 @@ public class ForwardCurveDerivedBasis {
 
 	private static final DiscountCurve MakeDC (
 		final JulianDate dtSpot,
-		final String strCurrency)
+		final String strCurrency,
+		final double dblBump)
 		throws Exception
 	{
 		/*
@@ -206,40 +172,44 @@ public class ForwardCurveDerivedBasis {
 
 		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
-			4,
+			new int[] {},
+			0,
 			strCurrency);
 
-		double[] adblCashQuote = new double[] {
-			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850, // Cash
-			0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+		double[] adblCashQuote = new double[] {}; // Futures
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
 		 */
 
 		double[] adblSwapQuote = new double[] {
-			0.02604,    //  4Y
-			0.02808,    //  5Y
-			0.02983,    //  6Y
-			0.03136,    //  7Y
-			0.03268,    //  8Y
-			0.03383,    //  9Y
-			0.03488,    // 10Y
-			0.03583,    // 11Y
-			0.03668,    // 12Y
-			0.03833,    // 15Y
-			0.03854,    // 20Y
-			0.03672,    // 25Y
-			0.03510,    // 30Y
-			0.03266,    // 40Y
-			0.03145     // 50Y
+			0.00092 + dblBump,     //  6M
+			0.0009875 + dblBump,   //  9M
+			0.00122 + dblBump,     //  1Y
+			0.00223 + dblBump,     // 18M
+			0.00383 + dblBump,     //  2Y
+			0.00827 + dblBump,     //  3Y
+			0.01245 + dblBump,     //  4Y
+			0.01605 + dblBump,     //  5Y
+			0.02597 + dblBump      // 10Y
+		};
+
+		String[] astrSwapManifestMeasure = new String[] {
+			"SwapRate",     //  6M
+			"SwapRate",		//  9M
+			"SwapRate",     //  1Y
+			"SwapRate",     // 18M
+			"SwapRate",     //  2Y
+			"SwapRate",     //  3Y
+			"SwapRate",     //  4Y
+			"SwapRate",     //  5Y
+			"SwapRate"      // 10Y
 		};
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
-			adblSwapQuote,
+			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
+			new double[] {0.00092, 0.0009875, 0.00122, 0.00223, 0.00383, 0.00827, 0.01245, 0.01605, 0.02597},
 			strCurrency);
 
 		/*
@@ -251,9 +221,12 @@ public class ForwardCurveDerivedBasis {
 			new ValuationParams (dtSpot, dtSpot, "USD"),
 			aCashComp,
 			adblCashQuote,
+			null,
 			aSwapComp,
 			adblSwapQuote,
-			true);
+			astrSwapManifestMeasure,
+			true
+		);
 	}
 
 	/*
@@ -345,7 +318,7 @@ public class ForwardCurveDerivedBasis {
 		for (Map.Entry<String, ForwardCurve> me : mapForward.entrySet())
 			System.out.println (me.getKey() + " | " + strStartDateTenor + ": " +
 				me.getValue().jackDForwardDManifestMeasure (
-					"DerivedParBasisSpread",
+					"PV",
 					dt.addTenor (strStartDateTenor)).displayString()
 				);
 	}
@@ -519,7 +492,7 @@ public class ForwardCurveDerivedBasis {
 		 * Construct the Discount Curve using its instruments and quotes
 		 */
 
-		DiscountCurve dc = MakeDC (dtToday, strCurrency);
+		DiscountCurve dc = MakeDC (dtToday, strCurrency, 0.);
 
 		System.out.println ("\n------------------------------------------------------------");
 
@@ -591,40 +564,6 @@ public class ForwardCurveDerivedBasis {
 			);
 
 		/*
-		 * Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
-		 */
-
-		System.out.println ("\n------------------------------------------------------------");
-
-		System.out.println ("-------------------    6M-6M Basis Swap    -----------------");
-
-		Map<String, ForwardCurve> mapForward6M6M = xM6MBasisSample (
-			dtToday,
-			strCurrency,
-			dc,
-			6,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
-			new double[] {
-				0.00000,    //  1Y
-				0.00000,    //  2Y
-				0.00000,    //  3Y
-				0.00000,    //  4Y
-				0.00000,    //  5Y
-				0.00000,    //  6Y
-				0.00000,    //  7Y
-				0.00000,    //  8Y
-				0.00000,    //  9Y
-				0.00000,    // 10Y
-				0.00000,    // 11Y
-				0.00000,    // 12Y
-				0.00000,    // 15Y
-				0.00000,    // 20Y
-				0.00000,    // 25Y
-				0.00000     // 30Y
-				}
-			);
-
-		/*
 		 * Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
 		 */
 
@@ -676,14 +615,6 @@ public class ForwardCurveDerivedBasis {
 		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
 
 		ForwardJack (dtToday, mapForward3M6M);
-
-		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
-
-		System.out.println ("------------------------------------------------------- 6M-6M Micro Jack -------------------------------------------------------------------");
-
-		System.out.println ("--------------------------------------------------------------------------------------------------------------------------------------------\n");
-
-		ForwardJack (dtToday, mapForward6M6M);
 
 		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
 

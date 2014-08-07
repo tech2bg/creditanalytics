@@ -89,7 +89,7 @@ public class DepositBuilder {
 	 * @return Deposit product
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateDeposit (
+	public static final org.drip.product.rates.DepositComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final org.drip.state.identifier.ForwardLabel fri,
@@ -102,7 +102,7 @@ public class DepositBuilder {
 		}
 
 		try {
-			org.drip.product.definition.RatesComponent deposit = new org.drip.product.rates.DepositComponent
+			org.drip.product.rates.DepositComponent deposit = new org.drip.product.rates.DepositComponent
 				(dtEffective, dtMaturity, fri, strIR, "Act/360", strIR);
 
 			deposit.setPrimaryCode ("CD." + dtMaturity + "." + strIR);

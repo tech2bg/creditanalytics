@@ -523,6 +523,18 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		return null;
 	}
 
+	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+	{
+		try {
+			return new org.drip.product.calib.FRAComponentQuoteSet (aLSS);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -530,13 +542,16 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
+		return null;
+
+		/*
 		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FRAComponentQuoteSet)
 			|| !pqs.contains (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 				org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 					org.drip.state.identifier.FundingLabel.Standard (_strCurrency)))
 			return null;
 
-		return discountFactorPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+		return discountFactorPRWC (valParams, pricerParams, csqs, quotingParams, pqs); */
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
@@ -550,16 +565,19 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 			org.drip.product.calib.FRAComponentQuoteSet))
 			return null;
 
-		if (valParams.valueDate() >= _dblEffectiveDate) return null;
+		if (valParams.valueDate() > _dblEffectiveDate) return null;
 
 		org.drip.product.calib.FRAComponentQuoteSet fcqs = (org.drip.product.calib.FRAComponentQuoteSet) pqs;
 
-		if (!fcqs.containsFRARate()) return null;
+		if (!fcqs.containsFRARate() && !fcqs.containsParForwardRate()) return null;
 
 		double dblForwardRate = java.lang.Double.NaN;
 
 		try {
-			dblForwardRate = fcqs.fraRate();
+			if (fcqs.containsParForwardRate())
+				dblForwardRate = fcqs.parForwardRate();
+			else if (fcqs.containsFRARate())
+				dblForwardRate = fcqs.fraRate();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -569,9 +587,11 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (!prwc.addPredictorResponseWeight (_dblEffectiveDate, 1.)) return null;
+		double dblMaturity = _dtMaturity.julian();
 
-		if (!prwc.addDResponseWeightDManifestMeasure ("Rate", _dblEffectiveDate, 1.)) return null;
+		if (!prwc.addPredictorResponseWeight (dblMaturity, 1.)) return null;
+
+		if (!prwc.addDResponseWeightDManifestMeasure ("Rate", dblMaturity, 1.)) return null;
 
 		if (!prwc.updateValue (dblForwardRate)) return null;
 
@@ -599,40 +619,6 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 			pricerParams, csqs, quotingParams, pqs);
 
 		return null != prwc && prwc.addMergeLabel (_fri) ? prwc : null;
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
-	{
-		if (null == valParams || null == lsmm) return null;
-
-		if (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD.equalsIgnoreCase (lsmm.id()) &&
-			org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE.equalsIgnoreCase
-				(lsmm.quantificationMetric())) {
-			if (org.drip.quant.common.StringUtil.MatchInStringArray (lsmm.manifestMeasures(), new
-				java.lang.String[] {"Forward", "ForwardRate", "ParForward", "ParForwardRate", "Rate"},
-					false)) {
-				org.drip.state.estimator.PredictorResponseWeightConstraint prlc = new
-					org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-				double dblMaturity = _dtMaturity.julian();
-
-				try {
-					return prlc.addPredictorResponseWeight (dblMaturity, 1.) && prlc.updateValue
-						(lsmm.measureQuoteValue ("ParForwardRate")) &&
-							prlc.addDResponseWeightDManifestMeasure ("ParForwardRate", dblMaturity, 1.) &&
-								prlc.updateDValueDManifestMeasure ("ParForwardRate", 1.) ? prlc : null;
-				} catch (java.lang.Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return null;
 	}
 
 	@Override public byte[] serialize()

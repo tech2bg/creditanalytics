@@ -1,5 +1,5 @@
 
-package org.drip.analytics.definition;
+package org.drip.analytics.input;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -42,7 +42,7 @@ package org.drip.analytics.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BootCurveConstructionInput implements org.drip.analytics.definition.CurveConstructionInputSet {
+public class BootCurveConstructionInput implements org.drip.analytics.input.CurveConstructionInputSet {
 	private org.drip.param.valuation.ValuationParams _valParam = null;
 	private org.drip.param.market.LatentStateFixingsContainer _lsfc = null;
 	private org.drip.param.valuation.ValuationCustomizationParams _quotingParam = null;
@@ -170,6 +170,16 @@ public class BootCurveConstructionInput implements org.drip.analytics.definition
 	@Override public org.drip.param.valuation.ValuationParams valuationParameter()
 	{
 		return _valParam;
+	}
+
+	@Override public org.drip.param.pricer.PricerParams pricerParameter()
+	{
+		return null;
+	}
+
+	@Override public org.drip.param.market.CurveSurfaceQuoteSet marketParameters()
+	{
+		return null;
 	}
 
 	@Override public org.drip.param.valuation.ValuationCustomizationParams quotingParameter()

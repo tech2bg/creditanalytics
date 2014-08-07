@@ -6,10 +6,11 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.period.CashflowPeriod;
-import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.calib.*;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -20,8 +21,9 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
+import org.drip.state.inference.*;
+import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -60,33 +62,104 @@ import org.drip.state.identifier.*;
 public class CrossOvernightFloatingStream {
 
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final DepositComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
-		final int[] aiDay,
-		final int iNumFutures,
-		final String strCurrency)
+		final String strCurrency,
+		final int[] aiDay)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
+		DepositComponent[] aDeposit = new DepositComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
-				dtEffective.addBusDays (aiDay[i], strCurrency),
+				dtEffective.addBusDays (
+					aiDay[i],
+					strCurrency
+				),
 				null,
-				strCurrency);
+				strCurrency
+			);
 
-		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
+		return aDeposit;
+	}
 
-		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
-			aCalibComp[i] = aEDF[i - aiDay.length];
+	private static final LatentStateStretchSpec DepositStretch (
+		final DepositComponent[] aDeposit,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		return aCalibComp;
+		String strCurrency = aDeposit[0].couponCurrency()[0];
+
+		for (int i = 0; i < aDeposit.length; ++i) {
+			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (strCurrency)
+					)
+				}
+			);
+
+			depositQuote.setRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aDeposit[i],
+				depositQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"DEPOSIT",
+			aSegmentSpec
+		);
+	}
+
+	private static final LatentStateStretchSpec EDFStretch (
+		final EDFComponent[] aEDF,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
+
+		String strCurrency = aEDF[0].couponCurrency()[0];
+
+		for (int i = 0; i < aEDF.length; ++i) {
+			EDFComponentQuoteSet edfQuote = new EDFComponentQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (strCurrency)
+					),
+					new LatentStateSpecification (
+						ForwardCurve.LATENT_STATE_FORWARD,
+						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						aEDF[i].forwardLabel()[0]
+					)
+				}
+			);
+
+			edfQuote.setRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aEDF[i],
+				edfQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"EDF",
+			aSegmentSpec
+		);
 	}
 
 	/*
@@ -95,21 +168,19 @@ public class CrossOvernightFloatingStream {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] OISInstrumentsFromMaturityTenor (
+	private static final IRSComponent[] OISInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
-		final String[] astrTenor,
+		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
+		IRSComponent[] aCalibComp = new IRSComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
-
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
 				dtEffective.julian(),
-				dtMaturity.julian(),
+				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
 				null,
 				"Act/360",
@@ -130,7 +201,7 @@ public class CrossOvernightFloatingStream {
 
 			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
 				dtEffective.julian(),
-				astrTenor[i],
+				astrMaturityTenor[i],
 				null,
 				2,
 				"Act/360",
@@ -151,12 +222,51 @@ public class CrossOvernightFloatingStream {
 
 			IRSComponent ois = new IRSComponent (fixStream, floatStream);
 
-			ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
+			ois.setPrimaryCode ("OIS." + astrMaturityTenor + "." + strCurrency);
 
 			aCalibComp[i] = ois;
 		}
 
 		return aCalibComp;
+	}
+
+	private static final LatentStateStretchSpec OISStretch (
+		final CalibratableFixedIncomeComponent[] aCFIC,
+		final double[] adblQuote)
+		throws Exception
+	{
+		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aCFIC.length];
+
+		String strCurrency = aCFIC[0].couponCurrency()[0];
+
+		for (int i = 0; i < aCFIC.length; ++i) {
+			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
+				new LatentStateSpecification[] {
+					new LatentStateSpecification (
+						DiscountCurve.LATENT_STATE_DISCOUNT,
+						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						FundingLabel.Standard (strCurrency)
+					),
+					new LatentStateSpecification (
+						ForwardCurve.LATENT_STATE_FORWARD,
+						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						aCFIC[i].forwardLabel()[0]
+					)
+				}
+			);
+
+			oisQuote.setSwapRate (adblQuote[i]);
+
+			aSegmentSpec[i] = new LatentStateSegmentSpec (
+				aCFIC[i],
+				oisQuote
+			);
+		}
+
+		return new LatentStateStretchSpec (
+			"OIS",
+			aSegmentSpec
+		);
 	}
 
 	private static final DiscountCurve CustomOISCurveBuilderSample (
@@ -165,31 +275,52 @@ public class CrossOvernightFloatingStream {
 		throws Exception
 	{
 		/*
-		 * Construct the Array of Cash Instruments and their Quotes from the given set of parameters
+		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		DepositComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
-			4,
-			strCurrency);
+			strCurrency,
+			new int[] {
+				1, 2, 3, 7, 14, 21, 30, 60
+			}
+		);
 
-		double[] adblCashQuote = new double[] {
+		double[] adblDepositQuote = new double[] {
 			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850, // Cash
-			0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+		};
+
+		/*
+		 * Construct the Deposit Instrument Set Stretch Builder
+		 */
+
+		LatentStateStretchSpec depositStretch = DepositStretch (
+			aDepositComp,
+			adblDepositQuote
+		);
+
+		/*
+		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
+		 */
+
+		EDFComponent[] aEDFComp = EDFutureBuilder.GenerateEDPack (
+			dtSpot,
+			4,
+			strCurrency
+		);
+
+		double[] adblEDFQuote = new double[] {
+			0.01612, 0.01580, 0.01589, 0.01598
+		};
 
 		/*
 		 * Construct the Cash Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsCash = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"CASH",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-			aCashComp,
-			"Rate",
-			adblCashQuote,
-			null);
+		LatentStateStretchSpec edfStretch = EDFStretch (
+			aEDFComp,
+			adblEDFQuote
+		);
 
 		/*
 		 * Construct the Array of OIS Instruments and their Quotes from the given set of parameters
@@ -205,27 +336,29 @@ public class CrossOvernightFloatingStream {
 			0.03488     // 10Y
 		};
 
-		CalibratableFixedIncomeComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
+		IRSComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[]
-				{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"},
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"
+			},
 			adblOISQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct the OIS Instrument Set Stretch Builder
 		 */
 
-		StretchRepresentationSpec srsOIS = StretchRepresentationSpec.CreateStretchBuilderSet (
-			"OIS",
-			DiscountCurve.LATENT_STATE_DISCOUNT,
-			DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+		LatentStateStretchSpec oisStretch = OISStretch (
 			aOISComp,
-			"Rate",
-			adblOISQuote,
-			null);
+			adblOISQuote
+		);
 
-		StretchRepresentationSpec[] aRBS = new StretchRepresentationSpec[] {srsCash, srsOIS};
+		LatentStateStretchSpec[] aStretchSpec = new LatentStateStretchSpec[] {
+			depositStretch,
+			edfStretch,
+			oisStretch
+		};
 
 		/*
 		 * Set up the Linear Curve Calibrator using the following parameters:
@@ -235,7 +368,7 @@ public class CrossOvernightFloatingStream {
 		 * 	- Natural Boundary Setting
 		 */
 
-		LinearCurveCalibrator lcc = new LinearCurveCalibrator (
+		LinearLatentStateCalibrator lcc = new LinearLatentStateCalibrator (
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -254,12 +387,13 @@ public class CrossOvernightFloatingStream {
 
 		return ScenarioDiscountCurveBuilder.ShapePreservingDFBuild (
 			lcc,
-			aRBS,
+			aStretchSpec,
 			new ValuationParams (dtSpot, dtSpot, strCurrency),
 			null,
 			null,
 			null,
-			1.);
+			1.
+		);
 	}
 
 	private static final LatentStateFixingsContainer SetFlatOvernightFixings (

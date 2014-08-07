@@ -142,4 +142,50 @@ public class FixedStreamQuoteSet extends org.drip.product.calib.ProductQuoteSet 
 
 		return _mapQuote.get ("Coupon");
 	}
+
+	/**
+	 * Set the Coupon Basis
+	 * 
+	 * @param dblCouponBasis The Coupon Basis
+	 * 
+	 * @return TRUE => The Coupon Basis successfully set
+	 */
+
+	public boolean setCouponBasis (
+		final double dblCouponBasis)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblCouponBasis)) return false;
+
+		_mapQuote.put ("CouponBasis", dblCouponBasis);
+
+		return true;
+	}
+
+	/**
+	 * Indicate if the Coupon Basis Field exists
+	 * 
+	 * @return TRUE => Coupon Basis Field Exists
+	 */
+
+	public boolean containsCouponBasis()
+	{
+		return _mapQuote.containsKey ("CouponBasis");
+	}
+
+	/**
+	 * Retrieve the Coupon Basis
+	 * 
+	 * @return The Coupon Basis
+	 * 
+	 * @throws java.lang.Exception Thrown if the Coupon Field does not exist
+	 */
+
+	public double couponBasis()
+		throws java.lang.Exception
+	{
+		if (!containsCouponBasis())
+			throw new java.lang.Exception ("FixedStreamQuoteSet::couponBasis => Does not contain Coupon basis");
+
+		return _mapQuote.get ("CouponBasis");
+	}
 }

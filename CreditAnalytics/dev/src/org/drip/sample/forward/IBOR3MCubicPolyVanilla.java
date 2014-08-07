@@ -172,7 +172,7 @@ public class IBOR3MCubicPolyVanilla {
 			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -202,8 +202,8 @@ public class IBOR3MCubicPolyVanilla {
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
-			strCurrency,
-			false);
+			strCurrency
+		);
 
 		ForwardCurve fc6M = IBOR6MCubicPolyVanilla.Make6MForward (
 			dtValue,

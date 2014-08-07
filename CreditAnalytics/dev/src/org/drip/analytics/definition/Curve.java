@@ -84,7 +84,7 @@ public interface Curve extends org.drip.state.representation.LatentState {
 	 */
 
 	public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis);
+		final org.drip.analytics.input.CurveConstructionInputSet ccis);
 
 	/**
 	 * Retrieve the Calibration Components

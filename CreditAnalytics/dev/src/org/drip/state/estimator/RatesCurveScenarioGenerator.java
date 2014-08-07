@@ -165,7 +165,7 @@ public class RatesCurveScenarioGenerator {
 			}
 		}
 
-		dc.setCCIS (org.drip.analytics.definition.BootCurveConstructionInput.Create (valParams, quotingParams,
+		dc.setCCIS (org.drip.analytics.input.BootCurveConstructionInput.Create (valParams, quotingParams,
 			_aCalibInst, adblQuotes, astrCalibMeasure, lsfc));
 
 		return dc;

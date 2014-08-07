@@ -35,28 +35,24 @@ package org.drip.state.estimator;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CCBSStretchRepresentationBuilder {
+public class CCBSStretchBuilder {
 
 	/**
-	 * Construct an instance of StretchRepresentationSpec for the Construction of the Forward Curve from the
+	 * Construct an instance of LatentStateStretchSpec for the Construction of the Forward Curve from the
 	 * 	specified Inputs
 	 * 
 	 * @param strName Stretch Name
-	 * @param strLatentStateID Latest State ID
-	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
 	 * @param aCCSP Array of Calibration Cross Currency Swap Pair Instances
 	 * @param valParams The Valuation Parameters
 	 * @param mktParams The Basket Market Parameters to imply the Market Quote Measure
 	 * @param adblReferenceComponentBasis Array of the Reference Component Reference Leg Basis Spread
 	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
 	 * 
-	 * return Instance of StretchRepresentationSpec
+	 * return Instance of LatentStateStretchSpec
 	 */
 
-	public static final StretchRepresentationSpec ForwardCurveSRS (
+	public static final org.drip.state.inference.LatentStateStretchSpec ForwardStretch (
 		final java.lang.String strName,
-		final java.lang.String strLatentStateID,
-		final java.lang.String strLatentStateQuantificationMetric,
 		final org.drip.product.fx.ComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
@@ -69,17 +65,34 @@ public class CCBSStretchRepresentationBuilder {
 
 		if (0 == iNumCCSP || adblReferenceComponentBasis.length != iNumCCSP) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = new
-			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumCCSP];
-
-		java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			lsMapManifestQuote = new
-				java.util.ArrayList<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+		org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
+			org.drip.state.inference.LatentStateSegmentSpec[iNumCCSP];
 
 		for (int i = 0; i < iNumCCSP; ++i) {
 			if (null == aCCSP[i]) return null;
 
-			aCalibComp[i] = aCCSP[i].derivedComponent();
+			org.drip.product.calib.ProductQuoteSet pqs = null;
+
+			org.drip.product.definition.CalibratableFixedIncomeComponent comp = aCCSP[i].derivedComponent();
+
+			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp instanceof
+				org.drip.product.cashflow.DualStreamComponent ?
+					((org.drip.product.cashflow.DualStreamComponent) comp).derivedStream().forwardLabel() :
+						comp.forwardLabel();
+
+			if (null == aForwardLabel || 0 == aForwardLabel.length) return null;
+
+			try { 
+				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
+					org.drip.state.representation.LatentStateSpecification
+						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
+							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+								aForwardLabel[0])});
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
 				(valParams, null, mktParams, null);
@@ -99,19 +112,22 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+			if (!pqs.set ("PV", -1. * (mapOP.get (strReferenceComponentPV) + 10000. * (bBasisOnDerivedLeg ?
+				mapOP.get (strReferenceComponentDerivedLegCleanDV01) : mapOP.get
+					(strReferenceComponentReferenceLegCleanDV01)) * adblReferenceComponentBasis[i])))
+				return null;
 
-			mapManifestQuote.put ("PV", -1. * (mapOP.get (strReferenceComponentPV) + 10000. *
-				(bBasisOnDerivedLeg ? mapOP.get (strReferenceComponentDerivedLegCleanDV01) : mapOP.get
-					(strReferenceComponentReferenceLegCleanDV01)) * adblReferenceComponentBasis[i]));
+			try {
+				aSegmentSpec[i] = new org.drip.state.inference.LatentStateSegmentSpec (comp, pqs);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
 
-			lsMapManifestQuote.add (mapManifestQuote);
+				return null;
+			}
 		}
 
 		try {
-			return new StretchRepresentationSpec (strName, strLatentStateID,
-				strLatentStateQuantificationMetric, aCalibComp, lsMapManifestQuote, null);
+			return new org.drip.state.inference.LatentStateStretchSpec (strName, aSegmentSpec);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -120,12 +136,10 @@ public class CCBSStretchRepresentationBuilder {
 	}
 
 	/**
-	 * Construct an instance of StretchRepresentationSpec for the Construction of the Discount Curve from the
+	 * Construct an instance of LatentStateStretchSpec for the Construction of the Discount Curve from the
 	 * 	specified Inputs
 	 * 
 	 * @param strName Stretch Name
-	 * @param strLatentStateID Latest State ID
-	 * @param strLatentStateQuantificationMetric Latent State Quantifier Metric
 	 * @param aCCSP Array of Calibration Cross Currency Swap Pair Instances
 	 * @param valParams The Valuation Parameters
 	 * @param mktParams The Basket Market Parameters to imply the Market Quote Measure
@@ -133,13 +147,11 @@ public class CCBSStretchRepresentationBuilder {
 	 * @param adblSwapRate Array of the IRS Calibration Swap Rates
 	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
 	 * 
-	 * return Instance of StretchRepresentationSpec
+	 * return Instance of LatentStateStretchSpec
 	 */
 
-	public static final StretchRepresentationSpec DiscountCurveSRS (
+	public static final org.drip.state.inference.LatentStateStretchSpec DiscountStretch (
 		final java.lang.String strName,
-		final java.lang.String strLatentStateID,
-		final java.lang.String strLatentStateQuantificationMetric,
 		final org.drip.product.fx.ComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
@@ -156,17 +168,39 @@ public class CCBSStretchRepresentationBuilder {
 			iNumCCSP)
 			return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = new
-			org.drip.product.definition.CalibratableFixedIncomeComponent[iNumCCSP];
-
-		java.util.List<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			lsMapManifestQuote = new
-				java.util.ArrayList<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+		org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
+			org.drip.state.inference.LatentStateSegmentSpec[iNumCCSP];
 
 		for (int i = 0; i < iNumCCSP; ++i) {
 			if (null == aCCSP[i]) return null;
 
-			aCalibComp[i] = aCCSP[i].derivedComponent();
+			org.drip.product.definition.CalibratableFixedIncomeComponent comp = aCCSP[i].derivedComponent();
+
+			org.drip.product.calib.ProductQuoteSet pqs = null;
+
+			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp instanceof
+				org.drip.product.cashflow.DualStreamComponent ?
+					((org.drip.product.cashflow.DualStreamComponent) comp).derivedStream().forwardLabel() :
+						comp.forwardLabel();
+
+			if (null == aForwardLabel || 0 == aForwardLabel.length) return null;
+
+			try { 
+				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
+					org.drip.state.representation.LatentStateSpecification
+						(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+							org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+								org.drip.state.identifier.FundingLabel.Standard
+									(comp.couponCurrency()[0])), new
+										org.drip.state.representation.LatentStateSpecification
+											(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
+												org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+													aForwardLabel[0])});
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
 				(valParams, null, mktParams, null);
@@ -186,21 +220,23 @@ public class CCBSStretchRepresentationBuilder {
 					(strReferenceComponentDerivedLegCleanDV01))
 				return null;
 
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestQuote = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+			if (!pqs.set ("SwapRate", adblSwapRate[i]) || !pqs.set ("PV", -1. * (mapOP.get
+				(strReferenceComponentPV) + 10000. * (bBasisOnDerivedLeg ? mapOP.get
+					(strReferenceComponentDerivedLegCleanDV01) : mapOP.get
+						(strReferenceComponentReferenceLegCleanDV01)) * adblReferenceComponentBasis[i])))
+				return null;
 
-			mapManifestQuote.put ("Rate", adblSwapRate[i]);
+			try {
+				aSegmentSpec[i] = new org.drip.state.inference.LatentStateSegmentSpec (comp, pqs);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
 
-			mapManifestQuote.put ("Upfront", -1. * (mapOP.get (strReferenceComponentPV) + 10000. *
-				(bBasisOnDerivedLeg ? mapOP.get (strReferenceComponentDerivedLegCleanDV01) : mapOP.get
-					(strReferenceComponentReferenceLegCleanDV01)) * adblReferenceComponentBasis[i]));
-
-			lsMapManifestQuote.add (mapManifestQuote);
+				return null;
+			}
 		}
 
 		try {
-			return new StretchRepresentationSpec (strName, strLatentStateID,
-				strLatentStateQuantificationMetric, aCalibComp, lsMapManifestQuote, null);
+			return new org.drip.state.inference.LatentStateStretchSpec (strName, aSegmentSpec);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

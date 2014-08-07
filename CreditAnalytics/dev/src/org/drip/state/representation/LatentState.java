@@ -32,7 +32,6 @@ package org.drip.state.representation;
 /**
  * LatentState exposes the functionality to manipulate the hidden Variable's Latent State. Specifically it
  * 	exports functions to:
- * 	- Retrieve the Array of the LatentStateMetricMeasure
  * 	- Produce node shifted, parallel shifted, and custom manifest-measure tweaked variants of the Latent
  * 		State
  * 	- Produce parallel shifted and custom quantification metric tweaked variants of the Latent State
@@ -41,14 +40,6 @@ package org.drip.state.representation;
  */
 
 public interface LatentState {
-
-	/**
-	 * Retrieve the Array of the LSMM
-	 * 
-	 * @return Array of the LSMM
-	 */
-
-	public abstract org.drip.state.representation.LatentStateMetricMeasure[] lsmm();
 
 	/**
 	 * Create a LatentState Instance from the Manifest Measure Parallel Shift

@@ -53,7 +53,8 @@ public class LatentStateStretchSpec {
 		final org.drip.state.inference.LatentStateSegmentSpec[] aLSSS)
 		throws java.lang.Exception
 	{
-		if (null == strName || strName.isEmpty() || null == (_aLSSS = aLSSS) || 0 == _aLSSS.length)
+		if (null == (_strName = strName) || _strName.isEmpty() || null == (_aLSSS = aLSSS) || 0 ==
+			_aLSSS.length)
 			throw new java.lang.Exception ("LatentStateStretchSpec ctr: Invalid Inputs");
 	}
 

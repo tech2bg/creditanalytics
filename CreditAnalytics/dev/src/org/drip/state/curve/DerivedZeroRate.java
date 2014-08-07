@@ -230,11 +230,6 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return objZeroRate;
 	}
 
-	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
-	{
-		return _dc.lsmm();
-	}
-
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
 		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;
@@ -284,7 +279,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 	}
 
 	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+		final org.drip.analytics.input.CurveConstructionInputSet ccis)
 	{
 		 return _dc.setCCIS (ccis);
 	}

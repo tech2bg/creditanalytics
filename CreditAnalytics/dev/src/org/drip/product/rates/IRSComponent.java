@@ -334,7 +334,7 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 		double dblCleanPV = mapFixStreamResult.get ("CleanPV") + dblFloatingCleanPV;
 
-		double dblFairPremium = java.lang.Math.abs (0.0001 * dblFloatingCleanPV / dblFixedCleanDV01);
+		double dblFairPremium = -0.0001 * dblFloatingCleanPV / dblFixedCleanDV01;
 
 		mapResult.put ("CleanFixedDV01", dblFixedCleanDV01);
 
@@ -411,12 +411,13 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 				double dblStartDate = effective().julian();
 
-				mapResult.put ("CalibSwapRatePV", (dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
-					dblValueDate) - dcFunding.df (maturity())));
+				double dblFloatingPV = dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
+					dblValueDate) - dcFunding.df (maturity());
 
-				mapResult.put ("CalibSwapRate", (dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
-					dblValueDate) - dcFunding.df (maturity())) / dblFixedCleanDV01 * notional (dblValueDate)
-						* 0.0001);
+				mapResult.put ("CalibFloatingPV", dblFloatingPV);
+
+				mapResult.put ("CalibSwapRate", dblFloatingPV / dblFixedCleanDV01 * notional (dblValueDate) *
+					0.0001);
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -621,73 +622,16 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	private boolean generateFixedLegPRWC (
-		final double dblValueDate,
-		final double dblInitialDate,
-		final org.drip.analytics.rates.RatesLSMM ratesLSMM,
-		final org.drip.state.estimator.PredictorResponseWeightConstraint prwc)
+	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
 	{
-		boolean bFirstPeriod = true;
-
-		org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
-
 		try {
-			for (org.drip.analytics.period.CashflowPeriod period : _fixStream.cashFlowPeriod()) {
-				if (null == period) continue;
-
-				double dblPayDate = period.pay();
-
-				if (dblValueDate > dblPayDate) continue;
-
-				double dblPeriodTurnDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
-					dblPayDate);
-
-				double dblPeriodDCF = period.couponDCF();
-
-				if (bFirstPeriod) {
-					bFirstPeriod = false;
-
-					if (dblValueDate > period.start()) dblPeriodDCF -= period.accrualDCF (dblValueDate);
-				}
-
-				double dblPay01 = dblPeriodDCF * dblPeriodTurnDF;
-
-				if (!prwc.addPredictorResponseWeight (dblPayDate, ratesLSMM.measureQuoteValue ("Rate") *
-					dblPay01) || !prwc.addDResponseWeightDManifestMeasure ("Rate", dblPayDate, dblPay01))
-					return false;
-			}
-
-			return true;
+			return new org.drip.product.calib.FixFloatQuoteSet (aLSS);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
-		return false;
-	}
-
-	private boolean generateFloatingLegPRWC (
-		final double dblValueDate,
-		final double dblInitialDate,
-		final org.drip.analytics.rates.RatesLSMM ratesLSMM,
-		final org.drip.state.estimator.PredictorResponseWeightConstraint prwc)
-	{
-		double dblMaturityDate = maturity().julian();
-
-		org.drip.analytics.rates.TurnListDiscountFactor tldf = ratesLSMM.turnsDiscount();
-
-		try {
-			double dblPeriodMaturityDF = null == tldf ? 1. : tldf.turnAdjust (dblValueDate,
-				dblMaturityDate);
-
-			return prwc.addPredictorResponseWeight (dblInitialDate, -1.) &&
-				prwc.addPredictorResponseWeight (dblMaturityDate, dblPeriodMaturityDF) &&
-					prwc.addDResponseWeightDManifestMeasure ("Rate", dblInitialDate, 0.) &&
-						prwc.addDResponseWeightDManifestMeasure ("Rate", dblMaturityDate, 0.);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return null;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
@@ -707,7 +651,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
-		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+		if (!ffqs.containsPV() && !ffqs.containsSwapRate() && !ffqs.containsDerivedParBasisSpread() &&
+			!ffqs.containsReferenceParBasisSpread())
+			return null;
 
 		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
@@ -718,9 +664,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
-			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
-
 			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+
+			if (ffqs.containsDerivedParBasisSpread()) fsqsDerived.setSpread (ffqs.derivedParBasisSpread());
+
+			if (ffqs.containsReferenceParBasisSpread())
+				fsqsReference.setCouponBasis (ffqs.referenceParBasisSpread());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -738,9 +687,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (null != prwcDerived && !prwc.absorb (prwcDerived)) return null;
+		if (!prwc.absorb (prwcDerived)) return null;
 
-		if (null != prwcReference && !prwc.absorb (prwcReference)) return null;
+		if (!prwc.absorb (prwcReference)) return null;
+
+		prwc.displayString (maturity().toString());
 
 		return !prwc.updateValue (dblPV) ? null : prwc;
 	}
@@ -762,7 +713,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
-		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+		if (!ffqs.containsPV() && !ffqs.containsSwapRate() && !ffqs.containsDerivedParBasisSpread() &&
+			!ffqs.containsReferenceParBasisSpread())
+			return null;
 
 		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
@@ -773,9 +726,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
-			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
-
 			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+
+			if (ffqs.containsDerivedParBasisSpread()) fsqsDerived.setSpread (ffqs.derivedParBasisSpread());
+
+			if (ffqs.containsReferenceParBasisSpread())
+				fsqsReference.setCouponBasis (ffqs.referenceParBasisSpread());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -793,9 +749,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (null != prwcDerived && !prwc.absorb (prwcDerived)) return null;
+		if (!prwc.absorb (prwcDerived)) return null;
 
-		if (null != prwcReference && !prwc.absorb (prwcReference)) return null;
+		if (!prwc.absorb (prwcReference)) return null;
 
 		return !prwc.updateValue (dblPV) ? null : prwc;
 	}
@@ -817,7 +773,9 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
 		org.drip.product.calib.FixFloatQuoteSet ffqs = (org.drip.product.calib.FixFloatQuoteSet) pqs;
 
-		if (!ffqs.containsPV() && !ffqs.containsDerivedBasis() && !ffqs.containsSwapRate()) return null;
+		if (!ffqs.containsPV() && !ffqs.containsSwapRate() && !ffqs.containsDerivedParBasisSpread() &&
+			!ffqs.containsReferenceParBasisSpread())
+			return null;
 
 		org.drip.state.representation.LatentStateSpecification[] aLSS = pqs.lss();
 
@@ -828,9 +786,12 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 
 			if (ffqs.containsPV()) dblPV = ffqs.pv();
 
-			if (ffqs.containsDerivedBasis()) fsqsDerived.setSpread (ffqs.derivedBasis());
-
 			if (ffqs.containsSwapRate()) fsqsReference.setCoupon (ffqs.swapRate());
+
+			if (ffqs.containsDerivedParBasisSpread()) fsqsDerived.setSpread (ffqs.derivedParBasisSpread());
+
+			if (ffqs.containsReferenceParBasisSpread())
+				fsqsReference.setCouponBasis (ffqs.referenceParBasisSpread());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -848,63 +809,11 @@ public class IRSComponent extends org.drip.product.definition.RatesComponent {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		if (null != prwcDerived && !prwc.absorb (prwcDerived)) return null;
+		if (!prwc.absorb (prwcDerived)) return null;
 
-		if (null != prwcReference && !prwc.absorb (prwcReference)) return null;
+		if (!prwc.absorb (prwcReference)) return null;
 
 		return !prwc.updateValue (dblPV) ? null : prwc;
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint generateCalibPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.state.representation.LatentStateMetricMeasure lsmm)
-	{
-		if (null == valParams  || null == lsmm || !(lsmm instanceof org.drip.analytics.rates.RatesLSMM) ||
-			!org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT.equalsIgnoreCase (lsmm.id()))
-			return null;
-
-		double dblValueDate = valParams.valueDate();
-
-		double dblMaturityDate = maturity().julian();
-
-		if (dblValueDate >= dblMaturityDate) return null;
-
-		double dblEffectiveDate = effective().julian();
-
-		double dblUpfront = 0.;
-		org.drip.analytics.rates.RatesLSMM ratesLSMM = (org.drip.analytics.rates.RatesLSMM) lsmm;
-		double dblInitialDate = dblEffectiveDate > dblValueDate ? dblEffectiveDate : dblValueDate;
-
-		java.lang.String[] astrManifestMeasure = ratesLSMM.manifestMeasures();
-
-		if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new java.lang.String[]
-			{"Upfront"}, false)) {
-			try {
-				dblUpfront = ratesLSMM.measureQuoteValue ("Upfront");
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
-			org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-		if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-			(ratesLSMM.quantificationMetric())) {
-			if (org.drip.quant.common.StringUtil.MatchInStringArray (astrManifestMeasure, new
-				java.lang.String[] {"Rate", "SwapRate", "ParRate", "ParSpread", "FairPremium"}, false)) {
-				if (!generateFixedLegPRWC (dblValueDate, dblInitialDate, ratesLSMM, prwc)) return null;
-
-				if (!generateFloatingLegPRWC (dblValueDate, dblInitialDate, ratesLSMM, prwc)) return null;
-			}
-		}
-
-		return prwc.updateValue (dblUpfront) ? prwc : null;
 	}
 
 	@Override public java.lang.String fieldDelimiter()

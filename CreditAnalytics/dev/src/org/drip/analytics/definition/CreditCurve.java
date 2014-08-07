@@ -528,7 +528,7 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	}
 
 	@Override public boolean setCCIS (
-		final org.drip.analytics.definition.CurveConstructionInputSet ccis)
+		final org.drip.analytics.input.CurveConstructionInputSet ccis)
 	{
 		return false;
 	}
@@ -536,32 +536,6 @@ public abstract class CreditCurve extends org.drip.service.stream.Serializer imp
 	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent[] calibComp()
 	{
 		return _aCalibInst;
-	}
-
-	@Override public org.drip.state.representation.LatentStateMetricMeasure[] lsmm()
-	{
-		if (null == _adblCalibQuote) return null;
-
-		int iNumLSMM = _adblCalibQuote.length;
-		org.drip.state.representation.LatentStateMetricMeasure[] aLSMM = new
-			org.drip.state.representation.LatentStateMetricMeasure[iNumLSMM];
-
-		if (0 == iNumLSMM) return null;
-
-		for (int i = 0; i < iNumLSMM; ++i) {
-			try {
-				aLSMM[i] = org.drip.state.representation.LatentStateMetricMeasure.Create
-					(org.drip.state.representation.LatentStateMetricMeasure.LATENT_STATE_SURVIVAL,
-						org.drip.state.representation.LatentStateMetricMeasure.QUANTIFICATION_METRIC_FORWARD_HAZARD_RATE,
-					_astrCalibMeasure[i], _adblCalibQuote[i]);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
-		return aLSMM;
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (

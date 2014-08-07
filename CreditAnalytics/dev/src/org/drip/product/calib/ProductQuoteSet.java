@@ -61,6 +61,48 @@ public abstract class ProductQuoteSet {
 	}
 
 	/**
+	 * Indicate if the requested Latent State Type is contained in the Quote Set
+	 * 
+	 * @param strLatentStateType The Requested Latent State Type
+	 * 
+	 * @return TRUE => The requested Latent State Type is contained in the Quote Set
+	 */
+
+	public boolean containsLatentStateType (
+		final java.lang.String strLatentStateType)
+	{
+		if (null == strLatentStateType || strLatentStateType.isEmpty()) return false;
+
+		for (org.drip.state.representation.LatentStateSpecification lss : _aLSS) {
+			if (lss.latentState().equalsIgnoreCase (strLatentStateType)) return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Indicate if the requested Latent State Quantification Metric is contained in the Quote Set
+	 * 
+	 * @param strLatentStateQuantificationMetric The Requested Latent State Quantification Metric
+	 * 
+	 * @return TRUE => The requested Latent State Quantification Metric is contained in the Quote Set
+	 */
+
+	public boolean containsLatentStateQuantificationMetric (
+		final java.lang.String strLatentStateQuantificationMetric)
+	{
+		if (null == strLatentStateQuantificationMetric || strLatentStateQuantificationMetric.isEmpty())
+			return false;
+
+		for (org.drip.state.representation.LatentStateSpecification lss : _aLSS) {
+			if (lss.latentStateQuantificationMetric().equalsIgnoreCase (strLatentStateQuantificationMetric))
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Indicates if the Specified External Latent State Specification is contained in the Array
 	 * 
 	 * @param strLatentState The Latent State
@@ -91,5 +133,38 @@ public abstract class ProductQuoteSet {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Set the named Manifest Measure Quote Value
+	 * 
+	 * @param strManifestMeasure The Manifest Measure
+	 * @param dblManifestMeasureQuote The Quote Value
+	 * 
+	 * @return TRUE => The Manifest Measure Quote Value successfully set
+	 */
+
+	public boolean set (
+		final java.lang.String strManifestMeasure,
+		final double dblManifestMeasureQuote)
+	{
+		if (null == strManifestMeasure || strManifestMeasure.isEmpty() ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblManifestMeasureQuote))
+			return false;
+
+		_mapQuote.put (strManifestMeasure, dblManifestMeasureQuote);
+
+		return true;
+	}
+
+	/**
+	 * Return the Set of Fields Available
+	 * 
+	 * @return The Set of Fields Available
+	 */
+
+	public java.util.Set<java.lang.String> fields()
+	{
+		return _mapQuote.keySet();
 	}
 }

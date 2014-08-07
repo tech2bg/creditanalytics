@@ -10,8 +10,7 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.FixedStream;
-import org.drip.product.cashflow.FloatingStream;
+import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.rates.*;
@@ -83,13 +82,14 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class FloatFloatForwardCurve {
 
+
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures,
@@ -103,7 +103,8 @@ public class FloatFloatForwardCurve {
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
 				null,
-				strCurrency);
+				strCurrency
+			);
 
 		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
 
@@ -150,7 +151,7 @@ public class FloatFloatForwardCurve {
 				-1.,
 				null,
 				lsFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Create (strCurrency + "-LIBOR-3M"),
 				false
 			);
 
@@ -197,48 +198,53 @@ public class FloatFloatForwardCurve {
 
 	private static final DiscountCurve MakeDC (
 		final JulianDate dtSpot,
-		final String strCurrency)
+		final String strCurrency,
+		final double dblBump)
 		throws Exception
 	{
 		/*
-		 * Construct the array of cash instruments and their quotes.
+		 * Construct the array of Deposit instruments and their quotes.
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
-			4,
+			new int[] {},
+			0,
 			strCurrency);
 
-		double[] adblCashQuote = new double[] {
-			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850, // Cash
-			0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+		double[] adblDepositQuote = new double[] {}; // Futures
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
 		 */
 
 		double[] adblSwapQuote = new double[] {
-			0.02604,    //  4Y
-			0.02808,    //  5Y
-			0.02983,    //  6Y
-			0.03136,    //  7Y
-			0.03268,    //  8Y
-			0.03383,    //  9Y
-			0.03488,    // 10Y
-			0.03583,    // 11Y
-			0.03668,    // 12Y
-			0.03833,    // 15Y
-			0.03854,    // 20Y
-			0.03672,    // 25Y
-			0.03510,    // 30Y
-			0.03266,    // 40Y
-			0.03145     // 50Y
+			0.00092 + dblBump,     //  6M
+			0.0009875 + dblBump,   //  9M
+			0.00122 + dblBump,     //  1Y
+			0.00223 + dblBump,     // 18M
+			0.00383 + dblBump,     //  2Y
+			0.00827 + dblBump,     //  3Y
+			0.01245 + dblBump,     //  4Y
+			0.01605 + dblBump,     //  5Y
+			0.02597 + dblBump      // 10Y
+		};
+
+		String[] astrSwapManifestMeasure = new String[] {
+			"SwapRate",     //  6M
+			"SwapRate",		//  9M
+			"SwapRate",     //  1Y
+			"SwapRate",     // 18M
+			"SwapRate",     //  2Y
+			"SwapRate",     //  3Y
+			"SwapRate",     //  4Y
+			"SwapRate",     //  5Y
+			"SwapRate"      // 10Y
 		};
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
+			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
 			adblSwapQuote,
 			strCurrency);
 
@@ -249,11 +255,14 @@ public class FloatFloatForwardCurve {
 		return ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			new ValuationParams (dtSpot, dtSpot, "USD"),
-			aCashComp,
-			adblCashQuote,
+			aDepositComp,
+			adblDepositQuote,
+			null,
 			aSwapComp,
 			adblSwapQuote,
-			true);
+			astrSwapManifestMeasure,
+			true
+		);
 	}
 
 	/*
@@ -418,7 +427,8 @@ public class FloatFloatForwardCurve {
 			aFFC,
 			strManifestMeasure,
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 
 		mapForward.put ("   CUBIC_FWD" + strBasisTenor, fcxMCubic);
 
@@ -510,13 +520,13 @@ public class FloatFloatForwardCurve {
 			CaseInsensitiveTreeMap<Double> mapKLKHyperValue = ffc.value (valParams, null, mktParamsKLKHyperFwd, null);
 
 			System.out.println (" " + strMaturityTenor + " =>  " +
-				FormatUtil.FormatDouble (fcxMCubic.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +
+				FormatUtil.FormatDouble (fcxMCubic.forward (dblFwdEndDate), 2, 2, 100.) + "  |  " +
 				FormatUtil.FormatDouble (mapCubicValue.get ("ReferenceParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (mapCubicValue.get ("DerivedParBasisSpread"), 2, 2, 1.) + "  |  " +
-				FormatUtil.FormatDouble (fcxMQuartic.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +
+				FormatUtil.FormatDouble (fcxMQuartic.forward (dblFwdEndDate), 2, 2, 100.) + "  |  " +
 				FormatUtil.FormatDouble (mapQuarticValue.get ("ReferenceParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (mapQuarticValue.get ("DerivedParBasisSpread"), 2, 2, 1.) + "  |  " +
-				FormatUtil.FormatDouble (fcxMKLKHyper.forward (strMaturityTenor), 2, 2, 100.) + "  |  " +
+				FormatUtil.FormatDouble (fcxMKLKHyper.forward (dblFwdEndDate), 2, 2, 100.) + "  |  " +
 				FormatUtil.FormatDouble (mapKLKHyperValue.get ("ReferenceParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (mapKLKHyperValue.get ("DerivedParBasisSpread"), 2, 2, 1.) + "  |  " +
 				FormatUtil.FormatDouble (iFreq * java.lang.Math.log (dc.df (dblFwdStartDate) / dc.df (dblFwdEndDate)), 1, 2, 100.) + "  |  " +
@@ -533,7 +543,6 @@ public class FloatFloatForwardCurve {
 	 * 	- Construct the Discount Curve using its instruments and quotes.
 	 * 	- Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
 	 * 	- Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
-	 * 	- Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
 	 * 	- Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
@@ -551,7 +560,7 @@ public class FloatFloatForwardCurve {
 		 * Construct the Discount Curve using its instruments and quotes
 		 */
 
-		DiscountCurve dc = MakeDC (dtToday, strCurrency);
+		DiscountCurve dc = MakeDC (dtToday, strCurrency, 0.);
 
 		System.out.println ("\n-----------------------------------------------------------------------------------------------------------------------------");
 
@@ -620,41 +629,6 @@ public class FloatFloatForwardCurve {
 				0.00022,    // 20Y
 				0.00020,    // 25Y
 				0.00018     // 30Y
-				}
-			);
-
-		/*
-		 * Build and run the sampling for the 6M-6M Tenor Basis Swap from its instruments and quotes.
-		 */
-
-		System.out.println ("\n-----------------------------------------------------------------------------------------------------------------------------");
-
-		System.out.println ("---------------------------------------------------    6M-6M Basis Swap    --------------------------------------------------");
-
-		xM6MBasisSample (
-			dtToday,
-			strCurrency,
-			dc,
-			6,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
-			strManifestMeasure,
-			new double[] {
-				0.00000,    //  1Y
-				0.00000,    //  2Y
-				0.00000,    //  3Y
-				0.00000,    //  4Y
-				0.00000,    //  5Y
-				0.00000,    //  6Y
-				0.00000,    //  7Y
-				0.00000,    //  8Y
-				0.00000,    //  9Y
-				0.00000,    // 10Y
-				0.00000,    // 11Y
-				0.00000,    // 12Y
-				0.00000,    // 15Y
-				0.00000,    // 20Y
-				0.00000,    // 25Y
-				0.00000     // 30Y
 				}
 			);
 

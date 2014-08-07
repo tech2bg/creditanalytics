@@ -56,8 +56,8 @@ public class IBOR6MCubicPolyVanilla {
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
-			strCurrency,
-			false);
+			strCurrency
+		);
 
 		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
@@ -199,7 +199,7 @@ public class IBOR6MCubicPolyVanilla {
 			"ParForwardRate",
 			astrFixFloatTenor,
 			adblFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -209,13 +209,13 @@ public class IBOR6MCubicPolyVanilla {
 			"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
 			bPrintMetric);
 
-		if (bPrintMetric)
+		/* if (bPrintMetric)
 			IBOR.ForwardJack (
 				dtValue,
 				"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
 				fc,
 				"DerivedParBasisSpread"
-			);
+			); */
 
 		return fc;
 	}
