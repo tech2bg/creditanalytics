@@ -47,7 +47,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class DepositComponent extends org.drip.product.definition.RatesComponent {
+public class DepositComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private double _dblNotional = 100.;
 	private java.lang.String _strCode = "";
 	private java.lang.String _strCalendar = "";
@@ -371,7 +371,7 @@ public class DepositComponent extends org.drip.product.definition.RatesComponent
 
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
-		return org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (_dblEffective, _dblMaturity,
+		return org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (_dblEffective, _dblMaturity,
 			_strDayCount, _strCalendar, _strCurrency);
 	}
 

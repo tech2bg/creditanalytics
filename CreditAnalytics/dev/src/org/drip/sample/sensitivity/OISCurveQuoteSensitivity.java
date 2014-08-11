@@ -6,13 +6,13 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.rates.*;
-import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
@@ -137,17 +137,17 @@ public class OISCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightIndexFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -170,7 +170,7 @@ public class OISCurveQuoteSensitivity {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -191,7 +191,7 @@ public class OISCurveQuoteSensitivity {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -207,7 +207,7 @@ public class OISCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -215,12 +215,12 @@ public class OISCurveQuoteSensitivity {
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrStartTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -243,7 +243,7 @@ public class OISCurveQuoteSensitivity {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -264,7 +264,7 @@ public class OISCurveQuoteSensitivity {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -276,7 +276,7 @@ public class OISCurveQuoteSensitivity {
 
 	private static final LatentStateStretchSpec OISStretch (
 		final String strName,
-		final IRSComponent[] aOIS,
+		final FixFloatComponent[] aOIS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -320,7 +320,7 @@ public class OISCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent MakeOIS (
+	/* private static final FixFloatComponent MakeOIS (
 		final JulianDate dtEffective,
 		final String strTenor,
 		final double dblCoupon,
@@ -373,43 +373,12 @@ public class OISCurveQuoteSensitivity {
 			lsFixedPeriods
 		);
 
-		IRSComponent ois = new IRSComponent (fixStream, floatStream);
+		FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 		ois.setPrimaryCode ("OIS." + dtMaturity.toString() + "." + strCurrency);
 
 		return ois;
-	}
-
-	private static final void TenorJack (
-		final JulianDate dtStart,
-		final String strTenor,
-		final DiscountCurve dc,
-		final String strCurrency)
-		throws Exception
-	{
-		IRSComponent oisBespoke = MakeOIS (
-			dtStart,
-			strTenor,
-			0.01,
-			strCurrency);
-
-		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (oisBespoke.maturity(), "PV");
-
-		System.out.println (strTenor + " => " + wjDFQuoteBespokeMat.displayString());
-	}
-
-	private static final void Forward6MRateJack (
-		final JulianDate dtStart,
-		final String strStartTenor,
-		final DiscountCurve dc,
-		final String strCurrency)
-	{
-		JulianDate dtBegin = dtStart.addTenor (strStartTenor);
-
-		WengertJacobian wjForwardRate = dc.jackDForwardDManifestMeasure (dtBegin, "6M", "PV", 0.5);
-
-		System.out.println ("[" + dtBegin + " | 6M] => " + wjForwardRate.displayString());
-	}
+	} */
 
 	/*
 	 * This sample demonstrates the calculation of the discount curve sensitivity to the calibration
@@ -476,7 +445,7 @@ public class OISCurveQuoteSensitivity {
 			0.00074     //   1M
 		};
 
-		IRSComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+		FixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[]
 				{"1W", "2W", "3W", "1M"},
@@ -506,7 +475,7 @@ public class OISCurveQuoteSensitivity {
 			-0.00014     //   5M x 1M
 		};
 
-		IRSComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+		FixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
 			new java.lang.String[] {"1M", "1M", "1M", "1M", "1M"},
@@ -549,7 +518,7 @@ public class OISCurveQuoteSensitivity {
 			0.02038     //  30Y
 		};
 
-		IRSComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+		FixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[]
 				{"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
@@ -798,73 +767,6 @@ public class OISCurveQuoteSensitivity {
 
 			System.out.println (aLongEndOISComp[i].maturity() + " => " + wjDFQuote.displayString());
 		}
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t     COMPONENT-BY-COMPONENT QUOTE JACOBIAN");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		WengertJacobian wj = dc.compJackDPVDManifestMeasure (dtSpot);
-
-		System.out.println (wj.displayString());
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t     BESPOKE 35Y OIS QUOTE JACOBIAN");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		IRSComponent ois35Y = MakeOIS (
-			dtSpot,
-			"35Y",
-			0.01,
-			strCurrency
-		);
-
-		WengertJacobian wjOISBespokeQuoteJack = ois35Y.jackDDirtyPVDManifestMeasure (
-			valParams,
-			null,
-			MarketParamsBuilder.Create (dc, null, null, null, null, null, null, null),
-			null);
-
-		System.out.println (wjOISBespokeQuoteJack.displayString());
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t     BESPOKE OIS MATURITY QUOTE JACOBIAN");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		TenorJack (dtSpot, "30Y", dc, strCurrency);
-
-		TenorJack (dtSpot, "32Y", dc, strCurrency);
-
-		TenorJack (dtSpot, "34Y", dc, strCurrency);
-
-		TenorJack (dtSpot, "36Y", dc, strCurrency);
-
-		TenorJack (dtSpot, "38Y", dc, strCurrency);
-
-		TenorJack (dtSpot, "40Y", dc, strCurrency);
-
-		System.out.println ("\n\t----------------------------------------------------------------");
-
-		System.out.println ("\t     OIS CURVE IMPLIED 6M FORWARD RATE QUOTE JACOBIAN");
-
-		System.out.println ("\t----------------------------------------------------------------");
-
-		Forward6MRateJack (dtSpot, "1D", dc, strCurrency);
-
-		Forward6MRateJack (dtSpot, "3M", dc, strCurrency);
-
-		Forward6MRateJack (dtSpot, "6M", dc, strCurrency);
-
-		Forward6MRateJack (dtSpot, "1Y", dc, strCurrency);
-
-		Forward6MRateJack (dtSpot, "2Y", dc, strCurrency);
-
-		Forward6MRateJack (dtSpot, "5Y", dc, strCurrency);
 	}
 
 	public static final void main (

@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -102,7 +103,7 @@ public class STIRVolCorrAnalysis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -125,7 +126,7 @@ public class STIRVolCorrAnalysis {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -146,7 +147,7 @@ public class STIRVolCorrAnalysis {
 				lsFixedPeriods
 			);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent (fixStream,
 				floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
@@ -272,7 +273,7 @@ public class STIRVolCorrAnalysis {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsReferenceFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -299,7 +300,7 @@ public class STIRVolCorrAnalysis {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -502,7 +503,7 @@ public class STIRVolCorrAnalysis {
 	{
 		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
 
-		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strTenor,
 			null,
@@ -525,7 +526,7 @@ public class STIRVolCorrAnalysis {
 			false
 		);
 
-		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strTenor,
 			null,

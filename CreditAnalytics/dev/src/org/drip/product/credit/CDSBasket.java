@@ -478,7 +478,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.Period p : _lPeriods) {
+			for (org.drip.analytics.period.CashflowPeriod p : _lPeriods) {
 				if (null == p) continue;
 
 				if (bFirstEntry)

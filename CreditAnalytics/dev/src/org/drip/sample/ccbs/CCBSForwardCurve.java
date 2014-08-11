@@ -7,11 +7,12 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.cashflow.FloatingStream;
-import org.drip.product.definition.RatesComponent;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fx.*;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
@@ -22,8 +23,7 @@ import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
-import org.drip.state.inference.LatentStateStretchSpec;
-import org.drip.state.inference.LinearLatentStateCalibrator;
+import org.drip.state.inference.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -82,7 +82,7 @@ public class CCBSForwardCurve {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -109,7 +109,7 @@ public class CCBSForwardCurve {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -266,7 +266,7 @@ public class CCBSForwardCurve {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCCSP.length; ++i) {
-			RatesComponent rc = aCCSP[i].derivedComponent();
+			CalibratableFixedIncomeComponent rc = aCCSP[i].derivedComponent();
 
 			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, mktParams, null);
 

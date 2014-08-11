@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -182,7 +183,7 @@ public class IBOR {
 			 * The Fixed Leg
 			 */
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -207,7 +208,7 @@ public class IBOR {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -266,7 +267,7 @@ public class IBOR {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsReferenceFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -293,7 +294,7 @@ public class IBOR {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -549,7 +550,7 @@ public class IBOR {
 
 				for (int i = 0; i < aFixFloat.length; ++i)
 					System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
-						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, mktParams, null, strFixFloatCalibMeasure), 1, 2, 0.01) +
+						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, mktParams, null, strFixFloatCalibMeasure), 1, 2, 100.) +
 							"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
 								FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
 			}

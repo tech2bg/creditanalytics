@@ -210,7 +210,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						adblRate[i + 15] = java.lang.Double.NaN;
 
 						try {
-							_aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS
+							_aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat
 								(_dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i +
 								    15]), 0., 2, "Act/360", 0., 4, "Act/360", _strCurrency, _strCurrency);
 						} catch (java.lang.Exception e) {

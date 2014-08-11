@@ -324,8 +324,8 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.analytics.date.JulianDate dtStart = epoch().addDays (2);
 
-		org.drip.product.definition.RatesComponent irs =
-			org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtStart, new
+		org.drip.product.definition.CalibratableFixedIncomeComponent irs =
+			org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (dtStart, new
 				org.drip.analytics.date.JulianDate (dblDate), 0., 2, "Act/360", 0., 4, "Act/360", currency(),
 					currency());
 

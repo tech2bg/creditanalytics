@@ -115,7 +115,7 @@ public class BondBasketAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateFixFloat (
 				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				0.,

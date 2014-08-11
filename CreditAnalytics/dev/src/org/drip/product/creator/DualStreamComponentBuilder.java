@@ -87,15 +87,15 @@ public class DualStreamComponentBuilder {
 	/**
 	 * Make the DualStreamComponent Instance from the Reference and the Derived Component Streams
 	 * 
-	 * @param rcReference The Reference RatesComponent Stream
-	 * @param rcDerived The Derived RatesComponent Stream
+	 * @param rcReference The Reference CalibratableFixedIncomeComponent Stream
+	 * @param rcDerived The Derived CalibratableFixedIncomeComponent Stream
 	 * 
 	 * @return The DualStreamComponent Instance
 	 */
 
 	public static final org.drip.product.cashflow.DualStreamComponent MakeDualStream (
-		final org.drip.product.definition.RatesComponent rcReference,
-		final org.drip.product.definition.RatesComponent rcDerived)
+		final org.drip.product.definition.CalibratableFixedIncomeComponent rcReference,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent rcDerived)
 	{
 		if (null == rcReference || null == rcDerived) return null;
 

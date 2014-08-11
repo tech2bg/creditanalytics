@@ -17,6 +17,7 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
  * Credit Product Imports
  */
 
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -113,7 +114,7 @@ public class MultiLegSwapAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateFixFloat (
 				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				0.,
@@ -151,7 +152,7 @@ public class MultiLegSwapAPI {
 
 		FixedStream[] aFixedStream = new FixedStream[3];
 
-		List<CashflowPeriod> lsFixedPeriods3Y = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixedPeriods3Y = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			"3Y",
 			null,
@@ -172,7 +173,7 @@ public class MultiLegSwapAPI {
 			lsFixedPeriods3Y
 		);
 
-		List<CashflowPeriod> lsFixedPeriods5Y = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixedPeriods5Y = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			"5Y",
 			null,
@@ -193,7 +194,7 @@ public class MultiLegSwapAPI {
 			lsFixedPeriods5Y
 		);
 
-		List<CashflowPeriod> lsFixedPeriods7Y = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixedPeriods7Y = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			"7Y",
 			null,
@@ -220,7 +221,7 @@ public class MultiLegSwapAPI {
 
 		FloatingStream[] aFloatStream = new FloatingStream[3];
 
-		List<CashflowPeriod> lsFloatPeriods3Y = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods3Y = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			"3Y",
 			null,
@@ -243,7 +244,7 @@ public class MultiLegSwapAPI {
 			false
 		);
 
-		List<CashflowPeriod> lsFloatPeriods5Y = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods5Y = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			"5Y",
 			null,
@@ -266,7 +267,7 @@ public class MultiLegSwapAPI {
 			false
 		);
 
-		List<CashflowPeriod> lsFloatPeriods7Y = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods7Y = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			"7Y",
 			null,

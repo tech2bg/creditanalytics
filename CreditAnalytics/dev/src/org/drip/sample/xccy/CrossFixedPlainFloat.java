@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
@@ -70,7 +71,7 @@ public class CrossFixedPlainFloat {
 		 * The Fixed Leg
 		 */
 
-		List<CashflowPeriod> lsFixPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strTenor,
 			null,
@@ -97,7 +98,7 @@ public class CrossFixedPlainFloat {
 		 * The Derived Leg
 		 */
 
-		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strTenor,
 			null,

@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -124,17 +125,17 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightIndexFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -157,7 +158,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -178,7 +179,7 @@ public class OISProduct {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -194,17 +195,17 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightFundFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightFundFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GenerateDailyPeriod (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
@@ -225,7 +226,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -246,7 +247,7 @@ public class OISProduct {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -262,7 +263,7 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -270,12 +271,12 @@ public class OISProduct {
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrStartTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -298,7 +299,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -319,7 +320,7 @@ public class OISProduct {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -335,7 +336,7 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightFundFutureFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightFundFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -343,12 +344,12 @@ public class OISProduct {
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrStartTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GenerateDailyPeriod (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
@@ -369,7 +370,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -390,7 +391,7 @@ public class OISProduct {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -402,7 +403,7 @@ public class OISProduct {
 
 	private static final LatentStateStretchSpec OISStretch (
 		final String strName,
-		final IRSComponent[] aOIS,
+		final FixFloatComponent[] aOIS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -490,7 +491,7 @@ public class OISProduct {
 			0.00074     //   1M
 		};
 
-		IRSComponent[] aShortEndOISComp = bOvernightIndex ?
+		FixFloatComponent[] aShortEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtToday,
 				new java.lang.String[]
@@ -526,7 +527,7 @@ public class OISProduct {
 			-0.00014     //   5M x 1M
 		};
 
-		IRSComponent[] aOISFutureComp = bOvernightIndex ?
+		FixFloatComponent[] aOISFutureComp = bOvernightIndex ?
 			OvernightIndexFutureFromMaturityTenor (
 				dtToday,
 				new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
@@ -575,7 +576,7 @@ public class OISProduct {
 			0.02038     //  30Y
 		};
 
-		IRSComponent[] aLongEndOISComp = bOvernightIndex ?
+		FixFloatComponent[] aLongEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtToday,
 				new java.lang.String[]
@@ -750,7 +751,7 @@ public class OISProduct {
 
 		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 
-		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtCustomOISStart.julian(),
 			"4M",
 			null,
@@ -773,7 +774,7 @@ public class OISProduct {
 			false
 		);
 
-		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtCustomOISStart.julian(),
 			"4M",
 			null,
@@ -794,7 +795,7 @@ public class OISProduct {
 			lsFixedPeriods
 		);
 
-		IRSComponent ois = new IRSComponent (fixStream, floatStream);
+		FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 		CurveSurfaceQuoteSet mktParamsIndex = MarketParamsBuilder.Create (dcIndex, null, null, null, null, null, null);
 

@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
@@ -127,17 +128,17 @@ public class CustomOISCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightIndexFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -160,7 +161,7 @@ public class CustomOISCurveBuilder {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -181,7 +182,7 @@ public class CustomOISCurveBuilder {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -197,7 +198,7 @@ public class CustomOISCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -205,12 +206,12 @@ public class CustomOISCurveBuilder {
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aOIS = new IRSComponent[astrStartTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -233,7 +234,7 @@ public class CustomOISCurveBuilder {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -254,7 +255,7 @@ public class CustomOISCurveBuilder {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -266,7 +267,7 @@ public class CustomOISCurveBuilder {
 
 	private static final LatentStateStretchSpec OISStretch (
 		final String strName,
-		final IRSComponent[] aOIS,
+		final FixFloatComponent[] aOIS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -352,7 +353,7 @@ public class CustomOISCurveBuilder {
 			0.00074     //   1M
 		};
 
-		IRSComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+		FixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"1W", "2W", "3W", "1M"
@@ -383,7 +384,7 @@ public class CustomOISCurveBuilder {
 			-0.00014     //   5M x 1M
 		};
 
-		IRSComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+		FixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"1M", "2M", "3M", "4M", "5M"
@@ -430,7 +431,7 @@ public class CustomOISCurveBuilder {
 			0.02038     //  30Y
 		};
 
-		IRSComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+		FixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"

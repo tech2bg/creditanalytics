@@ -437,48 +437,10 @@ public class BondLiveAndEODAPI {
 
 		System.out.println ("Next Exercise Type: " + org.drip.analytics.support.AnalyticsHelper.WorkoutTypeToString (nei.workoutType()));
 
-		if (bond.isFloater()) {
-			System.out.println ("Acc Start       Acc End     Pay Date    Index   Spread   Cpn DCF    Pay01    Surv01");
-
-			System.out.println ("---------      ---------    ---------   ------  ------   -------- --------- --------");
-
-			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, mktParams))
-				System.out.println (
-					JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.indexRate(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.spread(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.survival (p.pay()), 1, 4, 1.)
-				);
-		} else {
-			System.out.println ("Acc Start       Acc End     Pay Date   Cpn DCF    Pay01    Surv01");
-
-			System.out.println ("---------      ---------    ---------  -------- --------- --------");
-
-			for (CashflowPeriodCurveFactors p : bond.getCouponFlow (valParams, pricerParams, mktParams))
-				System.out.println (
-					JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (cc.survival (p.pay()), 1, 4, 1.)
-				);
-		}
-
-		System.out.println ("Loss Start     Loss End      Pay Date      Cpn    Notl     Rec    EffDF    StartSurv  EndSurv");
-
-		System.out.println ("----------     --------      --------      ---    ----     ---    -----    ---------  -------");
-
-		for (LossPeriodCurveFactors dp : bond.getLossFlow (valParams, pricerParams, mktParams))
+		for (LossQuadratureMetrics dp : bond.getLossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
 				JulianDate.fromJulian (dp.start()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (dp.end()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (dp.pay()) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dp.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +

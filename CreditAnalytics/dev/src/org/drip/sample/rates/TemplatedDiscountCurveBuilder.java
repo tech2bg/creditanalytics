@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.cashflow.*;
@@ -99,16 +100,16 @@ public class TemplatedDiscountCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		IRSComponent[] aIRS = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -131,7 +132,7 @@ public class TemplatedDiscountCurveBuilder {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -152,7 +153,7 @@ public class TemplatedDiscountCurveBuilder {
 				lsFixedPeriods
 			);
 
-			IRSComponent irs = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
 
 			irs.setPrimaryCode ("IRS." + astrMaturityTenor + "." + strCurrency);
 
@@ -225,23 +226,23 @@ public class TemplatedDiscountCurveBuilder {
 			dtSpot,
 			strCurrency,
 			new int[] {
-				1, 2, 7, 14, 30, 60, 90, 180, 270, 360, 450, 540, 630, 720
+				2, 7, 14, 30, 60, 90, 180, 270, 360, 450, 540, 630, 720
 			}
 		);
 
 		double[] adblDepositQuote = new double[] {
-			0.0013, 0.0017, 0.0017, 0.0018, 0.0020, 0.0023, 0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160
+			0.0017, 0.0017, 0.0018, 0.0020, 0.0023, 0.0027, 0.0032, 0.0041, 0.0054, 0.0077, 0.0104, 0.0134, 0.0160
 		};
 
 		String[] astrDepositManifestMeasure = new String[] {
-			"Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate"
+			"Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate"
 		};
 
 		/*
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		IRSComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {

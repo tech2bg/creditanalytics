@@ -97,7 +97,8 @@ public class CCBSStretchBuilder {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
 				(valParams, null, mktParams, null);
 
-			org.drip.product.definition.RatesComponent rcReference = aCCSP[i].referenceComponent();
+			org.drip.product.definition.CalibratableFixedIncomeComponent rcReference =
+				aCCSP[i].referenceComponent();
 
 			java.lang.String strReferenceComponentName = rcReference.name();
 
@@ -205,7 +206,8 @@ public class CCBSStretchBuilder {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
 				(valParams, null, mktParams, null);
 
-			org.drip.product.definition.RatesComponent rcReference = aCCSP[i].referenceComponent();
+			org.drip.product.definition.CalibratableFixedIncomeComponent rcReference =
+				aCCSP[i].referenceComponent();
 
 			java.lang.String strReferenceComponentName = rcReference.name();
 

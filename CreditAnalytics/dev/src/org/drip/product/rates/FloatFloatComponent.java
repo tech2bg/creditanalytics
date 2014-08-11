@@ -33,7 +33,7 @@ package org.drip.product.rates;
  * FloatFloatComponent contains the implementation of the Float-Float Index Basis Swap product
  *  contract/valuation details. It is made off one Reference Floating stream and one Derived floating stream.
  *  It exports the following functionality:
- *  - Standard/Custom Constructor for the IRSComponent
+ *  - Standard/Custom Constructor for the FloatFloatComponent
  *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
  *  - Coupon/Notional Outstanding as well as schedules
  *  - Retrieve the constituent floating streams
@@ -260,12 +260,12 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		return null;
 	}
 
-	@Override public org.drip.product.definition.RatesComponent referenceStream()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent referenceStream()
 	{
 		return _floatReference;
 	}
 
-	@Override public org.drip.product.definition.RatesComponent derivedStream()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent derivedStream()
 	{
 		return _floatDerived;
 	}

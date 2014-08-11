@@ -41,21 +41,6 @@ package org.drip.product.definition;
 public abstract class CreditComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 
 	/**
-	 * Get the coupon flow for the credit component
-	 * 
-	 * @param valParams ValuationParams
-	 * @param pricerParams PricerParams
-	 * @param csqs Component Market Params
-	 * 
-	 * @return List of ProductCouponPeriodCurveMeasures
-	 */
-
-	public abstract java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> getCouponFlow (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
-
-	/**
 	 * Generate the loss flow for the credit component based on the pricer parameters
 	 * 
 	 * @param valParams ValuationParams
@@ -65,7 +50,7 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	 * @return List of ProductLossPeriodCurveMeasures
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> getLossFlow (
+	public abstract java.util.List<org.drip.analytics.period.LossQuadratureMetrics> getLossFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);

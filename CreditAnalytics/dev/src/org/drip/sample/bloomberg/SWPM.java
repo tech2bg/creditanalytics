@@ -2,7 +2,7 @@
 package org.drip.sample.bloomberg;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.Period;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.*;
@@ -98,7 +98,7 @@ public class SWPM {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			org.drip.product.rates.IRSComponent irs = RatesStreamBuilder.CreateIRS (
+			org.drip.product.rates.FixFloatComponent irs = RatesStreamBuilder.CreateFixFloat (
 				dtEffective,
 				astrTenor[i],
 				adblCoupon[i],
@@ -235,7 +235,7 @@ public class SWPM {
 		 * Build the Fixed Receive Stream
 		 */
 
-		org.drip.product.rates.IRSComponent swap = RatesStreamBuilder.CreateIRS (
+		org.drip.product.rates.FixFloatComponent swap = RatesStreamBuilder.CreateFixFloat (
 			dtEffective,
 			"5Y",
 			0.,
@@ -260,7 +260,7 @@ public class SWPM {
 
 		LatentStateFixingsContainer lsfc = new LatentStateFixingsContainer();
 
-		lsfc.add (dtEffective, swap.getFloatStream().forwardLabel()[0], dblFixing);
+		lsfc.add (dtEffective, swap.derivedStream().forwardLabel()[0], dblFixing);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 
@@ -292,7 +292,7 @@ public class SWPM {
 		 * Set up the fixings bumped market parameters - these use base discount curve and the bumped fixing
 		 */
 
-		lsfc.add (dtEffective, swap.getFloatStream().forwardLabel()[0], dblFixing + 0.0001);
+		lsfc.add (dtEffective, swap.derivedStream().forwardLabel()[0], dblFixing + 0.0001);
 
 		CurveSurfaceQuoteSet mktParamsFixingsBumped = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 
@@ -314,7 +314,7 @@ public class SWPM {
 
 		DiscountCurve dcBumped = MakeDC (dtValue, "USD", -0.0001);
 
-		lsfc.add (dtEffective, swap.getFloatStream().forwardLabel()[0], dblFixing - 0.0001);
+		lsfc.add (dtEffective, swap.derivedStream().forwardLabel()[0], dblFixing - 0.0001);
 
 		CurveSurfaceQuoteSet mktParamsRateBumped = MarketParamsBuilder.Create (dcBumped, null, null, null, null, null, lsfc);
 
@@ -332,7 +332,7 @@ public class SWPM {
 
 		System.out.println ("\n---- Fixed Cashflow ----\n");
 
-		for (Period p : swap.getFixedStream().cashFlowPeriod())
+		for (CashflowPeriod p : swap.referenceStream().cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
@@ -348,7 +348,7 @@ public class SWPM {
 
 		System.out.println ("\n---- Floating Cashflow ----\n");
 
-		for (Period p : swap.getFloatStream().cashFlowPeriod())
+		for (CashflowPeriod p : swap.derivedStream().cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +

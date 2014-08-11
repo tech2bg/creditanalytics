@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.BlackScholesAlgorithm;
@@ -102,7 +103,7 @@ public class DeterministicVolBlackScholes {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -125,7 +126,7 @@ public class DeterministicVolBlackScholes {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -146,7 +147,7 @@ public class DeterministicVolBlackScholes {
 				lsFixedPeriods
 			);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent (fixStream,
 				floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);

@@ -133,15 +133,16 @@ public class EDFutureBuilder {
 	 * @return EDF product
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateEDF (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateEDF (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final java.lang.String strIR)
 	{
 		try {
-			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
-				(dtEffective, dtMaturity, org.drip.state.identifier.ForwardLabel.Create (strIR, "LIBOR",
-					"3M"), strIR, "Act/360", strIR);
+			org.drip.product.definition.CalibratableFixedIncomeComponent edf = new
+				org.drip.product.rates.EDFComponent (dtEffective, dtMaturity,
+					org.drip.state.identifier.ForwardLabel.Create (strIR, "LIBOR", "3M"), strIR, "Act/360",
+						strIR);
 
 			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
 
@@ -163,15 +164,16 @@ public class EDFutureBuilder {
 	 * @return EDF product
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateEDF (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateEDF (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strTenor,
 		final java.lang.String strIR)
 	{
 		try {
-			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
-				(dtEffective, dtEffective.addTenor (strTenor), org.drip.state.identifier.ForwardLabel.Create
-					(strIR, "LIBOR", strTenor), strIR, "Act/360", strIR);
+			org.drip.product.definition.CalibratableFixedIncomeComponent edf = new
+				org.drip.product.rates.EDFComponent (dtEffective, dtEffective.addTenor (strTenor),
+					org.drip.state.identifier.ForwardLabel.Create (strIR, "LIBOR", strTenor), strIR,
+						"Act/360", strIR);
 
 			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
 
@@ -193,14 +195,14 @@ public class EDFutureBuilder {
 	 * @return EDF product
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateEDF (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateEDF (
 		final java.lang.String strFullEDCode,
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strIR)
 	{
 		try {
-			org.drip.product.definition.RatesComponent edf = new org.drip.product.rates.EDFComponent
-				(strFullEDCode, dt, strIR);
+			org.drip.product.definition.CalibratableFixedIncomeComponent edf = new
+				org.drip.product.rates.EDFComponent (strFullEDCode, dt, strIR);
 
 			edf.setPrimaryCode (strFullEDCode);
 
@@ -220,7 +222,7 @@ public class EDFutureBuilder {
 	 * @return EDFuture Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent FromByteArray (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent FromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;

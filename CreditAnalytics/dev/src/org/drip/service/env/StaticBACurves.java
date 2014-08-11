@@ -544,7 +544,7 @@ public class StaticBACurves {
 			astrCalibMeasure[i + 15] = "Rate";
 
 			try {
-				if (null == (aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS
+				if (null == (aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat
 					(dt.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., 2,
 						"Act/360", 0., 4, "Act/360", strCurrency, strCurrency)))
 					return false;

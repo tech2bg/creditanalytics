@@ -114,7 +114,7 @@ public class BondAnalyticsAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateFixFloat (
 				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				0.,
@@ -380,7 +380,7 @@ public class BondAnalyticsAPI {
 			 * Generates and displays the coupon period details for the bonds
 			 */
 
-			for (Period p : aBond[i].cashFlowPeriod())
+			for (CashflowPeriod p : aBond[i].cashFlowPeriod())
 				System.out.println (
 					JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +

@@ -67,7 +67,7 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
 
 		try {
@@ -104,9 +104,9 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward (dtEffective.julian(),
 				dtMaturity.julian(), null, iFreq, strDayCount, false,
-					org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT, true, strCalendar, strCurrency);
+					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, strCurrency);
 
 		try {
 			return new org.drip.product.cashflow.FixedStream (strCurrency, null, dblCoupon, 1., null,
@@ -144,7 +144,7 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency);
 
 		try {
@@ -184,63 +184,14 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward (dtEffective.julian(),
 				dtMaturity.julian(), null, iFreq, strDayCount, false,
-					org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT, true, strCalendar, strCurrency);
+					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, strCurrency);
 
 		try {
 			return new org.drip.product.cashflow.FloatingStream (strCurrency, null, dblSpread, -1., null,
 				lsCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 /
 					iFreq) + "M"), bIsReference);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create an IRS product from effective date, tenor, coupon, and IR curve name/rate index
-	 * 
-	 * @param dtEffective JulianDate effective
-	 * @param strMaturityTenor Maturity Tenor
-	 * @param dblFixedCoupon Fixed Leg Coupon
-	 * @param iFixedFreq Fixed Leg Frequency
-	 * @param strFixedDC Fixed Leg Day Count Convention
-	 * @param dblFloatSpread Floating Leg Spread
-	 * @param iFloatFreq Floating Leg Frequency
-	 * @param strFloatDC Floating Leg Day Count Convention
-	 * @param strCalendar Optional Holiday Calendar for coupon accrual
-	 * @param strCurrency Currency
-	 * 
-	 * @return IRS product Instance
-	 */
-
-	public static final org.drip.product.rates.IRSComponent CreateIRS (
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final java.lang.String strMaturityTenor,
-		final double dblFixedCoupon,
-		final int iFixedFreq,
-		final java.lang.String strFixedDC,
-		final double dblFloatSpread,
-		final int iFloatFreq,
-		final java.lang.String strFloatDC,
-		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
-	{
-		try {
-			org.drip.product.cashflow.FixedStream fixStream = CreateFixedStream (dtEffective, strMaturityTenor,
-				dblFixedCoupon, iFixedFreq, strFixedDC, strCalendar, strCurrency);
-
-			org.drip.product.cashflow.FloatingStream floatStream = CreateIBORFloatingStream (dtEffective,
-				strMaturityTenor, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
-
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
-
-			irs.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
-
-			return irs;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -265,7 +216,7 @@ public class RatesStreamBuilder {
 	 * @return IRS product Instance
 	 */
 
-	public static final org.drip.product.rates.IRSComponent CreateIRS (
+	public static final org.drip.product.rates.FixFloatComponent CreateFixFloat (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final double dblFixedCoupon,
@@ -284,12 +235,61 @@ public class RatesStreamBuilder {
 			org.drip.product.cashflow.FloatingStream floatStream = CreateIBORFloatingStream (dtEffective,
 				dtMaturity, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+				(fixStream, floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity + "." + strCurrency);
 
 			return irs;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create a Fix-Float Component Instance from effective date, tenor, coupon, and IR curve name/rate index
+	 * 
+	 * @param dtEffective JulianDate effective
+	 * @param strMaturityTenor Maturity Tenor
+	 * @param dblFixedCoupon Fixed Leg Coupon
+	 * @param iFixedFreq Fixed Leg Frequency
+	 * @param strFixedDC Fixed Leg Day Count Convention
+	 * @param dblFloatSpread Floating Leg Spread
+	 * @param iFloatFreq Floating Leg Frequency
+	 * @param strFloatDC Floating Leg Day Count Convention
+	 * @param strCalendar Optional Holiday Calendar for coupon accrual
+	 * @param strCurrency Currency
+	 * 
+	 * @return The Fix-Float Component Instance
+	 */
+
+	public static final org.drip.product.rates.FixFloatComponent CreateFixFloat (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String strMaturityTenor,
+		final double dblFixedCoupon,
+		final int iFixedFreq,
+		final java.lang.String strFixedDC,
+		final double dblFloatSpread,
+		final int iFloatFreq,
+		final java.lang.String strFloatDC,
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency)
+	{
+		try {
+			org.drip.product.cashflow.FixedStream fixStream = CreateFixedStream (dtEffective,
+				strMaturityTenor, dblFixedCoupon, iFixedFreq, strFixedDC, strCalendar, strCurrency);
+
+			org.drip.product.cashflow.FloatingStream floatStream = CreateIBORFloatingStream (dtEffective,
+				strMaturityTenor, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
+
+			org.drip.product.rates.FixFloatComponent fixFloatComp = new
+				org.drip.product.rates.FixFloatComponent (fixStream, floatStream);
+
+			fixFloatComp.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
+
+			return fixFloatComp;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -305,8 +305,8 @@ public class RatesStreamBuilder {
 	 * @return Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent FixedStreamFromByteArray (
-		final byte[] ab)
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent FixedStreamFromByteArray
+		(final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
@@ -327,8 +327,9 @@ public class RatesStreamBuilder {
 	 * @return Floating Stream Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent FloatingStreamFromByteArray (
-		final byte[] ab)
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent
+		FloatingStreamFromByteArray (
+			final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
@@ -349,13 +350,13 @@ public class RatesStreamBuilder {
 	 * @return IRS Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent IRSFromByteArray (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent IRSFromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.product.rates.IRSComponent (ab);
+			return new org.drip.product.rates.FixFloatComponent (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

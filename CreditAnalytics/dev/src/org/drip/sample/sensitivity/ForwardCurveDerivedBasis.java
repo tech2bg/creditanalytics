@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -130,7 +131,7 @@ public class ForwardCurveDerivedBasis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			org.drip.product.rates.IRSComponent irs = RatesStreamBuilder.CreateIRS (
+			org.drip.product.rates.FixFloatComponent irs = RatesStreamBuilder.CreateFixFloat (
 				dtEffective,
 				astrTenor[i],
 				adblCoupon[i],
@@ -250,7 +251,7 @@ public class ForwardCurveDerivedBasis {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsReferenceFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -277,7 +278,7 @@ public class ForwardCurveDerivedBasis {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,

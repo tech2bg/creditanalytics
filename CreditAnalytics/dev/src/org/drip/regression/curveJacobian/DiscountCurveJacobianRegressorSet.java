@@ -127,7 +127,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						astrCalibMeasure[i] = "Rate";
 
 						try {
-							aCompCalib[i] = org.drip.product.creator.RatesStreamBuilder.CreateIRS
+							aCompCalib[i] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat
 								(dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i]),
 									0., 2, "Act/360", 0., 4, "Act/360", "USD", "USD");
 						} catch (java.lang.Exception e) {

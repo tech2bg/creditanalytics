@@ -7,12 +7,13 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.cashflow.FloatingStream;
 import org.drip.product.creator.RatesStreamBuilder;
-import org.drip.product.definition.RatesComponent;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
@@ -23,8 +24,7 @@ import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
-import org.drip.state.inference.LatentStateStretchSpec;
-import org.drip.state.inference.LinearLatentStateCalibrator;
+import org.drip.state.inference.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -83,7 +83,7 @@ public class CCBSDiscountCurve {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -110,7 +110,7 @@ public class CCBSDiscountCurve {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -151,16 +151,16 @@ public class CCBSDiscountCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] MakeIRS (
+	private static final FixFloatComponent[] MakeIRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrTenor)
 		throws Exception
 	{
-		IRSComponent[] aCalibComp = new IRSComponent[astrTenor.length];
+		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = (IRSComponent) RatesStreamBuilder.CreateIRS (
+			aCalibComp[i] = RatesStreamBuilder.CreateFixFloat (
 				dtEffective,
 				astrTenor[i],
 				0.,
@@ -192,7 +192,7 @@ public class CCBSDiscountCurve {
 			astrTenor,
 			3);
 
-		IRSComponent[] aIRS = MakeIRS (
+		FixFloatComponent[] aIRS = MakeIRS (
 			dtValue,
 			strDerivedCurrency,
 			astrTenor);
@@ -213,7 +213,7 @@ public class CCBSDiscountCurve {
 	{
 		String strCurrency = dc.currency();
 
-		RatesComponent irsBespoke = RatesStreamBuilder.CreateIRS (
+		CalibratableFixedIncomeComponent irsBespoke = RatesStreamBuilder.CreateFixFloat (
 			dtStart,
 			strTenor,
 			0.,
@@ -328,7 +328,7 @@ public class CCBSDiscountCurve {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCCSP.length; ++i) {
-			RatesComponent rcDerived = aCCSP[i].derivedComponent();
+			CalibratableFixedIncomeComponent rcDerived = aCCSP[i].derivedComponent();
 
 			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, mktParams, null);
 

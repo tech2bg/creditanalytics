@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
@@ -168,17 +169,17 @@ public class CrossOvernightFloatingStream {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] OISInstrumentsFromMaturityTenor (
+	private static final FixFloatComponent[] OISInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		IRSComponent[] aCalibComp = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GenerateDailyPeriod (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GenerateDailyPeriod (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
@@ -199,7 +200,7 @@ public class CrossOvernightFloatingStream {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -220,7 +221,7 @@ public class CrossOvernightFloatingStream {
 				lsFixedPeriods
 			);
 
-			IRSComponent ois = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor + "." + strCurrency);
 
@@ -336,7 +337,7 @@ public class CrossOvernightFloatingStream {
 			0.03488     // 10Y
 		};
 
-		IRSComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"
@@ -464,7 +465,7 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,

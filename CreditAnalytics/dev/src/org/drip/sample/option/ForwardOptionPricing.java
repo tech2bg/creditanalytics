@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.pricer.HestonOptionPricerParams;
 import org.drip.param.valuation.ValuationParams;
@@ -103,7 +104,7 @@ public class ForwardOptionPricing {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -126,7 +127,7 @@ public class ForwardOptionPricing {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -147,7 +148,7 @@ public class ForwardOptionPricing {
 				lsFixedPeriods
 			);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent (fixStream,
 				floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);

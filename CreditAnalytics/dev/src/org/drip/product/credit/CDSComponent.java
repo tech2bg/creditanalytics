@@ -121,13 +121,13 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				dblDirtyDV01 += 0.01 * period.couponDCF() * dcFunding.df (period.pay()) * dblSurvProb *
 					notional (period.accrualStart(), period.end());
 
-				java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
+				java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub =
 					org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 						pricerParams, period, period.end(), csqs);
 
 				if (null == sLPSub || 0 == sLPSub.size()) continue;
 
-				for (org.drip.analytics.period.LossPeriodCurveFactors lp : sLPSub) {
+				for (org.drip.analytics.period.LossQuadratureMetrics lp : sLPSub) {
 					if (null == lp) continue;
 
 					double dblSubPeriodEnd = lp.end();
@@ -240,12 +240,12 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 	private org.drip.quant.calculus.WengertJacobian calcPeriodOnDefaultPVDFMicroJack (
 		final double dblFairPremium,
-		final org.drip.analytics.period.Period period,
+		final org.drip.analytics.period.CashflowPeriod period,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
+		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub =
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams, pricerParams,
 				period, period.end(), csqs);
 
@@ -257,7 +257,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		int iNumParameters = 0;
 		org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVDF = null;
 
-		for (org.drip.analytics.period.LossPeriodCurveFactors lpcf : sLPSub) {
+		for (org.drip.analytics.period.LossQuadratureMetrics lpcf : sLPSub) {
 			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dcFunding.jackDDFDManifestMeasure (0.5
 				* (lpcf.start() + lpcf.end()) + _crValParams._iDefPayLag, "Rate");
 
@@ -286,12 +286,12 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	}
 
 	private PeriodLossMicroJack calcPeriodLossMicroJack (
-		final org.drip.analytics.period.Period period,
+		final org.drip.analytics.period.CashflowPeriod period,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
+		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub =
 			org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams, pricerParams,
 				period, period.end(), csqs);
 
@@ -302,7 +302,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		PeriodLossMicroJack plmj = null;
 
-		for (org.drip.analytics.period.LossPeriodCurveFactors lpcf : sLPSub) {
+		for (org.drip.analytics.period.LossQuadratureMetrics lpcf : sLPSub) {
 			double dblPeriodNotional = java.lang.Double.NaN;
 			double dblPeriodIncrementalLoss = java.lang.Double.NaN;
 			double dblPeriodIncrementalAccrual = java.lang.Double.NaN;
@@ -413,7 +413,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward (
+		_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward (
 			_dblEffective = dblEffective, // Effective
 			_dblMaturity = dblMaturity, // Maturity
 			dapEffective, // Effective DAP
@@ -429,8 +429,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_bApplyCpnEOMAdj,
 			strAccrualDC, // Accrual Day Count
 			_bApplyAccEOMAdj,
-			bConvCDS ? org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT :
-				org.drip.analytics.period.CashflowPeriod.FULL_FRONT_PERIOD,
+			bConvCDS ? org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT :
+				org.drip.analytics.support.PeriodBuilder.FULL_FRONT_PERIOD,
 			false,
 			strCalendar,
 			_strCouponCurrency);
@@ -769,82 +769,20 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _settleParams;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> getCouponFlow (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-	{
-		if (null == valParams || null == pricerParams || null == csqs) return null;
-
-		org.drip.state.identifier.CreditLabel[] aLSLCredit = creditLabel();
-
-		org.drip.analytics.definition.CreditCurve cc = null == aLSLCredit || 0 == aLSLCredit.length ? null :
-			csqs.creditCurve (aLSLCredit[0]);
-
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
-
-		if (null == cc || null == dcFunding) return null;
-
-		java.util.List<org.drip.analytics.period.CashflowPeriodCurveFactors> lsCP = new
-			java.util.ArrayList<org.drip.analytics.period.CashflowPeriodCurveFactors>();
-
-		double dblDFStart = java.lang.Double.NaN;
-		double dblSurvProbStart = java.lang.Double.NaN;
-
-		for (org.drip.analytics.period.CashflowPeriod fp : _lsCouponPeriod) {
-			if (null == fp) continue;
-
-			org.drip.analytics.period.CashflowPeriodCurveFactors cp = null;
-
-			try {
-				double dblSurvProbEnd = pricerParams.survivalToPayDate() ? cc.survival (fp.pay()) :
-					cc.survival (fp.end());
-
-				if (!org.drip.quant.common.NumberUtil.IsValid (dblDFStart))
-					dblDFStart = dcFunding.df (fp.start());
-
-				if (!org.drip.quant.common.NumberUtil.IsValid (dblSurvProbStart))
-					dblSurvProbStart = cc.survival (fp.start());
-
-				double dblDFEnd = dcFunding.df (fp.pay());
-
-				org.drip.analytics.output.PeriodCouponMeasures pcm = coupon (valParams.valueDate(),
-					valParams, csqs);
-
-				if (null == pcm) return null;
-
-				cp = new org.drip.analytics.period.CashflowPeriodCurveFactors (fp.start(), fp.end(),
-					fp.accrualStart(), fp.accrualEnd(), fp.pay(), fp.couponDCF(), pcm.nominal(), notional
-						(fp.start()), notional (fp.end()), dblDFStart, dblDFEnd, dblSurvProbStart,
-							dblSurvProbEnd, java.lang.Double.NaN, java.lang.Double.NaN);
-
-				dblDFStart = dblDFEnd;
-				dblSurvProbStart = dblSurvProbEnd;
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-			}
-
-			if (null != cp) lsCP.add (cp);
-		}
-
-		return lsCP;
-	}
-
-	@Override public java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> getLossFlow (
+	@Override public java.util.List<org.drip.analytics.period.LossQuadratureMetrics> getLossFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == valParams || null == pricerParams) return null;
 
-		java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLP = new
-			java.util.ArrayList<org.drip.analytics.period.LossPeriodCurveFactors>();
+		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLP = new
+			java.util.ArrayList<org.drip.analytics.period.LossQuadratureMetrics>();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 			if (null == period || period.end() < valParams.valueDate()) continue;
 
-			java.util.List<org.drip.analytics.period.LossPeriodCurveFactors> sLPSub =
+			java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub =
 				org.drip.analytics.support.AnalyticsHelper.GenerateLossPeriods (this, valParams,
 					pricerParams, period, period.end(), csqs);
 

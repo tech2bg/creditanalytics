@@ -37,8 +37,8 @@ package org.drip.product.fx;
 
 public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
-	private org.drip.product.definition.RatesComponent _rcDerived = null;
-	private org.drip.product.definition.RatesComponent _rcReference = null;
+	private org.drip.product.definition.CalibratableFixedIncomeComponent _rcDerived = null;
+	private org.drip.product.definition.CalibratableFixedIncomeComponent _rcReference = null;
 
 	/**
 	 * ComponentPair constructor
@@ -52,8 +52,8 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 	public ComponentPair (
 		final java.lang.String strName,
-		final org.drip.product.definition.RatesComponent rcReference,
-		final org.drip.product.definition.RatesComponent rcDerived)
+		final org.drip.product.definition.CalibratableFixedIncomeComponent rcReference,
+		final org.drip.product.definition.CalibratableFixedIncomeComponent rcDerived)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_rcDerived = rcDerived) || null ==
@@ -67,7 +67,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	 * @return The Reference Component
 	 */
 
-	public org.drip.product.definition.RatesComponent referenceComponent()
+	public org.drip.product.definition.CalibratableFixedIncomeComponent referenceComponent()
 	{
 		return _rcReference;
 	}
@@ -78,7 +78,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	 * @return The Derived Component
 	 */
 
-	public org.drip.product.definition.RatesComponent derivedComponent()
+	public org.drip.product.definition.CalibratableFixedIncomeComponent derivedComponent()
 	{
 		return _rcDerived;
 	}
@@ -150,9 +150,9 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 		if (null == mapOutput) return null;
 
-		org.drip.product.definition.RatesComponent rcReference = referenceComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent rcReference = referenceComponent();
 
-		org.drip.product.definition.RatesComponent rcDerived = derivedComponent();
+		org.drip.product.definition.CalibratableFixedIncomeComponent rcDerived = derivedComponent();
 
 		java.lang.String strReferenceCompName = rcReference.name();
 

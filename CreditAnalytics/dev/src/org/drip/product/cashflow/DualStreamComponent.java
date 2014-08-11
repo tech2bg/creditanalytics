@@ -29,13 +29,14 @@ package org.drip.product.cashflow;
  */
 
 /**
- * DualStreamComponent is the abstract class that extends the RatesComponent on top of which all the dual
- *  stream rates components (fix-float, float-float, IRS etc.) are implemented.
+ * DualStreamComponent is the abstract class that extends the CalibratableFixedIncomeComponent on top of
+ *  which all the dual stream rates components (fix-float, float-float, IRS etc.) are implemented.
  *  
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class DualStreamComponent extends org.drip.product.definition.RatesComponent {
+public abstract class DualStreamComponent extends
+	org.drip.product.definition.CalibratableFixedIncomeComponent {
 
 	/**
 	 * Retrieve the Reference Stream
@@ -43,7 +44,7 @@ public abstract class DualStreamComponent extends org.drip.product.definition.Ra
 	 * @return The Reference Stream
 	 */
 
-	public abstract org.drip.product.definition.RatesComponent referenceStream();
+	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent referenceStream();
 
 	/**
 	 * Retrieve the Derived Stream
@@ -51,5 +52,5 @@ public abstract class DualStreamComponent extends org.drip.product.definition.Ra
 	 * @return The Derived Stream
 	 */
 
-	public abstract org.drip.product.definition.RatesComponent derivedStream();
+	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent derivedStream();
 }

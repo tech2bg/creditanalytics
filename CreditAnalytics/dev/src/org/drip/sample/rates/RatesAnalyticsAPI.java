@@ -250,7 +250,7 @@ public class RatesAnalyticsAPI {
 			astrCalibMeasure[i + 15] = "Rate";
 			adblRate[i + 15] = 0.01;
 
-			aCompCalib[i + 15] = RatesStreamBuilder.CreateIRS (
+			aCompCalib[i + 15] = RatesStreamBuilder.CreateFixFloat (
 				dtIRSEffective,
 				new JulianDate (adblMaturity[i + 15]),
 				0.,
@@ -512,7 +512,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = RatesStreamBuilder.CreateIRS (
+			aCompCalib[i] = RatesStreamBuilder.CreateFixFloat (
 				dtIRSEffective,
 				new JulianDate (adblMaturity[i]),
 				0.,

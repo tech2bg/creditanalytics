@@ -45,7 +45,7 @@ package org.drip.product.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloatingStream extends org.drip.product.definition.RatesComponent {
+public class FloatingStream extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private static final boolean s_bBlog = false;
 
 	private double _dblNotional = 1.;
@@ -1017,148 +1017,6 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
-	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
-
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
-
-		if (null == dcFunding) return null;
-
-		try {
-			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
-
-			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
-				double dblPeriodPayDate = p.pay();
-
-				if (p.start() < valParams.valueDate()) continue;
-
-				org.drip.quant.calculus.WengertJacobian wjDForwardDManifestMeasure =
-					dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
-
-				if (null == wjDForwardDManifestMeasure) continue;
-
-				int iNumQuote = wjDForwardDManifestMeasure.numParameters();
-
-				if (0 == iNumQuote) continue;
-
-				org.drip.quant.calculus.WengertJacobian wjDPayDFDManifestMeasure =
-					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
-
-				if (null == wjDPayDFDManifestMeasure || iNumQuote !=
-					wjDPayDFDManifestMeasure.numParameters())
-					continue;
-
-				double dblForward = dcFunding.libor (p.start(), p.end());
-
-				double dblPayDF = dcFunding.df (dblPeriodPayDate);
-
-				if (null == jackDDirtyPVDManifestMeasure)
-					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
-						iNumQuote);
-
-				double dblPeriodNotional = _dblNotional * notional (p.start(), p.end());
-
-				double dblPeriodDCF = p.couponDCF();
-
-				for (int i = 0; i < iNumQuote; ++i) {
-					double dblDCashflowPVDManifestMeasurei = dblPeriodDCF * (dblForward *
-						wjDPayDFDManifestMeasure.getFirstDerivative (0, i) + dblPayDF *
-							wjDForwardDManifestMeasure.getFirstDerivative (0, i));
-
-					if (!jackDDirtyPVDManifestMeasure.accumulatePartialFirstDerivative (0, i,
-						dblPeriodNotional * dblDCashflowPVDManifestMeasurei))
-						return null;
-				}
-			}
-
-			return jackDDirtyPVDManifestMeasure;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
-		final java.lang.String strManifestMeasure,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
-	{
-		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
-			return null;
-
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
-
-		if (null == dcFunding) return null;
-
-		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
-		{
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
-				(valParams, pricerParams, csqs, quotingParams);
-
-			if (null == mapMeasures) return null;
-
-			double dblDirtyDV01 = mapMeasures.get ("DirtyDV01");
-
-			double dblParSwapRate = mapMeasures.get ("SwapRate");
-
-			try {
-				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
-
-				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
-					double dblPeriodPayDate = p.pay();
-
-					if (dblPeriodPayDate < valParams.valueDate()) continue;
-
-					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
-
-					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
-						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
-
-					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
-
-					double dblForwardRate = dcFunding.libor (p.start(), p.end());
-
-					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
-
-					if (null == wjSwapRateDFMicroJack)
-						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
-							wjPeriodFwdRateDF.numParameters());
-
-					double dblPeriodNotional = notional (p.start(), p.end());
-
-					double dblPeriodDCF = p.couponDCF();
-
-					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
-						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
-							wjPeriodPayDFDF.getFirstDerivative (0, k) + dblPeriodPayDF *
-								wjPeriodFwdRateDF.getFirstDerivative (0, k);
-
-						if (!wjSwapRateDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodNotional
-							* dblPeriodDCF * dblPeriodMicroJack / dblDirtyDV01))
-							return null;
-					}
-				}
-
-				return wjSwapRateDFMicroJack;
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		return null;
-	}
-
 	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
 		final org.drip.state.representation.LatentStateSpecification[] aLSS)
 	{
@@ -1408,6 +1266,148 @@ public class FloatingStream extends org.drip.product.definition.RatesComponent {
 		if (!prwc.addMergeLabel (_fri)) return null;
 
 		return prwc;
+	}
+
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+	{
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+
+		if (null == dcFunding) return null;
+
+		try {
+			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
+
+			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
+				double dblPeriodPayDate = p.pay();
+
+				if (p.start() < valParams.valueDate()) continue;
+
+				org.drip.quant.calculus.WengertJacobian wjDForwardDManifestMeasure =
+					dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
+
+				if (null == wjDForwardDManifestMeasure) continue;
+
+				int iNumQuote = wjDForwardDManifestMeasure.numParameters();
+
+				if (0 == iNumQuote) continue;
+
+				org.drip.quant.calculus.WengertJacobian wjDPayDFDManifestMeasure =
+					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
+
+				if (null == wjDPayDFDManifestMeasure || iNumQuote !=
+					wjDPayDFDManifestMeasure.numParameters())
+					continue;
+
+				double dblForward = dcFunding.libor (p.start(), p.end());
+
+				double dblPayDF = dcFunding.df (dblPeriodPayDate);
+
+				if (null == jackDDirtyPVDManifestMeasure)
+					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
+						iNumQuote);
+
+				double dblPeriodNotional = _dblNotional * notional (p.start(), p.end());
+
+				double dblPeriodDCF = p.couponDCF();
+
+				for (int i = 0; i < iNumQuote; ++i) {
+					double dblDCashflowPVDManifestMeasurei = dblPeriodDCF * (dblForward *
+						wjDPayDFDManifestMeasure.getFirstDerivative (0, i) + dblPayDF *
+							wjDForwardDManifestMeasure.getFirstDerivative (0, i));
+
+					if (!jackDDirtyPVDManifestMeasure.accumulatePartialFirstDerivative (0, i,
+						dblPeriodNotional * dblDCashflowPVDManifestMeasurei))
+						return null;
+				}
+			}
+
+			return jackDDirtyPVDManifestMeasure;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+		final java.lang.String strManifestMeasure,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+	{
+		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+
+		if (null == dcFunding) return null;
+
+		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
+		{
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
+				(valParams, pricerParams, csqs, quotingParams);
+
+			if (null == mapMeasures) return null;
+
+			double dblDirtyDV01 = mapMeasures.get ("DirtyDV01");
+
+			double dblParSwapRate = mapMeasures.get ("SwapRate");
+
+			try {
+				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
+
+				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
+					double dblPeriodPayDate = p.pay();
+
+					if (dblPeriodPayDate < valParams.valueDate()) continue;
+
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
+						dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
+
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
+						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
+
+					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
+
+					double dblForwardRate = dcFunding.libor (p.start(), p.end());
+
+					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
+
+					if (null == wjSwapRateDFMicroJack)
+						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
+							wjPeriodFwdRateDF.numParameters());
+
+					double dblPeriodNotional = notional (p.start(), p.end());
+
+					double dblPeriodDCF = p.couponDCF();
+
+					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
+						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
+							wjPeriodPayDFDF.getFirstDerivative (0, k) + dblPeriodPayDF *
+								wjPeriodFwdRateDF.getFirstDerivative (0, k);
+
+						if (!wjSwapRateDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodNotional
+							* dblPeriodDCF * dblPeriodMicroJack / dblDirtyDV01))
+							return null;
+					}
+				}
+
+				return wjSwapRateDFMicroJack;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
 	}
 
 	@Override public java.lang.String fieldDelimiter()

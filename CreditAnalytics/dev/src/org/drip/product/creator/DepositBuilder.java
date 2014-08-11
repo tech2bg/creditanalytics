@@ -51,7 +51,7 @@ public class DepositBuilder {
 	 * @return Deposit Object
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateDeposit (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strTenor,
 		final java.lang.String strIR,
@@ -65,8 +65,9 @@ public class DepositBuilder {
 		}
 
 		try {
-			org.drip.product.definition.RatesComponent deposit = new org.drip.product.rates.DepositComponent
-				(dtEffective, dtEffective.addTenor (strTenor), null, strIR, "Act/360", strIR);
+			org.drip.product.definition.CalibratableFixedIncomeComponent deposit = new
+				org.drip.product.rates.DepositComponent (dtEffective, dtEffective.addTenor (strTenor), null,
+					strIR, "Act/360", strIR);
 
 			deposit.setPrimaryCode (strCode + "." + strTenor + "." + strIR);
 
@@ -125,7 +126,7 @@ public class DepositBuilder {
 	 * @return Deposit object
 	 */
 
-	public static final org.drip.product.definition.RatesComponent CreateDeposit (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strTenor,
 		final java.lang.String strIR)
@@ -141,7 +142,7 @@ public class DepositBuilder {
 	 * @return Deposit Instance
 	 */
 
-	public static final org.drip.product.definition.RatesComponent FromByteArray (
+	public static final org.drip.product.definition.CalibratableFixedIncomeComponent FromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;

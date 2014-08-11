@@ -721,7 +721,7 @@ public class ProductTestSuite {
 			adblRate[i + 15] = 0.05;
 			astrCalibMeasure[i + 15] = "Rate";
 
-			aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (
+			aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (
 				dt.addDays (2),
 				new org.drip.analytics.date.JulianDate (adblDate[i + 15]),
 				0.,
@@ -1088,7 +1088,7 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.RatesComponent cash =
+		org.drip.product.definition.CalibratableFixedIncomeComponent cash =
 			org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), dt.addDays (10), null,
 				"USD");
 
@@ -1285,9 +1285,9 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.definition.RatesComponent irs =
-			org.drip.product.creator.RatesStreamBuilder.CreateIRS (dt.addDays (2), dt.addDays ((int)(365.25 *
-				9 + 2)), 0.04, 2, "Act/360", 0., 4, "Act/360", "USD", "USD");
+		org.drip.product.definition.CalibratableFixedIncomeComponent irs =
+			org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (dt.addDays (2), dt.addDays
+				((int)(365.25 * 9 + 2)), 0.04, 2, "Act/360", 0., 4, "Act/360", "USD", "USD");
 
 		org.drip.analytics.output.ComponentMeasures irsOut = irs.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);

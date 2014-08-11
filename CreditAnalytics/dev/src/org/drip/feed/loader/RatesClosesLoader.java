@@ -326,7 +326,7 @@ public class RatesClosesLoader {
 		return _mapIsON.containsKey (strCurrency) && _mapIsON.get (strCurrency);
 	}
 
-	private static final org.drip.product.definition.RatesComponent CreateIRS (
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateIRS (
 		final org.drip.analytics.date.JulianDate dtEffectiveUnadjusted,
 		final java.lang.String strMaturityTenor,
 		final int iNumDaysSubtract,
@@ -358,7 +358,7 @@ public class RatesClosesLoader {
 					strCurrency);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
-				org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(),
+				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
 						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency);
 
@@ -366,17 +366,17 @@ public class RatesClosesLoader {
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
-				org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(),
+				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
 						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency);
 
-			org.drip.product.cashflow.FloatingStream floatStream = new org.drip.product.cashflow.FloatingStream
-				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
-					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
-						_mapFloatingTenor.get (strCurrency)), false);
+			org.drip.product.cashflow.FloatingStream floatStream = new
+				org.drip.product.cashflow.FloatingStream (strCurrency, null, 0., -1., null,
+					lsFloatingCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
+						"LIBOR", _mapFloatingTenor.get (strCurrency)), false);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+				(fixStream, floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -388,7 +388,7 @@ public class RatesClosesLoader {
 		return null;
 	}
 
-	private static final org.drip.product.definition.RatesComponent CreateDIS (
+	private static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateDIS (
 		final org.drip.analytics.date.JulianDate dtEffectiveUnadjusted,
 		final java.lang.String strMaturityTenor,
 		final int iNumDaysSubtract,
@@ -416,7 +416,7 @@ public class RatesClosesLoader {
 					strCurrency);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
-				org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtEffective.julian(),
+				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
 						strCurrency, strCurrency);
 
@@ -424,16 +424,16 @@ public class RatesClosesLoader {
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
-				org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (dtEffective.julian(),
+				org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (dtEffective.julian(),
 					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency);
 
-			org.drip.product.cashflow.FloatingStream floatStream = new org.drip.product.cashflow.FloatingStream
-				(strCurrency, null, 0., -1., null, lsFloatingCouponPeriod,
-					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
-						_mapFloatingTenor.get (strCurrency)), false);
+			org.drip.product.cashflow.FloatingStream floatStream = new
+				org.drip.product.cashflow.FloatingStream (strCurrency, null, 0., -1., null,
+					lsFloatingCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
+						"LIBOR", _mapFloatingTenor.get (strCurrency)), false);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+				(fixStream, floatStream);
 
 			irs.setPrimaryCode ("DIS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -520,9 +520,9 @@ public class RatesClosesLoader {
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		org.drip.product.rates.IRSComponent irs = (org.drip.product.rates.IRSComponent) comp;
+		org.drip.product.rates.FixFloatComponent irs = (org.drip.product.rates.FixFloatComponent) comp;
 
-		double dblFixedCoupon = irs.getFixedStream().coupon (dtPrev.julian(), null, null).nominal();
+		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null, null).nominal();
 
 		boolean bApplyFixedCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFixedDC.get (strCurrency));
 
@@ -532,11 +532,11 @@ public class RatesClosesLoader {
 			dtCurr.julian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj, java.lang.Double.NaN,
 				null, strCurrency);
 
-		double dbl1DFixedDCF = (calcMeasure (irs.getFixedStream(), dtCurr, dcDatePrevQuotePrev, "Accrued01",
-			strCurrency, null) - calcMeasure (irs.getFixedStream(), dtPrev, dcDatePrevQuotePrev, "Accrued01",
-				strCurrency, null)) * 10000.;
+		double dbl1DFixedDCF = (calcMeasure (irs.referenceStream(), dtCurr, dcDatePrevQuotePrev, "Accrued01",
+			strCurrency, null) - calcMeasure (irs.referenceStream(), dtPrev, dcDatePrevQuotePrev,
+				"Accrued01", strCurrency, null)) * 10000.;
 
-		double dblProductFloatingRate = irs.getFloatStream().coupon (dtPrev.julian(), null,
+		double dblProductFloatingRate = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
 				null, null, null, null)).nominal();
 
@@ -547,8 +547,8 @@ public class RatesClosesLoader {
 			dtCurr.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
 				java.lang.Double.NaN, null, strCurrency);
 
-		double dbl1DFloatingDCF = (calcMeasure (irs.getFloatStream(), dtPrev, dcDatePrevQuotePrev,
-			"Accrued01", strCurrency, null) - calcMeasure (irs.getFloatStream(), dtCurr, dcDatePrevQuotePrev,
+		double dbl1DFloatingDCF = (calcMeasure (irs.derivedStream(), dtPrev, dcDatePrevQuotePrev,
+			"Accrued01", strCurrency, null) - calcMeasure (irs.derivedStream(), dtCurr, dcDatePrevQuotePrev,
 				"Accrued01", strCurrency, null)) * 10000.;
 
 		double dblCleanFixedDV01 = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "CleanFixedDV01",
@@ -571,7 +571,7 @@ public class RatesClosesLoader {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (dtPrev, irs.getFloatStream().forwardLabel()[0], dblProductFloatingRate);
+		lsfc.add (dtPrev, irs.derivedStream().forwardLabel()[0], dblProductFloatingRate);
 
 		double dbl1DCleanPnLWithFixing = calcCleanPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev,
 			dcDateCurrQuoteCurr, strCurrency, lsfc);
@@ -581,7 +581,7 @@ public class RatesClosesLoader {
 
 		double dbl1DTotalPnLWithFixing = dbl1DCleanPnLWithFixing + dbl1DCarry;
 
-		double dblFloatingRateUsed = irs.getFloatStream().coupon (dtPrev.julian(), null,
+		double dblFloatingRateUsed = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null, null, null,
 				null, lsfc)).nominal();
 
@@ -607,8 +607,8 @@ public class RatesClosesLoader {
 		double dbl1DMaturityRollUpSwapRatePnL = (dblBaselineSwapRate - dbl1DMaturityRollUpSwapRate) * 10000.
 			* dblDV01;
 
-		double dbl1DMaturityRollUpFairPremium = calcMeasure (comp, dtCurr, dcDatePrevQuotePrev, "FairPremium",
-			strCurrency, null);
+		double dbl1DMaturityRollUpFairPremium = calcMeasure (comp, dtCurr, dcDatePrevQuotePrev,
+			"FairPremium", strCurrency, null);
 
 		double dbl1DMaturityRollUpFairPremiumPnL = (dblBaselineSwapRate - dbl1DMaturityRollUpFairPremium) *
 			10000. * dblDV01;

@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
@@ -103,7 +104,7 @@ public class IRSVolCorrAnalysis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -126,7 +127,7 @@ public class IRSVolCorrAnalysis {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -147,7 +148,7 @@ public class IRSVolCorrAnalysis {
 				lsFixedPeriods
 			);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent (fixStream,
 				floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
@@ -273,7 +274,7 @@ public class IRSVolCorrAnalysis {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsReferenceFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -300,7 +301,7 @@ public class IRSVolCorrAnalysis {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -493,7 +494,7 @@ public class IRSVolCorrAnalysis {
 		return mapFC;
 	}
 
-	private static final IRSComponent CreateIRS (
+	private static final FixFloatComponent CreateIRS (
 		final JulianDate dtEffective,
 		final String strTenor,
 		final ForwardLabel fri,
@@ -503,7 +504,7 @@ public class IRSVolCorrAnalysis {
 	{
 		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
 
-		List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strTenor,
 			null,
@@ -526,7 +527,7 @@ public class IRSVolCorrAnalysis {
 			false
 		);
 
-		List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strTenor,
 			null,
@@ -547,7 +548,7 @@ public class IRSVolCorrAnalysis {
 			lsFixedPeriods
 		);
 
-		IRSComponent irs = new IRSComponent (fixStream, floatStream);
+		FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
 
 		irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -555,7 +556,7 @@ public class IRSVolCorrAnalysis {
 	}
 
 	private static final double RunWithVolCorrSurface (
-		final IRSComponent irs,
+		final FixFloatComponent irs,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
@@ -565,7 +566,7 @@ public class IRSVolCorrAnalysis {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CashflowPeriod period : irs.getFloatStream().cashFlowPeriod()) {
+		for (org.drip.analytics.period.CashflowPeriod period : irs.derivedStream().cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.start());
 
 			mktParams.setCustomMetricVolSurface (
@@ -626,7 +627,7 @@ public class IRSVolCorrAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
 
-		IRSComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
+		FixFloatComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);

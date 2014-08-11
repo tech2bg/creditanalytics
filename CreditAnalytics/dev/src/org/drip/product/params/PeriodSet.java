@@ -237,7 +237,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEffective) || 0 == _iFreq)
 			return false;
 
-		for (org.drip.analytics.period.Period fp : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CashflowPeriod fp : _lsCouponPeriod) {
 			if (null == fp || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = fp.end()))
 				return false;
 		}

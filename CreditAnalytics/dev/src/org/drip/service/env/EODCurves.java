@@ -70,7 +70,7 @@ public class EODCurves {
 					strTenor, strCurrency);
 
 			if ("S".equalsIgnoreCase (strInstrCode))
-				return org.drip.product.creator.RatesStreamBuilder.CreateIRS (dtEffective.addDays (2),
+				return org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (dtEffective.addDays (2),
 					strTenor, 0., 2, "Act/360", 0., 4, "Act/360", strCurrency, strCurrency);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

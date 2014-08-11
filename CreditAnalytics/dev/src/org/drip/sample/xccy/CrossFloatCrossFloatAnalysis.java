@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
@@ -71,7 +72,7 @@ public class CrossFloatCrossFloatAnalysis {
 			 * The Reference Leg
 			 */
 
-		List<CashflowPeriod> lsReferenceFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsReferenceFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,
@@ -100,7 +101,7 @@ public class CrossFloatCrossFloatAnalysis {
 		 * The Derived Leg
 		 */
 
-		List<CashflowPeriod> lsDerivedFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,

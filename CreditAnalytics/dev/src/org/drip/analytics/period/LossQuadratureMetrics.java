@@ -41,12 +41,15 @@ package org.drip.analytics.period;
  * @author Lakshmi Krishnamurthy
  */
 
-public class LossPeriodCurveFactors extends Period {
-	protected double _dblStartSurvival = java.lang.Double.NaN;
-	protected double _dblEndSurvival = java.lang.Double.NaN;
-	protected double _dblEffectiveNotional = java.lang.Double.NaN;
-	protected double _dblEffectiveRecovery = java.lang.Double.NaN;
-	protected double _dblEffectiveDF = java.lang.Double.NaN;
+public class LossQuadratureMetrics extends org.drip.service.stream.Serializer {
+	private double _dblEndDate = java.lang.Double.NaN;
+	private double _dblStartDate = java.lang.Double.NaN;
+	private double _dblAccrualDCF = java.lang.Double.NaN;
+	private double _dblEffectiveDF = java.lang.Double.NaN;
+	private double _dblEndSurvival = java.lang.Double.NaN;
+	private double _dblStartSurvival = java.lang.Double.NaN;
+	private double _dblEffectiveNotional = java.lang.Double.NaN;
+	private double _dblEffectiveRecovery = java.lang.Double.NaN;
 
 	/**
 	 * Create an instance of the LossPeriodCurveFactors class using the period's dates and curves to
@@ -54,7 +57,7 @@ public class LossPeriodCurveFactors extends Period {
 	 * 
 	 * @param dblStart Period Start Date
 	 * @param dblEnd Period End Date
-	 * @param dblEffectiveDCF Period's effective day count fraction
+	 * @param dblAccrualDCF Period's accrual day count fraction
 	 * @param dblEffectiveNotional Period's effective notional
 	 * @param dblEffectiveRecovery Period's effective recovery
 	 * @param dc Discount Curve
@@ -64,10 +67,10 @@ public class LossPeriodCurveFactors extends Period {
 	 * @return LossPeriodCurveFactors instance
 	 */
 
-	public static final LossPeriodCurveFactors MakeDefaultPeriod (
+	public static final LossQuadratureMetrics MakeDefaultPeriod (
 		final double dblStart,
 		final double dblEnd,
-		final double dblEffectiveDCF,
+		final double dblAccrualDCF,
 		final double dblEffectiveNotional,
 		final double dblEffectiveRecovery,
 		final org.drip.analytics.rates.DiscountCurve dc,
@@ -75,14 +78,14 @@ public class LossPeriodCurveFactors extends Period {
 		final int iDefaultLag)
 	{
 		if (java.lang.Double.isNaN (dblStart) || java.lang.Double.isNaN (dblEnd) || java.lang.Double.isNaN
-			(dblEffectiveDCF) || java.lang.Double.isNaN (dblEffectiveNotional) || java.lang.Double.isNaN
+			(dblAccrualDCF) || java.lang.Double.isNaN (dblEffectiveNotional) || java.lang.Double.isNaN
 				(dblEffectiveRecovery) || null == dc || null == cc)
 			return null;
 
 		try {
-			return new LossPeriodCurveFactors (dblStart, dblEnd, dblStart, dblEnd, dblStart + iDefaultLag,
-				dblEffectiveDCF, cc.survival (dblStart), cc.survival (dblEnd), dblEffectiveNotional,
-					dblEffectiveRecovery, dc.effectiveDF (dblStart + iDefaultLag, dblEnd + iDefaultLag));
+			return new LossQuadratureMetrics (dblStart, dblEnd, cc.survival (dblStart), cc.survival
+				(dblEnd), dblAccrualDCF, dblEffectiveNotional, dblEffectiveRecovery, dc.effectiveDF (dblStart
+					+ iDefaultLag, dblEnd + iDefaultLag));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -95,7 +98,7 @@ public class LossPeriodCurveFactors extends Period {
 	 * 
 	 * @param dblStart Period Start Date
 	 * @param dblEnd Period End Date
-	 * @param dblEffectiveDCF Period effective day count fraction
+	 * @param dblAccrualDCF Period Accrual day count fraction
 	 * @param dblEffectiveNotional Period effective notional
 	 * @param dc Discount Curve
 	 * @param cc Credit Curve
@@ -104,24 +107,23 @@ public class LossPeriodCurveFactors extends Period {
 	 * @return LossPeriodCurveFactors instance
 	 */
 
-	public static final LossPeriodCurveFactors MakeDefaultPeriod (
+	public static final LossQuadratureMetrics MakeDefaultPeriod (
 		final double dblStart,
 		final double dblEnd,
-		final double dblEffectiveDCF,
+		final double dblAccrualDCF,
 		final double dblEffectiveNotional,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.definition.CreditCurve cc,
 		final int iDefaultLag)
 	{
 		if (java.lang.Double.isNaN (dblStart) || java.lang.Double.isNaN (dblEnd) || java.lang.Double.isNaN
-			(dblEffectiveDCF) || java.lang.Double.isNaN (dblEffectiveNotional) || null == dc || null == cc)
+			(dblAccrualDCF) || java.lang.Double.isNaN (dblEffectiveNotional) || null == dc || null == cc)
 			return null;
 
 		try {
-			return new LossPeriodCurveFactors (dblStart, dblEnd, dblStart, dblEnd, dblStart + iDefaultLag,
-				dblEffectiveDCF, cc.survival (dblStart), cc.survival (dblEnd), dblEffectiveNotional,
-					cc.effectiveRecovery (dblStart + iDefaultLag, dblEnd + iDefaultLag), dc.effectiveDF
-						(dblStart + iDefaultLag, dblEnd + iDefaultLag));
+			return new LossQuadratureMetrics (dblStart, dblEnd, cc.survival (dblStart), cc.survival
+				(dblEnd), dblAccrualDCF, dblEffectiveNotional, cc.effectiveRecovery (dblStart + iDefaultLag,
+					dblEnd + iDefaultLag), dc.effectiveDF (dblStart + iDefaultLag, dblEnd + iDefaultLag));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -132,14 +134,11 @@ public class LossPeriodCurveFactors extends Period {
 	/**
 	 * Elaborate LossPeriodCurveFactors constructor
 	 * 
-	 * @param dblStart Start Date
-	 * @param dblEnd End Date
-	 * @param dblAccrualStart Accrual Start Date
-	 * @param dblAccrualEnd Accrual End Date
-	 * @param dblPay Pay Date
-	 * @param dblEffectiveDCF Effective period DCF
+	 * @param dblStartDate Start Date
+	 * @param dblEndDate End Date
 	 * @param dblStartSurvival Period Start Survival
 	 * @param dblEndSurvival Period End Survival
+	 * @param dblAccrualDCF Period Accrual DCF
 	 * @param dblEffectiveNotional Period Effective Notional
 	 * @param dblEffectiveRecovery Period Effective Recovery
 	 * @param dblEffectiveDF Period Effective Discount Factor
@@ -147,26 +146,24 @@ public class LossPeriodCurveFactors extends Period {
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public LossPeriodCurveFactors (
-		final double dblStart,
-		final double dblEnd,
-		final double dblAccrualStart,
-		final double dblAccrualEnd,
-		final double dblPay,
-		final double dblEffectiveDCF,
+	public LossQuadratureMetrics (
+		final double dblStartDate,
+		final double dblEndDate,
 		final double dblStartSurvival,
 		final double dblEndSurvival,
+		final double dblAccrualDCF,
 		final double dblEffectiveNotional,
 		final double dblEffectiveRecovery,
 		final double dblEffectiveDF)
 		throws java.lang.Exception
 	{
-		super (dblStart, dblEnd, dblStart, dblEnd, dblPay, dblEffectiveDCF);
-
-		if (java.lang.Double.isNaN (_dblStartSurvival = dblStartSurvival) || java.lang.Double.isNaN
-			(_dblEndSurvival = dblEndSurvival) || java.lang.Double.isNaN (_dblEffectiveNotional =
-				dblEffectiveNotional) || java.lang.Double.isNaN (_dblEffectiveRecovery =
-					dblEffectiveRecovery) || java.lang.Double.isNaN (_dblEffectiveDF = dblEffectiveDF))
+		if (java.lang.Double.isNaN (_dblStartDate = dblStartDate) || java.lang.Double.isNaN (_dblEndDate =
+			dblEndDate) || java.lang.Double.isNaN (_dblStartSurvival = dblStartSurvival) ||
+				java.lang.Double.isNaN (_dblEndSurvival = dblEndSurvival) || java.lang.Double.isNaN 
+					(_dblAccrualDCF = dblAccrualDCF) || java.lang.Double.isNaN (_dblEffectiveNotional =
+						dblEffectiveNotional) || java.lang.Double.isNaN (_dblEffectiveRecovery =
+							dblEffectiveRecovery) || java.lang.Double.isNaN (_dblEffectiveDF =
+								dblEffectiveDF))
 			throw new java.lang.Exception ("LossPeriodCurveFactors ctr: Invalid params");
 	}
 
@@ -178,12 +175,10 @@ public class LossPeriodCurveFactors extends Period {
 	 * @throws java.lang.Exception Thrown if cannot properly de-serialize LossPeriodCurveFactors
 	 */
 
-	public LossPeriodCurveFactors (
+	public LossQuadratureMetrics (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
-		super (ab);
-
 		if (null == ab || 0 == ab.length)
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serialize: Invalid byte stream input");
 
@@ -199,54 +194,97 @@ public class LossPeriodCurveFactors extends Period {
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, fieldDelimiter());
 
-		if (null == astrField || 6 > astrField.length)
+		if (null == astrField || 9 > astrField.length)
 			throw new java.lang.Exception ("LossPeriodCurveFactors de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate start survival");
+				("LossPeriodCurveFactors de-serializer: Cannot locate Start Date");
 
-		_dblStartSurvival = new java.lang.Double (astrField[1]);
+		_dblStartDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate end survival");
+				("LossPeriodCurveFactors de-serializer: Cannot locate End Date");
 
-		_dblEndSurvival = new java.lang.Double (astrField[2]);
+		_dblEndDate = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
 			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate effective notional");
+				("LossPeriodCurveFactors de-serializer: Cannot locate start survival");
 
-		_dblEffectiveNotional = new java.lang.Double (astrField[3]);
+		_dblStartSurvival = new java.lang.Double (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
 			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate effective recovery");
+				("LossPeriodCurveFactors de-serializer: Cannot locate end survival");
 
-		_dblEffectiveRecovery = new java.lang.Double (astrField[4]);
+		_dblEndSurvival = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
 			throw new java.lang.Exception
+				("LossPeriodCurveFactors de-serializer: Cannot locate effective notional");
+
+		_dblEffectiveNotional = new java.lang.Double (astrField[5]);
+
+		if (null == astrField[6] || astrField[6].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
+			throw new java.lang.Exception
+				("LossPeriodCurveFactors de-serializer: Cannot locate effective recovery");
+
+		_dblEffectiveRecovery = new java.lang.Double (astrField[6]);
+
+		if (null == astrField[7] || astrField[7].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
+			throw new java.lang.Exception
 				("LossPeriodCurveFactors de-serializer: Cannot locate effective DF");
 
-		_dblEffectiveDF = new java.lang.Double (astrField[5]);
+		_dblEffectiveDF = new java.lang.Double (astrField[7]);
+
+		if (null == astrField[8] || astrField[8].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
+			throw new java.lang.Exception
+				("LossPeriodCurveFactors de-serializer: Cannot locate Accrual DCF");
+
+		_dblAccrualDCF = new java.lang.Double (astrField[8]);
 	}
 
 	/**
-	 * Survival at the period beginning
+	 * Period Start Date
 	 * 
-	 * @return Survival at the period beginning
+	 * @return Period Start Date
+	 */
+
+	public double start()
+	{
+		return _dblStartDate;
+	}
+
+	/**
+	 * Survival Probability at the period beginning
+	 * 
+	 * @return Survival Probability at the period beginning
 	 */
 
 	public double startSurvival()
 	{
 		return _dblStartSurvival;
+	}
+
+	/**
+	 * Period End Date
+	 * 
+	 * @return Period End Date
+	 */
+
+	public double end()
+	{
+		return _dblEndDate;
 	}
 
 	/**
@@ -294,14 +332,14 @@ public class LossPeriodCurveFactors extends Period {
 	}
 
 	/**
-	 * Get the period's accrual day count factor
+	 * Get the period's Accrual Day Count Fraction
 	 * 
-	 * @return Period's accrual day count factor
+	 * @return Period's Accrual Day Count Fraction
 	 */
 
 	public double accrualDCF()
 	{
-		return _dblDCF;
+		return _dblAccrualDCF;
 	}
 
 	@Override public java.lang.String fieldDelimiter()
@@ -318,10 +356,24 @@ public class LossPeriodCurveFactors extends Period {
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
 
-		sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _dblStartSurvival +
-			fieldDelimiter() + _dblEndSurvival + fieldDelimiter() + _dblEffectiveNotional + fieldDelimiter()
-				+ _dblEffectiveRecovery + fieldDelimiter() + _dblEffectiveDF);
+		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblStartDate +
+			fieldDelimiter() + _dblEndDate + fieldDelimiter() + _dblStartSurvival + fieldDelimiter() +
+				_dblEndSurvival + fieldDelimiter() + _dblEffectiveNotional + fieldDelimiter() +
+					_dblEffectiveRecovery + fieldDelimiter() + _dblEffectiveDF + fieldDelimiter() +
+						_dblAccrualDCF);
 
 		return sb.append (objectTrailer()).toString().getBytes();
+	}
+
+	@Override public org.drip.service.stream.Serializer deserialize (
+		final byte[] ab)
+	{
+		try {
+			return new LossQuadratureMetrics (ab);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

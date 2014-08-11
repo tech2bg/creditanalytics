@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.TermStructure;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.BlackScholesAlgorithm;
@@ -14,6 +15,7 @@ import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
+import org.drip.product.rates.FixFloatComponent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
@@ -103,7 +105,7 @@ public class ATMTermStructure {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -126,7 +128,7 @@ public class ATMTermStructure {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -147,8 +149,7 @@ public class ATMTermStructure {
 				lsFixedPeriods
 			);
 
-			org.drip.product.rates.IRSComponent irs = new org.drip.product.rates.IRSComponent (fixStream,
-				floatStream);
+			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 

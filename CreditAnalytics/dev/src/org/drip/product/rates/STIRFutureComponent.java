@@ -45,7 +45,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
+public class STIRFutureComponent extends org.drip.product.rates.FixFloatComponent {
 
 	/**
 	 * Construct the STIRFutureComponent from the fixed and the floating streams
@@ -66,7 +66,7 @@ public class STIRFutureComponent extends org.drip.product.rates.IRSComponent {
 
 	@Override public java.lang.String name()
 	{
-		return "STIR=" + getFloatStream().fri() + " | " + effective();
+		return "STIR=" + derivedStream().forwardLabel()[0] + " | " + effective();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (

@@ -32,7 +32,7 @@ package org.drip.product.rates;
  * FixFloatComponent contains the implementation of the Fix-Float Index Basis Swap product
  *  contract/valuation details. It is made off one Reference Fixed stream and one Derived floating stream.
  *  It exports the following functionality:
- *  - Standard/Custom Constructor for the IRSComponent
+ *  - Standard/Custom Constructor for the FixFloatComponent
  *  - Dates: Effective, Maturity, Coupon dates and Product settlement Parameters
  *  - Coupon/Notional Outstanding as well as schedules
  *  - Retrieve the constituent floating streams
@@ -258,12 +258,12 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		return null;
 	}
 
-	@Override public org.drip.product.definition.RatesComponent referenceStream()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent referenceStream()
 	{
 		return _fixReference;
 	}
 
-	@Override public org.drip.product.definition.RatesComponent derivedStream()
+	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent derivedStream()
 	{
 		return _floatDerived;
 	}
@@ -306,8 +306,8 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
-		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists
-			(_fixReference.cashFlowPeriod(), _floatDerived.cashFlowPeriod());
+		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixReference.cashFlowPeriod(),
+			_floatDerived.cashFlowPeriod());
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
@@ -322,6 +322,8 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
 		long lStart = System.nanoTime();
+
+		double dblValueDate = valParams.valueDate();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFixedReferenceStreamResult =
 			_fixReference.value (valParams, pricerParams, csqs, quotingParams);
@@ -344,75 +346,75 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 			mapFloatDerivedStreamResult))
 			return null;
 
-		mapResult.put ("ReferenceAccrued01", mapFixedReferenceStreamResult.get ("Accrued01"));
+		double dblDerivedAccrued = mapFloatDerivedStreamResult.get ("Accrued");
 
-		mapResult.put ("ReferenceAccrued", mapFixedReferenceStreamResult.get ("FloatAccrued"));
+		double dblDerivedAccrued01 = mapFloatDerivedStreamResult.get ("Accrued01");
+
+		double dblDerivedCleanDV01 = mapFloatDerivedStreamResult.get ("CleanDV01");
+
+		double dblDerivedCleanPV = mapFloatDerivedStreamResult.get ("CleanPV");
+
+		double dblDerivedDirtyDV01 = mapFloatDerivedStreamResult.get ("DirtyDV01");
+
+		double dblDerivedDirtyPV = mapFloatDerivedStreamResult.get ("DirtyPV");
+
+		double dblDerivedPV = mapFloatDerivedStreamResult.get ("PV");
+
+		double dblDerivedQuantoAdjustmentPremium = mapFloatDerivedStreamResult.get
+			("QuantoAdjustmentPremiumUpfront");
+
+		double dblFixing01 = mapFloatDerivedStreamResult.get ("Fixing01");
+
+		double dblReferenceAccrued = mapFixedReferenceStreamResult.get ("Accrued");
+
+		double dblReferenceAccrued01 = mapFixedReferenceStreamResult.get ("Accrued01");
 
 		double dblReferenceCleanDV01 = mapFixedReferenceStreamResult.get ("CleanDV01");
 
-		mapResult.put ("ReferenceCleanDV01", dblReferenceCleanDV01);
-
 		double dblReferenceCleanPV = mapFixedReferenceStreamResult.get ("CleanPV");
 
-		mapResult.put ("ReferenceCleanPV", dblReferenceCleanPV);
-
-		mapResult.put ("ReferenceDirtyDV01", mapFixedReferenceStreamResult.get ("DirtyDV01"));
-
 		double dblReferenceDirtyPV = mapFixedReferenceStreamResult.get ("DirtyPV");
-
-		mapResult.put ("ReferenceDirtyPV", dblReferenceDirtyPV);
-
-		mapResult.put ("ReferenceDV01", mapFixedReferenceStreamResult.get ("DV01"));
-
-		mapResult.put ("ReferenceFixing01", mapFixedReferenceStreamResult.get ("Fixing01"));
-
-		double dblReferencePV = mapFixedReferenceStreamResult.get ("PV");
-
-		mapResult.put ("ReferencePV", dblReferencePV);
-
-		mapResult.put ("ReferenceQuantoAdjustmentFactor", mapFixedReferenceStreamResult.get
-			("QuantoAdjustmentPremiumUpfront"));
 
 		double dblReferenceQuantoAdjustmentPremium = mapFixedReferenceStreamResult.get
 			("QuantoAdjustmentPremium");
 
-		mapResult.put ("ReferenceQuantoAdjustmentPremium", dblReferenceQuantoAdjustmentPremium);
+		double dblValueNotional = java.lang.Double.NaN;
+		double dblAccrued = dblDerivedAccrued + dblReferenceAccrued;
+		double dblCleanPV = dblReferenceCleanPV + dblDerivedCleanPV;
+		double dblParFixedCoupon = -0.0001 * dblDerivedCleanPV / dblReferenceCleanDV01;
 
-		mapResult.put ("ReferenceResetDate", mapFixedReferenceStreamResult.get ("ResetDate"));
+		mapResult.put ("Accrued", dblAccrued);
 
-		mapResult.put ("ReferenceResetRate", mapFixedReferenceStreamResult.get ("ResetRate"));
+		mapResult.put ("CleanFixedDV01", dblReferenceCleanDV01);
 
-		mapResult.put ("DerivedAccrued01", mapFloatDerivedStreamResult.get ("Accrued01"));
+		mapResult.put ("CleanFloatingDV01", dblDerivedCleanDV01);
 
-		mapResult.put ("DerivedAccrued", mapFloatDerivedStreamResult.get ("FloatAccrued"));
+		mapResult.put ("CleanFloatingPV", dblDerivedCleanPV);
 
-		double dblDerivedCleanDV01 = mapFloatDerivedStreamResult.get ("CleanDV01");
+		mapResult.put ("CleanPV", dblCleanPV);
+
+		mapResult.put ("DerivedAccrued", dblDerivedAccrued);
+
+		mapResult.put ("DerivedAccrued01", dblDerivedAccrued01);
 
 		mapResult.put ("DerivedCleanDV01", dblDerivedCleanDV01);
 
-		double dblDerivedCleanPV = mapFloatDerivedStreamResult.get ("CleanPV");
-
 		mapResult.put ("DerivedCleanPV", dblDerivedCleanPV);
 
-		mapResult.put ("DerivedDirtyDV01", mapFloatDerivedStreamResult.get ("DirtyDV01"));
-
-		double dblDerivedDirtyPV = mapFloatDerivedStreamResult.get ("DirtyPV");
+		mapResult.put ("DerivedDirtyDV01", dblDerivedDirtyDV01);
 
 		mapResult.put ("DerivedDirtyPV", dblDerivedDirtyPV);
 
-		mapResult.put ("DerivedDV01", mapFloatDerivedStreamResult.get ("DV01"));
+		mapResult.put ("DerivedDV01", dblDerivedCleanDV01);
 
-		mapResult.put ("DerivedFixing01", mapFloatDerivedStreamResult.get ("Fixing01"));
+		mapResult.put ("DerivedFixing01", dblFixing01);
 
-		double dblDerivedPV = mapFloatDerivedStreamResult.get ("PV");
+		mapResult.put ("DerivedParBasisSpread", -1. * dblCleanPV / dblDerivedCleanDV01);
 
 		mapResult.put ("DerivedPV", dblDerivedPV);
 
 		mapResult.put ("DerivedQuantoAdjustmentFactor", mapFloatDerivedStreamResult.get
 			("QuantoAdjustmentFactor"));
-
-		double dblDerivedQuantoAdjustmentPremium = mapFloatDerivedStreamResult.get
-			("QuantoAdjustmentPremiumUpfront");
 
 		mapResult.put ("DerivedQuantoAdjustmentPremium", dblDerivedQuantoAdjustmentPremium);
 
@@ -420,37 +422,80 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		mapResult.put ("DerivedResetRate", mapFloatDerivedStreamResult.get ("ResetRate"));
 
-		double dblCleanPV = dblReferenceCleanPV + dblDerivedCleanPV;
+		mapResult.put ("DirtyFixedDV01", mapFixedReferenceStreamResult.get ("DirtyDV01"));
 
-		mapResult.put ("CleanPV", dblCleanPV);
+		mapResult.put ("DirtyFixedPV", dblReferenceDirtyPV);
 
-		mapResult.put ("DirtyPV", dblDerivedCleanPV + dblDerivedDirtyPV);
+		mapResult.put ("DirtyFloatingDV01", dblDerivedDirtyDV01);
 
-		mapResult.put ("PV", dblReferencePV + dblDerivedPV);
+		mapResult.put ("DirtyFloatingPV", dblDerivedDirtyPV);
+
+		mapResult.put ("DirtyPV", dblDerivedDirtyPV + dblReferenceDirtyPV);
+
+		mapResult.put ("FairPremium", dblParFixedCoupon);
+
+		mapResult.put ("FixedAccrued", dblReferenceAccrued);
+
+		mapResult.put ("FixedAccrued01", dblReferenceAccrued01);
+
+		mapResult.put ("FixedDV01", dblReferenceCleanDV01);
+
+		mapResult.put ("FloatAccrued", dblDerivedAccrued);
+
+		mapResult.put ("FloatAccrued01", dblDerivedAccrued01);
+
+		mapResult.put ("FloatDV01", dblDerivedCleanDV01);
+
+		mapResult.put ("Fixing01", dblFixing01);
+
+		mapResult.put ("ParFixedCoupon", dblParFixedCoupon);
+
+		mapResult.put ("ParRate", dblParFixedCoupon);
+
+		mapResult.put ("ParSwapRate", dblParFixedCoupon);
+
+		mapResult.put ("PV", dblCleanPV);
 
 		mapResult.put ("QuantoAdjustmentPremium", _fixReference.initialNotional() *
 			dblReferenceQuantoAdjustmentPremium + _floatDerived.initialNotional() *
 				dblDerivedQuantoAdjustmentPremium);
 
+		mapResult.put ("Rate", dblParFixedCoupon);
+
+		mapResult.put ("ReferenceAccrued", dblReferenceAccrued);
+
+		mapResult.put ("ReferenceAccrued01", dblReferenceAccrued01);
+
+		mapResult.put ("ReferenceCleanDV01", dblReferenceCleanDV01);
+
+		mapResult.put ("ReferenceCleanPV", dblReferenceCleanPV);
+
+		mapResult.put ("ReferenceDirtyDV01", mapFixedReferenceStreamResult.get ("DirtyDV01"));
+
+		mapResult.put ("ReferenceDirtyPV", dblReferenceDirtyPV);
+
+		mapResult.put ("ReferenceDV01", dblReferenceCleanDV01);
+
+		mapResult.put ("ReferenceParBasisSpread", -1. * dblCleanPV / dblReferenceCleanDV01);
+
+		mapResult.put ("ReferencePV", dblReferenceCleanPV);
+
+		mapResult.put ("ReferenceQuantoAdjustmentFactor", mapFixedReferenceStreamResult.get
+			("QuantoAdjustmentFactor"));
+
+		mapResult.put ("ReferenceQuantoAdjustmentPremium", dblReferenceQuantoAdjustmentPremium);
+
+		mapResult.put ("ResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
+
+		mapResult.put ("ResetRate", mapFloatDerivedStreamResult.get ("ResetRate"));
+
+		mapResult.put ("SwapRate", dblParFixedCoupon);
+
 		mapResult.put ("Upfront", mapFixedReferenceStreamResult.get ("Upfront") +
 			mapFloatDerivedStreamResult.get ("Upfront"));
 
-		mapResult.put ("ReferenceParBasisSpread", -1. * (dblReferenceCleanPV + dblDerivedCleanPV) /
-			dblReferenceCleanDV01);
-
-		mapResult.put ("DerivedParBasisSpread", -1. * (dblReferenceCleanPV + dblDerivedCleanPV) /
-			dblDerivedCleanDV01);
-
-		double dblSwapRate = -1. * dblDerivedCleanPV / dblReferenceCleanDV01;
-
-		mapResult.put ("ParSwapRate", dblSwapRate);
-
-		mapResult.put ("SwapRate", dblSwapRate);
-
-		double dblValueNotional = java.lang.Double.NaN;
-
 		try {
-			dblValueNotional = notional (valParams.valueDate());
+			dblValueNotional = notional (dblValueDate);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -459,7 +504,24 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+					(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+
+				if (null == dcFunding) return null;
+
+				double dblStartDate = effective().julian();
+
+				double dblTelescopedFloatingPV = dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
+					dblValueDate) - dcFunding.df (maturity());
+
+				mapResult.put ("CalibFloatingPV", dblTelescopedFloatingPV);
+
+				mapResult.put ("CalibSwapRate", java.lang.Math.abs (0.0001 * dblTelescopedFloatingPV /
+					dblReferenceCleanDV01 * notional (dblValueDate)));
+
 				mapResult.put ("CleanPrice", dblCleanPrice);
+
+				mapResult.put ("DirtyPrice", dblCleanPrice + dblAccrued);
 
 				mapResult.put ("Price", dblCleanPrice);
 			}
@@ -478,7 +540,19 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
+		setstrMeasureNames.add ("Accrued");
+
 		setstrMeasureNames.add ("CalcTime");
+
+		setstrMeasureNames.add ("CalibFloatingPV");
+
+		setstrMeasureNames.add ("CalibSwapRate");
+
+		setstrMeasureNames.add ("CleanFixedDV01");
+
+		setstrMeasureNames.add ("CleanFloatingDV01");
+
+		setstrMeasureNames.add ("CleanFloatingPV");
 
 		setstrMeasureNames.add ("CleanPrice");
 
@@ -512,7 +586,39 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		setstrMeasureNames.add ("DerivedResetRate");
 
+		setstrMeasureNames.add ("DirtyFixedDV01");
+
+		setstrMeasureNames.add ("DirtyFixedPV");
+
+		setstrMeasureNames.add ("DirtyFloatingDV01");
+
+		setstrMeasureNames.add ("DirtyFloatingPV");
+
+		setstrMeasureNames.add ("DirtyPrice");
+
 		setstrMeasureNames.add ("DirtyPV");
+
+		setstrMeasureNames.add ("FairPremium");
+
+		setstrMeasureNames.add ("FixedAccrued");
+
+		setstrMeasureNames.add ("FixedAccrued01");
+
+		setstrMeasureNames.add ("FixedDV01");
+
+		setstrMeasureNames.add ("FloatAccrued");
+
+		setstrMeasureNames.add ("FloatAccrued01");
+
+		setstrMeasureNames.add ("FloatDV01");
+
+		setstrMeasureNames.add ("Fixing01");
+
+		setstrMeasureNames.add ("ParFixedCoupon");
+
+		setstrMeasureNames.add ("ParRate");
+
+		setstrMeasureNames.add ("ParSwapRate");
 
 		setstrMeasureNames.add ("Price");
 
@@ -520,9 +626,11 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		setstrMeasureNames.add ("QuantoAdjustmentPremium");
 
-		setstrMeasureNames.add ("ReferenceAccrued01");
+		setstrMeasureNames.add ("Rate");
 
 		setstrMeasureNames.add ("ReferenceAccrued");
+
+		setstrMeasureNames.add ("ReferenceAccrued01");
 
 		setstrMeasureNames.add ("ReferenceCleanDV01");
 
@@ -534,24 +642,25 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		setstrMeasureNames.add ("ReferenceDV01");
 
-		setstrMeasureNames.add ("ReferenceFixing01");
-
 		setstrMeasureNames.add ("ReferenceParBasisSpread");
+
+		setstrMeasureNames.add ("ReferencePV");
 
 		setstrMeasureNames.add ("ReferenceQuantoAdjustmentFactor");
 
 		setstrMeasureNames.add ("ReferenceQuantoAdjustmentPremium");
 
-		setstrMeasureNames.add ("ReferencePV");
+		setstrMeasureNames.add ("ResetDate");
 
-		setstrMeasureNames.add ("ReferenceResetDate");
+		setstrMeasureNames.add ("ResetRate");
 
-		setstrMeasureNames.add ("ReferenceResetRate");
+		setstrMeasureNames.add ("SwapRate");
 
 		setstrMeasureNames.add ("Upfront");
 
 		return setstrMeasureNames;
 	}
+
 
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -559,7 +668,52 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		return null;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value (valParams,
+			pricerParams, csqs, quotingParams);
+
+		if (null == mapMeasures || !mapMeasures.containsKey ("SwapRate")) return null;
+
+		double dblParSwapRate = mapMeasures.get ("SwapRate");
+
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFloating =
+			_floatDerived.jackDDirtyPVDManifestMeasure (valParams, pricerParams, csqs, quotingParams);
+
+		if (null == jackDDirtyPVDManifestMeasureFloating) return null;
+
+		int iNumQuote = jackDDirtyPVDManifestMeasureFloating.numParameters();
+
+		if (0 == iNumQuote) return null;
+
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFixed =
+			_fixReference.jackDDirtyPVDManifestMeasure (valParams, pricerParams, csqs, quotingParams);
+
+		if (null == jackDDirtyPVDManifestMeasureFixed || iNumQuote !=
+			jackDDirtyPVDManifestMeasureFixed.numParameters())
+			return null;
+
+		double dblNotionalScaleDown = java.lang.Double.NaN;
+		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureIRS = null;
+
+		if (null == jackDDirtyPVDManifestMeasureIRS) {
+			try {
+				dblNotionalScaleDown = 1. / initialNotional();
+
+				jackDDirtyPVDManifestMeasureIRS = new org.drip.quant.calculus.WengertJacobian (1, iNumQuote);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		for (int i = 0; i < iNumQuote; ++i) {
+			if (!jackDDirtyPVDManifestMeasureIRS.accumulatePartialFirstDerivative (0, i, dblNotionalScaleDown
+				* (dblParSwapRate * jackDDirtyPVDManifestMeasureFixed.getFirstDerivative (0, i) +
+					jackDDirtyPVDManifestMeasureFloating.getFirstDerivative (0, i))))
+				return null;
+		}
+
+		return jackDDirtyPVDManifestMeasureIRS;
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
@@ -569,6 +723,71 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null ==
+			strManifestMeasure || null == csqs)
+			return null;
+
+		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
+		{
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
+				(valParams, pricerParams, csqs, quotingParams);
+
+			if (null == mapMeasures) return null;
+
+			double dblDirtyDV01 = mapMeasures.get ("DirtyDV01");
+
+			double dblParSwapRate = mapMeasures.get ("SwapRate");
+
+			try {
+				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
+
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+					(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+
+				if (null == dcFunding) return null;
+
+				for (org.drip.analytics.period.CashflowPeriod p : cashFlowPeriod()) {
+					double dblPeriodPayDate = p.pay();
+
+					if (dblPeriodPayDate < valParams.valueDate()) continue;
+
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
+						dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
+
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
+						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
+
+					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
+
+					double dblForwardRate = dcFunding.libor (p.start(), p.end());
+
+					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
+
+					if (null == wjSwapRateDFMicroJack)
+						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
+							wjPeriodFwdRateDF.numParameters());
+
+					double dblPeriodNotional = notional (p.start(), p.end());
+
+					double dblPeriodDCF = p.couponDCF();
+
+					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
+						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
+							wjPeriodPayDFDF.getFirstDerivative (0, k) + dblPeriodPayDF *
+								wjPeriodFwdRateDF.getFirstDerivative (0, k);
+
+						if (!wjSwapRateDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodNotional
+							* dblPeriodDCF * dblPeriodMicroJack / dblDirtyDV01))
+							return null;
+					}
+				}
+
+				return wjSwapRateDFMicroJack;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		return null;
 	}
 

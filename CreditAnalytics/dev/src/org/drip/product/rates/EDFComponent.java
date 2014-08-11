@@ -47,7 +47,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class EDFComponent extends org.drip.product.definition.RatesComponent {
+public class EDFComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private double _dblNotional = 100.;
 	private java.lang.String _strEDCode = "";
 	private java.lang.String _strCurrency = "";
@@ -430,7 +430,7 @@ public class EDFComponent extends org.drip.product.definition.RatesComponent {
 
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
-		return org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (_dblEffective, _dblMaturity,
+		return org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (_dblEffective, _dblMaturity,
 			_strDC, _strCalendar, _strCurrency);
 	}
 

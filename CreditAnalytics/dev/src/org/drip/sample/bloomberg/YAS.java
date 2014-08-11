@@ -7,7 +7,7 @@ package org.drip.sample.bloomberg;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
-import org.drip.analytics.period.Period;
+import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.definition.*;
@@ -109,7 +109,7 @@ public class YAS {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateIRS (
+			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateFixFloat (
 				dtIRSEffective,
 				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
 				adblCompCalibValue[i + astrCashTenor.length],
@@ -375,7 +375,7 @@ public class YAS {
 
 		System.out.println ("\nCashflow\n--------");
 
-		for (Period p : bond.cashFlowPeriod())
+		for (CashflowPeriod p : bond.cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +

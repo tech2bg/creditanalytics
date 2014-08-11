@@ -177,12 +177,12 @@ public class PeriodGenerator extends PeriodSet {
 					+ " ...");
 
 		if (0 == _iFreq) {
-			if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod
+			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod
 				(_dblEffective, _dblMaturity, _strCouponDC, _strCalendar, _strCurrency)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
-				if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsForward
+				if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GeneratePeriodsForward
 						(_dblEffective, // Effective
 -						_dblMaturity, // Maturity
 						_dapEffective, // Effective DAP
@@ -198,14 +198,14 @@ public class PeriodGenerator extends PeriodSet {
 						_bApplyCpnEOMAdj,
 						_strAccrualDC, // Accrual Day Count
 						_bApplyAccEOMAdj,
-						org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT,
+						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
 						true,
 						_strCalendar,
 						_strCurrency))
 						|| 0 == _lsCouponPeriod.size())
 						return false;
 			} else {
-				if (null == (_lsCouponPeriod = org.drip.analytics.period.CashflowPeriod.GeneratePeriodsBackward
+				if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward
 					(_dblEffective, // Effective
 					_dblMaturity, // Maturity
 					_dapEffective, // Effective DAP
@@ -221,7 +221,7 @@ public class PeriodGenerator extends PeriodSet {
 					_bApplyCpnEOMAdj,
 					_strAccrualDC, // Accrual Day Count
 					_bApplyAccEOMAdj,
-					org.drip.analytics.period.CashflowPeriod.NO_ADJUSTMENT,
+					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
 					true,
 					_strCalendar,
 					_strCurrency))

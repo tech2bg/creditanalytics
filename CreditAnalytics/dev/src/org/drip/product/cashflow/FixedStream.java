@@ -45,7 +45,7 @@ package org.drip.product.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixedStream extends org.drip.product.definition.RatesComponent {
+public class FixedStream extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private double _dblNotional = 1.;
 	private double _dblCoupon = 0.0001;
 	private java.lang.String _strCode = "";
@@ -175,7 +175,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return prwc;
 	}
 
-	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
+	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -344,23 +344,23 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		}
 	}
 
-	@Override public java.lang.String primaryCode()
+	public java.lang.String primaryCode()
 	{
 		return _strCode;
 	}
 
-	@Override public void setPrimaryCode (
+	public void setPrimaryCode (
 		final java.lang.String strCode)
 	{
 		_strCode = strCode;
 	}
 
-	@Override public java.lang.String name()
+	public java.lang.String name()
 	{
 		return _strCode;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
 		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
 
@@ -369,22 +369,22 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return setCcy;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	public java.lang.String[] couponCurrency()
 	{
 		return new java.lang.String[] {_strCurrency};
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	public java.lang.String[] principalCurrency()
 	{
 		return new java.lang.String[] {_strCurrency};
 	}
 
-	@Override public double initialNotional()
+	public double initialNotional()
 	{
 		return _dblNotional;
 	}
 
-	@Override public double notional (
+	public double notional (
 		final double dblDate)
 		throws java.lang.Exception
 	{
@@ -394,7 +394,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate);
 	}
 
-	@Override public double notional (
+	public double notional (
 		final double dblDate1,
 		final double dblDate2)
 		throws java.lang.Exception
@@ -406,7 +406,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.PeriodCouponMeasures coupon (
+	public org.drip.analytics.output.PeriodCouponMeasures coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -414,17 +414,17 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (_dblCoupon);
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		return null;
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		return null;
 	}
 
-	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
 		if (null == _fxmtm) return null;
 
@@ -434,7 +434,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 			{org.drip.state.identifier.FXLabel.Standard (cp.code())};
 	}
 
-	@Override public org.drip.analytics.date.JulianDate effective()
+	public org.drip.analytics.date.JulianDate effective()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblEffective);
@@ -445,7 +445,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate maturity()
+	public org.drip.analytics.date.JulianDate maturity()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblMaturity);
@@ -456,7 +456,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
+	public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (0).end());
@@ -467,22 +467,22 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
+	public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
 
-	@Override public int freq()
+	public int freq()
 	{
 		return cashFlowPeriod().get (0).freq();
 	}
 
-	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
+	public org.drip.param.valuation.CashSettleParams cashSettleParams()
 	{
 		return _settleParams;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -681,7 +681,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return mapResult;
 	}
 
-	@Override public java.util.Set<java.lang.String> measureNames()
+	public java.util.Set<java.lang.String> measureNames()
 	{
 		java.util.Set<java.lang.String> setstrMeasureNames = new java.util.TreeSet<java.lang.String>();
 
@@ -760,7 +760,57 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return setstrMeasureNames;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
+	public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+	{
+		try {
+			return new org.drip.product.calib.FixedStreamQuoteSet (aLSS);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null == valParams || null == pqs || !(pqs instanceof
+			org.drip.product.calib.FixedStreamQuoteSet) || !pqs.contains
+				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
+					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) ? unloadedPRWC
+							(valParams, pricerParams, csqs, quotingParams, pqs) : discountFactorPRWC
+								(valParams, pricerParams, csqs, quotingParams, pqs);
+	}
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return unloadedPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+	}
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null == valParams || null == pqs || !(pqs instanceof
+			org.drip.product.calib.FixedStreamQuoteSet) ? null : discountFactorPRWC (valParams, pricerParams,
+				csqs, quotingParams, pqs);
+	}
+
+	public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
@@ -814,7 +864,7 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		return null;
 	}
 
-	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+	public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
 		final java.lang.String strManifestMeasure,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -887,56 +937,6 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		}
 
 		return null;
-	}
-
-	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
-		final org.drip.state.representation.LatentStateSpecification[] aLSS)
-	{
-		try {
-			return new org.drip.product.calib.FixedStreamQuoteSet (aLSS);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		return null == valParams || null == pqs || !(pqs instanceof
-			org.drip.product.calib.FixedStreamQuoteSet) || !pqs.contains
-				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) ? unloadedPRWC
-							(valParams, pricerParams, csqs, quotingParams, pqs) : discountFactorPRWC
-								(valParams, pricerParams, csqs, quotingParams, pqs);
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		return unloadedPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		return null == valParams || null == pqs || !(pqs instanceof
-			org.drip.product.calib.FixedStreamQuoteSet) ? null : discountFactorPRWC (valParams, pricerParams,
-				csqs, quotingParams, pqs);
 	}
 
 	@Override public java.lang.String fieldDelimiter()
@@ -1031,8 +1031,8 @@ public class FixedStream extends org.drip.product.definition.RatesComponent {
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.period.CashflowPeriod.GeneratePeriodsRegular (dtToday.julian(), "4Y", null,
-				2, "30/360", false, true, "JPY", "JPY");
+			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "4Y", null, 2,
+				"30/360", false, true, "JPY", "JPY");
 
 		FixedStream fs = new org.drip.product.cashflow.FixedStream ("JPY", null, 0.03, 100., null,
 			lsCouponPeriod);

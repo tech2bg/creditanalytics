@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
@@ -174,16 +175,16 @@ public class DiscountCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		IRSComponent[] aIRS = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -206,7 +207,7 @@ public class DiscountCurveQuoteSensitivity {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -227,7 +228,7 @@ public class DiscountCurveQuoteSensitivity {
 				lsFixedPeriods
 			);
 
-			IRSComponent irs = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
 
 			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -238,7 +239,7 @@ public class DiscountCurveQuoteSensitivity {
 	}
 
 	private static final LatentStateStretchSpec SwapStretch (
-		final IRSComponent[] aIRS,
+		final FixFloatComponent[] aIRS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -283,7 +284,7 @@ public class DiscountCurveQuoteSensitivity {
 		final String strManifestMeasure,
 		final DiscountCurve dc)
 	{
-		RatesComponent irsBespoke = RatesStreamBuilder.CreateIRS (
+		CalibratableFixedIncomeComponent irsBespoke = RatesStreamBuilder.CreateFixFloat (
 			dtStart,
 			strTenor,
 			0.,
@@ -393,7 +394,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of SWAP Instruments and their Quotes from the given set of parameters
 		 */
 
-		IRSComponent[] aSwap = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwap = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {
@@ -635,7 +636,7 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		RatesComponent irs35Y = RatesStreamBuilder.CreateIRS (
+		CalibratableFixedIncomeComponent irs35Y = RatesStreamBuilder.CreateFixFloat (
 			dtSpot,
 			"35Y",
 			0.,

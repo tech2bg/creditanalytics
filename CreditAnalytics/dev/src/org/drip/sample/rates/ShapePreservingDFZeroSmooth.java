@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
@@ -14,7 +15,7 @@ import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.DepositComponent;
 import org.drip.product.rates.EDFComponent;
-import org.drip.product.rates.IRSComponent;
+import org.drip.product.rates.FixFloatComponent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
@@ -194,16 +195,16 @@ public class ShapePreservingDFZeroSmooth {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final IRSComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		IRSComponent[] aIRS = new IRSComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -226,7 +227,7 @@ public class ShapePreservingDFZeroSmooth {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = CashflowPeriod.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -247,7 +248,7 @@ public class ShapePreservingDFZeroSmooth {
 				lsFixedPeriods
 			);
 
-			IRSComponent irs = new IRSComponent (fixStream, floatStream);
+			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
 
 			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -258,7 +259,7 @@ public class ShapePreservingDFZeroSmooth {
 	}
 
 	private static final LatentStateStretchSpec SwapStretch (
-		final IRSComponent[] aIRS,
+		final FixFloatComponent[] aIRS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -390,7 +391,7 @@ public class ShapePreservingDFZeroSmooth {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		IRSComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {

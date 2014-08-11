@@ -205,7 +205,7 @@ public class CreditAnalyticsStub {
 			adblRate[i + 15] = 0.01;
 
 			try {
-				aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateIRS (
+				aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (
 					dtStart.addDays (2),
 					new org.drip.analytics.date.JulianDate (adblDate[i + 15]),
 					0.,

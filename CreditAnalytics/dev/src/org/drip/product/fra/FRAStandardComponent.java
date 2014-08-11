@@ -34,7 +34,7 @@ package org.drip.product.fra;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAStandardComponent extends org.drip.product.definition.RatesComponent {
+public class FRAStandardComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private double _dblNotional = 1.;
 	private java.lang.String _strCode = "";
 	private java.lang.String _strDayCount = "";
@@ -355,7 +355,7 @@ public class FRAStandardComponent extends org.drip.product.definition.RatesCompo
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
 		try {
-			return org.drip.analytics.period.CashflowPeriod.GenerateSinglePeriod (_dblEffectiveDate, new
+			return org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
 					_strDayCount, _strCalendar, _strCurrency);
 		} catch (java.lang.Exception e) {
