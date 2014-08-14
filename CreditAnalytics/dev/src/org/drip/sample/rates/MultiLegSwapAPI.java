@@ -161,7 +161,9 @@ public class MultiLegSwapAPI {
 			false,
 			false,
 			"USD",
-			"USD"
+			"USD",
+			null,
+			null
 		);
 
 		aFixedStream[0] = new FixedStream (
@@ -182,7 +184,9 @@ public class MultiLegSwapAPI {
 			false,
 			false,
 			"USD",
-			"USD"
+			"USD",
+			null,
+			null
 		);
 
 		aFixedStream[1] = new FixedStream (
@@ -203,7 +207,9 @@ public class MultiLegSwapAPI {
 			false,
 			false,
 			"USD",
-			"USD"
+			"USD",
+			null,
+			null
 		);
 
 		aFixedStream[2] = new FixedStream (
@@ -230,7 +236,9 @@ public class MultiLegSwapAPI {
 			false,
 			false,
 			"USD",
-			"USD"
+			"USD",
+			ForwardLabel.Standard ("ABC-RI-3M"),
+			null
 		);
 
 		aFloatStream[0] = new FloatingStream (
@@ -240,7 +248,7 @@ public class MultiLegSwapAPI {
 			-1.,
 			null,
 			lsFloatPeriods3Y,
-			ForwardLabel.Create ("ABC-RI-3M"),
+			ForwardLabel.Standard ("ABC-RI-3M"),
 			false
 		);
 
@@ -253,7 +261,9 @@ public class MultiLegSwapAPI {
 			false,
 			false,
 			"USD",
-			"USD"
+			"USD",
+			ForwardLabel.Standard ("ABC-RI-3M"),
+			null
 		);
 
 		aFloatStream[1] = new FloatingStream (
@@ -263,7 +273,7 @@ public class MultiLegSwapAPI {
 			-1.,
 			null,
 			lsFloatPeriods5Y,
-			ForwardLabel.Create ("ABC-RI-3M"),
+			ForwardLabel.Standard ("ABC-RI-3M"),
 			false
 		);
 
@@ -276,7 +286,9 @@ public class MultiLegSwapAPI {
 			false,
 			false,
 			"USD",
-			"USD"
+			"USD",
+			ForwardLabel.Standard ("ABC-RI-3M"),
+			null
 		);
 
 		aFloatStream[2] = new FloatingStream (
@@ -286,7 +298,7 @@ public class MultiLegSwapAPI {
 			-1.,
 			null,
 			lsFloatPeriods7Y,
-			ForwardLabel.Create ("ABC-RI-3M"),
+			ForwardLabel.Standard ("ABC-RI-3M"),
 			false
 		);
 

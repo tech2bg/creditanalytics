@@ -78,7 +78,7 @@ public class FRAMkt {
 			strCurrency,
 			strTenor);
 
-		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 

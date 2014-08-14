@@ -69,7 +69,7 @@ public class CompoundingUtil {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblPrevDate = currentPeriod.start();
+		double dblPrevDate = currentPeriod.startDate();
 
 		java.lang.String strCalendar = currentPeriod.calendar();
 
@@ -140,8 +140,8 @@ public class CompoundingUtil {
 					* dblLastCoupon;
 
 			double dblDCFNormalizer = org.drip.analytics.daycount.Convention.YearFraction
-				(currentPeriod.start(), dblAccrualEndDate, strAccrualDC, false, java.lang.Double.NaN, null,
-					strCalendar);
+				(currentPeriod.startDate(), dblAccrualEndDate, strAccrualDC, false, java.lang.Double.NaN,
+					null, strCalendar);
 
 			return new org.drip.analytics.output.PeriodCouponMeasures ((dblNominalAccrued + dblGapAccrued) /
 				dblDCFNormalizer, (dblConvexityAdjustedAccrued + dblGapAccrued) / dblDCFNormalizer);
@@ -179,7 +179,7 @@ public class CompoundingUtil {
 			return null;
 		}
 
-		double dblPrevDate = currentPeriod.start();
+		double dblPrevDate = currentPeriod.startDate();
 
 		java.lang.String strCalendar = currentPeriod.calendar();
 
@@ -224,7 +224,7 @@ public class CompoundingUtil {
 				org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate, dblAccrualEndDate,
 					currentPeriod.accrualDC(), false, java.lang.Double.NaN, null, strCalendar) *
 						dblLastCoupon) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
-							(currentPeriod.start(), dblAccrualEndDate, strAccrualDC, false,
+							(currentPeriod.startDate(), dblAccrualEndDate, strAccrualDC, false,
 								java.lang.Double.NaN, null, strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

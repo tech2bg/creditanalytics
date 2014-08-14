@@ -377,11 +377,11 @@ public class YAS {
 
 		for (CashflowPeriod p : bond.cashFlowPeriod())
 			System.out.println (
-				JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.accrualEndDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.) + FIELD_SEPARATOR
+				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.) + FIELD_SEPARATOR
 			);
 	}
 

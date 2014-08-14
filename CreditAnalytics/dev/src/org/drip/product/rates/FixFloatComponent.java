@@ -747,19 +747,20 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 				if (null == dcFunding) return null;
 
 				for (org.drip.analytics.period.CashflowPeriod p : cashFlowPeriod()) {
-					double dblPeriodPayDate = p.pay();
+					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
+						dcFunding.jackDForwardDManifestMeasure (p.startDate(), p.endDate(), "Rate",
+							p.couponDCF());
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
 						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dcFunding.libor (p.start(), p.end());
+					double dblForwardRate = dcFunding.libor (p.startDate(), p.endDate());
 
 					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
 
@@ -767,7 +768,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
-					double dblPeriodNotional = notional (p.start(), p.end());
+					double dblPeriodNotional = notional (p.startDate(), p.endDate());
 
 					double dblPeriodDCF = p.couponDCF();
 

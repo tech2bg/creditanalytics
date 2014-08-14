@@ -192,7 +192,9 @@ public class IBOR {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -217,7 +219,9 @@ public class IBOR {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				fri,
+				null
 			);
 
 			FloatingStream fsDerived = new FloatingStream (
@@ -276,7 +280,9 @@ public class IBOR {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
 
 			FloatingStream fsReference = new FloatingStream (
@@ -286,7 +292,7 @@ public class IBOR {
 				1.,
 				null,
 				lsReferenceFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -303,7 +309,9 @@ public class IBOR {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				fri,
+				null
 			);
 
 			FloatingStream fsDerived = new FloatingStream (

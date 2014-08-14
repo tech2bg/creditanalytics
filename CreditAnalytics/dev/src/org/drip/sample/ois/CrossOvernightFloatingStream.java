@@ -186,7 +186,10 @@ public class CrossOvernightFloatingStream {
 				null,
 				"Act/360",
 				strCurrency,
-				strCurrency
+				strCurrency,
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -209,7 +212,9 @@ public class CrossOvernightFloatingStream {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -474,7 +479,9 @@ public class CrossOvernightFloatingStream {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (

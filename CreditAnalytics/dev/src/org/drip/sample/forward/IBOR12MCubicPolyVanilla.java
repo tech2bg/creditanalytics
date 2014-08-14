@@ -60,7 +60,7 @@ public class IBOR12MCubicPolyVanilla {
 		String strTenor = "12M";
 		String strCurrency = "EUR";
 
-		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,

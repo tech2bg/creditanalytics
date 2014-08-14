@@ -722,7 +722,7 @@ public class CreditAnalytics {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strName + "-LIBOR-6M"),
+		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strName + "-LIBOR-6M"),
 			0.0042);
 
 		org.drip.param.definition.ScenarioDiscountCurve ircsc =

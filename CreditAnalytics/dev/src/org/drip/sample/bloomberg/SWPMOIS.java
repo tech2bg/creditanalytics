@@ -333,12 +333,12 @@ public class SWPMOIS {
 
 		for (CashflowPeriod p : swap.referenceStream().cashFlowPeriod())
 			System.out.println (
-				JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.accrualEndDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 0, 2, dblCoupon * dblNotional) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.)
+				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.)
 			);
 
 		/*
@@ -349,11 +349,11 @@ public class SWPMOIS {
 
 		for (CashflowPeriod p : swap.derivedStream().cashFlowPeriod())
 			System.out.println (
-				JulianDate.fromJulian (p.pay()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.accrualStart()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.accrualEnd()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.accrualEndDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (dc.df (p.pay()), 1, 4, 1.)
+				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.)
 			);
 	}
 }

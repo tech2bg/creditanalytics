@@ -365,7 +365,7 @@ public class OptionHelper {
 				strDiscountForwardCorrTS.isEmpty() || dblEndDate == dblStartDate)
 			return 0.;
 
-		org.drip.state.identifier.ForwardLabel fri = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel fri = org.drip.state.identifier.ForwardLabel.Standard
 			(strForwardVolTS);
 
 		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard

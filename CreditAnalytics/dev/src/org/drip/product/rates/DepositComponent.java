@@ -249,7 +249,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
 			_fri = null;
 		else
-			_fri = org.drip.state.identifier.ForwardLabel.Create (astrField[8]);
+			_fri = org.drip.state.identifier.ForwardLabel.Standard (astrField[8]);
 	}
 
 	@Override public java.lang.String primaryCode()
@@ -372,7 +372,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (_dblEffective, _dblMaturity,
-			_strDayCount, _strCalendar, _strCurrency);
+			_strDayCount, _strCalendar, _strCurrency, _strCurrency, _fri, null);
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
@@ -709,7 +709,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 	{
 		DepositComponent deposit = new DepositComponent (org.drip.analytics.date.JulianDate.Today(),
 			org.drip.analytics.date.JulianDate.Today().addTenor ("1Y"),
-				org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-3M"), "AUD", "Act/360", "BMA");
+				org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"), "AUD", "Act/360", "BMA");
 
 		byte[] abDeposit = deposit.serialize();
 

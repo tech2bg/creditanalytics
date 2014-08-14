@@ -225,9 +225,9 @@ public class CreditAnalyticsAPI {
 
 		PricerParams pricerParams = PricerParams.Standard();
 
-		System.out.println ("Loss Start     Loss End      Pay Date      Cpn    Notl     Rec    EffDF    StartSurv  EndSurv");
+		System.out.println ("Loss Start     Loss End  Notl    Rec    EffDF    StartSurv  EndSurv");
 
-		System.out.println ("----------     --------      --------      ---    ----     ---    -----    ---------  -------");
+		System.out.println ("----------     --------  ----    ---    -----    ---------  -------");
 
 		/*
 		 * CDS Loss Cash Flow

@@ -112,10 +112,10 @@ public class StaticBACurves {
 		org.drip.product.params.PeriodGenerator periodParams = null;
 
 		try {
-			periodParams = new org.drip.product.params.PeriodGenerator (dt.addYears
-				(iNumYears).julian(), dt.julian(), java.lang.Double.NaN, dt.julian(),
-					dt.julian(), 2, "30/360", "30/360", null, null, null, null, null, null, null, null,
-						"", false, strCurrency, strCurrency);
+			periodParams = new org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).julian(),
+				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, "30/360", "30/360", null,
+					null, null, null, null, null, null, null, "", false, strCurrency, strCurrency, null,
+						null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -557,13 +557,13 @@ public class StaticBACurves {
 
 		long lStart = System.nanoTime();
 
-		if (!mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strCurrency +
+		if (!mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
 			"-LIBOR-6M"), 0.0042))
 			return false;
 
 		try {
 			if (!mpc.addFixings (org.drip.analytics.date.JulianDate.CreateFromYMD (2010, 12, 14),
-				org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-3M"), 0.0042))
+				org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"), 0.0042))
 				return false;
 
 			(irsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency,

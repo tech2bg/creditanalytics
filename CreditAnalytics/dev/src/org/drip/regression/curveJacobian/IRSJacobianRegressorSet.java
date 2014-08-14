@@ -136,7 +136,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 						}
 					}
 
-					lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create
+					lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Standard
 						("USD-LIBOR-6M"), 0.0042);
 
 					return null != (dcIRS =

@@ -137,7 +137,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						}
 					}
 
-					lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create
+					lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Standard
 						("USD-LIBOR-6M"), 0.0042);
 
 					return null != (dcIRS = org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild

@@ -51,7 +51,7 @@ public class IBOR6MQuarticPolyVanilla {
 		final String strTenor)
 		throws Exception
 	{
-		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,

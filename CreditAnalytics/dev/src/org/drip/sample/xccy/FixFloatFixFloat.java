@@ -79,7 +79,9 @@ public class FixFloatFixFloat {
 			false,
 			false,
 			strFixedCurrency,
-			strFixedCurrency
+			strFixedCurrency,
+			null,
+			null
 		);
 
 		FixedStream fixStream = new FixedStream (
@@ -106,7 +108,9 @@ public class FixFloatFixFloat {
 			false,
 			false,
 			strFloatCurrency,
-			strFloatCurrency
+			strFloatCurrency,
+			ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
@@ -116,7 +120,7 @@ public class FixFloatFixFloat {
 			1.,
 			null,
 			lsDerivedFloatPeriods,
-			ForwardLabel.Create (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			false
 		);
 

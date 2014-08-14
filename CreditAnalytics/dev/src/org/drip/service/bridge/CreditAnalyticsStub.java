@@ -225,7 +225,7 @@ public class CreditAnalyticsStub {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"),
+		lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
 			0.0402);
 
 		return org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",

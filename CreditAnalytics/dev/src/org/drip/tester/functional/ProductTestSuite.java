@@ -187,7 +187,8 @@ public class ProductTestSuite {
 			org.drip.product.params.PeriodGenerator (dtMaturity.julian(),
 				dtEffective.julian(), java.lang.Double.NaN, java.lang.Double.NaN, java.lang.Double.NaN, 2,
 					"30/360", "30/360", null, null, null, null, null, null, null, null, "", false,
-						strCurrency, strCurrency);
+						strCurrency, strCurrency, null, org.drip.state.identifier.CreditLabel.Standard
+							("IBM"));
 
 		if (!periodParams.validate()) {
 			System.out.println ("Period Gen params for " + strName + " could not be validated!");
@@ -305,7 +306,8 @@ public class ProductTestSuite {
 		org.drip.product.params.PeriodGenerator periodParams = new
 			org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).julian(),
 				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, "30/360", "30/360",
-					null, null, null, null, null, null, null, null, "", false, "USD", "USD");
+					null, null, null, null, null, null, null, null, "", false, "USD", "USD", null,
+						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
 		if (!periodParams.validate()) {
 			System.out.println ("Period Gen params for " + strName + " could not be validated!");
@@ -735,7 +737,7 @@ public class ProductTestSuite {
 			);
 		}
 
-		mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"),
+		mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
 			0.0042);
 
 		long lStart = System.nanoTime();
@@ -2254,11 +2256,13 @@ public class ProductTestSuite {
 			org.drip.param.market.LatentStateFixingsContainer();
 
 		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
-			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
+			org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
-				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD");
+				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
+						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");

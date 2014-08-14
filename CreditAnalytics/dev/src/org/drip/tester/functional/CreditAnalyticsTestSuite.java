@@ -1450,14 +1450,15 @@ public class CreditAnalyticsTestSuite {
 
 				for (org.drip.analytics.period.CashflowPeriod p : aBond[i].cashFlowPeriod()) {
 					try {
-						System.out.println (org.drip.analytics.date.JulianDate.fromJulian (p.accrualStart())
-							+ "    " + org.drip.analytics.date.JulianDate.fromJulian (p.accrualEnd()) +
-								"    " + org.drip.analytics.date.JulianDate.fromJulian (p.pay()) + "    " +
-									org.drip.quant.common.FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) +
-										"    " + org.drip.quant.common.FormatUtil.FormatDouble (dc.df
-											(p.pay()), 1, 4, 1.) + "    " +
-												org.drip.quant.common.FormatUtil.FormatDouble (cc.survival
-													(p.pay()), 1, 4, 1.));
+						System.out.println (org.drip.analytics.date.JulianDate.fromJulian
+							(p.accrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
+								(p.accrualEndDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
+									(p.payDate()) + "    " + org.drip.quant.common.FormatUtil.FormatDouble
+										(p.couponDCF(), 1, 4, 1.) + "    " +
+											org.drip.quant.common.FormatUtil.FormatDouble (dc.df
+												(p.payDate()), 1, 4, 1.) + "    " +
+													org.drip.quant.common.FormatUtil.FormatDouble
+														(cc.survival (p.payDate()), 1, 4, 1.));
 					} catch (java.lang.Exception e) {
 						if (s_bSupressErrMsg) {
 							System.out.println ("CustomAPISample failed.");

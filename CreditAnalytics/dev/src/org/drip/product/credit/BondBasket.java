@@ -890,11 +890,13 @@ public class BondBasket extends org.drip.product.definition.BasketProduct {
 			org.drip.param.market.LatentStateFixingsContainer();
 
 		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
-			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
+			org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
-				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD");
+				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
+						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");

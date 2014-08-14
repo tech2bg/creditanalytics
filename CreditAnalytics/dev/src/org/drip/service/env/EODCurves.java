@@ -1123,7 +1123,7 @@ public class EODCurves {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strCurrency +
+		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
 			"-LIBOR-6M"), 0.0042);
 
 		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (lsfc, stmt, dtEOD,
@@ -1273,7 +1273,7 @@ public class EODCurves {
 		if (null == mpc || null == stmt || null == dtEOD || null == strCurrency || strCurrency.isEmpty())
 			return false;
 
-		mpc.addFixings (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Create (strCurrency +
+		mpc.addFixings (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
 			"-LIBOR-6M"), 0.0042);
 
 		if (!LoadEODIRToMPC (mpc, stmt, dtEOD, strCurrency, "swap", strCurrency)) {

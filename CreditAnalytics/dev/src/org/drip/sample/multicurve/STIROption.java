@@ -112,7 +112,9 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -122,7 +124,7 @@ public class STIROption {
 				-1.,
 				null,
 				lsFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -135,7 +137,9 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -282,7 +286,9 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
 
 			FloatingStream fsReference = new FloatingStream (
@@ -292,7 +298,7 @@ public class STIROption {
 				-1.,
 				null,
 				lsReferenceFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -309,7 +315,9 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				null
 			);
 
 			FloatingStream fsDerived = new FloatingStream (
@@ -319,7 +327,7 @@ public class STIROption {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -512,7 +520,9 @@ public class STIROption {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			fri,
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
@@ -535,7 +545,9 @@ public class STIROption {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			null,
+			null
 		);
 
 		FixedStream fixStream = new FixedStream (
@@ -581,7 +593,7 @@ public class STIROption {
 
 		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
 
-		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
 		JulianDate dtForward = dtToday.addTenor (strTenor);
 

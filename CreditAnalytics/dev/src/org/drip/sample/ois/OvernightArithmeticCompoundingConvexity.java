@@ -146,7 +146,9 @@ public class OvernightArithmeticCompoundingConvexity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -169,7 +171,9 @@ public class OvernightArithmeticCompoundingConvexity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -219,7 +223,9 @@ public class OvernightArithmeticCompoundingConvexity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -242,7 +248,9 @@ public class OvernightArithmeticCompoundingConvexity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -605,7 +613,9 @@ public class OvernightArithmeticCompoundingConvexity {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
@@ -662,7 +672,7 @@ public class OvernightArithmeticCompoundingConvexity {
 						new FloatingStream[] {floatStream},
 						"USD",
 						fri,
-						period.end(),
+						period.endDate(),
 						valParams,
 						mktParams,
 						dblOISVol,

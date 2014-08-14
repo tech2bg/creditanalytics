@@ -144,7 +144,9 @@ public class OISProduct {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -167,7 +169,9 @@ public class OISProduct {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -212,7 +216,10 @@ public class OISProduct {
 				null,
 				"Act/360",
 				strCurrency,
-				strCurrency
+				strCurrency,
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -235,7 +242,9 @@ public class OISProduct {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -285,7 +294,9 @@ public class OISProduct {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -308,7 +319,9 @@ public class OISProduct {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -356,7 +369,10 @@ public class OISProduct {
 				null,
 				"Act/360",
 				strCurrency,
-				strCurrency
+				strCurrency,
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -379,7 +395,9 @@ public class OISProduct {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -760,7 +778,9 @@ public class OISProduct {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
@@ -783,7 +803,9 @@ public class OISProduct {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			null,
+			null
 		);
 
 		FixedStream fixStream = new FixedStream (

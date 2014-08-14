@@ -81,7 +81,9 @@ public class CrossFloatCrossFloatAnalysis {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			null
 		);
 
 		FloatingStream floatStreamReference = new FloatingStream (
@@ -91,7 +93,7 @@ public class CrossFloatCrossFloatAnalysis {
 			-1.,
 			null,
 			lsReferenceFloatPeriods,
-			ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			false
 		);
 
@@ -110,7 +112,9 @@ public class CrossFloatCrossFloatAnalysis {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			null
 		);
 
 		FloatingStream floatStreamDerived = new FloatingStream (
@@ -120,7 +124,7 @@ public class CrossFloatCrossFloatAnalysis {
 			1.,
 			null,
 			lsDerivedFloatPeriods,
-			ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			false
 		);
 

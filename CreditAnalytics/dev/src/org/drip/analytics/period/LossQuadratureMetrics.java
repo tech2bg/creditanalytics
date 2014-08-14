@@ -121,9 +121,9 @@ public class LossQuadratureMetrics extends org.drip.service.stream.Serializer {
 			return null;
 
 		try {
-			return new LossQuadratureMetrics (dblStart, dblEnd, cc.survival (dblStart), cc.survival
-				(dblEnd), dblAccrualDCF, dblEffectiveNotional, cc.effectiveRecovery (dblStart + iDefaultLag,
-					dblEnd + iDefaultLag), dc.effectiveDF (dblStart + iDefaultLag, dblEnd + iDefaultLag));
+			return new LossQuadratureMetrics (dblStart, dblEnd, cc.survival (dblStart), cc.survival (dblEnd),
+				dblAccrualDCF, dblEffectiveNotional, cc.effectiveRecovery (dblStart + iDefaultLag, dblEnd +
+					iDefaultLag), dc.effectiveDF (dblStart + iDefaultLag, dblEnd + iDefaultLag));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

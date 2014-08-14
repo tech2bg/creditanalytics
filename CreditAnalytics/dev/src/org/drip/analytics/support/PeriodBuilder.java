@@ -89,26 +89,60 @@ public class PeriodBuilder {
 		final org.drip.analytics.period.CashflowPeriod periodLeft,
 		final org.drip.analytics.period.CashflowPeriod periodRight)
 	{
-		if (null == periodLeft || null == periodRight || periodLeft.end() != periodRight.start())
+		if (null == periodLeft || null == periodRight || periodLeft.endDate() != periodRight.startDate())
 			return null;
 
-		java.lang.String strCurrency = periodLeft.currency();
+		double dblAccrualStartDate = periodLeft.accrualStartDate();
 
-		if (!strCurrency.equalsIgnoreCase (periodRight.currency())) return null;
+		int iFreq = periodLeft.freq();
+
+		if (iFreq != periodRight.freq()) return null;
+			
+		java.lang.String strCouponDC = periodLeft.couponDC();
+
+		if (!org.drip.quant.common.StringUtil.StringMatch (strCouponDC, periodRight.couponDC())) return null;
+
+		java.lang.String strAccrualDC = periodLeft.accrualDC();
+
+		if (!org.drip.quant.common.StringUtil.StringMatch (strAccrualDC, periodRight.accrualDC()))
+			return null;
+
+		boolean bCouponEOMAdjustment = periodLeft.couponEODAdjustment();
+
+		if (bCouponEOMAdjustment != periodRight.couponEODAdjustment()) return null;
+
+		boolean bAccrualEOMAdjustment = periodLeft.accrualEODAdjustment();
+
+		if (bAccrualEOMAdjustment != periodRight.accrualEODAdjustment()) return null;
+
+		java.lang.String strCalendar = periodLeft.calendar();
+
+		if (!org.drip.quant.common.StringUtil.StringMatch (strCalendar, periodRight.calendar())) return null;
+
+		java.lang.String strPayCurrency = periodLeft.payCurrency();
+
+		if (!org.drip.quant.common.StringUtil.StringMatch (strPayCurrency, periodRight.payCurrency()))
+			return null;
+
+		org.drip.state.identifier.ForwardLabel forwardLabel = periodLeft.forwardLabel();
+
+		if (!org.drip.analytics.support.AnalyticsHelper.LabelMatch (forwardLabel,
+			periodRight.forwardLabel()))
+			return null;
+
+		org.drip.state.identifier.CreditLabel creditLabel = periodLeft.creditLabel();
+
+		if (!org.drip.analytics.support.AnalyticsHelper.LabelMatch (creditLabel, periodRight.creditLabel()))
+			return null;
 
 		try {
-			double dblLeftDCF = org.drip.analytics.daycount.Convention.YearFraction
-				(periodLeft.accrualEnd(), periodLeft.accrualStart(), periodLeft.accrualDC(),
-					periodLeft.accrualEODAdjustment(), java.lang.Double.NaN, null, periodLeft.calendar());
-
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblLeftDCF)) return null;
-
-			return new org.drip.analytics.period.CashflowPeriod (periodLeft.start(), periodRight.end(),
-				periodLeft.accrualStart(), periodRight.accrualEnd(), periodRight.pay(), periodLeft.reset(),
-					periodRight.freq(), dblLeftDCF + 1. / periodRight.freq(), periodRight.couponDC(),
-						periodRight.couponEODAdjustment(), periodRight.accrualDC(),
-							periodRight.accrualEODAdjustment(), java.lang.Double.NaN, periodRight.calendar(),
-								strCurrency);
+			return new org.drip.analytics.period.CashflowPeriod (periodLeft.startDate(),
+				periodRight.endDate(), dblAccrualStartDate, periodRight.accrualEndDate(),
+					periodRight.payDate(), periodLeft.resetDate(), java.lang.Double.NaN,
+						java.lang.Double.NaN, iFreq, periodLeft.accrualDCF (periodRight.accrualStartDate()) +
+							periodRight.couponDCF(), strCouponDC, strAccrualDC, bCouponEOMAdjustment,
+								bAccrualEOMAdjustment, strCalendar, strPayCurrency, forwardLabel,
+									creditLabel);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -137,7 +171,9 @@ public class PeriodBuilder {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
 	 * 
 	 * @return List of coupon Periods
 	 */
@@ -161,7 +197,9 @@ public class PeriodBuilder {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblMaturityUnadjusted) || dblEffective >=
@@ -225,9 +263,10 @@ public class PeriodBuilder {
 					dblAdjustedAccrualEndDate)
 					lsCashflowPeriod.add (0, periodFirst = new org.drip.analytics.period.CashflowPeriod
 						(dblAdjustedStartDate, dblAdjustedEndDate, dblAdjustedAccrualStartDate,
-							dblAdjustedAccrualEndDate, dblAdjustedPayDate, dblAdjustedResetDate, iFreq,
-								dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
-									dblMaturity, strCalendar, strCurrency));
+							dblAdjustedAccrualEndDate, dblAdjustedPayDate, dblAdjustedResetDate, dblMaturity,
+								java.lang.Double.NaN, iFreq, dblDCF, strCouponDC, strAccrualDC,
+									bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, strPayCurrency,
+										forwardLabel, creditLabel));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -284,7 +323,9 @@ public class PeriodBuilder {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
 	 * 
 	 * @return List of coupon Periods
 	 */
@@ -308,7 +349,9 @@ public class PeriodBuilder {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblMaturityUnadjusted) || dblEffective >=
@@ -350,9 +393,10 @@ public class PeriodBuilder {
 					lsCashflowPeriod.add (periodPenultimate = new org.drip.analytics.period.CashflowPeriod
 						(DAPAdjust (dblPeriodStartDate, dapPeriodStart), DAPAdjust (dblPeriodEndDate,
 							dapPeriodEnd), dblAdjustedAccrualStart, dblAdjustedAccrualEnd, DAPAdjust
-								(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq,
-									dblDCF, strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj,
-										dblMaturity, strCalendar, strCurrency));
+								(dblPeriodEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset),
+									dblMaturity, java.lang.Double.NaN, iFreq, dblDCF, strCouponDC,
+										strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar,
+											strPayCurrency, forwardLabel, creditLabel));
 				} else {
 					double dblAdjustedAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
 
@@ -367,9 +411,10 @@ public class PeriodBuilder {
 					lsCashflowPeriod.add (periodFinal = new org.drip.analytics.period.CashflowPeriod
 						(DAPAdjust (dblPeriodStartDate, dapPeriodStart), dblPeriodEndDate,
 							dblAdjustedAccrualStart, dblAdjustedAccrualEnd, DAPAdjust (dblPeriodEndDate,
-								dapPay), DAPAdjust (dblPeriodStartDate, dapReset), iFreq, dblDCF,
-									strCouponDC, bApplyCpnEOMAdj, strAccrualDC, bApplyAccEOMAdj, dblMaturity,
-										strCalendar, strCurrency));
+								dapPay), DAPAdjust (dblPeriodStartDate, dapReset), dblMaturity,
+									java.lang.Double.NaN, iFreq, dblDCF, strCouponDC, strAccrualDC,
+										bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, strPayCurrency,
+											forwardLabel, creditLabel));
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -419,7 +464,9 @@ public class PeriodBuilder {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditlabel The Credit Label
 	 * 
 	 * @return List of coupon Periods
 	 */
@@ -442,7 +489,9 @@ public class PeriodBuilder {
 		final boolean bApplyAccEOMAdj,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) || null == strMaturityTenor)
 			return null;
@@ -499,8 +548,9 @@ public class PeriodBuilder {
 				lsCashflowPeriod.add (new org.drip.analytics.period.CashflowPeriod (DAPAdjust
 					(dblPeriodStartDate, dapPeriodStart), dblPeriodEndDate, dblAdjustedAccrualStart,
 						dblAdjustedAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay), DAPAdjust
-							(dblPeriodStartDate, dapReset), iFreq, dblDCF, strCouponDC, bApplyCpnEOMAdj,
-								strAccrualDC, bApplyAccEOMAdj, dblMaturityDate, strCalendar, strCurrency));
+							(dblPeriodStartDate, dapReset), dblMaturityDate, java.lang.Double.NaN, iFreq,
+								dblDCF, strCouponDC, strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj,
+									strCalendar, strPayCurrency, forwardLabel, creditLabel));
 
 				dtPeriodStart = dtPeriodEnd;
 
@@ -529,7 +579,9 @@ public class PeriodBuilder {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
 	 * 
 	 * @return List of coupon Periods
 	 */
@@ -544,11 +596,13 @@ public class PeriodBuilder {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		return GeneratePeriodsBackward (dblEffective, dblMaturity, dap, dap, dap, dap, dap, dap, dap, dap,
 			iFreq, strDayCount, bApplyEOMAdj, strDayCount, bApplyEOMAdj, iPSEC, bCouponDCFOffOfFreq,
-				strCalendar, strCurrency);
+				strCalendar, strPayCurrency, forwardLabel, creditLabel);
 	}
 
 	/**
@@ -564,7 +618,9 @@ public class PeriodBuilder {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
 	 * 
 	 * @return List of coupon Periods
 	 */
@@ -579,11 +635,13 @@ public class PeriodBuilder {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		return GeneratePeriodsForward (dblEffective, dblMaturity, dap, dap, dap, dap, dap, dap, dap, dap,
 			iFreq, strDayCount, bApplyEOMAdj, strDayCount, bApplyEOMAdj, iPSEC, bCouponDCFOffOfFreq,
-				strCalendar, strCurrency);
+				strCalendar, strPayCurrency, forwardLabel, creditLabel);
 	}
 
 	/**
@@ -598,7 +656,9 @@ public class PeriodBuilder {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 	determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
 	 * 
 	 * @return List of coupon Periods
 	 */
@@ -612,11 +672,13 @@ public class PeriodBuilder {
 		final boolean bApplyEOMAdj,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		return GeneratePeriodsRegular (dblEffective, strMaturityTenor, dap, dap, dap, dap, dap, dap, dap,
 			dap, iFreq, strDayCount, bApplyEOMAdj, strDayCount, bApplyEOMAdj, bCouponDCFOffOfFreq,
-				strCalendar, strCurrency);
+				strCalendar, strPayCurrency, forwardLabel, creditLabel);
 	}
 
 	/**
@@ -626,7 +688,10 @@ public class PeriodBuilder {
 	 * @param dblMaturity Maturity date
 	 * @param strDayCount Day Count
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strCouponCurrency Pay Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
 	 * 
 	 * @return List containing the single Cash Flow period
 	 */
@@ -636,7 +701,10 @@ public class PeriodBuilder {
 		final double dblMaturity,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strCouponCurrency,
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity)
@@ -647,10 +715,10 @@ public class PeriodBuilder {
 
 		try {
 			lsCashflowPeriod.add (0, new org.drip.analytics.period.CashflowPeriod (dblEffective, dblMaturity,
-				dblEffective, dblMaturity, dblMaturity, dblEffective, 1,
+				dblEffective, dblMaturity, dblMaturity, dblEffective, dblMaturity, java.lang.Double.NaN, 1,
 					org.drip.analytics.daycount.Convention.YearFraction (dblEffective, dblMaturity,
-						strDayCount, false, dblMaturity, null, strCalendar), strDayCount, false, strDayCount,
-							false, dblMaturity, strCalendar, strCurrency));
+						strDayCount, false, dblMaturity, null, strCalendar), strDayCount, strDayCount, false,
+							false, strCalendar, strPayCurrency, forwardLabel, creditLabel));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -669,7 +737,10 @@ public class PeriodBuilder {
 	 * @param dapPay Pay Date Adjust Parameters
 	 * @param strDC Accrual/Coupon day count
 	 * @param strCalendar Optional Holiday Calendar for accrual
-	 * @param strCurrency Cash Flow Currency
+	 * @param strCouponCurrency Pay Currency
+	 * @param strPayCurrency Pay Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit label
 	 * 
 	 * @return List of coupon Periods
 	 */
@@ -681,7 +752,10 @@ public class PeriodBuilder {
 		final org.drip.analytics.daycount.DateAdjustParams dapPay,
 		final java.lang.String strDC,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strCouponCurrency,
+		final java.lang.String strPayCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity)
@@ -714,9 +788,10 @@ public class PeriodBuilder {
 				if (dblAdjustedStartDate < dblAdjustedEndDate)
 					lsCashflowPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblAdjustedStartDate,
 						dblAdjustedEndDate, dblAdjustedStartDate, dblAdjustedEndDate, DAPAdjust
-							(dblAdjustedEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset), 360,
-								(dblAdjustedEndDate - dblAdjustedStartDate) / 360., strDC, false, strDC,
-									false, dblMaturity, strCalendar, strCurrency));
+							(dblAdjustedEndDate, dapPay), DAPAdjust (dblPeriodStartDate, dapReset),
+								dblMaturity, java.lang.Double.NaN, 360, (dblAdjustedEndDate -
+									dblAdjustedStartDate) / 360., strDC, strDC, false, false, strCalendar,
+										strPayCurrency, forwardLabel, creditLabel));
 
 				dblPeriodStartDate = dblAdjustedEndDate;
 			} catch (java.lang.Exception e) {

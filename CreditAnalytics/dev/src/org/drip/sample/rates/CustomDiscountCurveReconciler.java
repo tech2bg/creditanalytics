@@ -201,7 +201,9 @@ public class CustomDiscountCurveReconciler {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -211,7 +213,7 @@ public class CustomDiscountCurveReconciler {
 				-1.,
 				null,
 				lsFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -224,7 +226,9 @@ public class CustomDiscountCurveReconciler {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (

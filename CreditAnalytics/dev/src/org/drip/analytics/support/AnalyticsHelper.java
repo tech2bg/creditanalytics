@@ -56,146 +56,6 @@ public class AnalyticsHelper {
 	private static final java.util.Map<java.lang.Integer, java.lang.String> s_mapDCBBGCode = new
 		java.util.HashMap<java.lang.Integer, java.lang.String>();
 
-	private static final java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
-		GenerateDayStepLossPeriods (
-			final org.drip.product.definition.CreditComponent comp,
-			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CashflowPeriod period,
-			final double dblPeriodEndDate,
-			final int iPeriodUnit,
-			final org.drip.analytics.rates.DiscountCurve dc,
-			final org.drip.analytics.definition.CreditCurve cc)
-	{
-		boolean bPeriodDone = false;
-
-		double dblSubPeriodStart = period.start() < valParams.valueDate() ? valParams.valueDate() :
-			period.start();
-
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLP = new
-			java.util.ArrayList<org.drip.analytics.period.LossQuadratureMetrics>();
-
-		while (!bPeriodDone) {
-			double dblSubPeriodEnd = dblSubPeriodStart + iPeriodUnit;
-
-			if (dblSubPeriodEnd < valParams.valueDate()) return null;
-
-			try {
-				if (dblSubPeriodEnd >= period.end()) {
-					bPeriodDone = true;
-
-					dblSubPeriodEnd = period.end();
-				}
-
-				org.drip.analytics.period.LossQuadratureMetrics lp =
-					org.drip.analytics.period.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
-						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
-							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
-								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
-									comp.getCRValParams()._iDefPayLag);
-
-				if (null != lp) sLP.add (lp);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-
-			dblSubPeriodStart = dblSubPeriodEnd;
-		}
-
-		return sLP;
-	}
-
-	private static final java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
-		GeneratePeriodUnitLossPeriods (
-			final org.drip.product.definition.CreditComponent comp,
-			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CashflowPeriod period,
-			final double dblPeriodEndDate,
-			final int iPeriodUnit,
-			final org.drip.analytics.rates.DiscountCurve dc,
-			final org.drip.analytics.definition.CreditCurve cc)
-	{
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLP = new
-			java.util.ArrayList<org.drip.analytics.period.LossQuadratureMetrics>();
-
-		boolean bPeriodDone = false;
-
-		if (period.end() < valParams.valueDate()) return null;
-
-		double dblSubPeriodStart = period.start() < valParams.valueDate() ? valParams.valueDate() :
-			period.start();
-
-		int iDayStep = (int) ((period.end() - dblSubPeriodStart) / (iPeriodUnit));
-
-		if (iDayStep < org.drip.param.pricer.PricerParams.PERIOD_DAY_STEPS_MINIMUM)
-			iDayStep = org.drip.param.pricer.PricerParams.PERIOD_DAY_STEPS_MINIMUM;
-
-		while (!bPeriodDone) {
-			double dblSubPeriodEnd = dblSubPeriodStart + iDayStep;
-
-			if (dblSubPeriodEnd < valParams.valueDate()) return null;
-
-			try {
-				if (dblSubPeriodEnd >= dblPeriodEndDate) {
-					bPeriodDone = true;
-
-					dblSubPeriodEnd = period.end();
-				}
-
-				org.drip.analytics.period.LossQuadratureMetrics lp =
-					org.drip.analytics.period.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
-						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
-							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
-								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
-									comp.getCRValParams()._iDefPayLag);
-
-				if (null != lp) sLP.add (lp);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-
-			dblSubPeriodStart = dblSubPeriodEnd;
-		}
-
-		return sLP;
-	}
-
-	private static final java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
-		GenerateWholeLossPeriods (
-			final org.drip.product.definition.CreditComponent comp,
-			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CashflowPeriod period,
-			final double dblPeriodEndDate,
-			final org.drip.analytics.rates.DiscountCurve dc,
-			final org.drip.analytics.definition.CreditCurve cc)
-	{
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLP = new
-			java.util.ArrayList<org.drip.analytics.period.LossQuadratureMetrics>();
-
-		try {
-			double dblPeriodStartDate = period.start() < valParams.valueDate() ? valParams.valueDate() :
-				period.start();
-
-			org.drip.analytics.period.LossQuadratureMetrics lp =
-				org.drip.analytics.period.LossQuadratureMetrics.MakeDefaultPeriod (dblPeriodStartDate,
-					dblPeriodEndDate, period.accrualDCF (0.5 * (dblPeriodStartDate + dblPeriodEndDate)),
-						comp.notional (dblPeriodStartDate, dblPeriodEndDate), comp.getRecovery
-							(dblPeriodStartDate, dblPeriodEndDate, cc),  dc, cc,
-								comp.getCRValParams()._iDefPayLag);
-
-			if (null != lp) sLP.add (lp);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		return sLP;
-	}
-
 	/**
 	 * Initialize IR switcher and Bloomberg day count maps
 	 */
@@ -874,58 +734,6 @@ public class AnalyticsHelper {
 	}
 
 	/**
-	 * Create a set of loss period measures
-	 * 
-	 * @param comp Component for which the measures are to be generated
-	 * @param valParams ValuationParams from which the periods are generated
-	 * @param pricerParams PricerParams that control the generation characteristics
-	 * @param period The enveloping coupon period
-	 * @param dblWorkoutDate Double JulianDate representing the absolute end of all the generated periods
-	 * @param csqs Market Parameters
-	 *  
-	 * @return List of the generated ProductLossPeriodCurveMeasures
-	 */
-
-	public static final java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
-		GenerateLossPeriods (
-			final org.drip.product.definition.CreditComponent comp,
-			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.param.pricer.PricerParams pricerParams,
-			final org.drip.analytics.period.CashflowPeriod period,
-			final double dblWorkoutDate,
-			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-	{
-		if (null == comp || null == valParams || null == period || null == pricerParams || null == csqs ||
-			null == csqs.creditCurve (comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid
-				(dblWorkoutDate) || period.start() > dblWorkoutDate)
-			return null;
-
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (comp.couponCurrency()[0]));
-
-		if (null == dc) return null;
-
-		double dblPeriodEndDate = period.end() < dblWorkoutDate ? period.end() : dblWorkoutDate;
-
-		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP ==
-			pricerParams.discretizationScheme())
-			return GenerateDayStepLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams.unitSize(), dc, csqs.creditCurve (comp.creditLabel()[0]));
-
-		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_PERIOD_STEP ==
-			pricerParams.discretizationScheme())
-			return GeneratePeriodUnitLossPeriods (comp, valParams, period, dblPeriodEndDate,
-				pricerParams.unitSize(), dc, csqs.creditCurve (comp.creditLabel()[0]));
-
-		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON ==
-			pricerParams.discretizationScheme())
-			return GenerateWholeLossPeriods (comp, valParams, period, dblPeriodEndDate, dc, csqs.creditCurve
-				(comp.creditLabel()[0]));
-
-		return null;
-	}
-
-	/**
 	 * Bump the input array quotes
 	 * 
 	 * @param adblQuotesIn Array of the input double quotes
@@ -1048,7 +856,7 @@ public class AnalyticsHelper {
 
 			org.drip.analytics.period.CashflowPeriod p2 = lsPeriod2.get (iPeriod2Index);
 
-			if (p1.pay() < p2.pay()) {
+			if (p1.payDate() < p2.payDate()) {
 				lsPeriodMerged.add (p1);
 
 				++iPeriod1Index;
@@ -1147,5 +955,25 @@ public class AnalyticsHelper {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Do the Left and the Right Labels Match?
+	 * 
+	 * @param lslLeft Left Cash Flow Period Label
+	 * @param lslRight Right Cash Flow Period Label
+	 * 
+	 * @return TRUE => The Labels Match
+	 */
+
+	public static final boolean LabelMatch (
+		final org.drip.state.identifier.LatentStateLabel lslLeft,
+		final org.drip.state.identifier.LatentStateLabel lslRight)
+	{
+		if (null == lslLeft && null == lslRight) return true;
+
+		if ((null == lslLeft && null != lslRight) || (null != lslLeft && null == lslRight)) return false;
+
+		return lslLeft.match (lslRight);
 	}
 }

@@ -602,7 +602,7 @@ public class CZK3M6MUSD3M6M {
 		ForwardCurve fc6MReference = IBOR.CustomIBORBuilderSample (
 			dcReference,
 			null,
-			ForwardLabel.Create (strReferenceCurrency + "-LIBOR-6M"),
+			ForwardLabel.Standard (strReferenceCurrency + "-LIBOR-6M"),
 			scbcCubic,
 			s_astrUSD6MDepositTenor,
 			s_adblUSD6MDepositQuote,
@@ -625,7 +625,7 @@ public class CZK3M6MUSD3M6M {
 		ForwardCurve fc3MReference = IBOR.CustomIBORBuilderSample (
 			dcReference,
 			fc6MReference,
-			ForwardLabel.Create (strReferenceCurrency + "-LIBOR-3M"),
+			ForwardLabel.Standard (strReferenceCurrency + "-LIBOR-3M"),
 			scbcCubic,
 			s_astrUSD3MDepositTenor,
 			s_adblUSD3MDepositQuote,
@@ -663,7 +663,7 @@ public class CZK3M6MUSD3M6M {
 		ForwardCurve fc6MDerived = IBOR.CustomIBORBuilderSample (
 			dcDerived,
 			null,
-			ForwardLabel.Create (strDerivedCurrency + "-LIBOR-6M"),
+			ForwardLabel.Standard (strDerivedCurrency + "-LIBOR-6M"),
 			scbcCubic,
 			s_astrCZK6MDepositTenor,
 			s_adblCZK6MDepositQuote,

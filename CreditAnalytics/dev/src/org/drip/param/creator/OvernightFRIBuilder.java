@@ -47,77 +47,77 @@ public class OvernightFRIBuilder {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
 
 	static {
-		org.drip.state.identifier.ForwardLabel friCAD = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friCAD = org.drip.state.identifier.ForwardLabel.Standard
 			("CAD-OIS-ON");
 
 		_mapOvernightFRI.put ("CAD-OIS-ON", friCAD);
 
 		_mapJurisdictionFRI.put ("CAD", friCAD);
 
-		org.drip.state.identifier.ForwardLabel friCHF = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friCHF = org.drip.state.identifier.ForwardLabel.Standard
 			("CHF-OIS-ON");
 
 		_mapOvernightFRI.put ("CHF-OIS-ON", friCHF);
 
 		_mapJurisdictionFRI.put ("CHF", friCHF);
 
-		org.drip.state.identifier.ForwardLabel friCZK = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friCZK = org.drip.state.identifier.ForwardLabel.Standard
 			("CZK-OIS-ON");
 
 		_mapOvernightFRI.put ("CZK-OIS-ON", friCZK);
 
 		_mapJurisdictionFRI.put ("CZK", friCZK);
 
-		org.drip.state.identifier.ForwardLabel friDKK = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friDKK = org.drip.state.identifier.ForwardLabel.Standard
 			("DKK-OIS-ON");
 
 		_mapOvernightFRI.put ("DKK-OIS-ON", friDKK);
 
 		_mapJurisdictionFRI.put ("DKK", friDKK);
 
-		org.drip.state.identifier.ForwardLabel friEUR = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friEUR = org.drip.state.identifier.ForwardLabel.Standard
 			("EUR-EONIA-ON");
 
 		_mapOvernightFRI.put ("EUR-EONIA-ON", friEUR);
 
 		_mapJurisdictionFRI.put ("EUR", friEUR);
 
-		org.drip.state.identifier.ForwardLabel friGBP = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friGBP = org.drip.state.identifier.ForwardLabel.Standard
 			("GBP-SONIA-ON");
 
 		_mapOvernightFRI.put ("GBP-SONIA-ON", friGBP);
 
 		_mapJurisdictionFRI.put ("GBP", friGBP);
 
-		org.drip.state.identifier.ForwardLabel friJPY = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friJPY = org.drip.state.identifier.ForwardLabel.Standard
 			("JPY-OIS-ON");
 
 		_mapOvernightFRI.put ("JPY-OIS-ON", friJPY);
 
 		_mapJurisdictionFRI.put ("JPY", friJPY);
 
-		org.drip.state.identifier.ForwardLabel friNOK = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friNOK = org.drip.state.identifier.ForwardLabel.Standard
 			("NOK-OIS-ON");
 
 		_mapOvernightFRI.put ("NOK-OIS-ON", friNOK);
 
 		_mapJurisdictionFRI.put ("NOK", friNOK);
 
-		org.drip.state.identifier.ForwardLabel friPLN = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friPLN = org.drip.state.identifier.ForwardLabel.Standard
 			("PLN-OIS-ON");
 
 		_mapOvernightFRI.put ("PLN-OIS-ON", friPLN);
 
 		_mapJurisdictionFRI.put ("PLN", friPLN);
 
-		org.drip.state.identifier.ForwardLabel friSEK = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friSEK = org.drip.state.identifier.ForwardLabel.Standard
 			("SEK-OIS-ON");
 
 		_mapOvernightFRI.put ("SEK-OIS-ON", friSEK);
 
 		_mapJurisdictionFRI.put ("SEK", friSEK);
 
-		org.drip.state.identifier.ForwardLabel friUSD = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel friUSD = org.drip.state.identifier.ForwardLabel.Standard
 			("USD-OIS-ON");
 
 		_mapOvernightFRI.put ("USD-OIS-ON", friUSD);
@@ -136,7 +136,7 @@ public class OvernightFRIBuilder {
 	public static final boolean Add (
 		final java.lang.String strFRIFullName)
 	{
-		org.drip.state.identifier.ForwardLabel fri = org.drip.state.identifier.ForwardLabel.Create
+		org.drip.state.identifier.ForwardLabel fri = org.drip.state.identifier.ForwardLabel.Standard
 			(strFRIFullName);
 
 		if (null == fri) return false;

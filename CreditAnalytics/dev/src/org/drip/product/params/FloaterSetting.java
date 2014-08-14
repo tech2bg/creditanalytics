@@ -85,7 +85,7 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		_strFloatDayCount = strFloatDayCount;
 		_dblCurrentCoupon = dblCurrentCoupon;
 
-		_fri = org.drip.state.identifier.ForwardLabel.Create (strRateIndex);
+		_fri = org.drip.state.identifier.ForwardLabel.Standard (strRateIndex);
 	}
 
 	/**

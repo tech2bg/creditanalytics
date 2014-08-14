@@ -258,14 +258,14 @@ public class SerializerTestSuite {
 		Verify (abWH, new org.drip.analytics.holiday.Weekend (abWH), "WeekendHoliday");
 
 		byte[] abPeriod = new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180, dblStart,
-			dblStart + 180, dblStart + 180, dblStart, 2, 0.5, "Act/360", false, "Act/360", false,
-				java.lang.Double.NaN, "USD", "USD").serialize();
+			dblStart + 180, dblStart + 180, dblStart, java.lang.Double.NaN, java.lang.Double.NaN, 2, 0.5,
+				"Act/360", "Act/360", false, false, "USD", "USD", null, null).serialize();
 
 		Verify (abPeriod, new org.drip.analytics.period.CashflowPeriod (abPeriod), "Period");
 
 		byte[] abCouponPeriod = new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
-			dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360", true,
-				dblStart + 1825, "GBP", "GBP").serialize();
+			dblStart, dblStart + 180, dblStart + 180, dblStart + 180, dblStart + 1825, java.lang.Double.NaN,
+				2, 0.5, "30/360", "30/360", true, true, "GBP", "GBP", null, null).serialize();
 
 		Verify (abCouponPeriod, new org.drip.analytics.period.CashflowPeriod (abCouponPeriod),
 			"CouponPeriod");
@@ -293,7 +293,7 @@ public class SerializerTestSuite {
 
 		byte[] abFRA = new org.drip.product.fra.FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().julian(),
-				org.drip.state.identifier.ForwardLabel.Create ("JPY-LIBOR-6M"), 0.01,
+				org.drip.state.identifier.ForwardLabel.Standard ("JPY-LIBOR-6M"), 0.01,
 					"Act/360").serialize();
 
 		Verify (abFRA, new org.drip.product.fra.FRAStandardComponent (abFRA), "FloatingRateAgreement");
@@ -307,45 +307,51 @@ public class SerializerTestSuite {
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap, 2,
-				"Act/360", false, false, "ABC", "DEF");
+				"Act/360", false, false, "ABC", "DEF", null, org.drip.state.identifier.CreditLabel.Standard
+					("XYZ"));
 
 		aFixedStream[0] = new org.drip.product.cashflow.FixedStream ("DEF", null, 0.03, 1., null,
 			lsFixedPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap, 2,
-				"Act/360", false, false, "GHI", "JKL");
+				"Act/360", false, false, "GHI", "JKL", null, org.drip.state.identifier.CreditLabel.Standard
+					("XYZ"));
 
 		aFixedStream[1] = new org.drip.product.cashflow.FixedStream ("JKL", null, 0.05, 1., null,
 			lsFixedPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap, 2,
-				"Act/360", false, false, "MNO", "PQR");
+				"Act/360", false, false, "MNO", "PQR", null, org.drip.state.identifier.CreditLabel.Standard
+					("XYZ"));
 
 		aFixedStream[2] = new org.drip.product.cashflow.FixedStream ("PQR", null, 0.07, 1., null,
 			lsFixedPeriod7Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap, 4,
-				"Act/360", false, false, "ABC", "DEF");
+				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
+					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aFloatStream[0] = new org.drip.product.cashflow.FloatingStream ("DEF", null, 0.03, -1., null,
-			lsFloatPeriod3Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
+			lsFloatPeriod3Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap, 4,
-				"Act/360", false, false, "ABC", "DEF");
+				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
+					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aFloatStream[1] = new org.drip.product.cashflow.FloatingStream ("DEF", null, 0.05, -1., null,
-			lsFloatPeriod5Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
+			lsFloatPeriod5Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap, 4,
-				"Act/360", false, false, "ABC", "DEF");
+				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
+					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aFloatStream[2] = new org.drip.product.cashflow.FloatingStream ("DEF", null, 0.07, -1., null,
-			lsFloatPeriod7Y, org.drip.state.identifier.ForwardLabel.Create ("ABC-RI-3M"), false);
+			lsFloatPeriod7Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
 			aFloatStream).serialize();
@@ -549,11 +555,13 @@ public class SerializerTestSuite {
 			org.drip.param.market.LatentStateFixingsContainer();
 
 		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
-			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0402);
+			org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
 			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
-				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD");
+				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
+						org.drip.state.identifier.CreditLabel.Standard ("IBMSUB"));
 
 		if (!bpgp.validate()) {
 			System.out.println ("Cannot validate BPGP!");
@@ -797,8 +805,9 @@ public class SerializerTestSuite {
 
 		while (0 != i--) {
 			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
-				dblStart, dblStart + 180, dblStart + 180, dblStart, 2, 0.5, "30/360", false, "30/360",
-					false, java.lang.Double.NaN, "ZAR", "ZAR"));
+				dblStart, dblStart + 180, dblStart + 180, dblStart, java.lang.Double.NaN,
+					java.lang.Double.NaN, 2, 0.5, "30/360", "30/360", false, false, "ZAR", "ZAR", null,
+						null));
 
 			dblStart += 180.;
 		}

@@ -144,7 +144,9 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -167,7 +169,9 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -217,7 +221,9 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -240,7 +246,9 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -558,7 +566,9 @@ public class FedFundOvernightCompounding {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
@@ -581,7 +591,9 @@ public class FedFundOvernightCompounding {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			null,
+			null
 		);
 
 		FixedStream fixStream = new FixedStream (
@@ -634,7 +646,7 @@ public class FedFundOvernightCompounding {
 		CashflowPeriod period = lsFloatPeriods.get (1);
 
 		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + floatStream.coupon (
-			period.end(),
+			period.endDate(),
 			valParams,
 			mktParams).nominal()
 		);
@@ -650,7 +662,7 @@ public class FedFundOvernightCompounding {
 		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 
 		System.out.println ("\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
-			period.end(),
+			period.endDate(),
 			valParams,
 			mktParams).convexityAdjusted()
 		);

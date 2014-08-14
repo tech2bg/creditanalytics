@@ -6,8 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -91,7 +90,9 @@ public class CCBSForwardCurve {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
 
 			FloatingStream fsReference = new FloatingStream (
@@ -101,7 +102,7 @@ public class CCBSForwardCurve {
 				-1.,
 				null,
 				lsFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -118,7 +119,9 @@ public class CCBSForwardCurve {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				null
 			);
 
 			FloatingStream fsDerived = new FloatingStream (
@@ -128,7 +131,7 @@ public class CCBSForwardCurve {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -241,7 +244,7 @@ public class CCBSForwardCurve {
 		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			llsc,
 			new LatentStateStretchSpec[] {stretchSpec},
-			ForwardLabel.Create (strDerivedCurrency + "-LIBOR-3M"),
+			ForwardLabel.Standard (strDerivedCurrency + "-LIBOR-3M"),
 			valParams,
 			null,
 			MarketParamsBuilder.Create (dcDerived, fc6MDerived, null, null, null, null, null, null),

@@ -357,7 +357,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		try {
 			return org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
-					_strDayCount, _strCalendar, _strCurrency);
+					_strDayCount, _strCalendar, _strCurrency, _strCurrency, _fri, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -712,7 +712,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 	{
 		FRAStandardComponent fra = new FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().julian(),
-				org.drip.state.identifier.ForwardLabel.Create ("JPY-LIBOR-6M"), 0.01, "Act/360");
+				org.drip.state.identifier.ForwardLabel.Standard ("JPY-LIBOR-6M"), 0.01, "Act/360");
 
 		byte[] abFRA = fra.serialize();
 

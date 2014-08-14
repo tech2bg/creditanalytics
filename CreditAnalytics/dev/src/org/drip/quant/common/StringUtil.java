@@ -374,4 +374,42 @@ public class StringUtil {
 
 		return sb.toString();
 	}
+
+	/**
+	 * Indicate if the Input String is Empty
+	 * 
+	 * @param str The Input String
+	 * 
+	 * @return TRUE => The Input String is Empty
+	 */
+
+	public static final boolean IsEmpty (
+		final java.lang.String str)
+	{
+		return null == str || str.isEmpty();
+	}
+
+	/**
+	 * Indicate it the pair of Strings Match each other in Value
+	 * 
+	 * @param strLeft The Left String
+	 * @param strRight The Right String
+	 * 
+	 * @return TRUE => The Strings Match
+	 */
+
+	public static final boolean StringMatch (
+		final java.lang.String strLeft,
+		final java.lang.String strRight)
+	{
+		boolean bIsLeftEmpty = IsEmpty (strLeft);
+
+		boolean bIsRightEmpty = IsEmpty (strRight);
+
+		if (bIsLeftEmpty && bIsRightEmpty) return true;
+
+		if ((bIsLeftEmpty && !bIsRightEmpty) || (!bIsLeftEmpty && bIsRightEmpty)) return false;
+
+		return strLeft.equalsIgnoreCase (strRight);
+	}
 }

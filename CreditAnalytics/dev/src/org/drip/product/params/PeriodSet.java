@@ -238,7 +238,7 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 			return false;
 
 		for (org.drip.analytics.period.CashflowPeriod fp : _lsCouponPeriod) {
-			if (null == fp || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = fp.end()))
+			if (null == fp || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = fp.endDate()))
 				return false;
 		}
 
@@ -405,8 +405,8 @@ public class PeriodSet extends org.drip.service.stream.Serializer implements
 
 		while (0 != i--) {
 			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
-				dblStart, dblStart + 180, dblStart + 180, dblStart + 180, 2, 0.5, "30/360", true, "30/360",
-					true, dblStart + 1825, "GBP", "GBP"));
+				dblStart, dblStart + 180, dblStart + 180, dblStart, dblStart + 1825, java.lang.Double.NaN, 2,
+					0.5, "30/360", "30/360", true, true, "GBP", "GBP", null, null));
 
 			dblStart += 180.;
 		}

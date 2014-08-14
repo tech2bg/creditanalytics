@@ -180,7 +180,7 @@ public class ComponentMeasures extends org.drip.service.stream.Serializer {
 		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("ComponentMeasures de-serializer: Cannot locate calc time");
 
-		_dblCalcTime = new java.lang.Double (astrField[1]).doubleValue();
+		_dblCalcTime = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() || NULL_SER_STRING.equalsIgnoreCase
 			(astrField[2]))

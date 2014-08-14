@@ -2564,7 +2564,7 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 		csqs.setFundingCurve (dc);
 
 		csqs.setFixing (org.drip.analytics.date.JulianDate.Today().addDays (2),
-			org.drip.state.identifier.ForwardLabel.Create ("USD-LIBOR-6M"), 0.0042);
+			org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"), 0.0042);
 
 		csqs.setQuoteMap (mapTSYQuotes);
 

@@ -753,7 +753,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			for (org.drip.analytics.period.CashflowPeriod cpnPeriod : cc.cashFlowPeriod()) {
 				if (null == cpnPeriod) continue;
 
-				double dblPay = cpnPeriod.pay();
+				double dblPay = cpnPeriod.payDate();
 
 				if (dblPay >= _dblEpochDate) {
 					try {

@@ -218,7 +218,9 @@ public class ShapeOISZeroLocalSmooth {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -241,7 +243,9 @@ public class ShapeOISZeroLocalSmooth {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -291,7 +295,9 @@ public class ShapeOISZeroLocalSmooth {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -314,7 +320,9 @@ public class ShapeOISZeroLocalSmooth {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (

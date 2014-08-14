@@ -360,7 +360,7 @@ public class RatesClosesLoader {
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
-						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency);
+						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency, null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
@@ -368,7 +368,9 @@ public class RatesClosesLoader {
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
-						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency);
+						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency,
+							org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+								_mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
 				org.drip.product.cashflow.FloatingStream (strCurrency, null, 0., -1., null,
@@ -418,14 +420,16 @@ public class RatesClosesLoader {
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
-						strCurrency, strCurrency);
+						strCurrency, strCurrency, null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (dtEffective.julian(),
-					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency);
+					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency, strCurrency,
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+							_mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
 				org.drip.product.cashflow.FloatingStream (strCurrency, null, 0., -1., null,

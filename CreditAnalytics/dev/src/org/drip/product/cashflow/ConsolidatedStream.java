@@ -88,11 +88,11 @@ public class ConsolidatedStream {
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
-			double dblPeriodEndDate = period.end();
+			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
 
-			double dblPeriodStartDate = period.start();
+			double dblPeriodStartDate = period.startDate();
 
 			double dblAccrued = 0.;
 
@@ -153,7 +153,7 @@ public class ConsolidatedStream {
 					org.drip.analytics.support.CompoundingUtil.Geometric (dblAccrualEndDate, _fri,
 						currentPeriod, csqs);
 
-		double dblResetDate = currentPeriod.reset();
+		double dblResetDate = currentPeriod.resetDate();
 
 		if (!csqs.available (dblResetDate, _fri)) return null;
 
@@ -214,9 +214,9 @@ public class ConsolidatedStream {
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_dblEffective = _lsCouponPeriod.get (0).start();
+		_dblEffective = _lsCouponPeriod.get (0).startDate();
 
-		_dblMaturity = _lsCouponPeriod.get (iNumPeriod - 1).end();
+		_dblMaturity = _lsCouponPeriod.get (iNumPeriod - 1).endDate();
 
 		if (!_strPayCurrency.equalsIgnoreCase (_strCouponCurrency))
 			_cp = org.drip.product.params.CurrencyPair.FromCode (_strPayCurrency + "/" + _strCouponCurrency);
@@ -334,7 +334,7 @@ public class ConsolidatedStream {
 			for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
 				if (null == period) continue;
 
-				if (dblAccrualEndDate >= period.start() && dblAccrualEndDate <= period.end()) {
+				if (dblAccrualEndDate >= period.startDate() && dblAccrualEndDate <= period.endDate()) {
 					currentPeriod = period;
 					break;
 				}
@@ -350,7 +350,7 @@ public class ConsolidatedStream {
 
 		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
 
-		double dblEndDate = currentPeriod.pay();
+		double dblEndDate = currentPeriod.payDate();
 
 		if (null != fc) {
 			try {
@@ -369,7 +369,7 @@ public class ConsolidatedStream {
 
 		double dblEpochDate = dcFunding.epoch().julian();
 
-		double dblStartDate = currentPeriod.start();
+		double dblStartDate = currentPeriod.startDate();
 
 		try {
 			if (dblEpochDate > dblStartDate)
@@ -427,7 +427,7 @@ public class ConsolidatedStream {
 	public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
 		try {
-			return new org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (0).pay());
+			return new org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (0).payDate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -513,9 +513,9 @@ public class ConsolidatedStream {
 			double dblPeriodQuantoAdjustment = 1.;
 			double dblPeriodUnadjustedDirtyDV01 = java.lang.Double.NaN;
 
-			double dblPeriodAccrualStartDate = period.accrualStart();
+			double dblPeriodAccrualStartDate = period.accrualStartDate();
 
-			double dblPeriodPayDate = period.pay();
+			double dblPeriodPayDate = period.payDate();
 
 			if (dblPeriodPayDate < dblValueDate) continue;
 
@@ -523,7 +523,7 @@ public class ConsolidatedStream {
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (period.start() < dblValueDate)
+					if (period.startDate() < dblValueDate)
 						dblAccrued01 = period.accrualDCF (dblValueDate) * 0.0001 * notionalFactor
 							(dblPeriodAccrualStartDate, dblValueDate);
 				}
@@ -536,7 +536,7 @@ public class ConsolidatedStream {
 									dblPeriodPayDate));
 
 				dblPeriodUnadjustedDirtyDV01 = 0.0001 * period.couponDCF() * dcFunding.df (dblPeriodPayDate)
-					* notionalFactor (dblPeriodAccrualStartDate, period.end());
+					* notionalFactor (dblPeriodAccrualStartDate, period.endDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -825,7 +825,7 @@ public class ConsolidatedStream {
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
-			double dblPeriodEndDate = period.end();
+			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
 
@@ -844,7 +844,7 @@ public class ConsolidatedStream {
 				double dblPeriodCV100 = _dblInitialNotional * notionalFactor (dblPeriodEndDate) *
 					(period.couponDCF() - dblAccrued) * (dblBaseCoupon + dblBasis);
 
-				double dblPeriodPayDate = period.pay();
+				double dblPeriodPayDate = period.payDate();
 
 				if (!prwc.addPredictorResponseWeight (dblPeriodPayDate, dblPeriodCV100)) return null;
 
@@ -926,14 +926,14 @@ public class ConsolidatedStream {
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
-			double dblPeriodEndDate = period.end();
+			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
 
 			try {
 				double dblAccrued = period.contains (dblValueDate) ? period.accrualDCF (dblValueDate) : 0.;
 
-				double dblPeriodPayDate = period.pay();
+				double dblPeriodPayDate = period.payDate();
 
 				double dblPeriodDCDCF = _dblInitialNotional * notionalFactor (dblPeriodEndDate) *
 					(period.couponDCF() - dblAccrued) * dcFunding.df (dblPeriodPayDate);

@@ -156,7 +156,9 @@ public class OISCurveQuoteSensitivity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -179,7 +181,9 @@ public class OISCurveQuoteSensitivity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -229,7 +233,9 @@ public class OISCurveQuoteSensitivity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -252,7 +258,9 @@ public class OISCurveQuoteSensitivity {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (

@@ -118,7 +118,7 @@ public class FRAMktVolAnalysis {
 		double dblMultiplicativeQuantoExchangeVol = 0.1;
 		double dblFRIQuantoExchangeCorr = 0.2;
 
-		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 

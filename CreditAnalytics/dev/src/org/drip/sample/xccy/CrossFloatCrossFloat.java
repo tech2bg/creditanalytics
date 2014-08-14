@@ -6,8 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
@@ -80,7 +79,9 @@ public class CrossFloatCrossFloat {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			null
 		);
 
 		FloatingStream floatStreamReference = new FloatingStream (
@@ -90,7 +91,7 @@ public class CrossFloatCrossFloat {
 			-1.,
 			null,
 			lsReferenceFloatPeriods,
-			ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			false
 		);
 
@@ -109,7 +110,9 @@ public class CrossFloatCrossFloat {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			null
 		);
 
 		FloatingStream floatStreamDerived = new FloatingStream (
@@ -119,7 +122,7 @@ public class CrossFloatCrossFloat {
 			1.,
 			null,
 			lsDerivedFloatPeriods,
-			ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			false
 		);
 

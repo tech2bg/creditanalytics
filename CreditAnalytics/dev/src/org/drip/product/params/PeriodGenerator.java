@@ -50,6 +50,8 @@ public class PeriodGenerator extends PeriodSet {
 	private boolean _bPeriodsFromForward = false;
 	private double _dblFirstCouponDate = java.lang.Double.NaN;
 	private double _dblInterestAccrualStart = java.lang.Double.NaN;
+	private org.drip.state.identifier.CreditLabel _creditLabel = null;
+	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapReset = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapMaturity = null;
@@ -83,6 +85,8 @@ public class PeriodGenerator extends PeriodSet {
 	 * @param bPeriodsFromForward Generate Periods forward (True) or Backward (False)
 	 * @param strCalendar Optional Holiday Calendar for accrual calculations
 	 * @param strCurrency Coupon Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
 	 */
 
 	public PeriodGenerator (
@@ -105,16 +109,20 @@ public class PeriodGenerator extends PeriodSet {
 		final java.lang.String strMaturityType,
 		final boolean bPeriodsFromForward,
 		final java.lang.String strCalendar,
-		final java.lang.String strCurrency)
+		final java.lang.String strCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		super (dblEffective, strCouponDC, iFreq, null);
 
 		_dapPay = dapPay;
 		_dapReset = dapReset;
+		_creditLabel = creditLabel;
 		_dapMaturity = dapMaturity;
 		_dblMaturity = dblMaturity;
 		_strCalendar = strCalendar;
 		_strCurrency = strCurrency;
+		_forwardLabel = forwardLabel;
 		_strAccrualDC = strAccrualDC;
 		_dapEffective = dapEffective;
 		_dapPeriodEnd = dapPeriodEnd;
@@ -178,11 +186,13 @@ public class PeriodGenerator extends PeriodSet {
 
 		if (0 == _iFreq) {
 			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod
-				(_dblEffective, _dblMaturity, _strCouponDC, _strCalendar, _strCurrency)))
+				(_dblEffective, _dblMaturity, _strCouponDC, _strCalendar, _strCurrency, _strCurrency,
+					_forwardLabel, _creditLabel)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
-				if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GeneratePeriodsForward
+				if (null == (_lsCouponPeriod =
+					org.drip.analytics.support.PeriodBuilder.GeneratePeriodsForward
 						(_dblEffective, // Effective
 -						_dblMaturity, // Maturity
 						_dapEffective, // Effective DAP
@@ -201,40 +211,45 @@ public class PeriodGenerator extends PeriodSet {
 						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
 						true,
 						_strCalendar,
-						_strCurrency))
+						_strCurrency,
+						_forwardLabel,
+						_creditLabel))
 						|| 0 == _lsCouponPeriod.size())
 						return false;
 			} else {
-				if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward
-					(_dblEffective, // Effective
-					_dblMaturity, // Maturity
-					_dapEffective, // Effective DAP
-					_dapMaturity, // Maturity DAP
-					_dapPeriodStart, // Period Start DAP
-					_dapPeriodEnd, // Period End DAP
-					_dapAccrualStart, // Accrual Start DAP
-					_dapAccrualEnd, // Accrual End DAP
-					_dapPay, // Pay DAP
-					_dapReset, // Reset DAP
-					_iFreq, // Coupon Freq
-					_strCouponDC, // Coupon Day Count
-					_bApplyCpnEOMAdj,
-					_strAccrualDC, // Accrual Day Count
-					_bApplyAccEOMAdj,
-					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
-					true,
-					_strCalendar,
-					_strCurrency))
-					|| 0 == _lsCouponPeriod.size())
+				if (null == (_lsCouponPeriod =
+					org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward
+						(_dblEffective, // Effective
+						_dblMaturity, // Maturity
+						_dapEffective, // Effective DAP
+						_dapMaturity, // Maturity DAP
+						_dapPeriodStart, // Period Start DAP
+						_dapPeriodEnd, // Period End DAP
+						_dapAccrualStart, // Accrual Start DAP
+						_dapAccrualEnd, // Accrual End DAP
+						_dapPay, // Pay DAP
+						_dapReset, // Reset DAP
+						_iFreq, // Coupon Freq
+						_strCouponDC, // Coupon Day Count
+						_bApplyCpnEOMAdj,
+						_strAccrualDC, // Accrual Day Count
+						_bApplyAccEOMAdj,
+						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
+						true,
+						_strCalendar,
+						_strCurrency,
+						_forwardLabel,
+						_creditLabel))
+						|| 0 == _lsCouponPeriod.size())
 					return false;
 			}
 		}
 
 		if (org.drip.quant.common.NumberUtil.IsValid (_dblFirstCouponDate))
-			_lsCouponPeriod.get (0).setPay (_dblFirstCouponDate);
+			_lsCouponPeriod.get (0).setPayDate (_dblFirstCouponDate);
 
 		if (org.drip.quant.common.NumberUtil.IsValid (_dblInterestAccrualStart))
-			_lsCouponPeriod.get (0).setAccrualStart (_dblInterestAccrualStart);
+			_lsCouponPeriod.get (0).setAccrualStartDate (_dblInterestAccrualStart);
 
 		return true;
 	}
@@ -254,7 +269,8 @@ public class PeriodGenerator extends PeriodSet {
 
 		PeriodGenerator bpp = new PeriodGenerator (dblEffective + 3653., dblEffective, dblEffective + 3653.,
 			dblEffective + 182., dblEffective, 2, "30/360", "30/360", null, null, null, null, null, null,
-				null, null, "IGNORE", false, "USD", "USD");
+				null, null, "IGNORE", false, "USD", "USD", org.drip.state.identifier.ForwardLabel.Standard
+					("USD-LIBOR-6M"), org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
 		if (!bpp.validate()) {
 			System.out.println ("Cannot validate BPP!");

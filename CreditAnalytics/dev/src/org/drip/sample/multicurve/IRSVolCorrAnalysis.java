@@ -113,7 +113,9 @@ public class IRSVolCorrAnalysis {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -123,7 +125,7 @@ public class IRSVolCorrAnalysis {
 				-1.,
 				null,
 				lsFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -136,7 +138,9 @@ public class IRSVolCorrAnalysis {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -283,7 +287,9 @@ public class IRSVolCorrAnalysis {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
 
 			FloatingStream fsReference = new FloatingStream (
@@ -293,7 +299,7 @@ public class IRSVolCorrAnalysis {
 				-1.,
 				null,
 				lsReferenceFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-6M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -310,7 +316,9 @@ public class IRSVolCorrAnalysis {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				null
 			);
 
 			FloatingStream fsDerived = new FloatingStream (
@@ -320,7 +328,7 @@ public class IRSVolCorrAnalysis {
 				1.,
 				null,
 				lsDerivedFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -513,7 +521,9 @@ public class IRSVolCorrAnalysis {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			fri,
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
@@ -536,7 +546,9 @@ public class IRSVolCorrAnalysis {
 			false,
 			false,
 			strCurrency,
-			strCurrency
+			strCurrency,
+			null,
+			null
 		);
 
 		FixedStream fixStream = new FixedStream (
@@ -567,7 +579,7 @@ public class IRSVolCorrAnalysis {
 		throws Exception
 	{
 		for (org.drip.analytics.period.CashflowPeriod period : irs.derivedStream().cashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.start());
+			JulianDate dtFRADate = new JulianDate (period.startDate());
 
 			mktParams.setCustomMetricVolSurface (
 				CustomMetricLabel.Standard (fri.fullyQualifiedName()),
@@ -625,7 +637,7 @@ public class IRSVolCorrAnalysis {
 
 		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
 
-		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
 		FixFloatComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 

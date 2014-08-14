@@ -114,7 +114,9 @@ public class FixFloatForwardCurve {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+				null
 			);
 
 			FloatingStream floatStream = new FloatingStream (
@@ -124,7 +126,7 @@ public class FixFloatForwardCurve {
 				-1.,
 				null,
 				lsFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-3M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
 				false
 			);
 
@@ -137,7 +139,9 @@ public class FixFloatForwardCurve {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -268,7 +272,9 @@ public class FixFloatForwardCurve {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				null,
+				null
 			);
 
 			FixedStream fixStream = new FixedStream (
@@ -293,7 +299,9 @@ public class FixFloatForwardCurve {
 				false,
 				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				null
 			);
 
 			FloatingStream fsDerived = new FloatingStream (
@@ -303,7 +311,7 @@ public class FixFloatForwardCurve {
 				-1.,
 				null,
 				lsDerivedFloatPeriods,
-				ForwardLabel.Create (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 

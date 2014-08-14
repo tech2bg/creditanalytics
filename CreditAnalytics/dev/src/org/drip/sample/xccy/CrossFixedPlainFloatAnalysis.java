@@ -80,7 +80,9 @@ public class CrossFixedPlainFloatAnalysis {
 			false,
 			false,
 			strFixedCurrency,
-			strFixedCurrency
+			strFixedCurrency,
+			null,
+			null
 		);
 
 		FixedStream fixStream = new FixedStream (
@@ -107,7 +109,9 @@ public class CrossFixedPlainFloatAnalysis {
 			false,
 			false,
 			strFloatCurrency,
-			strFloatCurrency
+			strFloatCurrency,
+			ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
@@ -117,7 +121,7 @@ public class CrossFixedPlainFloatAnalysis {
 			1.,
 			null,
 			lsDerivedFloatPeriods,
-			ForwardLabel.Create (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			false
 		);
 

@@ -1854,7 +1854,12 @@ public class BondProductBuilder extends org.drip.service.stream.Serializer {
 				java.lang.Double.NaN : _dtFinalMaturity.julian(), null == _dtFirstCoupon ?
 					java.lang.Double.NaN : _dtFirstCoupon.julian(), _dtInterestAccrualStart.julian(),
 						_iCouponFreq, _strDayCountCode, _strDayCountCode, null, null, null, null, null, null,
-							null, null, _strMaturityType, false, _strCouponCurrency, _strCouponCurrency);
+							null, null, _strMaturityType, false, _strCouponCurrency, _strCouponCurrency,
+								!org.drip.quant.common.StringUtil.IsEmpty (_strRateIndex) ?
+									org.drip.state.identifier.ForwardLabel.Standard (_strRateIndex) : null,
+										!org.drip.quant.common.StringUtil.IsEmpty (_strIssuerSPN) ?
+											org.drip.state.identifier.CreditLabel.Standard (_strIssuerSPN) :
+												null);
 
 		return periodParams.validate() ? periodParams : null;
 	}

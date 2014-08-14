@@ -175,10 +175,11 @@ public class BondBuilder {
 															dtEffective.julian(), iFreq, strDayCount,
 																strDayCount, null, null, null, null, null,
 																	null, null, null, "", false,
-																		strCurrency, strCurrency), new
-																			org.drip.product.params.NotionalSetting
-			(fsPrincipalOutstanding, 100., org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START,
-				false));
+																		strCurrency, strCurrency, null,
+																			!org.drip.quant.common.StringUtil.IsEmpty
+			(strCreditCurveName) ? org.drip.state.identifier.CreditLabel.Standard (strCreditCurveName) :
+				null), new org.drip.product.params.NotionalSetting (fsPrincipalOutstanding, 100.,
+					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
 	}
 
 	/**
@@ -242,9 +243,11 @@ public class BondBuilder {
 																									null,
 																										null,
 																											null,
-			null, null, null, "", false, strCurrency, strCurrency), new
-				org.drip.product.params.NotionalSetting (fsPrincipalOutstanding, 100.,
-					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
+			null, null, null, "", false, strCurrency, strCurrency,
+				org.drip.state.identifier.ForwardLabel.Standard (strRateIndex),
+					org.drip.state.identifier.CreditLabel.Standard (strCreditCurveName)), new
+						org.drip.product.params.NotionalSetting (fsPrincipalOutstanding, 100.,
+							org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
 	}
 
 	/**
@@ -330,9 +333,10 @@ public class BondBuilder {
 			}
 
 			try {
-				lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblPeriodStart, adblDate[i],
-					dblPeriodStart, adblDate[i], adblDate[i], dblPeriodStart, iFreq, 1. / iFreq, "30/360",
-						false, "30/360", false, java.lang.Double.NaN, "", strCurrency));
+				lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblPeriodStart,
+					adblDate[i], dblPeriodStart, adblDate[i], adblDate[i], dblPeriodStart,
+						java.lang.Double.NaN, java.lang.Double.NaN, iFreq, 1. / iFreq, "30/360", "30/360",
+							false, false, "", strCurrency, null, null));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

@@ -91,7 +91,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
-			double dblPeriodEndDate = period.end();
+			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
 
@@ -99,7 +99,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 				double dblAccrued = period.contains (dblValueDate) ? period.accrualDCF (dblValueDate) : 0.;
 
 				dblPV -= _dblNotional * notional (dblPeriodEndDate) * (period.couponDCF() - dblAccrued) *
-					dblCoupon * dcFunding.df (period.pay());
+					dblCoupon * dcFunding.df (period.payDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -145,7 +145,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
 		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
-			double dblPeriodEndDate = period.end();
+			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
 
@@ -155,7 +155,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 				double dblPeriodCV100 = _dblNotional * notional (dblPeriodEndDate) * (period.couponDCF() -
 					dblAccrued) * dblCoupon;
 
-				double dblPeriodPayDate = period.pay();
+				double dblPeriodPayDate = period.payDate();
 
 				if (!prwc.addPredictorResponseWeight (dblPeriodPayDate, dblPeriodCV100)) return null;
 
@@ -221,9 +221,9 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 
 		_fxmtm = fxmtm;
 
-		_dblEffective = _lsCouponPeriod.get (0).start();
+		_dblEffective = _lsCouponPeriod.get (0).startDate();
 
-		_dblMaturity = _lsCouponPeriod.get (iNumCouponPeriod - 1).end();
+		_dblMaturity = _lsCouponPeriod.get (iNumCouponPeriod - 1).endDate();
 
 		_strCode = _strCurrency + "::" + (12 / _lsCouponPeriod.get (0).freq()) + "M::" + new
 			org.drip.analytics.date.JulianDate (_dblMaturity);
@@ -459,7 +459,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 	public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
 		try {
-			return new org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (0).end());
+			return new org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (0).endDate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -528,9 +528,9 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			double dblPeriodQuantoAdjustment = 1.;
 			double dblPeriodUnadjustedDirtyDV01 = java.lang.Double.NaN;
 
-			double dblPeriodAccrualStartDate = period.accrualStart();
+			double dblPeriodAccrualStartDate = period.accrualStartDate();
 
-			double dblPeriodPayDate = period.pay();
+			double dblPeriodPayDate = period.payDate();
 
 			if (dblPeriodPayDate < dblValueDate) continue;
 
@@ -538,7 +538,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (period.start() < dblValueDate)
+					if (period.startDate() < dblValueDate)
 						dblAccrued01 = period.accrualDCF (dblValueDate) * 0.0001 * notional
 							(dblPeriodAccrualStartDate, dblValueDate);
 				}
@@ -551,7 +551,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 									dblPeriodPayDate));
 
 				dblPeriodUnadjustedDirtyDV01 = 0.0001 * period.couponDCF() * dcFunding.df (dblPeriodPayDate)
-					* notional (dblPeriodAccrualStartDate, period.end());
+					* notional (dblPeriodAccrualStartDate, period.endDate());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -827,9 +827,9 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
 			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
-				double dblPeriodPayDate = p.pay();
+				double dblPeriodPayDate = p.payDate();
 
-				if (p.start() < valParams.valueDate()) continue;
+				if (p.startDate() < valParams.valueDate()) continue;
 
 				org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure =
 					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
@@ -844,7 +844,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
 						iNumQuote);
 
-				double dblPeriodNotional = _dblNotional * notional (p.start(), p.end());
+				double dblPeriodNotional = _dblNotional * notional (p.startDate(), p.endDate());
 
 				double dblPeriodDCF = p.couponDCF();
 
@@ -895,19 +895,20 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
 				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
-					double dblPeriodPayDate = p.pay();
+					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
-						dcFunding.jackDForwardDManifestMeasure (p.start(), p.end(), "Rate", p.couponDCF());
+						dcFunding.jackDForwardDManifestMeasure (p.startDate(), p.endDate(), "Rate",
+							p.couponDCF());
 
 					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
 						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
 
 					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
 
-					double dblForwardRate = dcFunding.libor (p.start(), p.end());
+					double dblForwardRate = dcFunding.libor (p.startDate(), p.endDate());
 
 					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
 
@@ -915,7 +916,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
 							wjPeriodFwdRateDF.numParameters());
 
-					double dblPeriodNotional = notional (p.start(), p.end());
+					double dblPeriodNotional = notional (p.startDate(), p.endDate());
 
 					double dblPeriodDCF = p.couponDCF();
 
@@ -1032,7 +1033,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
 			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "4Y", null, 2,
-				"30/360", false, true, "JPY", "JPY");
+				"30/360", false, true, "JPY", "JPY", null, null);
 
 		FixedStream fs = new org.drip.product.cashflow.FixedStream ("JPY", null, 0.03, 100., null,
 			lsCouponPeriod);

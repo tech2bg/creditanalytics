@@ -56,7 +56,7 @@ public class IBOR3MCubicPolyVanilla {
 		final boolean bPrintMetric)
 		throws Exception
 	{
-		ForwardLabel fri = ForwardLabel.Create (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters

@@ -80,7 +80,7 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 	 * @return ForwardLabel Instance
 	 */
 
-	public static final ForwardLabel Create (
+	public static final ForwardLabel Standard (
 		final java.lang.String strFullyQualifiedName)
 	{
 		if (null == strFullyQualifiedName|| strFullyQualifiedName.isEmpty()) return null;
@@ -316,7 +316,7 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
 	{
-		ForwardLabel fl = Create ("USD-LIBOR-6M");
+		ForwardLabel fl = Standard ("USD-LIBOR-6M");
 
 		byte[] abFL = fl.serialize();
 

@@ -337,10 +337,15 @@ public class NonlinearCurveCalibrator {
 		org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
 			org.drip.quant.solver1D.FixedPointFinderBrent (0., ofIRNode, true).findRoot();
 
-		if (null == rfop || !rfop.containsRoot())
+		if (null == rfop || !rfop.containsRoot()) {
+			System.out.println ("\tName: " + comp.name());
+
+			System.out.println ("\tValue: " + dblCalibValue);
+
 			throw new java.lang.Exception
 				("NonlinearCurveCalibrator::calibrateIRNode => Cannot calibrate IR segment for node #" +
 					iInstr);
+		}
 
 		return rfop.getRoot();
 	}

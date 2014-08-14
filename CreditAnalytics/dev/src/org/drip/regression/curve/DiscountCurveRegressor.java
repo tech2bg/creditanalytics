@@ -220,7 +220,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						}
 					}
 
-					_lsfc.add (_dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Create
+					_lsfc.add (_dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Standard
 						(_strCurrency + "_LIBOR-6M"), 0.0042);
 
 					return true;
