@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
@@ -179,7 +179,7 @@ public class CrossOvernightFloatingStream {
 		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GenerateDailyPeriod (
+			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
@@ -203,7 +203,7 @@ public class CrossOvernightFloatingStream {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -470,7 +470,7 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,

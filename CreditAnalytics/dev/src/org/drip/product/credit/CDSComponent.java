@@ -402,7 +402,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward (
+		_lsCouponPeriod = org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (
 			_dblEffective = dblEffective, // Effective
 			_dblMaturity = dblMaturity, // Maturity
 			dapEffective, // Effective DAP
@@ -418,8 +418,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_bApplyCpnEOMAdj,
 			strAccrualDC, // Accrual Day Count
 			_bApplyAccEOMAdj,
-			bConvCDS ? org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT :
-				org.drip.analytics.support.PeriodBuilder.FULL_FRONT_PERIOD,
+			bConvCDS ? org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT :
+				org.drip.analytics.support.PeriodHelper.FULL_FRONT_PERIOD,
 			false,
 			strCalendar,
 			_strCouponCurrency,
@@ -668,7 +668,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (_dblCoupon);
+		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (_dblCoupon, 1.);
 	}
 
 	@Override public int freq()

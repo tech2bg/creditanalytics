@@ -283,11 +283,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (null != period) {
-			if (!csqs.available (period.resetDate(), _fltParams._fri)) {
+			if (!csqs.available (period.resetPeriods().get (0).fixing(), _fltParams._fri)) {
 				if (s_bBlog)
 					System.out.println ("IRS reset for index " + _fltParams._fri.fullyQualifiedName() +
 						" and reset date " + org.drip.analytics.date.JulianDate.fromJulian
-							(period.resetDate()) + " not found; defaulting to implied");
+							(period.resetPeriods().get (0).fixing()) + " not found; defaulting to implied");
 
 				org.drip.analytics.rates.ForwardRateEstimator fc = null;
 
@@ -306,7 +306,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				return dc.libor (period.startDate(), period.endDate());
 			}
 
-			return csqs.getFixing (period.resetDate(), _fltParams._fri);
+			return csqs.getFixing (period.resetPeriods().get (0).fixing(), _fltParams._fri);
 		}
 
 		double dblRateRefEndDate = dblValue + LOCAL_FORWARD_RATE_WIDTH;
@@ -1367,7 +1367,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		try {
 			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (null == _fltParams ?
-				getFixedCoupon (dblAccrualEndDate) : getFloatingCoupon (dblAccrualEndDate, csqs));
+				getFixedCoupon (dblAccrualEndDate) : getFloatingCoupon (dblAccrualEndDate, csqs), 1.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1745,7 +1745,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (period.payDate() < dblValue) continue;
 
 			try {
-				return new org.drip.analytics.date.JulianDate (period.resetDate());
+				return new org.drip.analytics.date.JulianDate (period.resetPeriods().get (0).fixing());
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 

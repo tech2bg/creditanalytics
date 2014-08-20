@@ -70,7 +70,7 @@ public class CrossFloatCrossFloat {
 			 * The Reference Leg
 			 */
 
-		List<CashflowPeriod> lsReferenceFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,
@@ -101,7 +101,7 @@ public class CrossFloatCrossFloat {
 		 * The Derived Leg
 		 */
 
-		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,

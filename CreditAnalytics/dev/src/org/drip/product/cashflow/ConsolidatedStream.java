@@ -153,13 +153,15 @@ public class ConsolidatedStream {
 					org.drip.analytics.support.CompoundingUtil.Geometric (dblAccrualEndDate, _fri,
 						currentPeriod, csqs);
 
-		double dblResetDate = currentPeriod.resetDate();
+		double dblResetDate = currentPeriod.resetPeriods().get (0).fixing();
 
 		if (!csqs.available (dblResetDate, _fri)) return null;
 
 		try {
 			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (csqs.getFixing (dblResetDate,
-				_fri));
+				_fri), org.drip.analytics.daycount.Convention.YearFraction (currentPeriod.startDate(),
+					dblAccrualEndDate, currentPeriod.accrualDC(), currentPeriod.accrualEODAdjustment(),
+						currentPeriod.terminalDate(), null, currentPeriod.calendar()));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -354,7 +356,10 @@ public class ConsolidatedStream {
 
 		if (null != fc) {
 			try {
-				return org.drip.analytics.output.PeriodCouponMeasures.Nominal (fc.forward (dblEndDate));
+				return org.drip.analytics.output.PeriodCouponMeasures.Nominal (fc.forward (dblEndDate),
+					org.drip.analytics.daycount.Convention.YearFraction (currentPeriod.startDate(),
+						dblAccrualEndDate, currentPeriod.accrualDC(), currentPeriod.accrualEODAdjustment(),
+							currentPeriod.terminalDate(), null, currentPeriod.calendar()));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -377,7 +382,10 @@ public class ConsolidatedStream {
 					(_fri.tenor()).julian();
 
 			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dcFunding.libor (dblStartDate,
-				dblEndDate, currentPeriod.couponDCF()));
+				dblEndDate, currentPeriod.couponDCF()), org.drip.analytics.daycount.Convention.YearFraction
+					(currentPeriod.startDate(), dblAccrualEndDate, currentPeriod.accrualDC(),
+						currentPeriod.accrualEODAdjustment(), currentPeriod.terminalDate(), null,
+							currentPeriod.calendar()));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

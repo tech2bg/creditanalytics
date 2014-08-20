@@ -67,7 +67,7 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency, null,
 					null);
 
@@ -105,9 +105,9 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward (dtEffective.julian(),
+			org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (dtEffective.julian(),
 				dtMaturity.julian(), null, iFreq, strDayCount, false,
-					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, strCurrency,
+					org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT, true, strCalendar, strCurrency,
 						null, null);
 
 		try {
@@ -146,7 +146,7 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 				strMaturityTenor, null, iFreq, strDayCount, false, true, strCalendar, strCurrency,
 					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 / iFreq) + "M"),
 						null);
@@ -188,9 +188,9 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsBackward (dtEffective.julian(),
+			org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (dtEffective.julian(),
 				dtMaturity.julian(), null, iFreq, strDayCount, false,
-					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, strCurrency,
+					org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT, true, strCalendar, strCurrency,
 						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 / iFreq) +
 							"M"), null);
 

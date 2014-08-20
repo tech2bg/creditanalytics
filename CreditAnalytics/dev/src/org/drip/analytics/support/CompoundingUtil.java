@@ -144,7 +144,8 @@ public class CompoundingUtil {
 					null, strCalendar);
 
 			return new org.drip.analytics.output.PeriodCouponMeasures ((dblNominalAccrued + dblGapAccrued) /
-				dblDCFNormalizer, (dblConvexityAdjustedAccrued + dblGapAccrued) / dblDCFNormalizer);
+				dblDCFNormalizer, (dblConvexityAdjustedAccrued + dblGapAccrued) / dblDCFNormalizer,
+					dblDCFNormalizer);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -220,12 +221,13 @@ public class CompoundingUtil {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLastCoupon)) return null;
 
 		try {
+			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (currentPeriod.startDate(),
+				dblAccrualEndDate, strAccrualDC, false, java.lang.Double.NaN, null, strCalendar);
+
 			return org.drip.analytics.output.PeriodCouponMeasures.Nominal ((dblAccruedAccount * (1. +
 				org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate, dblAccrualEndDate,
 					currentPeriod.accrualDC(), false, java.lang.Double.NaN, null, strCalendar) *
-						dblLastCoupon) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
-							(currentPeriod.startDate(), dblAccrualEndDate, strAccrualDC, false,
-								java.lang.Double.NaN, null, strCalendar));
+						dblLastCoupon) - 1.) / dblDCF, dblDCF);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -141,13 +141,13 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 					org.drip.analytics.support.CompoundingUtil.Geometric (dblAccrualEndDate, fri,
 						currentPeriod, csqs);
 
-		double dblResetDate = currentPeriod.resetDate();
+		double dblResetDate = currentPeriod.resetPeriods().get (0).fixing();
 
 		if (!csqs.available (dblResetDate, fri)) return null;
 
 		try {
 			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (csqs.getFixing (dblResetDate,
-				fri));
+				fri), 1.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -428,47 +428,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		}
 
 		return null == currentPeriod ? null : currentPeriod.baseRate (dblAccrualEndDate, valParams, csqs);
-
-		/* org.drip.analytics.output.PeriodCouponMeasures pcm = compoundFixing (dblAccrualEndDate, _fri,
-			currentPeriod, valParams, csqs);
-
-		if (null != pcm) return pcm;
-
-		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
-
-		double dblEndDate = currentPeriod.payDate();
-
-		if (null != fc) {
-			try {
-				return org.drip.analytics.output.PeriodCouponMeasures.Nominal (fc.forward (dblEndDate));
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
-
-		if (null == dcFunding) return null;
-
-		double dblEpochDate = dcFunding.epoch().julian();
-
-		double dblStartDate = currentPeriod.startDate();
-
-		try {
-			if (dblEpochDate > dblStartDate)
-				dblEndDate = new org.drip.analytics.date.JulianDate (dblStartDate = dblEpochDate).addTenor
-					(_fri.tenor()).julian();
-
-			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dcFunding.libor (dblStartDate,
-				dblEndDate, currentPeriod.couponDCF()));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null; */
 	}
 
 	@Override public int freq()
@@ -602,7 +561,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 			double dblPeriodAcrualStartDate = period.accrualStartDate();
 
-			double dblPeriodResetDate = period.resetDate();
+			double dblPeriodResetDate = period.resetPeriods().get (0).fixing();
 
 			double dblPeriodStartDate = period.startDate();
 
@@ -640,7 +599,11 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 					org.drip.analytics.output.PeriodCouponMeasures pcm = coupon (dblPeriodEndDate, valParams,
 						csqs);
 
-					if (null == pcm) return null;
+					if (null == pcm) {
+						System.out.println ("NULL PCM");
+
+						return null;
+					}
 
 					dblFloatingRate = pcm.nominal();
 

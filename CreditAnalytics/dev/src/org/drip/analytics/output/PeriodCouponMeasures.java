@@ -35,6 +35,7 @@ package org.drip.analytics.output;
  */
 
 public class PeriodCouponMeasures {
+	private double _dblDCF = java.lang.Double.NaN;
 	private double _dblNominalRate = java.lang.Double.NaN;
 	private double _dblConvexityAdjustedRate = java.lang.Double.NaN;
 
@@ -42,15 +43,17 @@ public class PeriodCouponMeasures {
 	 * Make a PeriodCouponMeasures Instance from the Nominal Rate
 	 * 
 	 * @param dblNominalRate The Nominal Rate
+	 * @param dblDCF The Period DCF
 	 * 
 	 * @return The PeriodCouponMeasures Instance
 	 */
 
 	public static final PeriodCouponMeasures Nominal (
-		final double dblNominalRate)
+		final double dblNominalRate,
+		final double dblDCF)
 	{
 		try {
-			return new PeriodCouponMeasures (dblNominalRate, dblNominalRate);
+			return new PeriodCouponMeasures (dblNominalRate, dblNominalRate, dblDCF);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -63,17 +66,20 @@ public class PeriodCouponMeasures {
 	 * 
 	 * @param dblNominalRate The Nominal Coupon Rate
 	 * @param dblConvexityAdjustedRate The Convexity Adjusted Coupon Rate
+	 * @param dblDCF The Period DCF
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
 	public PeriodCouponMeasures (
 		final double dblNominalRate,
-		final double dblConvexityAdjustedRate)
+		final double dblConvexityAdjustedRate,
+		final double dblDCF)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNominalRate = dblNominalRate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblConvexityAdjustedRate = dblConvexityAdjustedRate))
+			!org.drip.quant.common.NumberUtil.IsValid (_dblConvexityAdjustedRate = dblConvexityAdjustedRate)
+				|| !org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF))
 			throw new java.lang.Exception ("PeriodCouponMeaures ctr: Invalid Inputs");
 	}
 
@@ -100,6 +106,17 @@ public class PeriodCouponMeasures {
 	}
 
 	/**
+	 * Return the DCF
+	 * 
+	 * @return The DCF
+	 */
+
+	public double dcf()
+	{
+		return _dblDCF;
+	}
+
+	/**
 	 * Retrieve the Convexity Adjustment Factor
 	 * 
 	 * @return The Convexity Adjustment Factor
@@ -107,7 +124,8 @@ public class PeriodCouponMeasures {
 
 	public double convexityAdjustmentFactor()
 	{
-		return _dblConvexityAdjustedRate / _dblNominalRate;
+		return 0. == _dblConvexityAdjustedRate && 0. == _dblNominalRate ? 0. : _dblConvexityAdjustedRate /
+			_dblNominalRate;
 	}
 
 	/**
@@ -119,5 +137,31 @@ public class PeriodCouponMeasures {
 	public double convexityAdjustment()
 	{
 		return _dblConvexityAdjustedRate - _dblNominalRate;
+	}
+
+	/**
+	 * Absorb the supplied PCM
+	 * 
+	 * @param pcmOther The "Other" PCM
+	 * 
+	 * @return TRUE => At least one Entry in the PCM successfully absorbed
+	 */
+
+	public boolean absorb (
+		final PeriodCouponMeasures pcmOther)
+	{
+		if (null == pcmOther) return false;
+
+		_dblConvexityAdjustedRate = _dblDCF * _dblConvexityAdjustedRate + pcmOther._dblDCF *
+			pcmOther._dblConvexityAdjustedRate;
+		_dblNominalRate = _dblDCF * _dblNominalRate + pcmOther._dblDCF * pcmOther._dblNominalRate;
+		_dblDCF += pcmOther._dblDCF;
+
+		if (0. != _dblDCF) {
+			_dblNominalRate /= _dblDCF;
+			_dblConvexityAdjustedRate /= _dblDCF;
+		}
+
+		return true;
 	}
 }

@@ -6,7 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
@@ -70,7 +70,7 @@ public class FixFloatFixFloat {
 		 * The Fixed Leg
 		 */
 
-		List<CashflowPeriod> lsFixPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
 			null,
@@ -99,7 +99,7 @@ public class FixFloatFixFloat {
 		 * The Derived Leg
 		 */
 
-		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
 			null,

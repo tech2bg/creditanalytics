@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.output.PeriodCouponMeasures;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
@@ -137,7 +137,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -162,7 +162,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -214,7 +214,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -239,7 +239,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -604,7 +604,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		fri.setArithmeticCompounding (true);
 
-		List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,

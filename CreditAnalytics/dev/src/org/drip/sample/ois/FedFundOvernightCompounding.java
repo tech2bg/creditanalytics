@@ -5,9 +5,10 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.output.PeriodCouponMeasures;
 import org.drip.analytics.period.CashflowPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
@@ -135,7 +136,7 @@ public class FedFundOvernightCompounding {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -160,7 +161,7 @@ public class FedFundOvernightCompounding {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -212,7 +213,7 @@ public class FedFundOvernightCompounding {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -237,7 +238,7 @@ public class FedFundOvernightCompounding {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
+			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -505,6 +506,8 @@ public class FedFundOvernightCompounding {
 
 		double dblAccount = 1.;
 
+		lsfc.add (dtStart, fri, dblFlatFixing);
+
 		double dblPrevDate = dtStart.julian();
 
 		JulianDate dt = dtStart.addDays (1);
@@ -525,8 +528,12 @@ public class FedFundOvernightCompounding {
 
 		System.out.println ("\tManual Calc Float Accrued (Geometric Compounding): " + (dblAccount - 1.) * dblNotional);
 
+		double dblDCF = (dtValue.julian() - dtStart.julian()) / 360.;
+
 		System.out.println ("\tManual Calc Float Accrued (Arithmetic Compounding): " +
-			((dtValue.julian() - dtStart.julian()) * dblNotional * dblFlatFixing / 360.));
+			(dblDCF * dblNotional * dblFlatFixing));
+
+		System.out.println ("\tManual Calc Float Accrued DCF (Arithmetic Compounding): " + dblDCF);
 
 		return lsfc;
 	}
@@ -557,11 +564,11 @@ public class FedFundOvernightCompounding {
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
-		List<CashflowPeriod> lsFloatPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,
-			4,
+			2,
 			"Act/360",
 			false,
 			false,
@@ -582,7 +589,7 @@ public class FedFundOvernightCompounding {
 			false
 		);
 
-		List<CashflowPeriod> lsFixedPeriods = PeriodBuilder.GeneratePeriodsRegular (
+		List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"4M",
 			null,
@@ -643,13 +650,17 @@ public class FedFundOvernightCompounding {
 
 		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISOutput.get ("FloatAccrued"));
 
-		CashflowPeriod period = lsFloatPeriods.get (1);
+		CashflowPeriod period = lsFloatPeriods.get (0);
 
-		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + floatStream.coupon (
+		PeriodCouponMeasures pcm = floatStream.coupon (
 			period.endDate(),
 			valParams,
-			mktParams).nominal()
+			mktParams
 		);
+
+		System.out.println ("\tMachine Calc Float Accrued DCF (Arithmetic Compounding): " + pcm.dcf());
+
+		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcm.convexityAdjusted());
 
 		double dblOISVol = 0.3;
 		double dblUSDFundingVol = 0.3;
@@ -661,10 +672,12 @@ public class FedFundOvernightCompounding {
 
 		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 
-		System.out.println ("\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
-			period.endDate(),
-			valParams,
-			mktParams).convexityAdjusted()
+		System.out.println (
+			"\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
+				period.endDate(),
+				valParams,
+				mktParams
+			).convexityAdjusted()
 		);
 	}
 }

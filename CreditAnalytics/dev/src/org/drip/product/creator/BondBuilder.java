@@ -333,8 +333,14 @@ public class BondBuilder {
 			}
 
 			try {
+				java.util.List<org.drip.product.params.ResetPeriod> lsResetPeriod = new
+					java.util.ArrayList<org.drip.product.params.ResetPeriod>();
+
+				lsResetPeriod.add (new org.drip.product.params.ResetPeriod (dblPeriodStart, adblDate[i],
+					dblPeriodStart));
+
 				lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblPeriodStart,
-					adblDate[i], dblPeriodStart, adblDate[i], adblDate[i], dblPeriodStart,
+					adblDate[i], dblPeriodStart, adblDate[i], adblDate[i], lsResetPeriod,
 						java.lang.Double.NaN, java.lang.Double.NaN, iFreq, 1. / iFreq, "30/360", "30/360",
 							false, false, "", strCurrency, null, null));
 			} catch (java.lang.Exception e) {

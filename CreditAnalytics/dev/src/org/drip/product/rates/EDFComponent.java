@@ -366,7 +366,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (0.);
+		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (0., 1.);
 	}
 
 	@Override public int freq()
@@ -430,7 +430,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
-		return org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (_dblEffective, _dblMaturity,
+		return org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (_dblEffective, _dblMaturity,
 			_strDC, _strCalendar, _strCurrency, _strCurrency, _fri, null);
 	}
 

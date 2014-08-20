@@ -51,12 +51,12 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblPayDate = java.lang.Double.NaN;
-	private double _dblResetDate = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblFXFixingDate = java.lang.Double.NaN;
 	private double _dblTerminalDate = java.lang.Double.NaN;
 	private double _dblAccrualEndDate = java.lang.Double.NaN;
 	private double _dblAccrualStartDate = java.lang.Double.NaN;
+	private java.util.List<org.drip.product.params.ResetPeriod> _lsResetPeriod = null;
 
 	/*
 	 * Period Date Generation Fields
@@ -96,24 +96,66 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	private double _dblEndSurvival = java.lang.Double.NaN;
 	private java.util.List<org.drip.analytics.period.LossQuadratureMetrics> _lsLQM = null;
 
-	private org.drip.analytics.output.PeriodCouponMeasures compoundFixing (
+	private double resetPeriodRate (
 		final double dblAccrualEndDate,
-		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.product.params.ResetPeriod rp,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		double dblFixingDate = rp.fixing();
+
+		if (csqs.available (dblFixingDate, _forwardLabel))
+			return csqs.getFixing (dblFixingDate, _forwardLabel);
+
+		double dblResetEndDate = rp.end();
+
+		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_forwardLabel);
+
+		if (null != fc) return fc.forward (dblResetEndDate);
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
+
+		if (null == dcFunding)
+			throw new java.lang.Exception
+				("CashflowPeriod::resetPeriodRate => Cannot locate Discount Curve");
+
+		double dblResetStartDate = rp.start();
+
+		double dblEpochDate = dcFunding.epoch().julian();
+
+		if (dblEpochDate > dblResetStartDate)
+			dblResetEndDate = new org.drip.analytics.date.JulianDate (dblResetStartDate =
+				dblEpochDate).addTenor (_forwardLabel.tenor()).julian();
+
+		return dcFunding.libor (dblResetStartDate, dblResetEndDate, _dblDCF);
+	}
+
+	private double resetPeriodDCF (
+		final double dblAccrualEndDate,
+		final org.drip.product.params.ResetPeriod rp)
+		throws java.lang.Exception
+	{
+		double dblResetStartDate = rp.start();
+
+		if (dblAccrualEndDate < dblResetStartDate) return 0.;
+
+		double dblResetEndDate = rp.end();
+
+		return org.drip.analytics.daycount.Convention.YearFraction (dblResetStartDate, dblAccrualEndDate >=
+			dblResetEndDate ? dblResetEndDate : dblAccrualEndDate, _strAccrualDC, _bApplyAccEOMAdj,
+				_dblTerminalDate, null, _strCalendar);
+	}
+
+	private org.drip.analytics.output.PeriodCouponMeasures resetRate (
+		final int iResetPeriodIndex,
+		final double dblAccrualEndDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		if (_forwardLabel.overnight())
-			return _forwardLabel.isArithmeticCompounding() ?
-				org.drip.analytics.support.CompoundingUtil.Arithmetic (dblAccrualEndDate, _forwardLabel,
-					this, valParams, csqs) : org.drip.analytics.support.CompoundingUtil.Geometric
-						(dblAccrualEndDate, _forwardLabel, this, csqs);
-
-		double dblResetDate = resetDate();
-
-		if (!csqs.available (dblResetDate, _forwardLabel)) return null;
+		org.drip.product.params.ResetPeriod rp = _lsResetPeriod.get (iResetPeriodIndex);
 
 		try {
-			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (csqs.getFixing (dblResetDate,
-				_forwardLabel));
+			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (resetPeriodRate
+				(dblAccrualEndDate, rp, csqs), resetPeriodDCF (dblAccrualEndDate, rp));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -129,7 +171,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	 * @param dblAccrualStart Period Accrual Start Date
 	 * @param dblAccrualEndDate Period Accrual End Date
 	 * @param dblPayDate Period Pay Date
-	 * @param dblResetDate Period Reset Date
+	 * @param lsResetPeriod List of Reset Periods
 	 * @param dblFXFixingDate The FX Fixing Date for non-MTM'ed Cash-flow
 	 * @param dblTerminalDate Cash flow Terminal Date
 	 * @param iFreq Frequency
@@ -152,7 +194,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		final double dblAccrualStartDate,
 		final double dblAccrualEndDate,
 		final double dblPayDate,
-		final double dblResetDate,
+		final java.util.List<org.drip.product.params.ResetPeriod> lsResetPeriod,
 		final double dblFXFixingDate,
 		final double dblTerminalDate,
 		final int iFreq,
@@ -181,13 +223,15 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		_creditLabel = creditLabel;
 		_strCalendar = strCalendar;
 		_strCouponDC = strCouponDC;
-		_dblResetDate = dblResetDate;
-		_forwardLabel = forwardLabel;
 		_strAccrualDC = strAccrualDC;
 		_bApplyAccEOMAdj = bApplyAccEOMAdj;
 		_bApplyCpnEOMAdj = bApplyCpnEOMAdj;
 		_dblFXFixingDate = dblFXFixingDate;
 		_dblTerminalDate = dblTerminalDate;
+
+		if (null != (_forwardLabel = forwardLabel) && (null == (_lsResetPeriod = lsResetPeriod) || 0 ==
+			_lsResetPeriod.size()))
+			throw new java.lang.Exception ("CashflowPeriod ctr: Invalid Forward/Reset Combination");
 	}
 
 	/**
@@ -258,11 +302,28 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 		_dblPayDate = new java.lang.Double (astrField[5]);
 
-		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Reset Date");
+		if (null == astrField[6] || astrField[6].isEmpty())
+			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Reset Period");
 
-		_dblResetDate = new java.lang.Double (astrField[6]);
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
+			_lsResetPeriod = new java.util.ArrayList<org.drip.product.params.ResetPeriod>();
+		else {
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[6],
+				collectionRecordDelimiter());
+
+			if (null != astrRecord && 0 != astrRecord.length) {
+				for (int i = 0; i < astrRecord.length; ++i) {
+					if (null == astrRecord[i] || astrRecord[i].isEmpty() ||
+						org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrRecord[i]))
+						continue;
+
+					if (null == _lsResetPeriod)
+						_lsResetPeriod = new java.util.ArrayList<org.drip.product.params.ResetPeriod>();
+
+					_lsResetPeriod.add (new org.drip.product.params.ResetPeriod (astrRecord[i].getBytes()));
+				}
+			}
+		}
 
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate FX Fixing Date");
@@ -537,14 +598,14 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	}
 
 	/**
-	 * Return the period Reset Date
+	 * Return the Reset Periods
 	 * 
-	 * @return Period Reset Date
+	 * @return The RTeset Periods
 	 */
 
-	public double resetDate()
+	public java.util.List<org.drip.product.params.ResetPeriod> resetPeriods()
 	{
-		return _dblResetDate;
+		return _lsResetPeriod;
 	}
 
 	/**
@@ -1055,9 +1116,12 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
+		double dblValueDate = valParams.valueDate();
+
 		if (null == _forwardLabel) {
 			try {
-				return new org.drip.analytics.output.PeriodCouponMeasures (_dblFixedCoupon, _dblFixedCoupon);
+				return new org.drip.analytics.output.PeriodCouponMeasures (_dblFixedCoupon, _dblFixedCoupon,
+					accrualDCF (dblValueDate));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -1065,47 +1129,17 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 			}
 		}
 
-		org.drip.analytics.output.PeriodCouponMeasures pcm = compoundFixing (dblAccrualEndDate, valParams,
-			csqs);
+		org.drip.analytics.output.PeriodCouponMeasures pcmPeriod = resetRate (0, dblValueDate, csqs);
 
-		if (null != pcm) return pcm;
+		if (null == pcmPeriod) return null;
 
-		if (null == csqs) return null;
+		for (int iResetIndex = 1; iResetIndex < _lsResetPeriod.size(); ++iResetIndex) {
+			org.drip.analytics.output.PeriodCouponMeasures pcm = resetRate (iResetIndex, dblValueDate, csqs);
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_forwardLabel);
-
-		double dblEndDate = endDate();
-
-		if (null != fc) {
-			try {
-				return org.drip.analytics.output.PeriodCouponMeasures.Nominal (fc.forward (dblEndDate));
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
+			if (null != pcm&& !pcmPeriod.absorb (pcm)) return null;
 		}
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
-
-		if (null == dcFunding) return null;
-
-		double dblStartDate = startDate();
-
-		double dblEpochDate = dcFunding.epoch().julian();
-
-		try {
-			if (dblEpochDate > dblStartDate)
-				dblEndDate = new org.drip.analytics.date.JulianDate (dblStartDate = dblEpochDate).addTenor
-					(_forwardLabel.tenor()).julian();
-
-			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (dcFunding.libor (dblStartDate,
-				dblEndDate, couponDCF()));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return pcmPeriod;
 	}
 
 	@Override public byte[] serialize()
@@ -1124,7 +1158,31 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 		sb.append (_dblPayDate + fieldDelimiter());
 
-		sb.append (_dblResetDate + fieldDelimiter());
+		if (null == _lsResetPeriod || 0 == _lsResetPeriod.size())
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
+		else {
+			boolean bFirstEntry = true;
+
+			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
+
+			for (org.drip.product.params.ResetPeriod rp : _lsResetPeriod) {
+				if (null == rp) continue;
+
+				if (bFirstEntry)
+					bFirstEntry = false;
+				else
+					sbPeriods.append (collectionRecordDelimiter());
+
+				sbPeriods.append (new java.lang.String (rp.serialize()));
+			}
+
+			if (sbPeriods.toString().isEmpty())
+				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
+			else
+				sb.append (sbPeriods.toString());
+		}
+
+		sb.append (fieldDelimiter());
 
 		sb.append (_dblFXFixingDate + fieldDelimiter());
 

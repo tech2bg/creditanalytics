@@ -369,8 +369,8 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod3Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(), "3Y", dap,
-				2, "30/360", false, true, "DEF", "ABC", org.drip.state.identifier.ForwardLabel.Standard
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(), "3Y", dap, 2,
+				"30/360", false, true, "DEF", "ABC", org.drip.state.identifier.ForwardLabel.Standard
 					("ABC-RI-3M"), null);
 
 		aFixedStream[0] = new org.drip.product.cashflow.FixedStream ("ABC", null, 0.03, 100., null,
@@ -380,8 +380,8 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			lsCouponPeriod3Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod5Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(), "5Y", dap,
-				2, "30/360", false, true, "JKL", "GHI", null, null);
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(), "5Y", dap, 2,
+				"30/360", false, true, "JKL", "GHI", null, null);
 
 		aFixedStream[1] = new org.drip.product.cashflow.FixedStream ("GHI", null, 0.05, 100., null,
 			lsCouponPeriod5Y);
@@ -390,8 +390,8 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			lsCouponPeriod5Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod7Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(), "7Y", dap,
-				2, "30/360", false, true, "PQR", "MNO", null, null);
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(), "7Y",
+				dap, 2, "30/360", false, true, "PQR", "MNO", null, null);
 
 		aFixedStream[2] = new org.drip.product.cashflow.FixedStream ("MNO", null, 0.05, 100., null,
 			lsCouponPeriod7Y);

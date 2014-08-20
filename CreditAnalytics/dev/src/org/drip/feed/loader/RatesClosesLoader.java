@@ -358,7 +358,7 @@ public class RatesClosesLoader {
 					strCurrency);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
-				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
+				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
 						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency, null, null);
 
@@ -366,7 +366,7 @@ public class RatesClosesLoader {
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
-				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
+				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
 						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency,
 							org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
@@ -418,7 +418,7 @@ public class RatesClosesLoader {
 					strCurrency);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
-				org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtEffective.julian(),
+				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
 						strCurrency, strCurrency, null, null);
 
@@ -426,7 +426,7 @@ public class RatesClosesLoader {
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
-				org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (dtEffective.julian(),
+				org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (dtEffective.julian(),
 					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency, strCurrency,
 						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 							_mapFloatingTenor.get (strCurrency)), null);

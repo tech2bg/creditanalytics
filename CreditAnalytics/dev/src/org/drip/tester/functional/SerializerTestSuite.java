@@ -257,14 +257,19 @@ public class SerializerTestSuite {
 
 		Verify (abWH, new org.drip.analytics.holiday.Weekend (abWH), "WeekendHoliday");
 
+		java.util.List<org.drip.product.params.ResetPeriod> lsResetPeriod = new
+			java.util.ArrayList<org.drip.product.params.ResetPeriod>();
+
+		lsResetPeriod.add (new org.drip.product.params.ResetPeriod (dblStart, dblStart + 180, dblStart));
+
 		byte[] abPeriod = new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180, dblStart,
-			dblStart + 180, dblStart + 180, dblStart, java.lang.Double.NaN, java.lang.Double.NaN, 2, 0.5,
+			dblStart + 180, dblStart + 180, lsResetPeriod, java.lang.Double.NaN, java.lang.Double.NaN, 2, 0.5,
 				"Act/360", "Act/360", false, false, "USD", "USD", null, null).serialize();
 
 		Verify (abPeriod, new org.drip.analytics.period.CashflowPeriod (abPeriod), "Period");
 
 		byte[] abCouponPeriod = new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
-			dblStart, dblStart + 180, dblStart + 180, dblStart + 180, dblStart + 1825, java.lang.Double.NaN,
+			dblStart, dblStart + 180, dblStart + 180, lsResetPeriod, dblStart + 1825, java.lang.Double.NaN,
 				2, 0.5, "30/360", "30/360", true, true, "GBP", "GBP", null, null).serialize();
 
 		Verify (abCouponPeriod, new org.drip.analytics.period.CashflowPeriod (abCouponPeriod),
@@ -306,7 +311,7 @@ public class SerializerTestSuite {
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod3Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap, 2,
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "3Y", dap, 2,
 				"Act/360", false, false, "ABC", "DEF", null, org.drip.state.identifier.CreditLabel.Standard
 					("XYZ"));
 
@@ -314,7 +319,7 @@ public class SerializerTestSuite {
 			lsFixedPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod5Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap, 2,
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "5Y", dap, 2,
 				"Act/360", false, false, "GHI", "JKL", null, org.drip.state.identifier.CreditLabel.Standard
 					("XYZ"));
 
@@ -322,7 +327,7 @@ public class SerializerTestSuite {
 			lsFixedPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedPeriod7Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap, 2,
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "7Y", dap, 2,
 				"Act/360", false, false, "MNO", "PQR", null, org.drip.state.identifier.CreditLabel.Standard
 					("XYZ"));
 
@@ -330,7 +335,7 @@ public class SerializerTestSuite {
 			lsFixedPeriod7Y);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod3Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "3Y", dap, 4,
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "3Y", dap, 4,
 				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
 					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
@@ -338,7 +343,7 @@ public class SerializerTestSuite {
 			lsFloatPeriod3Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod5Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "5Y", dap, 4,
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "5Y", dap, 4,
 				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
 					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
@@ -346,7 +351,7 @@ public class SerializerTestSuite {
 			lsFloatPeriod5Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatPeriod7Y =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "7Y", dap, 4,
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "7Y", dap, 4,
 				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
 					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
@@ -804,8 +809,11 @@ public class SerializerTestSuite {
 		int i = 5;
 
 		while (0 != i--) {
+			(lsResetPeriod = new java.util.ArrayList<org.drip.product.params.ResetPeriod>()).add (new
+				org.drip.product.params.ResetPeriod (dblStart, dblStart + 180, dblStart));
+
 			lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod (dblStart, dblStart + 180,
-				dblStart, dblStart + 180, dblStart + 180, dblStart, java.lang.Double.NaN,
+				dblStart, dblStart + 180, dblStart + 180, lsResetPeriod, java.lang.Double.NaN,
 					java.lang.Double.NaN, 2, 0.5, "30/360", "30/360", false, false, "ZAR", "ZAR", null,
 						null));
 

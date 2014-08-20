@@ -355,7 +355,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
 	{
 		try {
-			return org.drip.analytics.support.PeriodBuilder.GenerateSinglePeriod (_dblEffectiveDate, new
+			return org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
 					_strDayCount, _strCalendar, _strCurrency, _strCurrency, _fri, null);
 		} catch (java.lang.Exception e) {

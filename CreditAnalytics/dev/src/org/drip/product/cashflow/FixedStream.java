@@ -411,7 +411,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (_dblCoupon);
+		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (_dblCoupon, 1.);
 	}
 
 	public org.drip.state.identifier.ForwardLabel[] forwardLabel()
@@ -1032,8 +1032,8 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodBuilder.GeneratePeriodsRegular (dtToday.julian(), "4Y", null, 2,
-				"30/360", false, true, "JPY", "JPY", null, null);
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "4Y", null,
+				2, "30/360", false, true, "JPY", "JPY", null, null);
 
 		FixedStream fs = new org.drip.product.cashflow.FixedStream ("JPY", null, 0.03, 100., null,
 			lsCouponPeriod);
