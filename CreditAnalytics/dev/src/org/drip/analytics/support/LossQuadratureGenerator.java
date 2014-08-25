@@ -56,7 +56,7 @@ public class LossQuadratureGenerator {
 		GenerateDayStepLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CashflowPeriod period,
+			final org.drip.analytics.period.CouponPeriod period,
 			final double dblWorkoutDate,
 			final int iPeriodUnit,
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -132,7 +132,7 @@ public class LossQuadratureGenerator {
 		GeneratePeriodUnitLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CashflowPeriod period,
+			final org.drip.analytics.period.CouponPeriod period,
 			final double dblWorkoutDate,
 			final int iPeriodUnit,
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -215,7 +215,7 @@ public class LossQuadratureGenerator {
 		GenerateWholeLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CashflowPeriod period,
+			final org.drip.analytics.period.CouponPeriod period,
 			final double dblWorkoutDate,
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{

@@ -148,7 +148,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return The Product's coupon Nominal/Adjusted Coupon Measures
 	 */
 
-	public abstract org.drip.analytics.output.PeriodCouponMeasures coupon (
+	public abstract org.drip.analytics.output.CouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
@@ -191,7 +191,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return List of the Product's Cash Flow Periods
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod();
+	public abstract java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod();
 
 	/**
 	 * Get the Product's cash settlement parameters

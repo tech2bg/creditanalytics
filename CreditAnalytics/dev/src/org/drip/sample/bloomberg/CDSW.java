@@ -355,7 +355,7 @@ public class CDSW {
 
 		System.out.println ("\n---- CDS Coupon Flows ----");
 
-		for (CashflowPeriod p : cds.cashFlowPeriod())
+		for (CouponPeriod p : cds.cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.accrualEndDate()) + FIELD_SEPARATOR +

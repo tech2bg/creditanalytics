@@ -357,7 +357,7 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
+			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
 						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency, null, null);
@@ -365,7 +365,7 @@ public class RatesClosesLoader {
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
-			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
+			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
 						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency,
@@ -417,7 +417,7 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFixedCouponPeriod =
+			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
 						strCurrency, strCurrency, null, null);
@@ -425,7 +425,7 @@ public class RatesClosesLoader {
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
 
-			java.util.List<org.drip.analytics.period.CashflowPeriod> lsFloatingCouponPeriod =
+			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (dtEffective.julian(),
 					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency, strCurrency,
 						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
@@ -526,7 +526,8 @@ public class RatesClosesLoader {
 	{
 		org.drip.product.rates.FixFloatComponent irs = (org.drip.product.rates.FixFloatComponent) comp;
 
-		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null, null).nominal();
+		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null,
+			null).nominalAccrualRate();
 
 		boolean bApplyFixedCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFixedDC.get (strCurrency));
 
@@ -542,7 +543,7 @@ public class RatesClosesLoader {
 
 		double dblProductFloatingRate = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
-				null, null, null, null)).nominal();
+				null, null, null, null)).nominalAccrualRate();
 
 		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.julian(),
 			irs.forwardLabel()[0].tenor());
@@ -587,7 +588,7 @@ public class RatesClosesLoader {
 
 		double dblFloatingRateUsed = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null, null, null,
-				null, lsfc)).nominal();
+				null, lsfc)).nominalAccrualRate();
 
 		double dblCleanFloatDV01WithFixing = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01",
 			strCurrency, lsfc);

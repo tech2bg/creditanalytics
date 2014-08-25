@@ -746,11 +746,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		for (org.drip.product.definition.CalibratableFixedIncomeComponent cc : aCC) {
 			if (null == cc) continue;
 
-			java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod = cc.cashFlowPeriod();
+			java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = cc.cashFlowPeriod();
 
 			if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
 
-			for (org.drip.analytics.period.CashflowPeriod cpnPeriod : cc.cashFlowPeriod()) {
+			for (org.drip.analytics.period.CouponPeriod cpnPeriod : cc.cashFlowPeriod()) {
 				if (null == cpnPeriod) continue;
 
 				double dblPay = cpnPeriod.payDate();

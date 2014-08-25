@@ -4,7 +4,7 @@ package org.drip.sample.ois;
 import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
@@ -135,7 +135,7 @@ public class CustomOISCurveReconciler {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -160,7 +160,7 @@ public class CustomOISCurveReconciler {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -212,7 +212,7 @@ public class CustomOISCurveReconciler {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -237,7 +237,7 @@ public class CustomOISCurveReconciler {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -362,6 +362,7 @@ public class CustomOISCurveReconciler {
 			null,
 			null
 		);
+
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
@@ -687,7 +688,7 @@ public class CustomOISCurveReconciler {
 			System.out.println ("\t[" + aShortEndOISComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
+						null, "SwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
 
 		/*
 		 * Cross-Recovery of the OIS Future Calibration Instrument "Rate" metric across the different curve

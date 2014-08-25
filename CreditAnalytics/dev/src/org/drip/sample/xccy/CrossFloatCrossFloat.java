@@ -4,7 +4,7 @@ package org.drip.sample.xccy;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
@@ -70,7 +70,7 @@ public class CrossFloatCrossFloat {
 			 * The Reference Leg
 			 */
 
-		List<CashflowPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,
@@ -101,7 +101,7 @@ public class CrossFloatCrossFloat {
 		 * The Derived Leg
 		 */
 
-		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,

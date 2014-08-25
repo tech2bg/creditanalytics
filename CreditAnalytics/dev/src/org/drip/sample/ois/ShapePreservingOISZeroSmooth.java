@@ -4,7 +4,7 @@ package org.drip.sample.ois;
 import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
@@ -168,7 +168,7 @@ public class ShapePreservingOISZeroSmooth {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -193,7 +193,7 @@ public class ShapePreservingOISZeroSmooth {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -245,7 +245,7 @@ public class ShapePreservingOISZeroSmooth {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -270,7 +270,7 @@ public class ShapePreservingOISZeroSmooth {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,

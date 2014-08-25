@@ -1298,8 +1298,8 @@ public class CreditAnalyticsTestSuite {
 				System.out.println (strISIN + "    " + bond.getTicker() + " " +
 					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 						(org.drip.analytics.date.JulianDate.Today().julian(), valParams,
-							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominal(), 2, 3,
-								100.) + " " + bond.maturity());
+							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominalAccrualRate(),
+								2, 3, 100.) + " " + bond.maturity());
 
 				System.out.println ("Work-out date From Price: " + new org.drip.analytics.date.JulianDate
 					(wi.date()));
@@ -1448,7 +1448,7 @@ public class CreditAnalyticsTestSuite {
 				System.out.println
 					("---------    ---------    ---------    ---------    ---------    --------");
 
-				for (org.drip.analytics.period.CashflowPeriod p : aBond[i].cashFlowPeriod()) {
+				for (org.drip.analytics.period.CouponPeriod p : aBond[i].cashFlowPeriod()) {
 					try {
 						System.out.println (org.drip.analytics.date.JulianDate.fromJulian
 							(p.accrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian
@@ -1676,9 +1676,9 @@ public class CreditAnalyticsTestSuite {
 						System.out.println (strISIN + "    " + bond.getTicker() + " " +
 							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 								(org.drip.analytics.date.JulianDate.Today().julian(), null,
-									org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominal(), 2, 3,
-										100.) + " " + bond.maturity() + "    " + (bond.isFloater() ? "FLOAT"
-											: "FIXED") + "     " +
+									org.drip.param.creator.MarketParamsBuilder.Credit (dc,
+										cc)).nominalAccrualRate(), 2, 3, 100.) + " " + bond.maturity() +
+											"    " + (bond.isFloater() ? "FLOAT" : "FIXED") + "     " +
 												org.drip.quant.common.FormatUtil.FormatDouble
 													(dblYieldFromPrice, 2, 3, 100.) + "    " +
 														org.drip.quant.common.FormatUtil.FormatDouble
@@ -1715,8 +1715,8 @@ public class CreditAnalyticsTestSuite {
 					System.out.println (strISIN + "    " + bond.getTicker() + " " +
 						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 							(org.drip.analytics.date.JulianDate.Today().julian(), null,
-								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominal(), 2, 3,
-									100.) + " " + bond.maturity() + "    " +
+								org.drip.param.creator.MarketParamsBuilder.Credit (dc,
+									cc)).nominalAccrualRate(), 2, 3, 100.) + " " + bond.maturity() + "    " +
 										org.drip.quant.common.FormatUtil.FormatDouble
 											(dblOutstandingAmount, 10, 0, 1.));
 			} catch (java.lang.Exception e) {

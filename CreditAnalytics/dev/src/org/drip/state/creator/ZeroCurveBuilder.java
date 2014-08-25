@@ -70,7 +70,7 @@ public class ZeroCurveBuilder {
 		final java.lang.String strDCZC,
 		final java.lang.String strCalendarZC,
 		final boolean bApplyEOMAdjZC,
-		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod,
+		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod,
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.rates.DiscountCurve dc,

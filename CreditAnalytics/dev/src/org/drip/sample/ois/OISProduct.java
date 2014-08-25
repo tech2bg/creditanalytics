@@ -4,7 +4,8 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
+import org.drip.analytics.period.ResetPeriodContainer;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
@@ -135,7 +136,7 @@ public class OISProduct {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -160,7 +161,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -209,7 +210,7 @@ public class OISProduct {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
@@ -218,6 +219,7 @@ public class OISProduct {
 				strCurrency,
 				strCurrency,
 				strCurrency,
+				ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
 			);
@@ -233,7 +235,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -285,7 +287,7 @@ public class OISProduct {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -310,7 +312,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -362,7 +364,7 @@ public class OISProduct {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
@@ -371,6 +373,7 @@ public class OISProduct {
 				strCurrency,
 				strCurrency,
 				strCurrency,
+				ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
 			);
@@ -386,7 +389,7 @@ public class OISProduct {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -769,7 +772,7 @@ public class OISProduct {
 
 		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 
-		List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"4M",
 			null,
@@ -794,7 +797,7 @@ public class OISProduct {
 			false
 		);
 
-		List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"4M",
 			null,

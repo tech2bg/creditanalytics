@@ -4,7 +4,7 @@ package org.drip.sample.multicurve;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.analytics.support.PeriodHelper;
@@ -105,7 +105,7 @@ public class FixFloatForwardCurve {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -130,7 +130,7 @@ public class FixFloatForwardCurve {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -263,7 +263,7 @@ public class FixFloatForwardCurve {
 			 * The Fixed Leg
 			 */
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -290,7 +290,7 @@ public class FixFloatForwardCurve {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,

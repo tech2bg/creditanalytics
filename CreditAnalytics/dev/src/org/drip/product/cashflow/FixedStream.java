@@ -55,7 +55,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 	private org.drip.product.params.FXMTMSetting _fxmtm = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
-	private java.util.List<org.drip.analytics.period.CashflowPeriod> _lsCouponPeriod = null;
+	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
 
 	private org.drip.state.estimator.PredictorResponseWeightConstraint unloadedPRWC (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -90,7 +90,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -144,7 +144,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -203,7 +203,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		final double dblCoupon,
 		final double dblNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
-		final java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod)
+		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod)
 		throws java.lang.Exception
 	{
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
@@ -335,9 +335,9 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 						continue;
 
 					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CashflowPeriod>();
+						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
 
-					_lsCouponPeriod.add (new org.drip.analytics.period.CashflowPeriod
+					_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -406,12 +406,29 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
 	}
 
-	public org.drip.analytics.output.PeriodCouponMeasures coupon (
+	public org.drip.analytics.output.CouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		return org.drip.analytics.output.PeriodCouponMeasures.Nominal (_dblCoupon, 1.);
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEndDate) || null == csqs) return null;
+
+		org.drip.analytics.period.CouponPeriod currentPeriod = null;
+
+		if (dblAccrualEndDate <= _dblEffective)
+			currentPeriod = _lsCouponPeriod.get (0);
+		else {
+			for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+				if (null == period) continue;
+
+				if (dblAccrualEndDate >= period.startDate() && dblAccrualEndDate <= period.endDate()) {
+					currentPeriod = period;
+					break;
+				}
+			}
+		}
+
+		return null == currentPeriod ? null : currentPeriod.baseRate (valParams, csqs);
 	}
 
 	public org.drip.state.identifier.ForwardLabel[] forwardLabel()
@@ -467,7 +484,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		return null;
 	}
 
-	public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
+	public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
@@ -524,7 +541,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			return null;
 		}
 
-		for (org.drip.analytics.period.CashflowPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodQuantoAdjustment = 1.;
 			double dblPeriodUnadjustedDirtyDV01 = java.lang.Double.NaN;
 
@@ -826,7 +843,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		try {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
-			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.payDate();
 
 				if (p.startDate() < valParams.valueDate()) continue;
@@ -894,7 +911,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
+				for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
@@ -991,7 +1008,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CashflowPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
 				if (null == p) continue;
 
 				if (bFirstEntry)
@@ -1031,7 +1048,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
-		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod =
+		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
 			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "4Y", null,
 				2, "30/360", false, true, "JPY", "JPY", null, null);
 

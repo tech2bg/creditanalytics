@@ -368,7 +368,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
-		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod3Y =
+		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod3Y =
 			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(), "3Y", dap, 2,
 				"30/360", false, true, "DEF", "ABC", org.drip.state.identifier.ForwardLabel.Standard
 					("ABC-RI-3M"), null);
@@ -379,7 +379,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		aFloatStream[0] = new org.drip.product.cashflow.FloatingStream ("ABC", null, 0., 100., null,
 			lsCouponPeriod3Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
-		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod5Y =
+		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod5Y =
 			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(), "5Y", dap, 2,
 				"30/360", false, true, "JKL", "GHI", null, null);
 
@@ -389,7 +389,7 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		aFloatStream[1] = new org.drip.product.cashflow.FloatingStream ("ABC", null, 0., 100., null,
 			lsCouponPeriod5Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
-		java.util.List<org.drip.analytics.period.CashflowPeriod> lsCouponPeriod7Y =
+		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod7Y =
 			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(), "7Y",
 				dap, 2, "30/360", false, true, "PQR", "MNO", null, null);
 

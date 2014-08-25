@@ -4,7 +4,7 @@ package org.drip.sample.option;
 import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
@@ -105,7 +105,7 @@ public class HestonStochasticVolatilityPricing {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -130,7 +130,7 @@ public class HestonStochasticVolatilityPricing {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,

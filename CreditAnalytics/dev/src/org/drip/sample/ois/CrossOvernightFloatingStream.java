@@ -5,7 +5,8 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
+import org.drip.analytics.period.ResetPeriodContainer;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
@@ -179,7 +180,7 @@ public class CrossOvernightFloatingStream {
 		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				null,
@@ -188,6 +189,7 @@ public class CrossOvernightFloatingStream {
 				strCurrency,
 				strCurrency,
 				strCurrency,
+				ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
 			);
@@ -203,7 +205,7 @@ public class CrossOvernightFloatingStream {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -470,7 +472,7 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,

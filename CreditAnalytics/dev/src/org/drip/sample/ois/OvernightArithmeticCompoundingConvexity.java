@@ -4,8 +4,8 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.output.PeriodCouponMeasures;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.output.CouponPeriodMetrics;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
@@ -137,7 +137,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -162,7 +162,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -214,7 +214,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -239,7 +239,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				null,
@@ -561,7 +561,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			FormatUtil.FormatDouble (dblUSDFundingUSDOISCorrelation, 2, 0, 100.) + "%] = ";
 
 		for (int i = 0; i < aFloatStream.length; ++i) {
-			PeriodCouponMeasures pcm = aFloatStream[i].coupon (
+			CouponPeriodMetrics pcm = aFloatStream[i].coupon (
 				dblAccrualEndDate,
 				valParams,
 				mktParams
@@ -570,8 +570,8 @@ public class OvernightArithmeticCompoundingConvexity {
 			if (0 != i) strDump += " || ";
 
 			strDump +=
-				FormatUtil.FormatDouble (pcm.nominal(), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (pcm.convexityAdjusted(), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (pcm.nominalAccrualRate(), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (pcm.convexityAdjustedAccrualRate(), 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (pcm.convexityAdjustment(), 1, 2, 10000.);
 		}
 
@@ -604,7 +604,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		fri.setArithmeticCompounding (true);
 
-		List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,
@@ -647,7 +647,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		CashflowPeriod period = lsFloatPeriods.get (1);
+		CouponPeriod period = lsFloatPeriods.get (1);
 
 		double[] adblOISVol = new double [] {0.1, 0.3, 0.5};
 		double[] adblUSDFundingVol = new double [] {0.1, 0.3, 0.5};

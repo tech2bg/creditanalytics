@@ -4,7 +4,7 @@ package org.drip.sample.xccy;
 import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
@@ -71,7 +71,7 @@ public class FloatFloatFloatFloatAnalysis {
 			 * The Reference Leg
 			 */
 
-		List<CashflowPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,
@@ -102,7 +102,7 @@ public class FloatFloatFloatFloatAnalysis {
 		 * The Derived Leg
 		 */
 
-		List<CashflowPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			null,

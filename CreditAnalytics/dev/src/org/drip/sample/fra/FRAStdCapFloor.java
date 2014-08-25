@@ -4,7 +4,7 @@ package org.drip.sample.fra;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
@@ -104,7 +104,7 @@ public class FRAStdCapFloor {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -129,7 +129,7 @@ public class FRAStdCapFloor {
 				false
 			);
 
-			List<CashflowPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -278,7 +278,7 @@ public class FRAStdCapFloor {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -307,7 +307,7 @@ public class FRAStdCapFloor {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -511,7 +511,7 @@ public class FRAStdCapFloor {
 		final double dblFRIQuantoExchangeCorr)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CashflowPeriod period : floatstream.cashFlowPeriod()) {
+		for (org.drip.analytics.period.CouponPeriod period : floatstream.cashFlowPeriod()) {
 			JulianDate dtFRADate = new JulianDate (period.startDate());
 
 			mktParams.setForwardCurveVolSurface (
@@ -562,7 +562,7 @@ public class FRAStdCapFloor {
 
 		JulianDate dtEffective = dtToday.addTenor (strTenor);
 
-		List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"5Y",
 			null,

@@ -1,5 +1,5 @@
 
-package org.drip.product.params;
+package org.drip.analytics.period;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

@@ -303,7 +303,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return 1.;
 	}
 
-	@Override public org.drip.analytics.output.PeriodCouponMeasures coupon (
+	@Override public org.drip.analytics.output.CouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -352,7 +352,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return maturity();
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
 	{
 		try {
 			return org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (_dblEffectiveDate, new

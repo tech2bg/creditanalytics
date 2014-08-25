@@ -254,7 +254,7 @@ public class PeriodGenerator extends PeriodSet {
 		return true;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CashflowPeriod> getPeriods()
+	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> getPeriods()
 	{
 		return _lsCouponPeriod;
 	}

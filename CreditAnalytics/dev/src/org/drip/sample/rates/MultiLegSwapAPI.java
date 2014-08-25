@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 
@@ -152,7 +152,7 @@ public class MultiLegSwapAPI {
 
 		FixedStream[] aFixedStream = new FixedStream[3];
 
-		List<CashflowPeriod> lsFixedPeriods3Y = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFixedPeriods3Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"3Y",
 			null,
@@ -175,7 +175,7 @@ public class MultiLegSwapAPI {
 			lsFixedPeriods3Y
 		);
 
-		List<CashflowPeriod> lsFixedPeriods5Y = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFixedPeriods5Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"5Y",
 			null,
@@ -198,7 +198,7 @@ public class MultiLegSwapAPI {
 			lsFixedPeriods5Y
 		);
 
-		List<CashflowPeriod> lsFixedPeriods7Y = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFixedPeriods7Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"7Y",
 			null,
@@ -227,7 +227,7 @@ public class MultiLegSwapAPI {
 
 		FloatingStream[] aFloatStream = new FloatingStream[3];
 
-		List<CashflowPeriod> lsFloatPeriods3Y = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods3Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"3Y",
 			null,
@@ -252,7 +252,7 @@ public class MultiLegSwapAPI {
 			false
 		);
 
-		List<CashflowPeriod> lsFloatPeriods5Y = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods5Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"5Y",
 			null,
@@ -277,7 +277,7 @@ public class MultiLegSwapAPI {
 			false
 		);
 
-		List<CashflowPeriod> lsFloatPeriods7Y = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods7Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"7Y",
 			null,

@@ -50,10 +50,10 @@ public class CompoundingUtil {
 	 * @return Arithmetically rolled over Nominal/Convexity Adjusted Coupon Amounts
 	 */
 
-	public static final org.drip.analytics.output.PeriodCouponMeasures Arithmetic (
+	public static final org.drip.analytics.output.CouponPeriodMetrics Arithmetic (
 		final double dblAccrualEndDate,
 		final org.drip.state.identifier.ForwardLabel fri,
-		final org.drip.analytics.period.CashflowPeriod currentPeriod,
+		final org.drip.analytics.period.CouponPeriod currentPeriod,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -143,9 +143,13 @@ public class CompoundingUtil {
 				(currentPeriod.startDate(), dblAccrualEndDate, strAccrualDC, false, java.lang.Double.NaN,
 					null, strCalendar);
 
-			return new org.drip.analytics.output.PeriodCouponMeasures ((dblNominalAccrued + dblGapAccrued) /
-				dblDCFNormalizer, (dblConvexityAdjustedAccrued + dblGapAccrued) / dblDCFNormalizer,
-					dblDCFNormalizer);
+			org.drip.analytics.output.CouponPeriodMetrics cpm = new
+				org.drip.analytics.output.CouponPeriodMetrics (1.,
+					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+
+			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics
+				((dblNominalAccrued + dblGapAccrued) / dblDCFNormalizer, (dblConvexityAdjustedAccrued +
+					dblGapAccrued) / dblDCFNormalizer, dblDCFNormalizer)) ? cpm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -164,10 +168,10 @@ public class CompoundingUtil {
 	 * @return Geometrically rolled over Nominal/Convexity Adjusted Coupon Amounts
 	 */
 
-	public static final org.drip.analytics.output.PeriodCouponMeasures Geometric (
+	public static final org.drip.analytics.output.CouponPeriodMetrics Geometric (
 		final double dblAccrualEndDate,
 		final org.drip.state.identifier.ForwardLabel fri,
-		final org.drip.analytics.period.CashflowPeriod currentPeriod,
+		final org.drip.analytics.period.CouponPeriod currentPeriod,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == currentPeriod || null == fri || null == csqs) return null;
@@ -224,10 +228,16 @@ public class CompoundingUtil {
 			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (currentPeriod.startDate(),
 				dblAccrualEndDate, strAccrualDC, false, java.lang.Double.NaN, null, strCalendar);
 
-			return org.drip.analytics.output.PeriodCouponMeasures.Nominal ((dblAccruedAccount * (1. +
-				org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate, dblAccrualEndDate,
-					currentPeriod.accrualDC(), false, java.lang.Double.NaN, null, strCalendar) *
-						dblLastCoupon) - 1.) / dblDCF, dblDCF);
+			double dblCoupon = (dblAccruedAccount * (1. + org.drip.analytics.daycount.Convention.YearFraction
+				(dblPrevDate, dblAccrualEndDate, currentPeriod.accrualDC(), false, java.lang.Double.NaN,
+					null, strCalendar) * dblLastCoupon) - 1.) / dblDCF;
+
+			org.drip.analytics.output.CouponPeriodMetrics cpm = new
+				org.drip.analytics.output.CouponPeriodMetrics (1.,
+					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
+
+			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (dblCoupon,
+				dblCoupon, dblDCF)) ? cpm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

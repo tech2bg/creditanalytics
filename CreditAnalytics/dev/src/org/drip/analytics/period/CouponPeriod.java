@@ -32,7 +32,7 @@ package org.drip.analytics.period;
  */
 
 /**
- * CashflowPeriod extends the period class with the cash-flow specific fields. It exposes the following
+ * CouponPeriod extends the period class with the cash-flow specific fields. It exposes the following
  * 	functionality:
  * 
  * 	- Frequency, reset date, and accrual day-count convention
@@ -42,8 +42,8 @@ package org.drip.analytics.period;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CashflowPeriod extends org.drip.service.stream.Serializer implements
-	java.lang.Comparable<CashflowPeriod> {
+public class CouponPeriod extends org.drip.service.stream.Serializer implements
+	java.lang.Comparable<CouponPeriod> {
 
 	/*
 	 * Period Date Fields
@@ -56,7 +56,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	private double _dblTerminalDate = java.lang.Double.NaN;
 	private double _dblAccrualEndDate = java.lang.Double.NaN;
 	private double _dblAccrualStartDate = java.lang.Double.NaN;
-	private java.util.List<org.drip.product.params.ResetPeriod> _lsResetPeriod = null;
+	private org.drip.analytics.period.ResetPeriodContainer _rpc = null;
 
 	/*
 	 * Period Date Generation Fields
@@ -97,8 +97,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	private java.util.List<org.drip.analytics.period.LossQuadratureMetrics> _lsLQM = null;
 
 	private double resetPeriodRate (
-		final double dblAccrualEndDate,
-		final org.drip.product.params.ResetPeriod rp,
+		final org.drip.analytics.period.ResetPeriod rp,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
@@ -116,8 +115,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
 
 		if (null == dcFunding)
-			throw new java.lang.Exception
-				("CashflowPeriod::resetPeriodRate => Cannot locate Discount Curve");
+			throw new java.lang.Exception ("CouponPeriod::resetPeriodRate => Cannot locate Discount Curve");
 
 		double dblResetStartDate = rp.start();
 
@@ -127,35 +125,25 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 			dblResetEndDate = new org.drip.analytics.date.JulianDate (dblResetStartDate =
 				dblEpochDate).addTenor (_forwardLabel.tenor()).julian();
 
-		return dcFunding.libor (dblResetStartDate, dblResetEndDate, _dblDCF);
+		return dcFunding.libor (dblResetStartDate, dblResetEndDate,
+			org.drip.analytics.daycount.Convention.YearFraction (dblResetStartDate, dblResetEndDate,
+				_strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate, null, _strCalendar));
 	}
 
-	private double resetPeriodDCF (
-		final double dblAccrualEndDate,
-		final org.drip.product.params.ResetPeriod rp)
-		throws java.lang.Exception
-	{
-		double dblResetStartDate = rp.start();
-
-		if (dblAccrualEndDate < dblResetStartDate) return 0.;
-
-		double dblResetEndDate = rp.end();
-
-		return org.drip.analytics.daycount.Convention.YearFraction (dblResetStartDate, dblAccrualEndDate >=
-			dblResetEndDate ? dblResetEndDate : dblAccrualEndDate, _strAccrualDC, _bApplyAccEOMAdj,
-				_dblTerminalDate, null, _strCalendar);
-	}
-
-	private org.drip.analytics.output.PeriodCouponMeasures resetRate (
+	private org.drip.analytics.output.ResetPeriodMetrics resetRate (
 		final int iResetPeriodIndex,
-		final double dblAccrualEndDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		org.drip.product.params.ResetPeriod rp = _lsResetPeriod.get (iResetPeriodIndex);
+		org.drip.analytics.period.ResetPeriod rp = _rpc.resetPeriods().get (iResetPeriodIndex);
+
+		if (null == rp) return null;
 
 		try {
-			return org.drip.analytics.output.PeriodCouponMeasures.Nominal (resetPeriodRate
-				(dblAccrualEndDate, rp, csqs), resetPeriodDCF (dblAccrualEndDate, rp));
+			double dblResetPeriodRate = resetPeriodRate (rp, csqs);
+
+			return new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodRate, dblResetPeriodRate,
+				org.drip.analytics.daycount.Convention.YearFraction (rp.start(), rp.end(), _strAccrualDC,
+					_bApplyAccEOMAdj, _dblTerminalDate, null, _strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -164,14 +152,14 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	}
 
 	/**
-	 * Construct a CashflowPeriod instance from the specified dates
+	 * Construct a CouponPeriod instance from the specified dates
 	 * 
 	 * @param dblStartDate Period Start Date
 	 * @param dblEndDate Period End Date
-	 * @param dblAccrualStart Period Accrual Start Date
+	 * @param dblAccrualStartDate Period Accrual Start Date
 	 * @param dblAccrualEndDate Period Accrual End Date
 	 * @param dblPayDate Period Pay Date
-	 * @param lsResetPeriod List of Reset Periods
+	 * @param rpc Reset Period Container
 	 * @param dblFXFixingDate The FX Fixing Date for non-MTM'ed Cash-flow
 	 * @param dblTerminalDate Cash flow Terminal Date
 	 * @param iFreq Frequency
@@ -188,13 +176,13 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public CashflowPeriod (
+	public CouponPeriod (
 		final double dblStartDate,
 		final double dblEndDate,
 		final double dblAccrualStartDate,
 		final double dblAccrualEndDate,
 		final double dblPayDate,
-		final java.util.List<org.drip.product.params.ResetPeriod> lsResetPeriod,
+		final org.drip.analytics.period.ResetPeriodContainer rpc,
 		final double dblFXFixingDate,
 		final double dblTerminalDate,
 		final int iFreq,
@@ -217,7 +205,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 							!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || _dblStartDate >=
 								_dblEndDate || _dblAccrualStartDate >= _dblAccrualEndDate || null ==
 									(_strPayCurrency = strPayCurrency) || _strPayCurrency.isEmpty())
-			throw new java.lang.Exception ("CashflowPeriod ctr: Invalid inputs");
+			throw new java.lang.Exception ("CouponPeriod ctr: Invalid inputs");
 
 		_iFreq = iFreq;
 		_creditLabel = creditLabel;
@@ -229,42 +217,40 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		_dblFXFixingDate = dblFXFixingDate;
 		_dblTerminalDate = dblTerminalDate;
 
-		if (null != (_forwardLabel = forwardLabel) && (null == (_lsResetPeriod = lsResetPeriod) || 0 ==
-			_lsResetPeriod.size()))
-			throw new java.lang.Exception ("CashflowPeriod ctr: Invalid Forward/Reset Combination");
+		if (null != (_forwardLabel = forwardLabel) && null == (_rpc = rpc))
+			throw new java.lang.Exception ("CouponPeriod ctr: Invalid Forward/Reset Combination");
 	}
 
 	/**
-	 * De-serialization of CashflowPeriod from byte stream
+	 * De-serialization of CouponPeriod from byte stream
 	 * 
 	 * @param ab Byte stream
 	 * 
 	 * @throws java.lang.Exception Thrown if cannot properly de-serialize
 	 */
 
-	public CashflowPeriod (
+	public CouponPeriod (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CashflowPeriod de-serialize: Invalid byte stream input");
+			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid byte stream input");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Empty state");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Empty state");
 
-		java.lang.String strPeriod = strRawString.substring (0, strRawString.indexOf
-			(super.objectTrailer()));
+		java.lang.String strPeriod = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strPeriod || strPeriod.isEmpty())
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod,
 			super.fieldDelimiter());
 
 		if (null == astrField || 23 > astrField.length)
-			throw new java.lang.Exception ("CashflowPeriod de-serialize: Invalid number of fields");
+			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid number of fields");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
@@ -274,65 +260,51 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate start date");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate start date");
 
 		_dblStartDate = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate end date");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate end date");
 
 		_dblEndDate = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate accrual start date");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate accrual start date");
 
 		_dblAccrualStartDate = new java.lang.Double (astrField[3]);
 
 		if (null == astrField[4] || astrField[4].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate accrual end date");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate accrual end date");
 
 		_dblAccrualEndDate = new java.lang.Double (astrField[4]);
 
 		if (null == astrField[5] || astrField[5].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate pay date");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate pay date");
 
 		_dblPayDate = new java.lang.Double (astrField[5]);
 
 		if (null == astrField[6] || astrField[6].isEmpty())
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Reset Period");
+			throw new java.lang.Exception
+				("CouponPeriod de-serializer: Cannot locate Reset Period Container");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			_lsResetPeriod = new java.util.ArrayList<org.drip.product.params.ResetPeriod>();
-		else {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[6],
-				collectionRecordDelimiter());
-
-			if (null != astrRecord && 0 != astrRecord.length) {
-				for (int i = 0; i < astrRecord.length; ++i) {
-					if (null == astrRecord[i] || astrRecord[i].isEmpty() ||
-						org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrRecord[i]))
-						continue;
-
-					if (null == _lsResetPeriod)
-						_lsResetPeriod = new java.util.ArrayList<org.drip.product.params.ResetPeriod>();
-
-					_lsResetPeriod.add (new org.drip.product.params.ResetPeriod (astrRecord[i].getBytes()));
-				}
-			}
-		}
+			_rpc = null;
+		else
+			_rpc = new org.drip.analytics.period.ResetPeriodContainer (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate FX Fixing Date");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate FX Fixing Date");
 
 		_dblFXFixingDate = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7])
 			? java.lang.Double.NaN : new java.lang.Double (astrField[7]);
 
 		if (null == astrField[8] || astrField[8].isEmpty())
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Terminal Date");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Terminal Date");
 
 		_dblTerminalDate = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8])
 			? java.lang.Double.NaN : new java.lang.Double (astrField[8]);
@@ -347,39 +319,39 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 		if (null == astrField[9] || astrField[9].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Frequency");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Frequency");
 
 		_iFreq = new java.lang.Integer (astrField[9]);
 
 		if (null == astrField[10] || astrField[10].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[10]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Full Period DCF");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Full Period DCF");
 
 		_dblDCF = new java.lang.Double (astrField[10]);
 
 		if (null == astrField[11] || astrField[11].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Coupon Day Count");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Coupon Day Count");
 
 		_strCouponDC = new java.lang.String (astrField[11]);
 
 		if (null == astrField[12] || astrField[12].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[12]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Accrual Day Count");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Accrual Day Count");
 
 		_strAccrualDC = new java.lang.String (astrField[12]);
 
 		if (null == astrField[13] || astrField[13].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[13]))
 			throw new java.lang.Exception
-				("CashflowPeriod de-serializer: Cannot locate Coupon EOM Adjustment");
+				("CouponPeriod de-serializer: Cannot locate Coupon EOM Adjustment");
 
 		_bApplyCpnEOMAdj = new java.lang.Boolean (astrField[13]);
 
 		if (null == astrField[14] || astrField[14].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[14]))
 			throw new java.lang.Exception
-				("CashflowPeriod de-serializer: Cannot locate Accrual EOM Adjustment");
+				("CouponPeriod de-serializer: Cannot locate Accrual EOM Adjustment");
 
 		_bApplyAccEOMAdj = new java.lang.Boolean (astrField[14]);
 
@@ -399,7 +371,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 		if (null == astrField[16] || astrField[16].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[16]))
-			throw new java.lang.Exception ("CashflowPeriod de-serializer: Cannot locate Pay Currency");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Pay Currency");
 
 		_strPayCurrency = new java.lang.String (astrField[16]);
 
@@ -423,28 +395,25 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 		if (null == astrField[19] || astrField[19].isEmpty())
 			throw new java.lang.Exception
-				("CashflowPeriod de-serializer: Cannot locate Period Start Notional");
+				("CouponPeriod de-serializer: Cannot locate Period Start Notional");
 
 		_dblStartNotional = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
 			(astrField[19]) ? java.lang.Double.NaN : new java.lang.Double (astrField[19]);
 
 		if (null == astrField[20] || astrField[20].isEmpty())
-			throw new java.lang.Exception
-				("CashflowPeriod de-serializer: Cannot locate Period End Notional");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period End Notional");
 
 		_dblEndNotional = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20])
 			? java.lang.Double.NaN : new java.lang.Double (astrField[20]);
 
 		if (null == astrField[21] || astrField[21].isEmpty())
-			throw new java.lang.Exception
-				("CashflowPeriod de-serializer: Cannot locate Period Fixed Coupon");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
 
 		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21])
 			? java.lang.Double.NaN : new java.lang.Double (astrField[21]);
 
 		if (null == astrField[22] || astrField[22].isEmpty())
-			throw new java.lang.Exception
-				("CashflowPeriod de-serializer: Cannot locate Period Coupon Spread");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Coupon Spread");
 
 		_dblSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[22]) ?
 			java.lang.Double.NaN : new java.lang.Double (astrField[22]);
@@ -534,7 +503,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("CashflowPeriod::contains => Invalid Inputs");
+			throw new java.lang.Exception ("CouponPeriod::contains => Invalid Inputs");
 
 		if (_dblStartDate > dblDate || dblDate > _dblEndDate) return false;
 
@@ -598,14 +567,14 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	}
 
 	/**
-	 * Return the Reset Periods
+	 * Retrieve the Reset Period Container Instance
 	 * 
-	 * @return The RTeset Periods
+	 * @return The Reset Period Container Instance
 	 */
 
-	public java.util.List<org.drip.product.params.ResetPeriod> resetPeriods()
+	public org.drip.analytics.period.ResetPeriodContainer rpc()
 	{
-		return _lsResetPeriod;
+		return _rpc;
 	}
 
 	/**
@@ -709,10 +678,10 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEnd))
-			throw new java.lang.Exception ("CashflowPeriod::accrualDCF => Accrual end is NaN!");
+			throw new java.lang.Exception ("CouponPeriod::accrualDCF => Accrual end is NaN!");
 
 		if (_dblAccrualStartDate > dblAccrualEnd && dblAccrualEnd > _dblAccrualEndDate)
-			throw new java.lang.Exception ("CashflowPeriod::accrualDCF => Invalid in-period accrual date!");
+			throw new java.lang.Exception ("CouponPeriod::accrualDCF => Invalid in-period accrual date!");
 
 		org.drip.analytics.daycount.ActActDCParams actactDCParams = new
 			org.drip.analytics.daycount.ActActDCParams (_iFreq, _dblAccrualStartDate, _dblAccrualEndDate);
@@ -1104,24 +1073,30 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	/**
 	 * Compute the Coupon Measures at the specified Accrual End Date
 	 * 
-	 * @param dblAccrualEndDate The Accrual End Date
 	 * @param valParams The Valuation Parameters
 	 * @param csqs The Market Curve Surface/Quote Set
 	 * 
 	 * @return The Coupon Measures at the specified Accrual End Date
 	 */
 
-	public org.drip.analytics.output.PeriodCouponMeasures baseRate (
-		final double dblAccrualEndDate,
+	public org.drip.analytics.output.CouponPeriodMetrics baseRate (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		double dblValueDate = valParams.valueDate();
 
-		if (null == _forwardLabel) {
+		double dblFX = 1.;
+		org.drip.analytics.output.CouponPeriodMetrics cpm = null;
+
+		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
+
+		if (null != fxLabel) {
+			org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
+
+			if (null == auFX) return null;
+
 			try {
-				return new org.drip.analytics.output.PeriodCouponMeasures (_dblFixedCoupon, _dblFixedCoupon,
-					accrualDCF (dblValueDate));
+				dblFX = auFX.evaluate (!isFXMTM() ? _dblPayDate : _dblFXFixingDate);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -1129,17 +1104,41 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 			}
 		}
 
-		org.drip.analytics.output.PeriodCouponMeasures pcmPeriod = resetRate (0, dblValueDate, csqs);
+		if (null == _forwardLabel) {
+			try {
+				return (cpm = new org.drip.analytics.output.CouponPeriodMetrics (dblFX, null == _rpc ?
+					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC :
+						_rpc.accrualCompoundingRule())).addResetPeriodMetrics (new
+							org.drip.analytics.output.ResetPeriodMetrics (_dblFixedCoupon, _dblFixedCoupon,
+								accrualDCF (dblValueDate))) ? cpm : null;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
 
-		if (null == pcmPeriod) return null;
-
-		for (int iResetIndex = 1; iResetIndex < _lsResetPeriod.size(); ++iResetIndex) {
-			org.drip.analytics.output.PeriodCouponMeasures pcm = resetRate (iResetIndex, dblValueDate, csqs);
-
-			if (null != pcm&& !pcmPeriod.absorb (pcm)) return null;
+				return null;
+			}
 		}
 
-		return pcmPeriod;
+		java.util.List<org.drip.analytics.period.ResetPeriod> lsResetPeriod = _rpc.resetPeriods();
+
+		for (int iResetIndex = 0; iResetIndex < lsResetPeriod.size(); ++iResetIndex) {
+			org.drip.analytics.output.ResetPeriodMetrics rpm = resetRate (iResetIndex, csqs);
+
+			if (null == cpm) {
+				try {
+					cpm = new org.drip.analytics.output.CouponPeriodMetrics (dblFX, null == _rpc ?
+						org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC :
+							_rpc.accrualCompoundingRule());
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+
+			if (null == rpm || !cpm.addResetPeriodMetrics (rpm)) return null;
+		}
+
+		return cpm;
 	}
 
 	@Override public byte[] serialize()
@@ -1158,29 +1157,10 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 
 		sb.append (_dblPayDate + fieldDelimiter());
 
-		if (null == _lsResetPeriod || 0 == _lsResetPeriod.size())
+		if (null == _rpc)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else {
-			boolean bFirstEntry = true;
-
-			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
-
-			for (org.drip.product.params.ResetPeriod rp : _lsResetPeriod) {
-				if (null == rp) continue;
-
-				if (bFirstEntry)
-					bFirstEntry = false;
-				else
-					sbPeriods.append (collectionRecordDelimiter());
-
-				sbPeriods.append (new java.lang.String (rp.serialize()));
-			}
-
-			if (sbPeriods.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-			else
-				sb.append (sbPeriods.toString());
-		}
+		else
+			sb.append (new java.lang.String (_rpc.serialize()));
 
 		sb.append (fieldDelimiter());
 
@@ -1256,7 +1236,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 		final byte[] ab)
 	{
 		try {
-			return new CashflowPeriod (ab);
+			return new CouponPeriod (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1272,7 +1252,7 @@ public class CashflowPeriod extends org.drip.service.stream.Serializer implement
 	}
 
 	@Override public int compareTo (
-		final CashflowPeriod periodOther)
+		final CouponPeriod periodOther)
 	{
 		if ((int) _dblPayDate > (int) (periodOther._dblPayDate)) return 1;
 

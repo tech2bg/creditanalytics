@@ -4,7 +4,7 @@ package org.drip.sample.ccbs;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CashflowPeriod;
+import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.analytics.support.PeriodHelper;
@@ -83,7 +83,7 @@ public class CCBSDiscountCurve {
 			 * The Reference 6M Leg
 			 */
 
-			List<CashflowPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
@@ -112,7 +112,7 @@ public class CCBSDiscountCurve {
 			 * The Derived Leg
 			 */
 
-			List<CashflowPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				null,
