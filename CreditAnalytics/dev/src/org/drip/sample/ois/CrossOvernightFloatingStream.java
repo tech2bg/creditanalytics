@@ -529,8 +529,6 @@ public class CrossOvernightFloatingStream {
 			mktParams,
 			null);
 
-		fri.setArithmeticCompounding (true);
-
 		Map<String, Double> mapArithmeticOutput = floatStream.value (
 			valParams,
 			null,

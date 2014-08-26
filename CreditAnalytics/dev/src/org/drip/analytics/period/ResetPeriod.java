@@ -36,6 +36,25 @@ package org.drip.analytics.period;
  */
 
 public class ResetPeriod extends org.drip.service.stream.Serializer {
+
+	/**
+	 * Node is to the Left of the Period
+	 */
+
+	public static final int NODE_LEFT_OF_SEGMENT = 1;
+
+	/**
+	 * Node is Inside the Period
+	 */
+
+	public static final int NODE_INSIDE_SEGMENT = 2;
+
+	/**
+	 * Node is to the Right of the Period
+	 */
+
+	public static final int NODE_RIGHT_OF_SEGMENT = 4;
+
 	private double _dblEnd = java.lang.Double.NaN;
 	private double _dblStart = java.lang.Double.NaN;
 	private double _dblFixing = java.lang.Double.NaN;
@@ -142,6 +161,30 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 	public double fixing()
 	{
 		return _dblFixing;
+	}
+
+	/**
+	 * Places the Node Location in relation to the segment Location
+	 * 
+	 * @param dblNode The Node Ordinate
+	 * 
+	 * @return One of NODE_LEFT_OF_SEGMENT, NODE_RIGHT_OF_SEGMENT, or NODE_INSIDE_SEGMENT
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are invalid
+	 */
+
+	public int nodeLocation (
+		final double dblNode)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblNode))
+			throw new java.lang.Exception ("ResetPeriod::nodeLocation => Invalid Node");
+
+		if (dblNode < _dblStart) return NODE_LEFT_OF_SEGMENT;
+
+		if (dblNode > _dblEnd) return NODE_RIGHT_OF_SEGMENT;
+
+		return NODE_INSIDE_SEGMENT;
 	}
 
 	@Override public java.lang.String fieldDelimiter()

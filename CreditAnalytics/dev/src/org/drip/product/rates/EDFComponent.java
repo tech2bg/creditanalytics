@@ -371,7 +371,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 				org.drip.analytics.output.CouponPeriodMetrics (1.,
 					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
-			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (0., 0.,
+			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (0.,
 				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
 					false, _dblMaturity, null, _strCalendar))) ? cpm : null;
 		} catch (java.lang.Exception e) {

@@ -555,7 +555,8 @@ public class FedFundOvernightCompounding {
 
 		DiscountCurve dc = CustomOISCurveBuilderSample (
 			dtToday,
-			strCurrency);
+			strCurrency
+		);
 
 		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 
@@ -565,7 +566,33 @@ public class FedFundOvernightCompounding {
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
-		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
+		List<CouponPeriod> lsGeometricFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
+			dtCustomOISStart.julian(),
+			"6M",
+			null,
+			2,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency,
+			ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null
+		);
+
+		FloatingStream floatStreamGeometric = new FloatingStream (
+			strCurrency,
+			null,
+			0.,
+			-1.,
+			null,
+			lsGeometricFloatPeriods,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			false
+		);
+
+		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,
@@ -580,13 +607,13 @@ public class FedFundOvernightCompounding {
 			null
 		);
 
-		FloatingStream floatStream = new FloatingStream (
+		FloatingStream floatStreamArithmetic = new FloatingStream (
 			strCurrency,
 			null,
 			0.,
 			-1.,
 			null,
-			lsFloatPeriods,
+			lsArithmeticFloatPeriods,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			false
 		);
@@ -614,7 +641,9 @@ public class FedFundOvernightCompounding {
 			lsFixedPeriods
 		);
 
-		FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
+		FixFloatComponent oisArithmetic = new FixFloatComponent (fixStream, floatStreamArithmetic);
+
+		FixFloatComponent oisGeometric = new FixFloatComponent (fixStream, floatStreamGeometric);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dc,
@@ -634,35 +663,35 @@ public class FedFundOvernightCompounding {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		Map<String, Double> mapOISOutput = ois.value (
+		Map<String, Double> mapOISGeometricOutput = oisGeometric.value (
 			valParams,
 			null,
 			mktParams,
-			null);
+			null
+		);
 
-		System.out.println ("\tMachine Calc Float Accrued (Geometric Compounding): " + mapOISOutput.get ("FloatAccrued"));
+		System.out.println ("\tMachine Calc Float Accrued (Geometric Compounding): " + mapOISGeometricOutput.get ("FloatAccrued"));
 
-		fri.setArithmeticCompounding (true);
-
-		mapOISOutput = ois.value (
-			new ValuationParams (dtToday, dtToday, strCurrency),
+		Map<String, Double> mapOISArithmeticOutput = oisArithmetic.value (
+			valParams,
 			null,
 			mktParams,
-			null);
+			null
+		);
 
-		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISOutput.get ("FloatAccrued"));
+		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISArithmeticOutput.get ("FloatAccrued"));
 
-		CouponPeriod period = lsFloatPeriods.get (0);
+		CouponPeriod period = lsArithmeticFloatPeriods.get (0);
 
-		CouponPeriodMetrics pcm = floatStream.coupon (
+		CouponPeriodMetrics pcmArithmetic = floatStreamArithmetic.coupon (
 			period.endDate(),
 			valParams,
 			mktParams
 		);
 
-		System.out.println ("\tMachine Calc Float Accrued DCF (Arithmetic Compounding): " + pcm.dcf());
+		System.out.println ("\tMachine Calc Float Accrued DCF (Arithmetic Compounding): " + pcmArithmetic.dcf());
 
-		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcm.convexityAdjustedAccrualRate());
+		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.convexityAdjustedAccrualRate());
 
 		double dblOISVol = 0.3;
 		double dblUSDFundingVol = 0.3;
@@ -675,7 +704,7 @@ public class FedFundOvernightCompounding {
 		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 
 		System.out.println (
-			"\tPeriod #1 Coupon With Convexity Adjustment: " + floatStream.coupon (
+			"\tPeriod #1 Coupon With Convexity Adjustment: " + floatStreamArithmetic.coupon (
 				period.endDate(),
 				valParams,
 				mktParams

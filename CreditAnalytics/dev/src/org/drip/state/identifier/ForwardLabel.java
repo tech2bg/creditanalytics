@@ -44,7 +44,6 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 	private java.lang.String _strIndex = "";
 	private java.lang.String _strTenor = "";
 	private java.lang.String _strCurrency = "";
-	private boolean _bArithmeticCompounding = false;
 	private java.lang.String _strFullyQualifiedName = "";
 
 	/**
@@ -64,7 +63,7 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 	{
 		try {
 			return new ForwardLabel (strCurrency, strIndex, strTenor, strCurrency + "-" + strIndex + "-" +
-				strTenor, false);
+				strTenor);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -90,7 +89,7 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 		if (null == astr || 3 != astr.length) return null;
 
 		try {
-			return new ForwardLabel (astr[0], astr[1], astr[2], strFullyQualifiedName, false);
+			return new ForwardLabel (astr[0], astr[1], astr[2], strFullyQualifiedName);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -105,7 +104,6 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 	 * @param strIndex Index
 	 * @param strTenor Tenor
 	 * @param strFullyQualifiedName The Fully Qualified Name
-	 * @param bArithmeticCompounding TRUE => Turn on Arithmetic Compounding
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
@@ -114,16 +112,13 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 		final java.lang.String strCurrency,
 		final java.lang.String strIndex,
 		final java.lang.String strTenor,
-		final java.lang.String strFullyQualifiedName,
-		final boolean bArithmeticCompounding)
+		final java.lang.String strFullyQualifiedName)
 		throws java.lang.Exception
 	{
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strIndex = strIndex)
 			|| _strIndex.isEmpty() || null == (_strTenor = strTenor) || _strTenor.isEmpty() || null ==
 				(_strFullyQualifiedName = strFullyQualifiedName) || _strFullyQualifiedName.isEmpty())
 			throw new java.lang.Exception ("ForwardLabel ctr: Invalid Inputs");
-
-		_bArithmeticCompounding = bArithmeticCompounding;
 	}
 
 	/**
@@ -155,7 +150,7 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloatingRateIndex,
 			fieldDelimiter());
 
-		if (null == astrField || 6 > astrField.length)
+		if (null == astrField || 5 > astrField.length)
 			throw new java.lang.Exception ("ForwardLabel de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -183,12 +178,6 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot locate Fully Qualified Name");
 
 		_strFullyQualifiedName = astrField[4];
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot locate Compounding Flag");
-
-		_bArithmeticCompounding = java.lang.Boolean.parseBoolean (astrField[5]);
 
 		if (!validate()) throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot validate!");
 	}
@@ -237,29 +226,6 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 		return "ON".equalsIgnoreCase (_strTenor) || "1D".equalsIgnoreCase (_strTenor);
 	}
 
-	/**
-	 * Set the Arithmetic Compounding Flag
-	 * 
-	 * @param bArithmeticCompounding TRUE => The Compounding Type is Arithmetic
-	 */
-
-	public void setArithmeticCompounding (
-		final boolean bArithmeticCompounding)
-	{
-		_bArithmeticCompounding = bArithmeticCompounding;
-	}
-
-	/**
-	 * Indicate if the Compounding Type is Arithmetic
-	 * 
-	 * @return TRUE => The Compounding Type is Arithmetic
-	 */
-
-	public boolean isArithmeticCompounding()
-	{
-		return _bArithmeticCompounding;
-	}
-
 	@Override public java.lang.String fullyQualifiedName()
 	{
 		return _strFullyQualifiedName;
@@ -295,7 +261,7 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strCurrency +
 			fieldDelimiter() + _strIndex + fieldDelimiter() + _strTenor + fieldDelimiter() +
-				_strFullyQualifiedName + fieldDelimiter() + _bArithmeticCompounding);
+				_strFullyQualifiedName);
 
 		return sb.append (objectTrailer()).toString().getBytes();
 	}

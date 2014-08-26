@@ -84,9 +84,68 @@ public class CouponPeriodMetrics {
 	}
 
 	/**
-	 * Retrieve the Nominal Accrual Rate
+	 * Retrieve the Nominal Accrual Rate in the Coupon Currency
 	 * 
-	 * @return The Nominal Accrual Rate
+	 * @return The Nominal Accrual Rate in the Coupon Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Nominal Accrual Rate cannot be calculated
+	 */
+
+	public double nominalAccrualRateCouponCurrency()
+		throws java.lang.Exception
+	{
+		if (null == _lsRPM || 0 == _lsRPM.size())
+			throw new java.lang.Exception
+				("CouponPeriodMetrics::nominalAccrualRateCouponCurrency => No Reset Period Metrics available!");
+
+		double dblCumulativeDCF = 0.;
+		double dblCumulativeNominalRate = java.lang.Double.NaN;
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeNominalRate = 0.;
+		else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeNominalRate = 1.;
+
+		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+			double dblDCF = rpm.dcf();
+
+			dblCumulativeDCF += dblDCF;
+
+			if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeNominalRate += rpm.nominalRate() * dblDCF;
+			else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeNominalRate *= (1. + rpm.nominalRate() * dblDCF);
+		}
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeNominalRate -= 1.;
+
+		return dblCumulativeNominalRate / dblCumulativeDCF;
+	}
+
+	/**
+	 * Retrieve the Nominal Accrual Rate in the Pay Currency
+	 * 
+	 * @return The Nominal Accrual Rate in the Pay Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Nominal Accrual Rate cannot be calculated
+	 */
+
+	public double nominalAccrualRatePayCurrency()
+		throws java.lang.Exception
+	{
+		return nominalAccrualRateCouponCurrency() * _dblFX;
+	}
+
+	/**
+	 * Retrieve the Nominal Accrual Rate in the Pay Currency
+	 * 
+	 * @return The Nominal Accrual Rate in the Pay Currency
 	 * 
 	 * @throws java.lang.Exception Thrown if the Nominal Accrual Rate cannot be calculated
 	 */
@@ -94,28 +153,67 @@ public class CouponPeriodMetrics {
 	public double nominalAccrualRate()
 		throws java.lang.Exception
 	{
-		if (null == _lsRPM || 0 == _lsRPM.size())
-			throw new java.lang.Exception
-				("CouponPeriodMetrics::nominalAccrualRate => No Reset Period Metrics avaliable!");
-
-		double dblCumulativeDCF = 0.;
-		double dblCumulativeNominalRate = 0.;
-
-		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
-			double dblDCF = rpm.dcf();
-
-			dblCumulativeDCF += dblDCF;
-
-			dblCumulativeNominalRate += rpm.nominalRate() * dblDCF;
-		}
-
-		return dblCumulativeNominalRate * _dblFX / dblCumulativeDCF;
+		return nominalAccrualRatePayCurrency();
 	}
 
 	/**
-	 * Retrieve the Nominal Accrual
+	 * Retrieve the Nominal Accrual in the Coupon Currency
 	 * 
-	 * @return The Nominal Accrual
+	 * @return The Nominal Accrual in the Coupon Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Nominal Accrual cannot be calculated
+	 */
+
+	public double nominalAccrualCouponCurrency()
+		throws java.lang.Exception
+	{
+		if (null == _lsRPM || 0 == _lsRPM.size())
+			throw new java.lang.Exception
+				("CouponPeriodMetrics::nominalAccrualCouponCurrency => No Reset Period Metrics available!");
+
+		double dblNominalAccrual = java.lang.Double.NaN;
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule)
+			dblNominalAccrual = 0.;
+		else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblNominalAccrual = 1.;
+
+		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+			if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule)
+				dblNominalAccrual += rpm.nominalRate() * rpm.dcf();
+			else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				dblNominalAccrual *= (1. + rpm.nominalRate() * rpm.dcf());
+		}
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblNominalAccrual -= 1.;
+
+		return dblNominalAccrual;
+	}
+
+	/**
+	 * Retrieve the Nominal Accrual in the Pay Currency
+	 * 
+	 * @return The Nominal Accrual in the Pay Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Nominal Accrual cannot be calculated
+	 */
+
+	public double nominalAccrualPayCurrency()
+		throws java.lang.Exception
+	{
+		return nominalAccrualCouponCurrency() * _dblFX;
+	}
+
+	/**
+	 * Retrieve the Nominal Accrual in the Pay Currency
+	 * 
+	 * @return The Nominal Accrual in the Pay Currency
 	 * 
 	 * @throws java.lang.Exception Thrown if the Nominal Accrual cannot be calculated
 	 */
@@ -123,22 +221,72 @@ public class CouponPeriodMetrics {
 	public double nominalAccrual()
 		throws java.lang.Exception
 	{
-		if (null == _lsRPM || 0 == _lsRPM.size())
-			throw new java.lang.Exception
-				("CouponPeriodMetrics::nominalAccrual => No Reset Period Metrics avaliable!");
-
-		double dblNominalAccrual = 0.;
-
-		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM)
-			dblNominalAccrual += rpm.nominalRate() * rpm.dcf();
-
-		return dblNominalAccrual * _dblFX;
+		return nominalAccrualPayCurrency();
 	}
 
 	/**
-	 * Retrieve the Convexity Adjusted Accrual Rate
+	 * Retrieve the Convexity Adjusted Accrual Rate in the Coupon Currency
 	 * 
-	 * @return The Convexity Adjusted Accrual Rate
+	 * @return The Convexity Adjusted Accrual Rate in the Coupon Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Convexity Adjusted Accrual Rate cannot be calculated
+	 */
+
+	public double convexityAdjustedAccrualRateCouponCurrency()
+		throws java.lang.Exception
+	{
+		if (null == _lsRPM || 0 == _lsRPM.size())
+			throw new java.lang.Exception
+				("CouponPeriodMetrics::convexityAdjustedAccrualRateCouponCurrency => No Reset Period Metrics available!");
+
+		double dblCumulativeDCF = 0.;
+		double dblCumulativeConvexityAdjustedRate = java.lang.Double.NaN;
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeConvexityAdjustedRate = 0.;
+		else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeConvexityAdjustedRate = 1.;
+
+		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+			double dblDCF = rpm.dcf();
+
+			dblCumulativeDCF += dblDCF;
+
+			if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeConvexityAdjustedRate += rpm.nominalRate() * dblDCF;
+			else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeConvexityAdjustedRate *= (1. + rpm.nominalRate() * dblDCF);
+		}
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeConvexityAdjustedRate -= 1.;
+
+		return dblCumulativeConvexityAdjustedRate / dblCumulativeDCF;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjusted Accrual Rate in the Pay Currency
+	 * 
+	 * @return The Convexity Adjusted Accrual Rate in the Pay Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Convexity Adjusted Accrual Rate cannot be calculated
+	 */
+
+	public double convexityAdjustedAccrualRatePayCurrency()
+		throws java.lang.Exception
+	{
+		return convexityAdjustedAccrualRateCouponCurrency() * _dblFX;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjusted Accrual Rate in the Pay Currency
+	 * 
+	 * @return The Convexity Adjusted Accrual Rate in the Pay Currency
 	 * 
 	 * @throws java.lang.Exception Thrown if the Convexity Adjusted Accrual Rate cannot be calculated
 	 */
@@ -146,28 +294,67 @@ public class CouponPeriodMetrics {
 	public double convexityAdjustedAccrualRate()
 		throws java.lang.Exception
 	{
-		if (null == _lsRPM || 0 == _lsRPM.size())
-			throw new java.lang.Exception
-				("CouponPeriodMetrics::convexityAdjustedAccrualRate => No Reset Period Metrics avaliable!");
-
-		double dblCumulativeDCF = 0.;
-		double dblCumulativeConvexityAdjustedRate = 0.;
-
-		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
-			double dblDCF = rpm.dcf();
-
-			dblCumulativeDCF += dblDCF;
-
-			dblCumulativeConvexityAdjustedRate += rpm.convexityAdjustedRate() * dblDCF;
-		}
-
-		return dblCumulativeConvexityAdjustedRate * _dblFX / dblCumulativeDCF;
+		return convexityAdjustedAccrualRatePayCurrency();
 	}
 
 	/**
-	 * Retrieve the Convexity Adjusted Accrual
+	 * Retrieve the Convexity Adjusted Accrual in the Coupon Currency
 	 * 
-	 * @return The Convexity Adjusted Accrual
+	 * @return The Convexity Adjusted Accrual in the Coupon Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Convexity Adjusted Accrual cannot be calculated
+	 */
+
+	public double convexityAdjustedAccrualCouponCurrency()
+		throws java.lang.Exception
+	{
+		if (null == _lsRPM || 0 == _lsRPM.size())
+			throw new java.lang.Exception
+				("CouponPeriodMetrics::convexityAdjustedAccrualCouponCurrency => No Reset Period Metrics available!");
+
+		double dblConvexityAdjustedAccrual = java.lang.Double.NaN;
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule)
+			dblConvexityAdjustedAccrual = 0.;
+		else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblConvexityAdjustedAccrual = 1.;
+
+		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+			if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule)
+				dblConvexityAdjustedAccrual += rpm.nominalRate() * rpm.dcf();
+			else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				dblConvexityAdjustedAccrual *= (1. + rpm.nominalRate() * rpm.dcf());
+		}
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblConvexityAdjustedAccrual -= 1.;
+
+		return dblConvexityAdjustedAccrual;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjusted Accrual in the Pay Currency
+	 * 
+	 * @return The Convexity Adjusted Accrual in the Pay Currency
+	 * 
+	 * @throws java.lang.Exception Thrown if the Convexity Adjusted Accrual cannot be calculated
+	 */
+
+	public double convexityAdjustedAccrualPayCurrency()
+		throws java.lang.Exception
+	{
+		return convexityAdjustedAccrualCouponCurrency() * _dblFX;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjusted Accrual in the Pay Currency
+	 * 
+	 * @return The Convexity Adjusted Accrual in the Pay Currency
 	 * 
 	 * @throws java.lang.Exception Thrown if the Convexity Adjusted Accrual cannot be calculated
 	 */
@@ -175,16 +362,7 @@ public class CouponPeriodMetrics {
 	public double convexityAdjustedAccrual()
 		throws java.lang.Exception
 	{
-		if (null == _lsRPM || 0 == _lsRPM.size())
-			throw new java.lang.Exception
-				("CouponPeriodMetrics::convexityAdjustedAccrual => No Reset Period Metrics avaliable!");
-
-		double dblConvexityAdjustedAccrual = 0.;
-
-		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM)
-			dblConvexityAdjustedAccrual += rpm.convexityAdjustedRate() * rpm.dcf();
-
-		return dblConvexityAdjustedAccrual * _dblFX;
+		return convexityAdjustedAccrualPayCurrency();
 	}
 
 	/**
@@ -199,7 +377,7 @@ public class CouponPeriodMetrics {
 		throws java.lang.Exception
 	{
 		if (null == _lsRPM || 0 == _lsRPM.size())
-			throw new java.lang.Exception ("CouponPeriodMetrics::dcf => No Reset Period Metrics avaliable!");
+			throw new java.lang.Exception ("CouponPeriodMetrics::dcf => No Reset Period Metrics available!");
 
 		double dblDCF = 0.;
 
@@ -222,30 +400,70 @@ public class CouponPeriodMetrics {
 	}
 
 	/**
-	 * Retrieve the Convexity Adjustment
+	 * Retrieve the Convexity Adjustment in the Coupon Currency
 	 * 
-	 * @return The Convexity Adjustment
+	 * @return The Convexity Adjustment in the Coupon Currency
 	 */
 
-	public double convexityAdjustment()
+	public double convexityAdjustmentCouponCurrency()
 		throws java.lang.Exception
 	{
 		if (null == _lsRPM || 0 == _lsRPM.size())
 			throw new java.lang.Exception
-				("CouponPeriodMetrics::convexityAdjustment => No Reset Period Metrics avaliable!");
+				("CouponPeriodMetrics::convexityAdjustmentCouponCurrency => No Reset Period Metrics available!");
 
 		double dblCumulativeDCF = 0.;
-		double dblCumulativeConvexityAdjustment = 0.;
+		double dblCumulativeConvexityAdjustment = java.lang.Double.NaN;
+
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeConvexityAdjustment = 0.;
+		else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeConvexityAdjustment = 1.;
 
 		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
 			double dblDCF = rpm.dcf();
 
 			dblCumulativeDCF += dblDCF;
 
-			dblCumulativeConvexityAdjustment += rpm.convexityAdjustment() * dblDCF;
+			if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeConvexityAdjustment += rpm.nominalRate() * dblDCF;
+			else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeConvexityAdjustment *= (1. + rpm.nominalRate() * dblDCF);
 		}
 
-		return dblCumulativeConvexityAdjustment * _dblFX / dblCumulativeDCF;
+		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeConvexityAdjustment -= 1.;
+
+		return dblCumulativeConvexityAdjustment / dblCumulativeDCF;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjustment in the Pay Currency
+	 * 
+	 * @return The Convexity Adjustment in the Pay Currency
+	 */
+
+	public double convexityAdjustmentPayCurrency()
+		throws java.lang.Exception
+	{
+		return convexityAdjustmentCouponCurrency() * _dblFX;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjustment in the Pay Currency
+	 * 
+	 * @return The Convexity Adjustment in the Pay Currency
+	 */
+
+	public double convexityAdjustment()
+		throws java.lang.Exception
+	{
+		return convexityAdjustmentPayCurrency();
 	}
 
 	/**

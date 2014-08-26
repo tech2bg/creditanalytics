@@ -602,8 +602,6 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		fri.setArithmeticCompounding (true);
-
 		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"6M",

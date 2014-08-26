@@ -324,7 +324,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 				org.drip.analytics.output.CouponPeriodMetrics (1.,
 					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
-			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (0., 0.,
+			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (0.,
 				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
 					_strDayCount, false, _dblMaturity, null, _strCalendar))) ? cpm : null;
 		} catch (java.lang.Exception e) {

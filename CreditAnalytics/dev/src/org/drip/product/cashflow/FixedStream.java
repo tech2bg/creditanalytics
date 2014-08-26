@@ -225,6 +225,11 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 
 		_dblMaturity = _lsCouponPeriod.get (iNumCouponPeriod - 1).endDate();
 
+		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
+			if (!cp.setFixedCoupon (dblCoupon))
+				throw new java.lang.Exception ("FixedStream ctr: Cannot set Coupon!");
+		}
+
 		_strCode = _strCurrency + "::" + (12 / _lsCouponPeriod.get (0).freq()) + "M::" + new
 			org.drip.analytics.date.JulianDate (_dblMaturity);
 	}
@@ -428,7 +433,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			}
 		}
 
-		return null == currentPeriod ? null : currentPeriod.baseRate (valParams, csqs);
+		return null == currentPeriod ? null : currentPeriod.baseRate (csqs);
 	}
 
 	public org.drip.state.identifier.ForwardLabel[] forwardLabel()
@@ -559,6 +564,13 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 						dblAccrued01 = period.accrualDCF (dblValueDate) * 0.0001 * notional
 							(dblPeriodAccrualStartDate, dblValueDate);
 				}
+
+				org.drip.analytics.output.CouponPeriodMetrics cpmAccrual = period.accrualMetrics
+					(dblValueDate, csqs);
+
+				if (null != cpmAccrual)
+					System.out.println ("\t\tAcc DCF: " + cpmAccrual.nominalAccrualRate() + " | " +
+						cpmAccrual.dcf());
 
 				if (null != _fxmtm && _fxmtm.mtmMode())
 					dblPeriodQuantoAdjustment *= java.lang.Math.exp

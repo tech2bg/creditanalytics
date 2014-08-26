@@ -67,8 +67,6 @@ public class CompoundingUtil {
 			return null;
 		}
 
-		double dblValueDate = valParams.valueDate();
-
 		double dblPrevDate = currentPeriod.startDate();
 
 		java.lang.String strCalendar = currentPeriod.calendar();
@@ -76,7 +74,6 @@ public class CompoundingUtil {
 		java.lang.String strAccrualDC = currentPeriod.accrualDC();
 
 		double dblNominalAccrued = 0.;
-		double dblConvexityAdjustedAccrued = 0.;
 		double dblLastCoupon = java.lang.Double.NaN;
 		org.drip.analytics.date.JulianDate dt = null;
 
@@ -90,29 +87,9 @@ public class CompoundingUtil {
 
 		double dblDate = dt.julian();
 
-		java.lang.String strCurrency = fri.currency();
-
-		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(strCurrency);
-
 		while (dblDate <= dblAccrualEndDate) {
 			if (csqs.available (dblDate, fri)) {
-				double dblAccrualConvexityAdjustment = 1.;
 				double dblIncrementalAccrued = java.lang.Double.NaN;
-
-				if (dblValueDate < dblDate) {
-					try {
-						dblAccrualConvexityAdjustment = java.lang.Math.exp
-							(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-								(csqs.fundingCurveVolSurface (fundingLabel), csqs.forwardCurveVolSurface
-									(fri), csqs.forwardFundingCorrSurface (fri, fundingLabel), dblValueDate,
-										dblDate));
-					} catch (java.lang.Exception e) {
-						e.printStackTrace();
-
-						return null;
-					}
-				}
 
 				try {
 					dblIncrementalAccrued = org.drip.analytics.daycount.Convention.YearFraction (dblPrevDate,
@@ -126,7 +103,6 @@ public class CompoundingUtil {
 
 				dblPrevDate = dblDate;
 				dblNominalAccrued += dblIncrementalAccrued;
-				dblConvexityAdjustedAccrued += dblIncrementalAccrued * dblAccrualConvexityAdjustment;
 			}
 
 			dblDate = (dt = dt.addBusDays (1, strCalendar)).julian();
@@ -148,8 +124,7 @@ public class CompoundingUtil {
 					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
 			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics
-				((dblNominalAccrued + dblGapAccrued) / dblDCFNormalizer, (dblConvexityAdjustedAccrued +
-					dblGapAccrued) / dblDCFNormalizer, dblDCFNormalizer)) ? cpm : null;
+				((dblNominalAccrued + dblGapAccrued) / dblDCFNormalizer, dblDCFNormalizer)) ? cpm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -237,7 +212,7 @@ public class CompoundingUtil {
 					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (dblCoupon,
-				dblCoupon, dblDCF)) ? cpm : null;
+				dblDCF)) ? cpm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

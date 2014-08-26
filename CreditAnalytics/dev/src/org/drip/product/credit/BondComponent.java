@@ -461,10 +461,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblPeriodCreditRiskyDirtyDV01 *= dblSurvProb;
 					dblPeriodCreditRiskyPrincipalPV *= dblSurvProb;
 
-					if (!period.generateLossMetrics (this, valParams, pricerParams, dblWorkoutDate, csqs))
-						continue;
-
-					for (org.drip.analytics.period.LossQuadratureMetrics lp : period.lossMetrics()) {
+					for (org.drip.analytics.period.LossQuadratureMetrics lp : period.lossMetrics (this,
+						valParams, pricerParams, dblWorkoutDate, csqs)) {
 						if (null == lp) continue;
 
 						double dblSubPeriodEnd = lp.end();
@@ -1374,7 +1372,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				(dblAccrualEndDate, csqs);
 
 			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (dblCoupon,
-				dblCoupon, 1.)) ? cpm : null;
+				1.)) ? cpm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1466,10 +1464,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		for (org.drip.analytics.period.CouponPeriod period : _periodParams.getPeriods()) {
 			if (null == period) continue;
 
-			if (!period.generateLossMetrics (this, valParams, pricerParams, period.endDate(), csqs))
-				continue;
-
-			java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub = period.lossMetrics();
+			java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub = period.lossMetrics
+				(this, valParams, pricerParams, period.endDate(), csqs);
 
 			if (null != sLPSub) sLP.addAll (sLPSub);
 		}
@@ -1502,10 +1498,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (period.startDate() > wi.date()) break;
 
-			if (!period.generateLossMetrics (this, valParams, pricerParams, period.endDate(), csqs))
-				continue;
-
-			java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub = period.lossMetrics();
+			java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLPSub = period.lossMetrics
+				(this, valParams, pricerParams, period.endDate(), csqs);
 
 			if (null != sLPSub) sLP.addAll (sLPSub);
 		}
@@ -2297,9 +2291,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					org.drip.analytics.date.JulianDate.fromJulian (period.endDate()) + ": " +
 						org.drip.quant.common.FormatUtil.FormatDouble (dblPVFromCC, 1, 3, 100.));
 
-			if (!period.generateLossMetrics (this, valParams, pricerParams, period.endDate(), csqs)) continue;
-
-			for (org.drip.analytics.period.LossQuadratureMetrics lp : period.lossMetrics()) {
+			for (org.drip.analytics.period.LossQuadratureMetrics lp : period.lossMetrics (this, valParams,
+				pricerParams, period.endDate(), csqs)) {
 				if (null == lp) continue;
 
 				double dblSubPeriodEnd = lp.end();

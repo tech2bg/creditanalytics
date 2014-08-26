@@ -37,13 +37,11 @@ package org.drip.analytics.output;
 public class ResetPeriodMetrics {
 	private double _dblDCF = java.lang.Double.NaN;
 	private double _dblNominalRate = java.lang.Double.NaN;
-	private double _dblConvexityAdjustedRate = java.lang.Double.NaN;
 
 	/**
 	 * ResetPeriodMetrics constructor
 	 * 
 	 * @param dblNominalRate The Nominal Coupon Rate
-	 * @param dblConvexityAdjustedRate The Convexity Adjusted Coupon Rate
 	 * @param dblDCF The Period DCF
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
@@ -51,47 +49,23 @@ public class ResetPeriodMetrics {
 
 	public ResetPeriodMetrics (
 		final double dblNominalRate,
-		final double dblConvexityAdjustedRate,
 		final double dblDCF)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNominalRate = dblNominalRate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblConvexityAdjustedRate = dblConvexityAdjustedRate)
-				|| !org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || 0. == _dblDCF)
+			!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || 0. == _dblDCF)
 			throw new java.lang.Exception ("ResetPeriodMetrics ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the Nominal Coupon Accrual Rate in the Floater Currency
+	 * Retrieve the Nominal Coupon Accrual Rate
 	 * 
-	 * @return The Nominal Coupon Accrual Rate in the Floater Currency
+	 * @return The Nominal Coupon Accrual Rate
 	 */
 
 	public double nominalRate()
 	{
 		return _dblNominalRate;
-	}
-
-	/**
-	 * Retrieve the Convexity Adjusted Coupon Accrual Rate in the Floater Currency
-	 * 
-	 * @return The Convexity Adjusted Coupon Accrual Rate in the Floater Currency
-	 */
-
-	public double convexityAdjustedRate()
-	{
-		return _dblConvexityAdjustedRate;
-	}
-
-	/**
-	 * Retrieve the Coupon Accrual Rate Convexity Adjustment in the Floater Currency
-	 * 
-	 * @return The Coupon Accrual Rate Convexity Adjustment in the Floater Currency
-	 */
-
-	public double convexityAdjustment()
-	{
-		return _dblConvexityAdjustedRate - _dblNominalRate;
 	}
 
 	/**
