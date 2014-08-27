@@ -153,9 +153,9 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Reset End Date
+	 * Reset Fixing Date
 	 * 
-	 * @return The Reset End Date
+	 * @return The Reset Fixing Date
 	 */
 
 	public double fixing()

@@ -226,7 +226,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		_dblMaturity = _lsCouponPeriod.get (iNumCouponPeriod - 1).endDate();
 
 		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
-			if (!cp.setFixedCoupon (dblCoupon))
+			if (!cp.setFixedCoupon (dblCoupon) || !cp.setNotionalSchedule (_notlSchedule))
 				throw new java.lang.Exception ("FixedStream ctr: Cannot set Coupon!");
 		}
 
@@ -433,7 +433,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 			}
 		}
 
-		return null == currentPeriod ? null : currentPeriod.baseRate (csqs);
+		return null == currentPeriod ? null : currentPeriod.baseMetrics (csqs);
 	}
 
 	public org.drip.state.identifier.ForwardLabel[] forwardLabel()
@@ -560,17 +560,19 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
 
-					if (period.startDate() < dblValueDate)
-						dblAccrued01 = period.accrualDCF (dblValueDate) * 0.0001 * notional
+					if (period.startDate() < dblValueDate) {
+						org.drip.analytics.output.CouponAccrualMetrics cam = period.accrualMetrics
+							(dblValueDate, csqs);
+
+						dblAccrued01 = (null == cam ? 0. : cam.dcf()) * 0.0001 * notional
 							(dblPeriodAccrualStartDate, dblValueDate);
+					}
 				}
 
-				org.drip.analytics.output.CouponPeriodMetrics cpmAccrual = period.accrualMetrics
-					(dblValueDate, csqs);
+				org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (period.endDate(), valParams,
+					csqs);
 
-				if (null != cpmAccrual)
-					System.out.println ("\t\tAcc DCF: " + cpmAccrual.nominalAccrualRate() + " | " +
-						cpmAccrual.dcf());
+				if (null == pcm) return null;
 
 				if (null != _fxmtm && _fxmtm.mtmMode())
 					dblPeriodQuantoAdjustment *= java.lang.Math.exp
@@ -579,8 +581,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 								csqs.fundingFXCorrSurface (fundingLabel, fxLabel), dblValueDate,
 									dblPeriodPayDate));
 
-				dblPeriodUnadjustedDirtyDV01 = 0.0001 * period.couponDCF() * dcFunding.df (dblPeriodPayDate)
-					* notional (dblPeriodAccrualStartDate, period.endDate());
+				dblPeriodUnadjustedDirtyDV01 = 0.0001 * pcm.dcf() * pcm.annuity();
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

@@ -681,6 +681,9 @@ public class FedFundOvernightCompounding {
 
 		System.out.println ("\tMachine Calc Float Accrued (Arithmetic Compounding): " + mapOISArithmeticOutput.get ("FloatAccrued"));
 
+		System.out.println ("\tMachine Calc Float Accrued DCF (Arithmetic Compounding): " +
+			Math.abs (mapOISGeometricOutput.get ("FloatAccrued") / mapOISGeometricOutput.get ("ResetRate")));
+
 		CouponPeriod period = lsArithmeticFloatPeriods.get (0);
 
 		CouponPeriodMetrics pcmArithmetic = floatStreamArithmetic.coupon (
@@ -688,8 +691,6 @@ public class FedFundOvernightCompounding {
 			valParams,
 			mktParams
 		);
-
-		System.out.println ("\tMachine Calc Float Accrued DCF (Arithmetic Compounding): " + pcmArithmetic.dcf());
 
 		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.convexityAdjustedAccrualRate());
 

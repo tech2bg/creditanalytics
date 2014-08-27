@@ -36,11 +36,17 @@ package org.drip.analytics.output;
 
 public class ResetPeriodMetrics {
 	private double _dblDCF = java.lang.Double.NaN;
+	private double _dblEndDate = java.lang.Double.NaN;
+	private double _dblStartDate = java.lang.Double.NaN;
+	private double _dblFixingDate = java.lang.Double.NaN;
 	private double _dblNominalRate = java.lang.Double.NaN;
 
 	/**
 	 * ResetPeriodMetrics constructor
 	 * 
+	 * @param dblStartDate Reset Period Start Date
+	 * @param dblEndDate Reset Period End Date
+	 * @param dblFixingDate Reset Period Fixing Date
 	 * @param dblNominalRate The Nominal Coupon Rate
 	 * @param dblDCF The Period DCF
 	 * 
@@ -48,13 +54,53 @@ public class ResetPeriodMetrics {
 	 */
 
 	public ResetPeriodMetrics (
+		final double dblStartDate,
+		final double dblEndDate,
+		final double dblFixingDate,
 		final double dblNominalRate,
 		final double dblDCF)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNominalRate = dblNominalRate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || 0. == _dblDCF)
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblStartDate >=
+				_dblEndDate || !org.drip.quant.common.NumberUtil.IsValid (_dblNominalRate = dblNominalRate)
+					|| !org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || 0. == _dblDCF)
 			throw new java.lang.Exception ("ResetPeriodMetrics ctr: Invalid Inputs");
+
+		_dblFixingDate = dblFixingDate;
+	}
+
+	/**
+	 * Reset Start Date
+	 * 
+	 * @return The Reset Start Date
+	 */
+
+	public double start()
+	{
+		return _dblStartDate;
+	}
+
+	/**
+	 * Reset End Date
+	 * 
+	 * @return The Reset End Date
+	 */
+
+	public double end()
+	{
+		return _dblEndDate;
+	}
+
+	/**
+	 * Reset Fixing Date
+	 * 
+	 * @return The Reset Fixing Date
+	 */
+
+	public double fixing()
+	{
+		return _dblFixingDate;
 	}
 
 	/**

@@ -84,8 +84,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 	private double _dblSpread = java.lang.Double.NaN;
 	private double _dblFixedCoupon = java.lang.Double.NaN;
-	private double _dblEndNotional = java.lang.Double.NaN;
-	private double _dblStartNotional = java.lang.Double.NaN;
+	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 
 	private double resetPeriodRate (
 		final org.drip.analytics.period.ResetPeriod rp,
@@ -121,16 +120,22 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 				_strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate, null, _strCalendar));
 	}
 
-	private org.drip.analytics.output.ResetPeriodMetrics resetRate (
+	private org.drip.analytics.output.ResetPeriodMetrics resetPeriodMetrics (
 		final org.drip.analytics.period.ResetPeriod rp,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		try {
 			double dblResetPeriodRate = resetPeriodRate (rp, csqs);
 
-			return new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodRate,
-				org.drip.analytics.daycount.Convention.YearFraction (rp.start(), rp.end(), _strAccrualDC,
-					_bApplyAccEOMAdj, _dblTerminalDate, null, _strCalendar));
+			double dblResetPeriodStartDate = rp.start();
+
+			double dblResetPeriodEndDate = rp.end();
+
+			return new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodStartDate,
+				dblResetPeriodEndDate, rp.fixing(), dblResetPeriodRate,
+					org.drip.analytics.daycount.Convention.YearFraction (dblResetPeriodStartDate,
+						dblResetPeriodEndDate, _strCouponDC, _bApplyAccEOMAdj, _dblTerminalDate, null,
+							_strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -236,7 +241,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod,
 			super.fieldDelimiter());
 
-		if (null == astrField || 23 > astrField.length)
+		if (null == astrField || 22 > astrField.length)
 			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid number of fields");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -382,28 +387,24 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		if (null == astrField[19] || astrField[19].isEmpty())
 			throw new java.lang.Exception
-				("CouponPeriod de-serializer: Cannot locate Period Start Notional");
+				("CouponPeriod de-serializer: Cannot locate Period Notional Schedule");
 
-		_dblStartNotional = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase
-			(astrField[19]) ? java.lang.Double.NaN : new java.lang.Double (astrField[19]);
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[19]))
+			_notlSchedule = null;
+		else
+			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[19].getBytes());
 
 		if (null == astrField[20] || astrField[20].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period End Notional");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
 
-		_dblEndNotional = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20])
+		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20])
 			? java.lang.Double.NaN : new java.lang.Double (astrField[20]);
 
 		if (null == astrField[21] || astrField[21].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
-
-		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[21]);
-
-		if (null == astrField[22] || astrField[22].isEmpty())
 			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Coupon Spread");
 
-		_dblSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[22]) ?
-			java.lang.Double.NaN : new java.lang.Double (astrField[22]);
+		_dblSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21]) ?
+			java.lang.Double.NaN : new java.lang.Double (astrField[21]);
 
 		/*
 		 * Period "Extensive Cash" Parameter Settings - End
@@ -763,58 +764,30 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Get the period start Notional
+	 * Get the period Notional Schedule
 	 * 
-	 * @return Period Start Notional
+	 * @return Period Notional Schedule
 	 */
 
-	public double startNotional()
+	public org.drip.product.params.FactorSchedule notionalSchedule()
 	{
-		return _dblStartNotional;
+		return _notlSchedule;
 	}
 
 	/**
-	 * Set the Starting Notional
+	 * Set the period Notional Schedule
 	 * 
-	 * @param dblStartNotional The Starting Notional
+	 * @param notlSchedule The Period Notional Schedule
 	 * 
-	 * @return The Starting Notional
+	 * @return TRUE => The Period Notional Schedule Successfully Set
 	 */
 
-	public boolean setStartNotional (
-		final double dblStartNotional)
+	public boolean setNotionalSchedule (
+		final org.drip.product.params.FactorSchedule notlSchedule)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartNotional)) return false;
+		if (null == notlSchedule) return false;
 
-		_dblStartNotional = dblStartNotional;
-		return true;
-	}
-
-	/**
-	 * Get the period end Notional
-	 * 
-	 * @return Period end Notional
-	 */
-
-	public double endNotional()
-	{
-		return _dblEndNotional;
-	}
-
-	/**
-	 * Set the End Notional
-	 * 
-	 * @param dblEndNotional The End Notional
-	 * 
-	 * @return The End Notional
-	 */
-
-	public boolean setEndNotional (
-		final double dblEndNotional)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblEndNotional)) return false;
-
-		_dblEndNotional = dblEndNotional;
+		_notlSchedule = notlSchedule;
 		return true;
 	}
 
@@ -932,6 +905,49 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
+	 * Coupon Period Notional Corresponding to the specified Date
+	 * 
+	 * @param dblDate The Specified Date
+	 * 
+	 * @return The Period Notional Corresponding to the specified Date
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double notional (
+		final double dblDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("Coupon::notional => Invalid Dates");
+
+		return null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate);
+	}
+
+	/**
+	 * Coupon Period Notional Aggregated over the specified Dates
+	 * 
+	 * @param dblDate1 The Date #1
+	 * @param dblDate2 The Date #2
+	 * 
+	 * @return The Period Notional Aggregated over the specified Dates
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double notional (
+		final double dblDate1,
+		final double dblDate2)
+		throws java.lang.Exception
+	{
+		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
+			throw new java.lang.Exception ("Coupon::notional => Invalid Dates");
+
+		return _notlSchedule.getFactor (dblDate1, dblDate2);
+	}
+
+	/**
 	 * Compute the Coupon Measures at the specified Accrual End Date
 	 * 
 	 * @param csqs The Market Curve Surface/Quote Set
@@ -939,26 +955,36 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 * @return The Coupon Measures at the specified Accrual End Date
 	 */
 
-	public org.drip.analytics.output.CouponPeriodMetrics baseRate (
+	public org.drip.analytics.output.CouponPeriodMetrics baseMetrics (
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		double dblFX = 1.;
+		double dblDF = java.lang.Double.NaN;
+		double dblSurvival = java.lang.Double.NaN;
 		org.drip.analytics.output.CouponPeriodMetrics cpm = null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
+
+		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (creditLabel());
 
 		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
 
-		if (null != fxLabel) {
-			org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
+		try {
+			if (null != fxLabel) {
+				org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
 
-			if (null == auFX) return null;
+				if (null == auFX) return null;
 
-			try {
-				dblFX = auFX.evaluate (!isFXMTM() ? _dblPayDate : _dblFXFixingDate);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
+				dblFX = auFX.evaluate (isFXMTM() ? _dblFXFixingDate : _dblPayDate);
 			}
+
+			if (null != dcFunding) dblDF = dcFunding.df (_dblPayDate);
+
+			if (null != cc) dblSurvival = cc.survival (_dblPayDate);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
 		}
 
 		int iAccrualCompoundingRule = null == _rpc ?
@@ -967,10 +993,11 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		if (null == _forwardLabel) {
 			try {
-				return (cpm = new org.drip.analytics.output.CouponPeriodMetrics (dblFX,
-					iAccrualCompoundingRule)).addResetPeriodMetrics (new
-						org.drip.analytics.output.ResetPeriodMetrics (_dblFixedCoupon, _dblDCF)) ? cpm :
-							null;
+				return (cpm = new org.drip.analytics.output.CouponPeriodMetrics (_dblStartDate, _dblEndDate,
+					dblDF, dblSurvival, dblFX, notional (_dblEndDate),
+						iAccrualCompoundingRule)).addResetPeriodMetrics (new
+							org.drip.analytics.output.ResetPeriodMetrics (_dblStartDate, _dblEndDate,
+								java.lang.Double.NaN, _dblFixedCoupon, _dblDCF)) ? cpm : null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -979,11 +1006,14 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		}
 
 		for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
-			org.drip.analytics.output.ResetPeriodMetrics rpm = resetRate (rp, csqs);
+			org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, csqs);
 
 			if (null == cpm) {
 				try {
-					cpm = new org.drip.analytics.output.CouponPeriodMetrics (dblFX, iAccrualCompoundingRule);
+					double dblResetEndDate = rp.end();
+
+					cpm = new org.drip.analytics.output.CouponPeriodMetrics (rp.start(), dblResetEndDate,
+						dblDF, dblSurvival, dblFX, notional (dblResetEndDate), iAccrualCompoundingRule);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -1006,7 +1036,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 * @return The Accrual Measures to the specified Accrual End Date
 	 */
 
-	public org.drip.analytics.output.CouponPeriodMetrics accrualMetrics (
+	public org.drip.analytics.output.CouponAccrualMetrics accrualMetrics (
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -1021,7 +1051,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		}
 
 		double dblFX = 1.;
-		org.drip.analytics.output.CouponPeriodMetrics cpm = null;
+		org.drip.analytics.output.CouponAccrualMetrics cam = null;
 
 		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
 
@@ -1047,12 +1077,13 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		if (null == _forwardLabel) {
 			try {
-				return (cpm = new org.drip.analytics.output.CouponPeriodMetrics (dblFX,
-					iAccrualCompoundingRule)).addResetPeriodMetrics (new
-						org.drip.analytics.output.ResetPeriodMetrics (_dblFixedCoupon,
-							org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, dblValueDate,
-								_strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate, null, _strCalendar))) ?
-									cpm : null;
+				return (cam = new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate, dblValueDate,
+					dblFX, notional (dblValueDate), iAccrualCompoundingRule)).addResetPeriodMetrics (new
+						org.drip.analytics.output.ResetPeriodMetrics (_dblStartDate, dblValueDate,
+							java.lang.Double.NaN, _dblFixedCoupon,
+								org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate,
+									dblValueDate, _strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate, null,
+										_strCalendar))) ? cam : null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -1062,28 +1093,30 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
 			try {
+				double dblResetPeriodStartDate = rp.start();
+
 				int iNodeLocationIndicator = rp.nodeLocation (dblValueDate);
 
-				if (org.drip.analytics.period.ResetPeriod.NODE_LEFT_OF_SEGMENT == iNodeLocationIndicator)
+				if (org.drip.analytics.period.ResetPeriod.NODE_LEFT_OF_SEGMENT == iNodeLocationIndicator ||
+					dblValueDate == dblResetPeriodStartDate)
 					break;
 
-				org.drip.analytics.output.ResetPeriodMetrics rpm = resetRate (rp, csqs);
+				org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, csqs);
 
 				if (null == rpm) return null;
 
-				if (org.drip.analytics.period.ResetPeriod.NODE_INSIDE_SEGMENT == iNodeLocationIndicator) {
-					double dblResetPeriodStartDate = rp.start();
+				if (org.drip.analytics.period.ResetPeriod.NODE_INSIDE_SEGMENT == iNodeLocationIndicator)
+					rpm = new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodStartDate,
+						dblValueDate, dblResetPeriodStartDate, rpm.nominalRate(),
+							org.drip.analytics.daycount.Convention.YearFraction (dblResetPeriodStartDate,
+								dblValueDate, _strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate, null,
+									_strCalendar));
 
-					if (dblValueDate == dblResetPeriodStartDate) break;
+				if (null == cam)
+					cam = new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate, dblValueDate,
+						dblFX, notional (dblValueDate), iAccrualCompoundingRule);
 
-					rpm = new org.drip.analytics.output.ResetPeriodMetrics (rpm.nominalRate(), rpm.dcf() *
-						(dblValueDate - dblResetPeriodStartDate) / (rp.end() - dblResetPeriodStartDate));
-				}
-
-				if (null == cpm)
-					cpm = new org.drip.analytics.output.CouponPeriodMetrics (dblFX, iAccrualCompoundingRule);
-
-				if (!cpm.addResetPeriodMetrics (rpm)) return null;
+				if (!cam.addResetPeriodMetrics (rpm)) return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -1091,7 +1124,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 			}
 		}
 
-		return cpm;
+		return cam;
 	}
 
 	@Override public byte[] serialize()
@@ -1150,9 +1183,10 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		else
 			sb.append (_creditLabel.fullyQualifiedName() + fieldDelimiter());
 
-		sb.append (_dblStartNotional + fieldDelimiter());
-
-		sb.append (_dblEndNotional + fieldDelimiter());
+		if (null == _notlSchedule)
+			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
+		else
+			sb.append (new java.lang.String (_notlSchedule.serialize()) + fieldDelimiter());
 
 		sb.append (_dblFixedCoupon + fieldDelimiter());
 

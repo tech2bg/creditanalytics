@@ -1364,15 +1364,23 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		try {
+			org.drip.analytics.period.CouponPeriod period = calcCurrentPeriod (dblAccrualEndDate);
+
+			double dblResetPeriodEndDate = period.endDate();
+
+			double dblResetPeriodStartDate = period.startDate();
+
 			org.drip.analytics.output.CouponPeriodMetrics cpm = new
-				org.drip.analytics.output.CouponPeriodMetrics (1.,
-					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+				org.drip.analytics.output.CouponPeriodMetrics (dblResetPeriodStartDate,
+					dblResetPeriodEndDate, 1., 1., 1., notional (dblResetPeriodEndDate),
+						org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
 			double dblCoupon = null == _fltParams ? getFixedCoupon (dblAccrualEndDate) : getFloatingCoupon
 				(dblAccrualEndDate, csqs);
 
-			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (dblCoupon,
-				1.)) ? cpm : null;
+			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics
+				(dblResetPeriodStartDate, dblResetPeriodEndDate, dblResetPeriodStartDate, dblCoupon, 1.)) ?
+					cpm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

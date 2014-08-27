@@ -333,6 +333,24 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return plmj;
 	}
 
+	private org.drip.analytics.period.CouponPeriod calcCurrentPeriod (
+		final double dblDate)
+	{
+		if (java.lang.Double.isNaN (dblDate)) return null;
+
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+			try {
+				if (period.contains (dblDate)) return period;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * CDSComponent constructor: Most generic CDS creation functionality
 	 * 
@@ -665,12 +683,19 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		try {
-			org.drip.analytics.output.CouponPeriodMetrics cpm = new
-				org.drip.analytics.output.CouponPeriodMetrics (1.,
-					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+			org.drip.analytics.period.CouponPeriod period = calcCurrentPeriod (dblAccrualEndDate);
 
-			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics (_dblCoupon,
-				1.)) ? cpm : null;
+			double dblPeriodEndDate = period.endDate();
+
+			double dblPeriodStartDate = period.startDate();
+
+			org.drip.analytics.output.CouponPeriodMetrics cpm = new
+				org.drip.analytics.output.CouponPeriodMetrics (dblPeriodStartDate, dblPeriodEndDate, 1., 1.,
+					1., notional (dblPeriodEndDate),
+						org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+
+			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics
+				(dblPeriodStartDate, period.endDate(), java.lang.Double.NaN, _dblCoupon, 1.)) ? cpm : null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

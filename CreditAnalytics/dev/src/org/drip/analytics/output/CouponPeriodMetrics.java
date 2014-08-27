@@ -37,28 +37,71 @@ package org.drip.analytics.output;
 public class CouponPeriodMetrics {
 	private double _dblFX = 1.;
 	private int _iAccrualCompoundingRule = -1;
+	private double _dblDF = java.lang.Double.NaN;
+	private double _dblEndDate = java.lang.Double.NaN;
+	private double _dblSurvival = java.lang.Double.NaN;
+	private double _dblStartDate = java.lang.Double.NaN;
+	private double _dblNotionalFactor = java.lang.Double.NaN;
 	private java.util.List<org.drip.analytics.output.ResetPeriodMetrics> _lsRPM = null;
 
 	/**
 	 * CouponPeriodMetrics constructor
 	 * 
+	 * @param dblStartDate Coupon Period Start Date
+	 * @param dblEndDate Coupon Period End Date
+	 * @param dblDF Coupon Period Discount Factor
+	 * @param dblSurvival Coupon Period Survival
 	 * @param dblFX The Coupon Period FX Rate
+	 * @param dblNotionalFactor Period Annuity Notional Factor
 	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
 	public CouponPeriodMetrics (
+		final double dblStartDate,
+		final double dblEndDate,
+		final double dblDF,
+		final double dblSurvival,
 		final double dblFX,
+		final double dblNotionalFactor,
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX) ||
-			(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC !=
-				(_iAccrualCompoundingRule = iAccrualCompoundingRule) &&
-					org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC !=
-						_iAccrualCompoundingRule))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblNotionalFactor = dblNotionalFactor) ||
+						(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC
+							!= (_iAccrualCompoundingRule = iAccrualCompoundingRule) &&
+								org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+			!= _iAccrualCompoundingRule))
 			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
+
+		_dblDF = dblDF;
+		_dblSurvival = dblSurvival;
+	}
+
+	/**
+	 * Retrieve the Period Start Date
+	 * 
+	 * @return The Period Start Date
+	 */
+
+	public double startDate()
+	{
+		return _dblStartDate;
+	}
+
+	/**
+	 * Retrieve the Period End Date
+	 * 
+	 * @return The Period End Date
+	 */
+
+	public double endDate()
+	{
+		return _dblEndDate;
 	}
 
 	/**
@@ -70,6 +113,17 @@ public class CouponPeriodMetrics {
 	public double fx()
 	{
 		return _dblFX;
+	}
+
+	/**
+	 * Retrieve the Period Notional Factor
+	 * 
+	 * @return The Period Notional Factor
+	 */
+
+	public double notionalFactor()
+	{
+		return _dblNotionalFactor;
 	}
 
 	/**
@@ -467,6 +521,103 @@ public class CouponPeriodMetrics {
 	}
 
 	/**
+	 * Retrieve the Period DF
+	 * 
+	 * @return The Period DF
+	 */
+
+	public double df()
+	{
+		return _dblDF;
+	}
+
+	/**
+	 * Set the Period DF
+	 * 
+	 * @param dblDF The Discount Factor
+	 * 
+	 * @return TRUE => The Period DF Successfully Set
+	 */
+
+	public boolean setDF (
+		final double dblDF)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDF)) return false;
+
+		_dblDF = dblDF;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Period Survival Probability
+	 * 
+	 * @return The Period Survival Probability
+	 */
+
+	public double survival()
+	{
+		return _dblSurvival;
+	}
+
+	/**
+	 * Set the Period DF
+	 * 
+	 * @param dblDF The Discount Factor
+	 * 
+	 * @return TRUE => The Period DF Successfully Set
+	 */
+
+	public boolean setPeriodSurvival (
+		final org.drip.analytics.definition.CreditCurve cc)
+	{
+		if (null == cc) return false;
+
+		try {
+			_dblSurvival = cc.survival (_dblEndDate);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Retrieve the Period Annuity
+	 * 
+	 * @return The Period Annuity
+	 * 
+	 * @throws If the Annuity cannot be computed
+	 */
+
+	public double annuity()
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDF))
+			throw new java.lang.Exception ("CouponPeriodMetrics::annuity => Valid Metrics not avaliable");
+
+		return _dblDF * _dblNotionalFactor;
+	}
+
+	/**
+	 * Retrieve the Period Risky Annuity
+	 * 
+	 * @return The Period Risky Annuity
+	 * 
+	 * throws If the Risky Annuity cannot be computed
+	 */
+
+	public double riskyAnnuity()
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDF) || !org.drip.quant.common.NumberUtil.IsValid
+			(_dblSurvival))
+			throw new java.lang.Exception
+				("CouponPeriodMetrics::riskyAnnuity => Valid Metrics not avaliable");
+
+		return _dblDF * _dblSurvival * _dblNotionalFactor;
+	}
+
+	/**
 	 * Compound the supplied PCM
 	 * 
 	 * @param pcmOther The "Other" PCM
@@ -485,5 +636,16 @@ public class CouponPeriodMetrics {
 		_lsRPM.add (rpm);
 
 		return true;
+	}
+
+	/**
+	 * Retrieve the Constituent Reset Period Metrics
+	 * 
+	 * @return The Constituent Reset Period Metrics
+	 */
+
+	public java.util.List<org.drip.analytics.output.ResetPeriodMetrics> resetPeriodMetrics()
+	{
+		return _lsRPM;
 	}
 }

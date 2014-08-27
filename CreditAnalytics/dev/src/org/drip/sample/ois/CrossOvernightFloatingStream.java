@@ -472,7 +472,7 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsGeometricFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			null,
@@ -482,17 +482,44 @@ public class CrossOvernightFloatingStream {
 			false,
 			strCurrency,
 			strCurrency,
+			ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);
 
-		FloatingStream floatStream = new FloatingStream (
+		FloatingStream floatStreamGeometric = new FloatingStream (
 			strCurrency,
 			null,
 			0.,
 			-1.,
 			null,
-			lsFloatPeriods,
+			lsGeometricFloatPeriods,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			false
+		);
+
+		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
+			dtCustomOISStart.julian(),
+			"6M",
+			null,
+			4,
+			"Act/360",
+			false,
+			false,
+			strCurrency,
+			strCurrency,
+			ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null
+		);
+
+		FloatingStream floatStreamArithmetic = new FloatingStream (
+			strCurrency,
+			null,
+			0.,
+			-1.,
+			null,
+			lsArithmeticFloatPeriods,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			false
 		);
@@ -523,13 +550,13 @@ public class CrossOvernightFloatingStream {
 
 		mktParams.setForwardFundingCorrSurface (fri, fundingLabelUSD, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
 
-		Map<String, Double> mapGeometricOutput = floatStream.value (
+		Map<String, Double> mapGeometricOutput = floatStreamGeometric.value (
 			valParams,
 			null,
 			mktParams,
 			null);
 
-		Map<String, Double> mapArithmeticOutput = floatStream.value (
+		Map<String, Double> mapArithmeticOutput = floatStreamArithmetic.value (
 			valParams,
 			null,
 			mktParams,
