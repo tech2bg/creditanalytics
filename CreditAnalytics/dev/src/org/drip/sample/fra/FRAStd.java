@@ -239,7 +239,8 @@ public class FRAStd {
 			dtSpot,
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
 			adblSwapQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -254,7 +255,8 @@ public class FRAStd {
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true);
+			true
+		);
 	}
 
 	/*
@@ -389,7 +391,8 @@ public class FRAStd {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 	}
 
 	private static final Map<String, ForwardCurve> MakeFC (
@@ -514,11 +517,14 @@ public class FRAStd {
 
 		String strTenor = "3M";
 		String strCurrency = "EUR";
-		double dblFRIVol = 0.3;
-		double dblMultiplicativeQuantoExchangeVol = 0.1;
-		double dblFRIQuantoExchangeCorr = 0.2;
+		double dblForwardVol = 0.3;
+		double dblFundingVol = 0.1;
+		double dblForwardFundingCorr = 0.2;
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+			"0D",
+			strCurrency
+		);
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -540,28 +546,38 @@ public class FRAStd {
 			dtForward.julian(),
 			fri,
 			0.006,
-			"Act/360");
+			"Act/360"
+		);
 
-		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
-			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
+			dc,
+			mapFC.get (strTenor),
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
+
 		mktParams.setForwardCurveVolSurface (
 			fri,
-			new FlatUnivariate (dblFRIVol)
+			new FlatUnivariate (dblForwardVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-			dtForward,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		mktParams.setFundingCurveVolSurface (
+			fundingLabel,
+			new FlatUnivariate (dblFundingVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-			dtForward,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabel,
+			new FlatUnivariate (dblForwardFundingCorr)
 		);
 
 		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);

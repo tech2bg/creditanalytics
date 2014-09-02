@@ -687,7 +687,8 @@ public class CAD3M6MUSD3M6M {
 			null,
 			"DerivedParBasisSpread",
 			"---- CAD LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
-			false);
+			false
+		);
 
 		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
 			strReferenceCurrency,

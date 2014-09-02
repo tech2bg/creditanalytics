@@ -61,12 +61,13 @@ public class FRAMkt {
 		String strTenor = "6M";
 		String strCurrency = "EUR";
 		double dblEURIBOR6MVol = 0.37;
-		double dblMultiplicativeQuantoExchangeVol = 0.1;
-		double dblFRIQuantoExchangeCorr = 0.2;
 		double dblEONIAVol = 0.37;
 		double dblEONIAEURIBOR6MCorrelation = 0.8;
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+			"0D",
+			strCurrency
+		);
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtToday,
@@ -92,28 +93,25 @@ public class FRAMkt {
 			dtForward.julian(),
 			fri,
 			0.006,
-			"Act/360");
+			"Act/360"
+		);
 
-		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
-			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
+			dcEONIA,
+			fcEURIBOR6M,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
 		mktParams.setForwardCurveVolSurface (
 			fri,
 			new FlatUnivariate (dblEURIBOR6MVol)
-		);
-
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-			dtForward,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-		);
-
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-			dtForward,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
 		mktParams.setFundingCurveVolSurface (

@@ -458,13 +458,17 @@ public class CrossOvernightFloatingStream {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
-
 		String strCurrency = "USD";
+
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+			"0D",
+			strCurrency
+		);
 
 		DiscountCurve dc = CustomOISCurveBuilderSample (
 			dtToday,
-			strCurrency);
+			strCurrency
+		);
 
 		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 

@@ -91,8 +91,10 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 	{
 		if (null == valParams || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(_fra.couponCurrency()[0]);
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 
 		if (null == dcFunding) return null;
 
@@ -121,15 +123,11 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		if (null == auForwardVolSurface) return null;
 
 		try {
-			org.drip.analytics.date.JulianDate dtEffective = exercise();
-
 			double dblIntegratedQuantoDrift = java.lang.Math.exp (-1. *
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (auForwardVolSurface,
-					csqs.customMetricVolSurface (org.drip.state.identifier.CustomMetricLabel.Standard
-						("ForwardToDomesticExchangeVolatility"), dtEffective), csqs.customMetricVolSurface
-							(org.drip.state.identifier.CustomMetricLabel.Standard
-								("FRIForwardToDomesticExchangeCorrelation"), dtEffective), dblValueDate,
-									dblExerciseDate));
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+					(csqs.forwardCurveVolSurface (_fra.fri()), csqs.fundingCurveVolSurface (fundingLabel),
+						csqs.forwardFundingCorrSurface (_fra.fri(), fundingLabel), dblValueDate,
+							dblExerciseDate));
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedQuantoDrift)) return null;
 

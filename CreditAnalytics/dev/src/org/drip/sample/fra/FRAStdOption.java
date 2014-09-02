@@ -515,9 +515,9 @@ public class FRAStdOption {
 		String strTenor = "3M";
 		String strCurrency = "EUR";
 		String strManifestMeasure = "QuantoAdjustedParForward";
-		double dblFRIVol = 0.3;
-		double dblMultiplicativeQuantoExchangeVol = 0.1;
-		double dblFRIQuantoExchangeCorr = 0.2;
+		double dblForwardVol = 0.3;
+		double dblFundingVol = 0.1;
+		double dblForwardFundingCorr = 0.2;
 		double dblCorrMeanReverterHazard = 0.4 / 365.25;
 
 		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
@@ -542,31 +542,34 @@ public class FRAStdOption {
 			dtForward.julian(),
 			fri,
 			0.006,
-			"Act/360");
+			"Act/360"
+		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
+
 		mktParams.setForwardCurveVolSurface (
 			fri,
-			new FlatUnivariate (dblFRIVol)
+			new FlatUnivariate (dblForwardVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-			dtForward,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		mktParams.setFundingCurveVolSurface (
+			fundingLabel,
+			new FlatUnivariate (dblFundingVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-			dtForward,
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabel,
 			new AndersenPiterbargMeanReverter (
 				new ExponentialDecay (
 					dtToday.julian(),
 					dblCorrMeanReverterHazard),
-				new FlatUnivariate (dblFRIQuantoExchangeCorr))
+				new FlatUnivariate (dblForwardFundingCorr)
+			)
 		);
 
 		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);

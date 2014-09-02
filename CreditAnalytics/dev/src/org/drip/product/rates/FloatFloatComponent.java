@@ -372,13 +372,13 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		mapResult.put ("ReferencePV", dblReferencePV);
 
-		mapResult.put ("ReferenceQuantoAdjustmentFactor", mapFloatReferenceStreamResult.get
-			("QuantoAdjustmentFactor"));
+		mapResult.put ("ReferenceConvexityAdjustmentFactor", mapFloatReferenceStreamResult.get
+			("ConvexityAdjustmentFactor"));
 
-		double dblReferenceQuantoAdjustmentPremium = mapFloatReferenceStreamResult.get
-			("QuantoAdjustmentPremiumUpfront");
+		double dblReferenceConvexityAdjustmentPremium = mapFloatReferenceStreamResult.get
+			("ConvexityAdjustmentPremiumUpfront");
 
-		mapResult.put ("ReferenceQuantoAdjustmentPremium", dblReferenceQuantoAdjustmentPremium);
+		mapResult.put ("ReferenceConvexityAdjustmentPremium", dblReferenceConvexityAdjustmentPremium);
 
 		mapResult.put ("ReferenceResetDate", mapFloatReferenceStreamResult.get ("ResetDate"));
 
@@ -410,13 +410,13 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		mapResult.put ("DerivedPV", dblDerivedPV);
 
-		mapResult.put ("DerivedQuantoAdjustmentFactor", mapFloatDerivedStreamResult.get
-			("QuantoAdjustmentFactor"));
+		mapResult.put ("DerivedConvexityAdjustmentFactor", mapFloatDerivedStreamResult.get
+			("ConvexityAdjustmentFactor"));
 
-		double dblDerivedQuantoAdjustmentPremium = mapFloatDerivedStreamResult.get
-			("QuantoAdjustmentPremiumUpfront");
+		double dblDerivedConvexityAdjustmentPremium = mapFloatDerivedStreamResult.get
+			("ConvexityAdjustmentPremiumUpfront");
 
-		mapResult.put ("DerivedQuantoAdjustmentPremium", dblDerivedQuantoAdjustmentPremium);
+		mapResult.put ("DerivedConvexityAdjustmentPremium", dblDerivedConvexityAdjustmentPremium);
 
 		mapResult.put ("DerivedResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
 
@@ -430,9 +430,9 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		mapResult.put ("PV", dblReferencePV + dblDerivedPV);
 
-		mapResult.put ("QuantoAdjustmentPremium", _floatReference.initialNotional() *
-			dblReferenceQuantoAdjustmentPremium + _floatDerived.initialNotional() *
-				dblDerivedQuantoAdjustmentPremium);
+		mapResult.put ("ConvexityAdjustmentPremium", _floatReference.initialNotional() *
+			dblReferenceConvexityAdjustmentPremium + _floatDerived.initialNotional() *
+				dblDerivedConvexityAdjustmentPremium);
 
 		mapResult.put ("Upfront", mapFloatReferenceStreamResult.get ("Upfront") +
 			mapFloatDerivedStreamResult.get ("Upfront"));
@@ -500,9 +500,9 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		setstrMeasureNames.add ("DerivedPV");
 
-		setstrMeasureNames.add ("DerivedQuantoAdjustmentFactor");
+		setstrMeasureNames.add ("DerivedConvexityAdjustmentFactor");
 
-		setstrMeasureNames.add ("DerivedQuantoAdjustmentPremium");
+		setstrMeasureNames.add ("DerivedConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("DerivedResetDate");
 
@@ -514,7 +514,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		setstrMeasureNames.add ("PV");
 
-		setstrMeasureNames.add ("QuantoAdjustmentPremium");
+		setstrMeasureNames.add ("ConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("ReferenceAccrued01");
 
@@ -534,9 +534,9 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		setstrMeasureNames.add ("ReferenceParBasisSpread");
 
-		setstrMeasureNames.add ("ReferenceQuantoAdjustmentFactor");
+		setstrMeasureNames.add ("ReferenceConvexityAdjustmentFactor");
 
-		setstrMeasureNames.add ("ReferenceQuantoAdjustmentPremium");
+		setstrMeasureNames.add ("ReferenceConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("ReferencePV");
 

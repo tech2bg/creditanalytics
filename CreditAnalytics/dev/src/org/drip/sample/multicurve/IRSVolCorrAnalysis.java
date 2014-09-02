@@ -9,7 +9,6 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
@@ -573,41 +572,27 @@ public class IRSVolCorrAnalysis {
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
 		final double dblBaselineSwapRate,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
+		final double dblForwardVol,
+		final double dblFundingVol,
+		final double dblForwardFundingCorr)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CouponPeriod period : irs.derivedStream().cashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.startDate());
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
-			mktParams.setCustomMetricVolSurface (
-				CustomMetricLabel.Standard (fri.fullyQualifiedName()),
-				dtFRADate,
-				new FlatUnivariate (dblFRIVol)
-			);
+		mktParams.setFundingCurveVolSurface (fundingLabel, new FlatUnivariate (dblFundingVol));
 
-			mktParams.setCustomMetricVolSurface (
-				CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-				dtFRADate,
-				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-			);
+		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblForwardVol));
 
-			mktParams.setCustomMetricVolSurface (
-				CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-				dtFRADate,
-				new FlatUnivariate (dblFRIQuantoExchangeCorr)
-			);
-		}
+		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblForwardFundingCorr));
 
-		Map<String, Double> mapIRSOutput = irs.value (valParams, PricerParams.StandardAmetranoBianchetti(), mktParams, null);
+		Map<String, Double> mapIRSOutput = irs.value (valParams, null, mktParams, null);
 
 		double dblSwapRate = mapIRSOutput.get ("SwapRate");
 
 		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate, 1, 4, 100.) + "% | " +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate - dblBaselineSwapRate, 1, 0, 10000.));
 
@@ -668,7 +653,8 @@ public class IRSVolCorrAnalysis {
 			0.,
 			0.,
 			0.,
-			0.);
+			0.
+		);
 
 		for (double dblSigmaFwd : adblSigmaFwd) {
 			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
@@ -681,7 +667,8 @@ public class IRSVolCorrAnalysis {
 						dblBaselineSwapRate,
 						dblSigmaFwd,
 						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX);
+						dblCorrFwdFwd2DomX
+					);
 			}
 		}
 	}

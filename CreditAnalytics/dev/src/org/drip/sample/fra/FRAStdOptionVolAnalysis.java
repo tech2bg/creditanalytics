@@ -508,30 +508,29 @@ public class FRAStdOptionVolAnalysis {
 		final FRAStandardComponent fra,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
+		final double dblForwardVol,
+		final double dblFundingVol,
+		final double dblForwardFundingCorr)
 		throws Exception
 	{
-		ForwardLabel fri = fra.forwardLabel()[0];
+		ForwardLabel fri = fra.fri();
 
-		JulianDate dtForward = fra.effective();
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
 		mktParams.setForwardCurveVolSurface (
 			fri,
-			new FlatUnivariate (dblFRIVol)
+			new FlatUnivariate (dblForwardVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-			dtForward,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		mktParams.setFundingCurveVolSurface (
+			fundingLabel,
+			new FlatUnivariate (dblFundingVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-			dtForward,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabel,
+			new FlatUnivariate (dblForwardFundingCorr)
 		);
 
 		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
@@ -575,9 +574,9 @@ public class FRAStdOptionVolAnalysis {
 		double dblSpotFloorletPrice = mapFRAFloorletOutput.get ("SpotPrice");
 
 		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblATMFRA, 1, 4, 100.) + "% | " +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 2, 10000.) + " | " +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 2, 10000.) + " | " +

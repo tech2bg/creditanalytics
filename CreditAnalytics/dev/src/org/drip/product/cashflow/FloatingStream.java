@@ -113,7 +113,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 				if (null == pcm) return null;
 
-				dblPV -= dblPeriodCV100 * (pcm.convexityAdjustedAccrualRate() + dblSpread);
+				dblPV -= dblPeriodCV100 * (pcm.nominalAccrualRate() + dblSpread);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -184,7 +184,8 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		_dblMaturity = _lsCouponPeriod.get (iNumPeriod - 1).endDate();
 
 		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
-			if (!cp.setSpread (_dblSpread) || !cp.setNotionalSchedule (_notlSchedule))
+			if (!cp.setBaseNotional (dblNotional) || !cp.setNotionalSchedule (_notlSchedule) || !cp.setSpread
+				(_dblSpread) || (null != _fxmtm && !_fxmtm.mtmMode() && !cp.setFXFixingDate (_dblEffective)))
 				throw new java.lang.Exception ("FixedStream ctr: Cannot set Spread!");
 		}
 
@@ -405,7 +406,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 			}
 		}
 
-		return null == currentPeriod ? null : currentPeriod.baseMetrics (csqs);
+		return null == currentPeriod ? null : currentPeriod.baseMetrics (valParams.valueDate(), csqs);
 	}
 
 	@Override public int freq()
@@ -486,12 +487,21 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		java.lang.String strCurrency = couponCurrency()[0];
 
-		org.drip.state.identifier.FXLabel fxLabel = null;
+		double dblFixing01 = 0.;
+		double dblAccrued01 = 0.;
+		double dblTotalCoupon = 0.;
+		boolean bFirstPeriod = true;
+		double dblUnadjustedDirtyPV = 0.;
+		double dblUnadjustedDirtyDV01 = 0.;
+		double dblConvexityAdjustedDirtyPV = 0.;
+		double dblConvexityAdjustedDirtyDV01 = 0.;
+		double dblCompoundingAdjustedDirtyPV = 0.;
+		double dblCompoundingAdjustedDirtyDV01 = 0.;
+		double dblCashPayDF = java.lang.Double.NaN;
+		double dblResetDate = java.lang.Double.NaN;
+		double dblResetRate = java.lang.Double.NaN;
+		double dblValueNotional = java.lang.Double.NaN;
 		org.drip.quant.function1D.AbstractUnivariate auFX = null;
-
-		org.drip.state.identifier.FXLabel[] aFXLabel = fxLabel();
-
-		if (null != aFXLabel && 0 != aFXLabel.length) auFX = csqs.fxCurve (fxLabel = aFXLabel[0]);
 
 		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
 			(strCurrency);
@@ -502,42 +512,12 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		long lStart = System.nanoTime();
 
-		double dblFixing01 = 0.;
-		double dblAccrued01 = 0.;
-		double dblTotalCoupon = 0.;
-		boolean bFirstPeriod = true;
-		double dblTotalConvexCoupon = 0.;
-		double dblUnadjustedDirtyPV = 0.;
-		double dblUnadjustedDirtyDV01 = 0.;
-		double dblQuantoAdjustedDirtyPV = 0.;
-		double dblQuantoAdjustedDirtyDV01 = 0.;
-		double dblUnadjustedConvexDirtyPV = 0.;
-		double dblAdjustedNotional = _dblNotional;
-		double dblQuantoAdjustedConvexDirtyPV = 0.;
-		double dblCashPayDF = java.lang.Double.NaN;
-		double dblResetDate = java.lang.Double.NaN;
-		double dblResetRate = java.lang.Double.NaN;
-		double dblValueNotional = java.lang.Double.NaN;
-		double dblConvexResetRate = java.lang.Double.NaN;
-
 		double dblValueDate = valParams.valueDate();
 
-		try {
-			dblAdjustedNotional *= (null != auFX && null != _fxmtm && !_fxmtm.mtmMode() ? auFX.evaluate
-				(dblValueDate) : 1.);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		java.lang.String strFRI = _fri.fullyQualifiedName();
-
 		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
-			double dblFloatingRate = 0.;
-			double dblConvexFloatingRate = 0.;
-			double dblPeriodQuantoAdjustment = 1.;
+			double dblFloatingRate = java.lang.Double.NaN;
 			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
+			double dblCompoundingAdjustedDirtyPeriodDV01 = java.lang.Double.NaN;
 
 			double dblPeriodStartDate = period.startDate();
 
@@ -549,66 +529,41 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 			if (dblPeriodPayDate < dblValueDate) continue;
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (dblPeriodEndDate, valParams, csqs);
+			org.drip.analytics.output.CouponPeriodMetrics pcm = period.baseMetrics (dblValueDate, csqs);
 
 			if (null == pcm) return null;
 
+			org.drip.analytics.output.ConvexityAdjustment convAdj = pcm.convexityAdjustment();
+
+			if (null == convAdj) return null;
+
 			try {
+				dblFloatingRate = pcm.nominalAccrualRate();
+
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
-					double dblAccrualDCF = 0.;
-					double dblNotionalFactor = 0.;
+					dblResetRate = dblFloatingRate;
 
-					dblResetRate = dblFloatingRate = pcm.nominalAccrualRate();
-
-					dblConvexResetRate = dblConvexFloatingRate = pcm.convexityAdjustedAccrualRate();
+					dblResetDate = pcm.resetPeriodMetrics().get (0).fixing();
 
 					org.drip.analytics.output.CouponAccrualMetrics cam = period.accrualMetrics (dblValueDate,
 						csqs);
 
 					if (null != cam) {
-						dblAccrualDCF = cam.dcf();
-
 						dblResetDate = cam.currentResetDate();
 
 						dblResetRate = cam.nominalAccrualRate();
 
-						dblNotionalFactor = cam.notionalFactor();
+						dblFixing01 = 0.0001 * cam.dcf() * cam.notionalFactor() * cam.fx();
 					}
 
-					dblFixing01 = dblAccrualDCF * 0.0001 * dblNotionalFactor * (null != auFX && null !=
-						_fxmtm && _fxmtm.mtmMode() ? auFX.evaluate (dblValueDate) : 1.);
-
 					if (dblPeriodStartDate < dblValueDate) dblAccrued01 = dblFixing01;
-				} else {
-					dblFloatingRate = pcm.nominalAccrualRate();
-
-					dblConvexFloatingRate = pcm.convexityAdjustedAccrualRate();
-
-					dblPeriodQuantoAdjustment = null != pricerParams && pricerParams.ametranoBianchettiMode()
-						? org.drip.analytics.support.OptionHelper.MultiplicativeCrossVolQuanto (csqs, strFRI,
-							"ForwardToDomesticExchangeVolatility", "FRIForwardToDomesticExchangeCorrelation",
-								dblValueDate, dblPeriodStartDate) : java.lang.Math.exp
-									(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-										(csqs.fundingCurveVolSurface (fundingLabel),
-											csqs.forwardCurveVolSurface (_fri),
-												csqs.forwardFundingCorrSurface (_fri, fundingLabel),
-													dblValueDate, dblPeriodStartDate));
-
-					if (null != _fxmtm && _fxmtm.mtmMode())
-						dblPeriodQuantoAdjustment *= java.lang.Math.exp
-							(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-								(csqs.fundingCurveVolSurface (fundingLabel), csqs.fxCurveVolSurface
-									(fxLabel), csqs.fundingFXCorrSurface (fundingLabel, fxLabel),
-										dblValueDate, dblPeriodPayDate) +
-											org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-												(csqs.forwardCurveVolSurface (_fri), csqs.fxCurveVolSurface
-													(fxLabel), csqs.forwardFXCorrSurface (_fri, fxLabel),
-														dblValueDate, dblPeriodStartDate));
 				}
 
-				dblUnadjustedDirtyPeriodDV01 = 0.0001 * dblPeriodDCF * pcm.annuity() * (null != auFX && null
-					!= _fxmtm && _fxmtm.mtmMode() ? auFX.evaluate (dblPeriodPayDate) : 1.);
+				dblUnadjustedDirtyPeriodDV01 = 0.0001 * dblPeriodDCF * pcm.annuity();
+
+				dblCompoundingAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+					pcm.compoundingConvexityFactor();
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -626,19 +581,17 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 				}
 			}
 
+			double dblConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 * convAdj.cumulative();
+
 			dblTotalCoupon += dblFloatingRate;
-			dblTotalConvexCoupon += dblConvexFloatingRate;
 			dblUnadjustedDirtyDV01 += dblUnadjustedDirtyPeriodDV01;
 			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate + _dblSpread);
-			dblUnadjustedConvexDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblConvexFloatingRate +
+			dblConvexityAdjustedDirtyDV01 += dblConvexityAdjustedDirtyPeriodDV01;
+			dblConvexityAdjustedDirtyPV += dblConvexityAdjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate +
 				_dblSpread);
-			double dblQuantoAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				dblPeriodQuantoAdjustment;
-			dblQuantoAdjustedDirtyDV01 += dblQuantoAdjustedDirtyPeriodDV01;
-			dblQuantoAdjustedDirtyPV += dblQuantoAdjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate +
-				_dblSpread);
-			dblQuantoAdjustedConvexDirtyPV += dblQuantoAdjustedDirtyPeriodDV01 * 10000. *
-				(dblConvexFloatingRate + _dblSpread);
+			dblCompoundingAdjustedDirtyDV01 += dblCompoundingAdjustedDirtyPeriodDV01;
+			dblCompoundingAdjustedDirtyPV += dblCompoundingAdjustedDirtyPeriodDV01 * 10000. *
+				(dblFloatingRate + _dblSpread);
 		}
 
 		try {
@@ -653,26 +606,24 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 			return null;
 		}
 
-		dblAccrued01 *= dblAdjustedNotional;
-		dblUnadjustedDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
-		dblUnadjustedDirtyDV01 *= (dblAdjustedNotional / dblCashPayDF);
-		dblQuantoAdjustedDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
-		dblQuantoAdjustedDirtyDV01 *= (dblAdjustedNotional / dblCashPayDF);
-		dblUnadjustedConvexDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
-		dblQuantoAdjustedConvexDirtyPV *= (dblAdjustedNotional / dblCashPayDF);
+		dblUnadjustedDirtyPV /= dblCashPayDF;
+		dblUnadjustedDirtyDV01 /= dblCashPayDF;
+		dblConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblConvexityAdjustedDirtyDV01 /= dblCashPayDF;
+		dblCompoundingAdjustedDirtyPV /= dblCashPayDF;
+		dblCompoundingAdjustedDirtyDV01 /= dblCashPayDF;
 		double dblAccrued = dblAccrued01 * 10000. * (dblResetRate + _dblSpread);
-		double dblConvexAccrued = dblAccrued01 * 10000. * (dblConvexResetRate + _dblSpread);
 		double dblUnadjustedCleanPV = dblUnadjustedDirtyPV - dblAccrued;
 		double dblUnadjustedCleanDV01 = dblUnadjustedDirtyDV01 - dblAccrued01;
-		double dblQuantoAdjustedCleanPV = dblQuantoAdjustedDirtyPV - dblAccrued;
-		double dblUnadjustedConvexCleanPV = dblUnadjustedConvexDirtyPV - dblAccrued;
-		double dblQuantoAdjustedCleanDV01 = dblQuantoAdjustedDirtyDV01 - dblAccrued01;
-		double dblQuantoAdjustedConvexCleanPV = dblQuantoAdjustedConvexDirtyPV - dblAccrued;
 		double dblUnadjustedFairPremium = 0.0001 * dblUnadjustedCleanPV / dblUnadjustedCleanDV01;
-		double dblUnadjustedConvexFairPremium = 0.0001 * dblUnadjustedConvexCleanPV / dblUnadjustedCleanDV01;
-		double dblQuantoAdjustedFairPremium = 0.0001 * dblQuantoAdjustedCleanPV / dblQuantoAdjustedCleanDV01;
-		double dblQuantoAdjustedConvexFairPremium = 0.0001 * dblQuantoAdjustedConvexCleanPV /
-			dblQuantoAdjustedCleanDV01;
+		double dblCompoundingAdjustedCleanPV = dblCompoundingAdjustedDirtyPV - dblAccrued;
+		double dblCompoundingAdjustedCleanDV01 = dblCompoundingAdjustedDirtyDV01 - dblAccrued01;
+		double dblCompoundingAdjustedFairPremium = 0.0001 * dblCompoundingAdjustedCleanPV /
+			dblCompoundingAdjustedCleanDV01;
+		double dblConvexityAdjustedCleanPV = dblConvexityAdjustedDirtyPV - dblAccrued;
+		double dblConvexityAdjustedCleanDV01 = dblConvexityAdjustedDirtyDV01 - dblAccrued01;
+		double dblConvexityAdjustedFairPremium = 0.0001 * dblConvexityAdjustedCleanPV /
+			dblConvexityAdjustedCleanDV01;
 
 		try {
 			dblValueNotional = notional (dblValueDate) * _dblNotional * (null != auFX && null != _fxmtm &&
@@ -688,83 +639,88 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		mapResult.put ("Accrued01", dblAccrued01);
 
-		mapResult.put ("CleanDV01", dblQuantoAdjustedCleanDV01);
+		mapResult.put ("CleanDV01", dblConvexityAdjustedCleanDV01);
 
-		mapResult.put ("CleanPV", dblQuantoAdjustedConvexCleanPV);
+		mapResult.put ("CleanPV", dblConvexityAdjustedCleanPV);
 
-		mapResult.put ("ConvexAccrued", dblConvexAccrued);
+		mapResult.put ("CompoundingAdjustedCleanDV01", dblCompoundingAdjustedCleanDV01);
 
-		mapResult.put ("ConvexResetRate", dblConvexResetRate);
+		mapResult.put ("CompoundingAdjustedCleanPV", dblCompoundingAdjustedCleanPV);
 
-		mapResult.put ("CouponConvexityPremiumUpfront", (dblQuantoAdjustedConvexCleanPV -
-			dblQuantoAdjustedCleanPV) / dblValueNotional);
+		mapResult.put ("CompoundingAdjustedDirtyPV", dblCompoundingAdjustedDirtyPV);
 
-		mapResult.put ("CouponConvexityRatio", dblTotalConvexCoupon / dblTotalCoupon);
+		mapResult.put ("CompoundingAdjustedDirtyDV01", dblCompoundingAdjustedDirtyDV01);
 
-		mapResult.put ("CV01", dblQuantoAdjustedCleanDV01);
+		mapResult.put ("CompoundingAdjustedDirtyPV", dblCompoundingAdjustedDirtyPV);
 
-		mapResult.put ("DirtyDV01", dblQuantoAdjustedDirtyDV01);
+		mapResult.put ("CompoundingAdjustedFairPremium", dblCompoundingAdjustedFairPremium);
 
-		mapResult.put ("DirtyPV", dblQuantoAdjustedConvexDirtyPV);
+		mapResult.put ("CompoundingAdjustedParRate", dblCompoundingAdjustedFairPremium);
 
-		mapResult.put ("DV01", dblQuantoAdjustedCleanDV01);
+		mapResult.put ("CompoundingAdjustedPV", dblCompoundingAdjustedCleanPV);
 
-		mapResult.put ("FairPremium", dblQuantoAdjustedConvexFairPremium);
+		mapResult.put ("CompoundingAdjustedRate", dblCompoundingAdjustedFairPremium);
 
-		mapResult.put ("Fixing01", dblFixing01 * dblAdjustedNotional / dblCashPayDF);
+		mapResult.put ("CompoundingAdjustedUpfront", dblCompoundingAdjustedCleanPV);
 
-		mapResult.put ("ParRate", dblQuantoAdjustedConvexFairPremium);
+		mapResult.put ("CompoundingAdjustmentFactor", dblCompoundingAdjustedDirtyDV01 /
+			dblUnadjustedDirtyDV01);
 
-		mapResult.put ("PV", dblQuantoAdjustedConvexCleanPV);
+		mapResult.put ("CompoundingAdjustmentPremiumUpfront", (dblCompoundingAdjustedCleanPV -
+			dblUnadjustedCleanPV) / dblValueNotional);
 
-		mapResult.put ("QuantoAdjustedCleanPV", dblQuantoAdjustedCleanPV);
+		mapResult.put ("ConvexityAdjustedCleanDV01", dblConvexityAdjustedCleanDV01);
 
-		mapResult.put ("QuantoAdjustedCleanDV01", dblQuantoAdjustedCleanDV01);
+		mapResult.put ("ConvexityAdjustedCleanPV", dblConvexityAdjustedCleanPV);
 
-		mapResult.put ("QuantoAdjustedConvexCleanPV", dblQuantoAdjustedConvexCleanPV);
+		mapResult.put ("ConvexityAdjustedDirtyPV", dblConvexityAdjustedDirtyPV);
 
-		mapResult.put ("QuantoAdjustedConvexDirtyPV", dblQuantoAdjustedConvexDirtyPV);
+		mapResult.put ("ConvexityAdjustedDirtyDV01", dblConvexityAdjustedDirtyDV01);
 
-		mapResult.put ("QuantoAdjustedConvexFairPremium", dblQuantoAdjustedConvexFairPremium);
+		mapResult.put ("ConvexityAdjustedDirtyPV", dblConvexityAdjustedDirtyPV);
 
-		mapResult.put ("QuantoAdjustedConvexParRate", dblQuantoAdjustedConvexFairPremium);
+		mapResult.put ("ConvexityAdjustedFairPremium", dblConvexityAdjustedFairPremium);
 
-		mapResult.put ("QuantoAdjustedDirtyDV01", dblQuantoAdjustedDirtyDV01);
+		mapResult.put ("ConvexityAdjustedParRate", dblConvexityAdjustedFairPremium);
 
-		mapResult.put ("QuantoAdjustedDirtyPV", dblQuantoAdjustedDirtyPV);
+		mapResult.put ("ConvexityAdjustedPV", dblConvexityAdjustedCleanPV);
 
-		mapResult.put ("QuantoAdjustedFairPremium", dblQuantoAdjustedFairPremium);
+		mapResult.put ("ConvexityAdjustedRate", dblConvexityAdjustedFairPremium);
 
-		mapResult.put ("QuantoAdjustedParRate", dblQuantoAdjustedFairPremium);
+		mapResult.put ("ConvexityAdjustedUpfront", dblConvexityAdjustedCleanPV);
 
-		mapResult.put ("QuantoAdjustedPV", dblQuantoAdjustedCleanPV);
+		mapResult.put ("ConvexityAdjustmentFactor", dblConvexityAdjustedDirtyDV01 / dblUnadjustedDirtyDV01);
 
-		mapResult.put ("QuantoAdjustedRate", dblQuantoAdjustedFairPremium);
+		mapResult.put ("ConvexityAdjustmentPremiumUpfront", (dblConvexityAdjustedCleanPV -
+			dblUnadjustedCleanPV) / dblValueNotional);
 
-		mapResult.put ("QuantoAdjustedUpfront", dblQuantoAdjustedCleanPV);
+		mapResult.put ("CV01", dblConvexityAdjustedCleanDV01);
 
-		mapResult.put ("QuantoAdjustmentFactor", dblQuantoAdjustedDirtyDV01 / dblUnadjustedDirtyDV01);
+		mapResult.put ("DirtyDV01", dblConvexityAdjustedDirtyDV01);
 
-		mapResult.put ("QuantoAdjustmentPremiumUpfront", (dblQuantoAdjustedCleanPV - dblUnadjustedCleanPV) /
-			dblValueNotional);
+		mapResult.put ("DirtyPV", dblConvexityAdjustedDirtyPV);
 
-		mapResult.put ("Rate", dblQuantoAdjustedConvexFairPremium);
+		mapResult.put ("DV01", dblConvexityAdjustedCleanDV01);
+
+		mapResult.put ("FairPremium", dblConvexityAdjustedFairPremium);
+
+		mapResult.put ("Fixing01", dblFixing01 / dblCashPayDF);
+
+		mapResult.put ("ParRate", dblConvexityAdjustedFairPremium);
+
+		mapResult.put ("PV", dblConvexityAdjustedCleanPV);
+
+		mapResult.put ("Rate", dblConvexityAdjustedFairPremium);
 
 		mapResult.put ("ResetDate", dblResetDate);
 
 		mapResult.put ("ResetRate", dblResetRate);
 
-		mapResult.put ("UnadjustedCleanPV", dblUnadjustedCleanPV);
+		mapResult.put ("TotalCoupon", dblTotalCoupon);
 
 		mapResult.put ("UnadjustedCleanDV01", dblUnadjustedCleanDV01);
 
-		mapResult.put ("UnadjustedConvexCleanPV", dblUnadjustedConvexCleanPV);
-
-		mapResult.put ("UnadjustedConvexDirtyPV", dblUnadjustedConvexDirtyPV);
-
-		mapResult.put ("UnadjustedConvexFairPremium", dblUnadjustedConvexFairPremium);
-
-		mapResult.put ("UnadjustedConvexParRate", dblUnadjustedConvexFairPremium);
+		mapResult.put ("UnadjustedCleanPV", dblUnadjustedCleanPV);
 
 		mapResult.put ("UnadjustedDirtyDV01", dblUnadjustedDirtyDV01);
 
@@ -780,39 +736,36 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		mapResult.put ("UnadjustedUpfront", dblUnadjustedCleanPV);
 
-		mapResult.put ("Upfront", dblQuantoAdjustedConvexCleanPV);
+		mapResult.put ("Upfront", dblConvexityAdjustedCleanPV);
 
 		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 			double dblUnadjustedPrice = 100. * (1. + (dblUnadjustedCleanPV / dblValueNotional));
-			double dblQuantoAdjustedPrice = 100. * (1. + (dblQuantoAdjustedCleanPV / dblValueNotional));
-			double dblUnadjustedConvexPrice = 100. * (1. + (dblUnadjustedConvexCleanPV / dblValueNotional));
-			double dblQuantoAdjustedConvexPrice = 100. * (1. + (dblQuantoAdjustedConvexCleanPV /
+			double dblCompoundingAdjustedPrice = 100. * (1. + (dblCompoundingAdjustedCleanPV /
+				dblValueNotional));
+			double dblConvexityAdjustedPrice = 100. * (1. + (dblConvexityAdjustedCleanPV /
 				dblValueNotional));
 
-			mapResult.put ("CleanPrice", dblQuantoAdjustedConvexPrice);
+			mapResult.put ("CleanPrice", dblConvexityAdjustedPrice);
 
-			mapResult.put ("DirtyPrice", 100. * (1. + (dblQuantoAdjustedConvexDirtyPV / dblValueNotional)));
+			mapResult.put ("CompoundingAdjustedCleanPrice", dblCompoundingAdjustedPrice);
 
-			mapResult.put ("Price", dblQuantoAdjustedConvexPrice);
-
-			mapResult.put ("QuantoAdjustedCleanPrice", dblQuantoAdjustedPrice);
-
-			mapResult.put ("QuantoAdjustedConvexCleanPrice", dblQuantoAdjustedConvexPrice);
-
-			mapResult.put ("QuantoAdjustedConvexDirtyPrice", 100. * (1. + (dblQuantoAdjustedConvexDirtyPV /
+			mapResult.put ("CompoundingAdjustedDirtyPrice", 100. * (1. + (dblCompoundingAdjustedDirtyPV /
 				dblValueNotional)));
 
-			mapResult.put ("QuantoAdjustedDirtyPrice", 100. * (1. + (dblQuantoAdjustedDirtyPV /
+			mapResult.put ("CompoundingAdjustedPrice", dblCompoundingAdjustedPrice);
+
+			mapResult.put ("ConvexityAdjustedCleanPrice", dblConvexityAdjustedPrice);
+
+			mapResult.put ("ConvexityAdjustedDirtyPrice", 100. * (1. + (dblConvexityAdjustedDirtyPV /
 				dblValueNotional)));
 
-			mapResult.put ("QuantoAdjustedPrice", dblQuantoAdjustedPrice);
+			mapResult.put ("ConvexityAdjustedPrice", dblConvexityAdjustedPrice);
+
+			mapResult.put ("DirtyPrice", 100. * (1. + (dblConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("Price", dblConvexityAdjustedPrice);
 
 			mapResult.put ("UnadjustedCleanPrice", dblUnadjustedPrice);
-
-			mapResult.put ("UnadjustedConvexCleanPrice", dblUnadjustedConvexPrice);
-
-			mapResult.put ("UnadjustedConvexDirtyPrice", 100. * (1. + (dblUnadjustedConvexDirtyPV /
-				dblValueNotional)));
 
 			mapResult.put ("UnadjustedDirtyPrice", 100. * (1. + (dblUnadjustedDirtyPV / dblValueNotional)));
 
@@ -840,13 +793,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		setstrMeasureNames.add ("CleanPV");
 
-		setstrMeasureNames.add ("ConvexAccrued");
-
-		setstrMeasureNames.add ("ConvexResetRate");
-
 		setstrMeasureNames.add ("CouponConvexityPremiumUpfront");
-
-		setstrMeasureNames.add ("CouponConvexityRatio");
 
 		setstrMeasureNames.add ("CV01");
 
@@ -1017,7 +964,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 				double dblAccrued = period.contains (dblValueDate) ? period.accrualDCF (dblValueDate) : 0.;
 
 				double dblPeriodCV100 = _dblNotional * notional (dblPeriodEndDate) * (period.couponDCF() -
-					dblAccrued) * (pcm.convexityAdjustedAccrualRate() + dblSpread);
+					dblAccrued) * (pcm.nominalAccrualRate() + dblSpread);
 
 				double dblPeriodPayDate = period.payDate();
 

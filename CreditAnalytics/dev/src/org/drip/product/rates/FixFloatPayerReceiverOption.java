@@ -29,17 +29,17 @@ package org.drip.product.rates;
  */
 
 /**
- * STIRPayerReceiverOption implements the Payer/Receiver Option on the STIR Futures.
+ * FixFloatPayerReceiverOption implements the Payer/Receiver Option on the STIR Futures.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIncomeOptionComponent {
+public class FixFloatPayerReceiverOption extends org.drip.product.definition.FixedIncomeOptionComponent {
 	private boolean _bIsReceiver = false;
-	private org.drip.product.rates.STIRFutureComponent _stir = null;
+	private org.drip.product.rates.FixFloatComponent _stir = null;
 
 	/**
-	 * STIRPayerReceiverOption constructor
+	 * FixFloatPayerReceiverOption constructor
 	 * 
 	 * @param stir The Underlying STIR Future Component
 	 * @param strManifestMeasure Measure of the Underlying Component
@@ -52,8 +52,8 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public STIRPayerReceiverOption (
-		final org.drip.product.rates.STIRFutureComponent stir,
+	public FixFloatPayerReceiverOption (
+		final org.drip.product.rates.FixFloatComponent stir,
 		final java.lang.String strManifestMeasure,
 		final boolean bIsReceiver,
 		final double dblStrike,
@@ -97,14 +97,6 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		long lStart = System.nanoTime();
 
-		java.lang.String strComponentName = name();
-
-		org.drip.quant.function1D.AbstractUnivariate auSTIRSwapRateVolSurface = csqs.customMetricVolSurface
-			(org.drip.state.identifier.CustomMetricLabel.Standard (strComponentName + "SwapRateVolatility"),
-				exercise());
-
-		if (null == auSTIRSwapRateVolSurface) return null;
-
 		double dblExerciseDate = exercise().julian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapSTIROutput = _stir.value
@@ -120,18 +112,23 @@ public class STIRPayerReceiverOption extends org.drip.product.definition.FixedIn
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblATMManifestMeasure)) return null;
 
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel()[0];
+
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(couponCurrency()[0]);
+
 		try {
 			double dblSTIRIntegratedQuantoDrift =
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs,
-					strComponentName + "SwapRateVolatility", strComponentName + "SwapRateExchangeVolatility",
-						strComponentName + "SwapRateToSwapRateExchangeCorrelation", dblValueDate,
+				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs.forwardCurveVolSurface
+					(forwardLabel), csqs.fundingCurveVolSurface (fundingLabel),
+						csqs.forwardFundingCorrSurface (forwardLabel, fundingLabel), dblValueDate,
 							dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedQuantoDrift)) return null;
 
 			double dblSTIRIntegratedSurfaceVariance =
-				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (csqs,
-					strComponentName + "SwapRateVolatility", dblValueDate, dblExerciseDate);
+				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance
+					(csqs.forwardCurveVolSurface (forwardLabel), dblValueDate, dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedSurfaceVariance)) return null;
 

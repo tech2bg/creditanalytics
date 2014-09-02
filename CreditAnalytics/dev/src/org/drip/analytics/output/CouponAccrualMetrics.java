@@ -137,12 +137,12 @@ public class CouponAccrualMetrics {
 	 * @throws java.lang.Exception Thrown if the Nominal Accrual Rate cannot be calculated
 	 */
 
-	public double nominalAccrualRateCouponCurrency()
+	public double nominalAccrualRate()
 		throws java.lang.Exception
 	{
 		if (null == _lsRPM || 0 == _lsRPM.size())
 			throw new java.lang.Exception
-				("CouponPeriodMetrics::nominalAccrualRateCouponCurrency => No Reset Period Metrics available!");
+				("CouponPeriodMetrics::nominalAccrualRate => No Reset Period Metrics available!");
 
 		double dblCumulativeDCF = 0.;
 		double dblCumulativeNominalRate = java.lang.Double.NaN;
@@ -172,34 +172,6 @@ public class CouponAccrualMetrics {
 			dblCumulativeNominalRate -= 1.;
 
 		return dblCumulativeNominalRate / dblCumulativeDCF;
-	}
-
-	/**
-	 * Retrieve the Nominal Accrual Rate in the Pay Currency
-	 * 
-	 * @return The Nominal Accrual Rate in the Pay Currency
-	 * 
-	 * @throws java.lang.Exception Thrown if the Nominal Accrual Rate cannot be calculated
-	 */
-
-	public double nominalAccrualRatePayCurrency()
-		throws java.lang.Exception
-	{
-		return nominalAccrualRateCouponCurrency() * _dblFX;
-	}
-
-	/**
-	 * Retrieve the Nominal Accrual Rate in the Pay Currency
-	 * 
-	 * @return The Nominal Accrual Rate in the Pay Currency
-	 * 
-	 * @throws java.lang.Exception Thrown if the Nominal Accrual Rate cannot be calculated
-	 */
-
-	public double nominalAccrualRate()
-		throws java.lang.Exception
-	{
-		return nominalAccrualRatePayCurrency();
 	}
 
 	/**

@@ -40,6 +40,7 @@ public class ResetPeriodMetrics {
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblFixingDate = java.lang.Double.NaN;
 	private double _dblNominalRate = java.lang.Double.NaN;
+	private org.drip.analytics.output.ConvexityAdjustment _convAdj = null;
 
 	/**
 	 * ResetPeriodMetrics constructor
@@ -123,5 +124,33 @@ public class ResetPeriodMetrics {
 	public double dcf()
 	{
 		return _dblDCF;
+	}
+
+	/**
+	 * Set the Convexity Adjustment for the Reset Period
+	 * 
+	 * @param convAdj The Convexity Adjustment for the Reset Period
+	 * 
+	 * @return TRUE => The Convexity Adjustment for the Reset Period successfully set
+	 */
+
+	public boolean setConvAdj (
+		final org.drip.analytics.output.ConvexityAdjustment convAdj)
+	{
+		if (null == convAdj) return false;
+
+		_convAdj = convAdj;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjustment for the Reset Period
+	 * 
+	 * @return The Convexity Adjustment for the Reset Period
+	 */
+
+	public org.drip.analytics.output.ConvexityAdjustment convexityAdjustment()
+	{
+		return _convAdj;
 	}
 }

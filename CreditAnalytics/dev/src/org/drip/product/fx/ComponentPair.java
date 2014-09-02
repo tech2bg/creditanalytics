@@ -164,18 +164,21 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 		java.lang.String strReferenceCompDerivedDV01 = strReferenceCompName + "[DerivedCleanDV01]";
 		java.lang.String strDerivedCompReferenceDV01 = strDerivedCompName + "[ReferenceCleanDV01]";
 		java.lang.String strReferenceCompReferenceDV01 = strReferenceCompName + "[ReferenceCleanDV01]";
-		java.lang.String strDerivedCompQuantoPremium = strDerivedCompName + "[QuantoAdjustmentPremium]";
-		java.lang.String strDerivedCompQuantoAdjustment = strDerivedCompName + "[QuantoAdjustmentFactor]";
-		java.lang.String strReferenceCompQuantoPremium = strReferenceCompName + "[QuantoAdjustmentPremium]";
-		java.lang.String strReferenceCompQuantoAdjustment = strReferenceCompName +
+		java.lang.String strDerivedCompConvexityPremium = strDerivedCompName +
+			"[ConvexityAdjustmentPremium]";
+		java.lang.String strDerivedCompConvexityAdjustment = strDerivedCompName +
+			"[ConvexityAdjustmentFactor]";
+		java.lang.String strReferenceCompConvexityPremium = strReferenceCompName +
+			"[ConvexityAdjustmentPremium]";
+		java.lang.String strReferenceCompConvexityAdjustment = strReferenceCompName +
 			"[QuantoAdjustmentFactor]";
 
 		if (!mapOutput.containsKey (strDerivedCompPV) || !mapOutput.containsKey (strReferenceCompPV) ||
 			!mapOutput.containsKey (strReferenceCompReferenceDV01) || !mapOutput.containsKey
 				(strReferenceCompDerivedDV01) || !mapOutput.containsKey (strDerivedCompReferenceDV01) ||
 					!mapOutput.containsKey (strDerivedCompDerivedDV01) || !mapOutput.containsKey
-						(strDerivedCompQuantoPremium) || !mapOutput.containsKey
-							(strReferenceCompQuantoPremium)) {
+						(strDerivedCompConvexityPremium) || !mapOutput.containsKey
+							(strReferenceCompConvexityPremium)) {
 			mapOutput.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
 			return mapOutput;
@@ -205,24 +208,26 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 		mapOutput.put ("DerivedCompDerivedBasis", -1. * (dblDerivedCompPV + dblReferenceCompPV) /
 			dblDerivedCompDerivedDV01);
 
-		if (mapOutput.containsKey (strReferenceCompQuantoAdjustment))
-			mapOutput.put ("ReferenceQuantoAdjustmentFactor", mapOutput.get (strReferenceCompQuantoAdjustment));
+		if (mapOutput.containsKey (strReferenceCompConvexityAdjustment))
+			mapOutput.put ("ReferenceConvexityAdjustmentFactor", mapOutput.get
+				(strReferenceCompConvexityAdjustment));
 
-		double dblReferenceQuantoAdjustmentPremium = mapOutput.get (strReferenceCompQuantoPremium);
+		double dblReferenceConvexityAdjustmentPremium = mapOutput.get (strReferenceCompConvexityPremium);
 
-		mapOutput.put ("ReferenceQuantoAdjustmentPremium", dblReferenceQuantoAdjustmentPremium);
+		mapOutput.put ("ReferenceConvexityAdjustmentPremium", dblReferenceConvexityAdjustmentPremium);
 
-		if (mapOutput.containsKey (strDerivedCompQuantoAdjustment))
-			mapOutput.put ("DerivedQuantoAdjustmentFactor", mapOutput.get (strDerivedCompQuantoAdjustment));
+		if (mapOutput.containsKey (strDerivedCompConvexityAdjustment))
+			mapOutput.put ("DerivedConvexityAdjustmentFactor", mapOutput.get
+				(strDerivedCompConvexityAdjustment));
 
-		double dblDerivedQuantoAdjustmentPremium = mapOutput.get (strDerivedCompQuantoPremium);
+		double dblDerivedConvexityAdjustmentPremium = mapOutput.get (strDerivedCompConvexityPremium);
 
-		mapOutput.put ("DerivedQuantoAdjustmentPremium", dblDerivedQuantoAdjustmentPremium);
+		mapOutput.put ("DerivedConvexityAdjustmentPremium", dblDerivedConvexityAdjustmentPremium);
 
 		try {
-			mapOutput.put ("QuantoAdjustmentPremium", _rcReference.initialNotional() *
-				dblReferenceQuantoAdjustmentPremium + _rcDerived.initialNotional() *
-					dblDerivedQuantoAdjustmentPremium);
+			mapOutput.put ("ConvexityAdjustmentPremium", _rcReference.initialNotional() *
+				dblReferenceConvexityAdjustmentPremium + _rcDerived.initialNotional() *
+					dblDerivedConvexityAdjustmentPremium);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

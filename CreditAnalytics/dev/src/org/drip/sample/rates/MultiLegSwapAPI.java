@@ -52,7 +52,6 @@ import org.drip.state.identifier.ForwardLabel;
  *  
  *  See the License for the specific language governing permissions and
  *  	limitations under the License.
- */
 
 /**
  * MultiLegSwapAPI illustrates the creation, invocation, and usage of the MultiLegSwap. It shows how to:
@@ -91,41 +90,78 @@ public class MultiLegSwapAPI {
 
 		// Cash Calibration
 
-		JulianDate dtCashEffective = dtStart.addBusDays (1, strCurrency);
-
 		for (int i = 0; i < astrCashTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
 			aCompCalib[i] = DepositBuilder.CreateDeposit (
-				dtCashEffective,
-				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
+				dtStart,
+				new JulianDate (adblDate[i] = dtStart.addTenor (astrCashTenor[i]).julian()),
 				null,
 				strCurrency);
 		}
 
 		// IRS Calibration
 
-		JulianDate dtIRSEffective = dtStart.addBusDays (2, strCurrency);
-
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateFixFloat (
-				dtIRSEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
-				0.,
+			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+				dtStart.julian(),
+				astrIRSTenor[i],
+				null,
 				2,
 				"Act/360",
-				0.,
-				2,
-				"Act/360",
+				false,
+				false,
 				strCurrency,
-				strCurrency
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				null
 			);
+
+			FloatingStream floatStream = new FloatingStream (
+				strCurrency,
+				null,
+				0.,
+				-1.,
+				null,
+				lsFloatPeriods,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+				false
+			);
+
+			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+				dtStart.julian(),
+				astrIRSTenor[i],
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				strCurrency,
+				null,
+				null
+			);
+
+			FixedStream fixStream = new FixedStream (
+				strCurrency,
+				null,
+				0.,
+				1.,
+				null,
+				lsFixedPeriods
+			);
+
+			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
+
+			irs.setPrimaryCode ("IRS." + astrIRSTenor[i] + "." + strCurrency);
+
+			aCompCalib[i + astrCashTenor.length] = irs;
 		}
 
 		/*
@@ -320,8 +356,6 @@ public class MultiLegSwapAPI {
 	{
 		JulianDate dtValue = JulianDate.Today();
 
-		JulianDate dtSettle = dtValue.addBusDays (2, "USD");
-
 		/*
 		 * Create the Discount Curve from the rates instruments
 		 */
@@ -329,17 +363,25 @@ public class MultiLegSwapAPI {
 		String[] astrCashTenor = new String[] {"3M"};
 		double[] adblCashRate = new double[] {0.00276};
 		String[] astrIRSTenor = new String[] {   "1Y",    "2Y",    "3Y",    "4Y",    "5Y",    "6Y",    "7Y",
-			   "8Y",    "9Y",   "10Y",   "11Y",   "12Y",   "15Y",   "20Y",   "25Y",   "30Y",   "40Y",   "50Y"};
+		   "8Y",    "9Y",   "10Y",   "11Y",   "12Y",   "15Y",   "20Y",   "25Y",   "30Y",   "40Y",   "50Y"};
 		double[] adblIRSRate = new double[]  {0.00367, 0.00533, 0.00843, 0.01238, 0.01609, 0.01926, 0.02191,
 			0.02406, 0.02588, 0.02741, 0.02870, 0.02982, 0.03208, 0.03372, 0.03445, 0.03484, 0.03501, 0.03484};
 
-		DiscountCurve dc = BuildRatesCurveFromInstruments (dtValue, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0., "USD");
+		DiscountCurve dc = BuildRatesCurveFromInstruments (
+			dtValue,
+			astrCashTenor,
+			adblCashRate,
+			astrIRSTenor,
+			adblIRSRate,
+			0.,
+			"USD"
+		);
 
 		/*
 		 * Set up the valuation and the market parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);
+		ValuationParams valParams = ValuationParams.CreateValParams (dtValue, 0, "", Convention.DR_ACTUAL);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 

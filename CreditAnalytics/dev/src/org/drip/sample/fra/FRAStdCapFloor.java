@@ -506,31 +506,28 @@ public class FRAStdCapFloor {
 		final FloatingStream floatstream,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
+		final double dblForwardVol,
+		final double dblFundingVol,
+		final double dblForwardFundingCorr)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CouponPeriod period : floatstream.cashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.startDate());
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
-			mktParams.setForwardCurveVolSurface (
-				fri,
-				new FlatUnivariate (dblFRIVol)
-			);
+		mktParams.setForwardCurveVolSurface (
+			fri,
+			new FlatUnivariate (dblForwardVol)
+		);
 
-			mktParams.setCustomMetricVolSurface (
-				CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-				dtFRADate,
-				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-			);
+		mktParams.setFundingCurveVolSurface (
+			fundingLabel,
+			new FlatUnivariate (dblFundingVol)
+		);
 
-			mktParams.setCustomMetricVolSurface (
-				CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-				dtFRADate,
-				new FlatUnivariate (dblFRIQuantoExchangeCorr)
-			);
-		}
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabel,
+			new FlatUnivariate (dblForwardFundingCorr)
+		);
 	}
 
 	public static final void main (
@@ -548,7 +545,10 @@ public class FRAStdCapFloor {
 		String strCurrency = "EUR";
 		String strManifestMeasure = "QuantoAdjustedParForward";
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+			"0D",
+			strCurrency
+		);
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -607,17 +607,18 @@ public class FRAStdCapFloor {
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
-		double dblSigmaFwd = 0.50;
-		double dblSigmaFwd2DomX = 0.50;
-		double dblCorrFwdFwd2DomX = 0.50;
+		double dblForwardVol = 0.50;
+		double dblFundingVol = 0.50;
+		double dblForwardFundingCorr = 0.50;
 
 		SetVolCorrSurface (
 			floatStream,
 			mktParams,
 			fri,
-			dblSigmaFwd,
-			dblSigmaFwd2DomX,
-			dblCorrFwdFwd2DomX);
+			dblForwardVol,
+			dblFundingVol,
+			dblForwardFundingCorr
+		);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

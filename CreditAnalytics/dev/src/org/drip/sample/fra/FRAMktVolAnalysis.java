@@ -115,8 +115,6 @@ public class FRAMktVolAnalysis {
 	{
 		String strTenor = "6M";
 		String strCurrency = "EUR";
-		double dblMultiplicativeQuantoExchangeVol = 0.1;
-		double dblFRIQuantoExchangeCorr = 0.2;
 
 		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
@@ -132,7 +130,8 @@ public class FRAMktVolAnalysis {
 			dtForward.julian(),
 			fri,
 			0.006,
-			"Act/360");
+			"Act/360"
+		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dcEONIA, fcEURIBOR6M, null, null, null, null, null, null);
@@ -142,18 +141,6 @@ public class FRAMktVolAnalysis {
 		mktParams.setForwardCurveVolSurface (
 			fri,
 			auEURIBOR6MVolTS
-		);
-
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-			dtForward,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-		);
-
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-			dtForward,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
 		);
 
 		mktParams.setFundingCurveVolSurface (

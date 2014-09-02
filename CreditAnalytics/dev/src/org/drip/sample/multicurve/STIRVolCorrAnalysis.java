@@ -388,7 +388,8 @@ public class STIRVolCorrAnalysis {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 	}
 
 	private static final Map<String, ForwardCurve> MakeFC (
@@ -501,7 +502,7 @@ public class STIRVolCorrAnalysis {
 		return mapFC;
 	}
 
-	private static final STIRFutureComponent CreateSTIR (
+	private static final FixFloatComponent CreateSTIR (
 		final JulianDate dtEffective,
 		final String strTenor,
 		final ForwardLabel fri,
@@ -559,7 +560,7 @@ public class STIRVolCorrAnalysis {
 			lsFixedPeriods
 		);
 
-		STIRFutureComponent stir = new STIRFutureComponent (fixStream, floatStream);
+		FixFloatComponent stir = new FixFloatComponent (fixStream, floatStream);
 
 		stir.setPrimaryCode ("STIR." + dtMaturity.toString() + "." + strCurrency);
 
@@ -567,46 +568,33 @@ public class STIRVolCorrAnalysis {
 	}
 
 	private static final double RunWithVolCorrSurface (
-		final STIRFutureComponent stir,
+		final FixFloatComponent stir,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
-		final ForwardLabel fri,
 		final double dblBaselineSwapRate,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
+		final double dblForwardVolatility,
+		final double dblFundingVolatility,
+		final double dblForwardFundingCorr)
 		throws Exception
 	{
-		JulianDate dtEffective = stir.effective();
+		ForwardLabel fri = stir.forwardLabel()[0];
 
-		String strComponentName = stir.name();
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard (strComponentName + "SwapRateVolatility"),
-			dtEffective,
-			new FlatUnivariate (dblFRIVol)
-		);
+		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblForwardVolatility));
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard (strComponentName + "SwapRateExchangeVolatility"),
-			dtEffective,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-		);
+		mktParams.setFundingCurveVolSurface (fundingLabel, new FlatUnivariate (dblFundingVolatility));
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard (strComponentName + "SwapRateToSwapRateExchangeCorrelation"),
-			dtEffective,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
-		);
+		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblForwardFundingCorr));
 
 		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
 
-		double dblSwapRate = mapSTIROutput.get ("QuantoAdjustedSwapRate");
+		double dblSwapRate = mapSTIROutput.get ("FairPremium");
 
 		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVolatility, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVolatility, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate, 1, 4, 100.) + "% | " +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate - dblBaselineSwapRate, 1, 0, 10000.));
 
@@ -626,7 +614,7 @@ public class STIRVolCorrAnalysis {
 		String strTenor = "3M";
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -638,16 +626,16 @@ public class STIRVolCorrAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
-		STIRFutureComponent stir = CreateSTIR (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
+		FixFloatComponent stir = CreateSTIR (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
-		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
-		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
+		double[] adblForwardVolatility = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
+		double[] adblFundingVolatility = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
+		double[] adblForwardFundingCorr = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
 
 		System.out.println ("\tPrinting the IRS Output in Order (Left -> Right):");
 
@@ -663,24 +651,24 @@ public class STIRVolCorrAnalysis {
 			stir,
 			valParams,
 			mktParams,
-			fri,
 			0.,
 			0.,
 			0.,
-			0.);
+			0.
+		);
 
-		for (double dblSigmaFwd : adblSigmaFwd) {
-			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
+		for (double dblForwardVolatility : adblForwardVolatility) {
+			for (double dblFundingVolatility : adblFundingVolatility) {
+				for (double dblForwardFundingCorr : adblForwardFundingCorr)
 					RunWithVolCorrSurface (
 						stir,
 						valParams,
 						mktParams,
-						fri,
 						dblBaselineSwapRate,
-						dblSigmaFwd,
-						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX);
+						dblForwardVolatility,
+						dblFundingVolatility,
+						dblForwardFundingCorr
+					);
 			}
 		}
 	}

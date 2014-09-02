@@ -194,7 +194,8 @@ public class CrossFixedPlainFloat {
 			true,
 			"USD",
 			"2Y",
-			3);
+			3
+		);
 
 		FixFloatComponent fixNonMTMFloat = MakeFixFloatSwap (
 			dtToday,
@@ -203,7 +204,8 @@ public class CrossFixedPlainFloat {
 			false,
 			"USD",
 			"2Y",
-			3);
+			3
+		);
 
 		FXLabel fxLabel = FXLabel.Standard (cp);
 
@@ -226,6 +228,8 @@ public class CrossFixedPlainFloat {
 		mktParams.setFundingCurve (dcEURCollatDomestic);
 
 		mktParams.setFXCurve (fxLabel, new FlatUnivariate (dblUSDEURFXRate));
+
+		mktParams.setFixing (dtToday, fxLabel, dblUSDEURFXRate);
 
 		mktParams.setFundingCurveVolSurface (fundingLabelEUR, new FlatUnivariate (dblEURFundingVol));
 

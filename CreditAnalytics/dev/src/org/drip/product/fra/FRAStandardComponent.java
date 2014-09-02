@@ -407,15 +407,14 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 			dblParForward = csqs.available (_dtMaturity, _fri) ? csqs.getFixing (_dtMaturity, _fri) :
 				fc.forward (_dtMaturity);
 
-			org.drip.analytics.date.JulianDate dtEffective = effective();
+			org.drip.state.identifier.FundingLabel fundingLabel =
+				org.drip.state.identifier.FundingLabel.Standard (_strCurrency);
 
-			double dblMultiplicativeQuantoAdjustment = java.lang.Math.exp (-1. *
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs.forwardCurveVolSurface
-					(_fri), csqs.customMetricVolSurface (org.drip.state.identifier.CustomMetricLabel.Standard
-						("ForwardToDomesticExchangeVolatility"), dtEffective), csqs.customMetricVolSurface
-							(org.drip.state.identifier.CustomMetricLabel.Standard
-								("FRIForwardToDomesticExchangeCorrelation"), dtEffective), dblValueDate,
-									_dblEffectiveDate));
+			double dblMultiplicativeQuantoAdjustment = java.lang.Math.exp
+				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
+					(csqs.forwardCurveVolSurface (_fri), csqs.fundingCurveVolSurface (fundingLabel),
+						csqs.forwardFundingCorrSurface (_fri, fundingLabel), dblValueDate,
+							_dblEffectiveDate));
 
 			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffectiveDate,
 				dblMaturity, _strDayCount, false, dblMaturity, null, _strCalendar);

@@ -40,12 +40,17 @@ package org.drip.param.market;
 
 public class LatentStateFixingsContainer {
 	private java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFixings = new
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmForwardFixing = new
+			java.util.TreeMap<org.drip.analytics.date.JulianDate,
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+
+	private java.util.Map<org.drip.analytics.date.JulianDate,
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> _mmFXFixing = new
 			java.util.TreeMap<org.drip.analytics.date.JulianDate,
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
 
 	/**
-	 * A do nothing LatentStateFixingsContainer Instance Constructor
+	 * Empty LatentStateFixingsContainer Instance Constructor
 	 */
 
 	public LatentStateFixingsContainer()
@@ -56,7 +61,7 @@ public class LatentStateFixingsContainer {
 	 * Add the Fixing corresponding to the Date/Label Pair
 	 * 
 	 * @param dt The Fixing Date
-	 * @param lsl The Fixing Label
+	 * @param lsl The Latent State Label
 	 * @param dblFixing The Fixing Amount
 	 * 
 	 * @return TRUE => Entry successfully added
@@ -69,22 +74,40 @@ public class LatentStateFixingsContainer {
 	{
 		if (null == dt || null == lsl || !org.drip.quant.common.NumberUtil.IsValid (dblFixing)) return false;
 
-		if (!_mmFixings.containsKey (dt))
-			_mmFixings.put (dt, new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
+		if (lsl instanceof org.drip.state.identifier.ForwardLabel) {
+			if (!_mmForwardFixing.containsKey (dt))
+				_mmForwardFixing.put (dt, new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapLSLFixing = _mmFixings.get
-			(dt);
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapForwardFixing =
+				_mmForwardFixing.get (dt);
 
-		mapLSLFixing.put (lsl.fullyQualifiedName(), dblFixing);
+			mapForwardFixing.put (lsl.fullyQualifiedName(), dblFixing);
 
-		return true;
+			return true;
+		}
+
+		if (lsl instanceof org.drip.state.identifier.FXLabel) {
+			if (!_mmFXFixing.containsKey (dt))
+				_mmFXFixing.put (dt, new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
+
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFXFixing = _mmFXFixing.get
+				(dt);
+
+			mapFXFixing.put (lsl.fullyQualifiedName(), dblFixing);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Add the Fixing corresponding to the Date/Label Pair
+	 * Add the Latent State Fixing corresponding to the Date/Label Pair
 	 * 
 	 * @param dblDate The Fixing Date
-	 * @param lsl The Fixing Label
+	 * @param lsl The Latent State Fixing Label
 	 * @param dblFixing The Fixing Amount
 	 * 
 	 * @return TRUE => Entry successfully added
@@ -105,10 +128,10 @@ public class LatentStateFixingsContainer {
 	}
 
 	/**
-	 * Remove the Fixing corresponding to the Date/Label Pair it if exists
+	 * Remove the Latent State Fixing corresponding to the Date/Label Pair it if exists
 	 * 
 	 * @param dt The Fixing Date
-	 * @param lsl The Fixing Label
+	 * @param lsl The Latent State Fixing Label
 	 * 
 	 * @return TRUE => Entry successfully removed if it existed
 	 */
@@ -117,19 +140,32 @@ public class LatentStateFixingsContainer {
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
-		if (null == dt || null == lsl || !_mmFixings.containsKey (dt)) return true;
+		if (null == dt || null == lsl) return false;
 
-		_mmFixings.get (dt).remove (lsl.fullyQualifiedName());
+		if (lsl instanceof org.drip.state.identifier.ForwardLabel) {
+			if (!_mmForwardFixing.containsKey (dt)) return true;
 
-		return true;
+			_mmForwardFixing.get (dt).remove (lsl.fullyQualifiedName());
+
+			return true;
+		}
+
+		if (lsl instanceof org.drip.state.identifier.FXLabel) {
+			if (!_mmFXFixing.containsKey (dt)) return true;
+
+			_mmFXFixing.get (dt).remove (lsl.fullyQualifiedName());
+
+			return true;
+		}
+
+		return false;
 	}
 
-
 	/**
-	 * Remove the Fixing corresponding to the Date/Label Pair it if exists
+	 * Remove the Latent State Fixing corresponding to the Date/Label Pair it if exists
 	 * 
 	 * @param dblDate The Fixing Date
-	 * @param lsl The Fixing Label
+	 * @param lsl The Latent State Fixing Label
 	 * 
 	 * @return TRUE => Entry successfully removed if it existed
 	 */
@@ -148,12 +184,12 @@ public class LatentStateFixingsContainer {
 	}
 
 	/**
-	 * Retrieve the Fixing for the Specified Date/LSL Combination
+	 * Retrieve the Latent State Fixing for the Specified Date/LSL Combination
 	 * 
 	 * @param dt Date
-	 * @param lsl The Latent State Label
+	 * @param lsl The Latent State Latent State Label
 	 * 
-	 * @return The Fixing for the Specified Date/LSL Combination
+	 * @return The Latent State Fixing for the Specified Date
 	 * 
 	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
 	 */
@@ -163,27 +199,55 @@ public class LatentStateFixingsContainer {
 		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception
 	{
-		if (null == dt || null == lsl || !_mmFixings.containsKey (dt))
-			throw new java.lang.Exception ("Cannot locate Fixing for the Date/Label Combination!");
+		if (null == dt || null == lsl)
+			throw new java.lang.Exception
+				("LatentStateFixingsContainer::get => Cannot locate Latent State Fixing for the Date");
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapLSLFixing = _mmFixings.get
-			(dt);
+		if (lsl instanceof org.drip.state.identifier.ForwardLabel) {
+			if (!_mmForwardFixing.containsKey (dt))
+				throw new java.lang.Exception
+					("LatentStateFixingsContainer::get => Cannot locate Forward Fixing for the Date");
 
-		java.lang.String strLabel = lsl.fullyQualifiedName();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapForwardFixing =
+				_mmForwardFixing.get (dt);
 
-		if (!mapLSLFixing.containsKey (strLabel))
-			throw new java.lang.Exception ("Cannot locate the LSL Entry for the Date!");
+			java.lang.String strLabel = lsl.fullyQualifiedName();
 
-		return mapLSLFixing.get (strLabel);
+			if (!mapForwardFixing.containsKey (strLabel))
+				throw new java.lang.Exception
+					("LatentStateFixingsContainer::get => Cannot locate the Forward Label Entry for the Date!");
+
+			return mapForwardFixing.get (strLabel);
+		}
+
+		if (lsl instanceof org.drip.state.identifier.FXLabel) {
+			if (!_mmFXFixing.containsKey (dt))
+				throw new java.lang.Exception
+					("LatentStateFixingsContainer::get => Cannot locate FX Fixing for the Date");
+
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFXFixing = _mmFXFixing.get
+				(dt);
+
+			java.lang.String strLabel = lsl.fullyQualifiedName();
+
+			if (!mapFXFixing.containsKey (strLabel))
+				throw new java.lang.Exception
+					("LatentStateFixingsContainer::get => Cannot locate the FX Label Entry for the Date!");
+
+			return mapFXFixing.get (strLabel);
+		}
+
+		throw new java.lang.Exception
+			("LatentStateFixingsContainer::get => No Fixings available for the Latent State");
 	}
 
 	/**
-	 * Retrieve the Fixing for the Specified Date/LSL Combination
+	 * Retrieve the Latent State Fixing for the Specified Date
 	 * 
 	 * @param dblDate Date
 	 * @param lsl The Latent State Label
 	 * 
-	 * @return The Fixing for the Specified Date/LSL Combination
+	 * @return The Fixing for the Specified Date
 	 * 
 	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
 	 */
@@ -197,7 +261,7 @@ public class LatentStateFixingsContainer {
 	}
 
 	/**
-	 * Indicates the Availability of the Fixing for the Specified LSL Label on the specified Date
+	 * Indicate the Availability of the Fixing for the Specified LSL Label on the specified Date
 	 * 
 	 * @param dt The Date
 	 * @param lsl The Label
@@ -209,13 +273,25 @@ public class LatentStateFixingsContainer {
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
-		if (null == dt || null == lsl || !_mmFixings.containsKey (dt)) return false;
+		if (null == dt || null == lsl) return false;
 
-		return _mmFixings.get (dt).containsKey (lsl.fullyQualifiedName());
+		if (lsl instanceof org.drip.state.identifier.ForwardLabel) {
+			if (!_mmForwardFixing.containsKey (dt)) return false;
+
+			return _mmForwardFixing.get (dt).containsKey (lsl.fullyQualifiedName());
+		}
+
+		if (lsl instanceof org.drip.state.identifier.FXLabel) {
+			if (!_mmFXFixing.containsKey (dt)) return false;
+
+			return _mmFXFixing.get (dt).containsKey (lsl.fullyQualifiedName());
+		}
+
+		return false;
 	}
 
 	/**
-	 * Indicates the Availability of the Fixing for the Specified LSL on the specified Date
+	 * Indicate the Availability of the Fixing for the Specified LSL on the specified Date
 	 * 
 	 * @param dblDate The Date
 	 * @param lsl The Label

@@ -4,7 +4,6 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.output.CouponPeriodMetrics;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodHelper;
@@ -561,18 +560,21 @@ public class OvernightArithmeticCompoundingConvexity {
 			FormatUtil.FormatDouble (dblUSDFundingUSDOISCorrelation, 2, 0, 100.) + "%] = ";
 
 		for (int i = 0; i < aFloatStream.length; ++i) {
-			CouponPeriodMetrics pcm = aFloatStream[i].coupon (
-				dblAccrualEndDate,
+			Map<String, Double> mapValue = aFloatStream[i].value (
 				valParams,
-				mktParams
+				null,
+				mktParams,
+				null
 			);
 
 			if (0 != i) strDump += " || ";
 
+			double dblUnadjustedFairPremium = mapValue.get ("UnadjustedFairPremium");
+
 			strDump +=
-				FormatUtil.FormatDouble (pcm.nominalAccrualRate(), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (pcm.convexityAdjustedAccrualRate(), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (pcm.convexityAdjustment(), 1, 2, 10000.);
+				FormatUtil.FormatDouble (dblUnadjustedFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (mapValue.get ("CompoundingAdjustedFairPremium") - dblUnadjustedFairPremium, 1, 3, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapValue.get ("FairPremium") - dblUnadjustedFairPremium, 1, 3, 10000.);
 		}
 
 		System.out.println (strDump);
@@ -659,7 +661,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		System.out.println ("\tOutput Order (RHS) L->R:");
 
-		System.out.println ("\t\tPeriod Coupon (Nominal), Period Coupon Convexity Adjusted, Adjustment (bp)\n");
+		System.out.println ("\t\tUnadjusted Fair Premium, Compounding Fair Premium Adjustment (bp), Convexity Fair Premium Adjustment (bp)\n");
 
 		System.out.println ("\t----------------------------------------------------------------------");
 
@@ -675,7 +677,8 @@ public class OvernightArithmeticCompoundingConvexity {
 						mktParams,
 						dblOISVol,
 						dblUSDFundingVol,
-						dblUSDFundingUSDOISCorrelation);
+						dblUSDFundingUSDOISCorrelation
+					);
 			}
 		}
 	}

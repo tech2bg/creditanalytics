@@ -213,9 +213,9 @@ public class CrossFixedPlainFloatAnalysis {
 			if (0 != i) strDump += " || ";
 
 			strDump +=
-				FormatUtil.FormatDouble (mapOutput.get ("ReferenceQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (mapOutput.get ("DerivedQuantoAdjustmentPremium"), 2, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (mapOutput.get ("QuantoAdjustmentPremium"), 2, 0, 10000.);
+				FormatUtil.FormatDouble (mapOutput.get ("ReferenceConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("DerivedConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("ConvexityAdjustmentPremium"), 2, 0, 10000.);
 		}
 
 		System.out.println (strDump);
@@ -246,19 +246,22 @@ public class CrossFixedPlainFloatAnalysis {
 			dtToday,
 			"USD",
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"),
-			dblUSDCollateralRate);
+			dblUSDCollateralRate
+		);
 
 		DiscountCurve dcEURCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
 			"EUR",
 			new CollateralizationParams ("OVERNIGHT_INDEX", "EUR"),
-			dblEURCollateralRate);
+			dblEURCollateralRate
+		);
 
 		ForwardCurve fc3MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
 			fri3M,
 			dblUSD3MForwardRate,
-			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
+			new CollateralizationParams ("OVERNIGHT_INDEX", "USD")
+		);
 
 		CurrencyPair cp = CurrencyPair.FromCode ("USD/EUR");
 
@@ -269,7 +272,8 @@ public class CrossFixedPlainFloatAnalysis {
 			true,
 			"USD",
 			"2Y",
-			3);
+			3
+		);
 
 		FixFloatComponent fixNonMTMFloat = MakeFixFloatSwap (
 			dtToday,
@@ -278,7 +282,8 @@ public class CrossFixedPlainFloatAnalysis {
 			false,
 			"USD",
 			"2Y",
-			3);
+			3
+		);
 
 		FXLabel fxLabel = FXLabel.Standard (cp);
 
@@ -291,6 +296,8 @@ public class CrossFixedPlainFloatAnalysis {
 		mktParams.setFundingCurve (dcEURCollatDomestic);
 
 		mktParams.setFXCurve (fxLabel, new FlatUnivariate (dblUSDEURFXRate));
+
+		mktParams.setFixing (dtToday, fxLabel, dblUSDEURFXRate);
 
 		double[] adblUSDFundingVol = new double[] {0.1, 0.35, 0.60};
 

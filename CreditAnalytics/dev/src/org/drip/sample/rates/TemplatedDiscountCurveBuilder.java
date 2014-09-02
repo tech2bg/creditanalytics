@@ -449,9 +449,12 @@ public class TemplatedDiscountCurveBuilder {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
-
 		String strCurrency = "EUR";
+
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+			"0D",
+			strCurrency
+		);
 
 		TemplatedDiscountCurveBuilderSample (dtToday, strCurrency);
 	}

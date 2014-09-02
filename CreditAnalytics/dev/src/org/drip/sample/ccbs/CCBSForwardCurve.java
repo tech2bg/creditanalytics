@@ -204,7 +204,8 @@ public class CCBSForwardCurve {
 			strDerivedCurrency,
 			CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency),
 			astrTenor,
-			3);
+			3
+		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
@@ -218,9 +219,17 @@ public class CCBSForwardCurve {
 
 		mktParams.setForwardCurve (fc6MDerived);
 
-		mktParams.setFXCurve (FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency)), new FlatUnivariate (dblRefDerFX));
+		FXLabel fxLabelBase = FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency));
 
-		mktParams.setFXCurve (FXLabel.Standard (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency)), new FlatUnivariate (1. / dblRefDerFX));
+		FXLabel fxLabelInverse = FXLabel.Standard (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency));
+
+		mktParams.setFXCurve (fxLabelBase, new FlatUnivariate (dblRefDerFX));
+
+		mktParams.setFXCurve (fxLabelInverse, new FlatUnivariate (1. / dblRefDerFX));
+
+		mktParams.setFixing (aCCSP[0].effective(), fxLabelBase, dblRefDerFX);
+
+		mktParams.setFixing (aCCSP[0].effective(), fxLabelInverse, 1. / dblRefDerFX);
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 

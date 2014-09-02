@@ -549,9 +549,12 @@ public class FedFundOvernightCompounding {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
-
 		String strCurrency = "USD";
+
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+			"0D",
+			strCurrency
+		);
 
 		DiscountCurve dc = CustomOISCurveBuilderSample (
 			dtToday,
@@ -692,7 +695,7 @@ public class FedFundOvernightCompounding {
 			mktParams
 		);
 
-		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.convexityAdjustedAccrualRate());
+		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.nominalAccrualRate());
 
 		double dblOISVol = 0.3;
 		double dblUSDFundingVol = 0.3;
@@ -709,7 +712,7 @@ public class FedFundOvernightCompounding {
 				period.endDate(),
 				valParams,
 				mktParams
-			).convexityAdjustedAccrualRate()
+			).nominalAccrualRate()
 		);
 	}
 }

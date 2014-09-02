@@ -507,31 +507,28 @@ public class FRAStdCapFloorVolAnalysis {
 		final FloatingStream floatstream,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
+		final double dblForwardVol,
+		final double dblFundingVol,
+		final double dblForwardFundingCorr)
 		throws Exception
 	{
-		for (org.drip.analytics.period.CouponPeriod period : floatstream.cashFlowPeriod()) {
-			JulianDate dtFRADate = new JulianDate (period.startDate());
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
-			mktParams.setForwardCurveVolSurface (
-				fri,
-				new FlatUnivariate (dblFRIVol)
-			);
+		mktParams.setForwardCurveVolSurface (
+			fri,
+			new FlatUnivariate (dblForwardVol)
+		);
 
-			mktParams.setCustomMetricVolSurface (
-				CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-				dtFRADate,
-				new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-			);
+		mktParams.setFundingCurveVolSurface (
+			fundingLabel,
+			new FlatUnivariate (dblFundingVol)
+		);
 
-			mktParams.setCustomMetricVolSurface (
-				CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-				dtFRADate,
-				new FlatUnivariate (dblFRIQuantoExchangeCorr)
-			);
-		}
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabel,
+			new FlatUnivariate (dblForwardFundingCorr)
+		);
 	}
 
 	public static final void main (

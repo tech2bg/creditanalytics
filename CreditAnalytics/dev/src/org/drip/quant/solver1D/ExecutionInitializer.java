@@ -127,9 +127,9 @@ public class ExecutionInitializer {
 		double dblBracketRight = dblVariate + dblBracketWidth;
 
 		while (0 <= iNumExpansionsCurrent--) {
-			if (null != (sv = validateVariate (dblBracketLeft, bop))) return sv;
-
 			if (null != (sv = validateVariate (dblBracketRight, bop))) return sv;
+
+			if (null != (sv = validateVariate (dblBracketLeft, bop))) return sv;
 
 			dblBracketWidth *= dblBracketWidthExpansionFactor;
 			dblBracketLeft = dblVariate - dblBracketWidth;

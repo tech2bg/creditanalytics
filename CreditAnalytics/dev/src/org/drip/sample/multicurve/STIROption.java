@@ -388,7 +388,8 @@ public class STIROption {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 	}
 
 	private static final Map<String, ForwardCurve> MakeFC (
@@ -501,7 +502,7 @@ public class STIROption {
 		return mapFC;
 	}
 
-	private static final STIRFutureComponent CreateSTIR (
+	private static final FixFloatComponent CreateSTIR (
 		final JulianDate dtEffective,
 		final String strTenor,
 		final ForwardLabel fri,
@@ -559,7 +560,7 @@ public class STIROption {
 			lsFixedPeriods
 		);
 
-		STIRFutureComponent stir = new STIRFutureComponent (fixStream, floatStream);
+		FixFloatComponent stir = new FixFloatComponent (fixStream, floatStream);
 
 		stir.setPrimaryCode ("STIR." + dtMaturity.toString() + "." + strCurrency);
 
@@ -578,12 +579,12 @@ public class STIROption {
 
 		String strTenor = "3M";
 		String strCurrency = "EUR";
-		String strManifestMeasure = "QuantoAdjustedSwapRate";
-		double dblFRIVol = 0.3;
-		double dblMultiplicativeQuantoExchangeVol = 0.1;
-		double dblFRIQuantoExchangeCorr = 0.2;
+		String strManifestMeasure = "SwapRate";
+		double dblForwardVolatility = 0.3;
+		double dblFundingVolatility = 0.1;
+		double dblForwardFundingCorr = 0.2;
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -597,43 +598,34 @@ public class STIROption {
 
 		JulianDate dtForward = dtToday.addTenor (strTenor);
 
-		STIRFutureComponent stir = CreateSTIR (dtForward, "5Y", fri, 0.05, strCurrency);
+		FixFloatComponent stir = CreateSTIR (dtForward, "5Y", fri, 0.05, strCurrency);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard (stir.name() + "SwapRateVolatility"),
-			dtForward,
-			new FlatUnivariate (dblFRIVol)
-		);
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard (stir.name() + "SwapRateExchangeVolatility"),
-			dtForward,
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
-		);
+		mktParams.setFundingCurveVolSurface (fundingLabel, new FlatUnivariate (dblFundingVolatility));
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard (stir.name() + "SwapRateToSwapRateExchangeCorrelation"),
-			dtForward,
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
-		);
+		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblForwardVolatility));
+
+		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblForwardFundingCorr));
 
 		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
 
 		double dblStrike = 1.01 * mapSTIROutput.get (strManifestMeasure);
 
-		STIRPayerReceiverOption stirReceiver = new STIRPayerReceiverOption (
+		FixFloatPayerReceiverOption stirReceiver = new FixFloatPayerReceiverOption (
 			stir,
 			strManifestMeasure,
 			true,
 			dblStrike,
 			1.,
 			strCurrency,
-			strCurrency);
+			strCurrency
+		);
 
 		Map<String, Double> mapSTIRReceiverOutput = stirReceiver.value (valParams, null, mktParams, null);
 
@@ -644,14 +636,15 @@ public class STIROption {
 
 		System.out.println ("------------------------------------------------------------------\n");
 
-		STIRPayerReceiverOption stirPayer = new STIRPayerReceiverOption (
+		FixFloatPayerReceiverOption stirPayer = new FixFloatPayerReceiverOption (
 			stir,
 			strManifestMeasure,
 			false,
 			dblStrike,
 			1.,
 			strCurrency,
-			strCurrency);
+			strCurrency
+		);
 
 		Map<String, Double> mapSTIRPayerOutput = stirPayer.value (valParams, null, mktParams, null);
 

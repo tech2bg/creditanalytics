@@ -856,7 +856,8 @@ public class OISProduct {
 			System.out.println ("\t" +
 				FormatUtil.FormatDouble (dblIndexMeasure, 1, 8, 1.) + " | " +
 				FormatUtil.FormatDouble (dblFundMeasure, 1, 8, 1.) + " | " +
-				strReconcile + " <= " + strKey);
+				strReconcile + " <= " + strKey
+			);
 		}
 	}
 }

@@ -507,34 +507,35 @@ public class FRAStdVolAnalysis {
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
-		final double dblFRIVol,
-		final double dblMultiplicativeQuantoExchangeVol,
-		final double dblFRIQuantoExchangeCorr)
+		final double dblForwardVol,
+		final double dblFundingVol,
+		final double dblForwardFundingCorr)
 		throws Exception
 	{
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
+
 		mktParams.setForwardCurveVolSurface (
 			fri,
-			new FlatUnivariate (dblFRIVol)
+			new FlatUnivariate (dblForwardVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("ForwardToDomesticExchangeVolatility"),
-			fra.effective(),
-			new FlatUnivariate (dblMultiplicativeQuantoExchangeVol)
+		mktParams.setFundingCurveVolSurface (
+			fundingLabel,
+			new FlatUnivariate (dblFundingVol)
 		);
 
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard ("FRIForwardToDomesticExchangeCorrelation"),
-			fra.effective(),
-			new FlatUnivariate (dblFRIQuantoExchangeCorr)
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabel,
+			new FlatUnivariate (dblForwardFundingCorr)
 		);
 
 		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
 
 		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblMultiplicativeQuantoExchangeVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFRIQuantoExchangeCorr, 2, 0, 100.) + "%] =" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("ParForward"), 1, 4, 100.) + "% |" +
 			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("QuantoAdjustedParForward"), 1, 4, 100.) + "% |" +
 			org.drip.quant.common.FormatUtil.FormatDouble (mapFRAOutput.get ("MultiplicativeQuantoAdjustment"), 1, 4, 1.) + " | " +
