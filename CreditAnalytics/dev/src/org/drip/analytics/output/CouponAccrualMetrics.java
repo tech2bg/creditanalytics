@@ -38,9 +38,8 @@ public class CouponAccrualMetrics {
 	private double _dblFX = 1.;
 	private int _iAccrualCompoundingRule = -1;
 	private double _dblEndDate = java.lang.Double.NaN;
+	private double _dblNotional = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
-	private double _dblNotionalFactor = java.lang.Double.NaN;
-	private double _dblCurrentResetDate = java.lang.Double.NaN;
 	private java.util.List<org.drip.analytics.output.ResetPeriodMetrics> _lsRPM = null;
 
 	/**
@@ -49,8 +48,9 @@ public class CouponAccrualMetrics {
 	 * @param dblStartDate Coupon Period Start Date
 	 * @param dblEndDate Coupon Period End Date
 	 * @param dblFX The Coupon Period FX Rate
-	 * @param dblNotionalFactor Period Annuity Notional Factor
+	 * @param dblNotional Period Notional
 	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
+	 * @param lsRPM List of Reset Period Metrics
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -59,18 +59,18 @@ public class CouponAccrualMetrics {
 		final double dblStartDate,
 		final double dblEndDate,
 		final double dblFX,
-		final double dblNotionalFactor,
-		final int iAccrualCompoundingRule)
+		final double dblNotional,
+		final int iAccrualCompoundingRule,
+		final java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
 				!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblNotionalFactor = dblNotionalFactor) ||
-						(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC
-							!= (_iAccrualCompoundingRule = iAccrualCompoundingRule) &&
-								org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-			!= _iAccrualCompoundingRule))
+					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
+						!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule
+							(_iAccrualCompoundingRule = iAccrualCompoundingRule) || null == (_lsRPM = lsRPM)
+								|| 0 == _lsRPM.size())
 			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
 	}
 
@@ -108,14 +108,14 @@ public class CouponAccrualMetrics {
 	}
 
 	/**
-	 * Retrieve the Period Notional Factor
+	 * Retrieve the Period Notional
 	 * 
-	 * @return The Period Notional Factor
+	 * @return The Period Notional
 	 */
 
-	public double notionalFactor()
+	public double notional()
 	{
-		return _dblNotionalFactor;
+		return _dblNotional;
 	}
 
 	/**
@@ -130,27 +130,27 @@ public class CouponAccrualMetrics {
 	}
 
 	/**
-	 * Retrieve the Nominal Accrual Rate in the Coupon Currency
+	 * Retrieve the Compounded Accrual Rate in the Coupon Currency
 	 * 
-	 * @return The Nominal Accrual Rate in the Coupon Currency
+	 * @return The Compounded Accrual Rate in the Coupon Currency
 	 * 
-	 * @throws java.lang.Exception Thrown if the Nominal Accrual Rate cannot be calculated
+	 * @throws java.lang.Exception Thrown if the Compounded Accrual Rate cannot be calculated
 	 */
 
-	public double nominalAccrualRate()
+	public double compoundedAccrualRate()
 		throws java.lang.Exception
 	{
 		if (null == _lsRPM || 0 == _lsRPM.size())
 			throw new java.lang.Exception
-				("CouponPeriodMetrics::nominalAccrualRate => No Reset Period Metrics available!");
+				("CouponPeriodMetrics::compoundedAccrualRate => No Reset Period Metrics available!");
 
 		double dblCumulativeDCF = 0.;
 		double dblCumulativeNominalRate = java.lang.Double.NaN;
 
-		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate = 0.;
-		else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate = 1.;
 
@@ -159,15 +159,15 @@ public class CouponAccrualMetrics {
 
 			dblCumulativeDCF += dblDCF;
 
-			if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule)
 				dblCumulativeNominalRate += rpm.nominalRate() * dblDCF;
-			else if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule)
 				dblCumulativeNominalRate *= (1. + rpm.nominalRate() * dblDCF);
 		}
 
-		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate -= 1.;
 
@@ -197,27 +197,6 @@ public class CouponAccrualMetrics {
 	}
 
 	/**
-	 * Compound the supplied PCM
-	 * 
-	 * @param pcmOther The "Other" PCM
-	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
-	 * 
-	 * @return TRUE => The "Other" PCM has been successfully compounded to the current one
-	 */
-
-	public boolean addResetPeriodMetrics (
-		final org.drip.analytics.output.ResetPeriodMetrics rpm)
-	{
-		if (null == rpm) return false;
-
-		if (null == _lsRPM) _lsRPM = new java.util.ArrayList<org.drip.analytics.output.ResetPeriodMetrics>();
-
-		_lsRPM.add (rpm);
-
-		return true;
-	}
-
-	/**
 	 * Retrieve the Constituent Reset Period Metrics
 	 * 
 	 * @return The Constituent Reset Period Metrics
@@ -229,30 +208,80 @@ public class CouponAccrualMetrics {
 	}
 
 	/**
-	 * Set the Current Reset Date
+	 * Retrieve the Fixing Date for the Outstanding Valuation Period
 	 * 
-	 * @param dblCurrentResetDate The Current Reset Date
-	 * 
-	 * @return TRUE => The Current Reset Date set
+	 * @return The Fixing Date for the Outstanding Valuation Period
 	 */
-
-	public boolean setCurrentResetDate (
-		final double dblCurrentResetDate)
+	
+	public double outstandingFixingDate()
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblCurrentResetDate)) return false;
-
-		_dblCurrentResetDate = dblCurrentResetDate;
-		return true;
+		return _lsRPM.get (_lsRPM.size() - 1).fixing();
 	}
 
 	/**
-	 * Retrieve the Current Reset Date
+	 * Retrieve the Fixing Rate for the Outstanding Valuation Period
 	 * 
-	 * @return The Current Reset Date
+	 * @return The Fixing Rate for the Outstanding Valuation Period
 	 */
 	
-	public double currentResetDate()
+	public double outstandingFixingRate()
 	{
-		return _dblCurrentResetDate;
+		return _lsRPM.get (_lsRPM.size() - 1).nominalRate();
+	}
+
+	/**
+	 * Retrieve the Computed Accrual01
+	 * 
+	 * @return The Computed Accrual01
+	 * 
+	 * @throws java.lang.Exception Thrown if the Computed Accrual cannot be calculated
+	 */
+	
+	public double accrual01()
+		throws java.lang.Exception
+	{
+		return 0.0001 * dcf() * notional() * _dblFX;
+	}
+
+	/**
+	 * Retrieve the Computed Accrued
+	 * 
+	 * @return The Computed Accrued
+	 * 
+	 * @throws java.lang.Exception Thrown if the Accrual DCF cannot be calculated
+	 */
+	
+	public double accrued()
+		throws java.lang.Exception
+	{
+		if (null == _lsRPM || 0 == _lsRPM.size())
+			throw new java.lang.Exception
+				("CouponPeriodMetrics::accrued => No Reset Period Metrics available!");
+
+		double dblCumulativeNominalRate = java.lang.Double.NaN;
+
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeNominalRate = 0.;
+		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeNominalRate = 1.;
+
+		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+			double dblDCF = rpm.dcf();
+
+			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeNominalRate += rpm.nominalRate() * dblDCF;
+			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				dblCumulativeNominalRate *= (1. + rpm.nominalRate() * dblDCF);
+		}
+
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCumulativeNominalRate -= 1.;
+
+		return dblCumulativeNominalRate;
 	}
 }

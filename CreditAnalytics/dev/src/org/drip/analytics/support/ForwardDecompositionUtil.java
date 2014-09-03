@@ -67,7 +67,7 @@ public class ForwardDecompositionUtil {
 		org.drip.product.cashflow.FixedStream[] aFS = new org.drip.product.cashflow.FixedStream[iNumForward];
 
 		try {
-			dblCoupon = fs.coupon (fs.effective().julian(), null, null).nominalAccrualRate();
+			dblCoupon = fs.coupon (fs.effective().julian(), null, null).compoundedAccrualRate();
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

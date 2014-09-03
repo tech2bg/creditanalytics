@@ -527,7 +527,7 @@ public class RatesClosesLoader {
 		org.drip.product.rates.FixFloatComponent irs = (org.drip.product.rates.FixFloatComponent) comp;
 
 		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null,
-			null).nominalAccrualRate();
+			null).compoundedAccrualRate();
 
 		boolean bApplyFixedCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFixedDC.get (strCurrency));
 
@@ -543,7 +543,7 @@ public class RatesClosesLoader {
 
 		double dblProductFloatingRate = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
-				null, null, null, null)).nominalAccrualRate();
+				null, null, null, null)).compoundedAccrualRate();
 
 		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.julian(),
 			irs.forwardLabel()[0].tenor());
@@ -588,7 +588,7 @@ public class RatesClosesLoader {
 
 		double dblFloatingRateUsed = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null, null, null,
-				null, lsfc)).nominalAccrualRate();
+				null, lsfc)).compoundedAccrualRate();
 
 		double dblCleanFloatDV01WithFixing = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01",
 			strCurrency, lsfc);

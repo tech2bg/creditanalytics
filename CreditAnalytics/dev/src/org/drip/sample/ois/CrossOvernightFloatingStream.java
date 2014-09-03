@@ -6,9 +6,8 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.period.CouponPeriod;
-import org.drip.analytics.period.ResetPeriodContainer;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
@@ -189,7 +188,7 @@ public class CrossOvernightFloatingStream {
 				strCurrency,
 				strCurrency,
 				strCurrency,
-				ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+				ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
 			);
@@ -486,7 +485,7 @@ public class CrossOvernightFloatingStream {
 			false,
 			strCurrency,
 			strCurrency,
-			ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);
@@ -512,7 +511,7 @@ public class CrossOvernightFloatingStream {
 			false,
 			strCurrency,
 			strCurrency,
-			ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);

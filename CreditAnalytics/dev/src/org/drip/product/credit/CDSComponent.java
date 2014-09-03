@@ -689,13 +689,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			double dblPeriodStartDate = period.startDate();
 
-			org.drip.analytics.output.CouponPeriodMetrics cpm = new
-				org.drip.analytics.output.CouponPeriodMetrics (dblPeriodStartDate, dblPeriodEndDate, 1., 1.,
-					1., notional (dblPeriodEndDate),
-						org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+			java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM = new
+				java.util.ArrayList<org.drip.analytics.output.ResetPeriodMetrics>();
 
-			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics
-				(dblPeriodStartDate, period.endDate(), java.lang.Double.NaN, _dblCoupon, 1.)) ? cpm : null;
+			lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (dblPeriodStartDate,
+				dblPeriodEndDate, dblPeriodStartDate, _dblCoupon, 1.));
+
+			return org.drip.analytics.output.CouponPeriodMetrics.Create (dblPeriodStartDate,
+				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
+					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
+						1., null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1067,7 +1070,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 								if (null == pcm) return null;
 
-								adblRestorableCDSCoupon[i] = pcm.nominalAccrualRate();
+								adblRestorableCDSCoupon[i] = pcm.compoundedAccrualRate();
 
 								((org.drip.product.definition.CreditDefaultSwap) aComp[i]).resetCoupon
 									(dblFixCoupon);

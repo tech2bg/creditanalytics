@@ -452,12 +452,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 
 	public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
-		if (null == _fxmtm) return null;
-
-		org.drip.product.params.CurrencyPair cp = _fxmtm.currencyPair();
-
-		return null == cp ? null : new org.drip.state.identifier.FXLabel[]
-			{org.drip.state.identifier.FXLabel.Standard (cp.code())};
+		return new org.drip.state.identifier.FXLabel[] {_lsCouponPeriod.get (0).fxLabel()};
 	}
 
 	public org.drip.analytics.date.JulianDate effective()

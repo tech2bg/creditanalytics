@@ -29,7 +29,6 @@ package org.drip.analytics.support;
  */
 
 /**
- * 
  * PeriodHelper exposes several period construction functionality.
  * 
  * @author Lakshmi Krishnamurthy
@@ -366,9 +365,9 @@ public class PeriodHelper {
 								dblAccrualEndDate), strCalendar);
 
 				if (null != forwardLabel&& !(rpc = new org.drip.analytics.period.ResetPeriodContainer
-					(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
-						(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
-							DAPAdjust (dblPeriodStartDate, dapReset))))
+					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
+					(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
+						DAPAdjust (dblPeriodStartDate, dapReset))))
 					return null;
 
 				if (dblAdjustedStartDate < dblAdjustedEndDate && dblAccrualStartDate < dblAccrualEndDate)
@@ -507,9 +506,9 @@ public class PeriodHelper {
 									dblAccrualEnd), strCalendar);
 
 					if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
-						(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
-							(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate,
-								dblAdjustedEndDate, DAPAdjust (dblPeriodStartDate, dapReset))))
+						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
+						(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
+							DAPAdjust (dblPeriodStartDate, dapReset))))
 						return null;
 
 					lsCashflowPeriod.add (periodPenultimate = new org.drip.analytics.period.CouponPeriod
@@ -529,9 +528,9 @@ public class PeriodHelper {
 									dblPeriodEndDate), strCalendar);
 
 					if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
-						(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
-							(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate,
-								dblPeriodEndDate, DAPAdjust (dblPeriodStartDate, dapReset))))
+						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
+						(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblPeriodEndDate,
+							DAPAdjust (dblPeriodStartDate, dapReset))))
 						return null;
 
 					lsCashflowPeriod.add (periodFinal = new org.drip.analytics.period.CouponPeriod
@@ -671,9 +670,9 @@ public class PeriodHelper {
 				org.drip.analytics.period.ResetPeriodContainer rpc = null;
 
 				if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
-					(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
-						(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
-							DAPAdjust (dblPeriodStartDate, dapReset))))
+					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
+					(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
+						DAPAdjust (dblPeriodStartDate, dapReset))))
 					return null;
 
 				double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
@@ -1021,8 +1020,8 @@ public class PeriodHelper {
 			org.drip.analytics.period.ResetPeriodContainer rpc = null;
 
 			if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
-				(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
-				(new org.drip.analytics.period.ResetPeriod (dblEffective, dblMaturity, dblEffective)))
+				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC)).appendResetPeriod
+					(new org.drip.analytics.period.ResetPeriod (dblEffective, dblMaturity, dblEffective)))
 				return null;
 
 			lsCashflowPeriod.add (0, new org.drip.analytics.period.CouponPeriod (dblEffective, dblMaturity,
@@ -1102,7 +1101,7 @@ public class PeriodHelper {
 
 				if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
 					(iAccrualCompoundingRule)).appendResetPeriod (new org.drip.analytics.period.ResetPeriod
-						(dblEffective, dblMaturity, dblEffective)))
+						(dblAdjustedStartDate, dblAdjustedEndDate, dblAdjustedStartDate)))
 					return null;
 
 				if (dblAdjustedStartDate < dblAdjustedEndDate)

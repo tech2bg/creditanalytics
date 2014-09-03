@@ -7,9 +7,8 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.output.CouponPeriodMetrics;
 import org.drip.analytics.period.CouponPeriod;
-import org.drip.analytics.period.ResetPeriodContainer;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
@@ -579,7 +578,7 @@ public class FedFundOvernightCompounding {
 			false,
 			strCurrency,
 			strCurrency,
-			ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);
@@ -605,7 +604,7 @@ public class FedFundOvernightCompounding {
 			false,
 			strCurrency,
 			strCurrency,
-			ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);
@@ -695,7 +694,7 @@ public class FedFundOvernightCompounding {
 			mktParams
 		);
 
-		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.nominalAccrualRate());
+		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.compoundedAccrualRate());
 
 		double dblOISVol = 0.3;
 		double dblUSDFundingVol = 0.3;
@@ -712,7 +711,7 @@ public class FedFundOvernightCompounding {
 				period.endDate(),
 				valParams,
 				mktParams
-			).nominalAccrualRate()
+			).compoundedAccrualRate()
 		);
 	}
 }

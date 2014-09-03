@@ -203,7 +203,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 							dblResetPeriodEndDate, _strCouponDC, _bApplyAccEOMAdj, _dblTerminalDate, null,
 								_strCalendar));
 
-			if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_rpc.accrualCompoundingRule() && !rpm.setConvAdj (calcConvexityAdjustment (dblValueDate,
 					dblResetPeriodStartDate, csqs)))
 				return null;
@@ -633,6 +633,37 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
+	 * Coupon Period FX
+	 * 
+	 * @param csqs Market Parameters
+	 * 
+	 * @return The Period FX
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double fx (
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
+
+		if (null == fxLabel) return 1.;
+
+		if (null == csqs) throw new java.lang.Exception ("CouponPeriod::fx => Invalid Inputs");
+
+		if (!isFXMTM()) return csqs.getFixing (_dblFXFixingDate, fxLabel);
+
+		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
+
+		if (null == auFX)
+			throw new java.lang.Exception ("CouponPeriod::fx => No FX Curve for " +
+				fxLabel.fullyQualifiedName());
+
+		return auFX.evaluate (_dblPayDate);
+	}
+
+	/**
 	 * Is this Cash Flow FX MTM'ed?
 	 * 
 	 * @return TRUE => FX MTM is on (i.e., FX is not driven by fixing)
@@ -1034,10 +1065,10 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Coupon::notional => Invalid Dates");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
+			throw new java.lang.Exception ("CouponPeriod::notional => Invalid Inputs");
 
-		return null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate);
+		return _dblNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate));
 	}
 
 	/**
@@ -1057,7 +1088,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		throws java.lang.Exception
 	{
 		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate2) || !contains (dblDate1) || !contains
+				(dblDate2))
 			throw new java.lang.Exception ("Coupon::notional => Invalid Dates");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
@@ -1078,84 +1110,55 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || null == csqs) return null;
 
-		double dblFX = 1.;
-		double dblDF = java.lang.Double.NaN;
-		double dblSurvival = java.lang.Double.NaN;
-		org.drip.analytics.output.CouponPeriodMetrics cpm = null;
-
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
+		double dblDF = 1.;
+		double dblSurvival = 1.;
 
 		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (creditLabel());
 
-		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
+
+		int iAccrualCompoundingRule = null == _rpc ?
+			org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
+				_rpc.accrualCompoundingRule();
+
+		java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM = new
+			java.util.ArrayList<org.drip.analytics.output.ResetPeriodMetrics>();
 
 		try {
-			if (null != fxLabel) {
-				if (isFXMTM()) {
-					org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
-
-					if (null == auFX) return null;
-
-					dblFX = auFX.evaluate (_dblPayDate);
-				} else
-					dblFX = csqs.getFixing (_dblFXFixingDate, fxLabel);
-			}
+			double dblFX = fx (csqs);
 
 			if (null != dcFunding) dblDF = dcFunding.df (_dblPayDate);
 
 			if (null != cc) dblSurvival = cc.survival (_dblPayDate);
+
+			if (null == _forwardLabel) {
+				lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (_dblStartDate, _dblEndDate,
+					java.lang.Double.NaN, _dblFixedCoupon, _dblDCF));
+
+				return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
+					_dblPayDate, notional (_dblEndDate), iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF,
+						dblFX, calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs));
+			}
+
+			for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
+				org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, dblValueDate,
+					csqs);
+
+				if (null == rpm) return null;
+
+				lsRPM.add (rpm);
+			}
+
+			return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
+				_dblPayDate, notional (_dblEndDate), iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF,
+					dblFX, org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+						iAccrualCompoundingRule ? calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs)
+							: null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
-
-			return null;
 		}
 
-		int iAccrualCompoundingRule = null == _rpc ?
-			org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
-				_rpc.accrualCompoundingRule();
-
-		if (null == _forwardLabel) {
-			try {
-				return (cpm = new org.drip.analytics.output.CouponPeriodMetrics (_dblStartDate, _dblEndDate,
-					dblDF, dblSurvival, dblFX, _dblNotional * notional (_dblEndDate),
-						iAccrualCompoundingRule)).addResetPeriodMetrics (new
-							org.drip.analytics.output.ResetPeriodMetrics (_dblStartDate, _dblEndDate,
-								java.lang.Double.NaN, _dblFixedCoupon, _dblDCF)) && cpm.setConvAdj
-									(calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs)) ? cpm :
-										null;
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
-		for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
-			org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, dblValueDate, csqs);
-
-			if (null == cpm) {
-				try {
-					double dblResetEndDate = rp.end();
-
-					cpm = new org.drip.analytics.output.CouponPeriodMetrics (rp.start(), dblResetEndDate,
-						dblDF, dblSurvival, dblFX, _dblNotional * notional (dblResetEndDate),
-							iAccrualCompoundingRule);
-				} catch (java.lang.Exception e) {
-					e.printStackTrace();
-
-					return null;
-				}
-			}
-
-			if (null == rpm || !cpm.addResetPeriodMetrics (rpm)) return null;
-		}
-
-		if (org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			_rpc.accrualCompoundingRule() && !cpm.setConvAdj (calcConvexityAdjustment (dblValueDate,
-				_dblStartDate, csqs)))
-			return null;
-
-		return cpm;
+		return null;
 	}
 
 	/**
@@ -1173,61 +1176,29 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate)) return null;
 
-		try {
-			 if (!contains (dblValueDate) || _dblStartDate == dblValueDate) return null;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		double dblFX = 1.;
-		org.drip.analytics.output.CouponAccrualMetrics cam = null;
-
-		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
-
-		if (null != fxLabel) {
-			if (null == csqs) return null;
-
-			try {
-				if (isFXMTM()) {
-					org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
-
-					if (null == auFX) return null;
-
-					dblFX = auFX.evaluate (_dblPayDate);
-				} else
-					dblFX = csqs.getFixing (_dblFXFixingDate, fxLabel);
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
-			}
-		}
-
 		int iAccrualCompoundingRule = null == _rpc ?
-			org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
+			org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
 				_rpc.accrualCompoundingRule();
 
-		if (null == _forwardLabel) {
-			try {
-				return (cam = new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate,
-					dblValueDate, dblFX, _dblNotional * notional (dblValueDate),
-						iAccrualCompoundingRule)).addResetPeriodMetrics (new
-							org.drip.analytics.output.ResetPeriodMetrics (_dblStartDate, dblValueDate,
-								java.lang.Double.NaN, _dblFixedCoupon,
-									org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate,
-										dblValueDate, _strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate,
-											null, _strCalendar))) ? cam : null;
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
+		java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM = new
+			java.util.ArrayList<org.drip.analytics.output.ResetPeriodMetrics>();
 
-				return null;
+		try {
+			 if (!contains (dblValueDate) || _dblStartDate == dblValueDate) return null;
+
+			 double dblFX = fx (csqs);
+
+			 if (null == _forwardLabel) {
+				lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (_dblStartDate, dblValueDate,
+					java.lang.Double.NaN, _dblFixedCoupon,
+						org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, dblValueDate,
+							_strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate, null, _strCalendar)));
+
+				return new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate, dblValueDate,
+					dblFX, notional (dblValueDate), iAccrualCompoundingRule, lsRPM);
 			}
-		}
 
-		for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
-			try {
+			for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
 				double dblResetPeriodStartDate = rp.start();
 
 				int iNodeLocationIndicator = rp.nodeLocation (dblValueDate);
@@ -1236,30 +1207,28 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 					dblValueDate == dblResetPeriodStartDate)
 					break;
 
-				org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, dblValueDate, csqs);
+				org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, dblValueDate,
+					csqs);
 
 				if (null == rpm) return null;
 
 				if (org.drip.analytics.period.ResetPeriod.NODE_INSIDE_SEGMENT == iNodeLocationIndicator)
-					rpm = new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodStartDate,
+					lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodStartDate,
 						dblValueDate, dblResetPeriodStartDate, rpm.nominalRate(),
 							org.drip.analytics.daycount.Convention.YearFraction (dblResetPeriodStartDate,
 								dblValueDate, _strAccrualDC, _bApplyAccEOMAdj, _dblTerminalDate, null,
-									_strCalendar));
-
-				if (null == cam)
-					cam = new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate, dblValueDate,
-						dblFX, _dblNotional * notional (dblValueDate), iAccrualCompoundingRule);
-
-				if (!cam.addResetPeriodMetrics (rpm)) return null;
-			} catch (java.lang.Exception e) {
-				e.printStackTrace();
-
-				return null;
+									_strCalendar)));
+				else
+					lsRPM.add (rpm);
 			}
+
+			return new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate, dblValueDate, dblFX,
+				notional (dblValueDate), iAccrualCompoundingRule, lsRPM);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 		}
 
-		return cam;
+		return null;
 	}
 
 	@Override public byte[] serialize()

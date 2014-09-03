@@ -367,15 +367,17 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		try {
-			org.drip.analytics.output.CouponPeriodMetrics cpm = new
-				org.drip.analytics.output.CouponPeriodMetrics (_dblEffective, _dblMaturity, 1., 1., 1.,
-					notional (_dblMaturity),
-						org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+			java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM = new
+				java.util.ArrayList<org.drip.analytics.output.ResetPeriodMetrics>();
 
-			return cpm.addResetPeriodMetrics (new org.drip.analytics.output.ResetPeriodMetrics
-				(_dblEffective, _dblMaturity, _dblEffective, 0.,
-					org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
-						false, _dblMaturity, null, _strCalendar))) ? cpm : null;
+			lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (_dblEffective, _dblMaturity,
+				_dblEffective, 0., org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
+					_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar)));
+
+			return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblEffective, _dblMaturity,
+				_dblMaturity, notional (_dblMaturity),
+					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC, lsRPM, 1., 1.,
+						1., null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -113,7 +113,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 				if (null == pcm) return null;
 
-				dblPV -= dblPeriodCV100 * (pcm.nominalAccrualRate() + dblSpread);
+				dblPV -= dblPeriodCV100 * (pcm.compoundedAccrualRate() + dblSpread);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -426,12 +426,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
-		if (null == _fxmtm) return null;
-
-		org.drip.product.params.CurrencyPair cp = _fxmtm.currencyPair();
-
-		return null == cp ? null : new org.drip.state.identifier.FXLabel[]
-			{org.drip.state.identifier.FXLabel.Standard (cp)};
+		return new org.drip.state.identifier.FXLabel[] {_lsCouponPeriod.get (0).fxLabel()};
 	}
 
 	@Override public org.drip.analytics.date.JulianDate effective()
@@ -538,7 +533,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 			if (null == convAdj) return null;
 
 			try {
-				dblFloatingRate = pcm.nominalAccrualRate();
+				dblFloatingRate = pcm.compoundedAccrualRate();
 
 				if (bFirstPeriod) {
 					bFirstPeriod = false;
@@ -550,11 +545,11 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 						csqs);
 
 					if (null != cam) {
-						dblResetDate = cam.currentResetDate();
+						dblResetDate = cam.outstandingFixingDate();
 
-						dblResetRate = cam.nominalAccrualRate();
+						dblResetRate = cam.compoundedAccrualRate();
 
-						dblFixing01 = 0.0001 * cam.dcf() * cam.notionalFactor() * cam.fx();
+						dblFixing01 = cam.accrual01();
 					}
 
 					if (dblPeriodStartDate < dblValueDate) dblAccrued01 = dblFixing01;
@@ -964,7 +959,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 				double dblAccrued = period.contains (dblValueDate) ? period.accrualDCF (dblValueDate) : 0.;
 
 				double dblPeriodCV100 = _dblNotional * notional (dblPeriodEndDate) * (period.couponDCF() -
-					dblAccrued) * (pcm.nominalAccrualRate() + dblSpread);
+					dblAccrued) * (pcm.compoundedAccrualRate() + dblSpread);
 
 				double dblPeriodPayDate = period.payDate();
 

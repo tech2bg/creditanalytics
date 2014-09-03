@@ -36,19 +36,6 @@ package org.drip.analytics.period;
  */
 
 public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
-
-	/**
-	 * Accrual Compounding Rule - Arithmetic
-	 */
-
-	public static final int ACCRUAL_COMPOUNDING_RULE_ARITHMETIC = 1;
-
-	/**
-	 * Accrual Compounding Rule - Geometric
-	 */
-
-	public static final int ACCRUAL_COMPOUNDING_RULE_GEOMETRIC = 2;
-
 	private int _iAccrualCompoundingRule = -1;
 	private java.util.List<org.drip.analytics.period.ResetPeriod> _lsResetPeriod = null;
 
@@ -64,8 +51,8 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		if (ACCRUAL_COMPOUNDING_RULE_ARITHMETIC != (_iAccrualCompoundingRule = iAccrualCompoundingRule) &&
-			ACCRUAL_COMPOUNDING_RULE_GEOMETRIC != _iAccrualCompoundingRule)
+		if (!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule (_iAccrualCompoundingRule =
+			iAccrualCompoundingRule))
 			throw new java.lang.Exception ("ResetPeriodContainer ctr: Invalid Accrual Compounding Rule");
 	}
 

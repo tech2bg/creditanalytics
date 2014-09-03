@@ -209,7 +209,8 @@ public class TreasuryCurveAPI {
 			JulianDate.Today(),
 			astrTSYName,
 			aiMaturityYear,
-			adblCoupon);
+			adblCoupon
+		);
 
 		/*
 		 * Create the on-the-run treasury discount curve
@@ -218,7 +219,8 @@ public class TreasuryCurveAPI {
 		DiscountCurve dcTSY = BuildOnTheRunTSYDiscountCurve (
 			JulianDate.Today(),
 			aTSYBond,
-			adblCalibYield);
+			adblCalibYield
+		);
 
 		/*
 		 * Compare the implied discount rate and input yields - in general they DO NOT match 
@@ -236,7 +238,8 @@ public class TreasuryCurveAPI {
 		double[] adblYield = GetOnTheRunYield (
 			JulianDate.Today(),
 			dcTSY,
-			aTSYBond);
+			aTSYBond
+		);
 
 		/*
 		 * Compare the implied and the input yields for the on-the-run's - they DO match 
@@ -245,8 +248,7 @@ public class TreasuryCurveAPI {
 		for (int i = 0; i < astrTSYName.length; ++i) {
 			String strTenor = aiMaturityYear[i] + "Y";
 
-			System.out.println ("CalcYield[" + strTenor + "]: " + adblYield[i] +
-				"; Input[" + strTenor + "]: " + adblCalibYield[i]);
+			System.out.println ("CalcYield[" + strTenor + "]: " + adblYield[i] + "; Input[" + strTenor + "]: " + adblCalibYield[i]);
 		}
 
 		/*
@@ -260,16 +262,17 @@ public class TreasuryCurveAPI {
 		int iOffTheRunMaturityYears = 10;
 
 		Bond bondOffTheRun = BondBuilder.CreateSimpleFixed (	// Simple Fixed Rate Bond
-				"USD" + iOffTheRunMaturityYears + "YOFF",
-				"USD",
-				"",
-				0.0375,
-				2,
-				"Act/Act",
-				JulianDate.Today(),
-				JulianDate.Today().addYears (iOffTheRunMaturityYears),	// off-the-run
-				null,
-				null);
+			"USD" + iOffTheRunMaturityYears + "YOFF",
+			"USD",
+			"",
+			0.0375,
+			2,
+			"Act/Act",
+			JulianDate.Today(),
+			JulianDate.Today().addYears (iOffTheRunMaturityYears),	// off-the-run
+			null,
+			null
+		);
 
 		/*
 		 * Calculate price for off-the-run
@@ -280,7 +283,8 @@ public class TreasuryCurveAPI {
 			MarketParamsBuilder.Discount (dcTSY),
 			bondOffTheRun.maturity().julian(),
 			1.,
-			0.);
+			0.
+		);
 
 		System.out.println ("\nOff-The-Run Price[" + iOffTheRunMaturityYears + "Y]: " + dblPrice);
 
@@ -292,7 +296,8 @@ public class TreasuryCurveAPI {
 			new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 			MarketParamsBuilder.Discount (dcTSY),
 			null,
-			dblPrice);
+			dblPrice
+		);
 
 		System.out.println ("\nOff-The-Run Yield[" + iOffTheRunMaturityYears + "Y]: " + dblYieldOffTheRun);
 

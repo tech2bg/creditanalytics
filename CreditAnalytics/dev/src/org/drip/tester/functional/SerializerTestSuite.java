@@ -259,7 +259,7 @@ public class SerializerTestSuite {
 
 		org.drip.analytics.period.ResetPeriodContainer rpc = new
 			org.drip.analytics.period.ResetPeriodContainer
-				(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
 		rpc.appendResetPeriod (new org.drip.analytics.period.ResetPeriod (dblStart, dblStart + 180,
 			dblStart));
@@ -812,7 +812,7 @@ public class SerializerTestSuite {
 
 		while (0 != i--) {
 			rpc = new org.drip.analytics.period.ResetPeriodContainer
-				(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
 			rpc.appendResetPeriod (new org.drip.analytics.period.ResetPeriod (dblStart, dblStart + 180,
 				dblStart));

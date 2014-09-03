@@ -5753,7 +5753,7 @@ public class CreditAnalytics {
 
 		if ("Coupon".equalsIgnoreCase (strField))
 			return bond.coupon (org.drip.analytics.date.JulianDate.Today().julian(), null,
-				null).nominalAccrualRate();
+				null).compoundedAccrualRate();
 
 		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.getCurrentCoupon();
 

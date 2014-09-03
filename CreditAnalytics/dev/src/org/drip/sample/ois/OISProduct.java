@@ -5,9 +5,8 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
-import org.drip.analytics.period.ResetPeriodContainer;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -219,7 +218,7 @@ public class OISProduct {
 				strCurrency,
 				strCurrency,
 				strCurrency,
-				ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+				ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
 			);
@@ -373,7 +372,7 @@ public class OISProduct {
 				strCurrency,
 				strCurrency,
 				strCurrency,
-				ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+				ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
 			);
@@ -524,7 +523,8 @@ public class OISProduct {
 				new java.lang.String[]
 					{"1W", "2W", "3W", "1M"},
 				adblShortEndOISQuote,
-				strCurrency);
+				strCurrency
+			);
 
 		/*
 		 * Construct the Short End OIS Instrument Set Stretch Builder

@@ -751,7 +751,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblCoupon += aComp[i].coupon (dblDate, null, csqs).nominalAccrualRate();
+			dblCoupon += aComp[i].coupon (dblDate, null, csqs).compoundedAccrualRate();
 
 		return dblCoupon / dblNotional;
 	}

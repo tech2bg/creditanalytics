@@ -1298,8 +1298,8 @@ public class CreditAnalyticsTestSuite {
 				System.out.println (strISIN + "    " + bond.getTicker() + " " +
 					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 						(org.drip.analytics.date.JulianDate.Today().julian(), valParams,
-							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).nominalAccrualRate(),
-								2, 3, 100.) + " " + bond.maturity());
+							org.drip.param.creator.MarketParamsBuilder.Credit (dc,
+								cc)).compoundedAccrualRate(), 2, 3, 100.) + " " + bond.maturity());
 
 				System.out.println ("Work-out date From Price: " + new org.drip.analytics.date.JulianDate
 					(wi.date()));
@@ -1677,7 +1677,7 @@ public class CreditAnalyticsTestSuite {
 							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 								(org.drip.analytics.date.JulianDate.Today().julian(), null,
 									org.drip.param.creator.MarketParamsBuilder.Credit (dc,
-										cc)).nominalAccrualRate(), 2, 3, 100.) + " " + bond.maturity() +
+										cc)).compoundedAccrualRate(), 2, 3, 100.) + " " + bond.maturity() +
 											"    " + (bond.isFloater() ? "FLOAT" : "FIXED") + "     " +
 												org.drip.quant.common.FormatUtil.FormatDouble
 													(dblYieldFromPrice, 2, 3, 100.) + "    " +
@@ -1716,8 +1716,8 @@ public class CreditAnalyticsTestSuite {
 						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 							(org.drip.analytics.date.JulianDate.Today().julian(), null,
 								org.drip.param.creator.MarketParamsBuilder.Credit (dc,
-									cc)).nominalAccrualRate(), 2, 3, 100.) + " " + bond.maturity() + "    " +
-										org.drip.quant.common.FormatUtil.FormatDouble
+									cc)).compoundedAccrualRate(), 2, 3, 100.) + " " + bond.maturity() +
+										"    " + org.drip.quant.common.FormatUtil.FormatDouble
 											(dblOutstandingAmount, 10, 0, 1.));
 			} catch (java.lang.Exception e) {
 				if (s_bSupressErrMsg) {

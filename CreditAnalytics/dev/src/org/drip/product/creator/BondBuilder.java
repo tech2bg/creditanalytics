@@ -335,7 +335,7 @@ public class BondBuilder {
 			try {
 				org.drip.analytics.period.ResetPeriodContainer rpc = new
 					org.drip.analytics.period.ResetPeriodContainer
-						(org.drip.analytics.period.ResetPeriodContainer.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
+						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
 				if (!rpc.appendResetPeriod (new org.drip.analytics.period.ResetPeriod (dblPeriodStart,
 					adblDate[i], dblPeriodStart)))
