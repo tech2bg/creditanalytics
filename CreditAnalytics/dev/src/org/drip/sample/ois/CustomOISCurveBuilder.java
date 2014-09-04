@@ -141,6 +141,7 @@ public class CustomOISCurveBuilder {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -154,7 +155,6 @@ public class CustomOISCurveBuilder {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -166,6 +166,7 @@ public class CustomOISCurveBuilder {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -179,7 +180,6 @@ public class CustomOISCurveBuilder {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -218,6 +218,7 @@ public class CustomOISCurveBuilder {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -231,7 +232,6 @@ public class CustomOISCurveBuilder {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -243,6 +243,7 @@ public class CustomOISCurveBuilder {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -256,7 +257,6 @@ public class CustomOISCurveBuilder {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,

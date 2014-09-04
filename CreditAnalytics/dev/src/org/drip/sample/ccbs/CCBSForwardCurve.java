@@ -84,6 +84,7 @@ public class CCBSForwardCurve {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -97,7 +98,6 @@ public class CCBSForwardCurve {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
-				null == cp ? null : new FXMTMSetting (cp, false),
 				0.,
 				-1.,
 				null,
@@ -113,6 +113,7 @@ public class CCBSForwardCurve {
 			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				12 / iTenorInMonths,
 				"Act/360",
@@ -126,7 +127,6 @@ public class CCBSForwardCurve {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
-				null == cp ? null : new FXMTMSetting (cp, false),
 				0.,
 				1.,
 				null,

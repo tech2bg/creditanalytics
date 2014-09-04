@@ -81,7 +81,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 				dblForwardDF = dcqs.pv();
 			else if (dcqs.containsRate())
 				dblForwardDF = 1. / (1. + org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-					_dblMaturity, _strDayCount, false, _dblMaturity, null, _strCalendar) * dcqs.rate());
+					_dblMaturity, _strDayCount, false, null, _strCalendar) * dcqs.rate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -325,7 +325,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 
 			lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (_dblEffective, _dblMaturity,
 				_dblEffective, 0., org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-					_dblMaturity, _strDayCount, false, _dblMaturity, null, _strCalendar)));
+					_dblMaturity, _strDayCount, false, null, _strCalendar)));
 
 			return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblEffective, _dblMaturity,
 				_dblMaturity, notional (_dblMaturity),
@@ -388,7 +388,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (_dblEffective, _dblMaturity,
-			_strDayCount, _strCalendar, _strCurrency, _strCurrency, _fri, null);
+			java.lang.Double.NaN, _strDayCount, _strCalendar, _strCurrency, _strCurrency, _fri, null);
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
@@ -448,7 +448,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 
 			mapResult.put ("rate", ((1. / dblUnadjustedAnnuity) - 1.) /
 				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
-					_strDayCount, false, _dblMaturity, null, _strCalendar));
+					_strDayCount, false, null, _strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -617,7 +617,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 			else if (dcqs.containsPV())
 				dblForwardRate = ((1. / dcqs.pv()) - 1.) /
 					org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity,
-						_strDayCount, false, _dblMaturity, null, _strCalendar);
+						_strDayCount, false, null, _strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

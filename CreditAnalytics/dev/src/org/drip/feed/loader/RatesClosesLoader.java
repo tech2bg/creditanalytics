@@ -359,23 +359,23 @@ public class RatesClosesLoader {
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC,
-						bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency, null, null);
+					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
+						strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, strCurrency, null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
-				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
+				(strCurrency, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, dap, _mapFloatingFrequency.get (strCurrency), strFloatingDC,
-						bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency,
+					strMaturityTenor, java.lang.Double.NaN, dap, _mapFloatingFrequency.get (strCurrency),
+						strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, strCurrency,
 							org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 								_mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
-				org.drip.product.cashflow.FloatingStream (strCurrency, null, 0., -1., null,
-					lsFloatingCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
-						"LIBOR", _mapFloatingTenor.get (strCurrency)), false);
+				org.drip.product.cashflow.FloatingStream (strCurrency, 0., -1., null, lsFloatingCouponPeriod,
+					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+						_mapFloatingTenor.get (strCurrency)), false);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream);
@@ -419,22 +419,22 @@ public class RatesClosesLoader {
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, dap, _mapFixedFrequency.get (strCurrency), strFixedDC, false, false,
-						strCurrency, strCurrency, null, null);
+					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
+						strFixedDC, false, false, strCurrency, strCurrency, null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
-				(strCurrency, null, dblCoupon, 1., null, lsFixedCouponPeriod);
+				(strCurrency, dblCoupon, 1., null, lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (dtEffective.julian(),
-					dtMaturity.julian(), strFloatingDC, strCurrency, strCurrency, strCurrency,
-						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+					dtMaturity.julian(), java.lang.Double.NaN, strFloatingDC, strCurrency, strCurrency,
+						strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 							_mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
-				org.drip.product.cashflow.FloatingStream (strCurrency, null, 0., -1., null,
-					lsFloatingCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
-						"LIBOR", _mapFloatingTenor.get (strCurrency)), false);
+				org.drip.product.cashflow.FloatingStream (strCurrency, 0., -1., null, lsFloatingCouponPeriod,
+					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+						_mapFloatingTenor.get (strCurrency)), false);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream);
@@ -534,8 +534,7 @@ public class RatesClosesLoader {
 		boolean bApplyFloatingCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFloatingDC.get (strCurrency));
 
 		int i1DFixedAccrualDays = org.drip.analytics.daycount.Convention.DaysAccrued (dtPrev.julian(),
-			dtCurr.julian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj, java.lang.Double.NaN,
-				null, strCurrency);
+			dtCurr.julian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj, null, strCurrency);
 
 		double dbl1DFixedDCF = (calcMeasure (irs.referenceStream(), dtCurr, dcDatePrevQuotePrev, "Accrued01",
 			strCurrency, null) - calcMeasure (irs.referenceStream(), dtPrev, dcDatePrevQuotePrev,
@@ -549,8 +548,8 @@ public class RatesClosesLoader {
 			irs.forwardLabel()[0].tenor());
 
 		int i1DFloatingAccrualDays = org.drip.analytics.daycount.Convention.DaysAccrued (dtPrev.julian(),
-			dtCurr.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
-				java.lang.Double.NaN, null, strCurrency);
+			dtCurr.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj, null,
+				strCurrency);
 
 		double dbl1DFloatingDCF = (calcMeasure (irs.derivedStream(), dtPrev, dcDatePrevQuotePrev,
 			"Accrued01", strCurrency, null) - calcMeasure (irs.derivedStream(), dtCurr, dcDatePrevQuotePrev,
@@ -630,12 +629,11 @@ public class RatesClosesLoader {
 		double dbl1DCurveShiftPnL = (dblBaselineSwapRate - dbl1DCurveShiftSwapRate) * 10000. * dblDV01;
 
 		double dbl1MFixedDCF = org.drip.analytics.daycount.Convention.YearFraction (dt1MPast.julian(),
-			dtPrev.julian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj,
-				java.lang.Double.NaN, null, strCurrency);
+			dtPrev.julian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj, null, strCurrency);
 
 		double dbl1MFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt1MPast.julian(),
-			dtPrev.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
-				java.lang.Double.NaN, null, strCurrency);
+			dtPrev.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj, null,
+				strCurrency);
 
 		double dbl1MCarryPnL = dblFixedCoupon * dbl1MFixedDCF - dblCurveFloatingRate * dbl1MFloatingDCF;
 
@@ -646,12 +644,11 @@ public class RatesClosesLoader {
 			10000. * dblDV01;
 
 		double dbl3MFixedDCF = org.drip.analytics.daycount.Convention.YearFraction (dt3MPast.julian(),
-			dtPrev.julian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj,
-				java.lang.Double.NaN, null, strCurrency);
+			dtPrev.julian(), _mapFixedDC.get (strCurrency), bApplyFixedCouponEOMAdj, null, strCurrency);
 
 		double dbl3MFloatingDCF = org.drip.analytics.daycount.Convention.YearFraction (dt3MPast.julian(),
-			dtPrev.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj,
-				java.lang.Double.NaN, null, strCurrency);
+			dtPrev.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj, null,
+				strCurrency);
 
 		double dbl3MCarryPnL = dblFixedCoupon * dbl3MFixedDCF - dblCurveFloatingRate * dbl3MFloatingDCF;
 

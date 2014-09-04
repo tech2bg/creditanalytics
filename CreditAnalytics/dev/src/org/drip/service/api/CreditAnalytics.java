@@ -257,8 +257,8 @@ public class CreditAnalytics {
 		if (null == dtStart || null == dtEnd)
 			throw new java.lang.Exception ("Null date into CreditAnalytics.YearFraction");
 
-		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.julian(),
-			dtEnd.julian(), strDayCount, bApplyEOMAdj, java.lang.Double.NaN, null, strCalendar);
+		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.julian(), dtEnd.julian(),
+			strDayCount, bApplyEOMAdj, null, strCalendar);
 	}
 
 	/**
@@ -283,8 +283,8 @@ public class CreditAnalytics {
 		if (null == dtStart || null == dtEnd)
 			throw new java.lang.Exception ("Null date into CreditAnalytics.YearFraction");
 
-		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.julian(),
-			dtEnd.julian(), strDayCount, true, java.lang.Double.NaN, null, strCalendar);
+		return org.drip.analytics.daycount.Convention.YearFraction (dtStart.julian(), dtEnd.julian(),
+			strDayCount, true, null, strCalendar);
 	}
 
 	/**

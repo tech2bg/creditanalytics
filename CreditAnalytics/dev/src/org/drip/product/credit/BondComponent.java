@@ -6847,7 +6847,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			}
 
 			double dblYearFract = org.drip.analytics.daycount.Convention.YearFraction (valParams.valueDate(),
-				period.payDate(), strDC, bApplyCpnEOMAdj, dblWorkoutDate, aap, strCalendar);
+				period.payDate(), strDC, bApplyCpnEOMAdj, aap, strCalendar);
 
 			double dblYieldDF = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
 				s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod : dblYearFract);
@@ -6913,7 +6913,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		double dblYearFractWorkout = org.drip.analytics.daycount.Convention.YearFraction
-			(valParams.valueDate(), dblWorkoutDate, strDC, bApplyCpnEOMAdj, dblWorkoutDate, aap, strCalendar);
+			(valParams.valueDate(), dblWorkoutDate, strDC, bApplyCpnEOMAdj, aap, strCalendar);
 
 		double dblDFWorkout = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
 			s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod : dblYearFractWorkout);
@@ -9003,7 +9003,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			}
 
 			double dblYearFract = org.drip.analytics.daycount.Convention.YearFraction (valParams.valueDate(),
-				period.payDate(), strDC, bApplyCpnEOMAdj, dblWorkoutDate, aap, strCalendar);
+				period.payDate(), strDC, bApplyCpnEOMAdj, aap, strCalendar);
 
 			double dblYieldDF = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
 				s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod : dblYearFract);
@@ -9111,8 +9111,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		double dblYearFractCashPay = org.drip.analytics.daycount.Convention.YearFraction
-			(valParams.valueDate(), dblCashPayDate, strDC, bApplyCpnEOMAdj, dblWorkoutDate, aap,
-				strCalendar);
+			(valParams.valueDate(), dblCashPayDate, strDC, bApplyCpnEOMAdj, aap, strCalendar);
 
 		double dblDFCashPay = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
 			dblYearFractCashPay);
@@ -9124,7 +9123,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblAccrued = calcAccrued (valParams.valueDate(), csqs);
 
 		double dblYearFractWorkout = org.drip.analytics.daycount.Convention.YearFraction
-			(valParams.valueDate(), dblWorkoutDate, strDC, bApplyCpnEOMAdj, dblWorkoutDate, aap, strCalendar);
+			(valParams.valueDate(), dblWorkoutDate, strDC, bApplyCpnEOMAdj, aap, strCalendar);
 
 		double dblDFWorkout = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
 			s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod : dblYearFractWorkout);

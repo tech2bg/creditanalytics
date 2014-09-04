@@ -288,7 +288,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 			throw new java.lang.Exception ("DiscountCurve::libor => Invalid input dates");
 
 		return libor (dblDt1, dblDt2, org.drip.analytics.daycount.Convention.YearFraction
-			(dblDt1, dblDt2, "Act/360", false, java.lang.Double.NaN, null, ""));
+			(dblDt1, dblDt2, "Act/360", false, null, ""));
 	}
 
 	@Override public double libor (
@@ -302,7 +302,7 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		double dblEndDate = new org.drip.analytics.date.JulianDate (dblDate).addTenor (strTenor).julian();
 
 		return ((df (dblDate) / df (dblEndDate)) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
-			(dblDate, dblEndDate, "Act/360", false, java.lang.Double.NaN, null, "");
+			(dblDate, dblEndDate, "Act/360", false, null, "");
 	}
 
 	@Override public double libor (

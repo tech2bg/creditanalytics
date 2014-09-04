@@ -158,7 +158,6 @@ public class DateEOMAdjustment {
 	public static final DateEOMAdjustment MakeDEOMA (
 		final double dblStart,
 		final double dblEnd,
-		final double dblMaturity,
 		final boolean bApplyEOMAdj)
 	{
 		DateEOMAdjustment dm = new DateEOMAdjustment();
@@ -166,7 +165,7 @@ public class DateEOMAdjustment {
 		if (!bApplyEOMAdj) return dm;
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
-			(dblEnd) || !org.drip.quant.common.NumberUtil.IsValid (dblMaturity))
+			(dblEnd))
 			return null;
 
 		try {
@@ -176,7 +175,7 @@ public class DateEOMAdjustment {
 
 				if (org.drip.analytics.date.JulianDate.IsEOM (dblEnd) &&
 					(org.drip.analytics.date.JulianDate.FEBRUARY != org.drip.analytics.date.JulianDate.Month
-						(dblEnd) && dblMaturity != dblEnd))
+						(dblEnd)))
 					dm._iD2Adj = 30 - org.drip.analytics.date.JulianDate.Day (dblEnd);
 			}
 

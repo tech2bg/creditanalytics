@@ -254,6 +254,7 @@ public class ForwardCurveReferenceBasis {
 			List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -267,7 +268,6 @@ public class ForwardCurveReferenceBasis {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -283,6 +283,7 @@ public class ForwardCurveReferenceBasis {
 			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				12 / iTenorInMonths,
 				"Act/360",
@@ -296,7 +297,6 @@ public class ForwardCurveReferenceBasis {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,

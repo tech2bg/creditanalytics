@@ -419,6 +419,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		_lsCouponPeriod = org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (
 			_dblEffective = dblEffective, // Effective
 			_dblMaturity = dblMaturity, // Maturity
+			java.lang.Double.NaN, // FX Fixing Date
 			dapEffective, // Effective DAP
 			dapMaturity, // Maturity DAP
 			dapPeriodStart, // Period Start DAP

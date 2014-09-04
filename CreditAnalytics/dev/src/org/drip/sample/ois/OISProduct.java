@@ -138,6 +138,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -151,7 +152,6 @@ public class OISProduct {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -163,6 +163,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -176,7 +177,6 @@ public class OISProduct {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -212,6 +212,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
+				Double.NaN,
 				null,
 				null,
 				"Act/360",
@@ -225,7 +226,6 @@ public class OISProduct {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -237,6 +237,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -250,7 +251,6 @@ public class OISProduct {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -289,6 +289,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -302,7 +303,6 @@ public class OISProduct {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -314,6 +314,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -327,7 +328,6 @@ public class OISProduct {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -366,6 +366,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
+				Double.NaN,
 				null,
 				null,
 				"Act/360",
@@ -379,7 +380,6 @@ public class OISProduct {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -391,6 +391,7 @@ public class OISProduct {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -404,7 +405,6 @@ public class OISProduct {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -775,6 +775,7 @@ public class OISProduct {
 		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"4M",
+			Double.NaN,
 			null,
 			4,
 			"Act/360",
@@ -788,7 +789,6 @@ public class OISProduct {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
-			null,
 			0.,
 			-1.,
 			null,
@@ -800,6 +800,7 @@ public class OISProduct {
 		List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"4M",
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -813,7 +814,6 @@ public class OISProduct {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
-			null,
 			0.003,
 			1.,
 			null,

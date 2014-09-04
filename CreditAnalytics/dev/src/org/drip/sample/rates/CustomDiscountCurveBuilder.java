@@ -182,6 +182,7 @@ public class CustomDiscountCurveBuilder {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -195,7 +196,6 @@ public class CustomDiscountCurveBuilder {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -207,6 +207,7 @@ public class CustomDiscountCurveBuilder {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -220,7 +221,6 @@ public class CustomDiscountCurveBuilder {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,

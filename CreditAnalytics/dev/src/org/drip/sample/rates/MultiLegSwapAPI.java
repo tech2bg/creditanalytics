@@ -112,6 +112,7 @@ public class MultiLegSwapAPI {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtStart.julian(),
 				astrIRSTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -125,7 +126,6 @@ public class MultiLegSwapAPI {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -137,6 +137,7 @@ public class MultiLegSwapAPI {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtStart.julian(),
 				astrIRSTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -150,7 +151,6 @@ public class MultiLegSwapAPI {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,
@@ -191,6 +191,7 @@ public class MultiLegSwapAPI {
 		List<CouponPeriod> lsFixedPeriods3Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"3Y",
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -204,7 +205,6 @@ public class MultiLegSwapAPI {
 
 		aFixedStream[0] = new FixedStream (
 			"USD",
-			null,
 			0.03,
 			1.,
 			null,
@@ -214,6 +214,7 @@ public class MultiLegSwapAPI {
 		List<CouponPeriod> lsFixedPeriods5Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"5Y",
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -227,7 +228,6 @@ public class MultiLegSwapAPI {
 
 		aFixedStream[1] = new FixedStream (
 			"USD",
-			null,
 			0.05,
 			1.,
 			null,
@@ -237,6 +237,7 @@ public class MultiLegSwapAPI {
 		List<CouponPeriod> lsFixedPeriods7Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"7Y",
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -250,7 +251,6 @@ public class MultiLegSwapAPI {
 
 		aFixedStream[2] = new FixedStream (
 			"USD",
-			null,
 			0.07,
 			1.,
 			null,
@@ -266,6 +266,7 @@ public class MultiLegSwapAPI {
 		List<CouponPeriod> lsFloatPeriods3Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"3Y",
+			Double.NaN,
 			null,
 			4,
 			"Act/360",
@@ -279,7 +280,6 @@ public class MultiLegSwapAPI {
 
 		aFloatStream[0] = new FloatingStream (
 			"USD",
-			null,
 			0.03,
 			-1.,
 			null,
@@ -291,6 +291,7 @@ public class MultiLegSwapAPI {
 		List<CouponPeriod> lsFloatPeriods5Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"5Y",
+			Double.NaN,
 			null,
 			4,
 			"Act/360",
@@ -304,7 +305,6 @@ public class MultiLegSwapAPI {
 
 		aFloatStream[1] = new FloatingStream (
 			"USD",
-			null,
 			0.05,
 			-1.,
 			null,
@@ -316,6 +316,7 @@ public class MultiLegSwapAPI {
 		List<CouponPeriod> lsFloatPeriods7Y = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			"7Y",
+			Double.NaN,
 			null,
 			4,
 			"Act/360",
@@ -329,7 +330,6 @@ public class MultiLegSwapAPI {
 
 		aFloatStream[2] = new FloatingStream (
 			"USD",
-			null,
 			0.07,
 			-1.,
 			null,

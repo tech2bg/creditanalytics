@@ -67,7 +67,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 
 		try {
 			dblForwardDF = 1. / (1. + (fcqs.fraRate() * org.drip.analytics.daycount.Convention.YearFraction
-				(_dblEffectiveDate, dblMaturity, _strDayCount, false, dblMaturity, null, _strCalendar)));
+				(_dblEffectiveDate, dblMaturity, _strDayCount, false, null, _strCalendar)));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -357,7 +357,8 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		try {
 			return org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
-					_strDayCount, _strCalendar, _strCurrency, _strCurrency, _fri, null);
+					java.lang.Double.NaN, _strDayCount, _strCalendar, _strCurrency, _strCurrency, _fri,
+						null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -417,7 +418,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 							_dblEffectiveDate));
 
 			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffectiveDate,
-				dblMaturity, _strDayCount, false, dblMaturity, null, _strCalendar);
+				dblMaturity, _strDayCount, false, null, _strCalendar);
 
 			double dblQuantoAdjustedParForward = dblParForward * dblMultiplicativeQuantoAdjustment;
 

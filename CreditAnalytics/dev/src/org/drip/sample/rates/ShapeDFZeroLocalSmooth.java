@@ -248,6 +248,7 @@ public class ShapeDFZeroLocalSmooth {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -261,7 +262,6 @@ public class ShapeDFZeroLocalSmooth {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -273,6 +273,7 @@ public class ShapeDFZeroLocalSmooth {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -286,7 +287,6 @@ public class ShapeDFZeroLocalSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,

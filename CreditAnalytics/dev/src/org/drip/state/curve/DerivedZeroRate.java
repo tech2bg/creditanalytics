@@ -59,7 +59,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		throws java.lang.Exception
 	{
 		double dblYearFraction = org.drip.analytics.daycount.Convention.YearFraction (epoch().julian(),
-			dblDate, strDC, bApplyCpnEOMAdj, dblDate, null, strCalendar);
+			dblDate, strDC, bApplyCpnEOMAdj, null, strCalendar);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYearFraction) || 0. > dblYearFraction) return;
 

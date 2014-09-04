@@ -265,14 +265,14 @@ public class SerializerTestSuite {
 			dblStart));
 
 		byte[] abPeriod = new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180, dblStart,
-			dblStart + 180, dblStart + 180, rpc, java.lang.Double.NaN, java.lang.Double.NaN, 2, 0.5,
-				"Act/360", "Act/360", false, false, "USD", "USD", null, null).serialize();
+			dblStart + 180, dblStart + 180, rpc, java.lang.Double.NaN, 2, 0.5, "Act/360", "Act/360", false,
+				false, "USD", "USD", null, null).serialize();
 
 		Verify (abPeriod, new org.drip.analytics.period.CouponPeriod (abPeriod), "Period");
 
 		byte[] abCouponPeriod = new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
-			dblStart, dblStart + 180, dblStart + 180, rpc, dblStart + 1825, java.lang.Double.NaN, 2, 0.5,
-				"30/360", "30/360", true, true, "GBP", "GBP", null, null).serialize();
+			dblStart, dblStart + 180, dblStart + 180, rpc, java.lang.Double.NaN, 2, 0.5, "30/360", "30/360",
+				true, true, "GBP", "GBP", null, null).serialize();
 
 		Verify (abCouponPeriod, new org.drip.analytics.period.CouponPeriod (abCouponPeriod),
 			"CouponPeriod");
@@ -313,51 +313,51 @@ public class SerializerTestSuite {
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedPeriod3Y =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "3Y", dap, 2,
-				"Act/360", false, false, "ABC", "DEF", null, org.drip.state.identifier.CreditLabel.Standard
-					("XYZ"));
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "3Y",
+				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "ABC", "DEF", null,
+					org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFixedStream[0] = new org.drip.product.cashflow.FixedStream ("DEF", null, 0.03, 1., null,
-			lsFixedPeriod3Y);
+		aFixedStream[0] = new org.drip.product.cashflow.FixedStream ("DEF", 0.03, 1., null, lsFixedPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedPeriod5Y =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "5Y", dap, 2,
-				"Act/360", false, false, "GHI", "JKL", null, org.drip.state.identifier.CreditLabel.Standard
-					("XYZ"));
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "5Y",
+				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "GHI", "JKL", null,
+					org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFixedStream[1] = new org.drip.product.cashflow.FixedStream ("JKL", null, 0.05, 1., null,
-			lsFixedPeriod5Y);
+		aFixedStream[1] = new org.drip.product.cashflow.FixedStream ("JKL", 0.05, 1., null, lsFixedPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedPeriod7Y =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "7Y", dap, 2,
-				"Act/360", false, false, "MNO", "PQR", null, org.drip.state.identifier.CreditLabel.Standard
-					("XYZ"));
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "7Y",
+				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "MNO", "PQR", null,
+					org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFixedStream[2] = new org.drip.product.cashflow.FixedStream ("PQR", null, 0.07, 1., null,
-			lsFixedPeriod7Y);
+		aFixedStream[2] = new org.drip.product.cashflow.FixedStream ("PQR", 0.07, 1., null, lsFixedPeriod7Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatPeriod3Y =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "3Y", dap, 4,
-				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
-					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "3Y",
+				java.lang.Double.NaN, dap, 4, "Act/360", false, false, "ABC", "DEF",
+					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
+						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFloatStream[0] = new org.drip.product.cashflow.FloatingStream ("DEF", null, 0.03, -1., null,
+		aFloatStream[0] = new org.drip.product.cashflow.FloatingStream ("DEF", 0.03, -1., null,
 			lsFloatPeriod3Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatPeriod5Y =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "5Y", dap, 4,
-				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
-					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "5Y",
+				java.lang.Double.NaN, dap, 4, "Act/360", false, false, "ABC", "DEF",
+					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
+						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFloatStream[1] = new org.drip.product.cashflow.FloatingStream ("DEF", null, 0.05, -1., null,
+		aFloatStream[1] = new org.drip.product.cashflow.FloatingStream ("DEF", 0.05, -1., null,
 			lsFloatPeriod5Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatPeriod7Y =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "7Y", dap, 4,
-				"Act/360", false, false, "ABC", "DEF", org.drip.state.identifier.ForwardLabel.Standard
-					("ABC-RI-3M"), org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "7Y",
+				java.lang.Double.NaN, dap, 4, "Act/360", false, false, "ABC", "DEF",
+					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
+						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFloatStream[2] = new org.drip.product.cashflow.FloatingStream ("DEF", null, 0.07, -1., null,
+		aFloatStream[2] = new org.drip.product.cashflow.FloatingStream ("DEF", 0.07, -1., null,
 			lsFloatPeriod7Y, org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"), false);
 
 		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
@@ -818,8 +818,8 @@ public class SerializerTestSuite {
 				dblStart));
 
 			lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart, dblStart + 180,
-				dblStart, dblStart + 180, dblStart + 180, rpc, java.lang.Double.NaN, java.lang.Double.NaN, 2,
-					0.5, "30/360", "30/360", false, false, "ZAR", "ZAR", null, null));
+				dblStart, dblStart + 180, dblStart + 180, rpc, java.lang.Double.NaN, 2, 0.5, "30/360",
+					"30/360", false, false, "ZAR", "ZAR", null, null));
 
 			dblStart += 180.;
 		}

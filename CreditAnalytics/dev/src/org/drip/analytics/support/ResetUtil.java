@@ -62,4 +62,114 @@ public class ResetUtil {
 		return ACCRUAL_COMPOUNDING_RULE_ARITHMETIC == iAccrualCompoundingRule ||
 			ACCRUAL_COMPOUNDING_RULE_GEOMETRIC == iAccrualCompoundingRule;
 	}
+
+	/**
+	 * Create a Reset Period Container that from the List of Daily Reset Periods between the specified Dates
+	 * 
+	 * @param dblLeft The Left Date
+	 * @param dblRight The Right Date
+	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
+	 * @param strCalendar The Calendar
+	 * 
+	 * @return The Reset Period Container that uses the List of Daily Reset Periods between the specified
+	 * 	Dates
+	 */
+
+	public static final org.drip.analytics.period.ResetPeriodContainer DailyResetPeriod (
+		final double dblLeft,
+		final double dblRight,
+		final int iAccrualCompoundingRule,
+		final java.lang.String strCalendar)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblLeft) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblRight) || dblLeft >= dblRight)
+			return null;
+
+		double dblStart = dblLeft;
+		double dblEnd = java.lang.Double.NaN;
+		org.drip.analytics.period.ResetPeriodContainer rpc = null;
+
+		try {
+			dblEnd = new org.drip.analytics.date.JulianDate (dblStart).addBusDays (1, strCalendar).julian();
+
+			rpc = new org.drip.analytics.period.ResetPeriodContainer (iAccrualCompoundingRule);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		while (dblEnd <= dblRight) {
+			try {
+				if (!rpc.appendResetPeriod (new org.drip.analytics.period.ResetPeriod (dblStart, dblEnd,
+					dblStart)))
+					return null;
+
+				dblStart = dblEnd;
+
+				dblEnd = new org.drip.analytics.date.JulianDate (dblStart).addBusDays (1,
+					strCalendar).julian();
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return rpc;
+	}
+
+	/**
+	 * Merge the specified Reset Period Lists onto a single Composite Reset Period List
+	 * 
+	 * @param rpcLeft The Left Reset Period Container
+	 * @param rpcRight The Right Reset Period Container
+	 * 
+	 * @return The Composite Reset Period Container
+	 */
+
+	public static final org.drip.analytics.period.ResetPeriodContainer MergeResetPeriods (
+		final org.drip.analytics.period.ResetPeriodContainer rpcLeft,
+		final org.drip.analytics.period.ResetPeriodContainer rpcRight)
+	{
+		if (null == rpcLeft || null == rpcRight) return null;
+
+		int iAccrualCompoundingRule = rpcLeft.accrualCompoundingRule();
+
+		if (iAccrualCompoundingRule != rpcRight.accrualCompoundingRule()) return null;
+
+		java.util.List<org.drip.analytics.period.ResetPeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
+
+		java.util.List<org.drip.analytics.period.ResetPeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
+
+		if (null == lsResetPeriodsLeft || null == lsResetPeriodsRight) return null;
+
+		int iNumPeriodsLeft = lsResetPeriodsLeft.size();
+
+		int iNumPeriodsRight = lsResetPeriodsRight.size();
+
+		if (0 == iNumPeriodsLeft || 0 == iNumPeriodsRight ||
+			lsResetPeriodsLeft.get (iNumPeriodsLeft - 1).end() != lsResetPeriodsRight.get (0).start())
+			return null;
+
+		org.drip.analytics.period.ResetPeriodContainer rpc = null;
+
+		try {
+			rpc = new org.drip.analytics.period.ResetPeriodContainer (iAccrualCompoundingRule);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		for (org.drip.analytics.period.ResetPeriod rp : lsResetPeriodsLeft) {
+			if (!rpc.appendResetPeriod (rp)) return null;
+		}
+
+		for (org.drip.analytics.period.ResetPeriod rp : lsResetPeriodsRight) {
+			if (!rpc.appendResetPeriod (rp)) return null;
+		}
+
+		return rpc;
+	}
 }

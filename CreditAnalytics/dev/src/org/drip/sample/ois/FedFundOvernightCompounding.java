@@ -139,6 +139,7 @@ public class FedFundOvernightCompounding {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -152,7 +153,6 @@ public class FedFundOvernightCompounding {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -164,6 +164,7 @@ public class FedFundOvernightCompounding {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -177,7 +178,6 @@ public class FedFundOvernightCompounding {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -216,6 +216,7 @@ public class FedFundOvernightCompounding {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -229,7 +230,6 @@ public class FedFundOvernightCompounding {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -241,6 +241,7 @@ public class FedFundOvernightCompounding {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -254,7 +255,6 @@ public class FedFundOvernightCompounding {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -516,7 +516,14 @@ public class FedFundOvernightCompounding {
 			lsfc.add (dt, fri, dblFlatFixing);
 
 			if (dt.julian() <= dtValue.julian()) {
-				double dblAccrualFraction = Convention.YearFraction (dblPrevDate, dt.julian(), "Act/360", false, Double.NaN, null, "USD");
+				double dblAccrualFraction = Convention.YearFraction (
+					dblPrevDate,
+					dt.julian(),
+					"Act/360",
+					false,
+					null,
+					"USD"
+				);
 
 				dblAccount *= (1. + dblFlatFixing * dblAccrualFraction);
 			}
@@ -571,6 +578,7 @@ public class FedFundOvernightCompounding {
 		List<CouponPeriod> lsGeometricFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -585,7 +593,6 @@ public class FedFundOvernightCompounding {
 
 		FloatingStream floatStreamGeometric = new FloatingStream (
 			strCurrency,
-			null,
 			0.,
 			-1.,
 			null,
@@ -597,6 +604,7 @@ public class FedFundOvernightCompounding {
 		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -611,7 +619,6 @@ public class FedFundOvernightCompounding {
 
 		FloatingStream floatStreamArithmetic = new FloatingStream (
 			strCurrency,
-			null,
 			0.,
 			-1.,
 			null,
@@ -623,6 +630,7 @@ public class FedFundOvernightCompounding {
 		List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"4M",
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -636,7 +644,6 @@ public class FedFundOvernightCompounding {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
-			null,
 			0.,
 			1.,
 			null,

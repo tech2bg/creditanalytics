@@ -61,7 +61,6 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -69,7 +68,7 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == actactParams)
 			throw new java.lang.Exception ("DCAct_365L.yearFraction: Invalid actact Params!");
 
-		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, dblMaturity, bApplyEOMAdj);
+		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, bApplyEOMAdj);
 
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_365L.yearFraction: Cannot create DateEOMAdjustment!");
@@ -92,7 +91,6 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -100,7 +98,7 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == actactParams)
 			throw new java.lang.Exception ("DCAct_365L.daysAccrued: Invalid actact Params!");
 
-		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, dblMaturity, bApplyEOMAdj);
+		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, bApplyEOMAdj);
 
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_365L.daysAccrued: Cannot create DateEOMAdjustment!");

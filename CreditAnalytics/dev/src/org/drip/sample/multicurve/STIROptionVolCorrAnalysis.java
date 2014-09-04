@@ -107,6 +107,7 @@ public class STIROptionVolCorrAnalysis {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -120,7 +121,6 @@ public class STIROptionVolCorrAnalysis {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -132,6 +132,7 @@ public class STIROptionVolCorrAnalysis {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -145,7 +146,6 @@ public class STIROptionVolCorrAnalysis {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -281,6 +281,7 @@ public class STIROptionVolCorrAnalysis {
 			List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -294,7 +295,6 @@ public class STIROptionVolCorrAnalysis {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -310,6 +310,7 @@ public class STIROptionVolCorrAnalysis {
 			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
+				Double.NaN,
 				null,
 				12 / iTenorInMonths,
 				"Act/360",
@@ -323,7 +324,6 @@ public class STIROptionVolCorrAnalysis {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,
@@ -516,6 +516,7 @@ public class STIROptionVolCorrAnalysis {
 		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
+			Double.NaN,
 			null,
 			4,
 			"Act/360",
@@ -529,7 +530,6 @@ public class STIROptionVolCorrAnalysis {
 
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
-			null,
 			0.,
 			-1.,
 			null,
@@ -541,6 +541,7 @@ public class STIROptionVolCorrAnalysis {
 		List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
+			Double.NaN,
 			null,
 			2,
 			"Act/360",
@@ -554,7 +555,6 @@ public class STIROptionVolCorrAnalysis {
 
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
-			null,
 			dblCoupon,
 			1.,
 			null,

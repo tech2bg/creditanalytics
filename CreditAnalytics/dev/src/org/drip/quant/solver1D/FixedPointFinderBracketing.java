@@ -207,6 +207,6 @@ public class FixedPointFinderBracketing extends org.drip.quant.solver1D.FixedPoi
 										_iIteratorPrimitive)
 			throw new java.lang.Exception ("FixedPointFinderBracketing constructor: Invalid inputs!");
 
-		_ei = new org.drip.quant.solver1D.ExecutionInitializer (_of, null);
+		_ei = new org.drip.quant.solver1D.ExecutionInitializer (_of, null, true);
 	}
 }

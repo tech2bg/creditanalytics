@@ -171,6 +171,7 @@ public class ShapePreservingOISZeroSmooth {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -184,7 +185,6 @@ public class ShapePreservingOISZeroSmooth {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -196,6 +196,7 @@ public class ShapePreservingOISZeroSmooth {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -209,7 +210,6 @@ public class ShapePreservingOISZeroSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -248,6 +248,7 @@ public class ShapePreservingOISZeroSmooth {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -261,7 +262,6 @@ public class ShapePreservingOISZeroSmooth {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -273,6 +273,7 @@ public class ShapePreservingOISZeroSmooth {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -286,7 +287,6 @@ public class ShapePreservingOISZeroSmooth {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,

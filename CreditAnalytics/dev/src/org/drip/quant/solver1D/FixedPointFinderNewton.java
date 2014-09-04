@@ -105,6 +105,6 @@ public class FixedPointFinderNewton extends org.drip.quant.solver1D.FixedPointFi
 	{
 		super (dblOFGoal, of, null, bWhine);
 
-		_ei = new org.drip.quant.solver1D.ExecutionInitializer (_of, null);
+		_ei = new org.drip.quant.solver1D.ExecutionInitializer (_of, null, true);
 	}
 }

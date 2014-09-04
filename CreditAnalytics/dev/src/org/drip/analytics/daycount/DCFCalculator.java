@@ -61,7 +61,6 @@ public interface DCFCalculator {
 	 * @param dblStart Start Date
 	 * @param dblEnd End Date
 	 * @param bApplyEOMAdj Apply end-of-month adjustment (true)
-	 * @param dblMaturity Maturity Date
 	 * @param actactParams ActActParams
 	 * @param strCalendar Holiday Calendar
 	 * 
@@ -74,7 +73,6 @@ public interface DCFCalculator {
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception;
@@ -85,7 +83,6 @@ public interface DCFCalculator {
 	 * @param dblStart Start Date
 	 * @param dblEnd End Date
 	 * @param bApplyEOMAdj Apply end-of-month adjustment (true)
-	 * @param dblMaturity Maturity Date
 	 * @param actactParams ActActParams
 	 * @param strCalendar Holiday Calendar
 	 * 
@@ -98,7 +95,6 @@ public interface DCFCalculator {
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception;

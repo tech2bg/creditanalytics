@@ -74,6 +74,7 @@ public class FixFloatFixFloatAnalysis {
 		List<CouponPeriod> lsFixPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
+			bFixMTMOn ? Double.NaN : dtEffective.julian(),
 			null,
 			2,
 			"Act/360",
@@ -87,7 +88,6 @@ public class FixFloatFixFloatAnalysis {
 
 		FixedStream fixStream = new FixedStream (
 			strFixedCurrency,
-			new FXMTMSetting (cp, bFixMTMOn),
 			0.02,
 			-1.,
 			null,
@@ -103,6 +103,7 @@ public class FixFloatFixFloatAnalysis {
 		List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
+			Double.NaN,
 			null,
 			12 / iTenorInMonths,
 			"Act/360",
@@ -116,7 +117,6 @@ public class FixFloatFixFloatAnalysis {
 
 		FloatingStream floatStream = new FloatingStream (
 			strFloatCurrency,
-			null,
 			0.,
 			1.,
 			null,

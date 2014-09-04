@@ -52,7 +52,6 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 	private java.lang.String _strCurrency = "";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.params.FXMTMSetting _fxmtm = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
@@ -175,6 +174,26 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		return prwc;
 	}
 
+	private double notional (
+		final double dblDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		if (dblDate <= _dblEffective) {
+			org.drip.analytics.period.CouponPeriod cp = _lsCouponPeriod.get (0);
+
+			return cp.notional (cp.startDate()) * cp.fx (csqs);
+		}
+
+		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
+			if (cp.contains (dblDate)) return cp.notional (dblDate) * cp.fx (csqs);
+		}
+
+		org.drip.analytics.period.CouponPeriod cp = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
+
+		return cp.notional (cp.endDate()) * cp.fx (csqs);
+	}
+
 	protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -188,7 +207,6 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 	 * Full-featured instantiation of the Fixed Stream instance
 	 * 
 	 * @param strCurrency => Pay Currency
-	 * @param fxmtm FX MTM setting
 	 * @param dblCoupon Fixed Coupon
 	 * @param dblNotional => Notional Amount
 	 * @param notlSchedule => Notional Schedule
@@ -199,7 +217,6 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 
 	public FixedStream (
 		final java.lang.String strCurrency,
-		final org.drip.product.params.FXMTMSetting fxmtm,
 		final double dblCoupon,
 		final double dblNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
@@ -219,16 +236,13 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_fxmtm = fxmtm;
-
 		_dblEffective = _lsCouponPeriod.get (0).startDate();
 
 		_dblMaturity = _lsCouponPeriod.get (iNumCouponPeriod - 1).endDate();
 
 		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
 			if (!cp.setBaseNotional (dblNotional) || !cp.setNotionalSchedule (_notlSchedule) ||
-				!cp.setFixedCoupon (dblCoupon) || (null != fxmtm && !fxmtm.mtmMode() && !cp.setFXFixingDate
-					(_dblEffective)))
+				!cp.setFixedCoupon (dblCoupon))
 				throw new java.lang.Exception ("FixedStream ctr: Cannot set Coupon!");
 		}
 
@@ -528,11 +542,6 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		double dblConvexityAdjustedDirtyDV01 = 0.;
 		double dblCashPayDF = java.lang.Double.NaN;
 		double dblValueNotional = java.lang.Double.NaN;
-		org.drip.quant.function1D.AbstractUnivariate auFX = null;
-
-		org.drip.state.identifier.FXLabel[] aFXLabel = fxLabel();
-
-		if (null != aFXLabel && 0 != aFXLabel.length) auFX = csqs.fxCurve (aFXLabel[0]);
 
 		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
 			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
@@ -656,8 +665,7 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		mapResult.put ("Upfront", dblConvexityAdjustedCleanPV);
 
 		try {
-			dblValueNotional = notional (dblValueDate) * (null != auFX && null != _fxmtm && !_fxmtm.mtmMode()
-				? auFX.evaluate (dblValueDate) : 1.);
+			dblValueNotional = notional (dblValueDate,csqs);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1048,11 +1056,10 @@ public class FixedStream extends org.drip.product.definition.CalibratableFixedIn
 		org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "4Y", null,
-				2, "30/360", false, true, "JPY", "JPY", null, null);
+			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtToday.julian(), "4Y",
+				java.lang.Double.NaN, null, 2, "30/360", false, true, "JPY", "JPY", null, null);
 
-		FixedStream fs = new org.drip.product.cashflow.FixedStream ("JPY", null, 0.03, 100., null,
-			lsCouponPeriod);
+		FixedStream fs = new org.drip.product.cashflow.FixedStream ("JPY", 0.03, 100., null, lsCouponPeriod);
 
 		byte[] abFS = fs.serialize();
 

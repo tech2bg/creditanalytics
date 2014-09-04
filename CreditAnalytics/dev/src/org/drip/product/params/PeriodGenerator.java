@@ -186,15 +186,16 @@ public class PeriodGenerator extends PeriodSet {
 
 		if (0 == _iFreq) {
 			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset
-				(_dblEffective, _dblMaturity, _strCouponDC, _strCalendar, _strCurrency, _strCurrency,
-					_forwardLabel, _creditLabel)))
+				(_dblEffective, _dblMaturity, java.lang.Double.NaN, _strCouponDC, _strCalendar, _strCurrency,
+					_strCurrency, _forwardLabel, _creditLabel)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
 				if (null == (_lsCouponPeriod =
 					org.drip.analytics.support.PeriodHelper.ForwardPeriodSingleReset (
 						_dblEffective, // Effective
--						_dblMaturity, // Maturity
+						_dblMaturity, // Maturity
+						java.lang.Double.NaN, // FX Fixing Date
 						_dapEffective, // Effective DAP
 						_dapMaturity, // Maturity DAP
 						_dapPeriodStart, // Period Start DAP
@@ -218,9 +219,10 @@ public class PeriodGenerator extends PeriodSet {
 						return false;
 			} else {
 				if (null == (_lsCouponPeriod =
-					org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset
-						(_dblEffective, // Effective
+					org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (
+						_dblEffective, // Effective
 						_dblMaturity, // Maturity
+						java.lang.Double.NaN, // FX Fixing Date
 						_dapEffective, // Effective DAP
 						_dapMaturity, // Maturity DAP
 						_dapPeriodStart, // Period Start DAP

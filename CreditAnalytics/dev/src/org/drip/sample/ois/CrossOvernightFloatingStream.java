@@ -182,6 +182,7 @@ public class CrossOvernightFloatingStream {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
+				Double.NaN,
 				null,
 				null,
 				"Act/360",
@@ -195,7 +196,6 @@ public class CrossOvernightFloatingStream {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				-1.,
 				null,
@@ -207,6 +207,7 @@ public class CrossOvernightFloatingStream {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -220,7 +221,6 @@ public class CrossOvernightFloatingStream {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				adblCoupon[i],
 				1.,
 				null,
@@ -424,7 +424,14 @@ public class CrossOvernightFloatingStream {
 			lsfc.add (dt, fri, dblFlatFixing);
 
 			if (dt.julian() <= dtValue.julian()) {
-				double dblAccrualFraction = Convention.YearFraction (dblPrevDate, dt.julian(), "Act/360", false, Double.NaN, null, "USD");
+				double dblAccrualFraction = Convention.YearFraction (
+					dblPrevDate,
+					dt.julian(),
+					"Act/360",
+					false,
+					null,
+					"USD"
+				);
 
 				dblAccount *= (1. + dblFlatFixing * dblAccrualFraction);
 			}
@@ -478,6 +485,7 @@ public class CrossOvernightFloatingStream {
 		List<CouponPeriod> lsGeometricFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
+			Double.NaN,
 			null,
 			4,
 			"Act/360",
@@ -492,7 +500,6 @@ public class CrossOvernightFloatingStream {
 
 		FloatingStream floatStreamGeometric = new FloatingStream (
 			strCurrency,
-			null,
 			0.,
 			-1.,
 			null,
@@ -504,6 +511,7 @@ public class CrossOvernightFloatingStream {
 		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
+			Double.NaN,
 			null,
 			4,
 			"Act/360",
@@ -518,7 +526,6 @@ public class CrossOvernightFloatingStream {
 
 		FloatingStream floatStreamArithmetic = new FloatingStream (
 			strCurrency,
-			null,
 			0.,
 			-1.,
 			null,

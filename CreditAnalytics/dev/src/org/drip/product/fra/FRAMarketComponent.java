@@ -108,7 +108,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 			double dblForwardDCF = org.drip.analytics.daycount.Convention.YearFraction (dblMaturity, new
 				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (fri.tenor()).julian(),
-					dayCount(), false, dblMaturity, null, calendar());
+					dayCount(), false, null, calendar());
 
 			double dblParDCForward = dcFunding.libor (dblEffectiveDate, dblMaturity);
 

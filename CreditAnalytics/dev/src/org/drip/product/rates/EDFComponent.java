@@ -81,7 +81,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 				dblForwardDF = ecqs.price();
 			else if (ecqs.containsRate())
 				dblForwardDF = 1. / (1. + org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-					_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar) * ecqs.rate());
+					_dblMaturity, _strDC, false, null, _strCalendar) * ecqs.rate());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -372,7 +372,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 
 			lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (_dblEffective, _dblMaturity,
 				_dblEffective, 0., org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
-					_dblMaturity, _strDC, false, _dblMaturity, null, _strCalendar)));
+					_dblMaturity, _strDC, false, null, _strCalendar)));
 
 			return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblEffective, _dblMaturity,
 				_dblMaturity, notional (_dblMaturity),
@@ -447,7 +447,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset (_dblEffective, _dblMaturity,
-			_strDC, _strCalendar, _strCurrency, _strCurrency, _fri, null);
+			java.lang.Double.NaN, _strDC, _strCalendar, _strCurrency, _strCurrency, _fri, null);
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
@@ -489,7 +489,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 
 			mapResult.put ("Rate", ((1. / dblUnadjustedAnnuity) - 1.) /
 				org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
-					false, _dblMaturity, null, _strCalendar));
+					false, null, _strCalendar));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -682,7 +682,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 			else if (ecqs.containsPrice())
 				dblForwardRate = ((1. / ecqs.price()) - 1.) /
 					org.drip.analytics.daycount.Convention.YearFraction (_dblEffective, _dblMaturity, _strDC,
-						false, _dblMaturity, null, _strCalendar);
+						false, null, _strCalendar);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

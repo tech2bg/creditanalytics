@@ -61,7 +61,6 @@ public class DC30_360 implements org.drip.analytics.daycount.DCFCalculator {
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -83,7 +82,6 @@ public class DC30_360 implements org.drip.analytics.daycount.DCFCalculator {
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception

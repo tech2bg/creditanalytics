@@ -186,6 +186,7 @@ public class IBOR {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				4,
 				"Act/360",
@@ -199,7 +200,6 @@ public class IBOR {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,
@@ -213,6 +213,7 @@ public class IBOR {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				12 / iForwardTenorFreq,
 				"Act/360",
@@ -226,7 +227,6 @@ public class IBOR {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -274,6 +274,7 @@ public class IBOR {
 			List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -287,7 +288,6 @@ public class IBOR {
 
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,
@@ -303,6 +303,7 @@ public class IBOR {
 			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				12 / iForwardTenorFreq,
 				"Act/360",
@@ -316,7 +317,6 @@ public class IBOR {
 
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,

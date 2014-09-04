@@ -55,7 +55,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 	private java.lang.String _strCurrency = "";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.params.FXMTMSetting _fxmtm = null;
 	private org.drip.state.identifier.ForwardLabel _fri = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
@@ -128,6 +127,26 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		return prwc;
 	}
 
+	private double notional (
+		final double dblDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		if (dblDate <= _dblEffective) {
+			org.drip.analytics.period.CouponPeriod cp = _lsCouponPeriod.get (0);
+
+			return cp.notional (cp.startDate()) * cp.fx (csqs);
+		}
+
+		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
+			if (cp.contains (dblDate)) return cp.notional (dblDate) * cp.fx (csqs);
+		}
+
+		org.drip.analytics.period.CouponPeriod cp = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
+
+		return cp.notional (cp.endDate()) * cp.fx (csqs);
+	}
+
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -141,7 +160,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 	 * FloatingStream constructor
 	 * 
 	 * @param strCurrency Cash Flow Currency
-	 * @param fxmtm FX MTM setting
 	 * @param dblSpread Spread
 	 * @param dblNotional Initial Notional Amount
 	 * @param notlSchedule Notional Schedule
@@ -154,7 +172,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 	public FloatingStream (
 		final java.lang.String strCurrency,
-		final org.drip.product.params.FXMTMSetting fxmtm,
 		final double dblSpread,
 		final double dblNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
@@ -173,7 +190,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		if (0 == iNumPeriod) throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params!");
 
-		_fxmtm = fxmtm;
 		_bIsReference = bIsReference;
 
 		if (null == (_notlSchedule = notlSchedule))
@@ -185,8 +201,8 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
 			if (!cp.setBaseNotional (dblNotional) || !cp.setNotionalSchedule (_notlSchedule) || !cp.setSpread
-				(_dblSpread) || (null != _fxmtm && !_fxmtm.mtmMode() && !cp.setFXFixingDate (_dblEffective)))
-				throw new java.lang.Exception ("FixedStream ctr: Cannot set Spread!");
+				(_dblSpread))
+				throw new java.lang.Exception ("FixedStream ctr: Cannot Initialize Coupon Periods!");
 		}
 
 		_strCode = _strCurrency + "::" + _fri.fullyQualifiedName() + "::" + new
@@ -496,7 +512,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 		double dblValueNotional = java.lang.Double.NaN;
-		org.drip.quant.function1D.AbstractUnivariate auFX = null;
 
 		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
 			(strCurrency);
@@ -621,8 +636,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 			dblConvexityAdjustedCleanDV01;
 
 		try {
-			dblValueNotional = notional (dblValueDate) * _dblNotional * (null != auFX && null != _fxmtm &&
-				!_fxmtm.mtmMode() ? auFX.evaluate (dblValueDate) : 1.);
+			dblValueNotional = notional (dblValueDate, csqs);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

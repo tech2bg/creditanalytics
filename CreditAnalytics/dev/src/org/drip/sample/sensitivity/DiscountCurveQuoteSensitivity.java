@@ -187,6 +187,7 @@ public class DiscountCurveQuoteSensitivity {
 			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -200,7 +201,6 @@ public class DiscountCurveQuoteSensitivity {
 
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
-				null,
 				0.,
 				-1.,
 				null,
@@ -212,6 +212,7 @@ public class DiscountCurveQuoteSensitivity {
 			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
+				Double.NaN,
 				null,
 				2,
 				"Act/360",
@@ -225,7 +226,6 @@ public class DiscountCurveQuoteSensitivity {
 
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
-				null,
 				0.,
 				1.,
 				null,

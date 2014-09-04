@@ -50,6 +50,7 @@ package org.drip.quant.solver1D;
  */
 
 public class ExecutionInitializer {
+
 	class StartingVariateOF {
 		public double _dblOF = java.lang.Double.NaN;
 		public double _dblVariate = java.lang.Double.NaN;
@@ -65,6 +66,7 @@ public class ExecutionInitializer {
 		}
 	}
 
+	private boolean _bTrendBracketRight = false;
 	private org.drip.quant.function1D.AbstractUnivariate _of = null;
 	private org.drip.quant.solver1D.ConvergenceControlParams _ccp = null;
 
@@ -127,9 +129,15 @@ public class ExecutionInitializer {
 		double dblBracketRight = dblVariate + dblBracketWidth;
 
 		while (0 <= iNumExpansionsCurrent--) {
-			if (null != (sv = validateVariate (dblBracketRight, bop))) return sv;
+			if (_bTrendBracketRight) {
+				if (null != (sv = validateVariate (dblBracketRight, bop))) return sv;
 
-			if (null != (sv = validateVariate (dblBracketLeft, bop))) return sv;
+				if (null != (sv = validateVariate (dblBracketLeft, bop))) return sv;
+			} else {
+				if (null != (sv = validateVariate (dblBracketLeft, bop))) return sv;
+
+				if (null != (sv = validateVariate (dblBracketRight, bop))) return sv;
+			}
 
 			dblBracketWidth *= dblBracketWidthExpansionFactor;
 			dblBracketLeft = dblVariate - dblBracketWidth;
@@ -289,19 +297,23 @@ public class ExecutionInitializer {
 	 * 
 	 * @param of Objective Function
 	 * @param ccp Convergence Control Parameters
+	 * @param bTrendBracketRight TRUE => Start Right Trending in search of a Bracket Variate
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
 	public ExecutionInitializer (
 		final org.drip.quant.function1D.AbstractUnivariate of,
-		final org.drip.quant.solver1D.ConvergenceControlParams ccp)
+		final org.drip.quant.solver1D.ConvergenceControlParams ccp,
+		final boolean bTrendBracketRight)
 		throws java.lang.Exception
 	{
 		if (null == (_of = of))
 			throw new java.lang.Exception ("ExecutionInitializer constructor: Invalid inputs");
 
 		if (null == (_ccp = ccp)) _ccp = new org.drip.quant.solver1D.ConvergenceControlParams();
+
+		_bTrendBracketRight = bTrendBracketRight;
 	}
 
 	/**

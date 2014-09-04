@@ -61,12 +61,11 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, dblMaturity, bApplyEOMAdj);
+		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, bApplyEOMAdj);
 
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_Act_ISDA.yearFraction: Cannot create DateEOMAdjustment!");
@@ -83,12 +82,11 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 		final double dblStart,
 		final double dblEnd,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, dblMaturity, bApplyEOMAdj);
+		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, bApplyEOMAdj);
 
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_Act_ISDA.daysAccrued: Cannot create DateEOMAdjustment!");

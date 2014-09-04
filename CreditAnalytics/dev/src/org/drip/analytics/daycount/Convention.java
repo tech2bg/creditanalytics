@@ -590,7 +590,6 @@ public class Convention {
 	 * @param dblEnd End Date
 	 * @param strDayCount Day count convention
 	 * @param bApplyEOMAdj Apply end-of-month adjustment (true)
-	 * @param dblMaturity Maturity Date
 	 * @param actactParams ActActParams
 	 * @param strCalendar Holiday Calendar
 	 * 
@@ -604,7 +603,6 @@ public class Convention {
 		final double dblEnd,
 		final java.lang.String strDayCount,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -616,8 +614,7 @@ public class Convention {
 		org.drip.analytics.daycount.DCFCalculator dfcCalc = s_mapDCCalc.get (strDayCount);
 
 		if (null != dfcCalc)
-			return dfcCalc.yearFraction (dblStart, dblEnd, bApplyEOMAdj, dblMaturity, actactParams,
-				strCalendar);
+			return dfcCalc.yearFraction (dblStart, dblEnd, bApplyEOMAdj, actactParams, strCalendar);
 
 		System.out.println ("Convention::YearFraction => Unknown DC: " + strDayCount +
 			"; defaulting to Actual/365.25");
@@ -633,11 +630,10 @@ public class Convention {
 	 * @param dblEnd End Date
 	 * @param strDayCount Day count convention
 	 * @param bApplyEOMAdj Apply end-of-month adjustment (true)
-	 * @param dblMaturity Maturity Date
 	 * @param actactParams ActActParams
 	 * @param strCalendar Holiday Calendar
 	 * 
-	 * @return Number fo Days Accrued
+	 * @return Number of Days Accrued
 	 * 
 	 * @throws java.lang.Exception Thrown if the accrual fraction cannot be calculated
 	 */
@@ -647,7 +643,6 @@ public class Convention {
 		final double dblEnd,
 		final java.lang.String strDayCount,
 		final boolean bApplyEOMAdj,
-		final double dblMaturity,
 		final ActActDCParams actactParams,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -659,8 +654,7 @@ public class Convention {
 		org.drip.analytics.daycount.DCFCalculator dfcCalc = s_mapDCCalc.get (strDayCount);
 
 		if (null != dfcCalc)
-			return dfcCalc.daysAccrued (dblStart, dblEnd, bApplyEOMAdj, dblMaturity, actactParams,
-				strCalendar);
+			return dfcCalc.daysAccrued (dblStart, dblEnd, bApplyEOMAdj, actactParams, strCalendar);
 
 		return (int) (dblEnd - dblStart);
 	}

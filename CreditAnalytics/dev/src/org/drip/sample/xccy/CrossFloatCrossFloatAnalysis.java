@@ -75,6 +75,7 @@ public class CrossFloatCrossFloatAnalysis {
 		List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
+			bFixMTMOn ? Double.NaN : dtEffective.julian(),
 			null,
 			12 / iTenorInMonthsReference,
 			"Act/360",
@@ -88,7 +89,6 @@ public class CrossFloatCrossFloatAnalysis {
 
 		FloatingStream floatStreamReference = new FloatingStream (
 			strCurrency,
-			new FXMTMSetting (cp, bFixMTMOn),
 			0.,
 			-1.,
 			null,
@@ -106,6 +106,7 @@ public class CrossFloatCrossFloatAnalysis {
 		List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
+			bFixMTMOn ? Double.NaN : dtEffective.julian(),
 			null,
 			12 / iTenorInMonthsDerived,
 			"Act/360",
@@ -119,7 +120,6 @@ public class CrossFloatCrossFloatAnalysis {
 
 		FloatingStream floatStreamDerived = new FloatingStream (
 			strCurrency,
-			new FXMTMSetting (cp, bFixMTMOn),
 			0.,
 			1.,
 			null,
