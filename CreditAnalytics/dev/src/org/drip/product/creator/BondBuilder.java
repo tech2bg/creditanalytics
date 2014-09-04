@@ -343,7 +343,9 @@ public class BondBuilder {
 
 				lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblPeriodStart, adblDate[i],
 					dblPeriodStart, adblDate[i], adblDate[i], rpc, java.lang.Double.NaN, iFreq, 1. / iFreq,
-						"30/360", "30/360", false, false, "", strCurrency, null, null));
+						"30/360", "30/360", false, false, "", dblTotalPrincipal,
+							org.drip.product.params.FactorSchedule.CreateFromDateFactorArray (adblDate,
+								adblCouponFactor), strCurrency, null, null));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

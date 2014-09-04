@@ -179,7 +179,7 @@ public class CrossOvernightFloatingStream {
 		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.DailyPeriodDailyReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.DailyPeriodDailyReset (
 				dtEffective.julian(),
 				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
 				Double.NaN,
@@ -188,6 +188,8 @@ public class CrossOvernightFloatingStream {
 				"Act/360",
 				strCurrency,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
@@ -197,14 +199,11 @@ public class CrossOvernightFloatingStream {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				adblCoupon[i],
-				-1.,
-				null,
 				lsFloatPeriods,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -214,6 +213,8 @@ public class CrossOvernightFloatingStream {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -222,8 +223,6 @@ public class CrossOvernightFloatingStream {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				adblCoupon[i],
-				1.,
-				null,
 				lsFixedPeriods
 			);
 
@@ -482,7 +481,7 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<CouponPeriod> lsGeometricFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
+		List<CouponPeriod> lsGeometricFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			Double.NaN,
@@ -492,6 +491,8 @@ public class CrossOvernightFloatingStream {
 			false,
 			false,
 			strCurrency,
+			-1.,
+			null,
 			strCurrency,
 			ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
@@ -501,14 +502,11 @@ public class CrossOvernightFloatingStream {
 		FloatingStream floatStreamGeometric = new FloatingStream (
 			strCurrency,
 			0.,
-			-1.,
-			null,
 			lsGeometricFloatPeriods,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			false
 		);
 
-		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
+		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			Double.NaN,
@@ -518,6 +516,8 @@ public class CrossOvernightFloatingStream {
 			false,
 			false,
 			strCurrency,
+			-1.,
+			null,
 			strCurrency,
 			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
@@ -527,10 +527,7 @@ public class CrossOvernightFloatingStream {
 		FloatingStream floatStreamArithmetic = new FloatingStream (
 			strCurrency,
 			0.,
-			-1.,
-			null,
 			lsArithmeticFloatPeriods,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			false
 		);
 

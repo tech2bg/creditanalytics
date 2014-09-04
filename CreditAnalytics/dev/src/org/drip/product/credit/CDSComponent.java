@@ -416,7 +416,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 
-		_lsCouponPeriod = org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (
+		_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (
 			_dblEffective = dblEffective, // Effective
 			_dblMaturity = dblMaturity, // Maturity
 			java.lang.Double.NaN, // FX Fixing Date
@@ -433,10 +433,12 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_bApplyCpnEOMAdj,
 			strAccrualDC, // Accrual Day Count
 			_bApplyAccEOMAdj,
-			bConvCDS ? org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT :
-				org.drip.analytics.support.PeriodHelper.FULL_FRONT_PERIOD,
+			bConvCDS ? org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT :
+				org.drip.analytics.support.PeriodBuilder.FULL_FRONT_PERIOD,
 			false,
 			strCalendar,
+			_dblNotional,
+			_notlSchedule,
 			_strCouponCurrency,
 			null,
 			org.drip.state.identifier.CreditLabel.Standard (_crValParams._strCC));

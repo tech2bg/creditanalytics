@@ -115,7 +115,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						try {
 							_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod (dblStart,
 								dblEnd, dblStart, dblEnd, dblEnd, null, java.lang.Double.NaN, 2, 0.5,
-									"30/360", "30/360", false, false, "ZAR", "ZAR", null, null));
+									"30/360", "30/360", false, false, "ZAR", 1., null, "ZAR", null, null));
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 

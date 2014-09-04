@@ -7,7 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
@@ -72,7 +72,7 @@ public class CrossFloatCrossFloatAnalysis {
 			 * The Reference Leg
 			 */
 
-		List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsReferenceFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			bFixMTMOn ? Double.NaN : dtEffective.julian(),
@@ -82,6 +82,8 @@ public class CrossFloatCrossFloatAnalysis {
 			false,
 			false,
 			strCurrency,
+			-1.,
+			null,
 			strCurrency,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			null
@@ -90,10 +92,7 @@ public class CrossFloatCrossFloatAnalysis {
 		FloatingStream floatStreamReference = new FloatingStream (
 			strCurrency,
 			0.,
-			-1.,
-			null,
 			lsReferenceFloatPeriods,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			false
 		);
 
@@ -103,7 +102,7 @@ public class CrossFloatCrossFloatAnalysis {
 		 * The Derived Leg
 		 */
 
-		List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			bFixMTMOn ? Double.NaN : dtEffective.julian(),
@@ -113,6 +112,8 @@ public class CrossFloatCrossFloatAnalysis {
 			false,
 			false,
 			strCurrency,
+			1.,
+			null,
 			strCurrency,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			null
@@ -121,10 +122,7 @@ public class CrossFloatCrossFloatAnalysis {
 		FloatingStream floatStreamDerived = new FloatingStream (
 			strCurrency,
 			0.,
-			1.,
-			null,
 			lsDerivedFloatPeriods,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			false
 		);
 

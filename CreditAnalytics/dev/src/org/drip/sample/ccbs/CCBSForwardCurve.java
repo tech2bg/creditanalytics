@@ -81,7 +81,7 @@ public class CCBSForwardCurve {
 			 * The Reference 6M Leg
 			 */
 
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -91,6 +91,8 @@ public class CCBSForwardCurve {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				null
@@ -99,10 +101,7 @@ public class CCBSForwardCurve {
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -110,7 +109,7 @@ public class CCBSForwardCurve {
 			 * The Derived Leg
 			 */
 
-			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -120,6 +119,8 @@ public class CCBSForwardCurve {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				null
@@ -128,10 +129,7 @@ public class CCBSForwardCurve {
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
 				0.,
-				1.,
-				null,
 				lsDerivedFloatPeriods,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 

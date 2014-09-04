@@ -6,7 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -103,7 +103,7 @@ public class STIROption {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -113,6 +113,8 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				null
@@ -121,14 +123,11 @@ public class STIROption {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -138,6 +137,8 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -146,8 +147,6 @@ public class STIROption {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				adblCoupon[i],
-				1.,
-				null,
 				lsFixedPeriods
 			);
 
@@ -277,7 +276,7 @@ public class STIROption {
 			 * The Reference 6M Leg
 			 */
 
-			List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsReferenceFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -287,6 +286,8 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				null
@@ -295,10 +296,7 @@ public class STIROption {
 			FloatingStream fsReference = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsReferenceFloatPeriods,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
@@ -306,7 +304,7 @@ public class STIROption {
 			 * The Derived Leg
 			 */
 
-			List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -316,6 +314,8 @@ public class STIROption {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				null
@@ -324,10 +324,7 @@ public class STIROption {
 			FloatingStream fsDerived = new FloatingStream (
 				strCurrency,
 				0.,
-				1.,
-				null,
 				lsDerivedFloatPeriods,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				false
 			);
 
@@ -512,7 +509,7 @@ public class STIROption {
 	{
 		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
 
-		List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
 			Double.NaN,
@@ -522,6 +519,8 @@ public class STIROption {
 			false,
 			false,
 			strCurrency,
+			-1.,
+			null,
 			strCurrency,
 			fri,
 			null
@@ -530,14 +529,11 @@ public class STIROption {
 		FloatingStream floatStream = new FloatingStream (
 			strCurrency,
 			0.,
-			-1.,
-			null,
 			lsFloatPeriods,
-			fri,
 			false
 		);
 
-		List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
 			Double.NaN,
@@ -547,6 +543,8 @@ public class STIROption {
 			false,
 			false,
 			strCurrency,
+			1.,
+			null,
 			strCurrency,
 			null,
 			null
@@ -555,8 +553,6 @@ public class STIROption {
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
 			dblCoupon,
-			1.,
-			null,
 			lsFixedPeriods
 		);
 

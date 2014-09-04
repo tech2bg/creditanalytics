@@ -6,7 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.BlackScholesAlgorithm;
@@ -103,7 +103,7 @@ public class DeterministicVolBlackScholes {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -113,6 +113,8 @@ public class DeterministicVolBlackScholes {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				null
@@ -121,14 +123,11 @@ public class DeterministicVolBlackScholes {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrTenor[i],
 				Double.NaN,
@@ -138,6 +137,8 @@ public class DeterministicVolBlackScholes {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -146,8 +147,6 @@ public class DeterministicVolBlackScholes {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				adblCoupon[i],
-				1.,
-				null,
 				lsFixedPeriods
 			);
 

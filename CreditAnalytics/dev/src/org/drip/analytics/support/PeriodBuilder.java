@@ -29,12 +29,12 @@ package org.drip.analytics.support;
  */
 
 /**
- * PeriodHelper exposes several period construction functionality.
+ * PeriodBuilder exposes several period construction functionality.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class PeriodHelper {
+public class PeriodBuilder {
 
 	/**
 	 * Period Set Generation Customization - No adjustment on either end
@@ -118,6 +118,14 @@ public class PeriodHelper {
 
 		if (!org.drip.quant.common.StringUtil.StringMatch (strCalendar, periodRight.calendar())) return null;
 
+		double dblBaseNotional = periodLeft.baseNotional();
+
+		if (dblBaseNotional != periodRight.baseNotional()) return null;
+
+		org.drip.product.params.FactorSchedule notlSchedule = periodLeft.notionalSchedule();
+
+		if (!notlSchedule.match (periodRight.notionalSchedule())) return null;
+
 		java.lang.String strPayCurrency = periodLeft.payCurrency();
 
 		if (!org.drip.quant.common.StringUtil.StringMatch (strPayCurrency, periodRight.payCurrency()))
@@ -141,7 +149,8 @@ public class PeriodHelper {
 						periodRight.rpc()), java.lang.Double.NaN, iFreq, periodLeft.accrualDCF
 							(periodRight.accrualStartDate()) + periodRight.couponDCF(), strCouponDC,
 								strAccrualDC, bCouponEOMAdjustment, bAccrualEOMAdjustment, strCalendar,
-									strPayCurrency, forwardLabel, creditLabel);
+									dblBaseNotional, notlSchedule, strPayCurrency, forwardLabel,
+										creditLabel);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -171,6 +180,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
@@ -198,6 +209,8 @@ public class PeriodHelper {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
@@ -268,7 +281,8 @@ public class PeriodHelper {
 						(dblAdjustedStartDate, dblAdjustedEndDate, dblAccrualStartDate, dblAccrualEndDate,
 							DAPAdjust (dblPeriodEndDate, dapPay), rpc, dblFXFixingDate, iFreq, dblDCF,
 								strCouponDC, strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar,
-									strPayCurrency, forwardLabel, creditLabel));
+									dblBaseNotional, notlSchedule, strPayCurrency, forwardLabel,
+										creditLabel));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -326,6 +340,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
@@ -353,6 +369,8 @@ public class PeriodHelper {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
@@ -408,8 +426,8 @@ public class PeriodHelper {
 					lsCashflowPeriod.add (periodPenultimate = new org.drip.analytics.period.CouponPeriod
 						(dblAdjustedStartDate, dblAdjustedEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust
 							(dblPeriodEndDate, dapPay), rpc, dblFXFixingDate, iFreq, dblDCF, strCouponDC,
-								strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, strPayCurrency,
-									forwardLabel, creditLabel));
+								strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, dblBaseNotional,
+									notlSchedule, strPayCurrency, forwardLabel, creditLabel));
 				} else {
 					double dblAccrualStart = DAPAdjust (dblPeriodStartDate, dapAccrualStart);
 
@@ -430,8 +448,8 @@ public class PeriodHelper {
 					lsCashflowPeriod.add (periodFinal = new org.drip.analytics.period.CouponPeriod
 						(dblAdjustedStartDate, dblPeriodEndDate, dblAccrualStart, dblPeriodEndDate, DAPAdjust
 							(dblPeriodEndDate, dapPay), rpc, dblFXFixingDate, iFreq, dblDCF, strCouponDC,
-								strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, strPayCurrency,
-									forwardLabel, creditLabel));
+								strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, dblBaseNotional,
+									notlSchedule, strPayCurrency, forwardLabel, creditLabel));
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -482,6 +500,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditlabel The Credit Label
@@ -508,6 +528,8 @@ public class PeriodHelper {
 		final boolean bApplyAccEOMAdj,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
@@ -579,7 +601,8 @@ public class PeriodHelper {
 				lsCashflowPeriod.add (new org.drip.analytics.period.CouponPeriod (dblAdjustedStartDate,
 					dblAdjustedEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay),
 						rpc, dblFXFixingDate, iFreq, dblDCF, strCouponDC, strAccrualDC, bApplyCpnEOMAdj,
-							bApplyAccEOMAdj, strCalendar, strPayCurrency, forwardLabel, creditLabel));
+							bApplyAccEOMAdj, strCalendar, dblBaseNotional, notlSchedule, strPayCurrency,
+								forwardLabel, creditLabel));
 
 				dtPeriodStart = dtPeriodEnd;
 
@@ -617,6 +640,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
 	 * @param forwardLabel The Forward Label
@@ -643,6 +668,8 @@ public class PeriodHelper {
 		final boolean bApplyAccEOMAdj,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final int iAccrualCompoundingRule,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
@@ -708,8 +735,8 @@ public class PeriodHelper {
 						null != forwardLabel ? org.drip.analytics.support.ResetUtil.DailyResetPeriod
 							(dblAdjustedStartDate, dblAdjustedEndDate, iAccrualCompoundingRule, strCalendar)
 								: null, dblFXFixingDate, iFreq, dblDCF, strCouponDC, strAccrualDC,
-									bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, strPayCurrency,
-										forwardLabel, creditLabel));
+									bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, dblBaseNotional,
+										notlSchedule, strPayCurrency, forwardLabel, creditLabel));
 
 				dtPeriodStart = dtPeriodEnd;
 
@@ -739,6 +766,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
@@ -757,13 +786,16 @@ public class PeriodHelper {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		return BackwardPeriodSingleReset (dblEffective, dblMaturity, dblFXFixingDate, dap, dap, dap, dap,
 			dap, dap, dap, dap, iFreq, strDayCount, bApplyEOMAdj, strDayCount, bApplyEOMAdj, iPSEC,
-				bCouponDCFOffOfFreq, strCalendar, strPayCurrency, forwardLabel, creditLabel);
+				bCouponDCFOffOfFreq, strCalendar, dblBaseNotional, notlSchedule, strPayCurrency,
+					forwardLabel, creditLabel);
 	}
 
 	/**
@@ -780,6 +812,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 		determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
@@ -798,13 +832,16 @@ public class PeriodHelper {
 		final int iPSEC,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		return ForwardPeriodSingleReset (dblEffective, dblMaturity, dblFXFixingDate, dap, dap, dap, dap, dap,
 			dap, dap, dap, iFreq, strDayCount, bApplyEOMAdj, strDayCount, bApplyEOMAdj, iPSEC,
-				bCouponDCFOffOfFreq, strCalendar, strPayCurrency, forwardLabel, creditLabel);
+				bCouponDCFOffOfFreq, strCalendar, dblBaseNotional, notlSchedule, strPayCurrency,
+					forwardLabel, creditLabel);
 	}
 
 	/**
@@ -820,6 +857,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 	determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
@@ -837,13 +876,16 @@ public class PeriodHelper {
 		final boolean bApplyEOMAdj,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		return RegularPeriodSingleReset (dblEffective, strMaturityTenor, dblFXFixingDate, dap, dap, dap, dap,
 			dap, dap, dap, dap, iFreq, strDayCount, bApplyEOMAdj, strDayCount, bApplyEOMAdj,
-				bCouponDCFOffOfFreq, strCalendar, strPayCurrency, forwardLabel, creditLabel);
+				bCouponDCFOffOfFreq, strCalendar, dblBaseNotional, notlSchedule, strPayCurrency,
+					forwardLabel, creditLabel);
 	}
 
 	/**
@@ -859,6 +901,8 @@ public class PeriodHelper {
 	 * @param bCouponDCFOffOfFreq TRUE => Full coupon DCF = 1 / Frequency; FALSE => Full Coupon DCF
 	 * 	determined from Coupon DCF and the coupon accrual period
 	 * @param strCalendar Optional Holiday Calendar for accrual
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
 	 * @param forwardLabel The Forward Label
@@ -877,6 +921,8 @@ public class PeriodHelper {
 		final boolean bApplyEOMAdj,
 		final boolean bCouponDCFOffOfFreq,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final int iAccrualCompoundingRule,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
@@ -884,7 +930,8 @@ public class PeriodHelper {
 	{
 		return RegularPeriodDailyReset (dblEffective, strMaturityTenor, dblFXFixingDate, dap, dap, dap, dap,
 			dap, dap, dap, iFreq, strDayCount, bApplyEOMAdj, strDayCount, bApplyEOMAdj, bCouponDCFOffOfFreq,
-				strCalendar, strPayCurrency, iAccrualCompoundingRule, forwardLabel, creditLabel);
+				strCalendar, dblBaseNotional, notlSchedule, strPayCurrency, iAccrualCompoundingRule,
+					forwardLabel, creditLabel);
 	}
 
 	/**
@@ -896,6 +943,8 @@ public class PeriodHelper {
 	 * @param strDayCount Day Count
 	 * @param strCalendar Optional Holiday Calendar for accrual
 	 * @param strCouponCurrency Pay Currency
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
@@ -910,6 +959,8 @@ public class PeriodHelper {
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
 		final java.lang.String strCouponCurrency,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
@@ -933,7 +984,8 @@ public class PeriodHelper {
 				dblEffective, dblMaturity, dblMaturity, rpc, dblFXFixingDate, 1,
 					org.drip.analytics.daycount.Convention.YearFraction (dblEffective, dblMaturity,
 						strDayCount, false, null, strCalendar), strDayCount, strDayCount, false, false,
-							strCalendar, strPayCurrency, forwardLabel, creditLabel));
+							strCalendar, dblBaseNotional, notlSchedule, strPayCurrency, forwardLabel,
+								creditLabel));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -954,6 +1006,8 @@ public class PeriodHelper {
 	 * @param strDC Accrual/Coupon day count
 	 * @param strCalendar Optional Holiday Calendar for accrual
 	 * @param strCouponCurrency Pay Currency
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
 	 * @param forwardLabel The Forward Label
@@ -971,6 +1025,8 @@ public class PeriodHelper {
 		final java.lang.String strDC,
 		final java.lang.String strCalendar,
 		final java.lang.String strCouponCurrency,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final int iAccrualCompoundingRule,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
@@ -1017,8 +1073,8 @@ public class PeriodHelper {
 							(dblAdjustedEndDate, dapPay), rpc, dblFXFixingDate, 360,
 								org.drip.analytics.daycount.Convention.YearFraction (dblAdjustedStartDate,
 									dblAdjustedEndDate, strDC, false, null, strCalendar), strDC, strDC,
-										false, false, strCalendar, strPayCurrency, forwardLabel,
-											creditLabel));
+										false, false, strCalendar, dblBaseNotional, notlSchedule,
+											strPayCurrency, forwardLabel, creditLabel));
 
 				dblPeriodStartDate = dblAdjustedEndDate;
 			} catch (java.lang.Exception e) {

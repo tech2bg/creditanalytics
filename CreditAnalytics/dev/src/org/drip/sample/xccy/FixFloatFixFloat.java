@@ -6,7 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
@@ -70,7 +70,7 @@ public class FixFloatFixFloat {
 		 * The Fixed Leg
 		 */
 
-		List<CouponPeriod> lsFixPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFixPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
 			bFixMTMOn ? Double.NaN : dtEffective.julian(),
@@ -80,6 +80,8 @@ public class FixFloatFixFloat {
 			false,
 			false,
 			strFixedCurrency,
+			-1.,
+			null,
 			strFixedCurrency,
 			null,
 			null
@@ -88,8 +90,6 @@ public class FixFloatFixFloat {
 		FixedStream fixStream = new FixedStream (
 			strFixedCurrency,
 			0.02,
-			-1.,
-			null,
 			lsFixPeriods
 		);
 
@@ -99,7 +99,7 @@ public class FixFloatFixFloat {
 		 * The Derived Leg
 		 */
 
-		List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strTenor,
 			Double.NaN,
@@ -109,6 +109,8 @@ public class FixFloatFixFloat {
 			false,
 			false,
 			strFloatCurrency,
+			1.,
+			null,
 			strFloatCurrency,
 			ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			null
@@ -117,10 +119,7 @@ public class FixFloatFixFloat {
 		FloatingStream floatStream = new FloatingStream (
 			strFloatCurrency,
 			0.,
-			1.,
-			null,
 			lsDerivedFloatPeriods,
-			ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			false
 		);
 

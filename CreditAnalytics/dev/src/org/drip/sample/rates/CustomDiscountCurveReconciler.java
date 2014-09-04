@@ -6,7 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
@@ -192,7 +192,7 @@ public class CustomDiscountCurveReconciler {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -202,6 +202,8 @@ public class CustomDiscountCurveReconciler {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				null
@@ -210,14 +212,11 @@ public class CustomDiscountCurveReconciler {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -227,6 +226,8 @@ public class CustomDiscountCurveReconciler {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -235,8 +236,6 @@ public class CustomDiscountCurveReconciler {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				0.,
-				1.,
-				null,
 				lsFixedPeriods
 			);
 

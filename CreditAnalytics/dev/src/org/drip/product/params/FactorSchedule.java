@@ -340,6 +340,37 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		return _adblFactor;
 	}
 
+	/**
+	 * Indicate if this Factor Schedule matches the "other" Entry-by-Entry
+	 * 
+	 * @param fsOther The "Other" Factor Schedule Instance
+	 * 
+	 * @return TRUE => The Factor Schedules match Entry-by-Entry
+	 */
+
+	public boolean match (
+		final FactorSchedule fsOther)
+	{
+		if (null == fsOther) return false;
+
+		double[] adblOtherDate = fsOther._adblDate;
+		double[] adblOtherFactor = fsOther._adblFactor;
+		int iNumOtherDate = adblOtherDate.length;
+		int iNumOtherFactor = adblOtherFactor.length;
+
+		if (iNumOtherDate != _adblDate.length || iNumOtherFactor != _adblFactor.length) return false;
+
+		for (int i = 0; i < iNumOtherDate; ++i) {
+			if (adblOtherDate[i] != _adblDate[i]) return false;
+		}
+
+		for (int i = 0; i < iNumOtherFactor; ++i) {
+			if (adblOtherFactor[i] != _adblFactor[i]) return false;
+		}
+
+		return true;
+	}
+
 	@Override public java.lang.String fieldDelimiter()
 	{
 		return "`";

@@ -81,9 +81,9 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 * Period Cash Extensive Fields
 	 */
 
-	private double _dblNotional = 1.;
-	private double _dblSpread = java.lang.Double.NaN;
 	private double _dblFixedCoupon = java.lang.Double.NaN;
+	private double _dblFloatSpread = java.lang.Double.NaN;
+	private double _dblBaseNotional = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 
 	private double resetPeriodRate (
@@ -233,6 +233,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 * @param bApplyCpnEOMAdj Apply end-of-month adjustment to the coupon periods
 	 * @param bApplyAccEOMAdj Apply end-of-month adjustment to the accrual periods
 	 * @param strCalendar Holiday Calendar
+	 * @param dblBaseNotional Coupon Period Base Notional
+	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param strPayCurrency Pay Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
@@ -255,6 +257,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final boolean bApplyCpnEOMAdj,
 		final boolean bApplyAccEOMAdj,
 		final java.lang.String strCalendar,
+		final double dblBaseNotional,
+		final org.drip.product.params.FactorSchedule notlSchedule,
 		final java.lang.String strPayCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
@@ -266,8 +270,10 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 					!org.drip.quant.common.NumberUtil.IsValid (_dblAccrualEndDate = dblAccrualEndDate) ||
 						!org.drip.quant.common.NumberUtil.IsValid (_dblPayDate = dblPayDate) ||
 							!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || _dblStartDate >=
-								_dblEndDate || _dblAccrualStartDate >= _dblAccrualEndDate || null ==
-									(_strPayCurrency = strPayCurrency) || _strPayCurrency.isEmpty())
+								_dblEndDate || _dblAccrualStartDate >= _dblAccrualEndDate ||
+									!org.drip.quant.common.NumberUtil.IsValid (_dblBaseNotional =
+										dblBaseNotional) || null == (_strPayCurrency = strPayCurrency) ||
+											_strPayCurrency.isEmpty())
 			throw new java.lang.Exception ("CouponPeriod ctr: Invalid inputs");
 
 		_iFreq = iFreq;
@@ -281,6 +287,9 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		if (null != (_forwardLabel = forwardLabel) && null == (_rpc = rpc))
 			throw new java.lang.Exception ("CouponPeriod ctr: Invalid Forward/Reset Combination");
+
+		if (null == (_notlSchedule = notlSchedule))
+			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
 	}
 
 	/**
@@ -311,7 +320,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod,
 			super.fieldDelimiter());
 
-		if (null == astrField || 21 > astrField.length)
+		if (null == astrField || 22 > astrField.length)
 			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid number of fields");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -449,26 +458,32 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		 * Period "Extensive Cash" Parameter Settings
 		 */
 
-		if (null == astrField[18] || astrField[18].isEmpty())
+		if (null == astrField[18] || astrField[18].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[18]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Base Notional");
+
+		_dblBaseNotional = new java.lang.Double (astrField[18]);
+
+		if (null == astrField[19] || astrField[19].isEmpty())
 			throw new java.lang.Exception
 				("CouponPeriod de-serializer: Cannot locate Period Notional Schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[18]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[19]))
 			_notlSchedule = null;
 		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[18].getBytes());
-
-		if (null == astrField[19] || astrField[19].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
-
-		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[19])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[19]);
+			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[19].getBytes());
 
 		if (null == astrField[20] || astrField[20].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Coupon Spread");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
 
-		_dblSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20]) ?
-			java.lang.Double.NaN : new java.lang.Double (astrField[20]);
+		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20])
+			? java.lang.Double.NaN : new java.lang.Double (astrField[20]);
+
+		if (null == astrField[21] || astrField[21].isEmpty())
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Float Spread");
+
+		_dblFloatSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21])
+			? java.lang.Double.NaN : new java.lang.Double (astrField[21]);
 
 		/*
 		 * Period "Extensive Cash" Parameter Settings - End
@@ -609,21 +624,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Set the period FX Fixing Date
-	 * 
-	 * @param dblFXFixingDate The FX Fixing Date
-	 * 
-	 * @return TRUE => The FX Fixing Date successfully set
-	 */
-
-	public boolean setFXFixingDate (
-		final double dblFXFixingDate)
-	{
-		_dblFXFixingDate = dblFXFixingDate;
-		return true;
-	}
-
-	/**
 	 * Coupon Period FX
 	 * 
 	 * @param csqs Market Parameters
@@ -648,7 +648,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
 
 		if (null == auFX)
-			throw new java.lang.Exception ("CouponPeriod::fx => No FX Curve for " +
+			throw new java.lang.Exception ("CouponPeriod::fx => No Curve for " +
 				fxLabel.fullyQualifiedName());
 
 		return auFX.evaluate (_dblPayDate);
@@ -842,23 +842,23 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 	public double spread()
 	{
-		return _dblSpread;
+		return _dblFloatSpread;
 	}
 
 	/**
-	 * Set the Coupon Spread
+	 * Set the Period Floater Spread
 	 * 
-	 * @param dblSpread The Coupon Spread
+	 * @param dblFloatSpread The Period Floater Spread
 	 * 
-	 * @return The Full Coupon Spread
+	 * @return TRUE => The Period Floater Spread successfully set
 	 */
 
-	public boolean setSpread (
-		final double dblSpread)
+	public boolean setFloatSpread (
+		final double dblFloatSpread)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpread)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblFloatSpread)) return false;
 
-		_dblSpread = dblSpread;
+		_dblFloatSpread = dblFloatSpread;
 		return true;
 	}
 
@@ -870,24 +870,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 	public double baseNotional()
 	{
-		return _dblNotional;
-	}
-
-	/**
-	 * Set the Period Base Notional
-	 * 
-	 * @param dblNotional The Period Base Notional
-	 * 
-	 * @return TRUE => The Period Base Notional Successfully Set
-	 */
-
-	public boolean setBaseNotional (
-		final double dblNotional)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblNotional)) return false;
-
-		_dblNotional = dblNotional;
-		return true;
+		return _dblBaseNotional;
 	}
 
 	/**
@@ -899,23 +882,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	public org.drip.product.params.FactorSchedule notionalSchedule()
 	{
 		return _notlSchedule;
-	}
-
-	/**
-	 * Set the period Notional Schedule
-	 * 
-	 * @param notlSchedule The Period Notional Schedule
-	 * 
-	 * @return TRUE => The Period Notional Schedule Successfully Set
-	 */
-
-	public boolean setNotionalSchedule (
-		final org.drip.product.params.FactorSchedule notlSchedule)
-	{
-		if (null == notlSchedule) return false;
-
-		_notlSchedule = notlSchedule;
-		return true;
 	}
 
 	/**
@@ -1048,7 +1014,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
 			throw new java.lang.Exception ("CouponPeriod::notional => Invalid Inputs");
 
-		return _dblNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate));
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate));
 	}
 
 	/**
@@ -1264,6 +1230,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		else
 			sb.append (_creditLabel.fullyQualifiedName() + fieldDelimiter());
 
+		sb.append (_dblBaseNotional + fieldDelimiter());
+
 		if (null == _notlSchedule)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
@@ -1271,7 +1239,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		sb.append (_dblFixedCoupon + fieldDelimiter());
 
-		sb.append (_dblSpread);
+		sb.append (_dblFloatSpread);
 
 		return sb.append (objectTrailer()).toString().getBytes();
 	}

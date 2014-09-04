@@ -6,7 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodHelper;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
@@ -131,7 +131,7 @@ public class OvernightIndexCurve {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -141,6 +141,8 @@ public class OvernightIndexCurve {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
@@ -149,14 +151,11 @@ public class OvernightIndexCurve {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -166,6 +165,8 @@ public class OvernightIndexCurve {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -174,8 +175,6 @@ public class OvernightIndexCurve {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				adblCoupon[i],
-				1.,
-				null,
 				lsFixedPeriods
 			);
 
@@ -208,7 +207,7 @@ public class OvernightIndexCurve {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -218,6 +217,8 @@ public class OvernightIndexCurve {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
@@ -226,14 +227,11 @@ public class OvernightIndexCurve {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -243,6 +241,8 @@ public class OvernightIndexCurve {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -251,8 +251,6 @@ public class OvernightIndexCurve {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				adblCoupon[i],
-				1.,
-				null,
 				lsFixedPeriods
 			);
 

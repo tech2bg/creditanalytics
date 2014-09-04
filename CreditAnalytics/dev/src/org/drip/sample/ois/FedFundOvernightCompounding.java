@@ -136,7 +136,7 @@ public class FedFundOvernightCompounding {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -146,6 +146,8 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
@@ -154,14 +156,11 @@ public class FedFundOvernightCompounding {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -171,6 +170,8 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -179,8 +180,6 @@ public class FedFundOvernightCompounding {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				adblCoupon[i],
-				1.,
-				null,
 				lsFixedPeriods
 			);
 
@@ -213,7 +212,7 @@ public class FedFundOvernightCompounding {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -223,6 +222,8 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
+				-1.,
+				null,
 				strCurrency,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
@@ -231,14 +232,11 @@ public class FedFundOvernightCompounding {
 			FloatingStream floatStream = new FloatingStream (
 				strCurrency,
 				0.,
-				-1.,
-				null,
 				lsFloatPeriods,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				false
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,
@@ -248,6 +246,8 @@ public class FedFundOvernightCompounding {
 				false,
 				false,
 				strCurrency,
+				1.,
+				null,
 				strCurrency,
 				null,
 				null
@@ -256,8 +256,6 @@ public class FedFundOvernightCompounding {
 			FixedStream fixStream = new FixedStream (
 				strCurrency,
 				adblCoupon[i],
-				1.,
-				null,
 				lsFixedPeriods
 			);
 
@@ -575,7 +573,7 @@ public class FedFundOvernightCompounding {
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
-		List<CouponPeriod> lsGeometricFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
+		List<CouponPeriod> lsGeometricFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			Double.NaN,
@@ -585,6 +583,8 @@ public class FedFundOvernightCompounding {
 			false,
 			false,
 			strCurrency,
+			-1.,
+			null,
 			strCurrency,
 			ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
@@ -594,14 +594,11 @@ public class FedFundOvernightCompounding {
 		FloatingStream floatStreamGeometric = new FloatingStream (
 			strCurrency,
 			0.,
-			-1.,
-			null,
 			lsGeometricFloatPeriods,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			false
 		);
 
-		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodHelper.RegularPeriodDailyReset (
+		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			Double.NaN,
@@ -611,6 +608,8 @@ public class FedFundOvernightCompounding {
 			false,
 			false,
 			strCurrency,
+			-1.,
+			null,
 			strCurrency,
 			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
@@ -620,14 +619,11 @@ public class FedFundOvernightCompounding {
 		FloatingStream floatStreamArithmetic = new FloatingStream (
 			strCurrency,
 			0.,
-			-1.,
-			null,
 			lsArithmeticFloatPeriods,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			false
 		);
 
-		List<CouponPeriod> lsFixedPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtCustomOISStart.julian(),
 			"4M",
 			Double.NaN,
@@ -637,6 +633,8 @@ public class FedFundOvernightCompounding {
 			false,
 			false,
 			strCurrency,
+			1.,
+			null,
 			strCurrency,
 			null,
 			null
@@ -645,8 +643,6 @@ public class FedFundOvernightCompounding {
 		FixedStream fixStream = new FixedStream (
 			strCurrency,
 			0.,
-			1.,
-			null,
 			lsFixedPeriods
 		);
 

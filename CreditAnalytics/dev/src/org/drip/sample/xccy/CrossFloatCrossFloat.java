@@ -70,7 +70,7 @@ public class CrossFloatCrossFloat {
 			 * The Reference Leg
 			 */
 
-		List<CouponPeriod> lsReferenceFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsReferenceFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			bFixMTMOn ? Double.NaN : dtEffective.julian(),
@@ -80,6 +80,8 @@ public class CrossFloatCrossFloat {
 			false,
 			false,
 			strCurrency,
+			-1.,
+			null,
 			strCurrency,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			null
@@ -88,10 +90,7 @@ public class CrossFloatCrossFloat {
 		FloatingStream floatStreamReference = new FloatingStream (
 			strCurrency,
 			0.,
-			-1.,
-			null,
 			lsReferenceFloatPeriods,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			false
 		);
 
@@ -101,7 +100,7 @@ public class CrossFloatCrossFloat {
 		 * The Derived Leg
 		 */
 
-		List<CouponPeriod> lsDerivedFloatPeriods = PeriodHelper.RegularPeriodSingleReset (
+		List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
 			dtEffective.julian(),
 			strMaturityTenor,
 			bFixMTMOn ? Double.NaN : dtEffective.julian(),
@@ -111,6 +110,8 @@ public class CrossFloatCrossFloat {
 			false,
 			false,
 			strCurrency,
+			1.,
+			null,
 			strCurrency,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			null
@@ -119,10 +120,7 @@ public class CrossFloatCrossFloat {
 		FloatingStream floatStreamDerived = new FloatingStream (
 			strCurrency,
 			0.,
-			1.,
-			null,
 			lsDerivedFloatPeriods,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			false
 		);
 

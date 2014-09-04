@@ -185,14 +185,14 @@ public class PeriodGenerator extends PeriodSet {
 					+ " ...");
 
 		if (0 == _iFreq) {
-			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodHelper.SinglePeriodSingleReset
+			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset
 				(_dblEffective, _dblMaturity, java.lang.Double.NaN, _strCouponDC, _strCalendar, _strCurrency,
-					_strCurrency, _forwardLabel, _creditLabel)))
+					1., null, _strCurrency, _forwardLabel, _creditLabel)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
 				if (null == (_lsCouponPeriod =
-					org.drip.analytics.support.PeriodHelper.ForwardPeriodSingleReset (
+					org.drip.analytics.support.PeriodBuilder.ForwardPeriodSingleReset (
 						_dblEffective, // Effective
 						_dblMaturity, // Maturity
 						java.lang.Double.NaN, // FX Fixing Date
@@ -209,9 +209,11 @@ public class PeriodGenerator extends PeriodSet {
 						_bApplyCpnEOMAdj,
 						_strAccrualDC, // Accrual Day Count
 						_bApplyAccEOMAdj,
-						org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT,
+						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
 						true,
 						_strCalendar,
+						1., // Base Notional
+						null, // Notional Schedule
 						_strCurrency,
 						_forwardLabel,
 						_creditLabel))
@@ -219,7 +221,7 @@ public class PeriodGenerator extends PeriodSet {
 						return false;
 			} else {
 				if (null == (_lsCouponPeriod =
-					org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (
+					org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (
 						_dblEffective, // Effective
 						_dblMaturity, // Maturity
 						java.lang.Double.NaN, // FX Fixing Date
@@ -236,9 +238,11 @@ public class PeriodGenerator extends PeriodSet {
 						_bApplyCpnEOMAdj,
 						_strAccrualDC, // Accrual Day Count
 						_bApplyAccEOMAdj,
-						org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT,
+						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
 						true,
 						_strCalendar,
+						-1., // Base Notional
+						null, // Notional Schedule
 						_strCurrency,
 						_forwardLabel,
 						_creditLabel))

@@ -67,13 +67,12 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 				strMaturityTenor, java.lang.Double.NaN, null, iFreq, strDayCount, false, true, strCalendar,
-					strCurrency, null, null);
+					1., null, strCurrency, null, null);
 
 		try {
-			return new org.drip.product.cashflow.FixedStream (strCurrency, dblCoupon, 1., null,
-				lsCouponPeriod);
+			return new org.drip.product.cashflow.FixedStream (strCurrency, dblCoupon, lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -105,14 +104,13 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtEffective.julian(),
 				dtMaturity.julian(), java.lang.Double.NaN, null, iFreq, strDayCount, false,
-					org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT, true, strCalendar, strCurrency,
-						null, null);
+					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, -1., null,
+						strCurrency, null, null);
 
 		try {
-			return new org.drip.product.cashflow.FixedStream (strCurrency, dblCoupon, 1., null,
-				lsCouponPeriod);
+			return new org.drip.product.cashflow.FixedStream (strCurrency, dblCoupon, lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -146,15 +144,14 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodHelper.RegularPeriodSingleReset (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 				strMaturityTenor, java.lang.Double.NaN, null, iFreq, strDayCount, false, true, strCalendar,
-					strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 /
-						iFreq) + "M"), null);
+					-1., null, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
+						"LIBOR", (12 / iFreq) + "M"), null);
 
 		try {
-			return new org.drip.product.cashflow.FloatingStream (strCurrency, dblSpread, -1., null,
-				lsCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 /
-					iFreq) + "M"), bIsReference);
+			return new org.drip.product.cashflow.FloatingStream (strCurrency, dblSpread, lsCouponPeriod,
+				bIsReference);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -188,16 +185,15 @@ public class RatesStreamBuilder {
 		final boolean bIsReference)
 	{
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
-			org.drip.analytics.support.PeriodHelper.BackwardPeriodSingleReset (dtEffective.julian(),
+			org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtEffective.julian(),
 				dtMaturity.julian(), java.lang.Double.NaN, null, iFreq, strDayCount, false,
-					org.drip.analytics.support.PeriodHelper.NO_ADJUSTMENT, true, strCalendar, strCurrency,
-						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 / iFreq) +
-							"M"), null);
+					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, -1., null,
+						strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12
+							/ iFreq) + "M"), null);
 
 		try {
-			return new org.drip.product.cashflow.FloatingStream (strCurrency, dblSpread, -1., null,
-				lsCouponPeriod, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 /
-					iFreq) + "M"), bIsReference);
+			return new org.drip.product.cashflow.FloatingStream (strCurrency, dblSpread, lsCouponPeriod,
+				bIsReference);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
