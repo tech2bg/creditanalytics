@@ -54,23 +54,12 @@ public class ForwardDecompositionUtil {
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponFlow = fs.cashFlowPeriod();
 
-		java.lang.String strCurrency = fs.couponCurrency()[0];
-
 		int iNumPeriods = lsCouponFlow.size();
 
 		int iCFPIndex = 0;
 		int iNumPeriodsAccumulated = 0;
-		double dblCoupon = java.lang.Double.NaN;
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
 		org.drip.product.cashflow.FixedStream[] aFS = new org.drip.product.cashflow.FixedStream[iNumForward];
-
-		try {
-			dblCoupon = fs.coupon (fs.effective().julian(), null, null).compoundedAccrualRate();
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
 
 		java.util.List<java.util.List<org.drip.analytics.period.CouponPeriod>> lslsCouponPeriod = new
 			java.util.ArrayList<java.util.List<org.drip.analytics.period.CouponPeriod>>();
@@ -89,8 +78,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.cashflow.FixedStream (strCurrency, dblCoupon,
-					lsCouponPeriod);
+				aFS[iCFPIndex++] = new org.drip.product.cashflow.FixedStream (lsCouponPeriod);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -118,13 +106,7 @@ public class ForwardDecompositionUtil {
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponFlow = fs.cashFlowPeriod();
 
-		java.lang.String strCurrency = fs.couponCurrency()[0];
-
 		int iNumPeriods = lsCouponFlow.size();
-
-		boolean bIsReference = fs.reference();
-
-		double dblSpread = fs.spread();
 
 		int iCFPIndex = 0;
 		int iNumPeriodsAccumulated = 0;
@@ -149,8 +131,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.cashflow.FloatingStream (strCurrency, dblSpread,
-					lsCouponPeriod, bIsReference);
+				aFS[iCFPIndex++] = new org.drip.product.cashflow.FloatingStream (lsCouponPeriod);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

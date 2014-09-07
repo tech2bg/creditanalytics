@@ -1,10 +1,7 @@
 
 package org.drip.sample.ccbs;
 
-import java.util.List;
-
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
@@ -81,56 +78,48 @@ public class CCBSForwardCurve {
 			 * The Reference 6M Leg
 			 */
 
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-				null
-			);
-
 			FloatingStream fsReference = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+					null
+				)
 			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrTenor[i],
-				Double.NaN,
-				null,
-				12 / iTenorInMonths,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-				null
-			);
-
 			FloatingStream fsDerived = new FloatingStream (
-				strCurrency,
-				0.,
-				lsDerivedFloatPeriods,
-				false
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrTenor[i],
+					Double.NaN,
+					null,
+					12 / iTenorInMonths,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					0.,
+					strCurrency,
+					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+					null
+				)
 			);
 
 			/*

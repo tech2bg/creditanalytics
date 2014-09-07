@@ -4,7 +4,6 @@ package org.drip.sample.fra;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
@@ -105,51 +104,44 @@ public class FRAStdOptionVolAnalysis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrTenor[i],
-				Double.NaN,
-				null,
-				4,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrTenor[i],
+					Double.NaN,
+					null,
+					4,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					adblCoupon[i],
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent (fixStream,
@@ -278,56 +270,48 @@ public class FRAStdOptionVolAnalysis {
 			 * The Reference 6M Leg
 			 */
 
-			List<CouponPeriod> lsReferenceFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-				null
-			);
-
 			FloatingStream fsReference = new FloatingStream (
-				strCurrency,
-				0.,
-				lsReferenceFloatPeriods,
-				false
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+					null
+				)
 			);
 
 			/*
 			 * The Derived Leg
 			 */
 
-			List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrTenor[i],
-				Double.NaN,
-				null,
-				12 / iTenorInMonths,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-				null
-			);
-
 			FloatingStream fsDerived = new FloatingStream (
-				strCurrency,
-				0.,
-				lsDerivedFloatPeriods,
-				false
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrTenor[i],
+					Double.NaN,
+					null,
+					12 / iTenorInMonths,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					0.,
+					strCurrency,
+					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+					null
+				)
 			);
 
 			/*

@@ -48,10 +48,6 @@ package org.drip.product.cashflow;
 public class FloatingStream extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private static final boolean s_bBlog = false;
 
-	private double _dblSpread = 0.0001;
-	private boolean _bIsReference = true;
-	private java.lang.String _strCode = "";
-	private java.lang.String _strCurrency = "";
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
 
@@ -68,14 +64,16 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		double dblValueDate = valParams.valueDate();
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (_strCurrency));
+		org.drip.analytics.period.CouponPeriod cpFinal = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
 
-		if (dblValueDate >= _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate() || null == dcFunding)
-			return null;
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (cpFinal.payCurrency()));
+
+		if (dblValueDate >= cpFinal.endDate() || null == dcFunding) return null;
+
+		double dblSpread = cpFinal.floatSpread();
 
 		double dblPV = 0.;
-		double dblSpread = _dblSpread;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqs = (org.drip.product.calib.FloatingStreamQuoteSet)
 			pqs;
 
@@ -167,47 +165,17 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 	/**
 	 * FloatingStream constructor
 	 * 
-	 * @param strCurrency Cash Flow Currency
-	 * @param dblSpread Spread
 	 * @param lsCouponPeriod List of the Coupon Periods
-	 * @param bIsReference Is this the Reference Leg in a Float-Float Swap?
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
 	public FloatingStream (
-		final java.lang.String strCurrency,
-		final double dblSpread,
-		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod,
-		final boolean bIsReference)
+		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod)
 		throws java.lang.Exception
 	{
-		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblSpread = dblSpread) || null == (_lsCouponPeriod =
-				lsCouponPeriod))
+		if (null == (_lsCouponPeriod = lsCouponPeriod) || 0 == _lsCouponPeriod.size())
 			throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params!");
-
-		int iNumPeriod = _lsCouponPeriod.size();
-
-		if (0 == iNumPeriod) throw new java.lang.Exception ("FloatingStream ctr => Invalid Input params!");
-
-		_bIsReference = bIsReference;
-
-		double dblMaturity = _lsCouponPeriod.get (iNumPeriod - 1).endDate();
-
-		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
-			if (!cp.setFloatSpread (_dblSpread))
-				throw new java.lang.Exception ("FixedStream ctr: Cannot Initialize Coupon Periods!");
-		}
-
-		org.drip.state.identifier.ForwardLabel forwardLabel = _lsCouponPeriod.get (0).forwardLabel();
-
-		if (null != forwardLabel)
-			_strCode = "FLOAT::" + _strCurrency + "::" + forwardLabel.fullyQualifiedName() + "::" + new
-				org.drip.analytics.date.JulianDate (dblMaturity);
-		else
-			_strCode = "FIXED::" + _strCurrency + "::" + (12 / _lsCouponPeriod.get (0).freq()) + "M::" + new
-				org.drip.analytics.date.JulianDate (dblMaturity);
 	}
 
 	/**
@@ -239,48 +207,26 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloatingStream,
 			fieldDelimiter());
 
-		if (null == astrField || 7 > astrField.length)
+		if (null == astrField || 3 > astrField.length)
 			throw new java.lang.Exception ("FloatingStream de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate coupon");
-
-		_dblSpread = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate IR curve name");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_strCurrency = astrField[2];
-		else
-			_strCurrency = "";
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate code");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			_strCode = astrField[3];
-		else
-			_strCode = "";
-
-		if (null == astrField[4] || astrField[4].isEmpty())
+		if (null == astrField[1] || astrField[1].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate cash settle params");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_settleParams = null;
 		else
-			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[4].getBytes());
+			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[1].getBytes());
 
-		if (null == astrField[5] || astrField[5].isEmpty())
+		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate the periods");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_lsCouponPeriod = null;
 		else {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[5],
+			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[2],
 				collectionRecordDelimiter());
 
 			if (null != astrRecord && 0 != astrRecord.length) {
@@ -297,47 +243,56 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 				}
 			}
 		}
-
-		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate the reference flag");
-
-		_bIsReference = new java.lang.Boolean (astrField[6]);
 	}
 
 	@Override public java.lang.String primaryCode()
 	{
-		return _strCode;
+		try {
+			return "FLOATSTREAM::" + forwardLabel()[0].fullyQualifiedName() + "::" + new
+				org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (_lsCouponPeriod.size() -
+					1).endDate());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Override public void setPrimaryCode (
 		final java.lang.String strCode)
 	{
-		_strCode = strCode;
 	}
 
 	@Override public java.lang.String name()
 	{
-		return _strCode;
+		try {
+			return "FLOATSTREAM::" + forwardLabel()[0].fullyQualifiedName() + "::" + new
+				org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (_lsCouponPeriod.size() -
+					1).endDate());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
 	{
 		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
 
-		setCcy.add (_strCurrency);
+		setCcy.add (_lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency());
 
 		return setCcy;
 	}
 
 	@Override public java.lang.String[] couponCurrency()
 	{
-		return new java.lang.String[] {_strCurrency};
+		return new java.lang.String[] {_lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency()};
 	}
 
 	@Override public java.lang.String[] principalCurrency()
 	{
-		return new java.lang.String[] {_strCurrency};
+		return new java.lang.String[] {_lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency()};
 	}
 
 	@Override public double initialNotional()
@@ -514,6 +469,8 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		double dblValueDate = valParams.valueDate();
 
+		double dblSpread = _lsCouponPeriod.get (0).floatSpread();
+
 		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
 			double dblFloatingRate = java.lang.Double.NaN;
 			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
@@ -585,13 +542,13 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 			dblTotalCoupon += dblFloatingRate;
 			dblUnadjustedDirtyDV01 += dblUnadjustedDirtyPeriodDV01;
-			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate + _dblSpread);
+			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate + dblSpread);
 			dblConvexityAdjustedDirtyDV01 += dblConvexityAdjustedDirtyPeriodDV01;
 			dblConvexityAdjustedDirtyPV += dblConvexityAdjustedDirtyPeriodDV01 * 10000. * (dblFloatingRate +
-				_dblSpread);
+				dblSpread);
 			dblCompoundingAdjustedDirtyDV01 += dblCompoundingAdjustedDirtyPeriodDV01;
 			dblCompoundingAdjustedDirtyPV += dblCompoundingAdjustedDirtyPeriodDV01 * 10000. *
-				(dblFloatingRate + _dblSpread);
+				(dblFloatingRate + dblSpread);
 		}
 
 		try {
@@ -612,7 +569,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		dblConvexityAdjustedDirtyDV01 /= dblCashPayDF;
 		dblCompoundingAdjustedDirtyPV /= dblCashPayDF;
 		dblCompoundingAdjustedDirtyDV01 /= dblCashPayDF;
-		double dblAccrued = dblAccrued01 * 10000. * (dblResetRate + _dblSpread);
+		double dblAccrued = dblAccrued01 * 10000. * (dblResetRate + dblSpread);
 		double dblUnadjustedCleanPV = dblUnadjustedDirtyPV - dblAccrued;
 		double dblUnadjustedCleanDV01 = dblUnadjustedDirtyDV01 - dblAccrued01;
 		double dblUnadjustedFairPremium = 0.0001 * dblUnadjustedCleanPV / dblUnadjustedCleanDV01;
@@ -932,7 +889,9 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		if (dblValueDate >= _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate()) return null;
 
 		double dblPV = 0.;
-		double dblSpread = _dblSpread;
+
+		double dblSpread = _lsCouponPeriod.get (0).floatSpread();
+
 		org.drip.product.calib.FloatingStreamQuoteSet fsqs = (org.drip.product.calib.FloatingStreamQuoteSet)
 			pqs;
 
@@ -1004,13 +963,14 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		double dblValueDate = valParams.valueDate();
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (_strCurrency));
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
 
 		if (dblValueDate >= _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate() || null == dcFunding)
 			return null;
 
+		double dblSpread = _lsCouponPeriod.get (0).floatSpread();
+
 		double dblPV = 0.;
-		double dblSpread = _dblSpread;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqs = (org.drip.product.calib.FloatingStreamQuoteSet)
 			pqs;
 
@@ -1069,7 +1029,7 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 			org.drip.product.calib.FloatingStreamQuoteSet) || !pqs.contains
 				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) ||
+						org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0])) ||
 							!pqs.contains (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
 								org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 									_lsCouponPeriod.get (0).forwardLabel()))
@@ -1079,9 +1039,10 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		if (dblValueDate >= _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate()) return null;
 
+		double dblSpread = _lsCouponPeriod.get (0).floatSpread();
+
 		double dblPV = 0.;
 		boolean bFirstPeriod = true;
-		double dblSpread = _dblSpread;
 		double dblTerminalNotional = java.lang.Double.NaN;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqs = (org.drip.product.calib.FloatingStreamQuoteSet)
 			pqs;
@@ -1321,18 +1282,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 
 		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
 
-		sb.append (_dblSpread + fieldDelimiter());
-
-		if (null == _strCurrency || _strCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCurrency + fieldDelimiter());
-
-		if (null == _strCode || _strCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCode + fieldDelimiter());
-
 		if (null == _settleParams)
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
@@ -1362,8 +1311,6 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 				sb.append (sbPeriods.toString());
 		}
 
-		sb.append (fieldDelimiter() + _bIsReference);
-
 		return sb.append (objectTrailer()).toString().getBytes();
 	}
 
@@ -1377,38 +1324,5 @@ public class FloatingStream extends org.drip.product.definition.CalibratableFixe
 		}
 
 		return null;
-	}
-
-	/**
-	 * Retrieve the Floating Rate Index
-	 * 
-	 * @return The Floating Rate Index
-	 */
-
-	public org.drip.state.identifier.ForwardLabel fri()
-	{
-		return _lsCouponPeriod.get (0).forwardLabel();
-	}
-
-	/**
-	 * Retrieve the Stream Spread
-	 *  
-	 * @return The Spread
-	 */
-
-	public double spread()
-	{
-		return _dblSpread;
-	}
-
-	/**
-	 * Is this a Reference Stream?
-	 *  
-	 * @return TRUE => This is a Reference Stream
-	 */
-
-	public boolean reference()
-	{
-		return _bIsReference;
 	}
 }

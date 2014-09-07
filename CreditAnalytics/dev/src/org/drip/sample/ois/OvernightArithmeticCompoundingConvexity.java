@@ -136,51 +136,44 @@ public class OvernightArithmeticCompoundingConvexity {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				4,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					4,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					adblCoupon[i],
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
@@ -212,51 +205,44 @@ public class OvernightArithmeticCompoundingConvexity {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				4,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					4,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					adblCoupon[i],
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
@@ -614,16 +600,14 @@ public class OvernightArithmeticCompoundingConvexity {
 			strCurrency,
 			-1.,
 			null,
+			0.,
 			strCurrency,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);
 
 		FloatingStream floatStream = new FloatingStream (
-			strCurrency,
-			0.,
-			lsFloatPeriods,
-			false
+			lsFloatPeriods
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (

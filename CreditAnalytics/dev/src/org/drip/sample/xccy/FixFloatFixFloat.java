@@ -4,9 +4,7 @@ package org.drip.sample.xccy;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CouponPeriod;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
@@ -70,27 +68,24 @@ public class FixFloatFixFloat {
 		 * The Fixed Leg
 		 */
 
-		List<CouponPeriod> lsFixPeriods = PeriodBuilder.RegularPeriodSingleReset (
-			dtEffective.julian(),
-			strTenor,
-			bFixMTMOn ? Double.NaN : dtEffective.julian(),
-			null,
-			2,
-			"Act/360",
-			false,
-			false,
-			strFixedCurrency,
-			-1.,
-			null,
-			strFixedCurrency,
-			null,
-			null
-		);
-
 		FixedStream fixStream = new FixedStream (
-			strFixedCurrency,
-			0.02,
-			lsFixPeriods
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				bFixMTMOn ? Double.NaN : dtEffective.julian(),
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strFixedCurrency,
+				-1.,
+				null,
+				0.02,
+				strFixedCurrency,
+				null,
+				null
+			)
 		);
 
 		fixStream.setPrimaryCode (strFixedCurrency + "_" + (null == cp ? "" : cp.numCcy()) + "::FIXED::" + strTenor);
@@ -99,28 +94,24 @@ public class FixFloatFixFloat {
 		 * The Derived Leg
 		 */
 
-		List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-			dtEffective.julian(),
-			strTenor,
-			Double.NaN,
-			null,
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			false,
-			strFloatCurrency,
-			1.,
-			null,
-			strFloatCurrency,
-			ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-			null
-		);
-
 		FloatingStream floatStream = new FloatingStream (
-			strFloatCurrency,
-			0.,
-			lsDerivedFloatPeriods,
-			false
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				12 / iTenorInMonths,
+				"Act/360",
+				false,
+				false,
+				strFloatCurrency,
+				1.,
+				null,
+				0.,
+				strFloatCurrency,
+				ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				null
+			)
 		);
 
 		floatStream.setPrimaryCode (strFloatCurrency + "_" + strFloatCurrency + "::FIXED::" + iTenorInMonths + "M::" + strTenor);

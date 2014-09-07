@@ -4,7 +4,6 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
@@ -135,51 +134,44 @@ public class OISProduct {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				4,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					4,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					adblCoupon[i],
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
@@ -208,51 +200,44 @@ public class OISProduct {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.DailyPeriodDailyReset (
-				dtEffective.julian(),
-				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
-				Double.NaN,
-				null,
-				null,
-				"Act/360",
-				strCurrency,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.DailyPeriodDailyReset (
+					dtEffective.julian(),
+					dtEffective.addTenor (astrMaturityTenor[i]).julian(),
+					Double.NaN,
+					null,
+					null,
+					"Act/360",
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					strCurrency,
+					ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					adblCoupon[i],
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
@@ -284,51 +269,44 @@ public class OISProduct {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				4,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					4,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					adblCoupon[i],
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
@@ -360,51 +338,44 @@ public class OISProduct {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.DailyPeriodDailyReset (
-				dtEffective.julian(),
-				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
-				Double.NaN,
-				null,
-				null,
-				"Act/360",
-				strCurrency,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.DailyPeriodDailyReset (
+					dtEffective.julian(),
+					dtEffective.addTenor (astrMaturityTenor[i]).julian(),
+					Double.NaN,
+					null,
+					null,
+					"Act/360",
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					strCurrency,
+					ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				adblCoupon[i],
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					adblCoupon[i],
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
@@ -768,51 +739,44 @@ public class OISProduct {
 
 		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 
-		List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-			dtCustomOISStart.julian(),
-			"4M",
-			Double.NaN,
-			null,
-			4,
-			"Act/360",
-			false,
-			false,
-			strCurrency,
-			-1.,
-			null,
-			strCurrency,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-			null
-		);
-
 		FloatingStream floatStream = new FloatingStream (
-			strCurrency,
-			0.,
-			lsFloatPeriods,
-			false
-		);
-
-		List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-			dtCustomOISStart.julian(),
-			"4M",
-			Double.NaN,
-			null,
-			2,
-			"Act/360",
-			false,
-			false,
-			strCurrency,
-			1.,
-			null,
-			strCurrency,
-			null,
-			null
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtCustomOISStart.julian(),
+				"4M",
+				Double.NaN,
+				null,
+				4,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				null
+			)
 		);
 
 		FixedStream fixStream = new FixedStream (
-			strCurrency,
-			0.003,
-			lsFixedPeriods
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtCustomOISStart.julian(),
+				"4M",
+				Double.NaN,
+				null,
+				2,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				1.,
+				null,
+				0.003,
+				strCurrency,
+				null,
+				null
+			)
 		);
 
 		FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);

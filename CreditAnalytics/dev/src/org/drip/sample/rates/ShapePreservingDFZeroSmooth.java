@@ -1,10 +1,7 @@
 
 package org.drip.sample.rates;
 
-import java.util.List;
-
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
@@ -13,9 +10,7 @@ import org.drip.product.calib.*;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
-import org.drip.product.rates.DepositComponent;
-import org.drip.product.rates.EDFComponent;
-import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
@@ -204,51 +199,44 @@ public class ShapePreservingDFZeroSmooth {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				0.,
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					0.,
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);

@@ -439,6 +439,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			strCalendar,
 			_dblNotional,
 			_notlSchedule,
+			dblCoupon,
+			_strCouponCurrency,
 			_strCouponCurrency,
 			null,
 			org.drip.state.identifier.CreditLabel.Standard (_crValParams._strCC));

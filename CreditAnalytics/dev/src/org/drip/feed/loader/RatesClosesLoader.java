@@ -360,21 +360,21 @@ public class RatesClosesLoader {
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
-						strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, strCurrency,
-							null, null);
+						strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
+							strCurrency, null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
-				(strCurrency, dblCoupon, lsFixedCouponPeriod);
+				(lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFloatingFrequency.get (strCurrency),
-						strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, -1., null,
+						strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, -1., null, 0.,
 							strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 								_mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
-				org.drip.product.cashflow.FloatingStream (strCurrency, 0., lsFloatingCouponPeriod, false);
+				org.drip.product.cashflow.FloatingStream (lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream);
@@ -419,19 +419,19 @@ public class RatesClosesLoader {
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
-						strFixedDC, false, false, strCurrency, 1., null, strCurrency, null, null);
+						strFixedDC, false, false, strCurrency, 1., null, dblCoupon, strCurrency, null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
-				(strCurrency, dblCoupon, lsFixedCouponPeriod);
+				(lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (dtEffective.julian(),
 					dtMaturity.julian(), java.lang.Double.NaN, strFloatingDC, strCurrency, strCurrency, -1.,
-						null, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
+						null, 0., strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
 							"LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
-				org.drip.product.cashflow.FloatingStream (strCurrency, 0., lsFloatingCouponPeriod, false);
+				org.drip.product.cashflow.FloatingStream (lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream);

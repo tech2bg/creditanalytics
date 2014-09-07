@@ -358,7 +358,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 			return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
 					java.lang.Double.NaN, _strDayCount, _strCalendar, _strCurrency, _dblNotional, null,
-						_strCurrency, _fri, null);
+						_dblStrike, _strCurrency, _fri, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

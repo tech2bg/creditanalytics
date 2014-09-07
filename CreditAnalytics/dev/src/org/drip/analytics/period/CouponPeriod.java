@@ -74,6 +74,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 */
 
 	private java.lang.String _strPayCurrency = "";
+	private java.lang.String _strCouponCurrency = "";
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
 	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
 
@@ -199,7 +200,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		try {
 			org.drip.analytics.output.ResetPeriodMetrics rpm = new
 				org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodStartDate, dblResetPeriodEndDate,
-					dblResetPeriodFixingDate, resetPeriodRate (rp, csqs),
+					dblResetPeriodFixingDate, resetPeriodRate (rp, csqs) + _dblFloatSpread,
 						org.drip.analytics.daycount.Convention.YearFraction (dblResetPeriodStartDate,
 							dblResetPeriodEndDate, _strCouponDC, _bApplyAccEOMAdj, null, _strCalendar));
 
@@ -235,7 +236,9 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 * @param strCalendar Holiday Calendar
 	 * @param dblBaseNotional Coupon Period Base Notional
 	 * @param notlSchedule Coupon Period Notional Schedule
+	 * @param dblFixedCouponFloatSpread Fixed Coupon/Float Spread
 	 * @param strPayCurrency Pay Currency
+	 * @param strCouponCurrency Coupon Currency
 	 * @param forwardLabel The Forward Label
 	 * @param creditLabel The Credit Label
 	 * 
@@ -259,7 +262,9 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final java.lang.String strCalendar,
 		final double dblBaseNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
+		final double dblFixedCouponFloatSpread,
 		final java.lang.String strPayCurrency,
+		final java.lang.String strCouponCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 		throws java.lang.Exception
@@ -285,11 +290,22 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		_bApplyCpnEOMAdj = bApplyCpnEOMAdj;
 		_dblFXFixingDate = dblFXFixingDate;
 
-		if (null != (_forwardLabel = forwardLabel) && null == (_rpc = rpc))
-			throw new java.lang.Exception ("CouponPeriod ctr: Invalid Forward/Reset Combination");
-
 		if (null == (_notlSchedule = notlSchedule))
 			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+
+		if (null != (_forwardLabel = forwardLabel)) {
+			if (null == (_rpc = rpc) || !org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread =
+				dblFixedCouponFloatSpread))
+				throw new java.lang.Exception
+					("CouponPeriod ctr: Invalid Forward/Reset/Float Spread Combination");
+
+			_strCouponCurrency = _forwardLabel.currency();
+		} else {
+			if (!org.drip.quant.common.NumberUtil.IsValid (_dblFixedCoupon = dblFixedCouponFloatSpread) ||
+				null == (_strCouponCurrency = strCouponCurrency) || _strCouponCurrency.isEmpty())
+				throw new java.lang.Exception
+					("CouponPeriod ctr: Invalid Fixed Coupon/Coupon Currency Combination");
+		}
 	}
 
 	/**
@@ -320,7 +336,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod,
 			super.fieldDelimiter());
 
-		if (null == astrField || 22 > astrField.length)
+		if (null == astrField || 23 > astrField.length)
 			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid number of fields");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
@@ -436,19 +452,25 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		if (null == astrField[15] || astrField[15].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[15]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Pay Currency");
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Coupon Currency");
 
-		_strPayCurrency = new java.lang.String (astrField[15]);
+		_strCouponCurrency = new java.lang.String (astrField[15]);
 
 		if (null == astrField[16] || astrField[16].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[16]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Pay Currency");
+
+		_strPayCurrency = new java.lang.String (astrField[16]);
+
+		if (null == astrField[17] || astrField[17].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[17]))
 			_forwardLabel = null;
 		else
-			_forwardLabel = org.drip.state.identifier.ForwardLabel.Standard (astrField[16]);
+			_forwardLabel = org.drip.state.identifier.ForwardLabel.Standard (astrField[17]);
 
-		if (null != astrField[17] && !astrField[17].isEmpty() &&
-			!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[17]))
-			_creditLabel = org.drip.state.identifier.CreditLabel.Standard (astrField[17]);
+		if (null != astrField[18] && !astrField[18].isEmpty() &&
+			!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[18]))
+			_creditLabel = org.drip.state.identifier.CreditLabel.Standard (astrField[18]);
 
 		/*
 		 * Period Latent State Identification Settings - End
@@ -458,32 +480,32 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		 * Period "Extensive Cash" Parameter Settings
 		 */
 
-		if (null == astrField[18] || astrField[18].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[18]))
+		if (null == astrField[19] || astrField[19].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[19]))
 			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Base Notional");
 
-		_dblBaseNotional = new java.lang.Double (astrField[18]);
+		_dblBaseNotional = new java.lang.Double (astrField[19]);
 
-		if (null == astrField[19] || astrField[19].isEmpty())
+		if (null == astrField[20] || astrField[20].isEmpty())
 			throw new java.lang.Exception
 				("CouponPeriod de-serializer: Cannot locate Period Notional Schedule");
 
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[19]))
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20]))
 			_notlSchedule = null;
 		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[19].getBytes());
-
-		if (null == astrField[20] || astrField[20].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
-
-		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[20]);
+			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[20].getBytes());
 
 		if (null == astrField[21] || astrField[21].isEmpty())
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
+
+		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21])
+			? java.lang.Double.NaN : new java.lang.Double (astrField[21]);
+
+		if (null == astrField[22] || astrField[22].isEmpty())
 			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Float Spread");
 
-		_dblFloatSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[21]);
+		_dblFloatSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[22])
+			? java.lang.Double.NaN : new java.lang.Double (astrField[22]);
 
 		/*
 		 * Period "Extensive Cash" Parameter Settings - End
@@ -749,6 +771,17 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
+	 * Retrieve the Calendar
+	 * 
+	 * @return The Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _strCalendar;
+	}
+
+	/**
 	 * Retrieve the Coupon Frequency
 	 * 
 	 * @return The Coupon Frequency
@@ -774,17 +807,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Retrieve the Coupon Currency
-	 * 
-	 * @return The Coupon Currency
-	 */
-
-	public java.lang.String couponCurrency()
-	{
-		return null == _forwardLabel ? _strPayCurrency : _forwardLabel.currency();
-	}
-
-	/**
 	 * Retrieve the Pay Currency
 	 * 
 	 * @return The Pay Currency
@@ -796,14 +818,14 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Retrieve the Calendar
+	 * Retrieve the Coupon Currency
 	 * 
-	 * @return The Calendar
+	 * @return The Coupon Currency
 	 */
 
-	public java.lang.String calendar()
+	public java.lang.String couponCurrency()
 	{
-		return _strCalendar;
+		return _strCouponCurrency;
 	}
 
 	/**
@@ -837,10 +859,10 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	/**
 	 * Get the period spread over the floating index
 	 * 
-	 * @return Period Spread
+	 * @return Period Float Spread
 	 */
 
-	public double spread()
+	public double floatSpread()
 	{
 		return _dblFloatSpread;
 	}
@@ -885,119 +907,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Create a set of loss period measures
-	 * 
-	 * @param comp Component for which the measures are to be generated
-	 * @param valParams ValuationParams from which the periods are generated
-	 * @param pricerParams PricerParams that control the generation characteristics
-	 * @param dblWorkoutDate Double JulianDate representing the absolute end of all the generated periods
-	 * @param csqs Market Parameters
-	 *  
-	 * @return The Generated Loss Quadrature Metrics
-	 */
-
-	public java.util.List<org.drip.analytics.period.LossQuadratureMetrics> lossMetrics (
-		final org.drip.product.definition.CreditComponent comp,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final double dblWorkoutDate,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-	{
-		if (null == comp || null == valParams || null == pricerParams || null == csqs || null ==
-			csqs.creditCurve (comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid
-				(dblWorkoutDate) || _dblStartDate > dblWorkoutDate)
-			return null;
-
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (_strPayCurrency));
-
-		if (null == dc) return null;
-
-		int iDiscretizationScheme = pricerParams.discretizationScheme();
-
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> lsLQM = null;
-		double dblPeriodEndDate = _dblEndDate < dblWorkoutDate ? _dblEndDate : dblWorkoutDate;
-
-		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP == iDiscretizationScheme &&
-			(null == (lsLQM = org.drip.analytics.support.LossQuadratureGenerator.GenerateDayStepLossPeriods
-				(comp, valParams, this, dblPeriodEndDate, pricerParams.unitSize(), csqs)) || 0 ==
-					lsLQM.size()))
-				return null;
-
-		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_PERIOD_STEP == iDiscretizationScheme &&
-			(null == (lsLQM =
-				org.drip.analytics.support.LossQuadratureGenerator.GeneratePeriodUnitLossPeriods (comp,
-					valParams, this, dblPeriodEndDate, pricerParams.unitSize(), csqs)) || 0 ==
-						lsLQM.size()))
-			return null;
-
-		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON == iDiscretizationScheme &&
-			(null == (lsLQM = org.drip.analytics.support.LossQuadratureGenerator.GenerateWholeLossPeriods
-				(comp, valParams, this, dblPeriodEndDate, csqs)) || 0 == lsLQM.size()))
-			return null;
-
-		return lsLQM;
-	}
-
-	/**
-	 * Return the Collateral Label
-	 * 
-	 * @return The Collateral Label
-	 */
-
-	public org.drip.state.identifier.CollateralLabel collateralLabel()
-	{
-		return org.drip.state.identifier.CollateralLabel.Standard (_strPayCurrency);
-	}
-
-	/**
-	 * Return the Funding Label
-	 * 
-	 * @return The Funding Label
-	 */
-
-	public org.drip.state.identifier.FundingLabel fundingLabel()
-	{
-		return org.drip.state.identifier.FundingLabel.Standard (_strPayCurrency);
-	}
-
-	/**
-	 * Return the Forward Label
-	 * 
-	 * @return The Forward Label
-	 */
-
-	public org.drip.state.identifier.ForwardLabel forwardLabel()
-	{
-		return _forwardLabel;
-	}
-
-	/**
-	 * Return the Credit Label
-	 * 
-	 * @return The Credit Label
-	 */
-
-	public org.drip.state.identifier.CreditLabel creditLabel()
-	{
-		return _creditLabel;
-	}
-
-	/**
-	 * Return the FX Label
-	 * 
-	 * @return The FX Label
-	 */
-
-	public org.drip.state.identifier.FXLabel fxLabel()
-	{
-		java.lang.String strCouponCurrency = couponCurrency();
-
-		return _strPayCurrency.equalsIgnoreCase (strCouponCurrency) ? null :
-			org.drip.state.identifier.FXLabel.Standard (_strPayCurrency + "/" + strCouponCurrency);
-	}
-
-	/**
 	 * Coupon Period Notional Corresponding to the specified Date
 	 * 
 	 * @param dblDate The Specified Date
@@ -1039,6 +948,64 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 			throw new java.lang.Exception ("Coupon::notional => Invalid Dates");
 
 		return _notlSchedule.getFactor (dblDate1, dblDate2);
+	}
+
+	/**
+	 * Return the Collateral Label
+	 * 
+	 * @return The Collateral Label
+	 */
+
+	public org.drip.state.identifier.CollateralLabel collateralLabel()
+	{
+		return org.drip.state.identifier.CollateralLabel.Standard (_strPayCurrency);
+	}
+
+	/**
+	 * Return the Credit Label
+	 * 
+	 * @return The Credit Label
+	 */
+
+	public org.drip.state.identifier.CreditLabel creditLabel()
+	{
+		return _creditLabel;
+	}
+
+	/**
+	 * Return the Forward Label
+	 * 
+	 * @return The Forward Label
+	 */
+
+	public org.drip.state.identifier.ForwardLabel forwardLabel()
+	{
+		return _forwardLabel;
+	}
+
+	/**
+	 * Return the Funding Label
+	 * 
+	 * @return The Funding Label
+	 */
+
+	public org.drip.state.identifier.FundingLabel fundingLabel()
+	{
+		return org.drip.state.identifier.FundingLabel.Standard (_strPayCurrency);
+	}
+
+	/**
+	 * Return the FX Label
+	 * 
+	 * @return The FX Label
+	 */
+
+	public org.drip.state.identifier.FXLabel fxLabel()
+	{
+		java.lang.String strCouponCurrency = couponCurrency();
+
+		return _strPayCurrency.equalsIgnoreCase (strCouponCurrency) ? null :
+			org.drip.state.identifier.FXLabel.Standard (_strPayCurrency + "/" + strCouponCurrency);
 	}
 
 	/**
@@ -1176,6 +1143,61 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		return null;
 	}
 
+	/**
+	 * Create a set of loss period measures
+	 * 
+	 * @param comp Component for which the measures are to be generated
+	 * @param valParams ValuationParams from which the periods are generated
+	 * @param pricerParams PricerParams that control the generation characteristics
+	 * @param dblWorkoutDate Double JulianDate representing the absolute end of all the generated periods
+	 * @param csqs Market Parameters
+	 *  
+	 * @return The Generated Loss Quadrature Metrics
+	 */
+
+	public java.util.List<org.drip.analytics.period.LossQuadratureMetrics> lossMetrics (
+		final org.drip.product.definition.CreditComponent comp,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final double dblWorkoutDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		if (null == comp || null == valParams || null == pricerParams || null == csqs || null ==
+			csqs.creditCurve (comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid
+				(dblWorkoutDate) || _dblStartDate > dblWorkoutDate)
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (_strPayCurrency));
+
+		if (null == dc) return null;
+
+		int iDiscretizationScheme = pricerParams.discretizationScheme();
+
+		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> lsLQM = null;
+		double dblPeriodEndDate = _dblEndDate < dblWorkoutDate ? _dblEndDate : dblWorkoutDate;
+
+		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP == iDiscretizationScheme &&
+			(null == (lsLQM = org.drip.analytics.support.LossQuadratureGenerator.GenerateDayStepLossPeriods
+				(comp, valParams, this, dblPeriodEndDate, pricerParams.unitSize(), csqs)) || 0 ==
+					lsLQM.size()))
+				return null;
+
+		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_PERIOD_STEP == iDiscretizationScheme &&
+			(null == (lsLQM =
+				org.drip.analytics.support.LossQuadratureGenerator.GeneratePeriodUnitLossPeriods (comp,
+					valParams, this, dblPeriodEndDate, pricerParams.unitSize(), csqs)) || 0 ==
+						lsLQM.size()))
+			return null;
+
+		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON == iDiscretizationScheme &&
+			(null == (lsLQM = org.drip.analytics.support.LossQuadratureGenerator.GenerateWholeLossPeriods
+				(comp, valParams, this, dblPeriodEndDate, csqs)) || 0 == lsLQM.size()))
+			return null;
+
+		return lsLQM;
+	}
+
 	@Override public byte[] serialize()
 	{
 		java.lang.StringBuffer sb = new java.lang.StringBuffer();
@@ -1217,6 +1239,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
 		else
 			sb.append (_strCalendar + fieldDelimiter());
+
+		sb.append (_strCouponCurrency + fieldDelimiter());
 
 		sb.append (_strPayCurrency + fieldDelimiter());
 

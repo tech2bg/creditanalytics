@@ -388,8 +388,8 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffective, _dblMaturity,
-			java.lang.Double.NaN, _strDayCount, _strCalendar, _strCurrency, _dblNotional, null, _strCurrency,
-				_fri, null);
+			java.lang.Double.NaN, _strDayCount, _strCalendar, _strCurrency, _dblNotional, null, 0.,
+				_strCurrency, _fri, null);
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()

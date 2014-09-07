@@ -1,10 +1,7 @@
 
 package org.drip.sample.sensitivity;
 
-import java.util.List;
-
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
@@ -184,51 +181,44 @@ public class DiscountCurveQuoteSensitivity {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				strCurrency,
-				ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-				null
-			);
-
 			FloatingStream floatStream = new FloatingStream (
-				strCurrency,
-				0.,
-				lsFloatPeriods,
-				false
-			);
-
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				astrMaturityTenor[i],
-				Double.NaN,
-				null,
-				2,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				strCurrency,
-				null,
-				null
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					-1.,
+					null,
+					0.,
+					strCurrency,
+					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+					null
+				)
 			);
 
 			FixedStream fixStream = new FixedStream (
-				strCurrency,
-				0.,
-				lsFixedPeriods
+				PeriodBuilder.RegularPeriodSingleReset (
+					dtEffective.julian(),
+					astrMaturityTenor[i],
+					Double.NaN,
+					null,
+					2,
+					"Act/360",
+					false,
+					false,
+					strCurrency,
+					1.,
+					null,
+					0.,
+					strCurrency,
+					null,
+					null
+				)
 			);
 
 			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
@@ -481,7 +471,8 @@ public class DiscountCurveQuoteSensitivity {
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (false, 1, null))
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (false, 1, null)
+			)
 		);
 
 		/*

@@ -187,7 +187,7 @@ public class PeriodGenerator extends PeriodSet {
 		if (0 == _iFreq) {
 			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset
 				(_dblEffective, _dblMaturity, java.lang.Double.NaN, _strCouponDC, _strCalendar, _strCurrency,
-					1., null, _strCurrency, _forwardLabel, _creditLabel)))
+					1., null, 0., _strCurrency, _forwardLabel, _creditLabel)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {
@@ -214,6 +214,8 @@ public class PeriodGenerator extends PeriodSet {
 						_strCalendar,
 						1., // Base Notional
 						null, // Notional Schedule
+						0., // Fixed Coupon/Float Spread 
+						_strCurrency,
 						_strCurrency,
 						_forwardLabel,
 						_creditLabel))
@@ -243,6 +245,8 @@ public class PeriodGenerator extends PeriodSet {
 						_strCalendar,
 						-1., // Base Notional
 						null, // Notional Schedule
+						0., // Fixed Coupon/Float Spread 
+						_strCurrency,
 						_strCurrency,
 						_forwardLabel,
 						_creditLabel))

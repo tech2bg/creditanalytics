@@ -4,7 +4,6 @@ package org.drip.sample.xccy;
 import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
@@ -70,28 +69,24 @@ public class CrossFloatCrossFloat {
 			 * The Reference Leg
 			 */
 
-		List<CouponPeriod> lsReferenceFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-			dtEffective.julian(),
-			strMaturityTenor,
-			bFixMTMOn ? Double.NaN : dtEffective.julian(),
-			null,
-			12 / iTenorInMonthsReference,
-			"Act/360",
-			false,
-			false,
-			strCurrency,
-			-1.,
-			null,
-			strCurrency,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
-			null
-		);
-
 		FloatingStream floatStreamReference = new FloatingStream (
-			strCurrency,
-			0.,
-			lsReferenceFloatPeriods,
-			false
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strMaturityTenor,
+				bFixMTMOn ? Double.NaN : dtEffective.julian(),
+				null,
+				12 / iTenorInMonthsReference,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+				null
+			)
 		);
 
 		floatStreamReference.setPrimaryCode (strCurrency + "::FLOAT::" + iTenorInMonthsReference + "M::" + strMaturityTenor);
@@ -100,28 +95,24 @@ public class CrossFloatCrossFloat {
 		 * The Derived Leg
 		 */
 
-		List<CouponPeriod> lsDerivedFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
-			dtEffective.julian(),
-			strMaturityTenor,
-			bFixMTMOn ? Double.NaN : dtEffective.julian(),
-			null,
-			12 / iTenorInMonthsDerived,
-			"Act/360",
-			false,
-			false,
-			strCurrency,
-			1.,
-			null,
-			strCurrency,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
-			null
-		);
-
 		FloatingStream floatStreamDerived = new FloatingStream (
-			strCurrency,
-			0.,
-			lsDerivedFloatPeriods,
-			false
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strMaturityTenor,
+				bFixMTMOn ? Double.NaN : dtEffective.julian(),
+				null,
+				12 / iTenorInMonthsDerived,
+				"Act/360",
+				false,
+				false,
+				strCurrency,
+				1.,
+				null,
+				0.,
+				strCurrency,
+				ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+				null
+			)
 		);
 
 		floatStreamDerived.setPrimaryCode (strCurrency + "::FLOAT::" + iTenorInMonthsDerived + "M::" + strMaturityTenor);
