@@ -119,7 +119,10 @@ public class FloatFloatFloatFloatAnalysis {
 		 * The float-float swap instance
 		 */
 
-		return new FloatFloatComponent (floatStreamReference, floatStreamDerived);
+		return new FloatFloatComponent (
+			floatStreamReference,
+			floatStreamDerived,
+			new CashSettleParams (0, strCurrency, 0));
 	}
 
 	private static final void SetMarketParams (

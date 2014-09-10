@@ -131,19 +131,23 @@ public class ScenarioForwardCurveBuilder {
 		if (0 == iNumComp || iNumComp != iNumQuote) return null;
 
 		try {
-			org.drip.state.identifier.ForwardLabel[] aForwardLabel = aCalibComp[0] instanceof
-				org.drip.product.cashflow.DualStreamComponent ?
-					((org.drip.product.cashflow.DualStreamComponent)
-						aCalibComp[0]).derivedStream().forwardLabel() : aCalibComp[0].forwardLabel();
+			org.drip.state.identifier.ForwardLabel forwardLabel = null;
 
-			if (null == aForwardLabel || 0 == aForwardLabel.length) return null;
+			if (aCalibComp[0] instanceof org.drip.product.cashflow.DualStreamComponent)
+				forwardLabel = ((org.drip.product.cashflow.DualStreamComponent)
+					aCalibComp[0]).derivedStream().forwardLabel();
+			else {
+				org.drip.state.identifier.ForwardLabel[] aForwardLabel = aCalibComp[0].forwardLabel();
+
+				if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+			}
 
 			org.drip.state.representation.LatentStateSpecification[] aLSS = new
 				org.drip.state.representation.LatentStateSpecification[] {new
 					org.drip.state.representation.LatentStateSpecification
 						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
 							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
-								aForwardLabel[0])};
+								forwardLabel)};
 
 			org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
 				org.drip.state.inference.LatentStateSegmentSpec[iNumComp];

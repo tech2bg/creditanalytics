@@ -5,6 +5,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
+import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
@@ -146,7 +147,11 @@ public class TemplatedDiscountCurveBuilder {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
+			FixFloatComponent irs = new FixFloatComponent (
+				fixStream,
+				floatStream,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 
 			irs.setPrimaryCode ("IRS." + astrMaturityTenor + "." + strCurrency);
 

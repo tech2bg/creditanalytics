@@ -92,6 +92,9 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
+		if (null == csqs)
+			throw new java.lang.Exception ("CouponPeriod::resetPeriodRate => Cannot locate CSQS");
+
 		double dblFixingDate = rp.fixing();
 
 		if (csqs.available (dblFixingDate, _forwardLabel))
@@ -138,41 +141,39 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 			org.drip.analytics.output.ConvexityAdjustment();
 
 		try {
-			if (!convAdj.setCreditForward (dblFixingDate > dblValueDate ? java.lang.Math.exp
-				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-					(csqs.creditCurveVolSurface (creditLabel), csqs.forwardCurveVolSurface
-						(forwardLabel), csqs.creditForwardCorrSurface (creditLabel, forwardLabel),
-							dblValueDate, dblFixingDate)) : 1.))
+			if (!convAdj.setCreditForward (null != csqs && dblFixingDate > dblValueDate ? java.lang.Math.exp
+				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs.creditCurveVolSurface
+					(creditLabel), csqs.forwardCurveVolSurface (forwardLabel), csqs.creditForwardCorrSurface
+						(creditLabel, forwardLabel), dblValueDate, dblFixingDate)) : 1.))
 				return null;
 
-			if (!convAdj.setCreditFunding (java.lang.Math.exp
-				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-					(csqs.creditCurveVolSurface (creditLabel), csqs.fundingCurveVolSurface
-						(fundingLabel), csqs.creditFundingCorrSurface (creditLabel, fundingLabel),
-							dblValueDate, _dblPayDate))))
+			if (!convAdj.setCreditFunding (null != csqs ? java.lang.Math.exp
+				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs.creditCurveVolSurface
+					(creditLabel), csqs.fundingCurveVolSurface (fundingLabel), csqs.creditFundingCorrSurface
+						(creditLabel, fundingLabel), dblValueDate, _dblPayDate)) : 1.))
 				return null;
 
-			if (!convAdj.setCreditFX (isFXMTM() ? java.lang.Math.exp
-				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-					(csqs.creditCurveVolSurface (creditLabel), csqs.fxCurveVolSurface (fxLabel),
-						csqs.creditFXCorrSurface (creditLabel, fxLabel), dblValueDate, _dblPayDate)) : 1.))
+			if (!convAdj.setCreditFX (null != csqs && isFXMTM() ? java.lang.Math.exp
+				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs.creditCurveVolSurface
+					(creditLabel), csqs.fxCurveVolSurface (fxLabel), csqs.creditFXCorrSurface (creditLabel,
+						fxLabel), dblValueDate, _dblPayDate)) : 1.))
 				return null;
 
-			if (!convAdj.setForwardFunding (dblFixingDate > dblValueDate ? java.lang.Math.exp
+			if (!convAdj.setForwardFunding (null != csqs && dblFixingDate > dblValueDate ? java.lang.Math.exp
 				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
 					(csqs.forwardCurveVolSurface (forwardLabel), csqs.fundingCurveVolSurface
 						(fundingLabel), csqs.forwardFundingCorrSurface (forwardLabel, fundingLabel),
 							dblValueDate, dblFixingDate)) : 1.))
 				return null;
 
-			if (!convAdj.setForwardFX (isFXMTM() && dblFixingDate > dblValueDate ?
+			if (!convAdj.setForwardFX (null != csqs && isFXMTM() && dblFixingDate > dblValueDate ?
 				java.lang.Math.exp (org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
 					(csqs.forwardCurveVolSurface (forwardLabel), csqs.fxCurveVolSurface (fxLabel),
 						csqs.forwardFXCorrSurface (forwardLabel, fxLabel), dblValueDate, dblFixingDate)) :
 							1.))
 				return null;
 
-			if (!convAdj.setFundingFX (isFXMTM() ? java.lang.Math.exp
+			if (!convAdj.setFundingFX (null != csqs && isFXMTM() ? java.lang.Math.exp
 				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
 					(csqs.fundingCurveVolSurface (fundingLabel), csqs.fxCurveVolSurface (fxLabel),
 						csqs.fundingFXCorrSurface (fundingLabel, fxLabel), dblValueDate, _dblPayDate)) : 1.))
@@ -942,12 +943,12 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final double dblDate2)
 		throws java.lang.Exception
 	{
-		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate1) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblDate2) || !contains (dblDate1) || !contains
-				(dblDate2))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
 			throw new java.lang.Exception ("Coupon::notional => Invalid Dates");
 
-		return _notlSchedule.getFactor (dblDate1, dblDate2);
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate1,
+			dblDate2));
 	}
 
 	/**
@@ -1021,14 +1022,16 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || null == csqs) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate)) return null;
 
 		double dblDF = 1.;
 		double dblSurvival = 1.;
 
-		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (creditLabel());
+		org.drip.analytics.definition.CreditCurve cc = null == csqs ? null : csqs.creditCurve
+			(creditLabel());
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
+		org.drip.analytics.rates.DiscountCurve dcFunding = null == csqs ? null : csqs.fundingCurve
+			(fundingLabel());
 
 		int iAccrualCompoundingRule = null == _rpc ?
 			org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
@@ -1087,7 +1090,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || _dblStartDate == dblValueDate)
+			return null;
 
 		int iAccrualCompoundingRule = null == _rpc ?
 			org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
@@ -1097,7 +1101,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 			java.util.ArrayList<org.drip.analytics.output.ResetPeriodMetrics>();
 
 		try {
-			 if (!contains (dblValueDate) || _dblStartDate == dblValueDate) return null;
+			 if (!contains (dblValueDate)) return null;
 
 			 double dblFX = fx (csqs);
 

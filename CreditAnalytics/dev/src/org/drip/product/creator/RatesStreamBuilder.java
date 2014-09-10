@@ -236,7 +236,7 @@ public class RatesStreamBuilder {
 				dtMaturity, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
-				(fixStream, floatStream);
+				(fixStream, floatStream, null);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity + "." + strCurrency);
 
@@ -285,7 +285,7 @@ public class RatesStreamBuilder {
 				strMaturityTenor, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
 
 			org.drip.product.rates.FixFloatComponent fixFloatComp = new
-				org.drip.product.rates.FixFloatComponent (fixStream, floatStream);
+				org.drip.product.rates.FixFloatComponent (fixStream, floatStream, null);
 
 			fixFloatComp.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
 
@@ -305,8 +305,8 @@ public class RatesStreamBuilder {
 	 * @return Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent FixedStreamFromByteArray
-		(final byte[] ab)
+	public static final org.drip.product.cashflow.FixedStream FixedStreamFromByteArray (
+		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
@@ -327,9 +327,8 @@ public class RatesStreamBuilder {
 	 * @return Floating Stream Instance
 	 */
 
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent
-		FloatingStreamFromByteArray (
-			final byte[] ab)
+	public static final org.drip.product.cashflow.FloatingStream FloatingStreamFromByteArray (
+		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 

@@ -41,7 +41,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 	/**
 	 * FRAStandardCapFloor constructor
 	 * 
-	 * @param fs The Floating Stream for which the FRA Components are to be constructed
+	 * @param comp The Underlying Component
 	 * @param strManifestMeasure Measure of the Underlying Component
 	 * @param bIsCap Is the FRA Option a Cap? TRUE => YES
 	 * @param dblStrike Strike of the Underlying Component's Measure
@@ -53,7 +53,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 	 */
 
 	public FRAStandardCapFloor (
-		final org.drip.product.cashflow.FloatingStream fs,
+		final org.drip.product.definition.FixedIncomeComponent comp,
 		final java.lang.String strManifestMeasure,
 		final boolean bIsCap,
 		final double dblStrike,
@@ -62,15 +62,15 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		super (fs, strManifestMeasure, dblStrike, dblNotional, strDayCount, strCalendar);
+		super (comp, strManifestMeasure, dblStrike, dblNotional, strDayCount, strCalendar);
 
-		java.lang.String strIR = fs.couponCurrency()[0];
+		java.lang.String strIR = comp.couponCurrency()[0];
 
-		org.drip.state.identifier.ForwardLabel fri = fs.forwardLabel()[0];
+		org.drip.state.identifier.ForwardLabel fri = comp.forwardLabel()[0];
 
 		java.lang.String strFRACodePrefix = fri.fullyQualifiedName();
 
-		for (org.drip.analytics.period.CouponPeriod period : fs.cashFlowPeriod()) {
+		for (org.drip.analytics.period.CouponPeriod period : comp.cashFlowPeriod()) {
 			double dblFRAStartDate = period.startDate();
 
 			org.drip.product.fra.FRAStandardComponent fra = new org.drip.product.fra.FRAStandardComponent

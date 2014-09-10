@@ -72,22 +72,25 @@ public class CCBSStretchBuilder {
 			if (null == aCCSP[i]) return null;
 
 			org.drip.product.calib.ProductQuoteSet pqs = null;
+			org.drip.state.identifier.ForwardLabel forwardLabel = null;
 
 			org.drip.product.definition.CalibratableFixedIncomeComponent comp = aCCSP[i].derivedComponent();
 
-			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp instanceof
-				org.drip.product.cashflow.DualStreamComponent ?
-					((org.drip.product.cashflow.DualStreamComponent) comp).derivedStream().forwardLabel() :
-						comp.forwardLabel();
+			if (comp instanceof org.drip.product.cashflow.DualStreamComponent)
+				forwardLabel = ((org.drip.product.cashflow.DualStreamComponent)
+					comp).derivedStream().forwardLabel();
+			else {
+				org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
 
-			if (null == aForwardLabel || 0 == aForwardLabel.length) return null;
+				if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+			}
 
 			try { 
 				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
 					org.drip.state.representation.LatentStateSpecification
 						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
 							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
-								aForwardLabel[0])});
+								forwardLabel)});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -178,13 +181,16 @@ public class CCBSStretchBuilder {
 			org.drip.product.definition.CalibratableFixedIncomeComponent comp = aCCSP[i].derivedComponent();
 
 			org.drip.product.calib.ProductQuoteSet pqs = null;
+			org.drip.state.identifier.ForwardLabel forwardLabel = null;
 
-			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp instanceof
-				org.drip.product.cashflow.DualStreamComponent ?
-					((org.drip.product.cashflow.DualStreamComponent) comp).derivedStream().forwardLabel() :
-						comp.forwardLabel();
+			if (comp instanceof org.drip.product.cashflow.DualStreamComponent)
+				forwardLabel = ((org.drip.product.cashflow.DualStreamComponent)
+					comp).derivedStream().forwardLabel();
+			else {
+				org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
 
-			if (null == aForwardLabel || 0 == aForwardLabel.length) return null;
+				if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+			}
 
 			try { 
 				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
@@ -196,7 +202,7 @@ public class CCBSStretchBuilder {
 										org.drip.state.representation.LatentStateSpecification
 											(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
 												org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
-													aForwardLabel[0])});
+													forwardLabel)});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

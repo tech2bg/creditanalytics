@@ -44,7 +44,7 @@ public abstract class DualStreamComponent extends
 	 * @return The Reference Stream
 	 */
 
-	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent referenceStream();
+	public abstract org.drip.product.cashflow.Stream referenceStream();
 
 	/**
 	 * Retrieve the Derived Stream
@@ -52,5 +52,5 @@ public abstract class DualStreamComponent extends
 	 * @return The Derived Stream
 	 */
 
-	public abstract org.drip.product.definition.CalibratableFixedIncomeComponent derivedStream();
+	public abstract org.drip.product.cashflow.Stream derivedStream();
 }

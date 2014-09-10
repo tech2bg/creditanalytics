@@ -49,6 +49,7 @@ package org.drip.product.rates;
 
 public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamComponent {
 	private java.lang.String _strCode = "";
+	private org.drip.param.valuation.CashSettleParams _csp = null;
 	private org.drip.product.cashflow.FloatingStream _floatDerived = null;
 	private org.drip.product.cashflow.FloatingStream _floatReference = null;
 
@@ -66,17 +67,21 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 	 * 
 	 * @param floatReference The Reference Floating Stream (e.g., 6M LIBOR/EURIBOR Leg)
 	 * @param floatDerived The Derived Floating Stream (e.g., 3M LIBOR/EURIBOR Leg)
+	 * @param csp Cash Settle Parameters Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public FloatFloatComponent (
 		final org.drip.product.cashflow.FloatingStream floatReference,
-		final org.drip.product.cashflow.FloatingStream floatDerived)
+		final org.drip.product.cashflow.FloatingStream floatDerived,
+		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
 		if (null == (_floatReference = floatReference) || null == (_floatDerived = floatDerived))
 			throw new java.lang.Exception ("FloatFloatComponent ctr: Invalid Inputs");
+
+		_csp = csp;
 	}
 
 	/**
@@ -246,8 +251,8 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return new org.drip.state.identifier.ForwardLabel[] {_floatReference.forwardLabel()[0],
-			_floatDerived.forwardLabel()[0]};
+		return new org.drip.state.identifier.ForwardLabel[] {_floatReference.forwardLabel(),
+			_floatDerived.forwardLabel()};
 	}
 
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
@@ -260,12 +265,12 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		return null;
 	}
 
-	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent referenceStream()
+	@Override public org.drip.product.cashflow.Stream referenceStream()
 	{
 		return _floatReference;
 	}
 
-	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent derivedStream()
+	@Override public org.drip.product.cashflow.Stream derivedStream()
 	{
 		return _floatDerived;
 	}
@@ -314,7 +319,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
 	{
-		return _floatReference.cashSettleParams();
+		return _csp;
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (

@@ -120,7 +120,11 @@ public class FixFloatFixFloat {
 		 * The fix-float swap instance
 		 */
 
-		FixFloatComponent fixFloat = new FixFloatComponent (fixStream, floatStream);
+		FixFloatComponent fixFloat = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			new CashSettleParams (0, strFloatCurrency, 0)
+		);
 
 		fixFloat.setPrimaryCode (fixStream.primaryCode() + "__" + floatStream.primaryCode());
 

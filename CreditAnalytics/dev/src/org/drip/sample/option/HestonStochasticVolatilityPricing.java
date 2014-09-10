@@ -6,6 +6,7 @@ import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.pricer.HestonOptionPricerParams;
+import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.*;
 import org.drip.product.cashflow.*;
@@ -142,7 +143,11 @@ public class HestonStochasticVolatilityPricing {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
+			FixFloatComponent irs = new FixFloatComponent (
+				fixStream,
+				floatStream,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 

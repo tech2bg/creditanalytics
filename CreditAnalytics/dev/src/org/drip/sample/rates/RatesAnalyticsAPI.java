@@ -268,9 +268,15 @@ public class RatesAnalyticsAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
+		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (
+			dtStart,
+			"USD",
 			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
+			aCompCalib,
+			adblCompCalibValue,
+			astrCalibMeasure,
+			null
+		);
 
 		/*
 		 * Re-calculate the component input measure quotes from the calibrated discount curve object
@@ -449,7 +455,7 @@ public class RatesAnalyticsAPI {
 	public static void DiscountCurveFromIRS()
 		throws Exception
 	{
-		int NUM_DC_INSTR = 15;
+		int NUM_DC_INSTR = 1;
 		double adblRate[] = new double[NUM_DC_INSTR];
 		double adblMaturity[] = new double[NUM_DC_INSTR];
 		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
@@ -464,7 +470,7 @@ public class RatesAnalyticsAPI {
 
 		adblMaturity[0] = dtIRSEffective.addTenor ("4Y").julian();
 
-		adblMaturity[1] = dtIRSEffective.addTenor ("5Y").julian();
+		/* adblMaturity[1] = dtIRSEffective.addTenor ("5Y").julian();
 
 		adblMaturity[2] = dtIRSEffective.addTenor ("6Y").julian();
 
@@ -490,10 +496,10 @@ public class RatesAnalyticsAPI {
 
 		adblMaturity[13] = dtIRSEffective.addTenor ("40Y").julian();
 
-		adblMaturity[14] = dtIRSEffective.addTenor ("50Y").julian();
+		adblMaturity[14] = dtIRSEffective.addTenor ("50Y").julian(); */
 
 		adblCompCalibValue[0] = .0166;
-		adblCompCalibValue[1] = .0206;
+		/* adblCompCalibValue[1] = .0206;
 		adblCompCalibValue[2] = .0241;
 		adblCompCalibValue[3] = .0269;
 		adblCompCalibValue[4] = .0292;
@@ -506,7 +512,7 @@ public class RatesAnalyticsAPI {
 		adblCompCalibValue[11] = .0402;
 		adblCompCalibValue[12] = .0407;
 		adblCompCalibValue[13] = .0409;
-		adblCompCalibValue[14] = .0409;
+		adblCompCalibValue[14] = .0409; */
 
 		for (int i = 0; i < NUM_DC_INSTR; ++i) {
 			adblRate[i] = 0.01;

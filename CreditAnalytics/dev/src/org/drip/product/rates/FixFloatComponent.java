@@ -48,6 +48,7 @@ package org.drip.product.rates;
 
 public class FixFloatComponent extends org.drip.product.cashflow.DualStreamComponent {
 	private java.lang.String _strCode = "";
+	private org.drip.param.valuation.CashSettleParams _csp = null;
 	private org.drip.product.cashflow.FixedStream _fixReference = null;
 	private org.drip.product.cashflow.FloatingStream _floatDerived = null;
 
@@ -65,17 +66,21 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 	 * 
 	 * @param fixReference The Reference Fixed Stream
 	 * @param floatDerived The Derived Floating Stream
+	 * @param csp Cash Settle Parameters Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public FixFloatComponent (
 		final org.drip.product.cashflow.FixedStream fixReference,
-		final org.drip.product.cashflow.FloatingStream floatDerived)
+		final org.drip.product.cashflow.FloatingStream floatDerived,
+		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
 		if (null == (_fixReference = fixReference) || null == (_floatDerived = floatDerived))
 			throw new java.lang.Exception ("FixFloatComponent ctr: Invalid Inputs");
+
+		_csp = csp;
 	}
 
 	/**
@@ -83,8 +88,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @throws java.lang.Exception Thrown if the FixFloatComponent cannot be de-serialized from the byte
-	 *  array
+	 * @throws java.lang.Exception Thrown if the FixFloatComponent cannot be de-serialized
 	 */
 
 	public FixFloatComponent (
@@ -119,8 +123,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_fixReference = null;
-		else
+		else {
 			_fixReference = new org.drip.product.cashflow.FixedStream (astrField[1].getBytes());
+		}
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
@@ -245,7 +250,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
-		return _floatDerived.forwardLabel();
+		return new org.drip.state.identifier.ForwardLabel[] {_floatDerived.forwardLabel()};
 	}
 
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
@@ -258,12 +263,12 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		return null;
 	}
 
-	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent referenceStream()
+	@Override public org.drip.product.cashflow.Stream referenceStream()
 	{
 		return _fixReference;
 	}
 
-	@Override public org.drip.product.definition.CalibratableFixedIncomeComponent derivedStream()
+	@Override public org.drip.product.cashflow.Stream derivedStream()
 	{
 		return _floatDerived;
 	}
@@ -312,7 +317,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
 	{
-		return _fixReference.cashSettleParams();
+		return _csp;
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (

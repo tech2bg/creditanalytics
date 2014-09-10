@@ -145,23 +145,22 @@ public class ForwardDecompositionUtil {
 	/**
 	 * Decompose the Rates Stream into an Array of Single Forward Period Rates Streams
 	 * 
-	 * @param rc The Rates Stream Component
+	 * @param stream The Rates Stream
 	 * @param iNumPeriodsToAccumulate Number of Forward Periods to roll into one
 	 * 
 	 * @return The Array of Single Forward Period Rates Streams
 	 */
 
-	private static final org.drip.product.definition.CalibratableFixedIncomeComponent[]
-		SinglePeriodStreamDecompose (
-			final org.drip.product.definition.CalibratableFixedIncomeComponent rc,
-			final int iNumPeriodsToAccumulate)
+	private static final org.drip.product.cashflow.Stream[] SinglePeriodStreamDecompose (
+		final org.drip.product.cashflow.Stream stream,
+		final int iNumPeriodsToAccumulate)
 	{
-		if (rc instanceof org.drip.product.cashflow.FloatingStream)
-			return SinglePeriodFloatingStreamDecompose ((org.drip.product.cashflow.FloatingStream) rc,
+		if (stream instanceof org.drip.product.cashflow.FloatingStream)
+			return SinglePeriodFloatingStreamDecompose ((org.drip.product.cashflow.FloatingStream) stream,
 				iNumPeriodsToAccumulate);
 
-		if (rc instanceof org.drip.product.cashflow.FixedStream)
-			return SinglePeriodFixedStreamDecompose ((org.drip.product.cashflow.FixedStream) rc,
+		if (stream instanceof org.drip.product.cashflow.FixedStream)
+			return SinglePeriodFixedStreamDecompose ((org.drip.product.cashflow.FixedStream) stream,
 				iNumPeriodsToAccumulate);
 
 		return null;
@@ -180,35 +179,35 @@ public class ForwardDecompositionUtil {
 	{
 		if (null == dsc) return null;
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent rcDerived = dsc.derivedStream();
+		org.drip.product.cashflow.Stream streamDerived = dsc.derivedStream();
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent rcReference = dsc.referenceStream();
+		org.drip.product.cashflow.Stream streamReference = dsc.referenceStream();
 
 		int iNumForward = 0;
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aRCDerivedForward = null;
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aRCReferenceForward = null;
+		org.drip.product.cashflow.Stream[] aStreamDerivedForward = null;
+		org.drip.product.cashflow.Stream[] aStreamReferenceForward = null;
 
-		int iDerivedStreamTenorMonths = 12 / rcDerived.freq();
+		int iDerivedStreamTenorMonths = 12 / streamDerived.freq();
 
-		int iReferenceStreamTenorMonths = 12 / rcReference.freq();
+		int iReferenceStreamTenorMonths = 12 / streamReference.freq();
 
 		if (iReferenceStreamTenorMonths > iDerivedStreamTenorMonths) {
-			if (null == (aRCReferenceForward = SinglePeriodStreamDecompose (rcReference, 1)) || 0 ==
-				(iNumForward = aRCReferenceForward.length))
+			if (null == (aStreamReferenceForward = SinglePeriodStreamDecompose (streamReference, 1)) || 0 ==
+				(iNumForward = aStreamReferenceForward.length))
 				return null;
 
-			if (null == (aRCDerivedForward = SinglePeriodStreamDecompose (rcDerived,
+			if (null == (aStreamDerivedForward = SinglePeriodStreamDecompose (streamDerived,
 				iReferenceStreamTenorMonths / iDerivedStreamTenorMonths)) || iNumForward !=
-					aRCDerivedForward.length)
+					aStreamDerivedForward.length)
 				return null;
 		} else {
-			if (null == (aRCDerivedForward = SinglePeriodStreamDecompose (rcDerived, 1)) || 0 == (iNumForward
-				= aRCDerivedForward.length))
+			if (null == (aStreamDerivedForward = SinglePeriodStreamDecompose (streamDerived, 1)) || 0 ==
+				(iNumForward = aStreamDerivedForward.length))
 				return null;
 
-			if (null == (aRCReferenceForward = SinglePeriodStreamDecompose (rcReference,
+			if (null == (aStreamReferenceForward = SinglePeriodStreamDecompose (streamReference,
 				iDerivedStreamTenorMonths / iReferenceStreamTenorMonths)) || iNumForward !=
-					aRCReferenceForward.length)
+					aStreamReferenceForward.length)
 				return null;
 		}
 
@@ -218,10 +217,12 @@ public class ForwardDecompositionUtil {
 		for (int i = 0; i < iNumForward; ++i) {
 			try {
 				if (null == (aRC[i] = org.drip.product.creator.DualStreamComponentBuilder.MakeDualStream
-					(aRCReferenceForward[i], aRCDerivedForward[i])))
+					(aStreamReferenceForward[i], aStreamDerivedForward[i], new
+						org.drip.param.valuation.CashSettleParams (0, streamDerived.couponCurrency()[0],
+							0))))
 					return null;
 
-				aRC[i].setPrimaryCode (rcReference.name() + "::" + rcDerived.name() + "_" + i);
+				aRC[i].setPrimaryCode (streamReference.name() + "::" + streamDerived.name() + "_" + i);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -249,7 +250,9 @@ public class ForwardDecompositionUtil {
 		if (rc instanceof org.drip.product.cashflow.DualStreamComponent)
 			return DualStreamForwardArray ((org.drip.product.cashflow.DualStreamComponent) rc);
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent[] aRCForward =
+		return null;
+
+		/* org.drip.product.definition.CalibratableFixedIncomeComponent[] aRCForward =
 			SinglePeriodStreamDecompose (rc, 1);
 
 		if (null == aRCForward) return null;
@@ -261,6 +264,6 @@ public class ForwardDecompositionUtil {
 		for (int i = 0; i < iNumForward; ++i)
 			aRCForward[i].setPrimaryCode (rc.name() + "_" + i);
 
-		return aRCForward;
+		return aRCForward; */
 	}
 }

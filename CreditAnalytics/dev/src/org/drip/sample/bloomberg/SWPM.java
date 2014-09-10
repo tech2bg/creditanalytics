@@ -260,7 +260,7 @@ public class SWPM {
 
 		LatentStateFixingsContainer lsfc = new LatentStateFixingsContainer();
 
-		lsfc.add (dtEffective, swap.derivedStream().forwardLabel()[0], dblFixing);
+		lsfc.add (dtEffective, swap.derivedStream().forwardLabel(), dblFixing);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 
@@ -292,7 +292,7 @@ public class SWPM {
 		 * Set up the fixings bumped market parameters - these use base discount curve and the bumped fixing
 		 */
 
-		lsfc.add (dtEffective, swap.derivedStream().forwardLabel()[0], dblFixing + 0.0001);
+		lsfc.add (dtEffective, swap.derivedStream().forwardLabel(), dblFixing + 0.0001);
 
 		CurveSurfaceQuoteSet mktParamsFixingsBumped = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 
@@ -314,7 +314,7 @@ public class SWPM {
 
 		DiscountCurve dcBumped = MakeDC (dtValue, "USD", -0.0001);
 
-		lsfc.add (dtEffective, swap.derivedStream().forwardLabel()[0], dblFixing - 0.0001);
+		lsfc.add (dtEffective, swap.derivedStream().forwardLabel(), dblFixing - 0.0001);
 
 		CurveSurfaceQuoteSet mktParamsRateBumped = MarketParamsBuilder.Create (dcBumped, null, null, null, null, null, lsfc);
 

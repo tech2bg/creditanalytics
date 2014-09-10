@@ -6,6 +6,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.cashflow.FloatingStream;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -126,7 +127,11 @@ public class CCBSForwardCurve {
 			 * The float-float swap instance
 			 */
 
-			aFFC[i] = new FloatFloatComponent (fsReference, fsDerived);
+			aFFC[i] = new FloatFloatComponent (
+				fsReference,
+				fsDerived,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 
 			aFFC[i].setPrimaryCode (strCurrency + "_6M::" + iTenorInMonths + "M::" + astrTenor[i]);
 		}

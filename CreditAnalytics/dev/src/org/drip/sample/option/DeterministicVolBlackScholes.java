@@ -7,12 +7,14 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
+import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.BlackScholesAlgorithm;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
+import org.drip.product.rates.FixFloatComponent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.SABRLIBORCapVolatility;
 import org.drip.service.api.CreditAnalytics;
@@ -142,8 +144,11 @@ public class DeterministicVolBlackScholes {
 				)
 			);
 
-			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent (fixStream,
-				floatStream);
+			FixFloatComponent irs = new FixFloatComponent (
+				fixStream,
+				floatStream,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 

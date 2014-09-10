@@ -8,6 +8,7 @@ import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
+import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
 import org.drip.product.cashflow.*;
@@ -171,7 +172,11 @@ public class OvernightIndexCurve {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (
+				fixStream,
+				floatStream,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -240,7 +245,11 @@ public class OvernightIndexCurve {
 
 			FixedStream fixStream = new FixedStream (lsFixedPeriods);
 
-			FixFloatComponent ois = new FixFloatComponent (fixStream, floatStream);
+			FixFloatComponent ois = new FixFloatComponent (
+				fixStream,
+				floatStream,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 

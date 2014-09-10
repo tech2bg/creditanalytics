@@ -46,7 +46,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RatesBasket extends org.drip.product.definition.BasketProduct {
+public class RatesBasket extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private java.lang.String _strName = "";
 	private org.drip.product.cashflow.FixedStream[] _aCompFixedStream = null;
 	private org.drip.product.cashflow.FloatingStream[] _aCompFloatStream = null;
@@ -156,91 +156,11 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 		return _strName;
 	}
 
-	@Override public org.drip.product.definition.FixedIncomeComponent[] components()
+	@Override public java.lang.String primaryCode()
 	{
-		int iNumFixedComp = (null == _aCompFixedStream ? 0 : _aCompFixedStream.length);
-		int iNumFloatComp = (null == _aCompFloatStream ? 0 : _aCompFloatStream.length);
-
-		org.drip.product.definition.FixedIncomeComponent[] aComp = new
-			org.drip.product.definition.FixedIncomeComponent[iNumFixedComp + iNumFloatComp];
-
-		for (int i = 0; i < iNumFixedComp; ++i)
-			aComp[i] = _aCompFixedStream[i];
-
-		for (int i = 0; i < iNumFloatComp; ++i)
-			aComp[iNumFixedComp + i] = _aCompFloatStream[i];
-
-		return aComp;
+		return _strName;
 	}
 
-	@Override public int measureAggregationType (
-		final java.lang.String strMeasureName)
-	{
-		if ("Accrued01".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("CleanDV01".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("CleanFixedPV".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("CleanFloatingPV".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("CleanPrice".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
-
-		if ("CleanPV".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("DirtyDV01".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("DirtyFixedPV".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("DirtyFloatingPV".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("DirtyPV".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("DV01".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("FairPremium".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
-
-		if ("FixAccrued".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("FloatAccrued".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("ParRate".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
-
-		if ("Price".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
-
-		if ("PV".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_CUMULATIVE;
-
-		if ("Rate".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
-
-		if ("ResetDate".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE;
-
-		if ("ResetRate".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE;
-
-		if ("Upfront".equalsIgnoreCase (strMeasureName))
-			return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE;
-
-		return org.drip.product.definition.BasketProduct.MEASURE_AGGREGATION_TYPE_IGNORE;
-	}
 
 	/**
 	 * Retrieve the array of the fixed stream components
@@ -350,6 +270,355 @@ public class RatesBasket extends org.drip.product.definition.BasketProduct {
 			e.printStackTrace();
 		}
 
+		return null;
+	}
+
+	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	{
+		java.util.Set<java.lang.String> setCurrency = new java.util.TreeSet<java.lang.String>();
+
+		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
+			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream)
+				setCurrency.addAll (fixedStream.cashflowCurrencySet());
+		}
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream)
+				setCurrency.addAll (floatStream.cashflowCurrencySet());
+		}
+
+		return null;
+	}
+
+	@Override public java.lang.String[] couponCurrency()
+	{
+		java.util.Set<java.lang.String> setCouponCurrency = new java.util.TreeSet<java.lang.String>();
+
+		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
+			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream) {
+				java.lang.String[] astrCouponCurrency = fixedStream.couponCurrency();
+
+				if (null != astrCouponCurrency && 0 != astrCouponCurrency.length) {
+					for (java.lang.String strCouponCurrency : astrCouponCurrency)
+						setCouponCurrency.add (strCouponCurrency);
+				}
+			}
+		}
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream) {
+				java.lang.String[] astrCouponCurrency = floatStream.couponCurrency();
+
+				if (null != astrCouponCurrency && 0 != astrCouponCurrency.length) {
+					for (java.lang.String strCouponCurrency : astrCouponCurrency)
+						setCouponCurrency.add (strCouponCurrency);
+				}
+			}
+		}
+
+		int iNumCouponCurrency = setCouponCurrency.size();
+
+		int i = 0;
+		java.lang.String[] astrCouponCurrency = new java.lang.String[iNumCouponCurrency];
+
+		for (java.lang.String strCouponCurrency : setCouponCurrency)
+			astrCouponCurrency[i++] = strCouponCurrency;
+
+		return astrCouponCurrency;
+	}
+
+	@Override public String[] principalCurrency()
+	{
+		java.util.Set<java.lang.String> setPrincipalCurrency = new java.util.TreeSet<java.lang.String>();
+
+		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
+			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream) {
+				java.lang.String[] astrPrincipalCurrency = fixedStream.principalCurrency();
+
+				if (null != astrPrincipalCurrency && 0 != astrPrincipalCurrency.length) {
+					for (java.lang.String strPrincipalCurrency : astrPrincipalCurrency)
+						setPrincipalCurrency.add (strPrincipalCurrency);
+				}
+			}
+		}
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream) {
+				java.lang.String[] astrPrincipalCurrency = floatStream.principalCurrency();
+
+				if (null != astrPrincipalCurrency && 0 != astrPrincipalCurrency.length) {
+					for (java.lang.String strPrincipalCurrency : astrPrincipalCurrency)
+						setPrincipalCurrency.add (strPrincipalCurrency);
+				}
+			}
+		}
+
+		int iNumPrincipalCurrency = setPrincipalCurrency.size();
+
+		int i = 0;
+		java.lang.String[] astrPrincipalCurrency = new java.lang.String[iNumPrincipalCurrency];
+
+		for (java.lang.String strPrincipalCurrency : setPrincipalCurrency)
+			astrPrincipalCurrency[i++] = strPrincipalCurrency;
+
+		return astrPrincipalCurrency;
+	}
+
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	{
+		java.util.Set<java.lang.String> setstrForwardLabel = new java.util.TreeSet<java.lang.String>();
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream) {
+				org.drip.state.identifier.ForwardLabel forwardLabel = floatStream.forwardLabel();
+
+				if (null != forwardLabel) setstrForwardLabel.add (forwardLabel.fullyQualifiedName());
+			}
+		}
+
+		int iNumForwardLabel = setstrForwardLabel.size();
+
+		int i = 0;
+		org.drip.state.identifier.ForwardLabel[] aForwardLabel = new
+			org.drip.state.identifier.ForwardLabel[iNumForwardLabel];
+
+		for (java.lang.String strForwardLabel : setstrForwardLabel)
+			aForwardLabel[i++] = org.drip.state.identifier.ForwardLabel.Standard (strForwardLabel);
+
+		return aForwardLabel;
+	}
+
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	{
+		java.util.Set<java.lang.String> setstrCreditLabel = new java.util.TreeSet<java.lang.String>();
+
+		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
+			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream) {
+				org.drip.state.identifier.CreditLabel creditLabel = fixedStream.creditLabel();
+
+				if (null != creditLabel) setstrCreditLabel.add (creditLabel.fullyQualifiedName());
+			}
+		}
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream) {
+				org.drip.state.identifier.CreditLabel creditLabel = floatStream.creditLabel();
+
+				if (null != creditLabel) setstrCreditLabel.add (creditLabel.fullyQualifiedName());
+			}
+		}
+
+		int iNumCreditLabel = setstrCreditLabel.size();
+
+		int i = 0;
+		org.drip.state.identifier.CreditLabel[] aCreditLabel = new
+			org.drip.state.identifier.CreditLabel[iNumCreditLabel];
+
+		for (java.lang.String strCreditLabel : setstrCreditLabel)
+			aCreditLabel[i++] = org.drip.state.identifier.CreditLabel.Standard (strCreditLabel);
+
+		return aCreditLabel;
+	}
+
+	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	{
+		java.util.Set<java.lang.String> setstrFXLabel = new java.util.TreeSet<java.lang.String>();
+
+		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
+			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream) {
+				org.drip.state.identifier.FXLabel fxLabel = fixedStream.fxLabel();
+
+				if (null != fxLabel) setstrFXLabel.add (fxLabel.fullyQualifiedName());
+			}
+		}
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream) {
+				org.drip.state.identifier.FXLabel fxLabel = floatStream.fxLabel();
+
+				if (null != fxLabel) setstrFXLabel.add (fxLabel.fullyQualifiedName());
+			}
+		}
+
+		int iNumFXLabel = setstrFXLabel.size();
+
+		int i = 0;
+		org.drip.state.identifier.FXLabel[] aFXLabel = new org.drip.state.identifier.FXLabel[iNumFXLabel];
+
+		for (java.lang.String strFXLabel : setstrFXLabel)
+			aFXLabel[i++] = org.drip.state.identifier.FXLabel.Standard (strFXLabel);
+
+		return aFXLabel;
+	}
+
+	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+	{
+		return null;
+	}
+
+	@Override public void setPrimaryCode (
+		final java.lang.String strCode)
+	{
+	}
+
+	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+	{
+		return null;
+	}
+
+	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+		final java.lang.String strMainfestMeasure,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+	{
+		return null;
+	}
+
+	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+	{
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null;
+	}
+
+	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return null;
+	}
+
+	@Override public double initialNotional()
+		throws java.lang.Exception
+	{
+		return 0;
+	}
+
+	@Override public double notional (
+		final double dblDate)
+		throws java.lang.Exception
+	{
+		return 0;
+	}
+
+	@Override public double notional (
+		final double dblDate1,
+		final double dblDate2)
+		throws java.lang.Exception
+	{
+		return 0;
+	}
+
+	@Override public org.drip.analytics.output.CouponPeriodMetrics coupon (
+		final double dblAccrualEndDate,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		return null;
+	}
+
+	@Override public int freq()
+	{
+		return 0;
+	}
+
+	@Override public org.drip.analytics.date.JulianDate effective()
+	{
+		return null;
+	}
+
+	@Override public org.drip.analytics.date.JulianDate maturity()
+	{
+		return null;
+	}
+
+	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
+	{
+		return null;
+	}
+
+	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
+	{
+		return null;
+	}
+
+	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
+	{
+		return null;
+	}
+
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+	{
+		long lStart = System.nanoTime();
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+
+		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
+			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream) {
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+					mapFixedStreamResult = fixedStream.value (valParams, pricerParams, csqs, quotingParams);
+
+				if (!org.drip.analytics.support.AnalyticsHelper.AccumulateMeasures (mapResult,
+					fixedStream.name(), mapFixedStreamResult))
+					return null;
+			}
+		}
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream) {
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
+					mapFixedStreamResult = floatStream.value (valParams, pricerParams, csqs, quotingParams);
+
+				if (!org.drip.analytics.support.AnalyticsHelper.AccumulateMeasures (mapResult,
+					floatStream.name(), mapFixedStreamResult))
+					return null;
+			}
+		}
+
+		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
+
+		return mapResult;
+	}
+
+	@Override public java.util.Set<java.lang.String> measureNames()
+	{
 		return null;
 	}
 

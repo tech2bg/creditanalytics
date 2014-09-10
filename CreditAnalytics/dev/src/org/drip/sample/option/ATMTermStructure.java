@@ -8,6 +8,7 @@ import org.drip.analytics.definition.TermStructure;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
+import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.pricer.option.BlackScholesAlgorithm;
 import org.drip.product.cashflow.*;
@@ -144,7 +145,11 @@ public class ATMTermStructure {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (fixStream, floatStream);
+			FixFloatComponent irs = new FixFloatComponent (
+				fixStream,
+				floatStream,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 

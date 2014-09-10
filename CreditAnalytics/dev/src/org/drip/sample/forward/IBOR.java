@@ -6,6 +6,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.calib.*;
 import org.drip.product.cashflow.*;
@@ -72,7 +73,7 @@ public class IBOR {
 						ForwardCurve.LATENT_STATE_FORWARD,
 						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 						aCalibComp[i] instanceof DualStreamComponent ?
-							((DualStreamComponent) aCalibComp[i]).derivedStream().forwardLabel()[0] : aCalibComp[i].forwardLabel()[0]
+							((DualStreamComponent) aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel()[0]
 					)
 				}
 			);
@@ -228,7 +229,11 @@ public class IBOR {
 			 * The fix-float swap instance
 			 */
 
-			aFFC[i] = new FixFloatComponent (fixStream, fsDerived);
+			aFFC[i] = new FixFloatComponent (
+				fixStream,
+				fsDerived,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 		}
 
 		return aFFC;
@@ -308,7 +313,11 @@ public class IBOR {
 			 * The float-float swap instance
 			 */
 
-			aFFC[i] = new FloatFloatComponent (fsReference, fsDerived);
+			aFFC[i] = new FloatFloatComponent (
+				fsReference,
+				fsDerived,
+				new CashSettleParams (0, strCurrency, 0)
+			);
 		}
 
 		return aFFC;

@@ -377,7 +377,7 @@ public class RatesClosesLoader {
 				org.drip.product.cashflow.FloatingStream (lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
-				(fixStream, floatStream);
+				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -434,7 +434,7 @@ public class RatesClosesLoader {
 				org.drip.product.cashflow.FloatingStream (lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
-				(fixStream, floatStream);
+				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
 
 			irs.setPrimaryCode ("DIS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -444,6 +444,22 @@ public class RatesClosesLoader {
 		}
 
 		return null;
+	}
+
+	private static final double calcMeasure (
+		final org.drip.product.cashflow.Stream stream,
+		final org.drip.analytics.date.JulianDate dt,
+		final org.drip.analytics.rates.DiscountCurve dc,
+		final java.lang.String strMeasure,
+		final java.lang.String strCurrency,
+		final org.drip.param.market.LatentStateFixingsContainer lsfc)
+		throws java.lang.Exception
+	{
+		if (stream.maturity().julian() <= dt.julian()) return 0.;
+
+		return stream.value (new org.drip.param.valuation.ValuationParams (dt, dt, strCurrency), null,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc),
+				null).get (strMeasure);
 	}
 
 	private static final double calcMeasure (
@@ -572,7 +588,7 @@ public class RatesClosesLoader {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (dtPrev, irs.derivedStream().forwardLabel()[0], dblProductFloatingRate);
+		lsfc.add (dtPrev, irs.derivedStream().forwardLabel(), dblProductFloatingRate);
 
 		double dbl1DCleanPnLWithFixing = calcCleanPnL (comp, dtPrev, dtCurr, dcDatePrevQuotePrev,
 			dcDateCurrQuoteCurr, strCurrency, lsfc);
@@ -779,19 +795,25 @@ public class RatesClosesLoader {
 	{
 		if (null == comp) return null;
 
+		org.drip.state.identifier.ForwardLabel forwardLabel = null;
 		org.drip.state.representation.LatentStateSpecification lssForward = null;
 		org.drip.state.representation.LatentStateSpecification lssDiscount = null;
 
-		org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp instanceof
-			org.drip.product.cashflow.DualStreamComponent ? ((org.drip.product.cashflow.DualStreamComponent)
-				comp).derivedStream().forwardLabel() : comp.forwardLabel();
+		if (comp instanceof org.drip.product.cashflow.DualStreamComponent)
+			forwardLabel =((org.drip.product.cashflow.DualStreamComponent)
+				comp).derivedStream().forwardLabel();
+		else {
+			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp.forwardLabel();
 
-		if (null != aForwardLabel && 0 != aForwardLabel.length) {
+			if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+		}
+
+		if (null != forwardLabel) {
 			try {
 				lssForward = new org.drip.state.representation.LatentStateSpecification
 					(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
 						org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
-							aForwardLabel[0]);
+							forwardLabel);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

@@ -208,14 +208,8 @@ public class CouponPeriodMetrics {
 		java.util.Map<java.lang.Double, java.lang.Double> mapCreditLoading = new
 			java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
-		try {
-			mapCreditLoading.put (_dblPayDate, _dblNotional * _dblCumulativeAccrual * _dblDF * _dblFX *
-				_convAdj.cumulative());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
+		mapCreditLoading.put (_dblPayDate, _dblNotional * _dblCumulativeDCF * _dblDF * _dblFX *
+			_convAdj.cumulative());
 
 		return mapCreditLoading;
 	}
@@ -231,14 +225,8 @@ public class CouponPeriodMetrics {
 		java.util.Map<java.lang.Double, java.lang.Double> mapForwardLoading = new
 			java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
-		try {
-			mapForwardLoading.put (_dblEndDate, _dblNotional * _dblCumulativeDCF * _dblSurvival * _dblDF *
-				_dblFX * _convAdj.cumulative());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
+		mapForwardLoading.put (_dblEndDate, _dblNotional * _dblCumulativeDCF * _dblSurvival * _dblDF * _dblFX
+			* _convAdj.cumulative());
 
 		return mapForwardLoading;
 	}
@@ -254,14 +242,8 @@ public class CouponPeriodMetrics {
 		java.util.Map<java.lang.Double, java.lang.Double> mapFundingLoading = new
 			java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
-		try {
-			mapFundingLoading.put (_dblPayDate, _dblNotional * _dblSurvival * _dblCumulativeAccrual * _dblFX
-				* _convAdj.cumulative());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
+		mapFundingLoading.put (_dblPayDate, _dblNotional * _dblSurvival * _dblCumulativeDCF * _dblFX *
+			_convAdj.cumulative());
 
 		return mapFundingLoading;
 	}
@@ -277,14 +259,8 @@ public class CouponPeriodMetrics {
 		java.util.Map<java.lang.Double, java.lang.Double> mapFXLoading = new
 			java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
-		try {
-			mapFXLoading.put (_dblPayDate, _dblNotional * _dblSurvival * _dblCumulativeAccrual * _dblDF *
-				_convAdj.cumulative());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
+		mapFXLoading.put (_dblPayDate, _dblNotional * _dblSurvival * _dblCumulativeDCF * _dblDF *
+			_convAdj.cumulative());
 
 		return mapFXLoading;
 	}
@@ -412,8 +388,13 @@ public class CouponPeriodMetrics {
 								|| 0 == _lsRPM.size() || !org.drip.quant.common.NumberUtil.IsValid
 									(_dblSurvival = dblSurvival) || !org.drip.quant.common.NumberUtil.IsValid
 										(_dblDF = dblDF) || !org.drip.quant.common.NumberUtil.IsValid (_dblFX
-											= dblFX))
+											= dblFX)) {
+			System.out.println ("DF => " + dblDF);
+
+			System.exit (3349);
+
 			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
+		}
 
 		_convAdj = convAdj;
 	}

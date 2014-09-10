@@ -93,7 +93,6 @@ public class FixFloatFixFloatAnalysis {
 		 * The Derived Leg
 		 */
 
-
 		FloatingStream floatStream = new FloatingStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
@@ -120,7 +119,11 @@ public class FixFloatFixFloatAnalysis {
 		 * The fix-float swap instance
 		 */
 
-		FixFloatComponent fixFloat = new FixFloatComponent (fixStream, floatStream);
+		FixFloatComponent fixFloat = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			new CashSettleParams (0, strFloatCurrency, 0)
+		);
 
 		fixFloat.setPrimaryCode (fixStream.primaryCode() + "__" + floatStream.primaryCode());
 
