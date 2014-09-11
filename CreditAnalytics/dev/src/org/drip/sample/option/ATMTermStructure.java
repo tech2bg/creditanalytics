@@ -120,6 +120,7 @@ public class ATMTermStructure {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -139,6 +140,7 @@ public class ATMTermStructure {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null

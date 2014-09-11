@@ -61,10 +61,13 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 
 	public java.lang.String name()
 	{
+		org.drip.analytics.period.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+
 		try {
-			return "STREAM::" + (12 / freq()) + "M::{" + new org.drip.analytics.date.JulianDate
-				(_lsCouponPeriod.get (0).startDate()) + "->" + new org.drip.analytics.date.JulianDate
-					(_lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate()) + "}";
+			return "STREAM::" + cpFirst.payCurrency() + "/" + cpFirst.couponCurrency() + "::" + (12 / freq())
+				+ "M::{" + new org.drip.analytics.date.JulianDate (cpFirst.startDate()) + "->" + new
+					org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (_lsCouponPeriod.size() -
+						1).endDate()) + "}";
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -294,9 +297,20 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 	 * @return The Coupon Currency
 	 */
 
-	public java.lang.String[] couponCurrency()
+	public java.lang.String couponCurrency()
 	{
-		return new java.lang.String[] {_lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency()};
+		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency();
+	}
+
+	/**
+	 * Retrieve the Pay Currency
+	 * 
+	 * @return The Pay Currency
+	 */
+
+	public java.lang.String payCurrency()
+	{
+		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency();
 	}
 
 	/**

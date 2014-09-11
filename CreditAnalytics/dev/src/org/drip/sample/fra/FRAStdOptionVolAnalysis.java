@@ -120,6 +120,7 @@ public class FRAStdOptionVolAnalysis {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
 					null
 				)
@@ -139,6 +140,7 @@ public class FRAStdOptionVolAnalysis {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -289,6 +291,7 @@ public class FRAStdOptionVolAnalysis {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -312,6 +315,7 @@ public class FRAStdOptionVolAnalysis {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					null

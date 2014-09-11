@@ -218,8 +218,7 @@ public class ForwardDecompositionUtil {
 			try {
 				if (null == (aRC[i] = org.drip.product.creator.DualStreamComponentBuilder.MakeDualStream
 					(aStreamReferenceForward[i], aStreamDerivedForward[i], new
-						org.drip.param.valuation.CashSettleParams (0, streamDerived.couponCurrency()[0],
-							0))))
+						org.drip.param.valuation.CashSettleParams (0, streamDerived.couponCurrency(), 0))))
 					return null;
 
 				aRC[i].setPrimaryCode (streamReference.name() + "::" + streamDerived.name() + "_" + i);

@@ -118,6 +118,7 @@ public class ForwardOptionPricing {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -137,6 +138,7 @@ public class ForwardOptionPricing {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null

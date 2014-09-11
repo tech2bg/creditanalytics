@@ -69,7 +69,7 @@ public class RatesStreamBuilder {
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 				strMaturityTenor, java.lang.Double.NaN, null, iFreq, strDayCount, false, true, strCalendar,
-					1., null, dblCoupon, strCurrency, null, null);
+					1., null, dblCoupon, strCurrency, strCurrency, null, null);
 
 		try {
 			return new org.drip.product.cashflow.FixedStream (lsCouponPeriod);
@@ -107,7 +107,7 @@ public class RatesStreamBuilder {
 			org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtEffective.julian(),
 				dtMaturity.julian(), java.lang.Double.NaN, null, iFreq, strDayCount, false,
 					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, -1., null,
-						dblCoupon, strCurrency, null, null);
+						dblCoupon, strCurrency, strCurrency, null, null);
 
 		try {
 			return new org.drip.product.cashflow.FixedStream (lsCouponPeriod);
@@ -146,8 +146,9 @@ public class RatesStreamBuilder {
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 				strMaturityTenor, java.lang.Double.NaN, null, iFreq, strDayCount, false, true, strCalendar,
-					-1., null, dblSpread, strCurrency, org.drip.state.identifier.ForwardLabel.Create
-						(strCurrency, "LIBOR", (12 / iFreq) + "M"), null);
+					-1., null, dblSpread, strCurrency, strCurrency,
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12 / iFreq) +
+							"M"), null);
 
 		try {
 			return new org.drip.product.cashflow.FloatingStream (lsCouponPeriod);
@@ -187,8 +188,8 @@ public class RatesStreamBuilder {
 			org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtEffective.julian(),
 				dtMaturity.julian(), java.lang.Double.NaN, null, iFreq, strDayCount, false,
 					org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCalendar, -1., null, 0.,
-						strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", (12
-							/ iFreq) + "M"), null);
+						strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
+							"LIBOR", (12 / iFreq) + "M"), null);
 
 		try {
 			return new org.drip.product.cashflow.FloatingStream (lsCouponPeriod);

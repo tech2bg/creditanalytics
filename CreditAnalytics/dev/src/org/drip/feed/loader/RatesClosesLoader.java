@@ -361,7 +361,7 @@ public class RatesClosesLoader {
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
 						strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
-							strCurrency, null, null);
+							strCurrency, strCurrency, null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(lsFixedCouponPeriod);
@@ -370,8 +370,8 @@ public class RatesClosesLoader {
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFloatingFrequency.get (strCurrency),
 						strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, -1., null, 0.,
-							strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
-								_mapFloatingTenor.get (strCurrency)), null);
+							strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
+								(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
 				org.drip.product.cashflow.FloatingStream (lsFloatingCouponPeriod);
@@ -419,7 +419,8 @@ public class RatesClosesLoader {
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
-						strFixedDC, false, false, strCurrency, 1., null, dblCoupon, strCurrency, null, null);
+						strFixedDC, false, false, strCurrency, 1., null, dblCoupon, strCurrency, strCurrency,
+							null, null);
 
 			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
 				(lsFixedCouponPeriod);
@@ -828,8 +829,7 @@ public class RatesClosesLoader {
 						org.drip.state.identifier.FundingLabel.Standard (comp instanceof
 							org.drip.product.cashflow.DualStreamComponent ?
 								((org.drip.product.cashflow.DualStreamComponent)
-									comp).derivedStream().couponCurrency()[0] :
-										comp.couponCurrency()[0]));
+									comp).derivedStream().couponCurrency() : comp.couponCurrency()[0]));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

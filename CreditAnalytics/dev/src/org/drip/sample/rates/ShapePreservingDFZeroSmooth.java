@@ -215,6 +215,7 @@ public class ShapePreservingDFZeroSmooth {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -234,6 +235,7 @@ public class ShapePreservingDFZeroSmooth {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					null,
 					null

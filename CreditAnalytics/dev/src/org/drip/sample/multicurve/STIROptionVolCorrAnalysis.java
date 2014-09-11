@@ -119,6 +119,7 @@ public class STIROptionVolCorrAnalysis {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -138,6 +139,7 @@ public class STIROptionVolCorrAnalysis {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -288,6 +290,7 @@ public class STIROptionVolCorrAnalysis {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -311,6 +314,7 @@ public class STIROptionVolCorrAnalysis {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					null
@@ -517,6 +521,7 @@ public class STIROptionVolCorrAnalysis {
 				null,
 				0.,
 				strCurrency,
+				strCurrency,
 				fri,
 				null
 			)
@@ -536,6 +541,7 @@ public class STIROptionVolCorrAnalysis {
 				1.,
 				null,
 				dblCoupon,
+				strCurrency,
 				strCurrency,
 				null,
 				null

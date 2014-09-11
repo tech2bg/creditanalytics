@@ -261,7 +261,7 @@ public class FixedStream extends org.drip.product.cashflow.Stream {
 		if (null == valParams || null == csqs) return null;
 
 		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(couponCurrency()[0]);
+			(payCurrency());
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 
@@ -530,7 +530,7 @@ public class FixedStream extends org.drip.product.cashflow.Stream {
 			org.drip.product.calib.FixedStreamQuoteSet) || !pqs.contains
 				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0])) ? unloadedPRWC
+						org.drip.state.identifier.FundingLabel.Standard (couponCurrency())) ? unloadedPRWC
 							(valParams, pricerParams, csqs, quotingParams, pqs) : discountFactorPRWC
 								(valParams, pricerParams, csqs, quotingParams, pqs);
 	}
@@ -568,7 +568,7 @@ public class FixedStream extends org.drip.product.cashflow.Stream {
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()));
 
 		if (null == dcFunding) return null;
 
@@ -625,7 +625,7 @@ public class FixedStream extends org.drip.product.cashflow.Stream {
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()));
 
 		if (null == dcFunding) return null;
 
@@ -726,8 +726,8 @@ public class FixedStream extends org.drip.product.cashflow.Stream {
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "4Y",
-				java.lang.Double.NaN, null, 2, "30/360", false, true, "JPY", 100., null, 0.03, "JPY", null,
-					null);
+				java.lang.Double.NaN, null, 2, "30/360", false, true, "JPY", 100., null, 0.03, "JPY", "JPY",
+					null, null);
 
 		FixedStream fs = new org.drip.product.cashflow.FixedStream (lsCouponPeriod);
 

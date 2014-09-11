@@ -192,6 +192,7 @@ public class CustomDiscountCurveBuilder {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -211,6 +212,7 @@ public class CustomDiscountCurveBuilder {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					null,
 					null

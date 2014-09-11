@@ -166,27 +166,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 	@Override public java.lang.String[] couponCurrency()
 	{
-		java.lang.String[] astrReferenceCouponCurrency = _fixReference.couponCurrency();
-
-		java.lang.String[] astrDerivedCouponCurrency = _floatDerived.couponCurrency();
-
-		int iNumReferenceCouponCurrency = null == astrReferenceCouponCurrency ? 0 :
-			astrReferenceCouponCurrency.length;
-		int iNumDerivedCouponCurrency = null == astrDerivedCouponCurrency ? 0 :
-			astrDerivedCouponCurrency.length;
-		int iNumCouponCurrency = iNumReferenceCouponCurrency + iNumDerivedCouponCurrency;
-
-		if (0 == iNumCouponCurrency) return null;
-
-		java.lang.String[] astrCouponCurrency = new java.lang.String[iNumCouponCurrency];
-
-		for (int i = 0; i < iNumReferenceCouponCurrency; ++i)
-			astrCouponCurrency[i] = astrReferenceCouponCurrency[i];
-
-		for (int i = iNumReferenceCouponCurrency; i < iNumCouponCurrency; ++i)
-			astrCouponCurrency[i] = astrDerivedCouponCurrency[i - iNumReferenceCouponCurrency];
-
-		return astrCouponCurrency;
+		return new java.lang.String[] {_fixReference.couponCurrency(), _floatDerived.couponCurrency()};
 	}
 
 	@Override public java.lang.String[] principalCurrency()

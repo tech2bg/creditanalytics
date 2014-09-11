@@ -119,6 +119,7 @@ public class FRAStdCapFloor {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
 					null
 				)
@@ -138,6 +139,7 @@ public class FRAStdCapFloor {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -234,7 +236,8 @@ public class FRAStdCapFloor {
 			dtSpot,
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
 			adblSwapQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -249,7 +252,8 @@ public class FRAStdCapFloor {
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true);
+			true
+		);
 	}
 
 	/*
@@ -288,6 +292,7 @@ public class FRAStdCapFloor {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -311,6 +316,7 @@ public class FRAStdCapFloor {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					null
@@ -565,6 +571,7 @@ public class FRAStdCapFloor {
 				1.,
 				null,
 				0.,
+				strCurrency,
 				strCurrency,
 				fri,
 				null

@@ -222,6 +222,7 @@ public class ShapeOISZeroLocalSmooth {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -241,6 +242,7 @@ public class ShapeOISZeroLocalSmooth {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -295,6 +297,7 @@ public class ShapeOISZeroLocalSmooth {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -314,6 +317,7 @@ public class ShapeOISZeroLocalSmooth {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null

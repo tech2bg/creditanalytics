@@ -120,6 +120,7 @@ public class FRAStdCapFloorVolAnalysis {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
 					null
 				)
@@ -139,6 +140,7 @@ public class FRAStdCapFloorVolAnalysis {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -289,6 +291,7 @@ public class FRAStdCapFloorVolAnalysis {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -312,6 +315,7 @@ public class FRAStdCapFloorVolAnalysis {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					null
@@ -563,6 +567,7 @@ public class FRAStdCapFloorVolAnalysis {
 				1.,
 				null,
 				0.,
+				strCurrency,
 				strCurrency,
 				fri,
 				null

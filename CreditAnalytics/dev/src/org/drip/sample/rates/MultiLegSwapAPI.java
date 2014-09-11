@@ -22,9 +22,12 @@ import org.drip.param.valuation.ValuationParams;
 import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
+import org.drip.product.params.CurrencyPair;
 import org.drip.product.rates.*;
+import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
+import org.drip.state.identifier.FXLabel;
 import org.drip.state.identifier.ForwardLabel;
 
 /*!
@@ -121,6 +124,7 @@ public class MultiLegSwapAPI {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -140,6 +144,7 @@ public class MultiLegSwapAPI {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -196,6 +201,7 @@ public class MultiLegSwapAPI {
 				null,
 				0.03,
 				"USD",
+				"USD",
 				null,
 				null
 			)
@@ -216,6 +222,7 @@ public class MultiLegSwapAPI {
 				null,
 				0.05,
 				"USD",
+				"USD",
 				null,
 				null
 			)
@@ -235,6 +242,7 @@ public class MultiLegSwapAPI {
 				1.,
 				null,
 				0.07,
+				"USD",
 				"USD",
 				null,
 				null
@@ -262,6 +270,7 @@ public class MultiLegSwapAPI {
 				null,
 				0.03,
 				"USD",
+				"ABC",
 				ForwardLabel.Standard ("ABC-RI-3M"),
 				null
 			)
@@ -282,6 +291,7 @@ public class MultiLegSwapAPI {
 				null,
 				0.05,
 				"USD",
+				"ABC",
 				ForwardLabel.Standard ("ABC-RI-3M"),
 				null
 			)
@@ -302,6 +312,7 @@ public class MultiLegSwapAPI {
 				null,
 				0.07,
 				"USD",
+				"ABC",
 				ForwardLabel.Standard ("ABC-RI-3M"),
 				null
 			)
@@ -352,9 +363,16 @@ public class MultiLegSwapAPI {
 
 		ValuationParams valParams = ValuationParams.CreateValParams (dtValue, 0, "", Convention.DR_ACTUAL);
 
+		double dblUSDABCFXRate = 1.;
+
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
 
 		mktParams.setFundingCurve (dc);
+
+		mktParams.setFXCurve (
+			FXLabel.Standard (CurrencyPair.FromCode ("USD/ABC")),
+			new FlatUnivariate (dblUSDABCFXRate)
+		);
 
 		/*
 		 * Create the Rates Basket from the streams

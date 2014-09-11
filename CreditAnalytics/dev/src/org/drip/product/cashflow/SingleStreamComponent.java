@@ -80,7 +80,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 
 	@Override public java.lang.String[] couponCurrency()
 	{
-		return _stream.couponCurrency();
+		return new java.lang.String[] {_stream.couponCurrency()};
 	}
 
 	@Override public java.lang.String[] principalCurrency()

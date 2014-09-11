@@ -97,6 +97,7 @@ public class CCBSDiscountCurve {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -120,6 +121,7 @@ public class CCBSDiscountCurve {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					null

@@ -151,6 +151,7 @@ public class CustomOISCurveBuilder {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -170,6 +171,7 @@ public class CustomOISCurveBuilder {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -224,6 +226,7 @@ public class CustomOISCurveBuilder {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -243,6 +246,7 @@ public class CustomOISCurveBuilder {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null

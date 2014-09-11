@@ -185,8 +185,6 @@ public class FloatingStream extends org.drip.product.cashflow.Stream {
 	{
 		if (null == valParams || null == csqs) return null;
 
-		java.lang.String strCurrency = couponCurrency()[0];
-
 		double dblFixing01 = 0.;
 		double dblAccrued01 = 0.;
 		double dblTotalCoupon = 0.;
@@ -202,7 +200,7 @@ public class FloatingStream extends org.drip.product.cashflow.Stream {
 		double dblValueNotional = java.lang.Double.NaN;
 
 		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(strCurrency);
+			(payCurrency());
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 
@@ -599,7 +597,7 @@ public class FloatingStream extends org.drip.product.cashflow.Stream {
 			org.drip.product.calib.FloatingStreamQuoteSet) || !pqs.contains
 				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0])))
+						org.drip.state.identifier.FundingLabel.Standard (payCurrency())))
 			return null;
 
 		double dblValueDate = valParams.valueDate();
@@ -693,7 +691,7 @@ public class FloatingStream extends org.drip.product.cashflow.Stream {
 		double dblValueDate = valParams.valueDate();
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
 
 		if (dblValueDate >= _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate() || null == dcFunding)
 			return null;
@@ -781,7 +779,7 @@ public class FloatingStream extends org.drip.product.cashflow.Stream {
 			org.drip.product.calib.FloatingStreamQuoteSet) || !pqs.contains
 				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0])) ||
+						org.drip.state.identifier.FundingLabel.Standard (payCurrency())) ||
 							!pqs.contains (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
 								org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
 									_lsCouponPeriod.get (0).forwardLabel()))
@@ -882,7 +880,7 @@ public class FloatingStream extends org.drip.product.cashflow.Stream {
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
 
 		if (null == dcFunding) return null;
 
@@ -954,7 +952,7 @@ public class FloatingStream extends org.drip.product.cashflow.Stream {
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
 
 		if (null == dcFunding) return null;
 

@@ -197,6 +197,7 @@ public class DiscountCurveQuoteSensitivity {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -216,6 +217,7 @@ public class DiscountCurveQuoteSensitivity {
 					1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					null,
 					null

@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.ResetUtil;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.CashSettleParams;
@@ -152,6 +153,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -171,6 +173,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -225,6 +228,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -244,6 +248,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -562,12 +567,10 @@ public class OvernightArithmeticCompoundingConvexity {
 
 			if (0 != i) strDump += " || ";
 
-			double dblUnadjustedFairPremium = mapValue.get ("UnadjustedFairPremium");
-
 			strDump +=
-				FormatUtil.FormatDouble (dblUnadjustedFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (mapValue.get ("CompoundingAdjustedFairPremium") - dblUnadjustedFairPremium, 1, 3, 10000.) + " | " +
-				FormatUtil.FormatDouble (mapValue.get ("FairPremium") - dblUnadjustedFairPremium, 1, 3, 10000.);
+				FormatUtil.FormatDouble (mapValue.get ("UnadjustedFairPremium"), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (mapValue.get ("CompoundingAdjustmentFactor") - 1, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (mapValue.get ("ConvexityAdjustmentFactor") - 1, 1, 2, 100.) + "%";
 		}
 
 		System.out.println (strDump);
@@ -597,7 +600,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodSingleReset (
+		List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			Double.NaN,
@@ -611,6 +614,8 @@ public class OvernightArithmeticCompoundingConvexity {
 			null,
 			0.,
 			strCurrency,
+			strCurrency,
+			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);
@@ -651,7 +656,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		System.out.println ("\tOutput Order (RHS) L->R:");
 
-		System.out.println ("\t\tUnadjusted Fair Premium, Compounding Fair Premium Adjustment (bp), Convexity Fair Premium Adjustment (bp)\n");
+		System.out.println ("\t\tUnadjusted Fair Premium, Compounding Adjustment Factor (% - Relative), Convexity Adjustment Factor (% - Relative)\n");
 
 		System.out.println ("\t----------------------------------------------------------------------");
 
@@ -660,7 +665,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				for (double dblUSDFundingUSDOISCorrelation : adblUSDFundingUSDOISCorrelation)
 					VolCorrScenario (
 						new FloatingStream[] {floatStream},
-						"USD",
+						strCurrency,
 						fri,
 						period.endDate(),
 						valParams,

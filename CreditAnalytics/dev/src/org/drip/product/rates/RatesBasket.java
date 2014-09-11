@@ -295,25 +295,13 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setCouponCurrency = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream) {
-				java.lang.String[] astrCouponCurrency = fixedStream.couponCurrency();
-
-				if (null != astrCouponCurrency && 0 != astrCouponCurrency.length) {
-					for (java.lang.String strCouponCurrency : astrCouponCurrency)
-						setCouponCurrency.add (strCouponCurrency);
-				}
-			}
+			for (org.drip.product.cashflow.FixedStream fixedStream : _aCompFixedStream)
+				setCouponCurrency.add (fixedStream.couponCurrency());
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream) {
-				java.lang.String[] astrCouponCurrency = floatStream.couponCurrency();
-
-				if (null != astrCouponCurrency && 0 != astrCouponCurrency.length) {
-					for (java.lang.String strCouponCurrency : astrCouponCurrency)
-						setCouponCurrency.add (strCouponCurrency);
-				}
-			}
+			for (org.drip.product.cashflow.FloatingStream floatStream : _aCompFloatStream)
+				setCouponCurrency.add (floatStream.couponCurrency());
 		}
 
 		int iNumCouponCurrency = setCouponCurrency.size();
@@ -642,42 +630,42 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "3Y",
-				java.lang.Double.NaN, dap, 2, "30/360", false, true, "DEF", 100., null, 0.03, "ABC", null,
-					null);
+				java.lang.Double.NaN, dap, 2, "30/360", false, true, "DEF", 100., null, 0.03, "ABC", "ABC",
+					null, null);
 
 		aFixedStream[0] = new org.drip.product.cashflow.FixedStream (lsFixedCouponPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatCouponPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "3Y",
-				java.lang.Double.NaN, dap, 2, "30/360", false, true, "DEF", 100., null, 0., "ABC",
+				java.lang.Double.NaN, dap, 2, "30/360", false, true, "DEF", 100., null, 0., "ABC", "ABC",
 					forwardLabel, null);
 
 		aFloatStream[0] = new org.drip.product.cashflow.FloatingStream (lsFloatCouponPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "5Y",
-				java.lang.Double.NaN, dap, 2, "30/360", false, true, "JKL", 100., null, 0.05, "GHI", null,
-					null);
+				java.lang.Double.NaN, dap, 2, "30/360", false, true, "JKL", 100., null, 0.05, "GHI", "GHI",
+					null, null);
 
 		aFixedStream[1] = new org.drip.product.cashflow.FixedStream (lsFixedCouponPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatCouponPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "5Y",
-				java.lang.Double.NaN, dap, 2, "30/360", false, true, "JKL", 100., null, 0.05, "GHI",
+				java.lang.Double.NaN, dap, 2, "30/360", false, true, "JKL", 100., null, 0.05, "GHI", "GHI",
 					forwardLabel, null);
 
 		aFloatStream[1] = new org.drip.product.cashflow.FloatingStream (lsFloatCouponPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "7Y",
-				java.lang.Double.NaN, dap, 2, "30/360", false, true, "PQR", 100., null, 0.05, "MNO", null,
-					null);
+				java.lang.Double.NaN, dap, 2, "30/360", false, true, "PQR", 100., null, 0.05, "MNO", "MNO",
+					null, null);
 
 		aFixedStream[2] = new org.drip.product.cashflow.FixedStream (lsFixedCouponPeriod7Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatCouponPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "7Y",
-				java.lang.Double.NaN, dap, 2, "30/360", false, true, "PQR", 100., null, 0.05, "MNO",
+				java.lang.Double.NaN, dap, 2, "30/360", false, true, "PQR", 100., null, 0.05, "MNO", "MNO",
 					forwardLabel, null);
 
 		aFloatStream[2] = new org.drip.product.cashflow.FloatingStream (lsFloatCouponPeriod7Y);

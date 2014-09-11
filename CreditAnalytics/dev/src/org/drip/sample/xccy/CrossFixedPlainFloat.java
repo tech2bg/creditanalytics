@@ -57,10 +57,9 @@ public class CrossFixedPlainFloat {
 
 	private static final FixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
-		final CurrencyPair cp,
-		final String strFixedCurrency,
-		final boolean bFixMTMOn,
-		final String strFloatCurrency,
+		final boolean bFXMTM,
+		final String strPayCurrency,
+		final String strFixedCouponCurrency,
 		final String strTenor,
 		final int iTenorInMonths)
 		throws Exception
@@ -73,23 +72,24 @@ public class CrossFixedPlainFloat {
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
-				bFixMTMOn ? Double.NaN : dtEffective.julian(),
+				bFXMTM ? Double.NaN : dtEffective.julian(),
 				null,
 				2,
 				"Act/360",
 				false,
 				false,
-				strFixedCurrency,
+				strFixedCouponCurrency,
 				-1.,
 				null,
 				0.02,
-				strFixedCurrency,
+				strPayCurrency,
+				strFixedCouponCurrency,
 				null,
 				null
 			)
 		);
 
-		fixStream.setPrimaryCode (strFixedCurrency + "_" + cp.numCcy() + "::FIXED::" + strTenor);
+		fixStream.setPrimaryCode (strPayCurrency + "_" + strFixedCouponCurrency + "::FIXED::" + strTenor);
 
 		/*
 		 * The Derived Leg
@@ -105,17 +105,18 @@ public class CrossFixedPlainFloat {
 				"Act/360",
 				false,
 				false,
-				strFloatCurrency,
+				strPayCurrency,
 				1.,
 				null,
 				0.,
-				strFloatCurrency,
-				ForwardLabel.Standard (strFloatCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+				strPayCurrency,
+				strPayCurrency,
+				ForwardLabel.Standard (strPayCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 				null
 			)
 		);
 
-		floatStream.setPrimaryCode (strFloatCurrency + "_" + strFloatCurrency + "::FIXED::" + iTenorInMonths + "M::" + strTenor);
+		floatStream.setPrimaryCode (strPayCurrency + "_" + strPayCurrency + "::FIXED::" + iTenorInMonths + "M::" + strTenor);
 
 		/*
 		 * The fix-float swap instance
@@ -124,7 +125,8 @@ public class CrossFixedPlainFloat {
 		FixFloatComponent fixFloat = new FixFloatComponent (
 			fixStream,
 			floatStream,
-			new CashSettleParams (0, strFloatCurrency, 0));
+			new CashSettleParams (0, strPayCurrency, 0)
+		);
 
 		fixFloat.setPrimaryCode (fixStream.primaryCode() + "__" + floatStream.primaryCode());
 
@@ -146,7 +148,7 @@ public class CrossFixedPlainFloat {
 
 		double dblEURFundingVol = 0.1;
 		double dblUSDEURFXVol = 0.3;
-		double dblEURFundingUSDEURFXCorr = 0.3;
+		double dblUSDFundingUSDEURFXCorr = 0.3;
 
 		/*
 		 * Initialize the Credit Analytics Library
@@ -164,38 +166,39 @@ public class CrossFixedPlainFloat {
 			dtToday,
 			"USD",
 			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"),
-			dblUSDCollateralRate);
+			dblUSDCollateralRate
+		);
 
 		DiscountCurve dcEURCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
 			"EUR",
 			new CollateralizationParams ("OVERNIGHT_INDEX", "EUR"),
-			dblEURCollateralRate);
+			dblEURCollateralRate
+		);
 
 		ForwardCurve fc3MUSD = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
 			fri3MUSD,
 			dblUSD3MForwardRate,
-			new CollateralizationParams ("OVERNIGHT_INDEX", "USD"));
+			new CollateralizationParams ("OVERNIGHT_INDEX", "USD")
+		);
 
 		CurrencyPair cp = CurrencyPair.FromCode ("USD/EUR");
 
 		FixFloatComponent fixMTMFloat = MakeFixFloatSwap (
 			dtToday,
-			cp,
-			"EUR",
 			true,
 			"USD",
+			"EUR",
 			"2Y",
 			3
 		);
 
 		FixFloatComponent fixNonMTMFloat = MakeFixFloatSwap (
 			dtToday,
-			cp,
-			"EUR",
 			false,
 			"USD",
+			"EUR",
 			"2Y",
 			3
 		);
@@ -228,7 +231,7 @@ public class CrossFixedPlainFloat {
 
 		mktParams.setFXCurveVolSurface (fxLabel, new FlatUnivariate (dblUSDEURFXVol));
 
-		mktParams.setFundingFXCorrSurface (fundingLabelEUR, fxLabel, new FlatUnivariate (dblEURFundingUSDEURFXCorr));
+		mktParams.setFundingFXCorrSurface (fundingLabelUSD, fxLabel, new FlatUnivariate (dblUSDFundingUSDEURFXCorr));
 
 		CaseInsensitiveTreeMap<Double> mapMTMOutput = fixMTMFloat.value (valParams, null, mktParams, null);
 

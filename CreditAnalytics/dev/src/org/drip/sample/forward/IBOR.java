@@ -196,6 +196,7 @@ public class IBOR {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					null,
 					null
 				)
@@ -219,6 +220,7 @@ public class IBOR {
 					-1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					fri,
 					null
@@ -280,6 +282,7 @@ public class IBOR {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 					null
 				)
@@ -303,6 +306,7 @@ public class IBOR {
 					-1.,
 					null,
 					0.,
+					strCurrency,
 					strCurrency,
 					fri,
 					null

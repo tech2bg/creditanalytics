@@ -152,6 +152,7 @@ public class FedFundOvernightCompounding {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -171,6 +172,7 @@ public class FedFundOvernightCompounding {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -225,6 +227,7 @@ public class FedFundOvernightCompounding {
 					null,
 					0.,
 					strCurrency,
+					strCurrency,
 					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 					null
 				)
@@ -244,6 +247,7 @@ public class FedFundOvernightCompounding {
 					1.,
 					null,
 					adblCoupon[i],
+					strCurrency,
 					strCurrency,
 					null,
 					null
@@ -583,6 +587,7 @@ public class FedFundOvernightCompounding {
 				null,
 				0.,
 				strCurrency,
+				strCurrency,
 				ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
@@ -602,6 +607,7 @@ public class FedFundOvernightCompounding {
 			-1.,
 			null,
 			0.,
+			strCurrency,
 			strCurrency,
 			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
@@ -626,6 +632,7 @@ public class FedFundOvernightCompounding {
 				1.,
 				null,
 				0.,
+				strCurrency,
 				strCurrency,
 				null,
 				null

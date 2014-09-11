@@ -354,7 +354,7 @@ public class CouponPeriodMetrics {
 
 			if (null == convAdjResetPeriod)
 				throw new java.lang.Exception
-					("CouponPeriodMetrics::compoundingConvexityFactor => No Convexity Adjustment for on/more reset periods");
+					("CouponPeriodMetrics::compoundingConvexityFactor => No Convexity Adjustment for one/more reset periods");
 
 			double dblPeriodAccrual = rpm.nominalRate() * rpm.dcf();
 
@@ -388,13 +388,8 @@ public class CouponPeriodMetrics {
 								|| 0 == _lsRPM.size() || !org.drip.quant.common.NumberUtil.IsValid
 									(_dblSurvival = dblSurvival) || !org.drip.quant.common.NumberUtil.IsValid
 										(_dblDF = dblDF) || !org.drip.quant.common.NumberUtil.IsValid (_dblFX
-											= dblFX)) {
-			System.out.println ("DF => " + dblDF);
-
-			System.exit (3349);
-
+											= dblFX))
 			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
-		}
 
 		_convAdj = convAdj;
 	}
