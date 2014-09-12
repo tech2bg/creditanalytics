@@ -91,9 +91,9 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 	public java.lang.String fxCode()
 	{
-		java.lang.String strDerivedComponentCouponCurrency = _rcDerived.couponCurrency()[0];
+		java.lang.String strDerivedComponentCouponCurrency = _rcDerived.payCurrency()[0];
 
-		java.lang.String strReferenceComponentCouponCurrency = _rcReference.couponCurrency()[0];
+		java.lang.String strReferenceComponentCouponCurrency = _rcReference.payCurrency()[0];
 
 		return strDerivedComponentCouponCurrency.equalsIgnoreCase (strReferenceComponentCouponCurrency) ?
 			null : strReferenceComponentCouponCurrency + "/" + strDerivedComponentCouponCurrency;
@@ -106,9 +106,9 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
-		java.lang.String strReferenceCurrency = _rcReference.couponCurrency()[0];
+		java.lang.String strReferenceCurrency = _rcReference.payCurrency()[0];
 
-		java.lang.String strDerivedCurrency = _rcDerived.couponCurrency()[0];
+		java.lang.String strDerivedCurrency = _rcDerived.payCurrency()[0];
 
 		return new org.drip.state.identifier.FXLabel[] {org.drip.state.identifier.FXLabel.Standard
 			(strReferenceCurrency + "/" + strDerivedCurrency), org.drip.state.identifier.FXLabel.Standard

@@ -286,7 +286,11 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 	{
 		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
 
-		setCcy.add (_lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency());
+		org.drip.analytics.period.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+
+		setCcy.add (cpFirst.payCurrency());
+
+		setCcy.add (cpFirst.couponCurrency());
 
 		return setCcy;
 	}
@@ -299,7 +303,7 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 
 	public java.lang.String couponCurrency()
 	{
-		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency();
+		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).couponCurrency();
 	}
 
 	/**

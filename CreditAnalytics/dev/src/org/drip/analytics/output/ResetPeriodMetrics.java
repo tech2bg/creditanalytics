@@ -64,11 +64,11 @@ public class ResetPeriodMetrics {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblStartDate >=
-				_dblEndDate || !org.drip.quant.common.NumberUtil.IsValid (_dblNominalRate = dblNominalRate)
-					|| !org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || 0. == _dblDCF)
+				_dblEndDate || !org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) || 0. == _dblDCF)
 			throw new java.lang.Exception ("ResetPeriodMetrics ctr: Invalid Inputs");
 
 		_dblFixingDate = dblFixingDate;
+		_dblNominalRate = dblNominalRate;
 	}
 
 	/**

@@ -440,7 +440,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		return setCashflowCurrency;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
 
@@ -455,7 +455,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.lang.String[] astrCompCouponCurrency = aComp[i].couponCurrency();
+			java.lang.String[] astrCompCouponCurrency = aComp[i].payCurrency();
 
 			if (null != astrCompCouponCurrency && 0 != astrCompCouponCurrency.length) {
 				for (java.lang.String strCompCouponCurrency : astrCompCouponCurrency) {

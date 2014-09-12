@@ -198,7 +198,7 @@ public class CCBSStretchBuilder {
 						(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 							org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 								org.drip.state.identifier.FundingLabel.Standard
-									(comp.couponCurrency()[0])), new
+									(comp.payCurrency()[0])), new
 										org.drip.state.representation.LatentStateSpecification
 											(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
 												org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,

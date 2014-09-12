@@ -45,6 +45,79 @@ package org.drip.analytics.period;
 public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	java.lang.Comparable<CouponPeriod> {
 
+	class CalibInput {
+		double _dblFloatSpread = java.lang.Double.NaN;
+		double _dblFixedCoupon = java.lang.Double.NaN;
+		double _dblFixedCouponBasis = java.lang.Double.NaN;
+
+		double fullCoupon (
+			final org.drip.analytics.output.CouponPeriodMetrics cpm)
+		{
+			return null == _forwardLabel ? _dblFixedCoupon + _dblFixedCouponBasis :
+				cpm.compoundedAccrualRate() + _dblFloatSpread;
+		}
+	}
+
+	private CalibInput calibInput (
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		CalibInput ci = new CalibInput();
+
+		ci._dblFixedCouponBasis = 0.;
+		ci._dblFixedCoupon = _dblFixedCoupon;
+		ci._dblFloatSpread = _dblFloatSpread;
+
+		if (null == pqs) return ci;
+
+		if (null == _forwardLabel) {
+			if (pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) {
+				org.drip.product.calib.FixedStreamQuoteSet fsqs =
+					(org.drip.product.calib.FixedStreamQuoteSet) pqs;
+
+				try {
+					if (fsqs.containsCoupon()) ci._dblFixedCoupon = fsqs.coupon();
+
+					if (fsqs.containsCouponBasis()) ci._dblFixedCouponBasis = fsqs.couponBasis();
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+		} else {
+			if (pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet) {
+				org.drip.product.calib.FloatingStreamQuoteSet fsqs =
+					(org.drip.product.calib.FloatingStreamQuoteSet) pqs;
+
+				try {
+					if (fsqs.containsSpread()) ci._dblFloatSpread = fsqs.spread();
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+		}
+
+		return ci;
+	}
+
+	private double calibAccrued (
+		final CalibInput ci,
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		if (!contains (dblValueDate)) return 0.;
+
+		org.drip.analytics.output.CouponAccrualMetrics cam = accrualMetrics (dblValueDate, csqs);
+
+		if (null == cam) return 0.;
+
+		return 10000. * cam.accrual01() * (null == _forwardLabel ? ci._dblFixedCoupon +
+			ci._dblFixedCouponBasis : cam.compoundedAccrualRate() + ci._dblFloatSpread);
+	}
+
 	/*
 	 * Period Date Fields
 	 */
@@ -92,8 +165,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		if (null == csqs)
-			throw new java.lang.Exception ("CouponPeriod::resetPeriodRate => Cannot locate CSQS");
+		if (null == csqs) return java.lang.Double.NaN;
+			// throw new java.lang.Exception ("CouponPeriod::resetPeriodRate => Cannot locate CSQS");
 
 		double dblFixingDate = rp.fixing();
 
@@ -1027,11 +1100,16 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		double dblDF = 1.;
 		double dblSurvival = 1.;
 
-		org.drip.analytics.definition.CreditCurve cc = null == csqs ? null : csqs.creditCurve
-			(creditLabel());
+		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
+
+		org.drip.state.identifier.CreditLabel creditLabel = creditLabel();
+
+		org.drip.state.identifier.FundingLabel fundingLabel = fundingLabel();
+
+		org.drip.analytics.definition.CreditCurve cc = null == csqs ? null : csqs.creditCurve (creditLabel);
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = null == csqs ? null : csqs.fundingCurve
-			(fundingLabel());
+			(fundingLabel);
 
 		int iAccrualCompoundingRule = null == _rpc ?
 			org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
@@ -1053,7 +1131,8 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 				return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
 					_dblPayDate, notional (_dblEndDate), iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF,
-						dblFX, calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs));
+						dblFX, calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs), creditLabel,
+							_forwardLabel, fundingLabel, fxLabel);
 			}
 
 			for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
@@ -1069,7 +1148,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 				_dblPayDate, notional (_dblEndDate), iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF,
 					dblFX, org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 						iAccrualCompoundingRule ? calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs)
-							: null);
+							: null, creditLabel, _forwardLabel, fundingLabel, fxLabel);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1145,6 +1224,292 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		}
 
 		return null;
+	}
+
+	/**
+	 * Compute the Clean PV of the Cash Flow
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Clean PV of the Cash Flow
+	 * 
+	 * @throws java.lang.Exception Thrown if the Clean PV cannot be computed
+	 */
+
+	public double cleanPV (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+		throws java.lang.Exception
+	{
+		if (null == pqs || (!(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) && !(pqs instanceof
+			org.drip.product.calib.FloatingStreamQuoteSet)))
+			throw new java.lang.Exception ("CouponPeriod::cleanPV => Invalid Inputs");
+
+		double dblAccrued = 0.;
+		double dblFixedCouponBasis = 0.;
+		double dblFixedCoupon = _dblFixedCoupon;
+		double dblFloatSpread = _dblFloatSpread;
+
+		if (null != pqs) {
+			if (null != forwardLabel()) {
+				if (pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) {
+					org.drip.product.calib.FixedStreamQuoteSet fsqs =
+						(org.drip.product.calib.FixedStreamQuoteSet) pqs;
+
+					if (fsqs.containsCoupon()) dblFixedCoupon = fsqs.coupon();
+
+					if (fsqs.containsCouponBasis()) dblFixedCouponBasis = fsqs.couponBasis();
+				}
+			} else {
+				if (pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet) {
+					org.drip.product.calib.FloatingStreamQuoteSet fsqs =
+						(org.drip.product.calib.FloatingStreamQuoteSet) pqs;
+
+					if (fsqs.containsSpread()) dblFloatSpread = fsqs.spread();
+				}
+			}
+		}
+
+		if (contains (dblValueDate)) {
+			org.drip.analytics.output.CouponAccrualMetrics cam = accrualMetrics (dblValueDate, csqs);
+
+			if (null != cam)
+				dblAccrued = 10000. * cam.accrual01() * (null == forwardLabel() ? dblFixedCoupon +
+					dblFixedCouponBasis : cam.compoundedAccrualRate() + dblFloatSpread);
+		}
+
+		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
+
+		if (null == cpm)
+			throw new java.lang.Exception ("CouponPeriod::cleanPV => Cannot compute base metrics");
+
+		org.drip.analytics.output.ConvexityAdjustment convAdj = cpm.convexityAdjustment();
+
+		if (null == convAdj)
+			throw new java.lang.Exception ("CouponPeriod::cleanPV => Cannot compute Convexity Adjustment");
+
+		return cpm.annuity() * convAdj.cumulative() * cpm.dcf() * (null == forwardLabel() ? dblFixedCoupon +
+			dblFixedCouponBasis : cpm.compoundedAccrualRate() + dblFloatSpread) - dblAccrued;
+	}
+
+	/**
+	 * Generate the Forward Predictor/Response Constraint
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Forward Predictor/Response Constraint
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == pqs) return null;
+
+		double dblPV = 0.;
+		double dblAccrued = 0.;
+
+		CalibInput ci = calibInput (pqs);
+
+		try {
+			dblAccrued = calibAccrued (ci, dblValueDate, csqs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
+
+		if (null == cpm) return null;
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapForwardRateLoading =
+			cpm.forwardRateForwardLoading (pqs.forwardLabel());
+
+		if (null != mapForwardRateLoading && 0 != mapForwardRateLoading.size()) {
+			dblPV -= cpm.annuity() * cpm.dcf() * ci._dblFloatSpread;
+
+			for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meForwardRateLoading :
+				mapForwardRateLoading.entrySet()) {
+				double dblDateAnchor = meForwardRateLoading.getKey();
+
+				double dblForwardRateLoading = meForwardRateLoading.getValue();
+
+				if (!prwc.addPredictorResponseWeight (dblDateAnchor, dblForwardRateLoading)) return null;
+
+				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor, dblForwardRateLoading))
+					return null;
+			}
+		} else
+			dblPV -= cpm.annuity() * cpm.dcf() * ci.fullCoupon (cpm);
+
+		if (!prwc.updateValue (dblPV + dblAccrued)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
+	/**
+	 * Generate the Funding Predictor/Response Constraint
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Funding Predictor/Response Constraint
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == pqs) return null;
+
+		double dblPV = 0.;
+		double dblAccrued = 0.;
+
+		CalibInput ci = calibInput (pqs);
+
+		try {
+			dblAccrued = calibAccrued (ci, dblValueDate, csqs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
+
+		if (null == cpm) return null;
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapDiscountFactorLoading =
+			cpm.discountFactorFundingLoading (pqs.fundingLabel());
+
+		if (null != mapDiscountFactorLoading && 0 != mapDiscountFactorLoading.size()) {
+			for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meDiscountFactorLoading :
+				mapDiscountFactorLoading.entrySet()) {
+				double dblDateAnchor = meDiscountFactorLoading.getKey();
+
+				double dblDiscountFactorFundingLoading = meDiscountFactorLoading.getValue() * ci.fullCoupon
+					(cpm);
+
+				if (!prwc.addPredictorResponseWeight (dblDateAnchor, dblDiscountFactorFundingLoading))
+					return null;
+
+				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor,
+					dblDiscountFactorFundingLoading))
+					return null;
+			}
+		} else
+			dblPV -= cpm.annuity() * cpm.dcf() * ci.fullCoupon (cpm);
+
+		if (!prwc.updateValue (dblPV + dblAccrued)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
+	/**
+	 * Generate the Merged Forward/Funding Predictor/Response Constraint
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Merged Forward/Funding Predictor/Response Constraint
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint forwardFundingPRWC (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == _forwardLabel) return fundingPRWC (dblValueDate, csqs, pqs);
+
+		if (null == pqs) return null;
+
+		double dblPV = 0.;
+		double dblAccrued = 0.;
+
+		CalibInput ci = calibInput (pqs);
+
+		try {
+			dblAccrued = calibAccrued (ci, dblValueDate, csqs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
+
+		if (null == cpm) return null;
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapMergedDiscountFactorLoading =
+			cpm.discountFactorForwardFundingLoading (pqs.forwardLabel(), pqs.fundingLabel());
+
+		if (null != mapMergedDiscountFactorLoading && 0 != mapMergedDiscountFactorLoading.size()) {
+			for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meMergedDiscountFactorLoading :
+				mapMergedDiscountFactorLoading.entrySet()) {
+				double dblMergedDateAnchor = meMergedDiscountFactorLoading.getKey();
+
+				double dblMergedDiscountFactorLoading = meMergedDiscountFactorLoading.getValue();
+
+				if (!prwc.addPredictorResponseWeight (dblMergedDateAnchor, dblMergedDiscountFactorLoading))
+					return null;
+
+				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblMergedDateAnchor,
+					dblMergedDiscountFactorLoading))
+					return null;
+			}
+
+			if (0. != ci._dblFloatSpread) {
+				java.util.Map<java.lang.Double, java.lang.Double> mapDiscountFactorLoading =
+					cpm.discountFactorFundingLoading (pqs.fundingLabel());
+
+				if (null != mapDiscountFactorLoading && 0 != mapDiscountFactorLoading.size()) {
+					for (java.util.Map.Entry<java.lang.Double, java.lang.Double> meDiscountFactorLoading :
+						mapDiscountFactorLoading.entrySet()) {
+						double dblDateAnchor = meDiscountFactorLoading.getKey();
+
+						double dblDiscountFactorLoading = meDiscountFactorLoading.getValue();
+
+						if (!prwc.addPredictorResponseWeight (dblDateAnchor, dblDiscountFactorLoading))
+							return null;
+
+						if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor,
+							dblDiscountFactorLoading))
+							return null;
+					}
+				}
+			}
+
+			if (!prwc.addMergeLabel (_forwardLabel)) return null;
+		}
+
+		if (!prwc.updateValue (dblPV + dblAccrued)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
 	}
 
 	/**

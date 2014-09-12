@@ -81,6 +81,40 @@ public abstract class ProductQuoteSet {
 	}
 
 	/**
+	 * Retrieve the Forward Latent State Label, it if exists
+	 * 
+	 * @return The Forward Latent State Label
+	 */
+
+	public org.drip.state.identifier.ForwardLabel forwardLabel()
+	{
+		for (org.drip.state.representation.LatentStateSpecification lss : _aLSS) {
+			if (lss.latentState().equalsIgnoreCase
+				(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD))
+				return (org.drip.state.identifier.ForwardLabel) lss.label();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Retrieve the Funding Latent State Label, it if exists
+	 * 
+	 * @return The Funding Latent State Label
+	 */
+
+	public org.drip.state.identifier.FundingLabel fundingLabel()
+	{
+		for (org.drip.state.representation.LatentStateSpecification lss : _aLSS) {
+			if (lss.latentState().equalsIgnoreCase
+				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT))
+				return (org.drip.state.identifier.FundingLabel) lss.label();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Indicate if the requested Latent State Quantification Metric is contained in the Quote Set
 	 * 
 	 * @param strLatentStateQuantificationMetric The Requested Latent State Quantification Metric
@@ -103,7 +137,7 @@ public abstract class ProductQuoteSet {
 	}
 
 	/**
-	 * Indicates if the Specified External Latent State Specification is contained in the Array
+	 * Indicate if the Specified External Latent State Specification is contained in the Array
 	 * 
 	 * @param strLatentState The Latent State
 	 * @param strLatentStateQuantificationMetric The Latent State Quantification Metric

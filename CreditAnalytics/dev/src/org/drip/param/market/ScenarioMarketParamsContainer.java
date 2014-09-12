@@ -519,25 +519,25 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 		org.drip.analytics.definition.CreditCurve cc = null;
 
-		if (null != comp.couponCurrency()[0] && null != _mapIRCSC.get (comp.couponCurrency()[0]))
-			dc = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBase();
+		if (null != comp.payCurrency()[0] && null != _mapIRCSC.get (comp.payCurrency()[0]))
+			dc = _mapIRCSC.get (comp.payCurrency()[0]).getDCBase();
 
 		if (null != comp.forwardLabel() && null != _mapSFC.get (comp.forwardLabel()))
 			fc = _mapSFC.get (comp.forwardLabel()).getFCBase();
 
-		if (null != comp.couponCurrency()[0] && null != _mapIRCSC.get (comp.couponCurrency()[0]))
-			dcTSY = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBase();
+		if (null != comp.payCurrency()[0] && null != _mapIRCSC.get (comp.payCurrency()[0]))
+			dcTSY = _mapIRCSC.get (comp.payCurrency()[0]).getDCBase();
 
 		if (null != comp.creditLabel() && null != _mapCCSC.get (comp.creditLabel()))
 			cc = _mapCCSC.get (comp.creditLabel()).getCCBase();
 
-		if ("FlatIRBumpUp".equalsIgnoreCase (strScen) && null != comp.couponCurrency()[0] && null !=
-			_mapIRCSC.get (comp.couponCurrency()[0]))
-			dc = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBumpUp();
+		if ("FlatIRBumpUp".equalsIgnoreCase (strScen) && null != comp.payCurrency()[0] && null !=
+			_mapIRCSC.get (comp.payCurrency()[0]))
+			dc = _mapIRCSC.get (comp.payCurrency()[0]).getDCBumpUp();
 
-		if ("FlatIRBumpDn".equalsIgnoreCase (strScen) && null != comp.couponCurrency()[0] && null !=
-			_mapIRCSC.get (comp.couponCurrency()[0]))
-			dc = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBumpDn();
+		if ("FlatIRBumpDn".equalsIgnoreCase (strScen) && null != comp.payCurrency()[0] && null !=
+			_mapIRCSC.get (comp.payCurrency()[0]))
+			dc = _mapIRCSC.get (comp.payCurrency()[0]).getDCBumpDn();
 
 		if ("FlatForwardBumpUp".equalsIgnoreCase (strScen) && null != comp.forwardLabel() && null !=
 			_mapSFC.get (comp.forwardLabel()))
@@ -565,16 +565,15 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp)
 	{
-		if (null == comp || null == comp.couponCurrency()[0] || null == _mapIRCSC.get
-			(comp.couponCurrency()[0]))
+		if (null == comp || null == comp.payCurrency()[0] || null == _mapIRCSC.get (comp.payCurrency()[0]))
 			return null;
 
-		if (bBumpUp && (null == _mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpUp() || null ==
-			_mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpUp().entrySet()))
+		if (bBumpUp && (null == _mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpUp() || null ==
+			_mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpUp().entrySet()))
 			return null;
 
-		if (!bBumpUp && (null == _mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpDn() || null ==
-			_mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpDn().entrySet()))
+		if (!bBumpUp && (null == _mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpDn() || null ==
+			_mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpDn().entrySet()))
 			return null;
 
 		org.drip.analytics.rates.ForwardCurve fc = null;
@@ -584,8 +583,8 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 		if (null != comp.forwardLabel() && null != _mapSFC.get (comp.forwardLabel()))
 			fc = _mapSFC.get (comp.forwardLabel()).getFCBase();
 
-		if (null != comp.couponCurrency()[0] && null != _mapIRCSC.get (comp.couponCurrency()[0]))
-			dcTSY = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBase();
+		if (null != comp.payCurrency()[0] && null != _mapIRCSC.get (comp.payCurrency()[0]))
+			dcTSY = _mapIRCSC.get (comp.payCurrency()[0]).getDCBase();
 
 		if (null != comp.creditLabel() && null != _mapCCSC.get (comp.creditLabel()))
 			cc = _mapCCSC.get (comp.creditLabel()).getCCBase();
@@ -595,12 +594,12 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>();
 
 		if (bBumpUp) {
-			if (null == _mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpUp() || null == _mapIRCSC.get
-				(comp.couponCurrency()[0]).getTenorDCBumpUp().entrySet())
+			if (null == _mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpUp() || null == _mapIRCSC.get
+				(comp.payCurrency()[0]).getTenorDCBumpUp().entrySet())
 				return null;
 
 			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
-				_mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpUp().entrySet()) {
+				_mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpUp().entrySet()) {
 				if (null == meDC || null == meDC.getKey() || meDC.getKey().isEmpty()) continue;
 
 				mapCSQS.put (meDC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create
@@ -608,12 +607,12 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 						_lsfc));
 			}
 		} else {
-			if (null == _mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpDn() || null == _mapIRCSC.get
-				(comp.couponCurrency()[0]).getTenorDCBumpDn().entrySet())
+			if (null == _mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpDn() || null == _mapIRCSC.get
+				(comp.payCurrency()[0]).getTenorDCBumpDn().entrySet())
 				return null;
 
 			for (java.util.Map.Entry<java.lang.String, org.drip.analytics.rates.DiscountCurve> meDC :
-				_mapIRCSC.get (comp.couponCurrency()[0]).getTenorDCBumpDn().entrySet()) {
+				_mapIRCSC.get (comp.payCurrency()[0]).getTenorDCBumpDn().entrySet()) {
 				if (null == meDC || null == meDC.getKey() || meDC.getKey().isEmpty()) continue;
 
 				mapCSQS.put (meDC.getKey(), org.drip.param.creator.MarketParamsBuilder.Create
@@ -631,8 +630,8 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp)
 	{
-		if (null == comp || null == comp.couponCurrency()[0] || null == _mapIRCSC.get
-			(comp.couponCurrency()[0]))
+		if (null == comp || null == comp.payCurrency()[0] || null == _mapIRCSC.get
+			(comp.payCurrency()[0]))
 			return null;
 
 		if (bBumpUp && (null == _mapSFC.get (comp.forwardLabel()).getTenorFCBumpUp() || null == _mapSFC.get
@@ -647,11 +646,11 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 		org.drip.analytics.definition.CreditCurve cc = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		if (null != comp.couponCurrency()[0] && null != _mapIRCSC.get (comp.couponCurrency()[0]))
-			dc = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBase();
+		if (null != comp.payCurrency()[0] && null != _mapIRCSC.get (comp.payCurrency()[0]))
+			dc = _mapIRCSC.get (comp.payCurrency()[0]).getDCBase();
 
-		if (null != comp.couponCurrency()[0] && null != _mapIRCSC.get (comp.couponCurrency()[0]))
-			dcTSY = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBase();
+		if (null != comp.payCurrency()[0] && null != _mapIRCSC.get (comp.payCurrency()[0]))
+			dcTSY = _mapIRCSC.get (comp.payCurrency()[0]).getDCBase();
 
 		if (null != comp.creditLabel() && null != _mapCCSC.get (comp.creditLabel()))
 			cc = _mapCCSC.get (comp.creditLabel()).getCCBase();
@@ -712,14 +711,14 @@ public class ScenarioMarketParamsContainer extends org.drip.param.definition.Sce
 		org.drip.analytics.rates.DiscountCurve dc = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		if (null != comp.couponCurrency()[0] && null != _mapIRCSC.get (comp.couponCurrency()[0]))
-			dc = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBase();
+		if (null != comp.payCurrency()[0] && null != _mapIRCSC.get (comp.payCurrency()[0]))
+			dc = _mapIRCSC.get (comp.payCurrency()[0]).getDCBase();
 
 		if (null != comp.forwardLabel() && null != _mapSFC.get (comp.forwardLabel()))
 			fc = _mapSFC.get (comp.forwardLabel()).getFCBase();
 
-		if (null != comp.couponCurrency()[0] && null != _mapIRCSC.get (comp.couponCurrency()[0]))
-			dcTSY = _mapIRCSC.get (comp.couponCurrency()[0]).getDCBase();
+		if (null != comp.payCurrency()[0] && null != _mapIRCSC.get (comp.payCurrency()[0]))
+			dcTSY = _mapIRCSC.get (comp.payCurrency()[0]).getDCBase();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet> mapCSQS
 			= new

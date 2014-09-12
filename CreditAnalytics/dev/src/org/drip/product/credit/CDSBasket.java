@@ -47,8 +47,8 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
-	private org.drip.product.definition.FixedIncomeComponent[] _aComp = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
+	private org.drip.product.definition.FixedIncomeComponent[] _aComp = null;
 	private java.util.List<org.drip.analytics.period.CouponPeriod> _lPeriods = null;
 
 	/**

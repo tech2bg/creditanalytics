@@ -427,8 +427,8 @@ public class RatesClosesLoader {
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (dtEffective.julian(),
-					dtMaturity.julian(), java.lang.Double.NaN, strFloatingDC, strCurrency, strCurrency, -1.,
-						null, 0., strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
+					dtMaturity.julian(), java.lang.Double.NaN, strFloatingDC, strCurrency, -1., null, 0.,
+						strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
 							"LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.cashflow.FloatingStream floatStream = new
@@ -829,7 +829,7 @@ public class RatesClosesLoader {
 						org.drip.state.identifier.FundingLabel.Standard (comp instanceof
 							org.drip.product.cashflow.DualStreamComponent ?
 								((org.drip.product.cashflow.DualStreamComponent)
-									comp).derivedStream().couponCurrency() : comp.couponCurrency()[0]));
+									comp).derivedStream().couponCurrency() : comp.payCurrency()[0]));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

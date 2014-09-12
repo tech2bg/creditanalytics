@@ -290,7 +290,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return null;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
 		java.util.Set<java.lang.String> setCouponCurrency = new java.util.TreeSet<java.lang.String>();
 

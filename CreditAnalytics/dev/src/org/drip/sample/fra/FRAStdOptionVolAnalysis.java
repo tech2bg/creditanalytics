@@ -530,7 +530,7 @@ public class FRAStdOptionVolAnalysis {
 
 		String strManifestMeasure = "QuantoAdjustedParForward";
 
-		String strCurrency = fra.couponCurrency()[0];
+		String strCurrency = fra.payCurrency()[0];
 
 		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
 

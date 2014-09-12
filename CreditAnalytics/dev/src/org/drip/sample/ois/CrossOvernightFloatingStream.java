@@ -97,7 +97,7 @@ public class CrossOvernightFloatingStream {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].couponCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency()[0];
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
@@ -131,7 +131,7 @@ public class CrossOvernightFloatingStream {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
 
-		String strCurrency = aEDF[0].couponCurrency()[0];
+		String strCurrency = aEDF[0].payCurrency()[0];
 
 		for (int i = 0; i < aEDF.length; ++i) {
 			EDFComponentQuoteSet edfQuote = new EDFComponentQuoteSet (
@@ -241,7 +241,7 @@ public class CrossOvernightFloatingStream {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aCFIC.length];
 
-		String strCurrency = aCFIC[0].couponCurrency()[0];
+		String strCurrency = aCFIC[0].payCurrency()[0];
 
 		for (int i = 0; i < aCFIC.length; ++i) {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
@@ -382,7 +382,8 @@ public class CrossOvernightFloatingStream {
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
 		/*
 		 * Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array

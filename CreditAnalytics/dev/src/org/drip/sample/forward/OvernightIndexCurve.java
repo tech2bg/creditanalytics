@@ -89,7 +89,7 @@ public class OvernightIndexCurve {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].couponCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency()[0];
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
@@ -271,7 +271,7 @@ public class OvernightIndexCurve {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
 
-		String strCurrency = aOIS[0].couponCurrency()[0];
+		String strCurrency = aOIS[0].payCurrency()[0];
 
 		for (int i = 0; i < aOIS.length; ++i) {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (

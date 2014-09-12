@@ -582,7 +582,7 @@ public class STIROptionVolCorrAnalysis {
 
 		String strManifestMeasure = "FairPremium";
 
-		String strCurrency = stir.couponCurrency()[0];
+		String strCurrency = stir.payCurrency()[0];
 
 		double dblStrike = 1.01 * mapSTIROutput.get (strManifestMeasure);
 

@@ -203,7 +203,7 @@ public class ScenarioDiscountCurveBuilder {
 		try {
 			org.drip.state.curve.DiscountFactorDiscountCurve dcdf = new
 				org.drip.state.curve.DiscountFactorDiscountCurve
-					(aStretchSpec[0].segmentSpec()[0].component().couponCurrency()[0], null == quotingParam ?
+					(aStretchSpec[0].segmentSpec()[0].component().payCurrency()[0], null == quotingParam ?
 						null : quotingParam.coreCollateralizationParams(), (llsc.calibrateSpan (aStretchSpec,
 							dblEpochResponse, valParam, pricerParam, quotingParam, csqs)));
 
@@ -486,7 +486,7 @@ public class ScenarioDiscountCurveBuilder {
 				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
 					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
 						org.drip.state.identifier.FundingLabel.Standard ((0 == iNumComp1 ? aCalibComp2 :
-							aCalibComp1)[0].couponCurrency()[0]));
+							aCalibComp1)[0].payCurrency()[0]));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -746,7 +746,7 @@ public class ScenarioDiscountCurveBuilder {
 
 		CompQuote[] aCQ1 = null;
 
-		java.lang.String strCurrency = aCalibComp1[0].couponCurrency()[0];
+		java.lang.String strCurrency = aCalibComp1[0].payCurrency()[0];
 
 		if (null == strTenor1 || strTenor1.isEmpty()) {
 			if (null != aCalibComp1) {

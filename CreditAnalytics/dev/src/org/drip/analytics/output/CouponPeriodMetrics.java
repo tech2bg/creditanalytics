@@ -37,6 +37,15 @@ package org.drip.analytics.output;
 public class CouponPeriodMetrics {
 
 	/*
+	 * Period Latent State Identification Support Fields
+	 */
+
+	private org.drip.state.identifier.CreditLabel _creditLabel = null;
+	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
+	private org.drip.state.identifier.FundingLabel _fundingLabel = null;
+	private org.drip.state.identifier.FXLabel _fxLabel = null;
+
+	/*
 	 * Period Specification Fields
 	 */
 
@@ -81,6 +90,10 @@ public class CouponPeriodMetrics {
 	 * @param dblDF Coupon Period Discount Factor
 	 * @param dblFX The Coupon Period FX Rate
 	 * @param convAdj The Convexity Adjustment for the Reset Period
+	 * @param creditLabel The Period Credit Label
+	 * @param forwardLabel The Period Forward Label
+	 * @param fundingLabel The Period Funding Label
+	 * @param fxLabel The Period FX Label
 	 * 
 	 * @return Instance of CouponPeriodMetrics
 	 */
@@ -95,11 +108,16 @@ public class CouponPeriodMetrics {
 		final double dblSurvival,
 		final double dblDF,
 		final double dblFX,
-		final org.drip.analytics.output.ConvexityAdjustment convAdj)
+		final org.drip.analytics.output.ConvexityAdjustment convAdj,
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.FXLabel fxLabel)
 	{
 		try {
 			CouponPeriodMetrics cpm = new CouponPeriodMetrics (dblStartDate, dblEndDate, dblPayDate,
-				dblNotional, iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF, dblFX, convAdj);
+				dblNotional, iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF, dblFX, convAdj, creditLabel,
+					forwardLabel, fundingLabel, fxLabel);
 
 			return cpm.initialize() && cpm.setConvexityAdjustment() ? cpm : null;
 		} catch (java.lang.Exception e) {
@@ -107,6 +125,118 @@ public class CouponPeriodMetrics {
 		}
 
 		return null;
+	}
+
+	private CouponPeriodMetrics (
+		final double dblStartDate,
+		final double dblEndDate,
+		final double dblPayDate,
+		final double dblNotional,
+		final int iAccrualCompoundingRule,
+		final java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM,
+		final double dblSurvival,
+		final double dblDF,
+		final double dblFX,
+		final org.drip.analytics.output.ConvexityAdjustment convAdj,
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.FXLabel fxLabel)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblPayDate = dblPayDate) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
+						!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule
+							(_iAccrualCompoundingRule = iAccrualCompoundingRule) || null == (_lsRPM = lsRPM)
+								|| 0 == _lsRPM.size() || !org.drip.quant.common.NumberUtil.IsValid
+									(_dblSurvival = dblSurvival) || !org.drip.quant.common.NumberUtil.IsValid
+										(_dblDF = dblDF) || !org.drip.quant.common.NumberUtil.IsValid (_dblFX
+											= dblFX) || null == (_fundingLabel = fundingLabel))
+			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
+
+		_convAdj = convAdj;
+		_fxLabel = fxLabel;
+		_creditLabel = creditLabel;
+		_forwardLabel = forwardLabel;
+	}
+
+	private boolean initialize()
+	{
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule)
+			_dblCumulativeAccrual = 0.;
+		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			_dblCumulativeAccrual = 1.;
+
+		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+			double dblDCF = rpm.dcf();
+
+			_dblCumulativeDCF += dblDCF;
+
+			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule)
+				_dblCumulativeAccrual += rpm.nominalRate() * dblDCF;
+			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				_dblCumulativeAccrual *= (1. + rpm.nominalRate() * dblDCF);
+		}
+
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			_dblCumulativeAccrual -= 1.;
+
+		return true;
+	}
+
+	private boolean setConvexityAdjustment()
+	{
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			return true;
+
+		double dblUnadjustedAccrual = 0.;
+		double dblCreditFXAdjAccrual = 0.;
+		double dblForwardFXAdjAccrual = 0.;
+		double dblFundingFXAdjAccrual = 0.;
+		double dblCreditForwardAdjAccrual = 0.;
+		double dblCreditFundingAdjAccrual = 0.;
+		double dblForwardFundingAdjAccrual = 0.;
+
+		if (1 == _lsRPM.size()) return null != (_convAdj = _lsRPM.get (0).convexityAdjustment());
+
+		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+			org.drip.analytics.output.ConvexityAdjustment convAdjResetPeriod = rpm.convexityAdjustment();
+
+			if (null == convAdjResetPeriod) return false;
+
+			double dblPeriodAccrual = rpm.nominalRate() * rpm.dcf();
+
+			dblUnadjustedAccrual += dblPeriodAccrual;
+
+			dblCreditFXAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.creditFX();
+
+			dblForwardFXAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.forwardFX();
+
+			dblFundingFXAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.fundingFX();
+
+			dblCreditForwardAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.creditForward();
+
+			dblCreditFundingAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.creditFunding();
+
+			dblForwardFundingAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.forwardFunding();
+		}
+
+		_convAdj = new org.drip.analytics.output.ConvexityAdjustment();
+
+		return 0. == dblUnadjustedAccrual ? true : _convAdj.setCreditForward (dblCreditForwardAdjAccrual /
+			dblUnadjustedAccrual) && _convAdj.setCreditFunding (dblCreditFundingAdjAccrual /
+				dblUnadjustedAccrual) && _convAdj.setCreditFX (dblCreditFXAdjAccrual / dblUnadjustedAccrual)
+					&& _convAdj.setForwardFunding (dblForwardFundingAdjAccrual / dblUnadjustedAccrual) &&
+						_convAdj.setForwardFX (dblForwardFXAdjAccrual / dblUnadjustedAccrual) &&
+							_convAdj.setFundingFX (dblFundingFXAdjAccrual / dblUnadjustedAccrual);
 	}
 
 	/**
@@ -198,74 +328,6 @@ public class CouponPeriodMetrics {
 	}
 
 	/**
-	 * Retrieve the Period Single Point Credit Loading Coefficient
-	 * 
-	 * @return The Period Single Point Credit Loading Coefficient
-	 */
-
-	public java.util.Map<java.lang.Double, java.lang.Double> singlePointCreditLoading()
-	{
-		java.util.Map<java.lang.Double, java.lang.Double> mapCreditLoading = new
-			java.util.TreeMap<java.lang.Double, java.lang.Double>();
-
-		mapCreditLoading.put (_dblPayDate, _dblNotional * _dblCumulativeDCF * _dblDF * _dblFX *
-			_convAdj.cumulative());
-
-		return mapCreditLoading;
-	}
-
-	/**
-	 * Retrieve the Period Single Point Forward Loading Coefficient
-	 * 
-	 * @return The Period Single Point Forward Loading Coefficient
-	 */
-
-	public java.util.Map<java.lang.Double, java.lang.Double> singlePointForwardLoading()
-	{
-		java.util.Map<java.lang.Double, java.lang.Double> mapForwardLoading = new
-			java.util.TreeMap<java.lang.Double, java.lang.Double>();
-
-		mapForwardLoading.put (_dblEndDate, _dblNotional * _dblCumulativeDCF * _dblSurvival * _dblDF * _dblFX
-			* _convAdj.cumulative());
-
-		return mapForwardLoading;
-	}
-
-	/**
-	 * Retrieve the Period Single Point Funding Loading Coefficient
-	 * 
-	 * @return The Period Single Point Funding Loading Coefficient
-	 */
-
-	public java.util.Map<java.lang.Double, java.lang.Double> singlePointFundingLoading()
-	{
-		java.util.Map<java.lang.Double, java.lang.Double> mapFundingLoading = new
-			java.util.TreeMap<java.lang.Double, java.lang.Double>();
-
-		mapFundingLoading.put (_dblPayDate, _dblNotional * _dblSurvival * _dblCumulativeDCF * _dblFX *
-			_convAdj.cumulative());
-
-		return mapFundingLoading;
-	}
-
-	/**
-	 * Retrieve the Period Single Point FX Loading Coefficient
-	 * 
-	 * @return The Period Single Point FX Loading Coefficient
-	 */
-
-	public java.util.Map<java.lang.Double, java.lang.Double> singlePointFXLoading()
-	{
-		java.util.Map<java.lang.Double, java.lang.Double> mapFXLoading = new
-			java.util.TreeMap<java.lang.Double, java.lang.Double>();
-
-		mapFXLoading.put (_dblPayDate, _dblNotional * _dblSurvival * _dblCumulativeDCF * _dblDF *
-			_convAdj.cumulative());
-
-		return mapFXLoading;
-	}
-
-	/**
 	 * Retrieve the Period DF
 	 * 
 	 * @return The Period DF
@@ -332,6 +394,136 @@ public class CouponPeriodMetrics {
 	}
 
 	/**
+	 * Retrieve the Period Survival Probability Loading Coefficient for the specified Credit Latent State
+	 * 
+	 * @param creditLabel The Period Credit Label
+	 * 
+	 * @return The Period Survival Probability Loading Coefficient for the specified Credit Latent State
+	 */
+
+	public java.util.Map<java.lang.Double, java.lang.Double> survivalProbabilityCreditLoading (
+		final org.drip.state.identifier.CreditLabel creditLabel)
+	{
+		if (null == creditLabel || !creditLabel.match (_creditLabel)) return null;
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapSurvivalProbabilityLoading = new
+			java.util.TreeMap<java.lang.Double, java.lang.Double>();
+
+		mapSurvivalProbabilityLoading.put (_dblPayDate, _dblNotional * _dblCumulativeDCF * _dblDF * _dblFX *
+			_convAdj.cumulative());
+
+		return mapSurvivalProbabilityLoading;
+	}
+
+	/**
+	 * Retrieve the Forward Rate Loading Coefficient for the specified Forward Latent State
+	 * 
+	 * @param forwardLabel The Period Forward Label
+	 * 
+	 * @return The Period Forward Rate Loading Coefficient for the specified Forward Latent State
+	 */
+
+	public java.util.Map<java.lang.Double, java.lang.Double> forwardRateForwardLoading (
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
+	{
+		if (null == forwardLabel || !forwardLabel.match (_forwardLabel)) return null;
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapForwardRateLoading = new
+			java.util.TreeMap<java.lang.Double, java.lang.Double>();
+
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			mapForwardRateLoading.put (_dblEndDate, _dblNotional * _dblCumulativeDCF * _dblSurvival * _dblDF
+				* _dblFX * _convAdj.cumulative());
+		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			_iAccrualCompoundingRule) {
+			for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
+				org.drip.analytics.output.ConvexityAdjustment convAdjResetPeriod = rpm.convexityAdjustment();
+
+				if (null == convAdjResetPeriod) return null;
+
+				mapForwardRateLoading.put (_dblEndDate, _dblNotional * rpm.dcf() * _dblSurvival * _dblDF *
+					_dblFX * convAdjResetPeriod.cumulative());
+			}
+		}
+
+		return mapForwardRateLoading;
+	}
+
+	/**
+	 * Retrieve the Period Discount Factor Loading Coefficient for the specified Funding Latent State
+	 * 
+	 * @param fundingLabel The Period Funding Label
+	 * 
+	 * @return The Period Discount Factor Loading Coefficient for the specified Funding Latent State
+	 */
+
+	public java.util.Map<java.lang.Double, java.lang.Double> discountFactorFundingLoading (
+		final org.drip.state.identifier.FundingLabel fundingLabel)
+	{
+		if (null == fundingLabel || !fundingLabel.match (_fundingLabel)) return null;
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapDiscountFactorLoading = new
+			java.util.TreeMap<java.lang.Double, java.lang.Double>();
+
+		mapDiscountFactorLoading.put (_dblPayDate, _dblNotional * _dblCumulativeDCF * _dblSurvival * _dblFX *
+			_convAdj.cumulative());
+
+		return mapDiscountFactorLoading;
+	}
+
+	/**
+	 * Retrieve the Period FX Loading Coefficient for the specified FX Latent State
+	 * 
+	 * @param fxLabel The Period FX Label
+	 * 
+	 * @return The Period FX Loading Coefficient for the specified FX Latent State
+	 */
+
+	public java.util.Map<java.lang.Double, java.lang.Double> fxFXLoading (
+		final org.drip.state.identifier.FXLabel fxLabel)
+	{
+		if (null == fxLabel || !fxLabel.match (_fxLabel)) return null;
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapFXLoading = new
+			java.util.TreeMap<java.lang.Double, java.lang.Double>();
+
+		mapFXLoading.put (_dblPayDate, _dblNotional * _dblCumulativeDCF * _dblSurvival * _dblDF *
+			_convAdj.cumulative());
+
+		return mapFXLoading;
+	}
+
+	/**
+	 * Retrieve the Period's Merged Discount Factor Loading Coefficient for the specified forward and Funding
+	 *  Latent States
+	 * 
+	 * @param forwardLabel The Period Forward Label
+	 * @param fundingLabel The Period Funding Label
+	 * 
+	 * @return The Period's Merged Discount Factor Loading Coefficient for the specified forward and Funding
+	 *  Latent States
+	 */
+
+	public java.util.Map<java.lang.Double, java.lang.Double> discountFactorForwardFundingLoading (
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel)
+	{
+		if (null == fundingLabel || !fundingLabel.match (_fundingLabel)) return null;
+
+		double dblDiscountFactorLoading = _dblNotional * _dblSurvival * _dblFX * _convAdj.cumulative();
+
+		java.util.Map<java.lang.Double, java.lang.Double> mapDiscountFactorLoading = new
+			java.util.TreeMap<java.lang.Double, java.lang.Double>();
+
+		mapDiscountFactorLoading.put (_dblStartDate, dblDiscountFactorLoading);
+
+		mapDiscountFactorLoading.put (_dblPayDate, -1. * dblDiscountFactorLoading);
+
+		return mapDiscountFactorLoading;
+	}
+
+	/**
 	 * Retrieve the Compounding Convexity Adjustment Factor for the Reset Period
 	 * 
 	 * @return The Compounding Convexity Adjustment Factor for the Reset Period
@@ -348,6 +540,17 @@ public class CouponPeriodMetrics {
 
 		double dblUnadjustedAccrual = 0.;
 		double dblForwardFundingAdjAccrual = 0.;
+
+		if (1 == _lsRPM.size()) {
+			org.drip.analytics.output.ConvexityAdjustment convAdjResetPeriod = _lsRPM.get
+				(0).convexityAdjustment();
+
+			if (null == convAdjResetPeriod)
+				throw new java.lang.Exception
+					("CouponPeriodMetrics::compoundingConvexityFactor => No Convexity Adjustment for one/more reset periods");
+
+			return convAdjResetPeriod.forwardFunding();
+		}
 
 		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
 			org.drip.analytics.output.ConvexityAdjustment convAdjResetPeriod = rpm.convexityAdjustment();
@@ -366,106 +569,47 @@ public class CouponPeriodMetrics {
 		return dblForwardFundingAdjAccrual / dblUnadjustedAccrual;
 	}
 
-	private CouponPeriodMetrics (
-		final double dblStartDate,
-		final double dblEndDate,
-		final double dblPayDate,
-		final double dblNotional,
-		final int iAccrualCompoundingRule,
-		final java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM,
-		final double dblSurvival,
-		final double dblDF,
-		final double dblFX,
-		final org.drip.analytics.output.ConvexityAdjustment convAdj)
-		throws java.lang.Exception
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblPayDate = dblPayDate) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
-						!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule
-							(_iAccrualCompoundingRule = iAccrualCompoundingRule) || null == (_lsRPM = lsRPM)
-								|| 0 == _lsRPM.size() || !org.drip.quant.common.NumberUtil.IsValid
-									(_dblSurvival = dblSurvival) || !org.drip.quant.common.NumberUtil.IsValid
-										(_dblDF = dblDF) || !org.drip.quant.common.NumberUtil.IsValid (_dblFX
-											= dblFX))
-			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
+	/**
+	 * Retrieve the Credit Label
+	 * 
+	 * @return The Credit Label
+	 */
 
-		_convAdj = convAdj;
+	public org.drip.state.identifier.CreditLabel creditLabel()
+	{
+		return _creditLabel;
 	}
 
-	private boolean initialize()
+	/**
+	 * Retrieve the Forward Label
+	 * 
+	 * @return The Forward Label
+	 */
+
+	public org.drip.state.identifier.ForwardLabel forwardLabel()
 	{
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-			_iAccrualCompoundingRule)
-			_dblCumulativeAccrual = 0.;
-		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			_iAccrualCompoundingRule)
-			_dblCumulativeAccrual = 1.;
-
-		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
-			double dblDCF = rpm.dcf();
-
-			_dblCumulativeDCF += dblDCF;
-
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-				_iAccrualCompoundingRule)
-				_dblCumulativeAccrual += rpm.nominalRate() * dblDCF;
-			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-				_iAccrualCompoundingRule)
-				_dblCumulativeAccrual *= (1. + rpm.nominalRate() * dblDCF);
-		}
-
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			_iAccrualCompoundingRule)
-			_dblCumulativeAccrual -= 1.;
-
-		return true;
+		return _forwardLabel;
 	}
 
-	private boolean setConvexityAdjustment()
+	/**
+	 * Retrieve the Funding Label
+	 * 
+	 * @return The Funding Label
+	 */
+
+	public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			_iAccrualCompoundingRule)
-			return true;
+		return _fundingLabel;
+	}
 
-		double dblUnadjustedAccrual = 0.;
-		double dblCreditFXAdjAccrual = 0.;
-		double dblForwardFXAdjAccrual = 0.;
-		double dblFundingFXAdjAccrual = 0.;
-		double dblCreditForwardAdjAccrual = 0.;
-		double dblCreditFundingAdjAccrual = 0.;
-		double dblForwardFundingAdjAccrual = 0.;
+	/**
+	 * Retrieve the FX Label
+	 * 
+	 * @return The FX Label
+	 */
 
-		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
-			org.drip.analytics.output.ConvexityAdjustment convAdjResetPeriod = rpm.convexityAdjustment();
-
-			if (null == convAdjResetPeriod) return false;
-
-			double dblPeriodAccrual = rpm.nominalRate() * rpm.dcf();
-
-			dblUnadjustedAccrual += dblPeriodAccrual;
-
-			dblCreditFXAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.creditFX();
-
-			dblForwardFXAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.forwardFX();
-
-			dblFundingFXAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.fundingFX();
-
-			dblCreditForwardAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.creditForward();
-
-			dblCreditFundingAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.creditFunding();
-
-			dblForwardFundingAdjAccrual += dblPeriodAccrual * convAdjResetPeriod.forwardFunding();
-		}
-
-		_convAdj = new org.drip.analytics.output.ConvexityAdjustment();
-
-		return 0. == dblUnadjustedAccrual ? true : _convAdj.setCreditForward (dblCreditForwardAdjAccrual /
-			dblUnadjustedAccrual) && _convAdj.setCreditFunding (dblCreditFundingAdjAccrual /
-				dblUnadjustedAccrual) && _convAdj.setCreditFX (dblCreditFXAdjAccrual / dblUnadjustedAccrual)
-					&& _convAdj.setForwardFunding (dblForwardFundingAdjAccrual / dblUnadjustedAccrual) &&
-						_convAdj.setForwardFX (dblForwardFXAdjAccrual / dblUnadjustedAccrual) &&
-							_convAdj.setFundingFX (dblFundingFXAdjAccrual / dblUnadjustedAccrual);
+	public org.drip.state.identifier.FXLabel fxLabel()
+	{
+		return _fxLabel;
 	}
 }

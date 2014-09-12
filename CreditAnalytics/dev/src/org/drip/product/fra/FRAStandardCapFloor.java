@@ -64,7 +64,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 	{
 		super (comp, strManifestMeasure, dblStrike, dblNotional, strDayCount, strCalendar);
 
-		java.lang.String strIR = comp.couponCurrency()[0];
+		java.lang.String strIR = comp.payCurrency()[0];
 
 		org.drip.state.identifier.ForwardLabel fri = comp.forwardLabel()[0];
 
@@ -87,9 +87,9 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 		return _lsFRACapFloorlet.get (0).cashflowCurrencySet();
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
-		return _lsFRACapFloorlet.get (0).couponCurrency();
+		return _lsFRACapFloorlet.get (0).payCurrency();
 	}
 
 	@Override public java.lang.String[] principalCurrency()

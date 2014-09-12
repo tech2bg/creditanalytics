@@ -277,7 +277,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 		return setCcy;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
 		return new java.lang.String[] {_strCurrency};
 	}
@@ -330,7 +330,8 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 			return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblEffective, _dblMaturity,
 				_dblMaturity, notional (_dblMaturity),
 					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC, lsRPM, 1., 1.,
-						1., null);
+						1., null, null, _fri, org.drip.state.identifier.FundingLabel.Standard (_strCurrency),
+							null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -388,7 +389,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffective, _dblMaturity,
-			java.lang.Double.NaN, _strDayCount, _strCalendar, _strCurrency, _dblNotional, null, 0.,
+			java.lang.Double.NaN, _strDayCount, _strCalendar, _dblNotional, null, 0., _strCurrency,
 				_strCurrency, _fri, null);
 	}
 
@@ -425,7 +426,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 		}
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == dc) {
 			mapResult.put ("calctime", (System.nanoTime() - lStart) * 1.e-09);
@@ -487,7 +488,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -530,7 +531,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == dcFunding) return null;
 

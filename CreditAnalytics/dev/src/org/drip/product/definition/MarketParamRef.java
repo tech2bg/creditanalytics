@@ -57,12 +57,12 @@ public interface MarketParamRef {
 	public abstract java.util.Set<java.lang.String> cashflowCurrencySet();
 
 	/**
-	 * Get the Coupon Currency
+	 * Get the Pay Currency
 	 * 
-	 * @return The Coupon Currency
+	 * @return The Pay Currency
 	 */
 
-	public abstract java.lang.String[] couponCurrency();
+	public abstract java.lang.String[] payCurrency();
 
 	/**
 	 * Get the Principal Currency

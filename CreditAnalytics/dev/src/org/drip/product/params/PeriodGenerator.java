@@ -186,8 +186,8 @@ public class PeriodGenerator extends PeriodSet {
 
 		if (0 == _iFreq) {
 			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset
-				(_dblEffective, _dblMaturity, java.lang.Double.NaN, _strCouponDC, _strCalendar, _strCurrency,
-					1., null, 0., _strCurrency, _forwardLabel, _creditLabel)))
+				(_dblEffective, _dblMaturity, java.lang.Double.NaN, _strCouponDC, _strCurrency, 1., null, 0.,
+					_strCurrency, _strCalendar, _forwardLabel, _creditLabel)))
 				return false;
 		} else {
 			if (_bPeriodsFromForward) {

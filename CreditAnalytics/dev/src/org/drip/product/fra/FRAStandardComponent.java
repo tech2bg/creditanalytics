@@ -260,7 +260,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return setCcy;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
 		return new java.lang.String[] {_strCurrency};
 	}
@@ -357,8 +357,8 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		try {
 			return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffectiveDate, new
 				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
-					java.lang.Double.NaN, _strDayCount, _strCalendar, _strCurrency, _dblNotional, null,
-						_dblStrike, _strCurrency, _fri, null);
+					java.lang.Double.NaN, _strDayCount, _strCalendar, _dblNotional, null, _dblStrike,
+						_strCurrency, _strCurrency, _fri, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -380,7 +380,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		if (null == valParams || null == csqs) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == dcFunding) return null;
 

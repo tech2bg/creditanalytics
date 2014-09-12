@@ -73,9 +73,9 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 		return _stir.cashflowCurrencySet();
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
-		return _stir.couponCurrency();
+		return _stir.payCurrency();
 	}
 
 	@Override public java.lang.String[] principalCurrency()
@@ -115,7 +115,7 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel()[0];
 
 		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(couponCurrency()[0]);
+			(payCurrency()[0]);
 
 		try {
 			double dblSTIRIntegratedQuantoDrift =

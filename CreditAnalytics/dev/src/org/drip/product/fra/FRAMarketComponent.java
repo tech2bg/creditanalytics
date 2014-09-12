@@ -83,7 +83,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 		if (dblValueDate > dblEffectiveDate) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == dcFunding) return null;
 

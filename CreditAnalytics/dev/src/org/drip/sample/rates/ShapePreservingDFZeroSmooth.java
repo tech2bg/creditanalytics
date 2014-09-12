@@ -129,7 +129,7 @@ public class ShapePreservingDFZeroSmooth {
 					new LatentStateSpecification (
 						DiscountCurve.LATENT_STATE_DISCOUNT,
 						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aDeposit[i].couponCurrency()[0])
+						FundingLabel.Standard (aDeposit[i].payCurrency()[0])
 					)
 				}
 			);
@@ -161,7 +161,7 @@ public class ShapePreservingDFZeroSmooth {
 					new LatentStateSpecification (
 						DiscountCurve.LATENT_STATE_DISCOUNT,
 						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aEDF[i].couponCurrency()[0])
+						FundingLabel.Standard (aEDF[i].payCurrency()[0])
 					),
 					new LatentStateSpecification (
 						ForwardCurve.LATENT_STATE_FORWARD,
@@ -269,7 +269,7 @@ public class ShapePreservingDFZeroSmooth {
 					new LatentStateSpecification (
 						DiscountCurve.LATENT_STATE_DISCOUNT,
 						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aIRS[i].couponCurrency()[0])
+						FundingLabel.Standard (aIRS[i].payCurrency()[0])
 					),
 					new LatentStateSpecification (
 						ForwardCurve.LATENT_STATE_FORWARD,

@@ -1012,11 +1012,11 @@ public class PeriodBuilder {
 		final double dblFXFixingDate,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
-		final java.lang.String strCouponCurrency,
 		final double dblBaseNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
 		final double dblFixedCouponFloatSpread,
 		final java.lang.String strPayCurrency,
+		final java.lang.String strCouponCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{

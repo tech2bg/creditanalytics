@@ -164,9 +164,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		return setCcy;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
-		return new java.lang.String[] {_fixReference.couponCurrency(), _floatDerived.couponCurrency()};
+		return new java.lang.String[] {_fixReference.payCurrency(), _floatDerived.payCurrency()};
 	}
 
 	@Override public java.lang.String[] principalCurrency()
@@ -490,7 +490,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
 				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-					(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+					(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 				if (null == dcFunding) return null;
 
@@ -727,7 +727,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
 				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-					(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+					(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 				if (null == dcFunding) return null;
 

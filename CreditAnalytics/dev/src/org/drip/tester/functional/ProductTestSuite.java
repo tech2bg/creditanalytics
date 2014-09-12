@@ -470,7 +470,7 @@ public class ProductTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.getScenMarketParams (aCompCalib[0],
 			"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-				(aCompCalib[0].couponCurrency()[0]));
+				(aCompCalib[0].payCurrency()[0]));
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
 			System.out.println ("Base TSY DC build: " + (null == dcBaseTSY ? "Failure" : "Success"));
@@ -495,7 +495,7 @@ public class ProductTestSuite {
 		if (0 != (TM_TSY_UP01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpUp").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-					(aCompCalib[0].couponCurrency()[0]));
+					(aCompCalib[0].payCurrency()[0]));
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Up TSY DC build: " + (null == dcBumpUp ? "Failure" : "Success"));
@@ -520,7 +520,7 @@ public class ProductTestSuite {
 		if (0 != (TM_TSY_DN01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpDn").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-					(aCompCalib[0].couponCurrency()[0]));
+					(aCompCalib[0].payCurrency()[0]));
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Dn TSY DC build: " + (null == dcBumpDn ? "Failure" : "Success"));
@@ -549,7 +549,7 @@ public class ProductTestSuite {
 					meCSQS : mapCSQSDCUp.entrySet())
 					System.out.println (meCSQS.getKey() + meCSQS.getValue().fundingCurve
 						(org.drip.state.identifier.FundingLabel.Standard
-							(aCompCalib[0].couponCurrency()[0])).toString());
+							(aCompCalib[0].payCurrency()[0])).toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
 					meCSQS : mapCSQSDCUp.entrySet()) {
@@ -562,7 +562,7 @@ public class ProductTestSuite {
 									org.drip.param.creator.MarketParamsBuilder.Create
 										(meCSQS.getValue().fundingCurve
 											(org.drip.state.identifier.FundingLabel.Standard
-												(aCompCalib[i].couponCurrency()[0])), null, null, null, null,
+												(aCompCalib[i].payCurrency()[0])), null, null, null, null,
 													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
@@ -591,7 +591,7 @@ public class ProductTestSuite {
 									org.drip.param.creator.MarketParamsBuilder.Create
 										(meCSQS.getValue().fundingCurve
 											(org.drip.state.identifier.FundingLabel.Standard
-												(aCompCalib[i].couponCurrency()[0])), null, null, null, null,
+												(aCompCalib[i].payCurrency()[0])), null, null, null, null,
 													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
@@ -757,7 +757,7 @@ public class ProductTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dcBase = mpc.getScenMarketParams (aCompCalib[0],
 			"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-				(aCompCalib[0].couponCurrency()[0]));
+				(aCompCalib[0].payCurrency()[0]));
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
 			System.out.println ("Base DC build: " + (null == dcBase ? "Failure" : "Success"));
@@ -778,7 +778,7 @@ public class ProductTestSuite {
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpUp").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-					(aCompCalib[0].couponCurrency()[0]));
+					(aCompCalib[0].payCurrency()[0]));
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Up DC build: " + (null == dcBumpUp ? "Failure" : "Success"));
@@ -802,7 +802,7 @@ public class ProductTestSuite {
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenMarketParams (aCompCalib[0],
 				"FlatIRBumpDn").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-					(aCompCalib[0].couponCurrency()[0]));
+					(aCompCalib[0].payCurrency()[0]));
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bump Dn DC build: " + (null == dcBumpDn ? "Failure" : "Success"));
@@ -831,7 +831,7 @@ public class ProductTestSuite {
 					meCSCQ : mapCSQSDCUp.entrySet())
 					System.out.println (meCSCQ.getKey() + meCSCQ.getValue().fundingCurve
 						(org.drip.state.identifier.FundingLabel.Standard
-							(aCompCalib[0].couponCurrency()[0])).toString());
+							(aCompCalib[0].payCurrency()[0])).toString());
 			else if (TD_DETAILED == iTestDetail) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
 				meCSCQ : mapCSQSDCUp.entrySet()) {
@@ -844,7 +844,7 @@ public class ProductTestSuite {
 									org.drip.param.creator.MarketParamsBuilder.Create
 										(meCSCQ.getValue().fundingCurve
 											(org.drip.state.identifier.FundingLabel.Standard
-												(aCompCalib[0].couponCurrency()[0])), null, null, null, null,
+												(aCompCalib[0].payCurrency()[0])), null, null, null, null,
 													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
@@ -873,7 +873,7 @@ public class ProductTestSuite {
 									org.drip.param.creator.MarketParamsBuilder.Create
 										(meCSQS.getValue().fundingCurve
 											(org.drip.state.identifier.FundingLabel.Standard
-												(aCompCalib[0].couponCurrency()[0])), null, null, null, null,
+												(aCompCalib[0].payCurrency()[0])), null, null, null, null,
 													null, mpc.fixings()), null, astrCalibMeasure[i]));
 				}
 			}
@@ -923,7 +923,7 @@ public class ProductTestSuite {
 
 		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenMarketParams (aCDSBRA[0],
 			"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-				(aCDSBRA[0].couponCurrency()[0]));
+				(aCDSBRA[0].payCurrency()[0]));
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
 			(dt, dt, "USD");

@@ -84,7 +84,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			csqs.creditCurve (aLSLCredit[0]);
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == cc || null == dcFunding) return null;
 
@@ -241,7 +241,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		int iNumParameters = 0;
 		org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVDF = null;
@@ -282,7 +282,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		PeriodLossMicroJack plmj = null;
 
@@ -615,7 +615,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return setCcy;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
 		return new java.lang.String[] {_strCouponCurrency};
 	}
@@ -703,7 +703,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			return org.drip.analytics.output.CouponPeriodMetrics.Create (dblPeriodStartDate,
 				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
 					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
-						1., null);
+						1., null, creditLabel()[0], null, org.drip.state.identifier.FundingLabel.Standard
+							(payCurrency()[0]), null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -903,8 +904,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null != ccMarket) {
 			org.drip.param.market.CurveSurfaceQuoteSet csqsMarket =
 				org.drip.param.creator.MarketParamsBuilder.Create (csqs.fundingCurve
-					(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0])), csqs.govvieCurve
-						(org.drip.state.identifier.GovvieLabel.Standard (couponCurrency()[0])), ccMarket,
+					(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0])), csqs.govvieCurve
+						(org.drip.state.identifier.GovvieLabel.Standard (payCurrency()[0])), ccMarket,
 							name(), csqs.productQuote (name()), csqs.quoteMap(), csqs.fixings());
 
 			if (null != csqsMarket) {
@@ -1101,7 +1102,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		}
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		try {
 			if (null == (ccQS = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
@@ -1147,7 +1148,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			csqs.creditCurve (aLSLCredit[0]);
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == cc || null == dc) return null;
 
@@ -1217,7 +1218,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			csqs.creditCurve (aLSLCredit[0]);
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
 
 		if (null == cc || null == dcFunding) return null;
 

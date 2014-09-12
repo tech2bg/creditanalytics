@@ -73,9 +73,9 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		return _fra.cashflowCurrencySet();
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
-		return _fra.couponCurrency();
+		return _fra.payCurrency();
 	}
 
 	@Override public java.lang.String[] principalCurrency()
@@ -92,7 +92,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		if (null == valParams || null == csqs) return null;
 
 		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(_fra.couponCurrency()[0]);
+			(_fra.payCurrency()[0]);
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 

@@ -67,7 +67,7 @@ public class LossQuadratureGenerator {
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (comp.couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()[0]));
 
 		if (null == dc) return null;
 
@@ -143,7 +143,7 @@ public class LossQuadratureGenerator {
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (comp.couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()[0]));
 
 		if (null == dc) return null;
 
@@ -225,7 +225,7 @@ public class LossQuadratureGenerator {
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (comp.couponCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()[0]));
 
 		if (null == dc) return null;
 

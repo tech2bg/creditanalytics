@@ -78,9 +78,9 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 		return _stream.cashflowCurrencySet();
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
-		return new java.lang.String[] {_stream.couponCurrency()};
+		return new java.lang.String[] {_stream.payCurrency()};
 	}
 
 	@Override public java.lang.String[] principalCurrency()

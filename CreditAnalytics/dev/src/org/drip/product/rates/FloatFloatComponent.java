@@ -165,9 +165,9 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		return setCcy;
 	}
 
-	@Override public java.lang.String[] couponCurrency()
+	@Override public java.lang.String[] payCurrency()
 	{
-		return new java.lang.String[] {_floatReference.couponCurrency(), _floatDerived.couponCurrency()};
+		return new java.lang.String[] {_floatReference.payCurrency(), _floatDerived.payCurrency()};
 	}
 
 	@Override public java.lang.String[] principalCurrency()
