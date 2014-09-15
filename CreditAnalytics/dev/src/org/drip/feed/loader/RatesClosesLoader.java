@@ -363,7 +363,7 @@ public class RatesClosesLoader {
 						strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
 							strCurrency, strCurrency, null, null);
 
-			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
+			org.drip.product.cashflow.Stream fixStream = new org.drip.product.cashflow.Stream
 				(lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
@@ -373,8 +373,8 @@ public class RatesClosesLoader {
 							strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
 								(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
-			org.drip.product.cashflow.FloatingStream floatStream = new
-				org.drip.product.cashflow.FloatingStream (lsFloatingCouponPeriod);
+			org.drip.product.cashflow.Stream floatStream = new org.drip.product.cashflow.Stream
+				(lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
@@ -422,7 +422,7 @@ public class RatesClosesLoader {
 						strFixedDC, false, false, strCurrency, 1., null, dblCoupon, strCurrency, strCurrency,
 							null, null);
 
-			org.drip.product.cashflow.FixedStream fixStream = new org.drip.product.cashflow.FixedStream
+			org.drip.product.cashflow.Stream fixStream = new org.drip.product.cashflow.Stream
 				(lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
@@ -431,8 +431,8 @@ public class RatesClosesLoader {
 						strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
 							"LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
-			org.drip.product.cashflow.FloatingStream floatStream = new
-				org.drip.product.cashflow.FloatingStream (lsFloatingCouponPeriod);
+			org.drip.product.cashflow.Stream floatStream = new org.drip.product.cashflow.Stream
+				(lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));

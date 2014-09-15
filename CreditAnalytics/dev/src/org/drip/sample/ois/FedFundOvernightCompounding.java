@@ -137,7 +137,7 @@ public class FedFundOvernightCompounding {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -158,7 +158,7 @@ public class FedFundOvernightCompounding {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -212,7 +212,7 @@ public class FedFundOvernightCompounding {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -233,7 +233,7 @@ public class FedFundOvernightCompounding {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -572,7 +572,7 @@ public class FedFundOvernightCompounding {
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
-		FloatingStream floatStreamGeometric = new FloatingStream (
+		Stream floatStreamGeometric = new Stream (
 			PeriodBuilder.RegularPeriodDailyReset (
 				dtCustomOISStart.julian(),
 				"6M",
@@ -614,11 +614,11 @@ public class FedFundOvernightCompounding {
 			null
 		);
 
-		FloatingStream floatStreamArithmetic = new FloatingStream (
+		Stream floatStreamArithmetic = new Stream (
 			lsArithmeticFloatPeriods
 		);
 
-		FixedStream fixStream = new FixedStream (
+		Stream fixStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtCustomOISStart.julian(),
 				"4M",

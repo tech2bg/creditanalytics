@@ -57,7 +57,7 @@ public class RatesStreamBuilder {
 	 * @return The Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.cashflow.FixedStream CreateFixedStream (
+	public static final org.drip.product.cashflow.Stream CreateFixedStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strMaturityTenor,
 		final double dblCoupon,
@@ -72,7 +72,7 @@ public class RatesStreamBuilder {
 					1., null, dblCoupon, strCurrency, strCurrency, null, null);
 
 		try {
-			return new org.drip.product.cashflow.FixedStream (lsCouponPeriod);
+			return new org.drip.product.cashflow.Stream (lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -94,7 +94,7 @@ public class RatesStreamBuilder {
 	 * @return The Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.cashflow.FixedStream CreateFixedStream (
+	public static final org.drip.product.cashflow.Stream CreateFixedStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final double dblCoupon,
@@ -110,7 +110,7 @@ public class RatesStreamBuilder {
 						dblCoupon, strCurrency, strCurrency, null, null);
 
 		try {
-			return new org.drip.product.cashflow.FixedStream (lsCouponPeriod);
+			return new org.drip.product.cashflow.Stream (lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -133,7 +133,7 @@ public class RatesStreamBuilder {
 	 * @return The Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.cashflow.FloatingStream CreateIBORFloatingStream (
+	public static final org.drip.product.cashflow.Stream CreateIBORStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final java.lang.String strMaturityTenor,
 		final double dblSpread,
@@ -151,7 +151,7 @@ public class RatesStreamBuilder {
 							"M"), null);
 
 		try {
-			return new org.drip.product.cashflow.FloatingStream (lsCouponPeriod);
+			return new org.drip.product.cashflow.Stream (lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -174,7 +174,7 @@ public class RatesStreamBuilder {
 	 * @return The Fixed Stream Instance
 	 */
 
-	public static final org.drip.product.cashflow.FloatingStream CreateIBORFloatingStream (
+	public static final org.drip.product.cashflow.Stream CreateIBORStream (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final double dblSpread,
@@ -192,7 +192,7 @@ public class RatesStreamBuilder {
 							"LIBOR", (12 / iFreq) + "M"), null);
 
 		try {
-			return new org.drip.product.cashflow.FloatingStream (lsCouponPeriod);
+			return new org.drip.product.cashflow.Stream (lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -230,11 +230,11 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		try {
-			org.drip.product.cashflow.FixedStream fixStream = CreateFixedStream (dtEffective, dtMaturity,
+			org.drip.product.cashflow.Stream fixStream = CreateFixedStream (dtEffective, dtMaturity,
 				dblFixedCoupon, iFixedFreq, strFixedDC, strCalendar, strCurrency);
 
-			org.drip.product.cashflow.FloatingStream floatStream = CreateIBORFloatingStream (dtEffective,
-				dtMaturity, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
+			org.drip.product.cashflow.Stream floatStream = CreateIBORStream (dtEffective, dtMaturity,
+				dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream, null);
@@ -279,11 +279,11 @@ public class RatesStreamBuilder {
 		final java.lang.String strCurrency)
 	{
 		try {
-			org.drip.product.cashflow.FixedStream fixStream = CreateFixedStream (dtEffective,
-				strMaturityTenor, dblFixedCoupon, iFixedFreq, strFixedDC, strCalendar, strCurrency);
+			org.drip.product.cashflow.Stream fixStream = CreateFixedStream (dtEffective, strMaturityTenor,
+				dblFixedCoupon, iFixedFreq, strFixedDC, strCalendar, strCurrency);
 
-			org.drip.product.cashflow.FloatingStream floatStream = CreateIBORFloatingStream (dtEffective,
-				strMaturityTenor, dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
+			org.drip.product.cashflow.Stream floatStream = CreateIBORStream (dtEffective, strMaturityTenor,
+				dblFloatSpread, iFloatFreq, strFloatDC, strCalendar, strCurrency, false);
 
 			org.drip.product.rates.FixFloatComponent fixFloatComp = new
 				org.drip.product.rates.FixFloatComponent (fixStream, floatStream, null);
@@ -299,42 +299,20 @@ public class RatesStreamBuilder {
 	}
 
 	/**
-	 * Create a Fixed Stream Instance from the byte array
+	 * Create a Stream Instance from the byte array
 	 * 
 	 * @param ab Byte Array
 	 * 
-	 * @return Fixed Stream Instance
+	 * @return The Stream Instance
 	 */
 
-	public static final org.drip.product.cashflow.FixedStream FixedStreamFromByteArray (
+	public static final org.drip.product.cashflow.Stream StreamFromByteArray (
 		final byte[] ab)
 	{
 		if (null == ab || 0 == ab.length) return null;
 
 		try {
-			return new org.drip.product.cashflow.FixedStream (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create a Floating Stream Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return Floating Stream Instance
-	 */
-
-	public static final org.drip.product.cashflow.FloatingStream FloatingStreamFromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.cashflow.FloatingStream (ab);
+			return new org.drip.product.cashflow.Stream (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

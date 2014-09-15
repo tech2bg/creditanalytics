@@ -279,8 +279,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.analytics.period.CouponPeriod period)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null != period) {
 			if (!csqs.available (period.rpc().resetPeriods().get (0).fixing(), _fltParams._fri)) {
@@ -375,8 +374,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			java.lang.Double.isNaN (dblWorkoutFactor) || valParams.valueDate() >= dblWorkoutDate)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -1382,8 +1380,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			return org.drip.analytics.output.CouponPeriodMetrics.Create (dblPeriodStartDate,
 				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
 					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
-						1., null, null, null, org.drip.state.identifier.FundingLabel.Standard
-							(payCurrency()[0]), null);
+						1., null, null, null, fundingLabel()[0], null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1396,13 +1393,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return cashFlowPeriod().get (0).freq();
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
-	{
-		if (null == _fltParams) return null;
-
-		return new org.drip.state.identifier.ForwardLabel[] {_fltParams._fri};
-	}
-
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		if (null == _crValParams || null == _crValParams._strCC || _crValParams._strCC.isEmpty())
@@ -1410,6 +1400,19 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		return new org.drip.state.identifier.CreditLabel[] {org.drip.state.identifier.CreditLabel.Standard
 			(_crValParams._strCC)};
+	}
+
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	{
+		if (null == _fltParams) return null;
+
+		return new org.drip.state.identifier.ForwardLabel[] {_fltParams._fri};
+	}
+
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	{
+		return new org.drip.state.identifier.FundingLabel[] {org.drip.state.identifier.FundingLabel.Standard
+			(_irValParams._strCouponDiscountCurve)};
 	}
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
@@ -2034,7 +2037,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		org.drip.analytics.rates.DiscountCurve dcBase = null;
 
 		if (ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE == iZeroCurveBaseDC)
-			dcBase = csqs.fundingCurve (org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+			dcBase = csqs.fundingCurve (fundingLabel()[0]);
 		else if (ZERO_OFF_OF_TREASURIES_DISCOUNT_CURVE == iZeroCurveBaseDC)
 			dcBase = csqs.govvieCurve (org.drip.state.identifier.GovvieLabel.Standard (payCurrency()[0]));
 
@@ -2120,8 +2123,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			java.lang.Double.isNaN (dblWorkoutFactor) || java.lang.Double.isNaN (dblDCBump))
 			throw new java.lang.Exception ("Invalid inputs into BondComponent::calcPriceFromBumpedDC");
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception
@@ -2222,8 +2224,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == ccIn)
 			throw new java.lang.Exception ("BondComponent::calcPriceFromBumpedCC => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception
@@ -2645,8 +2646,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
@@ -4726,8 +4726,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
@@ -6231,8 +6230,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYield => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYield => Invalid inputs");
@@ -8544,8 +8542,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
@@ -9870,8 +9867,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblDiscountMargin))
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMargin => Invalid inputs");
@@ -12093,12 +12089,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				org.drip.param.market.CurveSurfaceQuoteSet csqsMarket =
 					org.drip.param.creator.MarketParamsBuilder.Create
 						((org.drip.analytics.rates.DiscountCurve) csqs.fundingCurve
-							(org.drip.state.identifier.FundingLabel.Standard
-								(payCurrency()[0])).parallelShiftQuantificationMetric (wiMarket.yield() -
-									mapMeasures.get ("FairYield")), csqs.govvieCurve
-										(org.drip.state.identifier.GovvieLabel.Standard (payCurrency()[0])),
-											cc, name(), csqs.productQuote (name()), csqs.quoteMap(),
-												csqs.fixings());
+							(fundingLabel()[0]).parallelShiftQuantificationMetric (wiMarket.yield() -
+								mapMeasures.get ("FairYield")), csqs.govvieCurve
+									(org.drip.state.identifier.GovvieLabel.Standard (payCurrency()[0])), cc,
+										name(), csqs.productQuote (name()), csqs.quoteMap(), csqs.fixings());
 
 				if (null != csqsMarket) {
 					org.drip.analytics.output.BondWorkoutMeasures bwmMarket = calcBondWorkoutMeasures

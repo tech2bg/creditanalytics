@@ -95,6 +95,11 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 		return null == forwardLabel ? null : new org.drip.state.identifier.ForwardLabel[] {forwardLabel};
 	}
 
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	{
+		return new org.drip.state.identifier.FundingLabel[] {_stream.fundingLabel()};
+	}
+
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		org.drip.state.identifier.CreditLabel creditLabel = _stream.creditLabel();
@@ -174,7 +179,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		return value (valParams, pricerParams, csqs, quotingParams);
+		return _stream.value (valParams, pricerParams, csqs, quotingParams);
 	}
 
 	@Override public java.util.Set<java.lang.String> measureNames()
@@ -222,7 +227,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_stream = null;
 		else
-			_stream = new org.drip.product.cashflow.FixedStream (astrField[1].getBytes());
+			_stream = new org.drip.product.cashflow.Stream (astrField[1].getBytes());
 	}
 
 	@Override public java.lang.String fieldDelimiter()

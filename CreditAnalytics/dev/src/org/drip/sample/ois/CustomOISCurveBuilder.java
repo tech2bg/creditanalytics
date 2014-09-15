@@ -136,7 +136,7 @@ public class CustomOISCurveBuilder {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -157,7 +157,7 @@ public class CustomOISCurveBuilder {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -211,7 +211,7 @@ public class CustomOISCurveBuilder {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -232,7 +232,7 @@ public class CustomOISCurveBuilder {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],

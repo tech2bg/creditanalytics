@@ -48,9 +48,9 @@ package org.drip.product.rates;
 
 public class FixFloatComponent extends org.drip.product.cashflow.DualStreamComponent {
 	private java.lang.String _strCode = "";
+	private org.drip.product.cashflow.Stream _fixReference = null;
+	private org.drip.product.cashflow.Stream _floatDerived = null;
 	private org.drip.param.valuation.CashSettleParams _csp = null;
-	private org.drip.product.cashflow.FixedStream _fixReference = null;
-	private org.drip.product.cashflow.FloatingStream _floatDerived = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -72,8 +72,8 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 	 */
 
 	public FixFloatComponent (
-		final org.drip.product.cashflow.FixedStream fixReference,
-		final org.drip.product.cashflow.FloatingStream floatDerived,
+		final org.drip.product.cashflow.Stream fixReference,
+		final org.drip.product.cashflow.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
@@ -124,7 +124,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_fixReference = null;
 		else {
-			_fixReference = new org.drip.product.cashflow.FixedStream (astrField[1].getBytes());
+			_fixReference = new org.drip.product.cashflow.Stream (astrField[1].getBytes());
 		}
 
 		if (null == astrField[2] || astrField[2].isEmpty())
@@ -134,7 +134,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_floatDerived = null;
 		else
-			_floatDerived = new org.drip.product.cashflow.FloatingStream (astrField[2].getBytes());
+			_floatDerived = new org.drip.product.cashflow.Stream (astrField[2].getBytes());
 	}
 
 	@Override public void setPrimaryCode (
@@ -228,14 +228,20 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 		return _fixReference.freq();
 	}
 
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	{
+		return null;
+	}
+
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		return new org.drip.state.identifier.ForwardLabel[] {_floatDerived.forwardLabel()};
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
 	{
-		return null;
+		return new org.drip.state.identifier.FundingLabel[] {_fixReference.fundingLabel(),
+			_floatDerived.fundingLabel()};
 	}
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
@@ -345,8 +351,8 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		double dblDerivedPV = mapFloatDerivedStreamResult.get ("PV");
 
-		double dblDerivedConvexityAdjustmentPremium = mapFloatDerivedStreamResult.get
-			("ConvexityAdjustmentPremiumUpfront");
+		double dblDerivedCumulativeConvexityAdjustmentPremium = mapFloatDerivedStreamResult.get
+			("CumulativeConvexityAdjustmentPremiumUpfront");
 
 		double dblFixing01 = mapFloatDerivedStreamResult.get ("Fixing01");
 
@@ -360,8 +366,8 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		double dblReferenceDirtyPV = mapFixedReferenceStreamResult.get ("DirtyPV");
 
-		double dblReferenceConvexityAdjustmentPremium = mapFixedReferenceStreamResult.get
-			("ConvexityAdjustmentPremium");
+		double dblReferenceCumulativeConvexityAdjustmentPremium = mapFixedReferenceStreamResult.get
+			("CumulativeConvexityAdjustmentPremium");
 
 		double dblValueNotional = java.lang.Double.NaN;
 		double dblAccrued = dblDerivedAccrued + dblReferenceAccrued;
@@ -378,9 +384,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		mapResult.put ("CleanPV", dblCleanPV);
 
-		mapResult.put ("ConvexityAdjustmentPremium", _fixReference.initialNotional() *
-			dblReferenceConvexityAdjustmentPremium + _floatDerived.initialNotional() *
-				dblDerivedConvexityAdjustmentPremium);
+		mapResult.put ("CumulativeConvexityAdjustmentPremium", _fixReference.initialNotional() *
+			dblReferenceCumulativeConvexityAdjustmentPremium + _floatDerived.initialNotional() *
+				dblDerivedCumulativeConvexityAdjustmentPremium);
 
 		mapResult.put ("DerivedAccrued", dblDerivedAccrued);
 
@@ -402,10 +408,11 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		mapResult.put ("DerivedPV", dblDerivedPV);
 
-		mapResult.put ("DerivedConvexityAdjustmentFactor", mapFloatDerivedStreamResult.get
-			("ConvexityAdjustmentFactor"));
+		mapResult.put ("DerivedCumulativeConvexityAdjustmentFactor", mapFloatDerivedStreamResult.get
+			("CumulativeConvexityAdjustmentFactor"));
 
-		mapResult.put ("DerivedConvexityAdjustmentPremium", dblDerivedConvexityAdjustmentPremium);
+		mapResult.put ("DerivedCumulativeConvexityAdjustmentPremium",
+			dblDerivedCumulativeConvexityAdjustmentPremium);
 
 		mapResult.put ("DerivedResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
 
@@ -465,10 +472,11 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		mapResult.put ("ReferencePV", dblReferenceCleanPV);
 
-		mapResult.put ("ReferenceConvexityAdjustmentFactor", mapFixedReferenceStreamResult.get
-			("ConvexityAdjustmentFactor"));
+		mapResult.put ("ReferenceCumulativeConvexityAdjustmentFactor", mapFixedReferenceStreamResult.get
+			("CumulativeConvexityAdjustmentFactor"));
 
-		mapResult.put ("ReferenceConvexityAdjustmentPremium", dblReferenceConvexityAdjustmentPremium);
+		mapResult.put ("ReferenceCumulativeConvexityAdjustmentPremium",
+			dblReferenceCumulativeConvexityAdjustmentPremium);
 
 		mapResult.put ("ResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
 
@@ -489,8 +497,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
-				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-					(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 				if (null == dcFunding) return null;
 
@@ -563,9 +570,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		setstrMeasureNames.add ("DerivedPV");
 
-		setstrMeasureNames.add ("DerivedConvexityAdjustmentFactor");
+		setstrMeasureNames.add ("DerivedCumulativeConvexityAdjustmentFactor");
 
-		setstrMeasureNames.add ("DerivedConvexityAdjustmentPremium");
+		setstrMeasureNames.add ("DerivedCumulativeConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("DerivedResetDate");
 
@@ -609,7 +616,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		setstrMeasureNames.add ("PV");
 
-		setstrMeasureNames.add ("ConvexityAdjustmentPremium");
+		setstrMeasureNames.add ("CumulativeConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("Rate");
 
@@ -631,9 +638,9 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 
 		setstrMeasureNames.add ("ReferencePV");
 
-		setstrMeasureNames.add ("ReferenceConvexityAdjustmentFactor");
+		setstrMeasureNames.add ("ReferenceCumulativeConvexityAdjustmentFactor");
 
-		setstrMeasureNames.add ("ReferenceConvexityAdjustmentPremium");
+		setstrMeasureNames.add ("ReferenceCumulativeConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("ResetDate");
 
@@ -726,8 +733,7 @@ public class FixFloatComponent extends org.drip.product.cashflow.DualStreamCompo
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-					(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 				if (null == dcFunding) return null;
 

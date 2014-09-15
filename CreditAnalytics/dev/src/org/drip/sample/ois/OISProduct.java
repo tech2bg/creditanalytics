@@ -135,7 +135,7 @@ public class OISProduct {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -156,7 +156,7 @@ public class OISProduct {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -207,7 +207,7 @@ public class OISProduct {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.DailyPeriodDailyReset (
 					dtEffective.julian(),
 					dtEffective.addTenor (astrMaturityTenor[i]).julian(),
@@ -227,7 +227,7 @@ public class OISProduct {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -281,7 +281,7 @@ public class OISProduct {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -302,7 +302,7 @@ public class OISProduct {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -356,7 +356,7 @@ public class OISProduct {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.DailyPeriodDailyReset (
 					dtEffective.julian(),
 					dtEffective.addTenor (astrMaturityTenor[i]).julian(),
@@ -376,7 +376,7 @@ public class OISProduct {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -762,7 +762,7 @@ public class OISProduct {
 
 		JulianDate dtCustomOISStart = dtToday.subtractTenor ("2M");
 
-		FloatingStream floatStream = new FloatingStream (
+		Stream floatStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtCustomOISStart.julian(),
 				"4M",
@@ -783,7 +783,7 @@ public class OISProduct {
 			)
 		);
 
-		FixedStream fixStream = new FixedStream (
+		Stream fixStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtCustomOISStart.julian(),
 				"4M",

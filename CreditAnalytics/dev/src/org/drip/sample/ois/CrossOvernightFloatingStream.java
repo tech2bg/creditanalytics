@@ -54,7 +54,7 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * CrossOvernightFloatingStream demonstrates the construction, customization, and valuation of Cross-Currency
+ * CrossOvernightStream demonstrates the construction, customization, and valuation of Cross-Currency
  * 	Overnight Floating Streams.
  * 
  * @author Lakshmi Krishnamurthy
@@ -179,7 +179,7 @@ public class CrossOvernightFloatingStream {
 		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.DailyPeriodDailyReset (
 					dtEffective.julian(),
 					dtEffective.addTenor (astrMaturityTenor[i]).julian(),
@@ -199,7 +199,7 @@ public class CrossOvernightFloatingStream {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -480,7 +480,7 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		FloatingStream floatStreamGeometric = new FloatingStream (
+		Stream floatStreamGeometric = new Stream (
 			PeriodBuilder.RegularPeriodDailyReset (
 				dtCustomOISStart.julian(),
 				"6M",
@@ -502,7 +502,7 @@ public class CrossOvernightFloatingStream {
 			)
 		);
 
-		FloatingStream floatStreamArithmetic = new FloatingStream (
+		Stream floatStreamArithmetic = new Stream (
 			PeriodBuilder.RegularPeriodDailyReset (
 				dtCustomOISStart.julian(),
 				"6M",

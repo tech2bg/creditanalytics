@@ -305,9 +305,9 @@ public class SerializerTestSuite {
 
 		Verify (abFRA, new org.drip.product.fra.FRAStandardComponent (abFRA), "FloatingRateAgreement");
 
-		org.drip.product.cashflow.FixedStream[] aFixedStream = new org.drip.product.cashflow.FixedStream[3];
-		org.drip.product.cashflow.FloatingStream[] aFloatStream = new
-			org.drip.product.cashflow.FloatingStream[3];
+		org.drip.product.cashflow.Stream[] aStream = new org.drip.product.cashflow.Stream[3];
+		org.drip.product.cashflow.Stream[] aFloatStream = new
+			org.drip.product.cashflow.Stream[3];
 
 		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
@@ -317,21 +317,21 @@ public class SerializerTestSuite {
 				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "ABC", 1., null, 0.03, "DEF", "DEF",
 					null, org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFixedStream[0] = new org.drip.product.cashflow.FixedStream (lsFixedPeriod3Y);
+		aStream[0] = new org.drip.product.cashflow.Stream (lsFixedPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "5Y",
 				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "GHI", 1., null, 0.05, "JKL", "JKL",
 					null, org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFixedStream[1] = new org.drip.product.cashflow.FixedStream (lsFixedPeriod5Y);
+		aStream[1] = new org.drip.product.cashflow.Stream (lsFixedPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "7Y",
 				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "MNO", 1., null, 0.07, "PQR", "PQR",
 					null, org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFixedStream[2] = new org.drip.product.cashflow.FixedStream (lsFixedPeriod7Y);
+		aStream[2] = new org.drip.product.cashflow.Stream (lsFixedPeriod7Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "3Y",
@@ -339,7 +339,7 @@ public class SerializerTestSuite {
 					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
 						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFloatStream[0] = new org.drip.product.cashflow.FloatingStream (lsFloatPeriod3Y);
+		aFloatStream[0] = new org.drip.product.cashflow.Stream (lsFloatPeriod3Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "5Y",
@@ -347,7 +347,7 @@ public class SerializerTestSuite {
 					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
 						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFloatStream[1] = new org.drip.product.cashflow.FloatingStream (lsFloatPeriod5Y);
+		aFloatStream[1] = new org.drip.product.cashflow.Stream (lsFloatPeriod5Y);
 
 		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "7Y",
@@ -355,10 +355,9 @@ public class SerializerTestSuite {
 					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
 						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
-		aFloatStream[2] = new org.drip.product.cashflow.FloatingStream (lsFloatPeriod7Y);
+		aFloatStream[2] = new org.drip.product.cashflow.Stream (lsFloatPeriod7Y);
 
-		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aFixedStream,
-			aFloatStream).serialize();
+		byte[] abRB = new org.drip.product.rates.RatesBasket ("SAMRB", aStream, aFloatStream).serialize();
 
 		Verify (abRB, new org.drip.product.rates.RatesBasket (abRB), "RatesBasket");
 

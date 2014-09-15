@@ -516,6 +516,51 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		return astrPrincipalCurrency;
 	}
 
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	{
+		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
+
+		if (null == aComp) return null;
+
+		int iNumComp = aComp.length;
+
+		if (0 == iNumComp) return null;
+
+		java.util.Set<org.drip.state.identifier.CreditLabel> sLSLCredit = new
+			java.util.HashSet<org.drip.state.identifier.CreditLabel>();
+
+		for (int i = 0; i < iNumComp; ++i) {
+			if (null == aComp[i]) return null;
+
+			org.drip.state.identifier.CreditLabel[] aLSLCredit = aComp[i].creditLabel();
+
+			if (null == aLSLCredit) continue;
+
+			int iNumCreditCurve = aLSLCredit.length;
+
+			if (0 == iNumCreditCurve) continue;
+
+			for (int j = 0; j < iNumCreditCurve; ++j) {
+				org.drip.state.identifier.CreditLabel lslCredit = aLSLCredit[j];
+
+				if (null != lslCredit) sLSLCredit.add (lslCredit);
+			}
+		}
+
+		int iNumCreditCurve = sLSLCredit.size();
+
+		if (0 == iNumCreditCurve) return null;
+
+		int i = 0;
+		org.drip.state.identifier.CreditLabel[] aLSLCredit = new
+			org.drip.state.identifier.CreditLabel[iNumCreditCurve];
+
+		for (org.drip.state.identifier.CreditLabel lslCredit : sLSLCredit)
+			aLSLCredit[i++] = lslCredit;
+
+		return aLSLCredit;
+	}
+
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
@@ -561,7 +606,7 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 		return aLSLForward;
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
 
@@ -571,39 +616,36 @@ public abstract class BasketProduct extends org.drip.service.stream.Serializer i
 
 		if (0 == iNumComp) return null;
 
-		java.util.Set<org.drip.state.identifier.CreditLabel> sLSLCredit = new
-			java.util.HashSet<org.drip.state.identifier.CreditLabel>();
+		java.util.Set<org.drip.state.identifier.FundingLabel> sLSLFunding = new
+			java.util.HashSet<org.drip.state.identifier.FundingLabel>();
 
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			org.drip.state.identifier.CreditLabel[] aLSLCredit = aComp[i].creditLabel();
+			org.drip.state.identifier.FundingLabel[] aLSLFunding = aComp[i].fundingLabel();
 
-			if (null == aLSLCredit) continue;
+			if (null == aLSLFunding) continue;
 
-			int iNumCreditCurve = aLSLCredit.length;
+			int iNumFundingCurve = aLSLFunding.length;
 
-			if (0 == iNumCreditCurve) continue;
+			if (0 == iNumFundingCurve) continue;
 
-			for (int j = 0; j < iNumCreditCurve; ++j) {
-				org.drip.state.identifier.CreditLabel lslCredit = aLSLCredit[j];
-
-				if (null != lslCredit) sLSLCredit.add (lslCredit);
-			}
+			for (int j = 0; j < iNumFundingCurve; ++j)
+				sLSLFunding.add (aLSLFunding[j]);
 		}
 
-		int iNumCreditCurve = sLSLCredit.size();
+		int iNumFundingCurve = sLSLFunding.size();
 
-		if (0 == iNumCreditCurve) return null;
+		if (0 == iNumFundingCurve) return null;
 
 		int i = 0;
-		org.drip.state.identifier.CreditLabel[] aLSLCredit = new
-			org.drip.state.identifier.CreditLabel[iNumCreditCurve];
+		org.drip.state.identifier.FundingLabel[] aLSLFunding = new
+			org.drip.state.identifier.FundingLabel[iNumFundingCurve];
 
-		for (org.drip.state.identifier.CreditLabel lslCredit : sLSLCredit)
-			aLSLCredit[i++] = lslCredit;
+		for (org.drip.state.identifier.FundingLabel lslFunding : sLSLFunding)
+			aLSLFunding[i++] = lslFunding;
 
-		return aLSLCredit;
+		return aLSLFunding;
 	}
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()

@@ -138,7 +138,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -159,7 +159,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -213,7 +213,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -234,7 +234,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -532,7 +532,7 @@ public class OvernightArithmeticCompoundingConvexity {
 	}
 
 	private static final void VolCorrScenario (
-		final FloatingStream[] aFloatStream,
+		final Stream[] aFloatStream,
 		final String strCurrency,
 		final ForwardLabel fri,
 		final double dblAccrualEndDate,
@@ -570,7 +570,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			strDump +=
 				FormatUtil.FormatDouble (mapValue.get ("UnadjustedFairPremium"), 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (mapValue.get ("CompoundingAdjustmentFactor") - 1, 1, 2, 100.) + "% | " +
-				FormatUtil.FormatDouble (mapValue.get ("ConvexityAdjustmentFactor") - 1, 1, 2, 100.) + "%";
+				FormatUtil.FormatDouble (mapValue.get ("CumulativeConvexityAdjustmentFactor") - 1, 1, 2, 100.) + "%";
 		}
 
 		System.out.println (strDump);
@@ -620,7 +620,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			null
 		);
 
-		FloatingStream floatStream = new FloatingStream (
+		Stream floatStream = new Stream (
 			lsFloatPeriods
 		);
 
@@ -664,7 +664,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			for (double dblUSDFundingVol : adblUSDFundingVol) {
 				for (double dblUSDFundingUSDOISCorrelation : adblUSDFundingUSDOISCorrelation)
 					VolCorrScenario (
-						new FloatingStream[] {floatStream},
+						new Stream[] {floatStream},
 						strCurrency,
 						fri,
 						period.endDate(),

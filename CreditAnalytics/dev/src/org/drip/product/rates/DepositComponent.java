@@ -344,14 +344,20 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 		return cashFlowPeriod().get (0).freq();
 	}
 
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	{
+		return null;
+	}
+
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		return null == _fri ? null : new org.drip.state.identifier.ForwardLabel[] {_fri};
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
 	{
-		return null;
+		return new org.drip.state.identifier.FundingLabel[] {org.drip.state.identifier.FundingLabel.Standard
+			(_strCurrency)};
 	}
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
@@ -425,8 +431,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 			}
 		}
 
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dc) {
 			mapResult.put ("calctime", (System.nanoTime() - lStart) * 1.e-09);
@@ -487,8 +492,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 	{
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding) return null;
 
@@ -530,8 +534,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 		if (null == valParams || valParams.valueDate() >= _dblMaturity || null == strManifestMeasure)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding) return null;
 

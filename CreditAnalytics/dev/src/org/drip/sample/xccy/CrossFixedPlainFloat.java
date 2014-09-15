@@ -68,7 +68,7 @@ public class CrossFixedPlainFloat {
 		 * The Fixed Leg
 		 */
 
-		FixedStream fixStream = new FixedStream (
+		Stream fixStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -89,13 +89,11 @@ public class CrossFixedPlainFloat {
 			)
 		);
 
-		fixStream.setPrimaryCode (strPayCurrency + "_" + strFixedCouponCurrency + "::FIXED::" + strTenor);
-
 		/*
 		 * The Derived Leg
 		 */
 
-		FloatingStream floatStream = new FloatingStream (
+		Stream floatStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -116,8 +114,6 @@ public class CrossFixedPlainFloat {
 			)
 		);
 
-		floatStream.setPrimaryCode (strPayCurrency + "_" + strPayCurrency + "::FIXED::" + iTenorInMonths + "M::" + strTenor);
-
 		/*
 		 * The fix-float swap instance
 		 */
@@ -127,8 +123,6 @@ public class CrossFixedPlainFloat {
 			floatStream,
 			new CashSettleParams (0, strPayCurrency, 0)
 		);
-
-		fixFloat.setPrimaryCode (fixStream.primaryCode() + "__" + floatStream.primaryCode());
 
 		return fixFloat;
 	}

@@ -102,22 +102,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		return ci;
 	}
 
-	private double calibAccrued (
-		final CalibInput ci,
-		final double dblValueDate,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
-	{
-		if (!contains (dblValueDate)) return 0.;
-
-		org.drip.analytics.output.CouponAccrualMetrics cam = accrualMetrics (dblValueDate, csqs);
-
-		if (null == cam) return 0.;
-
-		return 10000. * cam.accrual01() * (null == _forwardLabel ? ci._dblFixedCoupon +
-			ci._dblFixedCouponBasis : cam.compoundedAccrualRate() + ci._dblFloatSpread);
-	}
-
 	/*
 	 * Period Date Fields
 	 */
@@ -160,13 +144,28 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	private double _dblBaseNotional = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 
+	private double calibAccrued (
+		final CalibInput ci,
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		if (!contains (dblValueDate)) return 0.;
+
+		org.drip.analytics.output.CouponAccrualMetrics cam = accrualMetrics (dblValueDate, csqs);
+
+		if (null == cam) return 0.;
+
+		return 10000. * cam.accrual01() * (null == _forwardLabel ? ci._dblFixedCoupon +
+			ci._dblFixedCouponBasis : cam.compoundedAccrualRate() + ci._dblFloatSpread);
+	}
+
 	private double resetPeriodRate (
 		final org.drip.analytics.period.ResetPeriod rp,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
 		if (null == csqs) return java.lang.Double.NaN;
-			// throw new java.lang.Exception ("CouponPeriod::resetPeriodRate => Cannot locate CSQS");
 
 		double dblFixingDate = rp.fixing();
 
@@ -914,23 +913,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * Set the Fixed Coupon Rate
-	 * 
-	 * @param dblFixedCoupon The Fixed Coupon Rate
-	 * 
-	 * @return TRUE => The Fixed Coupon Rate Set
-	 */
-
-	public boolean setFixedCoupon (
-		final double dblFixedCoupon)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblFixedCoupon)) return false;
-
-		_dblFixedCoupon = dblFixedCoupon;
-		return true;
-	}
-
-	/**
 	 * Get the period spread over the floating index
 	 * 
 	 * @return Period Float Spread
@@ -939,23 +921,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	public double floatSpread()
 	{
 		return _dblFloatSpread;
-	}
-
-	/**
-	 * Set the Period Floater Spread
-	 * 
-	 * @param dblFloatSpread The Period Floater Spread
-	 * 
-	 * @return TRUE => The Period Floater Spread successfully set
-	 */
-
-	public boolean setFloatSpread (
-		final double dblFloatSpread)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblFloatSpread)) return false;
-
-		_dblFloatSpread = dblFloatSpread;
-		return true;
 	}
 
 	/**
@@ -1224,75 +1189,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		}
 
 		return null;
-	}
-
-	/**
-	 * Compute the Clean PV of the Cash Flow
-	 * 
-	 * @param dblValueDate The Valuation Date
-	 * @param csqs The Market Curve Surface/Quote Set
-	 * @param pqs Product Quote Set
-	 * 
-	 * @return The Clean PV of the Cash Flow
-	 * 
-	 * @throws java.lang.Exception Thrown if the Clean PV cannot be computed
-	 */
-
-	public double cleanPV (
-		final double dblValueDate,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-		throws java.lang.Exception
-	{
-		if (null == pqs || (!(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) && !(pqs instanceof
-			org.drip.product.calib.FloatingStreamQuoteSet)))
-			throw new java.lang.Exception ("CouponPeriod::cleanPV => Invalid Inputs");
-
-		double dblAccrued = 0.;
-		double dblFixedCouponBasis = 0.;
-		double dblFixedCoupon = _dblFixedCoupon;
-		double dblFloatSpread = _dblFloatSpread;
-
-		if (null != pqs) {
-			if (null != forwardLabel()) {
-				if (pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) {
-					org.drip.product.calib.FixedStreamQuoteSet fsqs =
-						(org.drip.product.calib.FixedStreamQuoteSet) pqs;
-
-					if (fsqs.containsCoupon()) dblFixedCoupon = fsqs.coupon();
-
-					if (fsqs.containsCouponBasis()) dblFixedCouponBasis = fsqs.couponBasis();
-				}
-			} else {
-				if (pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet) {
-					org.drip.product.calib.FloatingStreamQuoteSet fsqs =
-						(org.drip.product.calib.FloatingStreamQuoteSet) pqs;
-
-					if (fsqs.containsSpread()) dblFloatSpread = fsqs.spread();
-				}
-			}
-		}
-
-		if (contains (dblValueDate)) {
-			org.drip.analytics.output.CouponAccrualMetrics cam = accrualMetrics (dblValueDate, csqs);
-
-			if (null != cam)
-				dblAccrued = 10000. * cam.accrual01() * (null == forwardLabel() ? dblFixedCoupon +
-					dblFixedCouponBasis : cam.compoundedAccrualRate() + dblFloatSpread);
-		}
-
-		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
-
-		if (null == cpm)
-			throw new java.lang.Exception ("CouponPeriod::cleanPV => Cannot compute base metrics");
-
-		org.drip.analytics.output.ConvexityAdjustment convAdj = cpm.convexityAdjustment();
-
-		if (null == convAdj)
-			throw new java.lang.Exception ("CouponPeriod::cleanPV => Cannot compute Convexity Adjustment");
-
-		return cpm.annuity() * convAdj.cumulative() * cpm.dcf() * (null == forwardLabel() ? dblFixedCoupon +
-			dblFixedCouponBasis : cpm.compoundedAccrualRate() + dblFloatSpread) - dblAccrued;
 	}
 
 	/**

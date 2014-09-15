@@ -114,8 +114,7 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel()[0];
 
-		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(payCurrency()[0]);
+		org.drip.state.identifier.FundingLabel fundingLabel = fundingLabel()[0];
 
 		try {
 			double dblSTIRIntegratedQuantoDrift =

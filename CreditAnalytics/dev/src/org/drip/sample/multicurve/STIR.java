@@ -103,7 +103,7 @@ public class STIR {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -124,7 +124,7 @@ public class STIR {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -274,7 +274,7 @@ public class STIR {
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = new FloatingStream (
+			Stream fsReference = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -299,7 +299,7 @@ public class STIR {
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = new FloatingStream (
+			Stream fsDerived = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -504,7 +504,7 @@ public class STIR {
 	{
 		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
 
-		FloatingStream floatStream = new FloatingStream (
+		Stream floatStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -525,7 +525,7 @@ public class STIR {
 			)
 		);
 
-		FixedStream fixStream = new FixedStream (
+		Stream fixStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

@@ -73,6 +73,14 @@ public interface MarketParamRef {
 	public abstract java.lang.String[] principalCurrency();
 
 	/**
+	 * Get the Array of Credit Curve Latent State Identifier Labels
+	 * 
+	 * @return The Array of Credit Curve Latent State Identifier Labels
+	 */
+
+	public abstract org.drip.state.identifier.CreditLabel[] creditLabel();
+
+	/**
 	 * Get the Array of Forward Curve Latent State Labels
 	 * 
 	 * @return Array of the Forward Curve Latent State Labels
@@ -81,12 +89,12 @@ public interface MarketParamRef {
 	public abstract org.drip.state.identifier.ForwardLabel[] forwardLabel();
 
 	/**
-	 * Get the Array of Credit Curve Latent State Identifier Labels
+	 * Get the Array of Funding Curve Latent State Labels
 	 * 
-	 * @return The Array of Credit Curve Latent State Identifier Labels
+	 * @return Array of the Funding Curve Latent State Labels
 	 */
 
-	public abstract org.drip.state.identifier.CreditLabel[] creditLabel();
+	public abstract org.drip.state.identifier.FundingLabel[] fundingLabel();
 
 	/**
 	 * Get the Array of the FX Latent State Identifier Labels

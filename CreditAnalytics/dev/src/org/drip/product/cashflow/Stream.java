@@ -34,8 +34,26 @@ package org.drip.product.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class Stream extends org.drip.service.stream.Serializer {
+public class Stream extends org.drip.service.stream.Serializer {
 	protected java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
+
+	protected double notional (
+		final double dblDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		org.drip.analytics.period.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
+
+		if (dblDate <= cpLeft.startDate()) return cpLeft.notional (cpLeft.startDate()) * cpLeft.fx (csqs);
+
+		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
+			if (cp.contains (dblDate)) return cp.notional (dblDate) * cp.fx (csqs);
+		}
+
+		org.drip.analytics.period.CouponPeriod cp = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
+
+		return cp.notional (cp.endDate()) * cp.fx (csqs);
+	}
 
 	/**
 	 * Stream constructor
@@ -106,6 +124,17 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 	public org.drip.state.identifier.ForwardLabel forwardLabel()
 	{
 		return _lsCouponPeriod.get (0).forwardLabel();
+	}
+
+	/**
+	 * Retrieve the Funding Label
+	 * 
+	 * @return The Funding Label
+	 */
+
+	public org.drip.state.identifier.FundingLabel fundingLabel()
+	{
+		return _lsCouponPeriod.get (0).fundingLabel();
 	}
 
 	/**
@@ -376,11 +405,688 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 	 * @return The Value Map for the Stream
 	 */
 
-	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
+	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams vcp);
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
+	{
+		if (null == valParams || null == csqs) return null;
+
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(payCurrency());
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
+
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
+
+		if (null == dcFunding) return null;
+
+		long lStart = System.nanoTime();
+
+		double dblValueDate = valParams.valueDate();
+
+		double dblFixing01 = 0.;
+		double dblAccrued01 = 0.;
+		double dblTotalCoupon = 0.;
+		double dblUnadjustedDirtyPV = 0.;
+		double dblUnadjustedDirtyDV01 = 0.;
+		double dblCompoundingAdjustedDirtyPV = 0.;
+		double dblCompoundingAdjustedDirtyDV01 = 0.;
+		double dblCashPayDF = java.lang.Double.NaN;
+		double dblResetDate = java.lang.Double.NaN;
+		double dblResetRate = java.lang.Double.NaN;
+		double dblValueNotional = java.lang.Double.NaN;
+		double dblCumulativeConvexityAdjustedDirtyPV = 0.;
+		double dblCumulativeConvexityAdjustedDirtyDV01 = 0.;
+
+		double dblSpread = null != forwardLabel ? _lsCouponPeriod.get (0).floatSpread() : 0.;
+
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
+			double dblCompoundingAdjustedDirtyPeriodDV01 = java.lang.Double.NaN;
+
+			double dblPeriodPayDate = period.payDate();
+
+			if (dblPeriodPayDate < dblValueDate) continue;
+
+			double dblPeriodDCF = period.couponDCF();
+
+			org.drip.analytics.output.CouponPeriodMetrics pcm = period.baseMetrics (dblValueDate, csqs);
+
+			if (null == pcm) return null;
+
+			org.drip.analytics.output.ConvexityAdjustment convAdj = pcm.convexityAdjustment();
+
+			if (null == convAdj) return null;
+
+			double dblPeriodBaseRate = pcm.compoundedAccrualRate();
+
+			org.drip.analytics.output.CouponAccrualMetrics cam = period.accrualMetrics (dblValueDate, csqs);
+
+			try {
+				if (null != cam) {
+					dblResetDate = cam.outstandingFixingDate();
+
+					dblResetRate = cam.compoundedAccrualRate();
+
+					dblAccrued01 = dblFixing01 = cam.accrual01();
+				} else if (period.contains (dblValueDate)) {
+					dblAccrued01 = 0.;
+					dblResetRate = dblPeriodBaseRate;
+					java.util.List<org.drip.analytics.period.ResetPeriod> lsRP = null;
+
+					org.drip.analytics.period.ResetPeriodContainer rpc = period.rpc();
+
+					if (null != rpc) lsRP = rpc.resetPeriods();
+
+					dblResetDate = null != lsRP && 0 != lsRP.size() ? lsRP.get (0).fixing() :
+						period.startDate();
+				}
+
+				dblUnadjustedDirtyPeriodDV01 = 0.0001 * dblPeriodDCF * pcm.annuity();
+
+				dblCompoundingAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+					pcm.compoundingConvexityFactor();
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			double dblCumulativeConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+				convAdj.cumulative();
+
+			double dblPeriodFullRate = dblPeriodBaseRate + dblSpread;
+			dblTotalCoupon += dblPeriodFullRate;
+			dblUnadjustedDirtyDV01 += dblUnadjustedDirtyPeriodDV01;
+			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * dblPeriodFullRate;
+			dblCumulativeConvexityAdjustedDirtyDV01 += dblCumulativeConvexityAdjustedDirtyPeriodDV01;
+			dblCumulativeConvexityAdjustedDirtyPV += dblCumulativeConvexityAdjustedDirtyPeriodDV01 * 10000. *
+				dblPeriodFullRate;
+			dblCompoundingAdjustedDirtyDV01 += dblCompoundingAdjustedDirtyPeriodDV01;
+			dblCompoundingAdjustedDirtyPV += dblCompoundingAdjustedDirtyPeriodDV01 * 10000. *
+				dblPeriodFullRate;
+		}
+
+		try {
+			dblCashPayDF = dcFunding.df (dblValueDate);
+
+			dblValueNotional = notional (dblValueDate, csqs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		double dblAccrualCoupon = null == forwardLabel ?_lsCouponPeriod.get (0).fixedCoupon() : dblResetRate
+			+ dblSpread;
+
+		dblUnadjustedDirtyPV /= dblCashPayDF;
+		dblUnadjustedDirtyDV01 /= dblCashPayDF;
+		dblCompoundingAdjustedDirtyPV /= dblCashPayDF;
+		dblCompoundingAdjustedDirtyDV01 /= dblCashPayDF;
+		dblCumulativeConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblCumulativeConvexityAdjustedDirtyDV01 /= dblCashPayDF;
+		double dblAccrued = 0. == dblAccrued01 ? 0. : dblAccrued01 * 10000. * dblAccrualCoupon;
+		double dblUnadjustedCleanPV = dblUnadjustedDirtyPV - dblAccrued;
+		double dblUnadjustedCleanDV01 = dblUnadjustedDirtyDV01 - dblAccrued01;
+		double dblUnadjustedFairPremium = 0.0001 * dblUnadjustedCleanPV / dblUnadjustedCleanDV01;
+		double dblCompoundingAdjustedCleanPV = dblCompoundingAdjustedDirtyPV - dblAccrued;
+		double dblCompoundingAdjustedCleanDV01 = dblCompoundingAdjustedDirtyDV01 - dblAccrued01;
+		double dblCompoundingAdjustedFairPremium = 0.0001 * dblCompoundingAdjustedCleanPV /
+			dblCompoundingAdjustedCleanDV01;
+		double dblCumulativeConvexityAdjustedCleanPV = dblCumulativeConvexityAdjustedDirtyPV - dblAccrued;
+		double dblCumulativeConvexityAdjustedCleanDV01 = dblCumulativeConvexityAdjustedDirtyDV01 -
+			dblAccrued01;
+		double dblCumulativeConvexityAdjustedFairPremium = 0.0001 * dblCumulativeConvexityAdjustedCleanPV /
+			dblCumulativeConvexityAdjustedCleanDV01;
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+
+		mapResult.put ("AccrualCoupon", dblAccrualCoupon);
+
+		mapResult.put ("Accrued", dblAccrued);
+
+		mapResult.put ("Accrued01", dblAccrued01);
+
+		mapResult.put ("CleanDV01", dblCumulativeConvexityAdjustedCleanDV01);
+
+		mapResult.put ("CleanPV", dblCumulativeConvexityAdjustedCleanPV);
+
+		mapResult.put ("CompoundingAdjustedCleanDV01", dblCompoundingAdjustedCleanDV01);
+
+		mapResult.put ("CompoundingAdjustedCleanPV", dblCompoundingAdjustedCleanPV);
+
+		mapResult.put ("CompoundingAdjustedDirtyPV", dblCompoundingAdjustedDirtyPV);
+
+		mapResult.put ("CompoundingAdjustedDirtyDV01", dblCompoundingAdjustedDirtyDV01);
+
+		mapResult.put ("CompoundingAdjustedDirtyPV", dblCompoundingAdjustedDirtyPV);
+
+		mapResult.put ("CompoundingAdjustedFairPremium", dblCompoundingAdjustedFairPremium);
+
+		mapResult.put ("CompoundingAdjustedParRate", dblCompoundingAdjustedFairPremium);
+
+		mapResult.put ("CompoundingAdjustedPV", dblCompoundingAdjustedCleanPV);
+
+		mapResult.put ("CompoundingAdjustedRate", dblCompoundingAdjustedFairPremium);
+
+		mapResult.put ("CompoundingAdjustedUpfront", dblCompoundingAdjustedCleanPV);
+
+		mapResult.put ("CompoundingAdjustmentFactor", dblCompoundingAdjustedDirtyDV01 /
+			dblUnadjustedDirtyDV01);
+
+		mapResult.put ("ConvexityAdjustmentPremium", dblCompoundingAdjustedCleanPV - dblUnadjustedCleanPV);
+
+		mapResult.put ("CompoundingAdjustmentPremiumUpfront", (dblCompoundingAdjustedCleanPV -
+			dblUnadjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("CumulativeConvexityAdjustedCleanDV01", dblCumulativeConvexityAdjustedCleanDV01);
+
+		mapResult.put ("CumulativeConvexityAdjustedCleanPV", dblCumulativeConvexityAdjustedCleanPV);
+
+		mapResult.put ("ConvexityAdjustedDirtyDV01", dblCumulativeConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("ConvexityAdjustedDirtyPV", dblCumulativeConvexityAdjustedDirtyPV);
+
+		mapResult.put ("ConvexityAdjustedDV01", dblCumulativeConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("CumulativeConvexityAdjustedFairPremium", dblCumulativeConvexityAdjustedFairPremium);
+
+		mapResult.put ("CumulativeConvexityAdjustedParRate", dblCumulativeConvexityAdjustedFairPremium);
+
+		mapResult.put ("CumulativeConvexityAdjustedPV", dblCumulativeConvexityAdjustedCleanPV);
+
+		mapResult.put ("CumulativeConvexityAdjustedRate", dblCumulativeConvexityAdjustedFairPremium);
+
+		mapResult.put ("CumulativeConvexityAdjustedUpfront", dblCumulativeConvexityAdjustedCleanPV);
+
+		mapResult.put ("CumulativeConvexityAdjustmentFactor", dblCumulativeConvexityAdjustedDirtyDV01 /
+			dblUnadjustedDirtyDV01);
+
+		mapResult.put ("CumulativeConvexityAdjustmentPremium", dblCumulativeConvexityAdjustedCleanPV -
+			dblUnadjustedCleanPV);
+
+		mapResult.put ("CumulativeConvexityAdjustmentPremiumUpfront", (dblCumulativeConvexityAdjustedCleanPV
+			- dblUnadjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("CV01", dblCumulativeConvexityAdjustedCleanDV01);
+
+		mapResult.put ("DirtyDV01", dblCumulativeConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("DirtyPV", dblCumulativeConvexityAdjustedDirtyPV);
+
+		mapResult.put ("DV01", dblCumulativeConvexityAdjustedCleanDV01);
+
+		mapResult.put ("FairPremium", dblCumulativeConvexityAdjustedFairPremium);
+
+		mapResult.put ("Fixing01", dblFixing01 / dblCashPayDF);
+
+		mapResult.put ("ParRate", dblCumulativeConvexityAdjustedFairPremium);
+
+		mapResult.put ("PV", dblCumulativeConvexityAdjustedCleanPV);
+
+		mapResult.put ("Rate", dblCumulativeConvexityAdjustedFairPremium);
+
+		mapResult.put ("ResetDate", dblResetDate);
+
+		mapResult.put ("ResetRate", dblResetRate);
+
+		mapResult.put ("TotalCoupon", dblTotalCoupon);
+
+		mapResult.put ("UnadjustedCleanDV01", dblUnadjustedCleanDV01);
+
+		mapResult.put ("UnadjustedCleanPV", dblUnadjustedCleanPV);
+
+		mapResult.put ("UnadjustedDirtyDV01", dblUnadjustedDirtyDV01);
+
+		mapResult.put ("UnadjustedDirtyPV", dblUnadjustedDirtyPV);
+
+		mapResult.put ("UnadjustedFairPremium", dblUnadjustedFairPremium);
+
+		mapResult.put ("UnadjustedParRate", dblUnadjustedFairPremium);
+
+		mapResult.put ("UnadjustedPV", dblUnadjustedCleanPV);
+
+		mapResult.put ("UnadjustedRate", dblUnadjustedFairPremium);
+
+		mapResult.put ("UnadjustedUpfront", dblUnadjustedCleanPV);
+
+		mapResult.put ("Upfront", dblCumulativeConvexityAdjustedCleanPV);
+
+		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
+			double dblCompoundingAdjustedCleanPrice = 100. * (1. + (dblCompoundingAdjustedCleanPV /
+				dblValueNotional));
+			double dblCumulativeConvexityAdjustedCleanPrice = 100. * (1. +
+				(dblCumulativeConvexityAdjustedCleanPV / dblValueNotional));
+			double dblUnadjustedCleanPrice = 100. * (1. + (dblUnadjustedCleanPV / dblValueNotional));
+
+			mapResult.put ("CleanPrice", dblCumulativeConvexityAdjustedCleanPrice);
+
+			mapResult.put ("CompoundingAdjustedCleanPrice", dblCompoundingAdjustedCleanPrice);
+
+			mapResult.put ("CompoundingAdjustedDirtyPrice", 100. * (1. + (dblCompoundingAdjustedDirtyPV /
+				dblValueNotional)));
+
+			mapResult.put ("CompoundingAdjustedPrice", dblCompoundingAdjustedCleanPrice);
+
+			mapResult.put ("CumulativeConvexityAdjustedCleanPrice",
+				dblCumulativeConvexityAdjustedCleanPrice);
+
+			mapResult.put ("CumulativeConvexityAdjustedDirtyPrice", 100. * (1. +
+				(dblCumulativeConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("CumulativeConvexityAdjustedPrice", dblCumulativeConvexityAdjustedCleanPrice);
+
+			mapResult.put ("DirtyPrice", 100. * (1. + (dblCumulativeConvexityAdjustedDirtyPV /
+				dblValueNotional)));
+
+			mapResult.put ("Price", dblCumulativeConvexityAdjustedCleanPrice);
+
+			mapResult.put ("UnadjustedCleanPrice", dblUnadjustedCleanPrice);
+
+			mapResult.put ("UnadjustedDirtyPrice", 100. * (1. + (dblUnadjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("UnadjustedPrice", dblUnadjustedCleanPrice);
+		}
+
+		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
+
+		return mapResult;
+	}
+
+	/**
+	 * Generate the Calibration Quote Set corresponding to the specified Latent State Array
+	 * 
+	 * @param aLSS The Latent State Array
+	 * 
+	 * @return The Calibration Quote Set corresponding to the specified Latent State Array
+	 */
+
+	public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
+		final org.drip.state.representation.LatentStateSpecification[] aLSS)
+	{
+		try {
+			return null == forwardLabel() ? new org.drip.product.calib.FixedStreamQuoteSet (aLSS) : new
+				org.drip.product.calib.FloatingStreamQuoteSet (aLSS);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate the State Loading Constraints for the Forward Latent State
+	 * 
+	 * @param valParams The Valuation Parameters
+	 * @param pricerParams The Pricer parameters
+	 * @param csqs The Market Parameters
+	 * @param vcp Valuation Customization Parameters
+	 * @param pqs The Product Calibration Quote Set
+	 * 
+	 * @return The State Loading Constraints for the Forward Latent State
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs) return null;
+
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
+
+		if ((null != forwardLabel && !(pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet)) ||
+			(null == forwardLabel && !(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet)))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= maturity().julian()) return null;
+
+		double dblCleanPV = 0.;
+
+		try {
+			if (pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet) {
+				org.drip.product.calib.FloatingStreamQuoteSet fsqs =
+					(org.drip.product.calib.FloatingStreamQuoteSet) pqs;
+
+				if (fsqs.containsPV()) dblCleanPV = fsqs.pv();
+			} else if (pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) {
+				org.drip.product.calib.FixedStreamQuoteSet fsqs =
+					(org.drip.product.calib.FixedStreamQuoteSet) pqs;
+
+				if (fsqs.containsPV()) dblCleanPV = fsqs.pv();
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+			double dblPeriodEndDate = period.endDate();
+
+			if (dblPeriodEndDate < dblValueDate) continue;
+
+			org.drip.state.estimator.PredictorResponseWeightConstraint prwcPeriod = period.forwardPRWC
+				(dblValueDate, csqs, pqs);
+
+			if (null == prwcPeriod || !prwc.absorb (prwcPeriod)) return null;
+		}
+
+		if (!prwc.updateValue (dblCleanPV)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
+	/**
+	 * Generate the State Loading Constraints for the Funding Latent State
+	 * 
+	 * @param valParams The Valuation Parameters
+	 * @param pricerParams The Pricer parameters
+	 * @param csqs The Market Parameters
+	 * @param vcp Valuation Customization Parameters
+	 * @param pqs The Product Calibration Quote Set
+	 * 
+	 * @return The State Loading Constraints for the Funding Latent State
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs) return null;
+
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
+
+		if ((null != forwardLabel && !(pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet)) ||
+			(null == forwardLabel && !(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet)))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= maturity().julian()) return null;
+
+		double dblCleanPV = 0.;
+
+		try {
+			if (pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet) {
+				org.drip.product.calib.FloatingStreamQuoteSet fsqs =
+					(org.drip.product.calib.FloatingStreamQuoteSet) pqs;
+
+				if (fsqs.containsPV()) dblCleanPV = fsqs.pv();
+			} else if (pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) {
+				org.drip.product.calib.FixedStreamQuoteSet fsqs =
+					(org.drip.product.calib.FixedStreamQuoteSet) pqs;
+
+				if (fsqs.containsPV()) dblCleanPV = fsqs.pv();
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+			double dblPeriodEndDate = period.endDate();
+
+			if (dblPeriodEndDate < dblValueDate) continue;
+
+			org.drip.state.estimator.PredictorResponseWeightConstraint prwcPeriod = period.fundingPRWC
+				(dblValueDate, csqs, pqs);
+
+			if (null == prwcPeriod || !prwc.absorb (prwcPeriod)) return null;
+		}
+
+		if (!prwc.updateValue (dblCleanPV)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
+	/**
+	 * Generate the State Loading Constraints for the Merged Forward/Funding Latent State
+	 * 
+	 * @param valParams The Valuation Parameters
+	 * @param pricerParams The Pricer parameters
+	 * @param csqs The Market Parameters
+	 * @param vcp Valuation Customization Parameters
+	 * @param pqs The Product Calibration Quote Set
+	 * 
+	 * @return The State Loading Constraints for the Merged Forward/Funding Latent State
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == valParams || null == pqs) return null;
+
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
+
+		if ((null != forwardLabel && !(pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet)) ||
+			(null == forwardLabel && !(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet)))
+			return null;
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= maturity().julian()) return null;
+
+		double dblCleanPV = 0.;
+
+		try {
+			if (pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet) {
+				org.drip.product.calib.FloatingStreamQuoteSet fsqs =
+					(org.drip.product.calib.FloatingStreamQuoteSet) pqs;
+
+				if (fsqs.containsPV()) dblCleanPV = fsqs.pv();
+			} else if (pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) {
+				org.drip.product.calib.FixedStreamQuoteSet fsqs =
+					(org.drip.product.calib.FixedStreamQuoteSet) pqs;
+
+				if (fsqs.containsPV()) dblCleanPV = fsqs.pv();
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+			double dblPeriodEndDate = period.endDate();
+
+			if (dblPeriodEndDate < dblValueDate) continue;
+
+			org.drip.state.estimator.PredictorResponseWeightConstraint prwcPeriod = period.forwardFundingPRWC
+				(dblValueDate, csqs, pqs);
+
+			if (null == prwcPeriod || !prwc.absorb (prwcPeriod)) return null;
+		}
+
+		if (!prwc.updateValue (dblCleanPV)) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
+	/**
+	 * Generate the Jacobian of the Dirty PV to the Manifest Measure
+	 * 
+	 * @param valParams The Valuation Parameters
+	 * @param pricerParams The Pricer parameters
+	 * @param csqs The Market Parameters
+	 * @param vcp Valuation Customization Parameters
+	 * 
+	 * @return The Jacobian of the Dirty PV to the Manifest Measure
+	 */
+
+	public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
+	{
+		if (null == valParams || valParams.valueDate() >= _lsCouponPeriod.get (_lsCouponPeriod.size() -
+			1).endDate() || null == csqs)
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()));
+
+		if (null == dcFunding) return null;
+
+		try {
+			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
+
+			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+				double dblPeriodPayDate = p.payDate();
+
+				if (p.startDate() < valParams.valueDate()) continue;
+
+				org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure =
+					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
+
+				if (null == jackDDFDManifestMeasure) continue;
+
+				int iNumQuote = jackDDFDManifestMeasure.numParameters();
+
+				if (0 == iNumQuote) continue;
+
+				if (null == jackDDirtyPVDManifestMeasure)
+					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
+						iNumQuote);
+
+				double dblPeriodNotional = p.baseNotional() * p.notional (p.startDate(), p.endDate());
+
+				double dblPeriodDCF = p.couponDCF();
+
+				for (int k = 0; k < iNumQuote; ++k) {
+					if (!jackDDirtyPVDManifestMeasure.accumulatePartialFirstDerivative (0, k,
+						dblPeriodNotional * dblPeriodDCF * jackDDFDManifestMeasure.getFirstDerivative (0,
+							k)))
+						return null;
+				}
+			}
+
+			return jackDDirtyPVDManifestMeasure;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate the micro-Jacobian of the Manifest Measure to the Discount Factor
+	 * 
+	 * @param valParams The Valuation Parameters
+	 * @param pricerParams The Pricer parameters
+	 * @param csqs The Market Parameters
+	 * @param vcp Valuation Customization Parameters
+	 * 
+	 * @return The micro-Jacobian of the Manifest Measure to the Discount Factor
+	 */
+
+	public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
+		final java.lang.String strManifestMeasure,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
+	{
+		if (null == valParams || valParams.valueDate() >= _lsCouponPeriod.get (_lsCouponPeriod.size() -
+			1).endDate() || null == strManifestMeasure)
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
+
+		if (null == dcFunding) return null;
+
+		if ("Rate".equalsIgnoreCase (strManifestMeasure) || "SwapRate".equalsIgnoreCase (strManifestMeasure))
+		{
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
+				(valParams, pricerParams, csqs, vcp);
+
+			if (null == mapMeasures) return null;
+
+			double dblDirtyDV01 = mapMeasures.get ("DirtyDV01");
+
+			double dblParSwapRate = mapMeasures.get ("SwapRate");
+
+			try {
+				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
+
+				for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+					double dblPeriodPayDate = p.payDate();
+
+					if (dblPeriodPayDate < valParams.valueDate()) continue;
+
+					org.drip.quant.calculus.WengertJacobian wjPeriodFwdRateDF =
+						dcFunding.jackDForwardDManifestMeasure (p.startDate(), p.endDate(), "Rate",
+							p.couponDCF());
+
+					org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF =
+						dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
+
+					if (null == wjPeriodFwdRateDF || null == wjPeriodPayDFDF) continue;
+
+					double dblForwardRate = dcFunding.libor (p.startDate(), p.endDate());
+
+					double dblPeriodPayDF = dcFunding.df (dblPeriodPayDate);
+
+					if (null == wjSwapRateDFMicroJack)
+						wjSwapRateDFMicroJack = new org.drip.quant.calculus.WengertJacobian (1,
+							wjPeriodFwdRateDF.numParameters());
+
+					double dblPeriodNotional = notional (p.startDate(), p.endDate());
+
+					double dblPeriodDCF = p.couponDCF();
+
+					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
+						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
+							wjPeriodPayDFDF.getFirstDerivative (0, k) + dblPeriodPayDF *
+								wjPeriodFwdRateDF.getFirstDerivative (0, k);
+
+						if (!wjSwapRateDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodNotional
+							* dblPeriodDCF * dblPeriodMicroJack / dblDirtyDV01))
+							return null;
+					}
+				}
+
+				return wjSwapRateDFMicroJack;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
 
 	/**
 	 * Stream de-serialization from input byte array
@@ -412,12 +1118,12 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 			fieldDelimiter());
 
 		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("FloatingStream de-serializer: Invalid reqd field set");
+			throw new java.lang.Exception ("Stream de-serializer: Invalid reqd field set");
 
 		// double dblVersion = new java.lang.Double (astrField[0]);
 
 		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("FloatingStream de-serializer: Cannot locate the periods");
+			throw new java.lang.Exception ("Stream de-serializer: Cannot locate the periods");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_lsCouponPeriod = null;
@@ -482,5 +1188,17 @@ public abstract class Stream extends org.drip.service.stream.Serializer {
 		}
 
 		return sb.append (objectTrailer()).toString().getBytes();
+	}
+
+	@Override public org.drip.service.stream.Serializer deserialize (
+		final byte[] ab)
+	{
+		try {
+			return new Stream (ab);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

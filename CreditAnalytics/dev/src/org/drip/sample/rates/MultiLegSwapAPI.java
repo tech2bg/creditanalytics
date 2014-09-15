@@ -109,7 +109,7 @@ public class MultiLegSwapAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtStart.julian(),
 					astrIRSTenor[i],
@@ -130,7 +130,7 @@ public class MultiLegSwapAPI {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtStart.julian(),
 					astrIRSTenor[i],
@@ -184,9 +184,9 @@ public class MultiLegSwapAPI {
 		 * Create a sequence of Fixed Streams
 		 */
 
-		FixedStream[] aFixedStream = new FixedStream[3];
+		Stream[] aStream = new Stream[3];
 
-		aFixedStream[0] = new FixedStream (
+		aStream[0] = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"3Y",
@@ -207,7 +207,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aFixedStream[1] = new FixedStream (
+		aStream[1] = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"5Y",
@@ -228,7 +228,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aFixedStream[2] = new FixedStream (
+		aStream[2] = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"7Y",
@@ -253,9 +253,9 @@ public class MultiLegSwapAPI {
 		 * Create a sequence of Float Streams
 		 */
 
-		FloatingStream[] aFloatStream = new FloatingStream[3];
+		Stream[] aFloatStream = new Stream[3];
 
-		aFloatStream[0] = new FloatingStream (
+		aFloatStream[0] = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"3Y",
@@ -276,7 +276,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aFloatStream[1] = new FloatingStream (
+		aFloatStream[1] = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"5Y",
@@ -297,7 +297,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aFloatStream[2] = new FloatingStream (
+		aFloatStream[2] = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"7Y",
@@ -322,7 +322,7 @@ public class MultiLegSwapAPI {
 		 * Create a Rates Basket instance containing the fixed and floating streams
 		 */
 
-		return new RatesBasket ("RATESBASKET", aFixedStream, aFloatStream);
+		return new RatesBasket ("RATESBASKET", aStream, aFloatStream);
 	}
 
 	/*

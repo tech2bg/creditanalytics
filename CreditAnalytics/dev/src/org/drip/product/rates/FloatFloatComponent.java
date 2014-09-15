@@ -50,8 +50,8 @@ package org.drip.product.rates;
 public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamComponent {
 	private java.lang.String _strCode = "";
 	private org.drip.param.valuation.CashSettleParams _csp = null;
-	private org.drip.product.cashflow.FloatingStream _floatDerived = null;
-	private org.drip.product.cashflow.FloatingStream _floatReference = null;
+	private org.drip.product.cashflow.Stream _floatDerived = null;
+	private org.drip.product.cashflow.Stream _floatReference = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -73,8 +73,8 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 	 */
 
 	public FloatFloatComponent (
-		final org.drip.product.cashflow.FloatingStream floatReference,
-		final org.drip.product.cashflow.FloatingStream floatDerived,
+		final org.drip.product.cashflow.Stream floatReference,
+		final org.drip.product.cashflow.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
@@ -126,7 +126,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_floatReference = null;
 		else
-			_floatReference = new org.drip.product.cashflow.FloatingStream (astrField[1].getBytes());
+			_floatReference = new org.drip.product.cashflow.Stream (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
@@ -135,7 +135,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_floatDerived = null;
 		else
-			_floatDerived = new org.drip.product.cashflow.FloatingStream (astrField[2].getBytes());
+			_floatDerived = new org.drip.product.cashflow.Stream (astrField[2].getBytes());
 	}
 
 	@Override public void setPrimaryCode (
@@ -229,15 +229,21 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		return _floatReference.freq();
 	}
 
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	{
+		return null;
+	}
+
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		return new org.drip.state.identifier.ForwardLabel[] {_floatReference.forwardLabel(),
 			_floatDerived.forwardLabel()};
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
 	{
-		return null;
+		return new org.drip.state.identifier.FundingLabel[] {_floatReference.fundingLabel(),
+			_floatDerived.fundingLabel()};
 	}
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
@@ -357,13 +363,14 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		mapResult.put ("ReferencePV", dblReferencePV);
 
-		mapResult.put ("ReferenceConvexityAdjustmentFactor", mapFloatReferenceStreamResult.get
-			("ConvexityAdjustmentFactor"));
+		mapResult.put ("ReferenceCumulativeConvexityAdjustmentFactor", mapFloatReferenceStreamResult.get
+			("CumulativeConvexityAdjustmentFactor"));
 
-		double dblReferenceConvexityAdjustmentPremium = mapFloatReferenceStreamResult.get
-			("ConvexityAdjustmentPremiumUpfront");
+		double dblReferenceCumulativeConvexityAdjustmentPremium = mapFloatReferenceStreamResult.get
+			("CumulativeConvexityAdjustmentPremiumUpfront");
 
-		mapResult.put ("ReferenceConvexityAdjustmentPremium", dblReferenceConvexityAdjustmentPremium);
+		mapResult.put ("ReferenceCumulativeConvexityAdjustmentPremium",
+			dblReferenceCumulativeConvexityAdjustmentPremium);
 
 		mapResult.put ("ReferenceResetDate", mapFloatReferenceStreamResult.get ("ResetDate"));
 
@@ -395,13 +402,14 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		mapResult.put ("DerivedPV", dblDerivedPV);
 
-		mapResult.put ("DerivedConvexityAdjustmentFactor", mapFloatDerivedStreamResult.get
-			("ConvexityAdjustmentFactor"));
+		mapResult.put ("DerivedCumulativeConvexityAdjustmentFactor", mapFloatDerivedStreamResult.get
+			("CumulativeConvexityAdjustmentFactor"));
 
-		double dblDerivedConvexityAdjustmentPremium = mapFloatDerivedStreamResult.get
-			("ConvexityAdjustmentPremiumUpfront");
+		double dblDerivedCumulativeConvexityAdjustmentPremium = mapFloatDerivedStreamResult.get
+			("CumulativeConvexityAdjustmentPremiumUpfront");
 
-		mapResult.put ("DerivedConvexityAdjustmentPremium", dblDerivedConvexityAdjustmentPremium);
+		mapResult.put ("DerivedCumulativeConvexityAdjustmentPremium",
+			dblDerivedCumulativeConvexityAdjustmentPremium);
 
 		mapResult.put ("DerivedResetDate", mapFloatDerivedStreamResult.get ("ResetDate"));
 
@@ -415,9 +423,9 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		mapResult.put ("PV", dblReferencePV + dblDerivedPV);
 
-		mapResult.put ("ConvexityAdjustmentPremium", _floatReference.initialNotional() *
-			dblReferenceConvexityAdjustmentPremium + _floatDerived.initialNotional() *
-				dblDerivedConvexityAdjustmentPremium);
+		mapResult.put ("CumulativeConvexityAdjustmentPremium", _floatReference.initialNotional() *
+			dblReferenceCumulativeConvexityAdjustmentPremium + _floatDerived.initialNotional() *
+				dblDerivedCumulativeConvexityAdjustmentPremium);
 
 		mapResult.put ("Upfront", mapFloatReferenceStreamResult.get ("Upfront") +
 			mapFloatDerivedStreamResult.get ("Upfront"));
@@ -485,9 +493,9 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		setstrMeasureNames.add ("DerivedPV");
 
-		setstrMeasureNames.add ("DerivedConvexityAdjustmentFactor");
+		setstrMeasureNames.add ("DerivedCumulativeConvexityAdjustmentFactor");
 
-		setstrMeasureNames.add ("DerivedConvexityAdjustmentPremium");
+		setstrMeasureNames.add ("DerivedCumulativeConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("DerivedResetDate");
 
@@ -499,7 +507,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		setstrMeasureNames.add ("PV");
 
-		setstrMeasureNames.add ("ConvexityAdjustmentPremium");
+		setstrMeasureNames.add ("CumulativeConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("ReferenceAccrued01");
 
@@ -519,9 +527,9 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 
 		setstrMeasureNames.add ("ReferenceParBasisSpread");
 
-		setstrMeasureNames.add ("ReferenceConvexityAdjustmentFactor");
+		setstrMeasureNames.add ("ReferenceCumulativeConvexityAdjustmentFactor");
 
-		setstrMeasureNames.add ("ReferenceConvexityAdjustmentPremium");
+		setstrMeasureNames.add ("ReferenceCumulativeConvexityAdjustmentPremium");
 
 		setstrMeasureNames.add ("ReferencePV");
 

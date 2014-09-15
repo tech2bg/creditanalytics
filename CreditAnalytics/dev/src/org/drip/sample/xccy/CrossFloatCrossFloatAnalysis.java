@@ -7,7 +7,7 @@ import org.drip.analytics.support.*;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.cashflow.FloatingStream;
+import org.drip.product.cashflow.Stream;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
@@ -68,7 +68,7 @@ public class CrossFloatCrossFloatAnalysis {
 		 * The Reference Leg
 		 */
 
-		FloatingStream floatStreamReference = new FloatingStream (
+		Stream floatStreamReference = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strMaturityTenor,
@@ -89,13 +89,11 @@ public class CrossFloatCrossFloatAnalysis {
 			)
 		);
 
-		floatStreamReference.setPrimaryCode (strCouponCurrency + "::FLOAT::" + iTenorInMonthsReference + "M::" + strMaturityTenor);
-
 		/*
 		 * The Derived Leg
 		 */
 
-		FloatingStream floatStreamDerived = new FloatingStream (
+		Stream floatStreamDerived = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strMaturityTenor,
@@ -115,8 +113,6 @@ public class CrossFloatCrossFloatAnalysis {
 				null
 			)
 		);
-
-		floatStreamDerived.setPrimaryCode (strCouponCurrency + "::FLOAT::" + iTenorInMonthsDerived + "M::" + strMaturityTenor);
 
 		/*
 		 * The float-float swap instance
@@ -218,9 +214,9 @@ public class CrossFloatCrossFloatAnalysis {
 			if (0 != i) strDump += " || ";
 
 			strDump +=
-				FormatUtil.FormatDouble (mapOutput.get ("ReferenceConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (mapOutput.get ("DerivedConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (mapOutput.get ("ConvexityAdjustmentPremium"), 2, 0, 10000.);
+				FormatUtil.FormatDouble (mapOutput.get ("ReferenceCumulativeConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("DerivedCumulativeConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("CumulativeConvexityAdjustmentPremium"), 2, 0, 10000.);
 		}
 
 		System.out.println (strDump);

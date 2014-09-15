@@ -66,7 +66,7 @@ public class FixFloatFixFloatAnalysis {
 		 * The Fixed Leg
 		 */
 
-		FixedStream fixStream = new FixedStream (
+		Stream fixStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -87,13 +87,11 @@ public class FixFloatFixFloatAnalysis {
 			)
 		);
 
-		fixStream.setPrimaryCode (strPayCurrency + "_" + strCouponCurrency + "::FIXED::" + strTenor);
-
 		/*
 		 * The Derived Leg
 		 */
 
-		FloatingStream floatStream = new FloatingStream (
+		Stream floatStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -114,8 +112,6 @@ public class FixFloatFixFloatAnalysis {
 			)
 		);
 
-		floatStream.setPrimaryCode (strPayCurrency + "_" + strCouponCurrency + "::FLOAT::" + iTenorInMonths + "M::" + strTenor);
-
 		/*
 		 * The fix-float swap instance
 		 */
@@ -125,8 +121,6 @@ public class FixFloatFixFloatAnalysis {
 			floatStream,
 			new CashSettleParams (0, strCouponCurrency, 0)
 		);
-
-		fixFloat.setPrimaryCode (fixStream.primaryCode() + "__" + floatStream.primaryCode());
 
 		return fixFloat;
 	}
@@ -214,9 +208,9 @@ public class FixFloatFixFloatAnalysis {
 			if (0 != i) strDump += " || ";
 
 			strDump +=
-				FormatUtil.FormatDouble (mapOutput.get ("ReferenceConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (mapOutput.get ("DerivedConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (mapOutput.get ("ConvexityAdjustmentPremium"), 2, 0, 10000.);
+				FormatUtil.FormatDouble (mapOutput.get ("ReferenceCumulativeConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("DerivedCumulativeConvexityAdjustmentPremium"), 2, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (mapOutput.get ("CumulativeConvexityAdjustmentPremium"), 2, 0, 10000.);
 		}
 
 		System.out.println (strDump);

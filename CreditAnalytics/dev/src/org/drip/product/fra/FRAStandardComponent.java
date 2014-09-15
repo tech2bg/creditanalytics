@@ -316,14 +316,20 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return cashFlowPeriod().get (0).freq();
 	}
 
+	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	{
+		return null;
+	}
+
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
 	{
 		return new org.drip.state.identifier.ForwardLabel[] {_fri};
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
 	{
-		return null;
+		return new org.drip.state.identifier.FundingLabel[] {org.drip.state.identifier.FundingLabel.Standard
+			(_strCurrency)};
 	}
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()

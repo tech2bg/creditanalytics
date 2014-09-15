@@ -104,7 +104,7 @@ public class FixFloatForwardCurve {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -125,7 +125,7 @@ public class FixFloatForwardCurve {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -259,7 +259,7 @@ public class FixFloatForwardCurve {
 			 * The Fixed Leg
 			 */
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -284,7 +284,7 @@ public class FixFloatForwardCurve {
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = new FloatingStream (
+			Stream fsDerived = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],

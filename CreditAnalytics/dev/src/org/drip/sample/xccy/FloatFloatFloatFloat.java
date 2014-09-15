@@ -8,7 +8,7 @@ import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.cashflow.FloatingStream;
+import org.drip.product.cashflow.Stream;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
@@ -68,7 +68,7 @@ public class FloatFloatFloatFloat {
 			 * The Reference Leg
 			 */
 
-		FloatingStream floatStreamReference = new FloatingStream (
+		Stream floatStreamReference = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strMaturityTenor,
@@ -89,13 +89,11 @@ public class FloatFloatFloatFloat {
 			)
 		);
 
-		floatStreamReference.setPrimaryCode (strCouponCurrency + "::FLOAT::" + iTenorInMonthsReference + "M::" + strMaturityTenor);
-
 		/*
 		 * The Derived Leg
 		 */
 
-		FloatingStream floatStreamDerived = new FloatingStream (
+		Stream floatStreamDerived = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strMaturityTenor,
@@ -115,8 +113,6 @@ public class FloatFloatFloatFloat {
 				null
 			)
 		);
-
-		floatStreamDerived.setPrimaryCode (strCouponCurrency + "::FLOAT::" + iTenorInMonthsDerived + "M::" + strMaturityTenor);
 
 		/*
 		 * The float-float swap instance

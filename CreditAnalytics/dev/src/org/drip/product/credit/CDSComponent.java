@@ -83,8 +83,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.analytics.definition.CreditCurve cc = null == aLSLCredit || 0 == aLSLCredit.length ? null :
 			csqs.creditCurve (aLSLCredit[0]);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == cc || null == dcFunding) return null;
 
@@ -240,8 +239,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		int iNumParameters = 0;
 		org.drip.quant.calculus.WengertJacobian wjPeriodOnDefaultPVDF = null;
@@ -281,8 +279,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		PeriodLossMicroJack plmj = null;
 
@@ -337,6 +334,10 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final double dblDate)
 	{
 		if (java.lang.Double.isNaN (dblDate)) return null;
+
+		org.drip.analytics.period.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+
+		if (dblDate <= cpFirst.startDate()) return cpFirst;
 
 		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
 			try {
@@ -703,8 +704,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			return org.drip.analytics.output.CouponPeriodMetrics.Create (dblPeriodStartDate,
 				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
 					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
-						1., null, creditLabel()[0], null, org.drip.state.identifier.FundingLabel.Standard
-							(payCurrency()[0]), null);
+						1., null, creditLabel()[0], null, fundingLabel()[0], null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -739,11 +739,6 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return dblOldCoupon;
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
-	{
-		return null;
-	}
-
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
 		if (null == _crValParams || null == _crValParams._strCC || _crValParams._strCC.isEmpty())
@@ -751,6 +746,17 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		return new org.drip.state.identifier.CreditLabel[] {org.drip.state.identifier.CreditLabel.Standard
 			(_crValParams._strCC)};
+	}
+
+	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	{
+		return null;
+	}
+
+	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	{
+		return new org.drip.state.identifier.FundingLabel[] {org.drip.state.identifier.FundingLabel.Standard
+			(_strCouponCurrency)};
 	}
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
@@ -903,10 +909,9 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		if (null != ccMarket) {
 			org.drip.param.market.CurveSurfaceQuoteSet csqsMarket =
-				org.drip.param.creator.MarketParamsBuilder.Create (csqs.fundingCurve
-					(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0])), csqs.govvieCurve
-						(org.drip.state.identifier.GovvieLabel.Standard (payCurrency()[0])), ccMarket,
-							name(), csqs.productQuote (name()), csqs.quoteMap(), csqs.fixings());
+				org.drip.param.creator.MarketParamsBuilder.Create (csqs.fundingCurve (fundingLabel()[0]),
+					csqs.govvieCurve (org.drip.state.identifier.GovvieLabel.Standard (payCurrency()[0])),
+						ccMarket, name(), csqs.productQuote (name()), csqs.quoteMap(), csqs.fixings());
 
 			if (null != csqsMarket) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMarketMeasures =
@@ -1101,8 +1106,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			astrCalibMeasure[i] = "FairPremium";
 		}
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		try {
 			if (null == (ccQS = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCreditCurve
@@ -1147,8 +1151,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.analytics.definition.CreditCurve cc = null == aLSLCredit || 0 == aLSLCredit.length ? null :
 			csqs.creditCurve (aLSLCredit[0]);
 
-		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == cc || null == dc) return null;
 
@@ -1217,8 +1220,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.analytics.definition.CreditCurve cc = null == aLSLCredit || 0 == aLSLCredit.length ? null :
 			csqs.creditCurve (aLSLCredit[0]);
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == cc || null == dcFunding) return null;
 

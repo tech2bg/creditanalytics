@@ -6,9 +6,8 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.valuation.CashSettleParams;
-import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.FloatingStream;
+import org.drip.param.valuation.*;
+import org.drip.product.cashflow.Stream;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fx.*;
 import org.drip.product.params.*;
@@ -79,7 +78,7 @@ public class CCBSForwardCurve {
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = new FloatingStream (
+			Stream fsReference = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -104,7 +103,7 @@ public class CCBSForwardCurve {
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = new FloatingStream (
+			Stream fsDerived = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -155,14 +154,16 @@ public class CCBSForwardCurve {
 			strReferenceCurrency,
 			cp,
 			astrTenor,
-			3);
+			3
+		);
 
 		FloatFloatComponent[] aFFCDerived = MakexM6MBasisSwap (
 			dtValue,
 			strDerivedCurrency,
 			null,
 			astrTenor,
-			3);
+			3
+		);
 
 		ComponentPair[] aCCSP = new ComponentPair[astrTenor.length];
 

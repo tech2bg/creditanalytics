@@ -104,7 +104,7 @@ public class FRAStdCapFloor {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			FloatingStream floatStream = new FloatingStream (
+			Stream floatStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -125,7 +125,7 @@ public class FRAStdCapFloor {
 				)
 			);
 
-			FixedStream fixStream = new FixedStream (
+			Stream fixStream = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -277,7 +277,7 @@ public class FRAStdCapFloor {
 			 * The Reference 6M Leg
 			 */
 
-			FloatingStream fsReference = new FloatingStream (
+			Stream fsReference = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -302,7 +302,7 @@ public class FRAStdCapFloor {
 			 * The Derived Leg
 			 */
 
-			FloatingStream fsDerived = new FloatingStream (
+			Stream fsDerived = new Stream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -498,7 +498,7 @@ public class FRAStdCapFloor {
 	}
 
 	private static final void SetVolCorrSurface (
-		final FloatingStream floatstream,
+		final Stream floatstream,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
 		final double dblForwardVol,
@@ -557,7 +557,7 @@ public class FRAStdCapFloor {
 
 		JulianDate dtEffective = dtToday.addTenor (strTenor);
 
-		FloatingStream floatStream = new FloatingStream (
+		Stream floatStream = new Stream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"5Y",
