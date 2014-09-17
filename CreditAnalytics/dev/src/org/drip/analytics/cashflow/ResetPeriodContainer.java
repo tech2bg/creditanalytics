@@ -1,5 +1,5 @@
 
-package org.drip.analytics.period;
+package org.drip.analytics.cashflow;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -37,7 +37,7 @@ package org.drip.analytics.period;
 
 public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 	private int _iAccrualCompoundingRule = -1;
-	private java.util.List<org.drip.analytics.period.ResetPeriod> _lsResetPeriod = null;
+	private java.util.List<org.drip.analytics.cashflow.ResetPeriod> _lsResetPeriod = null;
 
 	/**
 	 * ResetPeriodContainer Constructor
@@ -102,7 +102,7 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 				("ResetPeriodContainer de-serializer: Cannot locate Reset Period List");
 
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.period.ResetPeriod>();
+			_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.ResetPeriod>();
 		else {
 			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[2],
 				collectionRecordDelimiter());
@@ -114,9 +114,9 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 						continue;
 
 					if (null == _lsResetPeriod)
-						_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.period.ResetPeriod>();
+						_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.ResetPeriod>();
 
-					_lsResetPeriod.add (new org.drip.analytics.period.ResetPeriod
+					_lsResetPeriod.add (new org.drip.analytics.cashflow.ResetPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -143,12 +143,12 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 	 */
 
 	public boolean appendResetPeriod (
-		final org.drip.analytics.period.ResetPeriod rp)
+		final org.drip.analytics.cashflow.ResetPeriod rp)
 	{
 		if (null == rp) return false;
 
 		if (null == _lsResetPeriod)
-			_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.period.ResetPeriod>();
+			_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.ResetPeriod>();
 
 		_lsResetPeriod.add (rp);
 
@@ -161,7 +161,7 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 	 * @return The Reset Periods
 	 */
 
-	public java.util.List<org.drip.analytics.period.ResetPeriod> resetPeriods()
+	public java.util.List<org.drip.analytics.cashflow.ResetPeriod> resetPeriods()
 	{
 		return _lsResetPeriod;
 	}
@@ -191,7 +191,7 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.ResetPeriod rp : _lsResetPeriod) {
+			for (org.drip.analytics.cashflow.ResetPeriod rp : _lsResetPeriod) {
 				if (null == rp) continue;
 
 				if (bFirstEntry)

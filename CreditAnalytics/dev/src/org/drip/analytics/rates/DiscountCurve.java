@@ -50,33 +50,6 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	org.drip.analytics.rates.DiscountFactorEstimator, org.drip.analytics.definition.Curve {
 	private static final int NUM_DF_QUADRATURES = 5;
 
-	/**
-	 * Discount Latent State
-	 */
-
-	public static final java.lang.String LATENT_STATE_DISCOUNT = "LATENT_STATE_DISCOUNT";
-
-	/**
-	 * Discount Latent State Quantification Metric - Discount Factor
-	 */
-
-	public static final java.lang.String QUANTIFICATION_METRIC_DISCOUNT_FACTOR =
-		"QUANTIFICATION_METRIC_DISCOUNT_FACTOR";
-
-	/**
-	 * Discount Latent State Quantification Metric - Zero Rate
-	 */
-
-	public static final java.lang.String QUANTIFICATION_METRIC_ZERO_RATE =
-		"QUANTIFICATION_METRIC_ZERO_RATE";
-
-	/**
-	 * Discount Latent State Quantification Metric - Forward Rate
-	 */
-
-	public static final java.lang.String QUANTIFICATION_METRIC_FORWARD_RATE =
-		"QUANTIFICATION_METRIC_FORWARD_RATE";
-
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;
 	protected org.drip.analytics.rates.TurnListDiscountFactor _tldf = null;
@@ -723,9 +696,11 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 	public java.util.Map<java.lang.Double, java.lang.Double> canonicalTruthness (
 		final java.lang.String strLatentStateQuantificationMetric)
 	{
-		if (null == strLatentStateQuantificationMetric || (!QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
-			(strLatentStateQuantificationMetric) && !QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
-				(strLatentStateQuantificationMetric)))
+		if (null == strLatentStateQuantificationMetric ||
+			(!org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE.equalsIgnoreCase
+				(strLatentStateQuantificationMetric) && !
+					org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR.equalsIgnoreCase
+			(strLatentStateQuantificationMetric)))
 			return null;
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCC = calibComp();
@@ -740,27 +715,28 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 		java.util.Map<java.lang.Double, java.lang.Double> mapCanonicalTruthness = new
 			java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
-		if (QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase (strLatentStateQuantificationMetric))
+		if (org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR.equalsIgnoreCase
+			(strLatentStateQuantificationMetric))
 			mapCanonicalTruthness.put (_dblEpochDate, 1.);
 
 		for (org.drip.product.definition.CalibratableFixedIncomeComponent cc : aCC) {
 			if (null == cc) continue;
 
-			java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = cc.cashFlowPeriod();
+			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponPeriod = cc.cashFlowPeriod();
 
 			if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
 
-			for (org.drip.analytics.period.CouponPeriod cpnPeriod : cc.cashFlowPeriod()) {
+			for (org.drip.analytics.cashflow.CouponPeriod cpnPeriod : cc.cashFlowPeriod()) {
 				if (null == cpnPeriod) continue;
 
 				double dblPay = cpnPeriod.payDate();
 
 				if (dblPay >= _dblEpochDate) {
 					try {
-						if (QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+						if (org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR.equalsIgnoreCase
 							(strLatentStateQuantificationMetric))
 							mapCanonicalTruthness.put (dblPay, df (dblPay));
-						else if (QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
+						else if (org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE.equalsIgnoreCase
 							(strLatentStateQuantificationMetric)) {
 							if (bFirstCashFlow) {
 								bFirstCashFlow = false;

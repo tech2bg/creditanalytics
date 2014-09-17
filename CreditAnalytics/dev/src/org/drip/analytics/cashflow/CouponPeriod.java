@@ -1,5 +1,5 @@
 
-package org.drip.analytics.period;
+package org.drip.analytics.cashflow;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -112,7 +112,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	private double _dblFXFixingDate = java.lang.Double.NaN;
 	private double _dblAccrualEndDate = java.lang.Double.NaN;
 	private double _dblAccrualStartDate = java.lang.Double.NaN;
-	private org.drip.analytics.period.ResetPeriodContainer _rpc = null;
+	private org.drip.analytics.cashflow.ResetPeriodContainer _rpc = null;
 
 	/*
 	 * Period Date Generation Fields
@@ -161,7 +161,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	private double resetPeriodRate (
-		final org.drip.analytics.period.ResetPeriod rp,
+		final org.drip.analytics.cashflow.ResetPeriod rp,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
@@ -260,7 +260,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	private org.drip.analytics.output.ResetPeriodMetrics resetPeriodMetrics (
-		final org.drip.analytics.period.ResetPeriod rp,
+		final org.drip.analytics.cashflow.ResetPeriod rp,
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -324,7 +324,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		final double dblAccrualStartDate,
 		final double dblAccrualEndDate,
 		final double dblPayDate,
-		final org.drip.analytics.period.ResetPeriodContainer rpc,
+		final org.drip.analytics.cashflow.ResetPeriodContainer rpc,
 		final double dblFXFixingDate,
 		final int iFreq,
 		final double dblDCF,
@@ -455,7 +455,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
 			_rpc = null;
 		else
-			_rpc = new org.drip.analytics.period.ResetPeriodContainer (astrField[6].getBytes());
+			_rpc = new org.drip.analytics.cashflow.ResetPeriodContainer (astrField[6].getBytes());
 
 		if (null == astrField[7] || astrField[7].isEmpty())
 			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate FX Fixing Date");
@@ -702,7 +702,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 * @return The Reset Period Container Instance
 	 */
 
-	public org.drip.analytics.period.ResetPeriodContainer rpc()
+	public org.drip.analytics.cashflow.ResetPeriodContainer rpc()
 	{
 		return _rpc;
 	}
@@ -1100,7 +1100,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 							_forwardLabel, fundingLabel, fxLabel);
 			}
 
-			for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
+			for (org.drip.analytics.cashflow.ResetPeriod rp : _rpc.resetPeriods()) {
 				org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, dblValueDate,
 					csqs);
 
@@ -1159,12 +1159,12 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 					dblFX, notional (dblValueDate), iAccrualCompoundingRule, lsRPM);
 			}
 
-			for (org.drip.analytics.period.ResetPeriod rp : _rpc.resetPeriods()) {
+			for (org.drip.analytics.cashflow.ResetPeriod rp : _rpc.resetPeriods()) {
 				double dblResetPeriodStartDate = rp.start();
 
 				int iNodeLocationIndicator = rp.nodeLocation (dblValueDate);
 
-				if (org.drip.analytics.period.ResetPeriod.NODE_LEFT_OF_SEGMENT == iNodeLocationIndicator ||
+				if (org.drip.analytics.cashflow.ResetPeriod.NODE_LEFT_OF_SEGMENT == iNodeLocationIndicator ||
 					dblValueDate == dblResetPeriodStartDate)
 					break;
 
@@ -1173,7 +1173,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 				if (null == rpm) return null;
 
-				if (org.drip.analytics.period.ResetPeriod.NODE_INSIDE_SEGMENT == iNodeLocationIndicator)
+				if (org.drip.analytics.cashflow.ResetPeriod.NODE_INSIDE_SEGMENT == iNodeLocationIndicator)
 					lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodStartDate,
 						dblValueDate, dblResetPeriodStartDate, rpm.nominalRate(),
 							org.drip.analytics.daycount.Convention.YearFraction (dblResetPeriodStartDate,
@@ -1420,7 +1420,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	 * @return The Generated Loss Quadrature Metrics
 	 */
 
-	public java.util.List<org.drip.analytics.period.LossQuadratureMetrics> lossMetrics (
+	public java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lossMetrics (
 		final org.drip.product.definition.CreditComponent comp,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
@@ -1439,7 +1439,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 		int iDiscretizationScheme = pricerParams.discretizationScheme();
 
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> lsLQM = null;
+		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lsLQM = null;
 		double dblPeriodEndDate = _dblEndDate < dblWorkoutDate ? _dblEndDate : dblWorkoutDate;
 
 		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP == iDiscretizationScheme &&

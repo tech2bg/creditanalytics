@@ -5,10 +5,10 @@ package org.drip.sample.credit;
  * Credit Product import
  */
 
+import org.drip.analytics.cashflow.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
-import org.drip.analytics.period.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;

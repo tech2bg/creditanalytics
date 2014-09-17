@@ -5,9 +5,9 @@ package org.drip.sample.bloomberg;
  * Credit Product imports
  */
 
+import org.drip.analytics.cashflow.CouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.definition.*;

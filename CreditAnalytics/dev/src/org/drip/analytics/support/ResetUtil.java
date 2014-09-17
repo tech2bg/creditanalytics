@@ -75,7 +75,7 @@ public class ResetUtil {
 	 * 	Dates
 	 */
 
-	public static final org.drip.analytics.period.ResetPeriodContainer DailyResetPeriod (
+	public static final org.drip.analytics.cashflow.ResetPeriodContainer DailyResetPeriod (
 		final double dblLeft,
 		final double dblRight,
 		final int iAccrualCompoundingRule,
@@ -87,12 +87,12 @@ public class ResetUtil {
 
 		double dblStart = dblLeft;
 		double dblEnd = java.lang.Double.NaN;
-		org.drip.analytics.period.ResetPeriodContainer rpc = null;
+		org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
 		try {
 			dblEnd = new org.drip.analytics.date.JulianDate (dblStart).addBusDays (1, strCalendar).julian();
 
-			rpc = new org.drip.analytics.period.ResetPeriodContainer (iAccrualCompoundingRule);
+			rpc = new org.drip.analytics.cashflow.ResetPeriodContainer (iAccrualCompoundingRule);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -101,7 +101,7 @@ public class ResetUtil {
 
 		while (dblEnd <= dblRight) {
 			try {
-				if (!rpc.appendResetPeriod (new org.drip.analytics.period.ResetPeriod (dblStart, dblEnd,
+				if (!rpc.appendResetPeriod (new org.drip.analytics.cashflow.ResetPeriod (dblStart, dblEnd,
 					dblStart)))
 					return null;
 
@@ -128,9 +128,9 @@ public class ResetUtil {
 	 * @return The Composite Reset Period Container
 	 */
 
-	public static final org.drip.analytics.period.ResetPeriodContainer MergeResetPeriods (
-		final org.drip.analytics.period.ResetPeriodContainer rpcLeft,
-		final org.drip.analytics.period.ResetPeriodContainer rpcRight)
+	public static final org.drip.analytics.cashflow.ResetPeriodContainer MergeResetPeriods (
+		final org.drip.analytics.cashflow.ResetPeriodContainer rpcLeft,
+		final org.drip.analytics.cashflow.ResetPeriodContainer rpcRight)
 	{
 		if (null == rpcLeft || null == rpcRight) return null;
 
@@ -138,9 +138,9 @@ public class ResetUtil {
 
 		if (iAccrualCompoundingRule != rpcRight.accrualCompoundingRule()) return null;
 
-		java.util.List<org.drip.analytics.period.ResetPeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.ResetPeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
 
-		java.util.List<org.drip.analytics.period.ResetPeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.ResetPeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
 
 		if (null == lsResetPeriodsLeft || null == lsResetPeriodsRight) return null;
 
@@ -152,21 +152,21 @@ public class ResetUtil {
 			lsResetPeriodsLeft.get (iNumPeriodsLeft - 1).end() != lsResetPeriodsRight.get (0).start())
 			return null;
 
-		org.drip.analytics.period.ResetPeriodContainer rpc = null;
+		org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
 		try {
-			rpc = new org.drip.analytics.period.ResetPeriodContainer (iAccrualCompoundingRule);
+			rpc = new org.drip.analytics.cashflow.ResetPeriodContainer (iAccrualCompoundingRule);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
 			return null;
 		}
 
-		for (org.drip.analytics.period.ResetPeriod rp : lsResetPeriodsLeft) {
+		for (org.drip.analytics.cashflow.ResetPeriod rp : lsResetPeriodsLeft) {
 			if (!rpc.appendResetPeriod (rp)) return null;
 		}
 
-		for (org.drip.analytics.period.ResetPeriod rp : lsResetPeriodsRight) {
+		for (org.drip.analytics.cashflow.ResetPeriod rp : lsResetPeriodsRight) {
 			if (!rpc.appendResetPeriod (rp)) return null;
 		}
 

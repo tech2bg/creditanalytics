@@ -2,13 +2,13 @@
 package org.drip.sample.forward;
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
-import org.drip.product.cashflow.*;
 import org.drip.product.creator.DepositBuilder;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fra.FRAStandardComponent;
@@ -69,8 +69,8 @@ public class IBOR {
 			ProductQuoteSet pqs = aCalibComp[i].calibQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						ForwardCurve.LATENT_STATE_FORWARD,
-						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 						aCalibComp[i] instanceof DualStreamComponent ?
 							((DualStreamComponent) aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel()[0]
 					)

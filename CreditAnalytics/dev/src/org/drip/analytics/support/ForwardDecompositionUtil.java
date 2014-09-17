@@ -46,29 +46,29 @@ public class ForwardDecompositionUtil {
 	 * @return The Array of Single Forward Period Streams
 	 */
 
-	public static final org.drip.product.cashflow.Stream[] SinglePeriodStreamDecompose (
-		final org.drip.product.cashflow.Stream fs,
+	public static final org.drip.product.rates.Stream[] SinglePeriodStreamDecompose (
+		final org.drip.product.rates.Stream fs,
 		final int iNumPeriodsToAccumulate)
 	{
 		if (null == fs) return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponFlow = fs.cashFlowPeriod();
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponFlow = fs.cashFlowPeriod();
 
 		int iNumPeriods = lsCouponFlow.size();
 
 		int iCFPIndex = 0;
 		int iNumPeriodsAccumulated = 0;
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
-		org.drip.product.cashflow.Stream[] aFS = new org.drip.product.cashflow.Stream[iNumForward];
+		org.drip.product.rates.Stream[] aFS = new org.drip.product.rates.Stream[iNumForward];
 
-		java.util.List<java.util.List<org.drip.analytics.period.CouponPeriod>> lslsCouponPeriod = new
-			java.util.ArrayList<java.util.List<org.drip.analytics.period.CouponPeriod>>();
+		java.util.List<java.util.List<org.drip.analytics.cashflow.CouponPeriod>> lslsCouponPeriod = new
+			java.util.ArrayList<java.util.List<org.drip.analytics.cashflow.CouponPeriod>>();
 
 		for (int i = 0; i < iNumForward; ++i)
-			lslsCouponPeriod.add (new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>());
+			lslsCouponPeriod.add (new java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>());
 
-		for (org.drip.analytics.period.CouponPeriod cfp : lsCouponFlow) {
-			java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod = lslsCouponPeriod.get
+		for (org.drip.analytics.cashflow.CouponPeriod cfp : lsCouponFlow) {
+			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponPeriod = lslsCouponPeriod.get
 				(iCFPIndex);
 
 			lsCouponPeriod.add (cfp);
@@ -78,7 +78,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.cashflow.Stream (lsCouponPeriod);
+				aFS[iCFPIndex++] = new org.drip.product.rates.Stream (lsCouponPeriod);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -98,17 +98,17 @@ public class ForwardDecompositionUtil {
 	 */
 
 	public static final org.drip.product.definition.CalibratableFixedIncomeComponent[] DualStreamForwardArray
-		(final org.drip.product.cashflow.DualStreamComponent dsc)
+		(final org.drip.product.rates.DualStreamComponent dsc)
 	{
 		if (null == dsc) return null;
 
-		org.drip.product.cashflow.Stream streamDerived = dsc.derivedStream();
+		org.drip.product.rates.Stream streamDerived = dsc.derivedStream();
 
-		org.drip.product.cashflow.Stream streamReference = dsc.referenceStream();
+		org.drip.product.rates.Stream streamReference = dsc.referenceStream();
 
 		int iNumForward = 0;
-		org.drip.product.cashflow.Stream[] aStreamDerivedForward = null;
-		org.drip.product.cashflow.Stream[] aStreamReferenceForward = null;
+		org.drip.product.rates.Stream[] aStreamDerivedForward = null;
+		org.drip.product.rates.Stream[] aStreamReferenceForward = null;
 
 		int iDerivedStreamTenorMonths = 12 / streamDerived.freq();
 
@@ -167,7 +167,7 @@ public class ForwardDecompositionUtil {
 		CalibratableFixedIncomeComponentForwardArray (
 			final org.drip.product.definition.CalibratableFixedIncomeComponent rc)
 	{
-		return null != rc && rc instanceof org.drip.product.cashflow.DualStreamComponent ?
-			DualStreamForwardArray ((org.drip.product.cashflow.DualStreamComponent) rc) : null;
+		return null != rc && rc instanceof org.drip.product.rates.DualStreamComponent ?
+			DualStreamForwardArray ((org.drip.product.rates.DualStreamComponent) rc) : null;
 	}
 }

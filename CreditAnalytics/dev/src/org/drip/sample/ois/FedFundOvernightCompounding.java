@@ -3,18 +3,17 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
+import org.drip.analytics.cashflow.CouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
+import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.output.CouponPeriodMetrics;
-import org.drip.analytics.period.CouponPeriod;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
-import org.drip.param.valuation.CashSettleParams;
-import org.drip.param.valuation.ValuationParams;
+import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
-import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.*;
@@ -100,8 +99,8 @@ public class FedFundOvernightCompounding {
 			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						DiscountCurve.LATENT_STATE_DISCOUNT,
-						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						LatentStateStatic.LATENT_STATE_FUNDING,
+						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (strCurrency)
 					)
 				}
@@ -282,13 +281,13 @@ public class FedFundOvernightCompounding {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						DiscountCurve.LATENT_STATE_DISCOUNT,
-						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						LatentStateStatic.LATENT_STATE_FUNDING,
+						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (strCurrency)
 					),
 					new LatentStateSpecification (
-						ForwardCurve.LATENT_STATE_FORWARD,
-						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 						aOIS[i].forwardLabel()[0]
 					)
 				}

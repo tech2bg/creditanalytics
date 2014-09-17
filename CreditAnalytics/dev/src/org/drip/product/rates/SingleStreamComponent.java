@@ -1,5 +1,5 @@
 
-package org.drip.product.cashflow;
+package org.drip.product.rates;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -36,7 +36,7 @@ package org.drip.product.cashflow;
 
 public class SingleStreamComponent extends org.drip.product.definition.FixedIncomeComponent {
 	private java.lang.String _strName = "";
-	private org.drip.product.cashflow.Stream _stream = null;
+	private org.drip.product.rates.Stream _stream = null;
 	private org.drip.param.valuation.CashSettleParams _csp = null;
 
 	/**
@@ -50,7 +50,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 
 	public SingleStreamComponent (
 		final java.lang.String strName,
-		final org.drip.product.cashflow.Stream stream)
+		final org.drip.product.rates.Stream stream)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_stream = stream))
@@ -63,7 +63,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 	 * @return The Stream Instance
 	 */
 
-	public org.drip.product.cashflow.Stream stream()
+	public org.drip.product.rates.Stream stream()
 	{
 		return _stream;
 	}
@@ -163,7 +163,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 		return _stream.firstCouponDate();
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
 	{
 		return _stream.cashFlowPeriod();
 	}
@@ -227,7 +227,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_stream = null;
 		else
-			_stream = new org.drip.product.cashflow.Stream (astrField[1].getBytes());
+			_stream = new org.drip.product.rates.Stream (astrField[1].getBytes());
 	}
 
 	@Override public java.lang.String fieldDelimiter()

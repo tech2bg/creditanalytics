@@ -84,9 +84,9 @@ public class PeriodBuilder {
 	 * @return Merged Cash Flow Period
 	 */
 
-	public static final org.drip.analytics.period.CouponPeriod MergeCashFlowPeriods (
-		final org.drip.analytics.period.CouponPeriod periodLeft,
-		final org.drip.analytics.period.CouponPeriod periodRight)
+	public static final org.drip.analytics.cashflow.CouponPeriod MergeCashFlowPeriods (
+		final org.drip.analytics.cashflow.CouponPeriod periodLeft,
+		final org.drip.analytics.cashflow.CouponPeriod periodRight)
 	{
 		if (null == periodLeft || null == periodRight || periodLeft.endDate() != periodRight.startDate())
 			return null;
@@ -158,7 +158,7 @@ public class PeriodBuilder {
 			return null;
 
 		try {
-			return new org.drip.analytics.period.CouponPeriod (periodLeft.startDate(), periodRight.endDate(),
+			return new org.drip.analytics.cashflow.CouponPeriod (periodLeft.startDate(), periodRight.endDate(),
 				dblAccrualStartDate, periodRight.accrualEndDate(), periodRight.payDate(),
 					org.drip.analytics.support.ResetUtil.MergeResetPeriods (periodLeft.rpc(),
 						periodRight.rpc()), java.lang.Double.NaN, iFreq, periodLeft.accrualDCF
@@ -206,7 +206,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> BackwardPeriodSingleReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> BackwardPeriodSingleReset (
 		final double dblEffective,
 		final double dblMaturityUnadjusted,
 		final double dblFXFixingDate,
@@ -246,8 +246,8 @@ public class PeriodBuilder {
 		double dblPeriodEndDate = dblMaturity;
 		java.lang.String strTenor = (12 / iFreq) + "M";
 		double dblPeriodStartDate = java.lang.Double.NaN;
-		org.drip.analytics.period.CouponPeriod periodFirst = null;
-		org.drip.analytics.period.CouponPeriod periodSecond = null;
+		org.drip.analytics.cashflow.CouponPeriod periodFirst = null;
+		org.drip.analytics.cashflow.CouponPeriod periodSecond = null;
 
 		try {
 			dblPeriodStartDate = new org.drip.analytics.date.JulianDate (dblPeriodEndDate).subtractTenor
@@ -258,8 +258,8 @@ public class PeriodBuilder {
 			return null;
 		}
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCashflowPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCashflowPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
 		while (!bGenerationDone) {
 			if (dblPeriodStartDate <= dblEffective) {
@@ -270,7 +270,7 @@ public class PeriodBuilder {
 
 			try {
 				periodSecond = periodFirst;
-				org.drip.analytics.period.ResetPeriodContainer rpc = null;
+				org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
 				double dblAdjustedStartDate = DAPAdjust (dblPeriodStartDate, dapPeriodStart);
 
@@ -289,14 +289,14 @@ public class PeriodBuilder {
 							org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStartDate,
 								dblAccrualEndDate), strCalendar);
 
-				if (null != forwardLabel&& !(rpc = new org.drip.analytics.period.ResetPeriodContainer
+				if (null != forwardLabel&& !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-					(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
+					(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
 						DAPAdjust (dblPeriodStartDate, dapFixing))))
 					return null;
 
 				if (dblAdjustedStartDate < dblAdjustedEndDate && dblAccrualStartDate < dblAccrualEndDate)
-					lsCashflowPeriod.add (0, periodFirst = new org.drip.analytics.period.CouponPeriod
+					lsCashflowPeriod.add (0, periodFirst = new org.drip.analytics.cashflow.CouponPeriod
 						(dblAdjustedStartDate, dblAdjustedEndDate, dblAccrualStartDate, dblAccrualEndDate,
 							DAPAdjust (dblPeriodEndDate, dapPay), rpc, dblFXFixingDate, iFreq, dblDCF,
 								strCouponDC, strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar,
@@ -322,7 +322,7 @@ public class PeriodBuilder {
 
 		if (LONG_FRONT_STUB != iPSEC || null == periodFirst || null == periodSecond) return lsCashflowPeriod;
 
-		org.drip.analytics.period.CouponPeriod periodMerged = MergeCashFlowPeriods (periodFirst,
+		org.drip.analytics.cashflow.CouponPeriod periodMerged = MergeCashFlowPeriods (periodFirst,
 			periodSecond);
 
 		if (null == periodMerged) return lsCashflowPeriod;
@@ -370,7 +370,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> ForwardPeriodSingleReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> ForwardPeriodSingleReset (
 		final double dblEffective,
 		final double dblMaturityUnadjusted,
 		final double dblFXFixingDate,
@@ -408,14 +408,14 @@ public class PeriodBuilder {
 		boolean bFinalPeriod = false;
 		double dblPeriodDays = 365.25 / iFreq;
 		double dblPeriodStartDate = dblEffective;
-		org.drip.analytics.period.CouponPeriod periodFinal = null;
+		org.drip.analytics.cashflow.CouponPeriod periodFinal = null;
 		double dblPeriodEndDate = dblPeriodStartDate + dblPeriodDays;
-		org.drip.analytics.period.CouponPeriod periodPenultimate = null;
+		org.drip.analytics.cashflow.CouponPeriod periodPenultimate = null;
 
 		if (dblPeriodEndDate > dblMaturity) dblPeriodEndDate = dblMaturity;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCashflowPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCashflowPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
 		while (!bFinalPeriod) {
 			if (dblPeriodEndDate >= dblMaturity) {
@@ -424,7 +424,7 @@ public class PeriodBuilder {
 			}
 
 			try {
-				org.drip.analytics.period.ResetPeriodContainer rpc = null;
+				org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
 				if (!bFinalPeriod) {
 					double dblAdjustedStartDate = DAPAdjust (dblPeriodStartDate, dapPeriodStart);
@@ -440,13 +440,13 @@ public class PeriodBuilder {
 							strAccrualDC, bApplyAccEOMAdj, new org.drip.analytics.daycount.ActActDCParams
 								(iFreq, dblAccrualStart, dblAccrualEnd), strCalendar);
 
-					if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
+					if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-						(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
+						(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
 							DAPAdjust (dblPeriodStartDate, dapFixing))))
 						return null;
 
-					lsCashflowPeriod.add (periodPenultimate = new org.drip.analytics.period.CouponPeriod
+					lsCashflowPeriod.add (periodPenultimate = new org.drip.analytics.cashflow.CouponPeriod
 						(dblAdjustedStartDate, dblAdjustedEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust
 							(dblPeriodEndDate, dapPay), rpc, dblFXFixingDate, iFreq, dblDCF, strCouponDC,
 								strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, dblBaseNotional,
@@ -463,13 +463,13 @@ public class PeriodBuilder {
 								org.drip.analytics.daycount.ActActDCParams (iFreq, dblAccrualStart,
 									dblPeriodEndDate), strCalendar);
 
-					if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
+					if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-						(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblPeriodEndDate,
+						(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblPeriodEndDate,
 							DAPAdjust (dblPeriodStartDate, dapFixing))))
 						return null;
 
-					lsCashflowPeriod.add (periodFinal = new org.drip.analytics.period.CouponPeriod
+					lsCashflowPeriod.add (periodFinal = new org.drip.analytics.cashflow.CouponPeriod
 						(dblAdjustedStartDate, dblPeriodEndDate, dblAccrualStart, dblPeriodEndDate, DAPAdjust
 							(dblPeriodEndDate, dapPay), rpc, dblFXFixingDate, iFreq, dblDCF, strCouponDC,
 								strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, dblBaseNotional,
@@ -489,7 +489,7 @@ public class PeriodBuilder {
 		if (LONG_BACK_STUB != iPSEC || null == periodFinal || null == periodPenultimate)
 			return lsCashflowPeriod;
 
-		org.drip.analytics.period.CouponPeriod periodMerged = MergeCashFlowPeriods (periodFinal,
+		org.drip.analytics.cashflow.CouponPeriod periodMerged = MergeCashFlowPeriods (periodFinal,
 			periodPenultimate);
 
 		if (null == periodMerged) return lsCashflowPeriod;
@@ -536,7 +536,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> RegularPeriodSingleReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> RegularPeriodSingleReset (
 		final double dblEffective,
 		final java.lang.String strMaturityTenor,
 		final double dblFXFixingDate,
@@ -593,8 +593,8 @@ public class PeriodBuilder {
 
 		if (dblPeriodEndDate > dblMaturityDate) dblPeriodEndDate = dblMaturityDate;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCashflowPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCashflowPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
 		while (dblPeriodEndDate <= dblMaturityDate && bLoopOn) {
 			if (dblPeriodEndDate >= dblMaturityDate) {
@@ -614,11 +614,11 @@ public class PeriodBuilder {
 				(dblPeriodEndDate, dapAccrualStart);
 
 			try {
-				org.drip.analytics.period.ResetPeriodContainer rpc = null;
+				org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
-				if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
+				if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-					(new org.drip.analytics.period.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
+					(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
 						DAPAdjust (dblPeriodStartDate, dapFixing))))
 					return null;
 
@@ -627,7 +627,7 @@ public class PeriodBuilder {
 						strAccrualDC, bApplyAccEOMAdj, new org.drip.analytics.daycount.ActActDCParams (iFreq,
 							dblAccrualStart, dblAccrualEnd), strCalendar);
 
-				lsCashflowPeriod.add (new org.drip.analytics.period.CouponPeriod (dblAdjustedStartDate,
+				lsCashflowPeriod.add (new org.drip.analytics.cashflow.CouponPeriod (dblAdjustedStartDate,
 					dblAdjustedEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay),
 						rpc, dblFXFixingDate, iFreq, dblDCF, strCouponDC, strAccrualDC, bApplyCpnEOMAdj,
 							bApplyAccEOMAdj, strCalendar, dblBaseNotional, notlSchedule,
@@ -682,7 +682,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> RegularPeriodDailyReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> RegularPeriodDailyReset (
 		final double dblEffective,
 		final java.lang.String strMaturityTenor,
 		final double dblFXFixingDate,
@@ -734,8 +734,8 @@ public class PeriodBuilder {
 
 		if (null == dtPeriodEnd) return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCashflowPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCashflowPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
 		double dblPeriodEndDate = dtPeriodEnd.julian();
 
@@ -764,7 +764,7 @@ public class PeriodBuilder {
 						strAccrualDC, bApplyAccEOMAdj, new org.drip.analytics.daycount.ActActDCParams (iFreq,
 							dblAccrualStart, dblAccrualEnd), strCalendar);
 
-				lsCashflowPeriod.add (new org.drip.analytics.period.CouponPeriod (dblAdjustedStartDate,
+				lsCashflowPeriod.add (new org.drip.analytics.cashflow.CouponPeriod (dblAdjustedStartDate,
 					dblAdjustedEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay),
 						null != forwardLabel ? org.drip.analytics.support.ResetUtil.DailyResetPeriod
 							(dblAdjustedStartDate, dblAdjustedEndDate, iAccrualCompoundingRule, strCalendar)
@@ -813,7 +813,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> BackwardPeriodSingleReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> BackwardPeriodSingleReset (
 		final double dblEffective,
 		final double dblMaturity,
 		final double dblFXFixingDate,
@@ -863,7 +863,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> ForwardPeriodSingleReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> ForwardPeriodSingleReset (
 		final double dblEffective,
 		final double dblMaturity,
 		final double dblFXFixingDate,
@@ -912,7 +912,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> RegularPeriodSingleReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> RegularPeriodSingleReset (
 		final double dblEffective,
 		final java.lang.String strMaturityTenor,
 		final double dblFXFixingDate,
@@ -961,7 +961,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> RegularPeriodDailyReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> RegularPeriodDailyReset (
 		final double dblEffective,
 		final java.lang.String strMaturityTenor,
 		final double dblFXFixingDate,
@@ -1006,7 +1006,7 @@ public class PeriodBuilder {
 	 * @return List containing the single Cash Flow period
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> SinglePeriodSingleReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> SinglePeriodSingleReset (
 		final double dblEffective,
 		final double dblMaturity,
 		final double dblFXFixingDate,
@@ -1024,18 +1024,18 @@ public class PeriodBuilder {
 			!org.drip.quant.common.NumberUtil.IsValid (dblMaturity) || dblEffective >= dblMaturity)
 			return null;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCashflowPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCashflowPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
 		try {
-			org.drip.analytics.period.ResetPeriodContainer rpc = null;
+			org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
-			if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
+			if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-					(new org.drip.analytics.period.ResetPeriod (dblEffective, dblMaturity, dblEffective)))
+					(new org.drip.analytics.cashflow.ResetPeriod (dblEffective, dblMaturity, dblEffective)))
 				return null;
 
-			lsCashflowPeriod.add (0, new org.drip.analytics.period.CouponPeriod (dblEffective, dblMaturity,
+			lsCashflowPeriod.add (0, new org.drip.analytics.cashflow.CouponPeriod (dblEffective, dblMaturity,
 				dblEffective, dblMaturity, dblMaturity, rpc, dblFXFixingDate, 1,
 					org.drip.analytics.daycount.Convention.YearFraction (dblEffective, dblMaturity,
 						strDayCount, false, null, strCalendar), strDayCount, strDayCount, false, false,
@@ -1072,7 +1072,7 @@ public class PeriodBuilder {
 	 * @return List of coupon Periods
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.CouponPeriod> DailyPeriodDailyReset (
+	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> DailyPeriodDailyReset (
 		final double dblEffective,
 		final double dblMaturity,
 		final double dblFXFixingDate,
@@ -1096,8 +1096,8 @@ public class PeriodBuilder {
 		boolean bTerminationReached = false;
 		double dblPeriodStartDate = dblEffective;
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsCashflowPeriod = new
-			java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCashflowPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
 		while (!bTerminationReached) {
 			try {
@@ -1117,15 +1117,15 @@ public class PeriodBuilder {
 					bTerminationReached = true;
 				}
 
-				org.drip.analytics.period.ResetPeriodContainer rpc = null;
+				org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
-				if (null != forwardLabel && !(rpc = new org.drip.analytics.period.ResetPeriodContainer
-					(iAccrualCompoundingRule)).appendResetPeriod (new org.drip.analytics.period.ResetPeriod
+				if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
+					(iAccrualCompoundingRule)).appendResetPeriod (new org.drip.analytics.cashflow.ResetPeriod
 						(dblAdjustedStartDate, dblAdjustedEndDate, dblAdjustedStartDate)))
 					return null;
 
 				if (dblAdjustedStartDate < dblAdjustedEndDate)
-					lsCashflowPeriod.add (new org.drip.analytics.period.CouponPeriod (dblAdjustedStartDate,
+					lsCashflowPeriod.add (new org.drip.analytics.cashflow.CouponPeriod (dblAdjustedStartDate,
 						dblAdjustedEndDate, dblAdjustedStartDate, dblAdjustedEndDate, DAPAdjust
 							(dblAdjustedEndDate, dapPay), rpc, dblFXFixingDate, 360,
 								org.drip.analytics.daycount.Convention.YearFraction (dblAdjustedStartDate,

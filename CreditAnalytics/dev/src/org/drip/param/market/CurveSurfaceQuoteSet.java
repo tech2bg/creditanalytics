@@ -45,6 +45,10 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			_mapPayCurrencyForeignCollateralDC = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>>();
 
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityCurve = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 		_mapCreditCurve = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>();
@@ -66,6 +70,14 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapPaydownCurve = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapRecoveryCurve = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapCollateralVolatilitySurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
@@ -73,11 +85,13 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 		_mapCreditVolatilitySurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
-	private
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
-			org.drip.quant.function1D.AbstractUnivariate>> _mapCustomMetricVolatilitySurface = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<java.util.Map<org.drip.analytics.date.JulianDate,
-		org.drip.quant.function1D.AbstractUnivariate>>();
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCustomMetricVolatilitySurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityVolatilitySurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapForwardVolatilitySurface = new
@@ -96,6 +110,14 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapPaydownVolatilitySurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapRecoveryVolatilitySurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapCollateralCollateralCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
@@ -105,6 +127,10 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapCollateralCustomMetricCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCollateralEquityCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
@@ -124,11 +150,23 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCollateralPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCollateralRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapCreditCreditCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapCreditCustomMetricCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCreditEquityCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
@@ -148,7 +186,19 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCreditPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCreditRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapCustomMetricCustomMetricCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCustomMetricEquityCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
@@ -168,6 +218,42 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCustomMetricPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapCustomMetricRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityEquityCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityForwardCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityFundingCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityFXCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityGovvieCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapEquityRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapForwardForwardCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
@@ -184,6 +270,14 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapForwardPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapForwardRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapFundingFundingCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
@@ -196,6 +290,14 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapFundingPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapFundingRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapFXFXCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
@@ -204,7 +306,35 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapFXPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapFXRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
 		_mapGovvieGovvieCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapGovviePaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapGovvieRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapPaydownPaydownCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapPaydownRecoveryCorrelationSurface = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
+
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>
+		_mapRecoveryRecoveryCorrelationSurface = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function1D.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
@@ -440,6 +570,44 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Equity Curve for the specified Equity Latent State Label
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * 
+	 * @return Equity Curve
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityCurve (
+		final org.drip.state.identifier.EquityLabel equityLabel)
+	{
+		if (null == equityLabel) return null;
+
+		java.lang.String strCode = equityLabel.fullyQualifiedName();
+
+		return _mapEquityCurve.containsKey (strCode) ? _mapEquityCurve.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Equity Curve for the specified Equity Latent State Label
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param auEquity The Equity Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityCurve (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auEquity)
+	{
+		if (null == equityLabel || null == auEquity) return false;
+
+		_mapEquityCurve.put (equityLabel.fullyQualifiedName(), auEquity);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Forward Curve corresponding to the Label
 	 * 
 	 * @param forwardLabel Forward Latent State Label
@@ -597,6 +765,83 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Pay-down Curve for the specified Equity Latent State Label
+	 * 
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return Pay-down Curve
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate paydownCurve (
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == paydownLabel) return null;
+
+		java.lang.String strCode = paydownLabel.fullyQualifiedName();
+
+		return _mapPaydownCurve.containsKey (strCode) ? _mapPaydownCurve.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Pay-down Curve for the specified Pay-down Latent State Label
+	 * 
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auPaydown The Pay-down Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setPaydownCurve (
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auPaydown)
+	{
+		if (null == paydownLabel || null == auPaydown) return false;
+
+		_mapPaydownCurve.put (paydownLabel.fullyQualifiedName(), auPaydown);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Recovery Latent State from the Label
+	 * 
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Recovery Latent State from the Label
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate recoveryCurve (
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == recoveryLabel) return null;
+
+		java.lang.String strRecoveryLabel = recoveryLabel.fullyQualifiedName();
+
+		return !_mapRecoveryCurve.containsKey (strRecoveryLabel) ? null : _mapRecoveryCurve.get
+			(strRecoveryLabel);
+	}
+
+	/**
+	 * (Re)-set the Recovery Curve for the specified Recovery Latent State Label
+	 * 
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auRC The Recovery Curve
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setRecoveryCurve (
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auRC)
+	{
+		if (null == recoveryLabel || null == auRC) return false;
+
+		_mapRecoveryCurve.put (recoveryLabel.fullyQualifiedName(), auRC);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Volatility Surface for the specified Collateral Curve
 	 * 
 	 * @param strCurrency The Collateral Currency
@@ -674,36 +919,28 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Retrieve the Volatility Surface for the Custom Metric Latent State for the Forward Date
+	 * Retrieve the Volatility Surface for the Custom Metric Latent State
 	 * 
 	 * @param customMetricLabel The Custom Metric Latent State Label
-	 * @param dtForward The Forward Date 
 	 * 
-	 * @return The Volatility Surface for the Custom Metric Latent State for the Forward Date
+	 * @return The Volatility Surface for the Custom Metric Latent State
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate customMetricVolSurface (
-		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
-		final org.drip.analytics.date.JulianDate dtForward)
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel)
 	{
 		if (null == customMetricLabel) return null;
 
 		java.lang.String strCustomMetricLabel = customMetricLabel.fullyQualifiedName();
 
-		if (!_mapCustomMetricVolatilitySurface.containsKey (strCustomMetricLabel)) return null;
-
-		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
-			mapForwardVolatility = _mapCustomMetricVolatilitySurface.get (strCustomMetricLabel);
-
-		return null == mapForwardVolatility || !mapForwardVolatility.containsKey (dtForward) ? null :
-			mapForwardVolatility.get (dtForward);
+		return _mapCustomMetricVolatilitySurface.containsKey (strCustomMetricLabel) ?
+			_mapCustomMetricVolatilitySurface.get (strCustomMetricLabel) : null;
 	}
 
 	/**
-	 * (Re)-set the Custom Metric Volatility Surface for the given Forward Date
+	 * (Re)-set the Custom Metric Volatility Surface
 	 * 
 	 * @param customMetricLabel The Custom Metric Latent State Label
-	 * @param dtForward The Forward Date 
 	 * @param auVolatility The Custom Metric Volatility Surface
 	 * 
 	 * @return TRUE => Successfully set
@@ -711,25 +948,50 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 	public boolean setCustomMetricVolSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
-		final org.drip.analytics.date.JulianDate dtForward,
 		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
 	{
-		if (null == customMetricLabel || null == dtForward || null == auVolatility) return false;
+		if (null == customMetricLabel || null == auVolatility) return false;
 
-		java.lang.String strCustomMetricLabel = customMetricLabel.fullyQualifiedName();
+		_mapCustomMetricVolatilitySurface.put (customMetricLabel.fullyQualifiedName(), auVolatility);
 
-		java.util.Map<org.drip.analytics.date.JulianDate, org.drip.quant.function1D.AbstractUnivariate>
-			mapForwardVolatility = _mapCustomMetricVolatilitySurface.get (strCustomMetricLabel);
+		return true;
+	}
 
-		if (null == mapForwardVolatility) {
-			mapForwardVolatility = new java.util.HashMap<org.drip.analytics.date.JulianDate,
-				org.drip.quant.function1D.AbstractUnivariate>();
+	/**
+	 * Retrieve the Volatility Surface for the Equity Latent State
+	 * 
+	 * @param equityLabel The Equity Curve Latent State Label
+	 * 
+	 * @return The Volatility Surface for the Equity Latent State
+	 */
 
-			mapForwardVolatility.put (dtForward, auVolatility);
+	public org.drip.quant.function1D.AbstractUnivariate equityCurveVolSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel)
+	{
+		if (null == equityLabel) return null;
 
-			_mapCustomMetricVolatilitySurface.put (strCustomMetricLabel, mapForwardVolatility);
-		} else
-			mapForwardVolatility.put (dtForward, auVolatility);
+		java.lang.String strEquityLabel = equityLabel.fullyQualifiedName();
+
+		return  !_mapEquityVolatilitySurface.containsKey (strEquityLabel) ? null :
+			_mapEquityVolatilitySurface.get (strEquityLabel);
+	}
+
+	/**
+	 * (Re)-set the Volatility Surface for the Equity Latent State
+	 * 
+	 * @param equityLabel The Equity Curve Latent State Label
+	 * @param auVolatility The Volatility Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityCurveVolSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
+	{
+		if (null == equityLabel || null == auVolatility) return false;
+
+		_mapEquityVolatilitySurface.put (equityLabel.fullyQualifiedName(), auVolatility);
 
 		return true;
 	}
@@ -891,6 +1153,84 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Volatility Surface for the specified Pay-down Latent State
+	 * 
+	 * @param paydownLabel The Recovery Latent State Label
+	 * 
+	 * @return The Volatility Surface for the Pay-down Latent State
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate paydownCurveVolSurface (
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == paydownLabel) return null;
+
+		java.lang.String strPaydownLabel = paydownLabel.fullyQualifiedName();
+
+		return !_mapPaydownVolatilitySurface.containsKey (strPaydownLabel) ? null :
+			_mapPaydownVolatilitySurface.get (strPaydownLabel);
+	}
+
+	/**
+	 * (Re)-set the Volatility Surface for the Pay-down Latent State
+	 * 
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auVolatility The Volatility Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setPaydownCurveVolSurface (
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
+	{
+		if (null == paydownLabel || null == auVolatility) return false;
+
+		_mapPaydownVolatilitySurface.put (paydownLabel.fullyQualifiedName(), auVolatility);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Volatility Surface for the specified Recovery Latent State
+	 * 
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Volatility Surface for the Recovery Latent State
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate recoveryCurveVolSurface (
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == recoveryLabel) return null;
+
+		java.lang.String strRecoveryLabel = recoveryLabel.fullyQualifiedName();
+
+		return !_mapRecoveryVolatilitySurface.containsKey (strRecoveryLabel) ? null :
+			_mapRecoveryVolatilitySurface.get (strRecoveryLabel);
+	}
+
+	/**
+	 * (Re)-set the Volatility Surface for the Recovery Latent State
+	 * 
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auVolatility The Volatility Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setRecoveryCurveVolSurface (
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auVolatility)
+	{
+		if (null == recoveryLabel || null == auVolatility) return false;
+
+		_mapRecoveryVolatilitySurface.put (recoveryLabel.fullyQualifiedName(), auVolatility);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Correlation Surface for the specified Collateral Currency Pair
 	 * 
 	 * @param strCurrency1 Collateral Currency #1
@@ -1047,6 +1387,58 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 		_mapCustomMetricCustomMetricCorrelationSurface.put (customMetricLabel2.fullyQualifiedName() + "@#" +
 			customMetricLabel1.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Pair of Equity Latent States
+	 * 
+	 * @param equityLabel1 Equity Curve Latent State Label #1
+	 * @param equityLabel2 EquityCurve Latent State Label #2
+	 * 
+	 * @return The Correlation Surface between the Pair of Equity Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityEquityCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel1,
+		final org.drip.state.identifier.EquityLabel equityLabel2)
+	{
+		if (null == equityLabel1 || null == equityLabel2) return null;
+
+		java.lang.String strCode = equityLabel1.fullyQualifiedName() + "@#" +
+			equityLabel2.fullyQualifiedName();
+
+		return _mapEquityEquityCorrelationSurface.containsKey (strCode) ?
+			_mapEquityEquityCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Pair of Equity Latent States
+	 * 
+	 * @param equityLabel1 EquityCurve Latent State Label #1
+	 * @param equityLabel2 EquityCurve Latent State Label #2
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityEquityCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel1,
+		final org.drip.state.identifier.EquityLabel equityLabel2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == equityLabel1 || null == equityLabel2 || equityLabel1.match (equityLabel2) || null ==
+			auCorrelation)
+			return false;
+
+		java.lang.String strEquityLabel1 = equityLabel1.fullyQualifiedName();
+
+		java.lang.String strEquityLabel2 = equityLabel2.fullyQualifiedName();
+
+		_mapEquityEquityCorrelationSurface.put (strEquityLabel1 + "@#" + strEquityLabel2, auCorrelation);
+
+		_mapEquityEquityCorrelationSurface.put (strEquityLabel2 + "@#" + strEquityLabel1, auCorrelation);
 
 		return true;
 	}
@@ -1265,6 +1657,126 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Correlation Surface for the specified Pay-down Latent State Pair
+	 * 
+	 * @param paydownLabel1 The Pay-down Curve Latent State Label #1
+	 * @param paydownLabel2 The Pay-down Curve Latent State Label #2
+	 * 
+	 * @return The Correlation Surface for the specified Pay-down Latent State Pair
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate paydownPaydownCorrSurface (
+		final org.drip.state.identifier.PaydownLabel paydownLabel1,
+		final org.drip.state.identifier.PaydownLabel paydownLabel2)
+	{
+		if (null == paydownLabel1 || null == paydownLabel2 || paydownLabel1.match (paydownLabel2))
+			return null;
+
+		java.lang.String strCode12 = paydownLabel1.fullyQualifiedName() + "@#" +
+			paydownLabel2.fullyQualifiedName();
+
+		if (_mapPaydownPaydownCorrelationSurface.containsKey (strCode12))
+			return _mapPaydownPaydownCorrelationSurface.get (strCode12);
+
+		java.lang.String strCode21 = paydownLabel2.fullyQualifiedName() + "@#" +
+			paydownLabel1.fullyQualifiedName();
+
+		return _mapPaydownPaydownCorrelationSurface.containsKey (strCode21) ?
+			_mapPaydownPaydownCorrelationSurface.get (strCode21) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the Pay-down Latent State Pair
+	 * 
+	 * @param paydownLabel1 The Pay-down Curve Latent State Label #1
+	 * @param paydownLabel2 The Pay-down Curve Latent State Label #2
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setPaydownPaydownCorrSurface (
+		final org.drip.state.identifier.PaydownLabel paydownLabel1,
+		final org.drip.state.identifier.PaydownLabel paydownLabel2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == paydownLabel1 || null == paydownLabel2 || paydownLabel1.match (paydownLabel2) || null ==
+			auCorrelation)
+			return false;
+
+		java.lang.String strPaydownLabel1 = paydownLabel1.fullyQualifiedName();
+
+		java.lang.String strPaydownLabel2 = paydownLabel2.fullyQualifiedName();
+
+		_mapPaydownPaydownCorrelationSurface.put (strPaydownLabel1 + "@#" + strPaydownLabel2, auCorrelation);
+
+		_mapPaydownPaydownCorrelationSurface.put (strPaydownLabel2 + "@#" + strPaydownLabel1, auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Recovery Latent State Pair
+	 * 
+	 * @param recoveryLabel1 The Recovery Curve Latent State Label #1
+	 * @param recoveryLabel2 The Recovery Curve Latent State Label #2
+	 * 
+	 * @return The Correlation Surface for the specified Recovery Latent State Pair
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate recoveryRecoveryCorrSurface (
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel1,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel2)
+	{
+		if (null == recoveryLabel1 || null == recoveryLabel2 || recoveryLabel1.match (recoveryLabel2))
+			return null;
+
+		java.lang.String strCode12 = recoveryLabel1.fullyQualifiedName() + "@#" +
+			recoveryLabel2.fullyQualifiedName();
+
+		if (_mapRecoveryRecoveryCorrelationSurface.containsKey (strCode12))
+			return _mapRecoveryRecoveryCorrelationSurface.get (strCode12);
+
+		java.lang.String strCode21 = recoveryLabel2.fullyQualifiedName() + "@#" +
+			recoveryLabel1.fullyQualifiedName();
+
+		return _mapRecoveryRecoveryCorrelationSurface.containsKey (strCode21) ?
+			_mapRecoveryRecoveryCorrelationSurface.get (strCode21) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the Recovery Latent State Pair
+	 * 
+	 * @param recoveryLabel1 The Recovery Curve Latent State Label #1
+	 * @param recoveryLabel2 The Recovery Curve Latent State Label #2
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setRecoveryRecoveryCorrSurface (
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel1,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel2,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == recoveryLabel1 || null == recoveryLabel2 || recoveryLabel1.match (recoveryLabel2) || null
+			== auCorrelation)
+			return false;
+
+		java.lang.String strRecoveryLabel1 = recoveryLabel1.fullyQualifiedName();
+
+		java.lang.String strRecoveryLabel2 = recoveryLabel2.fullyQualifiedName();
+
+		_mapRecoveryRecoveryCorrelationSurface.put (strRecoveryLabel1 + "@#" + strRecoveryLabel2,
+			auCorrelation);
+
+		_mapRecoveryRecoveryCorrelationSurface.put (strRecoveryLabel2 + "@#" + strRecoveryLabel1,
+			auCorrelation);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Correlation Surface between the Collateral and the Credit Latent States
 	 * 
 	 * @param strCollateralCurrency The Collateral Currency
@@ -1376,6 +1888,53 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 		return _mapCollateralForwardCorrelationSurface.containsKey (strCode) ?
 			_mapCollateralForwardCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Collateral and the Equity Latent States
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param equityLabel The Equity Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCollateralEquityCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == equityLabel || null
+			== auCorrelation)
+			return false;
+
+		_mapCollateralEquityCorrelationSurface.put (strCollateralCurrency + "@#" +
+			equityLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Collateral and the Equity Latent States
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param equityLabel The Equity Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Collateral and the Equity Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate collateralEquityCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.state.identifier.EquityLabel equityLabel)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == equityLabel)
+			return null;
+
+		java.lang.String strCode = strCollateralCurrency + "@#" + equityLabel.fullyQualifiedName();
+
+		return _mapCollateralEquityCorrelationSurface.containsKey (strCode) ?
+			_mapCollateralEquityCorrelationSurface.get (strCode) : null;
 	}
 
 	/**
@@ -1544,6 +2103,100 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Correlation Surface for the specified Collateral and Pay-down Latent State Labels
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface for the specified Collateral and Pay-down Latent State Labels
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate collateralPaydownCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == paydownLabel)
+			return null;
+
+		java.lang.String strCode = strCollateralCurrency + "@#" + paydownLabel.fullyQualifiedName();
+
+		return _mapCollateralPaydownCorrelationSurface.containsKey (strCode) ?
+			_mapCollateralPaydownCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Collateral and Pay-down Latent State Labels
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCollateralPaydownCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == paydownLabel || null
+			== auCorrelation)
+			return false;
+
+		_mapCollateralPaydownCorrelationSurface.put (strCollateralCurrency + "@#" +
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Collateral and Recovery Latent State Labels
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface for the specified Collateral and Recovery Latent State Labels
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate collateralRecoveryCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == recoveryLabel)
+			return null;
+
+		java.lang.String strCode = strCollateralCurrency + "@#" + recoveryLabel.fullyQualifiedName();
+
+		return _mapCollateralRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapCollateralRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Collateral and Recovery Latent State Labels
+	 * 
+	 * @param strCollateralCurrency The Collateral Currency
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCollateralRecoveryCorrSurface (
+		final java.lang.String strCollateralCurrency,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == recoveryLabel || null
+			== auCorrelation)
+			return false;
+
+		_mapCollateralRecoveryCorrelationSurface.put (strCollateralCurrency + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Correlation Surface between the Credit and the Custom Metric Latent States
 	 * 
 	 * @param creditLabel The Credit Latent State Label
@@ -1589,12 +2242,57 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Correlation Surface between the Credit and the Equity Latent States
+	 * 
+	 * @param creditLabel The Credit Curve Label
+	 * @param equityLabel The Equity Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Credit and the Equity Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate creditEquityCorrSurface (
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.EquityLabel equityLabel)
+	{
+		if (null == creditLabel || null == equityLabel) return null;
+
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" +
+			equityLabel.fullyQualifiedName();
+
+		return _mapCreditEquityCorrelationSurface.containsKey (strCode) ?
+			_mapCreditEquityCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Credit and the Equity Latent States
+	 * 
+	 * @param creditLabel The Credit Curve Label
+	 * @param equityLabel The Equity Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCreditEquityCorrSurface (
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == creditLabel || null == equityLabel || null == auCorrelation) return false;
+
+		_mapCreditEquityCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
+			equityLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Correlation Surface between the Credit and the Forward Latent States
 	 * 
 	 * @param creditLabel The Credit Curve Label
 	 * @param forwardLabel The Forward Latent State Label
 	 * 
-	 * @return The Correlation Surface between the Credit and the Forward Lsatent States
+	 * @return The Correlation Surface between the Credit and the Forward Latent States
 	 */
 
 	public org.drip.quant.function1D.AbstractUnivariate creditForwardCorrSurface (
@@ -1763,6 +2461,141 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 		_mapCreditGovvieCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
 			govvieLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Credit and the Pay-down Latent State Labels
+	 * 
+	 * @param creditLabel The Credit Curve Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Credit and the Pay-down Latent State Labels
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate creditPaydownCorrSurface (
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == creditLabel || null == paydownLabel) return null;
+
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName();
+
+		return _mapCreditPaydownCorrelationSurface.containsKey (strCode) ?
+			_mapCreditPaydownCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Credit and the Pay-down Latent States
+	 * 
+	 * @param creditLabel The Credit Curve Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCreditPaydownCorrSurface (
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == creditLabel || null == paydownLabel || null == auCorrelation) return false;
+
+		_mapCreditPaydownCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Credit and the Recovery Latent State Labels
+	 * 
+	 * @param creditLabel The Credit Curve Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Credit and the Recovery Latent State Labels
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate creditRecoveryCorrSurface (
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == creditLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = creditLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName();
+
+		return _mapCreditRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapCreditRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Credit and the Recovery Latent States
+	 * 
+	 * @param creditLabel The Credit Curve Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCreditRecoveryCorrSurface (
+		final org.drip.state.identifier.CreditLabel creditLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == creditLabel || null == recoveryLabel || null == auCorrelation) return false;
+
+		_mapCreditRecoveryCorrelationSurface.put (creditLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Custom Metric and the Equity Latent States
+	 * 
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param equityLabel The Equity Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Custom Metric and the Equity Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate customMetricEquityCorrSurface (
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.EquityLabel equityLabel)
+	{
+		if (null == customMetricLabel || null == equityLabel) return null;
+
+		java.lang.String strCode = customMetricLabel.fullyQualifiedName() + "@#" +
+			equityLabel.fullyQualifiedName();
+
+		return _mapCustomMetricEquityCorrelationSurface.containsKey (strCode) ?
+			_mapCustomMetricEquityCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Custom Metric and the Equity Latent States
+	 * 
+	 * @param customMetricLabel The Custom Metric Label
+	 * @param equityLabel The Equity Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCustomMetricEquityCorrSurface (
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == customMetricLabel || null == equityLabel || null == auCorrelation) return false;
+
+		_mapCustomMetricEquityCorrelationSurface.put (customMetricLabel.fullyQualifiedName() + "@#" +
+			equityLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}
@@ -1948,6 +2781,365 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Correlation Surface between the Custom Metric and the Pay-down Latent States
+	 * 
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Custom Metric and the Pay-down Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate customMetricPaydownCorrSurface (
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == customMetricLabel || null == paydownLabel) return null;
+
+		java.lang.String strCode = customMetricLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName();
+
+		return _mapCustomMetricPaydownCorrelationSurface.containsKey (strCode) ?
+			_mapCustomMetricPaydownCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Custom Metric and the Pay-down Latent States
+	 * 
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCustomMetricPaydownCorrSurface (
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == customMetricLabel || null == paydownLabel) return false;
+
+		_mapCustomMetricPaydownCorrelationSurface.put (customMetricLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Custom Metric and the Recovery Latent States
+	 * 
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Custom Metric and the Recovery Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate customMetricRecoveryCorrSurface (
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == customMetricLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = customMetricLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName();
+
+		return _mapCustomMetricRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapCustomMetricRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Custom Metric and the Recovery Latent States
+	 * 
+	 * @param customMetricLabel The Custom Metric Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setCustomMetricRecoveryCorrSurface (
+		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == customMetricLabel || null == recoveryLabel) return false;
+
+		_mapCustomMetricRecoveryCorrelationSurface.put (customMetricLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Equity and the Forward Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param forwardLabel The Forward Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Equity and the Forward Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityForwardCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
+	{
+		if (null == equityLabel || null == forwardLabel) return null;
+
+		java.lang.String strCode = equityLabel.fullyQualifiedName() + "@#" +
+			forwardLabel.fullyQualifiedName();
+
+		return _mapEquityForwardCorrelationSurface.containsKey (strCode) ?
+			_mapEquityForwardCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Equity and the Forward Latent States
+	 * 
+	 * @param equityLabel The Equity Label
+	 * @param forwardLabel The Forward Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityForwardCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == equityLabel || null == forwardLabel || null == auCorrelation) return false;
+
+		_mapEquityForwardCorrelationSurface.put (equityLabel.fullyQualifiedName() + "@#" +
+			forwardLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between Equity and the Funding Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param fundingLabel The Funding Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Equity and the Funding Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityFundingCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel)
+	{
+		if (null == equityLabel || null == fundingLabel) return null;
+
+		java.lang.String strCode = equityLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName();
+
+		return _mapEquityFundingCorrelationSurface.containsKey (strCode) ?
+			_mapEquityFundingCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Equity and the Funding Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityFundingCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == equityLabel || null == fundingLabel) return false;
+
+		_mapEquityFundingCorrelationSurface.put (equityLabel.fullyQualifiedName() + "@#" +
+			fundingLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Equity and the FX Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param fxLabel The FX Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Equity and the FX Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityFXCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.FXLabel fxLabel)
+	{
+		if (null == equityLabel || null == fxLabel) return null;
+
+		java.lang.String strCode = equityLabel.fullyQualifiedName() + "@#" + fxLabel.fullyQualifiedName();
+
+		return _mapEquityFXCorrelationSurface.containsKey (strCode) ? _mapEquityFXCorrelationSurface.get
+			(strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Equity and the FX Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param fxLabel The FX Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityFXCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.FXLabel fxLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == equityLabel || null == fxLabel || null == auCorrelation) return false;
+
+		_mapEquityFXCorrelationSurface.get (equityLabel.fullyQualifiedName() + "@#" +
+			fxLabel.fullyQualifiedName());
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Equity and the Govvie Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Equity and the Govvie Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityGovvieCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel)
+	{
+		if (null == equityLabel || null == govvieLabel) return null;
+
+		java.lang.String strCode = equityLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName();
+
+		return _mapEquityGovvieCorrelationSurface.containsKey (strCode) ?
+			_mapEquityGovvieCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Equity and the Govvie Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param govvieLabel The Govvie Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityGovvieCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == equityLabel || null == govvieLabel) return false;
+
+		_mapEquityGovvieCorrelationSurface.put (equityLabel.fullyQualifiedName() + "@#" +
+			govvieLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Equity and the Pay-down Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Equity and the Pay-down Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityPaydownCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == equityLabel || null == paydownLabel) return null;
+
+		java.lang.String strCode = equityLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName();
+
+		return _mapEquityPaydownCorrelationSurface.containsKey (strCode) ?
+			_mapEquityPaydownCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Equity and the Pay-down Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityPaydownCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == equityLabel || null == paydownLabel) return false;
+
+		_mapEquityPaydownCorrelationSurface.put (equityLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Equity and the Recovery Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Equity and the Recovery Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate equityRecoveryCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == equityLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = equityLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName();
+
+		return _mapEquityRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapEquityRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Equity and the Recovery Latent States
+	 * 
+	 * @param equityLabel The Equity Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setEquityRecoveryCorrSurface (
+		final org.drip.state.identifier.EquityLabel equityLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == equityLabel || null == recoveryLabel) return false;
+
+		_mapEquityRecoveryCorrelationSurface.put (equityLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Correlation Surface between the Forward and the Funding Latent States
 	 * 
 	 * @param forwardLabel The Forward Latent State Label
@@ -2082,6 +3274,96 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Correlation Surface between the Forward and the Pay-down Latent States
+	 * 
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Forward and the Pay-down Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate forwardPaydownCorrSurface (
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == forwardLabel || null == paydownLabel) return null;
+
+		java.lang.String strCode = forwardLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName();
+
+		return _mapForwardPaydownCorrelationSurface.containsKey (strCode) ?
+			_mapForwardPaydownCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Forward and the Pay-down Latent States
+	 * 
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setForwardPaydownCorrSurface (
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == forwardLabel || null == paydownLabel || null == auCorrelation) return false;
+
+		_mapForwardPaydownCorrelationSurface.put (forwardLabel.fullyQualifiedName() + "@#" + 
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Forward and the Recovery Latent States
+	 * 
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Forward and the Recovery Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate forwardRecoveryCorrSurface (
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == forwardLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = forwardLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName();
+
+		return _mapForwardRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapForwardRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Forward and the Recovery Latent States
+	 * 
+	 * @param forwardLabel The Forward Curve Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setForwardRecoveryCorrSurface (
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == forwardLabel || null == recoveryLabel || null == auCorrelation) return false;
+
+		_mapForwardRecoveryCorrelationSurface.put (forwardLabel.fullyQualifiedName() + "@#" + 
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Correlation Surface between the Funding and the FX Latent States
 	 * 
 	 * @param fundingLabel The Funding Latent State Label
@@ -2171,6 +3453,96 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the Correlation Surface between the Funding and the Pay-down Latent States
+	 * 
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Funding and the Pay-down Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate fundingPaydownCorrSurface (
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == fundingLabel || null == paydownLabel) return null;
+
+		java.lang.String strCode = fundingLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName();
+
+		return _mapFundingPaydownCorrelationSurface.containsKey (strCode) ?
+			_mapFundingPaydownCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Funding and the Pay-down Latent States
+	 * 
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setFundingPaydownCorrSurface (
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == fundingLabel || null == paydownLabel || null == auCorrelation) return false;
+
+		_mapFundingPaydownCorrelationSurface.put (fundingLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface between the Funding and the Recovery Latent States
+	 * 
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface between the Funding and the Recovery Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate fundingRecoveryCorrSurface (
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == fundingLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = fundingLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName();
+
+		return _mapFundingRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapFundingRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface between the Funding and the Recovery Latent States
+	 * 
+	 * @param fundingLabel The Funding Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setFundingRecoveryCorrSurface (
+		final org.drip.state.identifier.FundingLabel fundingLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == fundingLabel || null == recoveryLabel || null == auCorrelation) return false;
+
+		_mapFundingRecoveryCorrelationSurface.put (fundingLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
 	 * Retrieve the Correlation Surface for the specified FX and the Govvie Latent States
 	 * 
 	 * @param fxLabel The FX Latent State Label
@@ -2210,6 +3582,229 @@ public class CurveSurfaceQuoteSet extends org.drip.service.stream.Serializer {
 
 		_mapFXGovvieCorrelationSurface.put (fxLabel.fullyQualifiedName() + "@#" +
 			govvieLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface for the specified FX and the Pay-down Latent States
+	 * 
+	 * @param fxLabel The FX Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface for the specified FX and the Pay-down Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate fxPaydownCorrSurface (
+		final org.drip.state.identifier.FXLabel fxLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == fxLabel || null == paydownLabel) return null;
+
+		java.lang.String strCode = fxLabel.fullyQualifiedName() + "@#" + paydownLabel.fullyQualifiedName();
+
+		return _mapFXPaydownCorrelationSurface.containsKey (strCode) ? _mapFXPaydownCorrelationSurface.get
+			(strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified FX and the Pay-down Latent States
+	 * 
+	 * @param fxLabel The FX Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setFXPaydownCorrSurface (
+		final org.drip.state.identifier.FXLabel fxLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == fxLabel || null == paydownLabel || null == auCorrelation) return false;
+
+		_mapFXPaydownCorrelationSurface.put (fxLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface for the specified FX and the Recovery Latent States
+	 * 
+	 * @param fxLabel The FX Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface for the specified FX and the Recovery Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate fxRecoveryCorrSurface (
+		final org.drip.state.identifier.FXLabel fxLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == fxLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = fxLabel.fullyQualifiedName() + "@#" + recoveryLabel.fullyQualifiedName();
+
+		return _mapFXRecoveryCorrelationSurface.containsKey (strCode) ? _mapFXRecoveryCorrelationSurface.get
+			(strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified FX and the Recovery Latent States
+	 * 
+	 * @param fxLabel The FX Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setFXRecoveryCorrSurface (
+		final org.drip.state.identifier.FXLabel fxLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == fxLabel || null == recoveryLabel || null == auCorrelation) return false;
+
+		_mapFXRecoveryCorrelationSurface.put (fxLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Govvie and the Pay-down Latent States
+	 * 
+	 * @param govvieLabel The Govvie Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * 
+	 * @return The Correlation Surface for the specified Govvie and the Pay-down Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate govviePaydownCorrSurface (
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel)
+	{
+		if (null == govvieLabel || null == paydownLabel) return null;
+
+		java.lang.String strCode = govvieLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName();
+
+		return _mapGovviePaydownCorrelationSurface.containsKey (strCode) ?
+			_mapGovviePaydownCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Govvie and the Pay-down Latent States
+	 * 
+	 * @param govvieLabel The Govvie Latent State Label
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setGovviePaydownCorrSurface (
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == govvieLabel || null == paydownLabel || null == auCorrelation) return false;
+
+		_mapGovviePaydownCorrelationSurface.put (govvieLabel.fullyQualifiedName() + "@#" +
+			paydownLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Govvie and the Recovery Latent States
+	 * 
+	 * @param govvieLabel The Govvie Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface for the specified Govvie and the Recovery Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate govvieRecoveryCorrSurface (
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == govvieLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = govvieLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName();
+
+		return _mapGovvieRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapGovvieRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Govvie and the Recovery Latent States
+	 * 
+	 * @param govvieLabel The Govvie Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setGovvieRecoveryCorrSurface (
+		final org.drip.state.identifier.GovvieLabel govvieLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == govvieLabel || null == recoveryLabel || null == auCorrelation) return false;
+
+		_mapGovvieRecoveryCorrelationSurface.put (govvieLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
+
+		return true;
+	}
+
+	/**
+	 * Retrieve the Correlation Surface for the specified Pay-down and the Recovery Latent States
+	 * 
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * 
+	 * @return The Correlation Surface for the specified Pay-down and the Recovery Latent States
+	 */
+
+	public org.drip.quant.function1D.AbstractUnivariate paydownRecoveryCorrSurface (
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
+	{
+		if (null == paydownLabel || null == recoveryLabel) return null;
+
+		java.lang.String strCode = paydownLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName();
+
+		return _mapPaydownRecoveryCorrelationSurface.containsKey (strCode) ?
+			_mapPaydownRecoveryCorrelationSurface.get (strCode) : null;
+	}
+
+	/**
+	 * (Re)-set the Correlation Surface for the specified Pay-down and the Recovery Latent States
+	 * 
+	 * @param paydownLabel The Pay-down Latent State Label
+	 * @param recoveryLabel The Recovery Latent State Label
+	 * @param auCorrelation The Correlation Surface
+	 * 
+	 * @return TRUE => Successfully set
+	 */
+
+	public boolean setPaydownRecoveryCorrSurface (
+		final org.drip.state.identifier.PaydownLabel paydownLabel,
+		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
+		final org.drip.quant.function1D.AbstractUnivariate auCorrelation)
+	{
+		if (null == paydownLabel || null == recoveryLabel || null == auCorrelation) return false;
+
+		_mapPaydownRecoveryCorrelationSurface.put (paydownLabel.fullyQualifiedName() + "@#" +
+			recoveryLabel.fullyQualifiedName(), auCorrelation);
 
 		return true;
 	}

@@ -225,22 +225,26 @@ public abstract class CalibratableFixedIncomeComponent extends
 	{
 		if (null == valParams || null == pqs) return null;
 
-		if (pqs.containsLatentStateType (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT) &&
-			pqs.containsLatentStateQuantificationMetric
-				(org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR) &&
-					pqs.containsLatentStateType (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD)
-						&& pqs.containsLatentStateQuantificationMetric
-							(org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE))
+		if (pqs.containsLatentStateType
+			(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING) &&
+				pqs.containsLatentStateQuantificationMetric
+					(org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR) &&
+						pqs.containsLatentStateType
+							(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD) &&
+								pqs.containsLatentStateQuantificationMetric
+									(org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE))
 			return fundingForwardPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
 
-		if (pqs.containsLatentStateType (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT) &&
-			pqs.containsLatentStateQuantificationMetric
-				(org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR))
+		if (pqs.containsLatentStateType
+			(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING) &&
+				pqs.containsLatentStateQuantificationMetric
+					(org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR))
 			return fundingPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
 
-		if (pqs.containsLatentStateType (org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD) &&
-			pqs.containsLatentStateQuantificationMetric
-				(org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE))
+		if (pqs.containsLatentStateType
+			(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD) &&
+				pqs.containsLatentStateQuantificationMetric
+					(org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE))
 			return forwardPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
 
 		return null;

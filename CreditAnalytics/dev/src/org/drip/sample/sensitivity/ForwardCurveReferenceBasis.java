@@ -10,7 +10,6 @@ import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.CashSettleParams;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.Stream;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.rates.*;

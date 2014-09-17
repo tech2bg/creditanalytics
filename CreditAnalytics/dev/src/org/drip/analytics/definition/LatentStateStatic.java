@@ -1,5 +1,5 @@
 
-package org.drip.product.cashflow;
+package org.drip.analytics.definition;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,28 +29,47 @@ package org.drip.product.cashflow;
  */
 
 /**
- * DualStreamComponent is the abstract class that extends the CalibratableFixedIncomeComponent on top of
- *  which all the dual stream rates components (fix-float, float-float, IRS etc.) are implemented.
- *  
+ * LatentStateStatic contains the Analytics Latent STate Static/Textual Identifiers.
+ *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class DualStreamComponent extends
-	org.drip.product.definition.CalibratableFixedIncomeComponent {
+public class LatentStateStatic {
 
 	/**
-	 * Retrieve the Reference Stream
-	 * 
-	 * @return The Reference Stream
+	 * Forward Latent State
 	 */
 
-	public abstract org.drip.product.cashflow.Stream referenceStream();
+	public static final java.lang.String LATENT_STATE_FORWARD = "LATENT_STATE_FORWARD";
 
 	/**
-	 * Retrieve the Derived Stream
-	 * 
-	 * @return The Derived Stream
+	 * Forward Latent State Quantification Metric - Discount Factor
 	 */
 
-	public abstract org.drip.product.cashflow.Stream derivedStream();
+	public static final java.lang.String FORWARD_QM_FORWARD_RATE = "FORWARD_QM_FORWARD_RATE";
+
+	/**
+	 * Funding Latent State
+	 */
+
+	public static final java.lang.String LATENT_STATE_FUNDING = "LATENT_STATE_FUNDING";
+
+	/**
+	 * Discount Latent State Quantification Metric - Discount Factor
+	 */
+
+	public static final java.lang.String DISCOUNT_QM_DISCOUNT_FACTOR = "DISCOUNT_QM_DISCOUNT_FACTOR";
+
+	/**
+	 * Discount Latent State Quantification Metric - Zero Rate
+	 */
+
+	public static final java.lang.String DISCOUNT_QM_ZERO_RATE = "DISCOUNT_QM_ZERO_RATE";
+
+	/**
+	 * Discount Latent State Quantification Metric - Forward Rate
+	 */
+
+	public static final java.lang.String DISCOUNT_QM_FORWARD_RATE = "DISCOUNT_QM_FORWARD_RATE";
+
 }

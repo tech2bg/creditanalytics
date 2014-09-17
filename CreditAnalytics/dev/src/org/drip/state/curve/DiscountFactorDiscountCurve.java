@@ -139,7 +139,7 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
+		return org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR;
 	}
 
 	@Override public DiscountFactorDiscountCurve parallelShiftManifestMeasure (

@@ -295,12 +295,13 @@ public class ScenarioDiscountCurveBuilder {
 
 			org.drip.analytics.rates.DiscountCurve dcMultiPass = null;
 
-			if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			if (org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, null ==
 					quotingParam ? null : quotingParam.coreCollateralizationParams(), new
 						org.drip.spline.grid.OverlappingStretchSpan (stretch));
-			else if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
+			else if
+				(org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, null == quotingParam ?
 					null : quotingParam.coreCollateralizationParams(), new
@@ -398,12 +399,13 @@ public class ScenarioDiscountCurveBuilder {
 
 			org.drip.analytics.rates.DiscountCurve dcMultiPass = null;
 
-			if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR.equalsIgnoreCase
+			if (org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.DiscountFactorDiscountCurve (strName, null ==
 					quotingParam ? null : quotingParam.coreCollateralizationParams(), new
 						org.drip.spline.grid.OverlappingStretchSpan (stretch));
-			else if (org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE.equalsIgnoreCase
+			else if
+				(org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE.equalsIgnoreCase
 				(strSmootheningQM))
 				dcMultiPass = new org.drip.state.curve.ZeroRateDiscountCurve (strName, null == quotingParam ?
 					null : quotingParam.coreCollateralizationParams(), new
@@ -483,8 +485,8 @@ public class ScenarioDiscountCurveBuilder {
 
 		try {
 			lssFunding = new org.drip.state.representation.LatentStateSpecification
-				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+				(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
+					org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						org.drip.state.identifier.FundingLabel.Standard ((0 == iNumComp1 ? aCalibComp2 :
 							aCalibComp1)[0].payCurrency()[0]));
 		} catch (java.lang.Exception e) {
@@ -503,8 +505,8 @@ public class ScenarioDiscountCurveBuilder {
 			try {
 				aLSS = new org.drip.state.representation.LatentStateSpecification[] {lssFunding, new
 					org.drip.state.representation.LatentStateSpecification
-						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
-							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 								aForwardLabel[0])};
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -591,7 +593,7 @@ public class ScenarioDiscountCurveBuilder {
 		try {
 			lccp = new org.drip.state.estimator.LocalControlCurveParams
 				(org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE, new
+					org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, new
 						org.drip.spline.params.SegmentCustomBuilderControl
 							(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL, new
 								org.drip.spline.basis.PolynomialFunctionSetParams (4),

@@ -17,9 +17,7 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.valuation.CashSettleParams;
-import org.drip.param.valuation.ValuationParams;
-import org.drip.product.cashflow.*;
+import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.params.CurrencyPair;
@@ -27,8 +25,7 @@ import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
-import org.drip.state.identifier.FXLabel;
-import org.drip.state.identifier.ForwardLabel;
+import org.drip.state.identifier.*;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy

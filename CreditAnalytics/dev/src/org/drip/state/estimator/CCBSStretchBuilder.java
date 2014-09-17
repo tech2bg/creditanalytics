@@ -76,8 +76,8 @@ public class CCBSStretchBuilder {
 
 			org.drip.product.definition.CalibratableFixedIncomeComponent comp = aCCSP[i].derivedComponent();
 
-			if (comp instanceof org.drip.product.cashflow.DualStreamComponent)
-				forwardLabel = ((org.drip.product.cashflow.DualStreamComponent)
+			if (comp instanceof org.drip.product.rates.DualStreamComponent)
+				forwardLabel = ((org.drip.product.rates.DualStreamComponent)
 					comp).derivedStream().forwardLabel();
 			else {
 				org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
@@ -88,8 +88,8 @@ public class CCBSStretchBuilder {
 			try { 
 				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
 					org.drip.state.representation.LatentStateSpecification
-						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
-							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 								forwardLabel)});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -183,8 +183,8 @@ public class CCBSStretchBuilder {
 			org.drip.product.calib.ProductQuoteSet pqs = null;
 			org.drip.state.identifier.ForwardLabel forwardLabel = null;
 
-			if (comp instanceof org.drip.product.cashflow.DualStreamComponent)
-				forwardLabel = ((org.drip.product.cashflow.DualStreamComponent)
+			if (comp instanceof org.drip.product.rates.DualStreamComponent)
+				forwardLabel = ((org.drip.product.rates.DualStreamComponent)
 					comp).derivedStream().forwardLabel();
 			else {
 				org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
@@ -195,14 +195,12 @@ public class CCBSStretchBuilder {
 			try { 
 				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
 					org.drip.state.representation.LatentStateSpecification
-						(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-							org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-								org.drip.state.identifier.FundingLabel.Standard
-									(comp.payCurrency()[0])), new
-										org.drip.state.representation.LatentStateSpecification
-											(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
-												org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
-													forwardLabel)});
+						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
+							org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
+					comp.fundingLabel()[0]), new org.drip.state.representation.LatentStateSpecification
+						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
+								forwardLabel)});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

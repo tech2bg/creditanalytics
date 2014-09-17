@@ -1,5 +1,5 @@
 
-package org.drip.sample.option;
+package org.drip.sample.stochvol;
 
 import org.drip.param.pricer.HestonOptionPricerParams;
 import org.drip.pricer.option.HestonStochasticVolatilityAlgorithm;

@@ -358,7 +358,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return maturity();
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
 	{
 		try {
 			return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffectiveDate, new
@@ -614,11 +614,11 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
 		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FRAComponentQuoteSet)
-			|| !pqs.contains (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-				org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+			|| !pqs.contains (org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
+				org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 					org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) || !pqs.contains
-						(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
-							org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE, _fri))
+						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE, _fri))
 			return null;
 
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = discountFactorPRWC (valParams,

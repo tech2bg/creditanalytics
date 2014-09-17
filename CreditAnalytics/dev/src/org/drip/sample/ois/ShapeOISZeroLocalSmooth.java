@@ -2,13 +2,12 @@
 package org.drip.sample.ois;
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
-import org.drip.param.valuation.CashSettleParams;
-import org.drip.param.valuation.ValuationParams;
+import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
-import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
@@ -17,6 +16,7 @@ import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.params.*;
+import org.drip.spline.pchip.LocalMonotoneCkGenerator;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
@@ -170,8 +170,8 @@ public class ShapeOISZeroLocalSmooth {
 			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						DiscountCurve.LATENT_STATE_DISCOUNT,
-						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						LatentStateStatic.LATENT_STATE_FUNDING,
+						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (strCurrency)
 					)
 				}
@@ -352,13 +352,13 @@ public class ShapeOISZeroLocalSmooth {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						DiscountCurve.LATENT_STATE_DISCOUNT,
-						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						LatentStateStatic.LATENT_STATE_FUNDING,
+						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (strCurrency)
 					),
 					new LatentStateSpecification (
-						ForwardCurve.LATENT_STATE_FORWARD,
-						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 						aOIS[i].forwardLabel()[0]
 					)
 				}
@@ -640,8 +640,8 @@ public class ShapeOISZeroLocalSmooth {
 		 */
 
 		LocalControlCurveParams lccpAkima = new LocalControlCurveParams (
-			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_AKIMA,
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LocalMonotoneCkGenerator.C1_AKIMA,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -667,8 +667,8 @@ public class ShapeOISZeroLocalSmooth {
 		 */
 
 		LocalControlCurveParams lccpHarmonic = new LocalControlCurveParams (
-			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HARMONIC,
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LocalMonotoneCkGenerator.C1_HARMONIC,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -694,8 +694,8 @@ public class ShapeOISZeroLocalSmooth {
 		 */
 
 		LocalControlCurveParams lccpHyman83 = new LocalControlCurveParams (
-			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN83,
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LocalMonotoneCkGenerator.C1_HYMAN83,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -721,8 +721,8 @@ public class ShapeOISZeroLocalSmooth {
 		 */
 
 		LocalControlCurveParams lccpHyman89 = new LocalControlCurveParams (
-			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HYMAN89,
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LocalMonotoneCkGenerator.C1_HYMAN89,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -748,8 +748,8 @@ public class ShapeOISZeroLocalSmooth {
 		 */
 
 		LocalControlCurveParams lccpHuynhLeFloch = new LocalControlCurveParams (
-			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_HUYNH_LE_FLOCH,
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LocalMonotoneCkGenerator.C1_HUYNH_LE_FLOCH,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -774,8 +774,8 @@ public class ShapeOISZeroLocalSmooth {
 		 */
 
 		LocalControlCurveParams lccpKruger = new LocalControlCurveParams (
-			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_KRUGER,
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LocalMonotoneCkGenerator.C1_KRUGER,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),

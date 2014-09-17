@@ -47,19 +47,6 @@ package org.drip.analytics.rates;
 public abstract class ForwardCurve extends org.drip.service.stream.Serializer implements
 	org.drip.analytics.rates.ForwardRateEstimator, org.drip.analytics.definition.Curve {
 
-	/**
-	 * Forward Latent State
-	 */
-
-	public static final java.lang.String LATENT_STATE_FORWARD = "LATENT_STATE_FORWARD";
-
-	/**
-	 * Forward Latent State Quantification Metric - Discount Factor
-	 */
-
-	public static final java.lang.String QUANTIFICATION_METRIC_FORWARD_RATE =
-		"QUANTIFICATION_METRIC_FORWARD_RATE";
-
 	private double _dblEpochDate = java.lang.Double.NaN;
 	private org.drip.state.identifier.ForwardLabel _fri = null;
 

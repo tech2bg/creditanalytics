@@ -357,23 +357,23 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
 						strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
 							strCurrency, strCurrency, null, null);
 
-			org.drip.product.cashflow.Stream fixStream = new org.drip.product.cashflow.Stream
+			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
 				(lsFixedCouponPeriod);
 
-			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFloatingFrequency.get (strCurrency),
 						strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, -1., null, 0.,
 							strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
 								(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
-			org.drip.product.cashflow.Stream floatStream = new org.drip.product.cashflow.Stream
+			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
 				(lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
@@ -416,22 +416,22 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
 						strFixedDC, false, false, strCurrency, 1., null, dblCoupon, strCurrency, strCurrency,
 							null, null);
 
-			org.drip.product.cashflow.Stream fixStream = new org.drip.product.cashflow.Stream
+			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
 				(lsFixedCouponPeriod);
 
-			java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatingCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (dtEffective.julian(),
 					dtMaturity.julian(), java.lang.Double.NaN, strFloatingDC, strCurrency, -1., null, 0.,
 						strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
 							"LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
-			org.drip.product.cashflow.Stream floatStream = new org.drip.product.cashflow.Stream
+			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
 				(lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
@@ -448,7 +448,7 @@ public class RatesClosesLoader {
 	}
 
 	private static final double calcMeasure (
-		final org.drip.product.cashflow.Stream stream,
+		final org.drip.product.rates.Stream stream,
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strMeasure,
@@ -800,8 +800,8 @@ public class RatesClosesLoader {
 		org.drip.state.representation.LatentStateSpecification lssForward = null;
 		org.drip.state.representation.LatentStateSpecification lssDiscount = null;
 
-		if (comp instanceof org.drip.product.cashflow.DualStreamComponent)
-			forwardLabel =((org.drip.product.cashflow.DualStreamComponent)
+		if (comp instanceof org.drip.product.rates.DualStreamComponent)
+			forwardLabel =((org.drip.product.rates.DualStreamComponent)
 				comp).derivedStream().forwardLabel();
 		else {
 			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp.forwardLabel();
@@ -812,8 +812,8 @@ public class RatesClosesLoader {
 		if (null != forwardLabel) {
 			try {
 				lssForward = new org.drip.state.representation.LatentStateSpecification
-					(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD,
-						org.drip.analytics.rates.ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+					(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+						org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 							forwardLabel);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -824,11 +824,11 @@ public class RatesClosesLoader {
 
 		try {
 			lssDiscount = new org.drip.state.representation.LatentStateSpecification
-				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-					org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+				(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
+					org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						org.drip.state.identifier.FundingLabel.Standard (comp instanceof
-							org.drip.product.cashflow.DualStreamComponent ?
-								((org.drip.product.cashflow.DualStreamComponent)
+							org.drip.product.rates.DualStreamComponent ?
+								((org.drip.product.rates.DualStreamComponent)
 									comp).derivedStream().couponCurrency() : comp.payCurrency()[0]));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

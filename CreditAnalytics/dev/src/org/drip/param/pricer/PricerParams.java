@@ -86,17 +86,6 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Create the standard pricer parameters object instance with the Ametrano-Bianchetti Mode Turned On
-	 * 
-	 * @return PricerParams object instance
-	 */
-
-	public static final PricerParams StandardAmetranoBianchetti()
-	{
-		return new PricerParams (7, null, false, PERIOD_DISCRETIZATION_DAY_STEP, true);
-	}
-
-	/**
 	 * Create the pricer parameters from the discrete unit size, calibration mode on/off, survival to
 	 * 	pay/end date, and the discretization scheme
 	 * 

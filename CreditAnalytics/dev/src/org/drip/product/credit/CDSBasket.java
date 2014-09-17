@@ -49,7 +49,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.product.definition.FixedIncomeComponent[] _aComp = null;
-	private java.util.List<org.drip.analytics.period.CouponPeriod> _lPeriods = null;
+	private java.util.List<org.drip.analytics.cashflow.CouponPeriod> _lPeriods = null;
 
 	/**
 	 * Construct a CDS Basket from the components and their weights
@@ -211,9 +211,9 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 						continue;
 
 					if (null == _lPeriods)
-						_lPeriods = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lPeriods = new java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
-					_lPeriods.add (new org.drip.analytics.period.CouponPeriod (astrRecord[i].getBytes()));
+					_lPeriods.add (new org.drip.analytics.cashflow.CouponPeriod (astrRecord[i].getBytes()));
 				}
 			}
 		}
@@ -478,7 +478,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lPeriods) {
+			for (org.drip.analytics.cashflow.CouponPeriod p : _lPeriods) {
 				if (null == p) continue;
 
 				if (bFirstEntry)

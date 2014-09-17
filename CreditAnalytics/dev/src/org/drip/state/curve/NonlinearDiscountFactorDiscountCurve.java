@@ -411,7 +411,7 @@ public class NonlinearDiscountFactorDiscountCurve extends
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR;
+		return org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE;
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure (

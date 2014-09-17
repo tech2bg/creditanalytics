@@ -52,11 +52,11 @@ public class LossQuadratureGenerator {
 	 * @return List of the generated LossQuadratureMetrics
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
+	public static final java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics>
 		GenerateDayStepLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CouponPeriod period,
+			final org.drip.analytics.cashflow.CouponPeriod period,
 			final double dblWorkoutDate,
 			final int iPeriodUnit,
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -80,8 +80,8 @@ public class LossQuadratureGenerator {
 		double dblSubPeriodStart = period.startDate() < valParams.valueDate() ? valParams.valueDate() :
 			period.startDate();
 
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLP = new
-			java.util.ArrayList<org.drip.analytics.period.LossQuadratureMetrics>();
+		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
 		while (!bPeriodDone) {
 			double dblSubPeriodEnd = dblSubPeriodStart + iPeriodUnit;
@@ -95,8 +95,8 @@ public class LossQuadratureGenerator {
 					dblSubPeriodEnd = period.endDate();
 				}
 
-				org.drip.analytics.period.LossQuadratureMetrics lp =
-					org.drip.analytics.period.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
+				org.drip.analytics.cashflow.LossQuadratureMetrics lp =
+					org.drip.analytics.cashflow.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
 						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
 							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc), dc, cc,
@@ -128,11 +128,11 @@ public class LossQuadratureGenerator {
 	 * @return List of the generated LossQuadratureMetrics
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
+	public static final java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics>
 		GeneratePeriodUnitLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CouponPeriod period,
+			final org.drip.analytics.cashflow.CouponPeriod period,
 			final double dblWorkoutDate,
 			final int iPeriodUnit,
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -151,8 +151,8 @@ public class LossQuadratureGenerator {
 
 		double dblPeriodEndDate = period.endDate() < dblWorkoutDate ? period.endDate() : dblWorkoutDate;
 
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLP = new
-			java.util.ArrayList<org.drip.analytics.period.LossQuadratureMetrics>();
+		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
 		boolean bPeriodDone = false;
 
@@ -178,8 +178,8 @@ public class LossQuadratureGenerator {
 					dblSubPeriodEnd = period.endDate();
 				}
 
-				org.drip.analytics.period.LossQuadratureMetrics lp =
-					org.drip.analytics.period.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
+				org.drip.analytics.cashflow.LossQuadratureMetrics lp =
+					org.drip.analytics.cashflow.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
 						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
 							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
@@ -211,11 +211,11 @@ public class LossQuadratureGenerator {
 	 * @return List of the generated LossQuadratureMetrics
 	 */
 
-	public static final java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
+	public static final java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics>
 		GenerateWholeLossPeriods (
 			final org.drip.product.definition.CreditComponent comp,
 			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.analytics.period.CouponPeriod period,
+			final org.drip.analytics.cashflow.CouponPeriod period,
 			final double dblWorkoutDate,
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -233,15 +233,15 @@ public class LossQuadratureGenerator {
 
 		double dblPeriodEndDate = period.endDate() < dblWorkoutDate ? period.endDate() : dblWorkoutDate;
 
-		java.util.List<org.drip.analytics.period.LossQuadratureMetrics> sLP = new
-			java.util.ArrayList<org.drip.analytics.period.LossQuadratureMetrics>();
+		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
 		try {
 			double dblPeriodStartDate = period.startDate() < valParams.valueDate() ? valParams.valueDate() :
 				period.startDate();
 
-			org.drip.analytics.period.LossQuadratureMetrics lp =
-				org.drip.analytics.period.LossQuadratureMetrics.MakeDefaultPeriod (dblPeriodStartDate,
+			org.drip.analytics.cashflow.LossQuadratureMetrics lp =
+				org.drip.analytics.cashflow.LossQuadratureMetrics.MakeDefaultPeriod (dblPeriodStartDate,
 					dblPeriodEndDate, period.accrualDCF (0.5 * (dblPeriodStartDate + dblPeriodEndDate)),
 						comp.notional (dblPeriodStartDate, dblPeriodEndDate), comp.getRecovery
 							(dblPeriodStartDate, dblPeriodEndDate, cc), dc, cc,

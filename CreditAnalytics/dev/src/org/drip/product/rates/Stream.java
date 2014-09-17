@@ -1,5 +1,5 @@
 
-package org.drip.product.cashflow;
+package org.drip.product.rates;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -35,22 +35,22 @@ package org.drip.product.cashflow;
  */
 
 public class Stream extends org.drip.service.stream.Serializer {
-	protected java.util.List<org.drip.analytics.period.CouponPeriod> _lsCouponPeriod = null;
+	protected java.util.List<org.drip.analytics.cashflow.CouponPeriod> _lsCouponPeriod = null;
 
 	protected double notional (
 		final double dblDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.period.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
 
 		if (dblDate <= cpLeft.startDate()) return cpLeft.notional (cpLeft.startDate()) * cpLeft.fx (csqs);
 
-		for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CouponPeriod cp : _lsCouponPeriod) {
 			if (cp.contains (dblDate)) return cp.notional (dblDate) * cp.fx (csqs);
 		}
 
-		org.drip.analytics.period.CouponPeriod cp = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
+		org.drip.analytics.cashflow.CouponPeriod cp = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
 
 		return cp.notional (cp.endDate()) * cp.fx (csqs);
 	}
@@ -64,7 +64,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 	 */
 
 	public Stream (
-		final java.util.List<org.drip.analytics.period.CouponPeriod> lsCouponPeriod)
+		final java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponPeriod)
 		throws java.lang.Exception
 	{
 		if (null == (_lsCouponPeriod = lsCouponPeriod) || 0 == _lsCouponPeriod.size())
@@ -79,7 +79,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 
 	public java.lang.String name()
 	{
-		org.drip.analytics.period.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
 
 		try {
 			return "STREAM::" + cpFirst.payCurrency() + "/" + cpFirst.couponCurrency() + "::" + (12 / freq())
@@ -154,7 +154,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 	 * @return The Coupon Period List
 	 */
 
-	public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
+	public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
@@ -167,11 +167,11 @@ public class Stream extends org.drip.service.stream.Serializer {
 	 * @return The Period Instance enveloping the specified Date
 	 */
 
-	public org.drip.analytics.period.CouponPeriod containingPeriod (
+	public org.drip.analytics.cashflow.CouponPeriod containingPeriod (
 		final double dblDate)
 	{
 		try {
-			for (org.drip.analytics.period.CouponPeriod cp : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.CouponPeriod cp : _lsCouponPeriod) {
 				if (cp.contains (dblDate)) return cp;
 			}
 		} catch (java.lang.Exception e) {
@@ -209,11 +209,11 @@ public class Stream extends org.drip.service.stream.Serializer {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
 
-		org.drip.analytics.period.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
 
 		if (dblDate <= cpLeft.startDate()) return cpLeft.notional (cpLeft.startDate());
 
-		org.drip.analytics.period.CouponPeriod cp = containingPeriod (dblDate);
+		org.drip.analytics.cashflow.CouponPeriod cp = containingPeriod (dblDate);
 
 		if (null == cp)
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
@@ -243,7 +243,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 			(dblDate2))
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
 
-		org.drip.analytics.period.CouponPeriod cp = containingPeriod (dblDate1);
+		org.drip.analytics.cashflow.CouponPeriod cp = containingPeriod (dblDate1);
 
 		if (null == cp || !cp.contains (dblDate2))
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
@@ -315,7 +315,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 	{
 		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
 
-		org.drip.analytics.period.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
 
 		setCcy.add (cpFirst.payCurrency());
 
@@ -374,14 +374,14 @@ public class Stream extends org.drip.service.stream.Serializer {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEndDate) || null == csqs) return null;
 
-		org.drip.analytics.period.CouponPeriod currentPeriod = null;
+		org.drip.analytics.cashflow.CouponPeriod currentPeriod = null;
 
-		org.drip.analytics.period.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
 
 		if (dblAccrualEndDate <= cpLeft.startDate())
 			currentPeriod = cpLeft;
 		else {
-			for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
 				if (null == period) continue;
 
 				if (dblAccrualEndDate >= period.startDate() && dblAccrualEndDate <= period.endDate()) {
@@ -437,12 +437,24 @@ public class Stream extends org.drip.service.stream.Serializer {
 		double dblResetDate = java.lang.Double.NaN;
 		double dblResetRate = java.lang.Double.NaN;
 		double dblValueNotional = java.lang.Double.NaN;
+		double dblCreditForwardConvexityAdjustedDirtyPV = 0.;
+		double dblCreditForwardConvexityAdjustedDirtyDV01 = 0.;
+		double dblCreditFundingConvexityAdjustedDirtyPV = 0.;
+		double dblCreditFundingConvexityAdjustedDirtyDV01 = 0.;
+		double dblCreditFXConvexityAdjustedDirtyPV = 0.;
+		double dblCreditFXConvexityAdjustedDirtyDV01 = 0.;
 		double dblCumulativeConvexityAdjustedDirtyPV = 0.;
 		double dblCumulativeConvexityAdjustedDirtyDV01 = 0.;
+		double dblForwardFundingConvexityAdjustedDirtyPV = 0.;
+		double dblForwardFundingConvexityAdjustedDirtyDV01 = 0.;
+		double dblForwardFXConvexityAdjustedDirtyPV = 0.;
+		double dblForwardFXConvexityAdjustedDirtyDV01 = 0.;
+		double dblFundingFXConvexityAdjustedDirtyPV = 0.;
+		double dblFundingFXConvexityAdjustedDirtyDV01 = 0.;
 
 		double dblSpread = null != forwardLabel ? _lsCouponPeriod.get (0).floatSpread() : 0.;
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
 			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
 			double dblCompoundingAdjustedDirtyPeriodDV01 = java.lang.Double.NaN;
 
@@ -474,9 +486,9 @@ public class Stream extends org.drip.service.stream.Serializer {
 				} else if (period.contains (dblValueDate)) {
 					dblAccrued01 = 0.;
 					dblResetRate = dblPeriodBaseRate;
-					java.util.List<org.drip.analytics.period.ResetPeriod> lsRP = null;
+					java.util.List<org.drip.analytics.cashflow.ResetPeriod> lsRP = null;
 
-					org.drip.analytics.period.ResetPeriodContainer rpc = period.rpc();
+					org.drip.analytics.cashflow.ResetPeriodContainer rpc = period.rpc();
 
 					if (null != rpc) lsRP = rpc.resetPeriods();
 
@@ -494,18 +506,54 @@ public class Stream extends org.drip.service.stream.Serializer {
 				return null;
 			}
 
+			double dblCreditForwardConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+				convAdj.creditForward();
+
+			double dblCreditFundingConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+				convAdj.creditFunding();
+
+			double dblCreditFXConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+				convAdj.creditFX();
+
 			double dblCumulativeConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
 				convAdj.cumulative();
+
+			double dblForwardFundingConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+				convAdj.forwardFunding();
+
+			double dblForwardFXConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+				convAdj.forwardFX();
+
+			double dblFundingFXConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
+				convAdj.fundingFX();
 
 			double dblPeriodFullRate = dblPeriodBaseRate + dblSpread;
 			dblTotalCoupon += dblPeriodFullRate;
 			dblUnadjustedDirtyDV01 += dblUnadjustedDirtyPeriodDV01;
 			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * dblPeriodFullRate;
+			dblCompoundingAdjustedDirtyDV01 += dblCompoundingAdjustedDirtyPeriodDV01;
+			dblCompoundingAdjustedDirtyPV += dblCompoundingAdjustedDirtyPeriodDV01 * 10000. *
+				dblPeriodFullRate;
+			dblCreditForwardConvexityAdjustedDirtyDV01 += dblCreditForwardConvexityAdjustedDirtyPeriodDV01;
+			dblCreditForwardConvexityAdjustedDirtyPV += dblCreditForwardConvexityAdjustedDirtyPeriodDV01 *
+				10000. * dblPeriodFullRate;
+			dblCreditFundingConvexityAdjustedDirtyDV01 += dblCreditFundingConvexityAdjustedDirtyPeriodDV01;
+			dblCreditFundingConvexityAdjustedDirtyPV += dblCreditFundingConvexityAdjustedDirtyPeriodDV01 *
+				10000. * dblPeriodFullRate;
+			dblCreditFXConvexityAdjustedDirtyDV01 += dblCreditFXConvexityAdjustedDirtyPeriodDV01;
+			dblCreditFXConvexityAdjustedDirtyPV += dblCreditFXConvexityAdjustedDirtyPeriodDV01 * 10000. *
+				dblPeriodFullRate;
 			dblCumulativeConvexityAdjustedDirtyDV01 += dblCumulativeConvexityAdjustedDirtyPeriodDV01;
 			dblCumulativeConvexityAdjustedDirtyPV += dblCumulativeConvexityAdjustedDirtyPeriodDV01 * 10000. *
 				dblPeriodFullRate;
-			dblCompoundingAdjustedDirtyDV01 += dblCompoundingAdjustedDirtyPeriodDV01;
-			dblCompoundingAdjustedDirtyPV += dblCompoundingAdjustedDirtyPeriodDV01 * 10000. *
+			dblForwardFundingConvexityAdjustedDirtyDV01 += dblForwardFundingConvexityAdjustedDirtyPeriodDV01;
+			dblForwardFundingConvexityAdjustedDirtyPV += dblForwardFundingConvexityAdjustedDirtyPeriodDV01 *
+				10000. * dblPeriodFullRate;
+			dblForwardFXConvexityAdjustedDirtyDV01 += dblForwardFXConvexityAdjustedDirtyPeriodDV01;
+			dblForwardFXConvexityAdjustedDirtyPV += dblForwardFXConvexityAdjustedDirtyPeriodDV01 * 10000. *
+				dblPeriodFullRate;
+			dblFundingFXConvexityAdjustedDirtyDV01 += dblFundingFXConvexityAdjustedDirtyPeriodDV01;
+			dblFundingFXConvexityAdjustedDirtyPV += dblFundingFXConvexityAdjustedDirtyPeriodDV01 * 10000. *
 				dblPeriodFullRate;
 		}
 
@@ -526,8 +574,20 @@ public class Stream extends org.drip.service.stream.Serializer {
 		dblUnadjustedDirtyDV01 /= dblCashPayDF;
 		dblCompoundingAdjustedDirtyPV /= dblCashPayDF;
 		dblCompoundingAdjustedDirtyDV01 /= dblCashPayDF;
+		dblCreditForwardConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblCreditForwardConvexityAdjustedDirtyDV01 /= dblCashPayDF;
+		dblCreditFundingConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblCreditFundingConvexityAdjustedDirtyDV01 /= dblCashPayDF;
+		dblCreditFXConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblCreditFXConvexityAdjustedDirtyDV01 /= dblCashPayDF;
 		dblCumulativeConvexityAdjustedDirtyPV /= dblCashPayDF;
 		dblCumulativeConvexityAdjustedDirtyDV01 /= dblCashPayDF;
+		dblForwardFundingConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblForwardFundingConvexityAdjustedDirtyDV01 /= dblCashPayDF;
+		dblForwardFXConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblForwardFXConvexityAdjustedDirtyDV01 /= dblCashPayDF;
+		dblFundingFXConvexityAdjustedDirtyPV /= dblCashPayDF;
+		dblFundingFXConvexityAdjustedDirtyDV01 /= dblCashPayDF;
 		double dblAccrued = 0. == dblAccrued01 ? 0. : dblAccrued01 * 10000. * dblAccrualCoupon;
 		double dblUnadjustedCleanPV = dblUnadjustedDirtyPV - dblAccrued;
 		double dblUnadjustedCleanDV01 = dblUnadjustedDirtyDV01 - dblAccrued01;
@@ -536,11 +596,43 @@ public class Stream extends org.drip.service.stream.Serializer {
 		double dblCompoundingAdjustedCleanDV01 = dblCompoundingAdjustedDirtyDV01 - dblAccrued01;
 		double dblCompoundingAdjustedFairPremium = 0.0001 * dblCompoundingAdjustedCleanPV /
 			dblCompoundingAdjustedCleanDV01;
+		double dblCreditForwardConvexityAdjustedCleanPV = dblCreditForwardConvexityAdjustedDirtyPV -
+			dblAccrued;
+		double dblCreditForwardConvexityAdjustedCleanDV01 = dblCreditForwardConvexityAdjustedDirtyDV01 -
+			dblAccrued01;
+		double dblCreditForwardConvexityAdjustedFairPremium = 0.0001 *
+			dblCreditForwardConvexityAdjustedCleanPV / dblCreditForwardConvexityAdjustedCleanDV01;
+		double dblCreditFundingConvexityAdjustedCleanPV = dblCreditFundingConvexityAdjustedDirtyPV -
+			dblAccrued;
+		double dblCreditFundingConvexityAdjustedCleanDV01 = dblCreditFundingConvexityAdjustedDirtyDV01 -
+			dblAccrued01;
+		double dblCreditFundingConvexityAdjustedFairPremium = 0.0001 *
+			dblCreditFundingConvexityAdjustedCleanPV / dblCreditFundingConvexityAdjustedCleanDV01;
+		double dblCreditFXConvexityAdjustedCleanPV = dblCreditFXConvexityAdjustedDirtyPV - dblAccrued;
+		double dblCreditFXConvexityAdjustedCleanDV01 = dblCreditFXConvexityAdjustedDirtyDV01 - dblAccrued01;
+		double dblCreditFXConvexityAdjustedFairPremium = 0.0001 * dblCreditFXConvexityAdjustedCleanPV /
+			dblCreditFXConvexityAdjustedCleanDV01;
 		double dblCumulativeConvexityAdjustedCleanPV = dblCumulativeConvexityAdjustedDirtyPV - dblAccrued;
 		double dblCumulativeConvexityAdjustedCleanDV01 = dblCumulativeConvexityAdjustedDirtyDV01 -
 			dblAccrued01;
 		double dblCumulativeConvexityAdjustedFairPremium = 0.0001 * dblCumulativeConvexityAdjustedCleanPV /
 			dblCumulativeConvexityAdjustedCleanDV01;
+		double dblForwardFundingConvexityAdjustedCleanPV = dblForwardFundingConvexityAdjustedDirtyPV -
+			dblAccrued;
+		double dblForwardFundingConvexityAdjustedCleanDV01 = dblForwardFundingConvexityAdjustedDirtyDV01 -
+			dblAccrued01;
+		double dblForwardFundingConvexityAdjustedFairPremium = 0.0001 *
+			dblForwardFundingConvexityAdjustedCleanPV / dblForwardFundingConvexityAdjustedCleanDV01;
+		double dblForwardFXConvexityAdjustedCleanPV = dblForwardFXConvexityAdjustedDirtyPV - dblAccrued;
+		double dblForwardFXConvexityAdjustedCleanDV01 = dblForwardFXConvexityAdjustedDirtyDV01 -
+			dblAccrued01;
+		double dblForwardFXConvexityAdjustedFairPremium = 0.0001 * dblForwardFXConvexityAdjustedCleanPV /
+			dblForwardFXConvexityAdjustedCleanDV01;
+		double dblFundingFXConvexityAdjustedCleanPV = dblFundingFXConvexityAdjustedDirtyPV - dblAccrued;
+		double dblFundingFXConvexityAdjustedCleanDV01 = dblFundingFXConvexityAdjustedDirtyDV01 -
+			dblAccrued01;
+		double dblFundingFXConvexityAdjustedFairPremium = 0.0001 * dblFundingFXConvexityAdjustedCleanPV /
+			dblFundingFXConvexityAdjustedCleanDV01;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
@@ -578,20 +670,115 @@ public class Stream extends org.drip.service.stream.Serializer {
 		mapResult.put ("CompoundingAdjustmentFactor", dblCompoundingAdjustedDirtyDV01 /
 			dblUnadjustedDirtyDV01);
 
-		mapResult.put ("ConvexityAdjustmentPremium", dblCompoundingAdjustedCleanPV - dblUnadjustedCleanPV);
+		mapResult.put ("CompoundingAdjustmentPremium", dblCompoundingAdjustedCleanPV - dblUnadjustedCleanPV);
 
 		mapResult.put ("CompoundingAdjustmentPremiumUpfront", (dblCompoundingAdjustedCleanPV -
+			dblUnadjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("CreditForwardConvexityAdjustedCleanDV01",
+			dblCreditForwardConvexityAdjustedCleanDV01);
+
+		mapResult.put ("CreditForwardConvexityAdjustedCleanPV", dblCreditForwardConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditForwardConvexityAdjustedDirtyDV01",
+			dblCreditForwardConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("CreditForwardConvexityAdjustedDirtyPV", dblCreditForwardConvexityAdjustedDirtyPV);
+
+		mapResult.put ("CreditForwardConvexityAdjustedDV01", dblCreditForwardConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("CreditForwardConvexityAdjustedFairPremium",
+			dblCreditForwardConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditForwardConvexityAdjustedParRate",
+			dblCreditForwardConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditForwardConvexityAdjustedPV", dblCreditForwardConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditForwardConvexityAdjustedRate", dblCreditForwardConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditForwardConvexityAdjustedUpfront", dblCreditForwardConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditForwardConvexityAdjustmentFactor", dblCreditForwardConvexityAdjustedDirtyDV01
+			/ dblUnadjustedDirtyDV01);
+
+		mapResult.put ("CreditForwardConvexityAdjustmentPremium", dblCreditForwardConvexityAdjustedCleanPV
+			- dblUnadjustedCleanPV);
+
+		mapResult.put ("CreditForwardConvexityAdjustmentPremiumUpfront",
+			(dblCreditForwardConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("CreditFundingConvexityAdjustedCleanDV01",
+			dblCreditFundingConvexityAdjustedCleanDV01);
+
+		mapResult.put ("CreditFundingConvexityAdjustedCleanPV", dblCreditFundingConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditFundingConvexityAdjustedDirtyDV01",
+			dblCreditFundingConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("CreditFundingConvexityAdjustedDirtyPV", dblCreditFundingConvexityAdjustedDirtyPV);
+
+		mapResult.put ("CreditFundingConvexityAdjustedDV01", dblCreditFundingConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("CreditFundingConvexityAdjustedFairPremium",
+			dblCreditFundingConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditFundingConvexityAdjustedParRate",
+			dblCreditFundingConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditFundingConvexityAdjustedPV", dblCreditFundingConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditFundingConvexityAdjustedRate", dblCreditFundingConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditFundingConvexityAdjustedUpfront", dblCreditFundingConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditFundingConvexityAdjustmentFactor", dblCreditFundingConvexityAdjustedDirtyDV01
+			/ dblUnadjustedDirtyDV01);
+
+		mapResult.put ("CreditFundingConvexityAdjustmentPremium", dblCreditFundingConvexityAdjustedCleanPV
+			- dblUnadjustedCleanPV);
+
+		mapResult.put ("CreditFundingConvexityAdjustmentPremiumUpfront",
+			(dblCreditFundingConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("CreditFXConvexityAdjustedCleanDV01", dblCreditFXConvexityAdjustedCleanDV01);
+
+		mapResult.put ("CreditFXConvexityAdjustedCleanPV", dblCreditFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditFXConvexityAdjustedDirtyDV01", dblCreditFXConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("CreditFXConvexityAdjustedDirtyPV", dblCreditFXConvexityAdjustedDirtyPV);
+
+		mapResult.put ("CreditFXConvexityAdjustedDV01", dblCreditFXConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("CreditFXConvexityAdjustedFairPremium", dblCreditFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditFXConvexityAdjustedParRate", dblCreditFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditFXConvexityAdjustedPV", dblCreditFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditFXConvexityAdjustedRate", dblCreditFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("CreditFXConvexityAdjustedUpfront", dblCreditFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("CreditFXConvexityAdjustmentFactor", dblCreditFXConvexityAdjustedDirtyDV01 /
+			dblUnadjustedDirtyDV01);
+
+		mapResult.put ("CreditFXConvexityAdjustmentPremium", dblCreditFXConvexityAdjustedCleanPV -
+			dblUnadjustedCleanPV);
+
+		mapResult.put ("CreditFXConvexityAdjustmentPremiumUpfront", (dblCreditFXConvexityAdjustedCleanPV -
 			dblUnadjustedCleanPV) / dblValueNotional);
 
 		mapResult.put ("CumulativeConvexityAdjustedCleanDV01", dblCumulativeConvexityAdjustedCleanDV01);
 
 		mapResult.put ("CumulativeConvexityAdjustedCleanPV", dblCumulativeConvexityAdjustedCleanPV);
 
-		mapResult.put ("ConvexityAdjustedDirtyDV01", dblCumulativeConvexityAdjustedDirtyDV01);
+		mapResult.put ("CumulativeConvexityAdjustedDirtyDV01", dblCumulativeConvexityAdjustedDirtyDV01);
 
-		mapResult.put ("ConvexityAdjustedDirtyPV", dblCumulativeConvexityAdjustedDirtyPV);
+		mapResult.put ("CumulativeConvexityAdjustedDirtyPV", dblCumulativeConvexityAdjustedDirtyPV);
 
-		mapResult.put ("ConvexityAdjustedDV01", dblCumulativeConvexityAdjustedDirtyDV01);
+		mapResult.put ("CumulativeConvexityAdjustedDV01", dblCumulativeConvexityAdjustedDirtyDV01);
 
 		mapResult.put ("CumulativeConvexityAdjustedFairPremium", dblCumulativeConvexityAdjustedFairPremium);
 
@@ -623,6 +810,97 @@ public class Stream extends org.drip.service.stream.Serializer {
 		mapResult.put ("FairPremium", dblCumulativeConvexityAdjustedFairPremium);
 
 		mapResult.put ("Fixing01", dblFixing01 / dblCashPayDF);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedCleanDV01",
+			dblForwardFundingConvexityAdjustedCleanDV01);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedCleanPV", dblForwardFundingConvexityAdjustedCleanPV);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedDirtyDV01",
+			dblForwardFundingConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedDirtyPV", dblForwardFundingConvexityAdjustedDirtyPV);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedDV01", dblForwardFundingConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedFairPremium",
+			dblForwardFundingConvexityAdjustedFairPremium);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedParRate",
+			dblForwardFundingConvexityAdjustedFairPremium);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedPV", dblForwardFundingConvexityAdjustedCleanPV);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedRate", dblForwardFundingConvexityAdjustedFairPremium);
+
+		mapResult.put ("ForwardFundingConvexityAdjustedUpfront", dblForwardFundingConvexityAdjustedCleanPV);
+
+		mapResult.put ("ForwardFundingConvexityAdjustmentFactor", dblForwardFundingConvexityAdjustedDirtyDV01
+			/ dblUnadjustedDirtyDV01);
+
+		mapResult.put ("ForwardFundingConvexityAdjustmentPremium", dblForwardFundingConvexityAdjustedCleanPV
+			- dblUnadjustedCleanPV);
+
+		mapResult.put ("ForwardFundingConvexityAdjustmentPremiumUpfront",
+			(dblForwardFundingConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("ForwardFXConvexityAdjustedCleanDV01", dblForwardFXConvexityAdjustedCleanDV01);
+
+		mapResult.put ("ForwardFXConvexityAdjustedCleanPV", dblForwardFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("ForwardFXConvexityAdjustedDirtyDV01", dblForwardFXConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("ForwardFXConvexityAdjustedDirtyPV", dblForwardFXConvexityAdjustedDirtyPV);
+
+		mapResult.put ("ForwardFXConvexityAdjustedDV01", dblForwardFXConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("ForwardFXConvexityAdjustedFairPremium", dblForwardFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("ForwardFXConvexityAdjustedParRate", dblForwardFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("ForwardFXConvexityAdjustedPV", dblForwardFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("ForwardFXConvexityAdjustedRate", dblForwardFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("ForwardFXConvexityAdjustedUpfront", dblForwardFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("ForwardFXConvexityAdjustmentFactor", dblForwardFXConvexityAdjustedDirtyDV01 /
+			dblUnadjustedDirtyDV01);
+
+		mapResult.put ("ForwardFXConvexityAdjustmentPremium", dblForwardFXConvexityAdjustedCleanPV -
+			dblUnadjustedCleanPV);
+
+		mapResult.put ("ForwardFXConvexityAdjustmentPremiumUpfront", (dblForwardFXConvexityAdjustedCleanPV -
+			dblUnadjustedCleanPV) / dblValueNotional);
+
+		mapResult.put ("FundingFXConvexityAdjustedCleanDV01", dblFundingFXConvexityAdjustedCleanDV01);
+
+		mapResult.put ("FundingFXConvexityAdjustedCleanPV", dblFundingFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("FundingFXConvexityAdjustedDirtyDV01", dblFundingFXConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("FundingFXConvexityAdjustedDirtyPV", dblFundingFXConvexityAdjustedDirtyPV);
+
+		mapResult.put ("FundingFXConvexityAdjustedDV01", dblFundingFXConvexityAdjustedDirtyDV01);
+
+		mapResult.put ("FundingFXConvexityAdjustedFairPremium", dblFundingFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("FundingFXConvexityAdjustedParRate", dblFundingFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("FundingFXConvexityAdjustedPV", dblFundingFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("FundingFXConvexityAdjustedRate", dblFundingFXConvexityAdjustedFairPremium);
+
+		mapResult.put ("FundingFXConvexityAdjustedUpfront", dblFundingFXConvexityAdjustedCleanPV);
+
+		mapResult.put ("FundingFXConvexityAdjustmentFactor", dblFundingFXConvexityAdjustedDirtyDV01 /
+			dblUnadjustedDirtyDV01);
+
+		mapResult.put ("FundingFXConvexityAdjustmentPremium", dblFundingFXConvexityAdjustedCleanPV -
+			dblUnadjustedCleanPV);
+
+		mapResult.put ("FundingFXConvexityAdjustmentPremiumUpfront", (dblFundingFXConvexityAdjustedCleanPV -
+			dblUnadjustedCleanPV) / dblValueNotional);
 
 		mapResult.put ("ParRate", dblCumulativeConvexityAdjustedFairPremium);
 
@@ -659,8 +937,20 @@ public class Stream extends org.drip.service.stream.Serializer {
 		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 			double dblCompoundingAdjustedCleanPrice = 100. * (1. + (dblCompoundingAdjustedCleanPV /
 				dblValueNotional));
+			double dblCreditForwardConvexityAdjustedCleanPrice = 100. * (1. +
+				(dblCreditForwardConvexityAdjustedCleanPV / dblValueNotional));
+			double dblCreditFundingConvexityAdjustedCleanPrice = 100. * (1. +
+				(dblCreditFundingConvexityAdjustedCleanPV / dblValueNotional));
+			double dblCreditFXConvexityAdjustedCleanPrice = 100. * (1. + (dblCreditFXConvexityAdjustedCleanPV
+				/ dblValueNotional));
 			double dblCumulativeConvexityAdjustedCleanPrice = 100. * (1. +
 				(dblCumulativeConvexityAdjustedCleanPV / dblValueNotional));
+			double dblForwardFundingConvexityAdjustedCleanPrice = 100. * (1. +
+				(dblForwardFundingConvexityAdjustedCleanPV / dblValueNotional));
+			double dblForwardFXConvexityAdjustedCleanPrice = 100. * (1. +
+				(dblForwardFXConvexityAdjustedCleanPV / dblValueNotional));
+			double dblFundingFXConvexityAdjustedCleanPrice = 100. * (1. +
+				(dblFundingFXConvexityAdjustedCleanPV / dblValueNotional));
 			double dblUnadjustedCleanPrice = 100. * (1. + (dblUnadjustedCleanPV / dblValueNotional));
 
 			mapResult.put ("CleanPrice", dblCumulativeConvexityAdjustedCleanPrice);
@@ -672,6 +962,31 @@ public class Stream extends org.drip.service.stream.Serializer {
 
 			mapResult.put ("CompoundingAdjustedPrice", dblCompoundingAdjustedCleanPrice);
 
+			mapResult.put ("CreditForwardConvexityAdjustedCleanPrice",
+				dblCreditForwardConvexityAdjustedCleanPrice);
+
+			mapResult.put ("CreditForwardConvexityAdjustedDirtyPrice", 100. * (1. +
+				(dblCreditForwardConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("CreditForwardConvexityAdjustedPrice",
+				dblCreditForwardConvexityAdjustedCleanPrice);
+
+			mapResult.put ("CreditFundingConvexityAdjustedCleanPrice",
+				dblCreditFundingConvexityAdjustedCleanPrice);
+
+			mapResult.put ("CreditFundingConvexityAdjustedDirtyPrice", 100. * (1. +
+				(dblCreditFundingConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("CreditFundingConvexityAdjustedPrice",
+				dblCreditFundingConvexityAdjustedCleanPrice);
+
+			mapResult.put ("CreditFXConvexityAdjustedCleanPrice", dblCreditFXConvexityAdjustedCleanPrice);
+
+			mapResult.put ("CreditFXConvexityAdjustedDirtyPrice", 100. * (1. +
+				(dblCreditFXConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("CreditFXConvexityAdjustedPrice", dblCreditFXConvexityAdjustedCleanPrice);
+
 			mapResult.put ("CumulativeConvexityAdjustedCleanPrice",
 				dblCumulativeConvexityAdjustedCleanPrice);
 
@@ -682,6 +997,29 @@ public class Stream extends org.drip.service.stream.Serializer {
 
 			mapResult.put ("DirtyPrice", 100. * (1. + (dblCumulativeConvexityAdjustedDirtyPV /
 				dblValueNotional)));
+
+			mapResult.put ("ForwardFundingConvexityAdjustedCleanPrice",
+				dblForwardFundingConvexityAdjustedCleanPrice);
+
+			mapResult.put ("ForwardFundingConvexityAdjustedDirtyPrice", 100. * (1. +
+				(dblForwardFundingConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("ForwardFundingConvexityAdjustedPrice",
+				dblForwardFundingConvexityAdjustedCleanPrice);
+
+			mapResult.put ("ForwardFXConvexityAdjustedCleanPrice", dblForwardFXConvexityAdjustedCleanPrice);
+
+			mapResult.put ("ForwardFXConvexityAdjustedDirtyPrice", 100. * (1. +
+				(dblForwardFXConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("ForwardFXConvexityAdjustedPrice", dblForwardFXConvexityAdjustedCleanPrice);
+
+			mapResult.put ("FundingFXConvexityAdjustedCleanPrice", dblFundingFXConvexityAdjustedCleanPrice);
+
+			mapResult.put ("FundingFXConvexityAdjustedDirtyPrice", 100. * (1. +
+				(dblFundingFXConvexityAdjustedDirtyPV / dblValueNotional)));
+
+			mapResult.put ("FundingFXConvexityAdjustedPrice", dblFundingFXConvexityAdjustedCleanPrice);
 
 			mapResult.put ("Price", dblCumulativeConvexityAdjustedCleanPrice);
 
@@ -772,7 +1110,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -844,7 +1182,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -916,7 +1254,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.period.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -963,7 +1301,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 		try {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.payDate();
 
 				if (p.startDate() < valParams.valueDate()) continue;
@@ -1042,7 +1380,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+				for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
@@ -1138,9 +1476,9 @@ public class Stream extends org.drip.service.stream.Serializer {
 						continue;
 
 					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.period.CouponPeriod>();
+						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
 
-					_lsCouponPeriod.add (new org.drip.analytics.period.CouponPeriod
+					_lsCouponPeriod.add (new org.drip.analytics.cashflow.CouponPeriod
 						(astrRecord[i].getBytes()));
 				}
 			}
@@ -1170,7 +1508,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 
 			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
 
-			for (org.drip.analytics.period.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
 				if (null == p) continue;
 
 				if (bFirstEntry)

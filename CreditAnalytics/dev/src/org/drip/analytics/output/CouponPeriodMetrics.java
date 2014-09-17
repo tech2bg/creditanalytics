@@ -453,7 +453,7 @@ public class CouponPeriodMetrics {
 	/**
 	 * Retrieve the Period Discount Factor Loading Coefficient for the specified Funding Latent State
 	 * 
-	 * @param fundingLabel The Period Funding Label
+	 * @param fundingLabel The Funding Label
 	 * 
 	 * @return The Period Discount Factor Loading Coefficient for the specified Funding Latent State
 	 */
@@ -475,7 +475,7 @@ public class CouponPeriodMetrics {
 	/**
 	 * Retrieve the Period FX Loading Coefficient for the specified FX Latent State
 	 * 
-	 * @param fxLabel The Period FX Label
+	 * @param fxLabel The FX Label
 	 * 
 	 * @return The Period FX Loading Coefficient for the specified FX Latent State
 	 */

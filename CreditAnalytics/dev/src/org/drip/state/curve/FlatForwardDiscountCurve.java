@@ -412,7 +412,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_FORWARD_RATE;
+		return org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE;
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure (

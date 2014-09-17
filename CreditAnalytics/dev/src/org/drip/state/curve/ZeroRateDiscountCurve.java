@@ -133,7 +133,7 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 
 	@Override public java.lang.String latentStateQuantificationMetric()
 	{
-		return org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE;
+		return org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE;
 	}
 
 	@Override public ZeroRateDiscountCurve parallelShiftManifestMeasure (

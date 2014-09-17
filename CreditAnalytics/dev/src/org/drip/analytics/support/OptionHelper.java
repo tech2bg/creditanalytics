@@ -150,8 +150,7 @@ public class OptionHelper {
 			return 0.;
 
 		org.drip.quant.function1D.AbstractUnivariate auVolSurface = csqs.customMetricVolSurface
-			(org.drip.state.identifier.CustomMetricLabel.Standard (strVolSurface), new
-				org.drip.analytics.date.JulianDate (dblEndDate));
+			(org.drip.state.identifier.CustomMetricLabel.Standard (strVolSurface));
 
 		return null != auVolSurface ? new PeriodVariance (auVolSurface).integrate (dblStartDate, dblEndDate)
 			/ 365.25 : 0.;
@@ -287,13 +286,11 @@ public class OptionHelper {
 				dblStartDate)
 			return 0.;
 
-		org.drip.analytics.date.JulianDate dtEnd = new org.drip.analytics.date.JulianDate (dblEndDate);
-
 		return IntegratedCrossVolQuanto (csqs.customMetricVolSurface
-			(org.drip.state.identifier.CustomMetricLabel.Standard (strVolSurface1), dtEnd),
+			(org.drip.state.identifier.CustomMetricLabel.Standard (strVolSurface1)),
 				csqs.customMetricVolSurface (org.drip.state.identifier.CustomMetricLabel.Standard
-					(strVolSurface2), dtEnd), csqs.customMetricVolSurface
-						(org.drip.state.identifier.CustomMetricLabel.Standard (strCorrSurface), dtEnd),
+					(strVolSurface2)), csqs.customMetricVolSurface
+						(org.drip.state.identifier.CustomMetricLabel.Standard (strCorrSurface)),
 							dblStartDate, dblEndDate);
 	}
 

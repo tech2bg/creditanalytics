@@ -47,11 +47,11 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamComponent {
+public class FloatFloatComponent extends org.drip.product.rates.DualStreamComponent {
 	private java.lang.String _strCode = "";
 	private org.drip.param.valuation.CashSettleParams _csp = null;
-	private org.drip.product.cashflow.Stream _floatDerived = null;
-	private org.drip.product.cashflow.Stream _floatReference = null;
+	private org.drip.product.rates.Stream _floatDerived = null;
+	private org.drip.product.rates.Stream _floatReference = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -73,8 +73,8 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 	 */
 
 	public FloatFloatComponent (
-		final org.drip.product.cashflow.Stream floatReference,
-		final org.drip.product.cashflow.Stream floatDerived,
+		final org.drip.product.rates.Stream floatReference,
+		final org.drip.product.rates.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
@@ -126,7 +126,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
 			_floatReference = null;
 		else
-			_floatReference = new org.drip.product.cashflow.Stream (astrField[1].getBytes());
+			_floatReference = new org.drip.product.rates.Stream (astrField[1].getBytes());
 
 		if (null == astrField[2] || astrField[2].isEmpty())
 			throw new java.lang.Exception
@@ -135,7 +135,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
 			_floatDerived = null;
 		else
-			_floatDerived = new org.drip.product.cashflow.Stream (astrField[2].getBytes());
+			_floatDerived = new org.drip.product.rates.Stream (astrField[2].getBytes());
 	}
 
 	@Override public void setPrimaryCode (
@@ -251,12 +251,12 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 		return null;
 	}
 
-	@Override public org.drip.product.cashflow.Stream referenceStream()
+	@Override public org.drip.product.rates.Stream referenceStream()
 	{
 		return _floatReference;
 	}
 
-	@Override public org.drip.product.cashflow.Stream derivedStream()
+	@Override public org.drip.product.rates.Stream derivedStream()
 	{
 		return _floatDerived;
 	}
@@ -297,7 +297,7 @@ public class FloatFloatComponent extends org.drip.product.cashflow.DualStreamCom
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists
 			(_floatReference.cashFlowPeriod(), _floatDerived.cashFlowPeriod());

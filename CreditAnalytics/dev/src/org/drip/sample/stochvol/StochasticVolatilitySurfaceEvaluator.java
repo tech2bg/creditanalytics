@@ -1,5 +1,5 @@
 
-package org.drip.sample.option;
+package org.drip.sample.stochvol;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.MarketSurface;

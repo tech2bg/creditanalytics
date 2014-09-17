@@ -51,8 +51,8 @@ public class DualStreamComponentBuilder {
 	 */
 
 	public static final org.drip.product.rates.FixFloatComponent MakeFixFloat (
-		final org.drip.product.cashflow.Stream fixReference,
-		final org.drip.product.cashflow.Stream floatDerived,
+		final org.drip.product.rates.Stream fixReference,
+		final org.drip.product.rates.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 	{
 		try {
@@ -75,8 +75,8 @@ public class DualStreamComponentBuilder {
 	 */
 
 	public static final org.drip.product.rates.FloatFloatComponent MakeFloatFloat (
-		final org.drip.product.cashflow.Stream floatReference,
-		final org.drip.product.cashflow.Stream floatDerived,
+		final org.drip.product.rates.Stream floatReference,
+		final org.drip.product.rates.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 	{
 		try {
@@ -98,9 +98,9 @@ public class DualStreamComponentBuilder {
 	 * @return The DualStreamComponent Instance
 	 */
 
-	public static final org.drip.product.cashflow.DualStreamComponent MakeDualStream (
-		final org.drip.product.cashflow.Stream streamReference,
-		final org.drip.product.cashflow.Stream streamDerived,
+	public static final org.drip.product.rates.DualStreamComponent MakeDualStream (
+		final org.drip.product.rates.Stream streamReference,
+		final org.drip.product.rates.Stream streamDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 	{
 		return null == streamReference || null == streamDerived ? null : MakeFloatFloat (streamReference,

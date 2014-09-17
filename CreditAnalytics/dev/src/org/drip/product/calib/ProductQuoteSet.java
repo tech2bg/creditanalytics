@@ -90,7 +90,7 @@ public abstract class ProductQuoteSet {
 	{
 		for (org.drip.state.representation.LatentStateSpecification lss : _aLSS) {
 			if (lss.latentState().equalsIgnoreCase
-				(org.drip.analytics.rates.ForwardCurve.LATENT_STATE_FORWARD))
+				(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD))
 				return (org.drip.state.identifier.ForwardLabel) lss.label();
 		}
 
@@ -107,7 +107,7 @@ public abstract class ProductQuoteSet {
 	{
 		for (org.drip.state.representation.LatentStateSpecification lss : _aLSS) {
 			if (lss.latentState().equalsIgnoreCase
-				(org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT))
+				(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING))
 				return (org.drip.state.identifier.FundingLabel) lss.label();
 		}
 

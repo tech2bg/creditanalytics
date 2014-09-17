@@ -119,7 +119,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return List of ProductLossPeriodCurveMeasures
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.LossQuadratureMetrics>
+	public abstract java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics>
 		getLossFlowFromPrice (
 			final org.drip.param.valuation.ValuationParams valParams,
 			final org.drip.param.pricer.PricerParams pricerParams,

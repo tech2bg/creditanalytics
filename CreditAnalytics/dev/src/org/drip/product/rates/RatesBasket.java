@@ -48,8 +48,8 @@ package org.drip.product.rates;
 
 public class RatesBasket extends org.drip.product.definition.CalibratableFixedIncomeComponent {
 	private java.lang.String _strName = "";
-	private org.drip.product.cashflow.Stream[] _aCompFixedStream = null;
-	private org.drip.product.cashflow.Stream[] _aCompFloatStream = null;
+	private org.drip.product.rates.Stream[] _aCompFixedStream = null;
+	private org.drip.product.rates.Stream[] _aCompFloatStream = null;
 
 	/**
 	 * RatesBasket constructor
@@ -63,8 +63,8 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 
 	public RatesBasket (
 		final java.lang.String strName,
-		final org.drip.product.cashflow.Stream[] aCompFixedStream,
-		final org.drip.product.cashflow.Stream[] aCompFloatStream)
+		final org.drip.product.rates.Stream[] aCompFixedStream,
+		final org.drip.product.rates.Stream[] aCompFloatStream)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_aCompFixedStream =
@@ -119,7 +119,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 			throw new java.lang.Exception
 				("RatesBasket de-serializer: Cannot locate fixed stream component array");
 
-		_aCompFixedStream = new org.drip.product.cashflow.Stream[astrCompFixedStream.length];
+		_aCompFixedStream = new org.drip.product.rates.Stream[astrCompFixedStream.length];
 
 		for (int i = 0; i < astrCompFixedStream.length; ++i) {
 			if (null == astrCompFixedStream[i] || astrCompFixedStream[i].isEmpty() ||
@@ -127,7 +127,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 				throw new java.lang.Exception
 					("RatesBasket de-serializer: Cannot locate fixed stream component #" + i);
 
-			_aCompFixedStream[i] = new org.drip.product.cashflow.Stream (astrCompFixedStream[i].getBytes());
+			_aCompFixedStream[i] = new org.drip.product.rates.Stream (astrCompFixedStream[i].getBytes());
 		}
 
 		java.lang.String[] astrCompFloatStream = org.drip.quant.common.StringUtil.Split (astrField[3],
@@ -137,7 +137,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 			throw new java.lang.Exception
 				("RatesBasket de-serializer: Cannot locate float stream component array");
 
-		_aCompFloatStream = new org.drip.product.cashflow.Stream[astrCompFloatStream.length];
+		_aCompFloatStream = new org.drip.product.rates.Stream[astrCompFloatStream.length];
 
 		for (int i = 0; i < astrCompFloatStream.length; ++i) {
 			if (null == astrCompFloatStream[i] || astrCompFloatStream[i].isEmpty() ||
@@ -145,7 +145,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 				throw new java.lang.Exception
 					("RatesBasket de-serializer: Cannot locate floating stream component #" + i);
 
-			_aCompFloatStream[i] = new org.drip.product.cashflow.Stream (astrCompFloatStream[i].getBytes());
+			_aCompFloatStream[i] = new org.drip.product.rates.Stream (astrCompFloatStream[i].getBytes());
 		}
 	}
 
@@ -166,7 +166,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 	 * @return The array of the fixed stream components
 	 */
 
-	public org.drip.product.cashflow.Stream[] getFixedStreamComponents()
+	public org.drip.product.rates.Stream[] getFixedStreamComponents()
 	{
 		return _aCompFixedStream;
 	}
@@ -177,7 +177,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 	 * @return The array of the float stream components
 	 */
 
-	public org.drip.product.cashflow.Stream[] getFloatStreamComponents()
+	public org.drip.product.rates.Stream[] getFloatStreamComponents()
 	{
 		return _aCompFloatStream;
 	}
@@ -215,7 +215,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 
 			java.lang.StringBuffer sbFixStream = new java.lang.StringBuffer();
 
-			for (org.drip.product.cashflow.Stream fixStream : _aCompFixedStream) {
+			for (org.drip.product.rates.Stream fixStream : _aCompFixedStream) {
 				if (null == fixStream) continue;
 
 				if (bFirstEntry)
@@ -239,7 +239,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 
 			java.lang.StringBuffer sbFloatStream = new java.lang.StringBuffer();
 
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream) {
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				if (null == floatStream) continue;
 
 				if (bFirstEntry)
@@ -276,12 +276,12 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setCurrency = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.Stream fixedStream : _aCompFixedStream)
+			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream)
 				setCurrency.addAll (fixedStream.cashflowCurrencySet());
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream)
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream)
 				setCurrency.addAll (floatStream.cashflowCurrencySet());
 		}
 
@@ -293,12 +293,12 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setCouponCurrency = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.Stream fixedStream : _aCompFixedStream)
+			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream)
 				setCouponCurrency.add (fixedStream.couponCurrency());
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream)
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream)
 				setCouponCurrency.add (floatStream.couponCurrency());
 		}
 
@@ -318,7 +318,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setPrincipalCurrency = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.Stream fixedStream : _aCompFixedStream) {
+			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
 				java.lang.String[] astrPrincipalCurrency = fixedStream.principalCurrency();
 
 				if (null != astrPrincipalCurrency && 0 != astrPrincipalCurrency.length) {
@@ -329,7 +329,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream) {
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				java.lang.String[] astrPrincipalCurrency = floatStream.principalCurrency();
 
 				if (null != astrPrincipalCurrency && 0 != astrPrincipalCurrency.length) {
@@ -355,7 +355,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setstrCreditLabel = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.Stream fixedStream : _aCompFixedStream) {
+			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
 				org.drip.state.identifier.CreditLabel creditLabel = fixedStream.creditLabel();
 
 				if (null != creditLabel) setstrCreditLabel.add (creditLabel.fullyQualifiedName());
@@ -363,7 +363,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream) {
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				org.drip.state.identifier.CreditLabel creditLabel = floatStream.creditLabel();
 
 				if (null != creditLabel) setstrCreditLabel.add (creditLabel.fullyQualifiedName());
@@ -387,7 +387,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setstrForwardLabel = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream) {
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				org.drip.state.identifier.ForwardLabel forwardLabel = floatStream.forwardLabel();
 
 				if (null != forwardLabel) setstrForwardLabel.add (forwardLabel.fullyQualifiedName());
@@ -411,12 +411,12 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setstrFundingLabel = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.Stream fixedStream : _aCompFixedStream)
+			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream)
 				setstrFundingLabel.add (fixedStream.fundingLabel().fullyQualifiedName());
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream)
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream)
 				setstrFundingLabel.add (floatStream.fundingLabel().fullyQualifiedName());
 		}
 
@@ -437,7 +437,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		java.util.Set<java.lang.String> setstrFXLabel = new java.util.TreeSet<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.Stream fixedStream : _aCompFixedStream) {
+			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
 				org.drip.state.identifier.FXLabel fxLabel = fixedStream.fxLabel();
 
 				if (null != fxLabel) setstrFXLabel.add (fxLabel.fullyQualifiedName());
@@ -445,7 +445,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream) {
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				org.drip.state.identifier.FXLabel fxLabel = floatStream.fxLabel();
 
 				if (null != fxLabel) setstrFXLabel.add (fxLabel.fullyQualifiedName());
@@ -581,7 +581,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
 	{
 		return null;
 	}
@@ -603,7 +603,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.cashflow.Stream fixedStream : _aCompFixedStream) {
+			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
 					mapFixedStreamResult = fixedStream.value (valParams, pricerParams, csqs, quotingParams);
 
@@ -614,7 +614,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.cashflow.Stream floatStream : _aCompFloatStream) {
+			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>
 					mapFixedStreamResult = floatStream.value (valParams, pricerParams, csqs, quotingParams);
 
@@ -642,8 +642,8 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 
 		org.drip.analytics.date.JulianDate dtEffective = org.drip.analytics.date.JulianDate.Today();
 
-		org.drip.product.cashflow.Stream[] aFixedStream = new org.drip.product.cashflow.Stream[3];
-		org.drip.product.cashflow.Stream[] aFloatStream = new org.drip.product.cashflow.Stream[3];
+		org.drip.product.rates.Stream[] aFixedStream = new org.drip.product.rates.Stream[3];
+		org.drip.product.rates.Stream[] aFloatStream = new org.drip.product.rates.Stream[3];
 
 		org.drip.state.identifier.ForwardLabel forwardLabel = org.drip.state.identifier.ForwardLabel.Standard
 				("ABC-RI-3M");
@@ -651,47 +651,47 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		org.drip.analytics.daycount.DateAdjustParams dap = new org.drip.analytics.daycount.DateAdjustParams
 			(org.drip.analytics.daycount.Convention.DR_FOLL, "XYZ");
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod3Y =
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "3Y",
 				java.lang.Double.NaN, dap, 2, "30/360", false, true, "DEF", 100., null, 0.03, "ABC", "ABC",
 					null, null);
 
-		aFixedStream[0] = new org.drip.product.cashflow.Stream (lsFixedCouponPeriod3Y);
+		aFixedStream[0] = new org.drip.product.rates.Stream (lsFixedCouponPeriod3Y);
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatCouponPeriod3Y =
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatCouponPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "3Y",
 				java.lang.Double.NaN, dap, 2, "30/360", false, true, "DEF", 100., null, 0., "ABC", "ABC",
 					forwardLabel, null);
 
-		aFloatStream[0] = new org.drip.product.cashflow.Stream (lsFloatCouponPeriod3Y);
+		aFloatStream[0] = new org.drip.product.rates.Stream (lsFloatCouponPeriod3Y);
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod5Y =
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "5Y",
 				java.lang.Double.NaN, dap, 2, "30/360", false, true, "JKL", 100., null, 0.05, "GHI", "GHI",
 					null, null);
 
-		aFixedStream[1] = new org.drip.product.cashflow.Stream (lsFixedCouponPeriod5Y);
+		aFixedStream[1] = new org.drip.product.rates.Stream (lsFixedCouponPeriod5Y);
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatCouponPeriod5Y =
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatCouponPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "5Y",
 				java.lang.Double.NaN, dap, 2, "30/360", false, true, "JKL", 100., null, 0.05, "GHI", "GHI",
 					forwardLabel, null);
 
-		aFloatStream[1] = new org.drip.product.cashflow.Stream (lsFloatCouponPeriod5Y);
+		aFloatStream[1] = new org.drip.product.rates.Stream (lsFloatCouponPeriod5Y);
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsFixedCouponPeriod7Y =
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "7Y",
 				java.lang.Double.NaN, dap, 2, "30/360", false, true, "PQR", 100., null, 0.05, "MNO", "MNO",
 					null, null);
 
-		aFixedStream[2] = new org.drip.product.cashflow.Stream (lsFixedCouponPeriod7Y);
+		aFixedStream[2] = new org.drip.product.rates.Stream (lsFixedCouponPeriod7Y);
 
-		java.util.List<org.drip.analytics.period.CouponPeriod> lsFloatCouponPeriod7Y =
+		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatCouponPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(), "7Y",
 				java.lang.Double.NaN, dap, 2, "30/360", false, true, "PQR", 100., null, 0.05, "MNO", "MNO",
 					forwardLabel, null);
 
-		aFloatStream[2] = new org.drip.product.cashflow.Stream (lsFloatCouponPeriod7Y);
+		aFloatStream[2] = new org.drip.product.rates.Stream (lsFloatCouponPeriod7Y);
 
 		RatesBasket rb = new RatesBasket ("SAMRB", aFixedStream, aFloatStream);
 

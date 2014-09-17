@@ -7,7 +7,6 @@ import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.cashflow.Stream;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fx.*;
 import org.drip.product.params.*;

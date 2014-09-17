@@ -191,7 +191,7 @@ public abstract class FixedIncomeComponent extends org.drip.service.stream.Seria
 	 * @return List of the Product's Cash Flow Periods
 	 */
 
-	public abstract java.util.List<org.drip.analytics.period.CouponPeriod> cashFlowPeriod();
+	public abstract java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod();
 
 	/**
 	 * Get the Product's cash settlement parameters

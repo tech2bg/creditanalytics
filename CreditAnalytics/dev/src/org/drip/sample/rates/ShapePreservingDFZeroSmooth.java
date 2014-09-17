@@ -2,13 +2,12 @@
 package org.drip.sample.rates;
 
 import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
-import org.drip.param.valuation.CashSettleParams;
-import org.drip.param.valuation.ValuationParams;
+import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
-import org.drip.product.cashflow.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
@@ -17,6 +16,7 @@ import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.params.*;
+import org.drip.spline.pchip.LocalMonotoneCkGenerator;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
@@ -127,8 +127,8 @@ public class ShapePreservingDFZeroSmooth {
 			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						DiscountCurve.LATENT_STATE_DISCOUNT,
-						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						LatentStateStatic.LATENT_STATE_FUNDING,
+						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (aDeposit[i].payCurrency()[0])
 					)
 				}
@@ -159,13 +159,13 @@ public class ShapePreservingDFZeroSmooth {
 			EDFComponentQuoteSet edfQuote = new EDFComponentQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						DiscountCurve.LATENT_STATE_DISCOUNT,
-						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						LatentStateStatic.LATENT_STATE_FUNDING,
+						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (aEDF[i].payCurrency()[0])
 					),
 					new LatentStateSpecification (
-						ForwardCurve.LATENT_STATE_FORWARD,
-						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 						aEDF[i].forwardLabel()[0]
 					)
 				}
@@ -267,13 +267,13 @@ public class ShapePreservingDFZeroSmooth {
 			FixFloatQuoteSet fixFloatQuote = new FixFloatQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
-						DiscountCurve.LATENT_STATE_DISCOUNT,
-						DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
+						LatentStateStatic.LATENT_STATE_FUNDING,
+						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (aIRS[i].payCurrency()[0])
 					),
 					new LatentStateSpecification (
-						ForwardCurve.LATENT_STATE_FORWARD,
-						ForwardCurve.QUANTIFICATION_METRIC_FORWARD_RATE,
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 						aIRS[i].forwardLabel()[0]
 					)
 				}
@@ -443,7 +443,7 @@ public class ShapePreservingDFZeroSmooth {
 		 */
 
 		GlobalControlCurveParams gccp = new GlobalControlCurveParams (
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
@@ -467,8 +467,8 @@ public class ShapePreservingDFZeroSmooth {
 		 */
 
 		LocalControlCurveParams lccp = new LocalControlCurveParams (
-			org.drip.spline.pchip.LocalMonotoneCkGenerator.C1_BESSEL,
-			org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_ZERO_RATE,
+			LocalMonotoneCkGenerator.C1_BESSEL,
+			LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
 			new SegmentCustomBuilderControl (
 				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 				new PolynomialFunctionSetParams (4),
