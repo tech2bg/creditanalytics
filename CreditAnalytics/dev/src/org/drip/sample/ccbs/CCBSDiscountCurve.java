@@ -9,7 +9,6 @@ import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.creator.RatesStreamBuilder;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
@@ -86,7 +85,16 @@ public class CCBSDiscountCurve {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -111,7 +119,16 @@ public class CCBSDiscountCurve {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					12 / iTenorInMonths,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -142,6 +159,84 @@ public class CCBSDiscountCurve {
 		return aFFC;
 	}
 
+	private static final FixFloatComponent IRS (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String strTenor,
+		final double dblCoupon)
+		throws Exception
+	{
+		Stream fixStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				2,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				1.,
+				null,
+				dblCoupon,
+				strCurrency,
+				strCurrency,
+				null,
+				null
+			)
+		);
+
+		Stream floatStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				4,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				strCurrency,
+				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
+				null
+			)
+		);
+
+		FixFloatComponent irs = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			null
+		);
+
+		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+
+		return irs;
+	}
+
 	/*
 	 * Construct the Array of Swap Instruments from the given set of parameters
 	 * 
@@ -157,17 +252,11 @@ public class CCBSDiscountCurve {
 		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
-			aCalibComp[i] = RatesStreamBuilder.CreateFixFloat (
+			aCalibComp[i] = IRS (
 				dtEffective,
-				astrTenor[i],
-				0.,
-				2,
-				"Act/360",
-				0.,
-				4,
-				"Act/360",
 				strCurrency,
-				strCurrency
+				astrTenor[i],
+				0.
 			);
 
 		return aCalibComp;
@@ -187,12 +276,14 @@ public class CCBSDiscountCurve {
 			strReferenceCurrency,
 			cp,
 			astrTenor,
-			3);
+			3
+		);
 
 		FixFloatComponent[] aIRS = MakeIRS (
 			dtValue,
 			strDerivedCurrency,
-			astrTenor);
+			astrTenor
+		);
 
 		ComponentPair[] aCCSP = new ComponentPair[astrTenor.length];
 
@@ -207,20 +298,15 @@ public class CCBSDiscountCurve {
 		final String strTenor,
 		final String strManifestMeasure,
 		final DiscountCurve dc)
+		throws Exception
 	{
 		String strCurrency = dc.currency();
 
-		CalibratableFixedIncomeComponent irsBespoke = RatesStreamBuilder.CreateFixFloat (
+		CalibratableFixedIncomeComponent irsBespoke = IRS (
 			dtStart,
-			strTenor,
-			0.,
-			2,
-			"Act/360",
-			0.,
-			4,
-			"Act/360",
 			strCurrency,
-			strCurrency
+			strTenor,
+			0.
 		);
 
 		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (

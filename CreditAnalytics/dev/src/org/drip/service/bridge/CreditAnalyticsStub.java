@@ -205,18 +205,23 @@ public class CreditAnalyticsStub {
 			adblRate[i + 15] = 0.01;
 
 			try {
-				aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (
-					dtStart.addDays (2),
-					new org.drip.analytics.date.JulianDate (adblDate[i + 15]),
-					0.,
-					2,
-					"Act/360",
-					0.,
-					4,
-					"Act/360",
-					"USD",
-					"USD"
-				);
+				org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtStart.julian(),
+						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
+							null, 2, "Act/360", false, "Act/360", false,
+								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1., null,
+									0., "USD", "USD", null, null));
+
+				org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtStart.julian(),
+						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
+							null, 4, "Act/360", false, "Act/360", false,
+								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1.,
+									null, 0., "USD", "USD", org.drip.state.identifier.ForwardLabel.Create
+										("USD", "LIBOR", "3M"), null));
+
+				aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent (fixStream, floatStream,
+					null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}

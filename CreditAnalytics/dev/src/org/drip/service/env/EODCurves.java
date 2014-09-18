@@ -69,9 +69,34 @@ public class EODCurves {
 				return org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective.addDays (2),
 					strTenor, strCurrency);
 
-			if ("S".equalsIgnoreCase (strInstrCode))
-				return org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (dtEffective.addDays (2),
-					strTenor, 0., 2, "Act/360", 0., 4, "Act/360", strCurrency, strCurrency);
+			if ("S".equalsIgnoreCase (strInstrCode)) {
+				try {
+					org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+						(org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset
+							(dtEffective.julian(), strTenor, java.lang.Double.NaN, null, null, null, null,
+								null, null, null, null, 2, "Act/360", false, "Act/360", false, true,
+									strCurrency, 1., null, 0., strCurrency, strCurrency, null, null));
+
+					org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+						(org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset
+							(dtEffective.julian(), strTenor, java.lang.Double.NaN, null, null, null, null,
+								null, null, null, null, 4, "Act/360", false, "Act/360", false, true,
+									strCurrency, -1., null, 0., strCurrency, strCurrency,
+										org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+											"3M"), null));
+
+					org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+						(fixStream, floatStream, null);
+
+					irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+
+					return irs;
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+				}
+
+				return null;
+			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

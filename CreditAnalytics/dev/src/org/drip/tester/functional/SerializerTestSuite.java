@@ -154,6 +154,39 @@ public class SerializerTestSuite {
 		System.out.println (strDRIPObj + " serialization OK.\n----------------------\n\n");
 	}
 
+	private static final org.drip.product.rates.FixFloatComponent IRS (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final java.lang.String strCurrency,
+		final java.lang.String strTenor,
+		final double dblCoupon)
+	{
+		try {
+			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+				(org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
+					strTenor, java.lang.Double.NaN, null, null, null, null, null, null, null, null, 2,
+						"Act/360", false, "Act/360", false, true, strCurrency, 1., null, dblCoupon,
+							strCurrency, strCurrency, null, null));
+
+			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+				(org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
+					strTenor, java.lang.Double.NaN, null, null, null, null, null, null, null, null, 4,
+						"Act/360", false, "Act/360", false, true, strCurrency, -1., null, 0., strCurrency,
+							strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+								"3M"), null));
+
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+				(fixStream, floatStream, null);
+
+			irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+
+			return irs;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception
@@ -292,11 +325,9 @@ public class SerializerTestSuite {
 
 		Verify (abEDF, org.drip.product.creator.EDFutureBuilder.FromByteArray (abEDF), "EDFuture");
 
-		byte[] abIRS = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (dtToday, "4Y", 0.03, 2,
-			"Act/360", 0., 4, "Act/360", "JPY", "JPY").serialize();
+		byte[] abIRS = IRS (dtToday, "JPY", "4Y", 0.03).serialize();
 
-		Verify (abIRS, org.drip.product.creator.RatesStreamBuilder.IRSFromByteArray (abIRS),
-			"InterestRateSwap");
+		Verify (abIRS, new org.drip.product.rates.FixFloatComponent (abIRS), "InterestRateSwap");
 
 		byte[] abFRA = new org.drip.product.fra.FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
 			org.drip.analytics.date.JulianDate.Today().julian(),
@@ -314,46 +345,52 @@ public class SerializerTestSuite {
 
 		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "3Y",
-				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "ABC", 1., null, 0.03, "DEF", "DEF",
-					null, org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+				java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap, 2, "Act/360", false, "Act/360",
+					false, false, "ABC", 1., null, 0.03, "DEF", "DEF", null,
+						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aStream[0] = new org.drip.product.rates.Stream (lsFixedPeriod3Y);
 
 		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "5Y",
-				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "GHI", 1., null, 0.05, "JKL", "JKL",
-					null, org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+				java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap, 2, "Act/360", false, "Act/360",
+					false, false, "GHI", 1., null, 0.05, "JKL", "JKL", null,
+						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aStream[1] = new org.drip.product.rates.Stream (lsFixedPeriod5Y);
 
 		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "7Y",
-				java.lang.Double.NaN, dap, 2, "Act/360", false, false, "MNO", 1., null, 0.07, "PQR", "PQR",
-					null, org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+				java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap, 2, "Act/360", false, "Act/360",
+					false, false, "MNO", 1., null, 0.07, "PQR", "PQR", null,
+						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aStream[2] = new org.drip.product.rates.Stream (lsFixedPeriod7Y);
 
 		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatPeriod3Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "3Y",
-				java.lang.Double.NaN, dap, 4, "Act/360", false, false, "ABC", -1., null, 0.03, "DEF", "ABC",
-					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
-						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+				java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap, 4, "Act/360", false, "Act/360",
+					false, false, "ABC", -1., null, 0.03, "DEF", "ABC",
+						org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
+							org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aFloatStream[0] = new org.drip.product.rates.Stream (lsFloatPeriod3Y);
 
 		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatPeriod5Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "5Y",
-				java.lang.Double.NaN, dap, 4, "Act/360", false, false, "ABC", -1., null, 0.05, "DEF", "ABC",
-					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
-						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+				java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap, 4, "Act/360", false, "Act/360",
+					false, false, "ABC", -1., null, 0.05, "DEF", "ABC",
+						org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
+							org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aFloatStream[1] = new org.drip.product.rates.Stream (lsFloatPeriod5Y);
 
 		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatPeriod7Y =
 			org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtToday.julian(), "7Y",
-				java.lang.Double.NaN, dap, 4, "Act/360", false, false, "ABC", -1., null, 0.07, "DEF", "ABC",
-					org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
-						org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
+				java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap, 4, "Act/360", false, "Act/360",
+					false, false, "ABC", -1., null, 0.07, "DEF", "ABC",
+						org.drip.state.identifier.ForwardLabel.Standard ("ABC-RI-3M"),
+							org.drip.state.identifier.CreditLabel.Standard ("XYZ"));
 
 		aFloatStream[2] = new org.drip.product.rates.Stream (lsFloatPeriod7Y);
 

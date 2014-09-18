@@ -108,7 +108,16 @@ public class FRAStdCapFloor {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					4,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -129,7 +138,16 @@ public class FRAStdCapFloor {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -281,7 +299,16 @@ public class FRAStdCapFloor {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -306,7 +333,16 @@ public class FRAStdCapFloor {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					12 / iTenorInMonths,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -382,7 +418,8 @@ public class FRAStdCapFloor {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 	}
 
 	private static final Map<String, ForwardCurve> MakeFC (
@@ -533,7 +570,7 @@ public class FRAStdCapFloor {
 
 		CreditAnalytics.Init ("");
 
-		double dblStrike = 0.01;
+		double dblStrike = 0.05;
 		String strTenor = "3M";
 		String strCurrency = "EUR";
 		String strManifestMeasure = "QuantoAdjustedParForward";
@@ -561,7 +598,16 @@ public class FRAStdCapFloor {
 				"5Y",
 				Double.NaN,
 				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
 				4,
+				"Act/360",
+				false,
 				"Act/360",
 				false,
 				false,

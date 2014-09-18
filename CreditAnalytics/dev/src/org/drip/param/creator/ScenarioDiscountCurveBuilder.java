@@ -78,17 +78,28 @@ public class ScenarioDiscountCurveBuilder {
 		org.drip.analytics.date.JulianDate dtMaturity = dtInitialMaturity;
 
 		while (dtMaturity.julian() <= dtTerminalMaturity.julian()) {
-			org.drip.product.definition.CalibratableFixedIncomeComponent comp = bIsIRS ?
-				org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (dtEffective, dtMaturity, 0., 2,
-					"Act/360", 0., 4, "Act/360", strCurrency, strCurrency) :
-						org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective, dtMaturity, null,
-							strCurrency);
-
-			if (null == comp) return null;
-
-			lsCompDENSE.add (comp);
-
 			try {
+				org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
+						(dtEffective.julian(), dtMaturity.julian(), java.lang.Double.NaN, null, null, null,
+							null, null, null, null, null, 2, "Act/360", false, "Act/360", false,
+								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCurrency,
+									-1., null, 0., strCurrency, strCurrency, null, null));
+
+				org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
+						(dtEffective.julian(), dtMaturity.julian(), java.lang.Double.NaN, null, null, null,
+							null, null, null, null, null, 4, "Act/360", false, "Act/360", false,
+								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCurrency,
+									-1., null, 0., strCurrency, strCurrency,
+										org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+											"3M"), null));
+
+				org.drip.product.definition.CalibratableFixedIncomeComponent comp = new
+					org.drip.product.rates.FixFloatComponent (fixStream, floatStream, null);
+
+				lsCompDENSE.add (comp);
+
 				lsCalibQuote.add (comp.measureValue (valParams, null, csqs, null, "Rate"));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

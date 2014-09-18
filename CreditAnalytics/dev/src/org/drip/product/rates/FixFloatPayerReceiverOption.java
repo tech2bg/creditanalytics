@@ -123,6 +123,8 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 						csqs.forwardFundingCorrSurface (forwardLabel, fundingLabel), dblValueDate,
 							dblExerciseDate);
 
+			// dblSTIRIntegratedQuantoDrift = 0.;
+
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedQuantoDrift)) return null;
 
 			double dblSTIRIntegratedSurfaceVariance =

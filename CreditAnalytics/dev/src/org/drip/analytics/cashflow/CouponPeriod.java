@@ -382,210 +382,6 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * De-serialization of CouponPeriod from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize
-	 */
-
-	public CouponPeriod (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Empty state");
-
-		java.lang.String strPeriod = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strPeriod || strPeriod.isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod,
-			super.fieldDelimiter());
-
-		if (null == astrField || 23 > astrField.length)
-			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid number of fields");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		/*
-		 * Period Dates
-		 */
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate start date");
-
-		_dblStartDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate end date");
-
-		_dblEndDate = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate accrual start date");
-
-		_dblAccrualStartDate = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate accrual end date");
-
-		_dblAccrualEndDate = new java.lang.Double (astrField[4]);
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate pay date");
-
-		_dblPayDate = new java.lang.Double (astrField[5]);
-
-		if (null == astrField[6] || astrField[6].isEmpty())
-			throw new java.lang.Exception
-				("CouponPeriod de-serializer: Cannot locate Reset Period Container");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			_rpc = null;
-		else
-			_rpc = new org.drip.analytics.cashflow.ResetPeriodContainer (astrField[6].getBytes());
-
-		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate FX Fixing Date");
-
-		_dblFXFixingDate = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[7]);
-
-		/*
-		 * Period Date Parameters - End
-		 */
-
-		/*
-		 * Period Accrual/Coupon Fraction Generation Parameters
-		 */
-
-		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Frequency");
-
-		_iFreq = new java.lang.Integer (astrField[8]);
-
-		if (null == astrField[9] || astrField[9].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Full Period DCF");
-
-		_dblDCF = new java.lang.Double (astrField[9]);
-
-		if (null == astrField[10] || astrField[10].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[10]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Coupon Day Count");
-
-		_strCouponDC = new java.lang.String (astrField[10]);
-
-		if (null == astrField[11] || astrField[11].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Accrual Day Count");
-
-		_strAccrualDC = new java.lang.String (astrField[11]);
-
-		if (null == astrField[12] || astrField[12].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[12]))
-			throw new java.lang.Exception
-				("CouponPeriod de-serializer: Cannot locate Coupon EOM Adjustment");
-
-		_bApplyCpnEOMAdj = new java.lang.Boolean (astrField[12]);
-
-		if (null == astrField[13] || astrField[13].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[13]))
-			throw new java.lang.Exception
-				("CouponPeriod de-serializer: Cannot locate Accrual EOM Adjustment");
-
-		_bApplyAccEOMAdj = new java.lang.Boolean (astrField[13]);
-
-		if (null == astrField[14] || astrField[14].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[14]))
-			_strCalendar = "";
-		else
-			_strCalendar = new java.lang.String (astrField[14]);
-
-		/*
-		 * Period Accrual/Coupon Fraction Generation Parameters - End
-		 */
-
-		/*
-		 * Period Latent State Identification Settings
-		 */
-
-		if (null == astrField[15] || astrField[15].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[15]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Coupon Currency");
-
-		_strCouponCurrency = new java.lang.String (astrField[15]);
-
-		if (null == astrField[16] || astrField[16].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[16]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Pay Currency");
-
-		_strPayCurrency = new java.lang.String (astrField[16]);
-
-		if (null == astrField[17] || astrField[17].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[17]))
-			_forwardLabel = null;
-		else
-			_forwardLabel = org.drip.state.identifier.ForwardLabel.Standard (astrField[17]);
-
-		if (null != astrField[18] && !astrField[18].isEmpty() &&
-			!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[18]))
-			_creditLabel = org.drip.state.identifier.CreditLabel.Standard (astrField[18]);
-
-		/*
-		 * Period Latent State Identification Settings - End
-		 */
-
-		/*
-		 * Period "Extensive Cash" Parameter Settings
-		 */
-
-		if (null == astrField[19] || astrField[19].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[19]))
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Base Notional");
-
-		_dblBaseNotional = new java.lang.Double (astrField[19]);
-
-		if (null == astrField[20] || astrField[20].isEmpty())
-			throw new java.lang.Exception
-				("CouponPeriod de-serializer: Cannot locate Period Notional Schedule");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20]))
-			_notlSchedule = null;
-		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[20].getBytes());
-
-		if (null == astrField[21] || astrField[21].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
-
-		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[21]);
-
-		if (null == astrField[22] || astrField[22].isEmpty())
-			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Float Spread");
-
-		_dblFloatSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[22])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[22]);
-
-		/*
-		 * Period "Extensive Cash" Parameter Settings - End
-		 */
-	}
-
-	/**
 	 * Return the period Start Date
 	 * 
 	 * @return Period Start Date
@@ -1461,6 +1257,209 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 			return null;
 
 		return lsLQM;
+	}
+
+	/**
+	 * De-serialization of CouponPeriod from byte stream
+	 * 
+	 * @param ab Byte stream
+	 * 
+	 * @throws java.lang.Exception Thrown if cannot properly de-serialize
+	 */
+
+	public CouponPeriod (
+		final byte[] ab)
+		throws java.lang.Exception
+	{
+		if (null == ab || 0 == ab.length)
+			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid byte stream input");
+
+		java.lang.String strRawString = new java.lang.String (ab);
+
+		if (null == strRawString || strRawString.isEmpty())
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Empty state");
+
+		java.lang.String strPeriod = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
+
+		if (null == strPeriod || strPeriod.isEmpty())
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate state");
+
+		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod, fieldDelimiter());
+
+		if (null == astrField || 23 > astrField.length)
+			throw new java.lang.Exception ("CouponPeriod de-serialize: Invalid number of fields");
+
+		// double dblVersion = new java.lang.Double (astrField[0]);
+
+		/*
+		 * Period Dates
+		 */
+
+		if (null == astrField[1] || astrField[1].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate start date");
+
+		_dblStartDate = new java.lang.Double (astrField[1]);
+
+		if (null == astrField[2] || astrField[2].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate end date");
+
+		_dblEndDate = new java.lang.Double (astrField[2]);
+
+		if (null == astrField[3] || astrField[3].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate accrual start date");
+
+		_dblAccrualStartDate = new java.lang.Double (astrField[3]);
+
+		if (null == astrField[4] || astrField[4].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate accrual end date");
+
+		_dblAccrualEndDate = new java.lang.Double (astrField[4]);
+
+		if (null == astrField[5] || astrField[5].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate pay date");
+
+		_dblPayDate = new java.lang.Double (astrField[5]);
+
+		if (null == astrField[6] || astrField[6].isEmpty())
+			throw new java.lang.Exception
+				("CouponPeriod de-serializer: Cannot locate Reset Period Container");
+
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
+			_rpc = null;
+		else
+			_rpc = new org.drip.analytics.cashflow.ResetPeriodContainer (astrField[6].getBytes());
+
+		if (null == astrField[7] || astrField[7].isEmpty())
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate FX Fixing Date");
+
+		_dblFXFixingDate = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7])
+			? java.lang.Double.NaN : new java.lang.Double (astrField[7]);
+
+		/*
+		 * Period Date Parameters - End
+		 */
+
+		/*
+		 * Period Accrual/Coupon Fraction Generation Parameters
+		 */
+
+		if (null == astrField[8] || astrField[8].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Frequency");
+
+		_iFreq = new java.lang.Integer (astrField[8]);
+
+		if (null == astrField[9] || astrField[9].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[9]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Full Period DCF");
+
+		_dblDCF = new java.lang.Double (astrField[9]);
+
+		if (null == astrField[10] || astrField[10].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[10]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Coupon Day Count");
+
+		_strCouponDC = new java.lang.String (astrField[10]);
+
+		if (null == astrField[11] || astrField[11].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[11]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Accrual Day Count");
+
+		_strAccrualDC = new java.lang.String (astrField[11]);
+
+		if (null == astrField[12] || astrField[12].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[12]))
+			throw new java.lang.Exception
+				("CouponPeriod de-serializer: Cannot locate Coupon EOM Adjustment");
+
+		_bApplyCpnEOMAdj = new java.lang.Boolean (astrField[12]);
+
+		if (null == astrField[13] || astrField[13].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[13]))
+			throw new java.lang.Exception
+				("CouponPeriod de-serializer: Cannot locate Accrual EOM Adjustment");
+
+		_bApplyAccEOMAdj = new java.lang.Boolean (astrField[13]);
+
+		if (null == astrField[14] || astrField[14].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[14]))
+			_strCalendar = "";
+		else
+			_strCalendar = new java.lang.String (astrField[14]);
+
+		/*
+		 * Period Accrual/Coupon Fraction Generation Parameters - End
+		 */
+
+		/*
+		 * Period Latent State Identification Settings
+		 */
+
+		if (null == astrField[15] || astrField[15].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[15]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Coupon Currency");
+
+		_strCouponCurrency = new java.lang.String (astrField[15]);
+
+		if (null == astrField[16] || astrField[16].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[16]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Pay Currency");
+
+		_strPayCurrency = new java.lang.String (astrField[16]);
+
+		if (null == astrField[17] || astrField[17].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[17]))
+			_forwardLabel = null;
+		else
+			_forwardLabel = org.drip.state.identifier.ForwardLabel.Standard (astrField[17]);
+
+		if (null != astrField[18] && !astrField[18].isEmpty() &&
+			!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[18]))
+			_creditLabel = org.drip.state.identifier.CreditLabel.Standard (astrField[18]);
+
+		/*
+		 * Period Latent State Identification Settings - End
+		 */
+
+		/*
+		 * Period "Extensive Cash" Parameter Settings
+		 */
+
+		if (null == astrField[19] || astrField[19].isEmpty() ||
+			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[19]))
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Base Notional");
+
+		_dblBaseNotional = new java.lang.Double (astrField[19]);
+
+		if (null == astrField[20] || astrField[20].isEmpty())
+			throw new java.lang.Exception
+				("CouponPeriod de-serializer: Cannot locate Period Notional Schedule");
+
+		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[20]))
+			_notlSchedule = null;
+		else
+			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[20].getBytes());
+
+		if (null == astrField[21] || astrField[21].isEmpty())
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Fixed Coupon");
+
+		_dblFixedCoupon = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[21])
+			? java.lang.Double.NaN : new java.lang.Double (astrField[21]);
+
+		if (null == astrField[22] || astrField[22].isEmpty())
+			throw new java.lang.Exception ("CouponPeriod de-serializer: Cannot locate Period Float Spread");
+
+		_dblFloatSpread = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[22])
+			? java.lang.Double.NaN : new java.lang.Double (astrField[22]);
+
+		/*
+		 * Period "Extensive Cash" Parameter Settings - End
+		 */
 	}
 
 	@Override public byte[] serialize()

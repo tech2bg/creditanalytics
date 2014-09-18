@@ -210,9 +210,30 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						adblRate[i + 15] = java.lang.Double.NaN;
 
 						try {
-							_aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat
-								(_dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i +
-								    15]), 0., 2, "Act/360", 0., 4, "Act/360", _strCurrency, _strCurrency);
+							org.drip.analytics.date.JulianDate dtMaturity = new
+								org.drip.analytics.date.JulianDate (adblDate[i + 15]);
+
+							org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+								(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
+									(_dtStart.julian(), dtMaturity.julian(), java.lang.Double.NaN, null,
+										null, null, null, null, null, null, null, 2, "Act/360", false,
+											"Act/360", false,
+												org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true,
+													_strCurrency, -1., null, 0., _strCurrency, _strCurrency,
+														null, null));
+
+							org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+								(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
+									(_dtStart.julian(), dtMaturity.julian(), java.lang.Double.NaN, null,
+										null, null, null, null, null, null, null, 4, "Act/360", false,
+											"Act/360", false,
+												org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true,
+													_strCurrency, -1., null, 0., _strCurrency, _strCurrency,
+														org.drip.state.identifier.ForwardLabel.Create
+															(_strCurrency, "LIBOR", "3M"), null));
+
+							_aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent
+									(fixStream, floatStream, null);
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 

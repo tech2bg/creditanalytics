@@ -297,10 +297,22 @@ public abstract class DiscountCurve extends org.drip.service.stream.Serializer i
 
 		org.drip.analytics.date.JulianDate dtStart = epoch().addDays (2);
 
-		org.drip.product.definition.CalibratableFixedIncomeComponent irs =
-			org.drip.product.creator.RatesStreamBuilder.CreateFixFloat (dtStart, new
-				org.drip.analytics.date.JulianDate (dblDate), 0., 2, "Act/360", 0., 4, "Act/360", currency(),
-					currency());
+		org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtStart.julian(), dblDate,
+				java.lang.Double.NaN, null, null, null, null, null, null, null, null, 2, "Act/360", false,
+					"Act/360", false, org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true,
+						currency(), -1., null, 0., currency(), currency(), null, null));
+
+		org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtStart.julian(), dblDate,
+				java.lang.Double.NaN, null, null, null, null, null, null, null, null, 4, "Act/360", false,
+					"Act/360", false, org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true,
+						currency(), -1., null, 0., currency(), currency(),
+							org.drip.state.identifier.ForwardLabel.Create (currency(), "LIBOR", "3M"),
+								null));
+
+		org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+			(fixStream, floatStream, null);
 
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();

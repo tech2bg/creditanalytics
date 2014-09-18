@@ -123,14 +123,6 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		if (null == auForwardVolSurface) return null;
 
 		try {
-			double dblIntegratedQuantoDrift = java.lang.Math.exp (-1. *
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-					(csqs.forwardCurveVolSurface (_fra.fri()), csqs.fundingCurveVolSurface (fundingLabel),
-						csqs.forwardFundingCorrSurface (_fra.fri(), fundingLabel), dblValueDate,
-							dblExerciseDate));
-
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblIntegratedQuantoDrift)) return null;
-
 			double dblIntegratedSurfaceVariance =
 				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance (auForwardVolSurface,
 					dblValueDate, dblExerciseDate);
@@ -147,14 +139,12 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 			double dblForwardPrice = java.lang.Double.NaN;
 			double dblForwardATMPrice = java.lang.Double.NaN;
-			double dblATMDPlus = (dblIntegratedQuantoDrift + 0.5 * dblIntegratedSurfaceVariance) /
+			double dblATMDPlus = 0.5 * dblIntegratedSurfaceVariance / dblIntegratedSurfaceVolatility;
+			double dblATMDMinus = -1. * dblATMDPlus;
+			double dblDPlus = (dblLogMoneynessFactor + 0.5 * dblIntegratedSurfaceVariance) /
 				dblIntegratedSurfaceVolatility;
-			double dblATMDMinus = (dblIntegratedQuantoDrift - 0.5 * dblIntegratedSurfaceVariance) /
+			double dblDMinus = (dblLogMoneynessFactor - 0.5 * dblIntegratedSurfaceVariance) /
 				dblIntegratedSurfaceVolatility;
-			double dblDPlus = (dblLogMoneynessFactor + dblIntegratedQuantoDrift + 0.5 *
-				dblIntegratedSurfaceVariance) / dblIntegratedSurfaceVolatility;
-			double dblDMinus = (dblLogMoneynessFactor + dblIntegratedQuantoDrift - 0.5 *
-				dblIntegratedSurfaceVariance) / dblIntegratedSurfaceVolatility;
 
 			if (_bIsCaplet) {
 				dblForwardPrice = dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
@@ -185,8 +175,6 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 			mapResult.put ("ForwardPrice", dblForwardPrice);
 
-			mapResult.put ("IntegratedQuantoDrift", dblIntegratedQuantoDrift);
-
 			mapResult.put ("IntegratedSurfaceVariance", dblIntegratedSurfaceVariance);
 
 			mapResult.put ("Price", dblSpotPrice);
@@ -216,8 +204,6 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		setstrMeasureNames.add ("ForwardATMPrice");
 
 		setstrMeasureNames.add ("ForwardPrice");
-
-		setstrMeasureNames.add ("IntegratedQuantoDrift");
 
 		setstrMeasureNames.add ("IntegratedSurfaceVariance");
 

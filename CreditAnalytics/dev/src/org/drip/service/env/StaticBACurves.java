@@ -544,10 +544,24 @@ public class StaticBACurves {
 			astrCalibMeasure[i + 15] = "Rate";
 
 			try {
-				if (null == (aCompCalib[i + 15] = org.drip.product.creator.RatesStreamBuilder.CreateFixFloat
-					(dt.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i + 15]), 0., 2,
-						"Act/360", 0., 4, "Act/360", strCurrency, strCurrency)))
-					return false;
+				org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
+						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
+							null, 2, "Act/360", false, "Act/360", false,
+								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCurrency,
+									-1., null, 0., strCurrency, strCurrency, null, null));
+
+				org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
+						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
+							null, 4, "Act/360", false, "Act/360", false,
+								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCurrency,
+									-1., null, 0., strCurrency, strCurrency,
+										org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+											"3M"), null));
+
+				aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent (fixStream, floatStream,
+					null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

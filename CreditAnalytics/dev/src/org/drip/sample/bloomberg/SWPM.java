@@ -5,13 +5,17 @@ import org.drip.analytics.cashflow.CouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.Stream;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -80,6 +84,84 @@ public class SWPM {
 		return aCalibComp;
 	}
 
+	private static final FixFloatComponent IRS (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String strTenor,
+		final double dblCoupon)
+		throws Exception
+	{
+		Stream fixStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				2,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				1.,
+				null,
+				dblCoupon,
+				strCurrency,
+				strCurrency,
+				null,
+				null
+			)
+		);
+
+		Stream floatStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				4,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				strCurrency,
+				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
+				null
+			)
+		);
+
+		FixFloatComponent irs = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			null
+		);
+
+		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+
+		return irs;
+	}
+
 	/*
 	 * Construct the Array of Swap Instruments from the given set of parameters
 	 * 
@@ -88,33 +170,20 @@ public class SWPM {
 
 	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
+		final String strCurrency,
 		final String[] astrTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
+		final double[] adblCoupon)
 		throws Exception
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
-
-			org.drip.product.rates.FixFloatComponent irs = RatesStreamBuilder.CreateFixFloat (
+		for (int i = 0; i < astrTenor.length; ++i)
+			aCalibComp[i] = IRS (
 				dtEffective,
-				astrTenor[i],
-				adblCoupon[i],
-				2,
-				"Act/360",
-				0.,
-				4,
-				"Act/360",
 				strCurrency,
-				strCurrency
+				astrTenor[i],
+				adblCoupon[i]
 			);
-
-			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
-
-			aCalibComp[i] = irs;
-		}
 
 		return aCalibComp;
 	}
@@ -176,9 +245,9 @@ public class SWPM {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
+			strCurrency,
 			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
-			new double[] {0.00092, 0.0009875, 0.00122, 0.00223, 0.00383, 0.00827, 0.01245, 0.01605, 0.02597},
-			strCurrency);
+			new double[] {0.00092, 0.0009875, 0.00122, 0.00223, 0.00383, 0.00827, 0.01245, 0.01605, 0.02597});
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -235,17 +304,11 @@ public class SWPM {
 		 * Build the Fixed Receive Stream
 		 */
 
-		org.drip.product.rates.FixFloatComponent swap = RatesStreamBuilder.CreateFixFloat (
+		FixFloatComponent swap = IRS (
 			dtEffective,
-			"5Y",
-			0.,
-			2,
-			"Act/360",
-			0.,
-			4,
-			"Act/360",
 			"USD",
-			"USD"
+			"5Y",
+			0.
 		);
 
 		System.out.println ("\n---- Swap Details ----\n");

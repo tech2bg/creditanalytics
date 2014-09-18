@@ -9,6 +9,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.ValuationParams;
@@ -21,10 +22,13 @@ import org.drip.product.params.FactorSchedule;
  * Credit Analytics API Imports
  */
 
+import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.Stream;
 import org.drip.param.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -67,6 +71,84 @@ import org.drip.state.creator.*;
  */
 
 public class BondBasketAPI {
+
+	private static final FixFloatComponent IRS (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String strTenor,
+		final double dblCoupon)
+		throws Exception
+	{
+		Stream fixStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				2,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				1.,
+				null,
+				dblCoupon,
+				strCurrency,
+				strCurrency,
+				null,
+				null
+			)
+		);
+
+		Stream floatStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				4,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				strCurrency,
+				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
+				null
+			)
+		);
+
+		FixFloatComponent irs = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			null
+		);
+
+		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+
+		return irs;
+	}
 
 	/*
 	 * Sample demonstrating creation of a rates curve from instruments
@@ -115,17 +197,13 @@ public class BondBasketAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			aCompCalib[i + astrCashTenor.length] = RatesStreamBuilder.CreateFixFloat (
+			adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian();
+
+			aCompCalib[i + astrCashTenor.length] = IRS (
 				dtIRSEffective,
-				new JulianDate (adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian()),
-				0.,
-				2,
-				"Act/360",
-				0.,
-				4,
-				"Act/360",
 				strCurrency,
-				strCurrency
+				astrIRSTenor[i],
+				0.
 			);
 		}
 
@@ -133,8 +211,15 @@ public class BondBasketAPI {
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		return ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, strCurrency,
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
+		return ScenarioDiscountCurveBuilder.NonlinearBuild (
+			dtStart,
+			strCurrency,
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+			aCompCalib,
+			adblCompCalibValue,
+			astrCalibMeasure,
+			null
+		);
 	}
 
 	/*

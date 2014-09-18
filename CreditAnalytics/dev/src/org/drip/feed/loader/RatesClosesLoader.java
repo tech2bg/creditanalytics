@@ -359,19 +359,21 @@ public class RatesClosesLoader {
 
 			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
-						strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
-							strCurrency, strCurrency, null, null);
+					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
+						_mapFixedFrequency.get (strCurrency), strFixedDC, bApplyEOMAdjustmentFixed,
+							strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
+								strCurrency, strCurrency, null, null);
 
 			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
 				(lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, java.lang.Double.NaN, dap, _mapFloatingFrequency.get (strCurrency),
-						strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, -1., null, 0.,
-							strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
-								(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), null);
+					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
+						_mapFloatingFrequency.get (strCurrency), strFloatingDC, bApplyEOMAdjustmentFloating,
+							strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, -1., null, 0.,
+								strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
+									(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
 			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
 				(lsFloatingCouponPeriod);
@@ -418,9 +420,9 @@ public class RatesClosesLoader {
 
 			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, java.lang.Double.NaN, dap, _mapFixedFrequency.get (strCurrency),
-						strFixedDC, false, false, strCurrency, 1., null, dblCoupon, strCurrency, strCurrency,
-							null, null);
+					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
+						_mapFixedFrequency.get (strCurrency), strFixedDC, false, strFixedDC, false, false,
+							strCurrency, 1., null, dblCoupon, strCurrency, strCurrency, null, null);
 
 			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
 				(lsFixedCouponPeriod);

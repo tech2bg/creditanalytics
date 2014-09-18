@@ -187,7 +187,16 @@ public class DiscountCurveQuoteSensitivity {
 					astrMaturityTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -208,7 +217,16 @@ public class DiscountCurveQuoteSensitivity {
 					astrMaturityTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -276,24 +294,97 @@ public class DiscountCurveQuoteSensitivity {
 		);
 	}
 
+	private static final FixFloatComponent IRS (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String strTenor,
+		final double dblCoupon)
+		throws Exception
+	{
+		Stream fixStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				2,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				1.,
+				null,
+				dblCoupon,
+				strCurrency,
+				strCurrency,
+				null,
+				null
+			)
+		);
+
+		Stream floatStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				4,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				strCurrency,
+				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
+				null
+			)
+		);
+
+		FixFloatComponent irs = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			null
+		);
+
+		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+
+		return irs;
+	}
+
 	private static final void TenorJack (
 		final JulianDate dtStart,
 		final String strTenor,
 		final String strCurrency,
 		final String strManifestMeasure,
 		final DiscountCurve dc)
+		throws Exception
 	{
-		CalibratableFixedIncomeComponent irsBespoke = RatesStreamBuilder.CreateFixFloat (
+		CalibratableFixedIncomeComponent irsBespoke = IRS (
 			dtStart,
-			strTenor,
-			0.,
-			2,
-			"30/360",
-			0.,
-			2,
-			"30/360",
 			strCurrency,
-			strCurrency
+			strTenor,
+			0.
 		);
 
 		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (
@@ -636,17 +727,11 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		CalibratableFixedIncomeComponent irs35Y = RatesStreamBuilder.CreateFixFloat (
+		CalibratableFixedIncomeComponent irs35Y = IRS (
 			dtSpot,
-			"35Y",
-			0.,
-			2,
-			"30/360",
-			0.,
-			2,
-			"30/360",
 			strCurrency,
-			strCurrency
+			"35Y",
+			0.
 		);
 
 		WengertJacobian wjIRSBespokeQuoteJack = irs35Y.jackDDirtyPVDManifestMeasure (

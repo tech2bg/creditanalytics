@@ -7,19 +7,18 @@ package org.drip.sample.rates;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
+import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API Import
- */
-
+import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.Stream;
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
 import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -62,58 +61,82 @@ import org.drip.state.creator.*;
 
 public class RatesAnalyticsAPI {
 
-	/**
-	 * Sample API demonstrating the creation/usage of discount curve
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	public static final void DiscountCurveAPISample()
+	private static final FixFloatComponent IRS (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String strTenor,
+		final double dblCoupon)
 		throws Exception
 	{
-		JulianDate dtStart = JulianDate.Today();
+		Stream fixStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				2,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				1.,
+				null,
+				dblCoupon,
+				strCurrency,
+				strCurrency,
+				null,
+				null
+			)
+		);
 
-		double[] adblDF = new double[5];
-		double[] adblDate = new double[5];
-		double[] adblRate = new double[5];
+		Stream floatStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				4,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				strCurrency,
+				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
+				null
+			)
+		);
 
-		for (int i = 0; i < 5; ++i) {
-			adblDate[i] = dtStart.addYears (2 * i + 2).julian();
+		FixFloatComponent irs = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			null
+		);
 
-			adblDF[i] = 1. - 2 * (i + 1) * 0.05;
-			adblRate[i] = 0.05;
-		}
+		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
 
-		/*
-		 * Build the discount curve from an array of dates and discount factors
-		 */
-
-		DiscountCurve dcFromDF = DiscountCurveBuilder.BuildFromDF (dtStart, "EUR", null, adblDate, adblDF,
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
-		JulianDate dt = dtStart.addYears (10);
-
-		System.out.println ("DCFromDF[" + dt.toString() + "]; DF=" + dcFromDF.df (dt) + "; Rate=" +
-			dcFromDF.zero ("10Y"));
-
-		/*
-		 * Build the discount curve from an array of dates and forward rates
-		 */
-
-		DiscountCurve dcFromRate = DiscountCurveBuilder.CreateDC (dtStart, "EUR", null, adblDate, adblRate,
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-
-		System.out.println ("DCFromRate[" + dt.toString() + "]; DF=" + dcFromRate.df (dt) + "; Rate=" +
-			dcFromRate.zero ("10Y"));
-
-		/*
-		 * Build the discount curve from a flat rate
-		 */
-
-		DiscountCurve dcFromFlatRate = DiscountCurveBuilder.CreateFromFlatRate (dtStart, "DKK", null, 0.04);
-
-		System.out.println ("DCFromFlatRate[" + dt.toString() + "]; DF=" + dcFromFlatRate.df (dt) +
-			"; Rate=" + dcFromFlatRate.zero ("10Y"));
+		return irs;
 	}
 
 	/**
@@ -172,7 +195,8 @@ public class RatesAnalyticsAPI {
 				dtCashEffective, // Effective
 				new JulianDate (adblMaturity[i]).addBusDays (2, "USD"), // Maturity
 				null, // FRI
-				"USD");
+				"USD"
+			);
 		}
 
 		// Next 8 instruments - EDF calibration
@@ -200,35 +224,53 @@ public class RatesAnalyticsAPI {
 
 		JulianDate dtIRSEffective = dtStart.addBusDays (2, "USD");
 
-		adblMaturity[15] = dtIRSEffective.addTenor ("4Y").julian();
+		String[] astrIRSTenor = new String[] {
+			"4Y",
+			"5Y",
+			"6Y",
+			"7Y",
+			"8Y",
+			"9Y",
+			"10Y",
+			"11Y",
+			"12Y",
+			"15Y",
+			"20Y",
+			"25Y",
+			"30Y",
+			"40Y",
+			"50Y",
+		};
 
-		adblMaturity[16] = dtIRSEffective.addTenor ("5Y").julian();
+		adblMaturity[15] = dtIRSEffective.addTenor (astrIRSTenor[0]).julian();
 
-		adblMaturity[17] = dtIRSEffective.addTenor ("6Y").julian();
+		adblMaturity[16] = dtIRSEffective.addTenor (astrIRSTenor[1]).julian();
 
-		adblMaturity[18] = dtIRSEffective.addTenor ("7Y").julian();
+		adblMaturity[17] = dtIRSEffective.addTenor (astrIRSTenor[2]).julian();
 
-		adblMaturity[19] = dtIRSEffective.addTenor ("8Y").julian();
+		adblMaturity[18] = dtIRSEffective.addTenor (astrIRSTenor[3]).julian();
 
-		adblMaturity[20] = dtIRSEffective.addTenor ("9Y").julian();
+		adblMaturity[19] = dtIRSEffective.addTenor (astrIRSTenor[4]).julian();
 
-		adblMaturity[21] = dtIRSEffective.addTenor ("10Y").julian();
+		adblMaturity[20] = dtIRSEffective.addTenor (astrIRSTenor[5]).julian();
 
-		adblMaturity[22] = dtIRSEffective.addTenor ("11Y").julian();
+		adblMaturity[21] = dtIRSEffective.addTenor (astrIRSTenor[6]).julian();
 
-		adblMaturity[23] = dtIRSEffective.addTenor ("12Y").julian();
+		adblMaturity[22] = dtIRSEffective.addTenor (astrIRSTenor[7]).julian();
 
-		adblMaturity[24] = dtIRSEffective.addTenor ("15Y").julian();
+		adblMaturity[23] = dtIRSEffective.addTenor (astrIRSTenor[8]).julian();
 
-		adblMaturity[25] = dtIRSEffective.addTenor ("20Y").julian();
+		adblMaturity[24] = dtIRSEffective.addTenor (astrIRSTenor[9]).julian();
 
-		adblMaturity[26] = dtIRSEffective.addTenor ("25Y").julian();
+		adblMaturity[25] = dtIRSEffective.addTenor (astrIRSTenor[10]).julian();
 
-		adblMaturity[27] = dtIRSEffective.addTenor ("30Y").julian();
+		adblMaturity[26] = dtIRSEffective.addTenor (astrIRSTenor[11]).julian();
 
-		adblMaturity[28] = dtIRSEffective.addTenor ("40Y").julian();
+		adblMaturity[27] = dtIRSEffective.addTenor (astrIRSTenor[12]).julian();
 
-		adblMaturity[29] = dtIRSEffective.addTenor ("50Y").julian();
+		adblMaturity[28] = dtIRSEffective.addTenor (astrIRSTenor[13]).julian();
+
+		adblMaturity[29] = dtIRSEffective.addTenor (astrIRSTenor[14]).julian();
 
 		adblCompCalibValue[15] = .0166;
 		adblCompCalibValue[16] = .0206;
@@ -250,17 +292,11 @@ public class RatesAnalyticsAPI {
 			astrCalibMeasure[i + 15] = "Rate";
 			adblRate[i + 15] = 0.01;
 
-			aCompCalib[i + 15] = RatesStreamBuilder.CreateFixFloat (
+			aCompCalib[i + 15] = IRS (
 				dtIRSEffective,
-				new JulianDate (adblMaturity[i + 15]),
-				0.,
-				2,
-				"30/360",
-				0.,
-				4,
-				"Act/360",
 				"USD",
-				"USD"
+				astrIRSTenor[i],
+				0.
 			);
 		}
 
@@ -288,292 +324,27 @@ public class RatesAnalyticsAPI {
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
 
-		/* for (int i = 0; i < 100; ++i) {
-			org.drip.analytics.date.JulianDate dt = dtStart.addDays (90 * i);
-
-			System.out.println ("DF[" + dt + "] = " + dc.df (dt));
-		} */
-
 		for (int i = 0; i < aCompCalib.length; ++i) {
-			WengertJacobian wjComp = aCompCalib[i].jackDDirtyPVDManifestMeasure
-				(new ValuationParams (dtStart, dtStart, "USD"),
+			WengertJacobian wjComp = aCompCalib[i].jackDDirtyPVDManifestMeasure (
+				new ValuationParams (dtStart, dtStart, "USD"),
 				null,
 				MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-				null);
+				null
+			);
 
 			System.out.println ("PV/DF Micro Jack[" + aCompCalib[i].name() + "]=" +
 				(null == wjComp ? null : wjComp.displayString()));
 		}
 	}
 
-	/*
-	 * Sample demonstrating creation of discount curve from cash instruments
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	public static void DiscountCurveFromCash()
-		throws Exception
-	{
-		int NUM_CASH_INSTR = 7;
-		double adblRate[] = new double[NUM_CASH_INSTR];
-		double adblMaturity[] = new double[NUM_CASH_INSTR];
-		String astrCalibMeasure[] = new String[NUM_CASH_INSTR];
-		double adblCompCalibValue[] = new double[NUM_CASH_INSTR];
-		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_CASH_INSTR];
-
-		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
-
-		// First 7 instruments - cash calibration
-
-		JulianDate dtCashEffective = dtStart.addBusDays (1, "USD");
-
-		adblMaturity[0] = dtCashEffective.addBusDays (1, "USD").julian(); // ON
-
-		adblMaturity[1] = dtCashEffective.addBusDays (2, "USD").julian(); // 1D (TN)
-
-		adblMaturity[2] = dtCashEffective.addBusDays (7, "USD").julian(); // 1W
-
-		adblMaturity[3] = dtCashEffective.addBusDays (14, "USD").julian(); // 2W
-
-		adblMaturity[4] = dtCashEffective.addBusDays (30, "USD").julian(); // 1M
-
-		adblMaturity[5] = dtCashEffective.addBusDays (60, "USD").julian(); // 2M
-
-		adblMaturity[6] = dtCashEffective.addBusDays (90, "USD").julian(); // 3M
-
-		/*
-		 * Cash Rate Quotes
-		 */
-
-		adblCompCalibValue[0] = .0013;
-		adblCompCalibValue[1] = .0017;
-		adblCompCalibValue[2] = .0017;
-		adblCompCalibValue[3] = .0018;
-		adblCompCalibValue[4] = .0020;
-		adblCompCalibValue[5] = .0023;
-		adblCompCalibValue[6] = .0026;
-
-		for (int i = 0; i < NUM_CASH_INSTR; ++i) {
-			adblRate[i] = 0.01;
-			astrCalibMeasure[i] = "Rate";
-
-			aCompCalib[i] = DepositBuilder.CreateDeposit (
-				dtCashEffective,
-				new JulianDate (adblMaturity[i]),
-				null,
-				"USD");
-		}
-
-		/*
-		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
-		 */
-
-		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
-
-		/*
-		 * Re-calculate the component input measure quotes from the calibrated discount curve object
-		 */
-
-		for (int i = 0; i < aCompCalib.length; ++i)
-			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
-
-		org.drip.quant.calculus.WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
-
-		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
-	}
-
-	/*
-	 * Sample demonstrating creation of discount cure from EDF instruments
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	public static void DiscountCurveFromEDF()
-		throws Exception
-	{
-		int NUM_DC_INSTR = 8;
-		double adblRate[] = new double[NUM_DC_INSTR];
-		double adblMaturity[] = new double[NUM_DC_INSTR];
-		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
-		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
-		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_DC_INSTR];
-
-		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
-
-		// Next 8 instruments - EDF calibration
-
-		adblCompCalibValue[0] = .0027;
-		adblCompCalibValue[1] = .0032;
-		adblCompCalibValue[2] = .0041;
-		adblCompCalibValue[3] = .0054;
-		adblCompCalibValue[4] = .0077;
-		adblCompCalibValue[5] = .0104;
-		adblCompCalibValue[6] = .0134;
-		adblCompCalibValue[7] = .0160;
-
-		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
-
-		for (int i = 0; i < NUM_DC_INSTR; ++i) {
-			adblRate[i] = 0.01;
-			aCompCalib[i] = aEDF[i];
-			astrCalibMeasure[i] = "Rate";
-
-			adblMaturity[i + 7] = aEDF[i].maturity().julian();
-		}
-
-		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
-
-		/*
-		 * Re-calculate the component input measure quotes from the calibrated discount curve object
-		 */
-
-		for (int i = 0; i < aCompCalib.length; ++i)
-			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
-
-		WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
-
-		System.out.println ("PV/DF Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
-	}
-
-	/*
-	 * Sample demonstrating creation of discount cure from swap instruments
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	public static void DiscountCurveFromIRS()
-		throws Exception
-	{
-		int NUM_DC_INSTR = 1;
-		double adblRate[] = new double[NUM_DC_INSTR];
-		double adblMaturity[] = new double[NUM_DC_INSTR];
-		String astrCalibMeasure[] = new String[NUM_DC_INSTR];
-		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
-		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_DC_INSTR];
-
-		JulianDate dtStart = JulianDate.CreateFromYMD (2011, 4, 6);
-
-		// Final 15 instruments - IRS calibration
-
-		JulianDate dtIRSEffective = dtStart.addBusDays (2, "USD");
-
-		adblMaturity[0] = dtIRSEffective.addTenor ("4Y").julian();
-
-		/* adblMaturity[1] = dtIRSEffective.addTenor ("5Y").julian();
-
-		adblMaturity[2] = dtIRSEffective.addTenor ("6Y").julian();
-
-		adblMaturity[3] = dtIRSEffective.addTenor ("7Y").julian();
-
-		adblMaturity[4] = dtIRSEffective.addTenor ("8Y").julian();
-
-		adblMaturity[5] = dtIRSEffective.addTenor ("9Y").julian();
-
-		adblMaturity[6] = dtIRSEffective.addTenor ("10Y").julian();
-
-		adblMaturity[7] = dtIRSEffective.addTenor ("11Y").julian();
-
-		adblMaturity[8] = dtIRSEffective.addTenor ("12Y").julian();
-
-		adblMaturity[9] = dtIRSEffective.addTenor ("15Y").julian();
-
-		adblMaturity[10] = dtIRSEffective.addTenor ("20Y").julian();
-
-		adblMaturity[11] = dtIRSEffective.addTenor ("25Y").julian();
-
-		adblMaturity[12] = dtIRSEffective.addTenor ("30Y").julian();
-
-		adblMaturity[13] = dtIRSEffective.addTenor ("40Y").julian();
-
-		adblMaturity[14] = dtIRSEffective.addTenor ("50Y").julian(); */
-
-		adblCompCalibValue[0] = .0166;
-		/* adblCompCalibValue[1] = .0206;
-		adblCompCalibValue[2] = .0241;
-		adblCompCalibValue[3] = .0269;
-		adblCompCalibValue[4] = .0292;
-		adblCompCalibValue[5] = .0311;
-		adblCompCalibValue[6] = .0326;
-		adblCompCalibValue[7] = .0340;
-		adblCompCalibValue[8] = .0351;
-		adblCompCalibValue[9] = .0375;
-		adblCompCalibValue[10] = .0393;
-		adblCompCalibValue[11] = .0402;
-		adblCompCalibValue[12] = .0407;
-		adblCompCalibValue[13] = .0409;
-		adblCompCalibValue[14] = .0409; */
-
-		for (int i = 0; i < NUM_DC_INSTR; ++i) {
-			adblRate[i] = 0.01;
-			astrCalibMeasure[i] = "Rate";
-
-			aCompCalib[i] = RatesStreamBuilder.CreateFixFloat (
-				dtIRSEffective,
-				new JulianDate (adblMaturity[i]),
-				0.,
-				2,
-				"30/360",
-				0.,
-				4,
-				"Act/360",
-				"USD",
-				"USD"
-			);
-		}
-
-		/*
-		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
-		 */
-
-		DiscountCurve dc = ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, "USD",
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
-			aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
-
-		/*
-		 * Re-calculate the component input measure quotes from the calibrated discount curve object
-		 */
-
-		for (int i = 0; i < aCompCalib.length; ++i)
-			System.out.println (astrCalibMeasure[i] + "[" + i + "] = " +
-				FormatUtil.FormatDouble (aCompCalib[i].measureValue (new ValuationParams (dtStart, dtStart, "USD"), null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, astrCalibMeasure[i]), 1, 5, 1.) + " | " + FormatUtil.FormatDouble (adblCompCalibValue[i], 1, 5, 1.));
-
-		/* WengertJacobian wjQuoteDF = dc.compQuoteDFJacobian (dtStart);
-
-		System.out.println ("Quote/DF Micro Jack[04/06/11]=" + (null == wjQuoteDF ? null :
-			wjQuoteDF.displayString())); */
-
-		WengertJacobian wjPVDF = dc.compJackDPVDManifestMeasure (dtStart);
-
-		System.out.println ("PV/Zero Micro Jack[04/06/11]=" + (null == wjPVDF ? null : wjPVDF.displayString()));
-	}
-
 	public static final void main (
 		final String astrArgs[])
 		throws Exception
 	{
-		// String strConfig = "c:\\Lakshmi\\BondAnal\\Config.xml";
-
 		String strConfig = "";
 
 		CreditAnalytics.Init (strConfig);
 
 		DiscountCurveFromRatesInstruments();
-
-		// DiscountCurveFromIRS();
-
-		// DiscountCurveAPISample();
 	}
 }

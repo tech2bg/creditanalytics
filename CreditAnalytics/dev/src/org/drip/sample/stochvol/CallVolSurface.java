@@ -41,13 +41,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * StochasticVolatilitySurfaceEvaluator demonstrates the spline volatility surface generator by a stochastic
- * 	volatility algorithm, i.e., in this case the Heston 1993 algorithm.
+ * CallVolSurface demonstrates the spline volatility surface generator by a stochastic volatility
+ * 	algorithm, i.e., in this case the Heston 1993 algorithm.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class StochasticVolatilitySurfaceEvaluator {
+public class CallVolSurface {
 	private static final SegmentCustomBuilderControl CubicPolySCBC()
 		throws Exception
 	{

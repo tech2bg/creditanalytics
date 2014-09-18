@@ -172,7 +172,7 @@ public class IBOR {
 
 		FixFloatComponent[] aFFC = new FixFloatComponent[astrMaturityTenor.length];
 
-		int iForwardTenorFreq = new Integer (fri.tenor().split ("M")[0]);
+		int iTenorInMonths = new Integer (fri.tenor().split ("M")[0]);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 
@@ -186,7 +186,16 @@ public class IBOR {
 					astrMaturityTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					4,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -211,7 +220,16 @@ public class IBOR {
 					astrMaturityTenor[i],
 					Double.NaN,
 					null,
-					12 / iForwardTenorFreq,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					12 / iTenorInMonths,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -258,7 +276,7 @@ public class IBOR {
 
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		int iForwardTenorFreq = new Integer (fri.tenor().split ("M")[0]);
+		int iTenorInMonths = new Integer (fri.tenor().split ("M")[0]);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 
@@ -272,7 +290,16 @@ public class IBOR {
 					astrMaturityTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -297,7 +324,16 @@ public class IBOR {
 					astrMaturityTenor[i],
 					Double.NaN,
 					null,
-					12 / iForwardTenorFreq,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					12 / iTenorInMonths,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,

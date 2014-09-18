@@ -109,7 +109,16 @@ public class FRAStdOptionVolAnalysis {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					4,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -130,7 +139,16 @@ public class FRAStdOptionVolAnalysis {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -280,7 +298,16 @@ public class FRAStdOptionVolAnalysis {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -305,7 +332,16 @@ public class FRAStdOptionVolAnalysis {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					12 / iTenorInMonths,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -569,10 +605,10 @@ public class FRAStdOptionVolAnalysis {
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblATMFRA, 1, 4, 100.) + "% | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 2, 10000.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 2, 10000.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMFloorletPrice, 1, 2, 10000.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotFloorletPrice, 1, 2, 10000.));
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 3, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 3, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMFloorletPrice, 1, 3, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotFloorletPrice, 1, 3, 1.));
 	}
 
 	public static final void main (

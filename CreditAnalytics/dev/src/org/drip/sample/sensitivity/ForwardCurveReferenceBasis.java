@@ -111,6 +111,84 @@ public class ForwardCurveReferenceBasis {
 		return aCalibComp;
 	}
 
+	private static final FixFloatComponent IRS (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String strTenor,
+		final double dblCoupon)
+		throws Exception
+	{
+		Stream fixStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				2,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				1.,
+				null,
+				dblCoupon,
+				strCurrency,
+				strCurrency,
+				null,
+				null
+			)
+		);
+
+		Stream floatStream = new Stream (
+			PeriodBuilder.RegularPeriodSingleReset (
+				dtEffective.julian(),
+				strTenor,
+				Double.NaN,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				4,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				true,
+				strCurrency,
+				-1.,
+				null,
+				0.,
+				strCurrency,
+				strCurrency,
+				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
+				null
+			)
+		);
+
+		FixFloatComponent irs = new FixFloatComponent (
+			fixStream,
+			floatStream,
+			null
+		);
+
+		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+
+		return irs;
+	}
+
 	/*
 	 * Construct the Array of Swap Instruments from the given set of parameters
 	 * 
@@ -129,17 +207,11 @@ public class ForwardCurveReferenceBasis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			org.drip.product.rates.FixFloatComponent irs = RatesStreamBuilder.CreateFixFloat (
+			FixFloatComponent irs = IRS (
 				dtEffective,
-				astrTenor[i],
-				adblCoupon[i],
-				2,
-				"Act/360",
-				0.,
-				4,
-				"Act/360",
 				strCurrency,
-				strCurrency
+				astrTenor[i],
+				adblCoupon[i]
 			);
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
@@ -255,7 +327,16 @@ public class ForwardCurveReferenceBasis {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -280,7 +361,16 @@ public class ForwardCurveReferenceBasis {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					12 / iTenorInMonths,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,

@@ -1057,6 +1057,281 @@ public class Stream extends org.drip.service.stream.Serializer {
 	}
 
 	/**
+	 * Retrieve the set of the implemented measures
+	 * 
+	 * @return The set of the implemented measures
+	 */
+
+	public java.util.Set<java.lang.String> availableMeasures()
+	{
+		java.util.Set<java.lang.String> setstrMeasures = new java.util.TreeSet<java.lang.String>();
+
+		setstrMeasures.add ("AccrualCoupon");
+
+		setstrMeasures.add ("Accrued");
+
+		setstrMeasures.add ("Accrued01");
+
+		setstrMeasures.add ("CleanDV01");
+
+		setstrMeasures.add ("CleanPV");
+
+		setstrMeasures.add ("CompoundingAdjustedCleanDV01");
+
+		setstrMeasures.add ("CompoundingAdjustedCleanPV");
+
+		setstrMeasures.add ("CompoundingAdjustedDirtyPV");
+
+		setstrMeasures.add ("CompoundingAdjustedDirtyDV01");
+
+		setstrMeasures.add ("CompoundingAdjustedDirtyPV");
+
+		setstrMeasures.add ("CompoundingAdjustedFairPremium");
+
+		setstrMeasures.add ("CompoundingAdjustedParRate");
+
+		setstrMeasures.add ("CompoundingAdjustedPV");
+
+		setstrMeasures.add ("CompoundingAdjustedRate");
+
+		setstrMeasures.add ("CompoundingAdjustedUpfront");
+
+		setstrMeasures.add ("CompoundingAdjustmentFactor");
+
+		setstrMeasures.add ("CompoundingAdjustmentPremium");
+
+		setstrMeasures.add ("CompoundingAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedCleanDV01");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedCleanPV");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedDirtyDV01");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedDirtyPV");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedDV01");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedFairPremium");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedParRate");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedPV");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedRate");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustedUpfront");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustmentFactor");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustmentPremium");
+
+		setstrMeasures.add ("CreditForwardConvexityAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedCleanDV01");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedCleanPV");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedDirtyDV01");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedDirtyPV");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedDV01");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedFairPremium");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedParRate");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedPV");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedRate");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustedUpfront");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustmentFactor");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustmentPremium");
+
+		setstrMeasures.add ("CreditFundingConvexityAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedCleanDV01");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedCleanPV");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedDirtyDV01");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedDirtyPV");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedDV01");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedFairPremium");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedParRate");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedPV");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedRate");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustedUpfront");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustmentFactor");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustmentPremium");
+
+		setstrMeasures.add ("CreditFXConvexityAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedCleanDV01");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedCleanPV");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedDirtyDV01");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedDirtyPV");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedDV01");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedFairPremium");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedParRate");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedPV");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedRate");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustedUpfront");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustmentFactor");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustmentPremium");
+
+		setstrMeasures.add ("CumulativeConvexityAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("CV01");
+
+		setstrMeasures.add ("DirtyDV01");
+
+		setstrMeasures.add ("DirtyPV");
+
+		setstrMeasures.add ("DV01");
+
+		setstrMeasures.add ("FairPremium");
+
+		setstrMeasures.add ("Fixing01");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedCleanDV01");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedCleanPV");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedDirtyDV01");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedDirtyPV");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedDV01");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedFairPremium");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedParRate");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedPV");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedRate");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustedUpfront");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustmentFactor");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustmentPremium");
+
+		setstrMeasures.add ("ForwardFundingConvexityAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedCleanDV01");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedCleanPV");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedDirtyDV01");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedDirtyPV");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedDV01");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedFairPremium");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedParRate");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedPV");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedRate");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustedUpfront");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustmentFactor");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustmentPremium");
+
+		setstrMeasures.add ("ForwardFXConvexityAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedCleanDV01");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedCleanPV");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedDirtyDV01");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedDirtyPV");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedDV01");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedFairPremium");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedParRate");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedPV");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedRate");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustedUpfront");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustmentFactor");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustmentPremium");
+
+		setstrMeasures.add ("FundingFXConvexityAdjustmentPremiumUpfront");
+
+		setstrMeasures.add ("ParRate");
+
+		setstrMeasures.add ("PV");
+
+		setstrMeasures.add ("Rate");
+
+		setstrMeasures.add ("ResetDate");
+
+		setstrMeasures.add ("ResetRate");
+
+		setstrMeasures.add ("TotalCoupon");
+
+		setstrMeasures.add ("UnadjustedCleanDV01");
+
+		setstrMeasures.add ("UnadjustedCleanPV");
+
+		setstrMeasures.add ("UnadjustedDirtyDV01");
+
+		setstrMeasures.add ("UnadjustedDirtyPV");
+
+		setstrMeasures.add ("UnadjustedFairPremium");
+
+		setstrMeasures.add ("UnadjustedParRate");
+
+		setstrMeasures.add ("UnadjustedPV");
+
+		setstrMeasures.add ("UnadjustedRate");
+
+		setstrMeasures.add ("UnadjustedUpfront");
+
+		setstrMeasures.add ("Upfront");
+
+		return setstrMeasures;
+	}
+
+	/**
 	 * Generate the State Loading Constraints for the Forward Latent State
 	 * 
 	 * @param valParams The Valuation Parameters

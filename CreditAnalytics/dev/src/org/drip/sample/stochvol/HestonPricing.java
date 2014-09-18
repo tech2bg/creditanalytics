@@ -45,13 +45,13 @@ import org.drip.state.identifier.ForwardLabel;
  */
 
 /**
- * HestonStochasticVolatilityPricing contains an illustration of the Stochastic Volatility based Pricing
- *  Algorithm of an European Call Using the Heston Algorithm.
+ * HestonPricing contains an illustration of the Stochastic Volatility based Pricing Algorithm of an
+ *  European Call Using the Heston Algorithm.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class HestonStochasticVolatilityPricing {
+public class HestonPricing {
 
 	/*
 	 * Construct the Array of Cash Instruments from the given set of parameters
@@ -107,7 +107,16 @@ public class HestonStochasticVolatilityPricing {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					4,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
@@ -128,7 +137,16 @@ public class HestonStochasticVolatilityPricing {
 					astrTenor[i],
 					Double.NaN,
 					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					2,
+					"Act/360",
+					false,
 					"Act/360",
 					false,
 					false,
