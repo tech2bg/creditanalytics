@@ -1,8 +1,6 @@
 
 package org.drip.sample.ccbs;
 
-import java.util.*;
-
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
@@ -65,8 +63,9 @@ public class CCBSDiscountCurve {
 
 	private static final FloatFloatComponent[] MakexM6MBasisSwap (
 		final JulianDate dtEffective,
-		final String strCurrency,
-		final CurrencyPair cp,
+		final String strPayCurrency,
+		final String strCouponCurrency,
+		final double dblNotional,
 		final String[] astrTenor,
 		final int iTenorInMonths)
 		throws Exception
@@ -98,13 +97,13 @@ public class CCBSDiscountCurve {
 					"Act/360",
 					false,
 					false,
-					strCurrency,
-					-1.,
+					strPayCurrency,
+					-1. * dblNotional,
 					null,
 					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+					strPayCurrency,
+					strCouponCurrency,
+					ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
 					null
 				)
 			);
@@ -132,13 +131,13 @@ public class CCBSDiscountCurve {
 					"Act/360",
 					false,
 					false,
-					strCurrency,
-					1.,
+					strPayCurrency,
+					dblNotional,
 					null,
 					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+					strPayCurrency,
+					strCouponCurrency,
+					ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					null
 				)
 			);
@@ -150,10 +149,10 @@ public class CCBSDiscountCurve {
 			aFFC[i] = new FloatFloatComponent (
 				fsReference,
 				fsDerived,
-				new CashSettleParams (0, strCurrency, 0)
+				new CashSettleParams (0, strPayCurrency, 0)
 			);
 
-			aFFC[i].setPrimaryCode (strCurrency + "_6M::" + iTenorInMonths + "M::" + astrTenor[i]);
+			aFFC[i].setPrimaryCode (fsReference.name() + "||" + fsDerived.name());
 		}
 
 		return aFFC;
@@ -266,15 +265,15 @@ public class CCBSDiscountCurve {
 		final JulianDate dtValue,
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
-		final CurrencyPair cp,
 		final String[] astrTenor,
 		final int iTenorInMonths)
 		throws Exception
 	{
 		FloatFloatComponent[] aFFCReference = MakexM6MBasisSwap (
 			dtValue,
+			strDerivedCurrency,
 			strReferenceCurrency,
-			cp,
+			1.,
 			astrTenor,
 			3
 		);
@@ -332,29 +331,10 @@ public class CCBSDiscountCurve {
 		final boolean bBasisOnDerivedLeg)
 		throws Exception
 	{
-		List<CaseInsensitiveTreeMap<Double>> lsCCBSMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
-
-		List<CaseInsensitiveTreeMap<Double>> lsIRSMapManifestQuote = new ArrayList<CaseInsensitiveTreeMap<Double>>();
-
-		for (int i = 0; i < astrTenor.length; ++i) {
-			CaseInsensitiveTreeMap<Double> mapIRSManifestQuote = new CaseInsensitiveTreeMap<Double>();
-
-			mapIRSManifestQuote.put ("Rate", adblSwapRate[i]);
-
-			lsIRSMapManifestQuote.add (mapIRSManifestQuote);
-
-			CaseInsensitiveTreeMap<Double> mapCCBSManifestQuote = new CaseInsensitiveTreeMap<Double>();
-
-			mapCCBSManifestQuote.put ("DerivedParBasisSpread", adblCrossCurrencyBasis[i]);
-
-			lsCCBSMapManifestQuote.add (mapCCBSManifestQuote);
-		}
-
 		ComponentPair[] aCCSP = MakeCCSP (
 			dtValue,
-			strReferenceCurrency,
 			strDerivedCurrency,
-			CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency),
+			strReferenceCurrency,
 			astrTenor,
 			3
 		);
@@ -367,17 +347,11 @@ public class CCBSDiscountCurve {
 
 		mktParams.setForwardCurve (fc6MReference);
 
-		FXLabel fxLabelBase = FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency));
+		FXLabel fxLabel = FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency));
 
-		FXLabel fxLabelInverse = FXLabel.Standard (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency));
+		mktParams.setFXCurve (fxLabel, new FlatUnivariate (dblRefDerFX));
 
-		mktParams.setFXCurve (fxLabelBase, new FlatUnivariate (1. / dblRefDerFX));
-
-		mktParams.setFXCurve (fxLabelInverse, new FlatUnivariate (dblRefDerFX));
-
-		mktParams.setFixing (aCCSP[0].effective(), fxLabelBase, dblRefDerFX);
-
-		mktParams.setFixing (aCCSP[0].effective(), fxLabelInverse, 1. / dblRefDerFX);
+		mktParams.setFixing (aCCSP[0].effective(), fxLabel, dblRefDerFX);
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 
@@ -386,7 +360,8 @@ public class CCBSDiscountCurve {
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
 		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.DiscountStretch (
 			"FIXFLOAT",
@@ -424,7 +399,7 @@ public class CCBSDiscountCurve {
 
 			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, mktParams, null);
 
-			double dblCalibSwapRate = mapOP.get (rcDerived.name() + "[CalibSwapRate]");
+			double dblCalibSwapRate = mapOP.get (rcDerived.name() + "[SwapRate]");
 
 			System.out.println ("\t[" + rcDerived.effective() + " - " + rcDerived.maturity() + "] = " +
 				FormatUtil.FormatDouble (dblCalibSwapRate, 1, 3, 100.) +

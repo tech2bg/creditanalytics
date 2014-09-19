@@ -623,6 +623,7 @@ public class STIROption {
 		String strTenor = "3M";
 		String strCurrency = "EUR";
 		String strManifestMeasure = "SwapRate";
+		double dblCustomMetricVolatility = 0.4;
 		double dblForwardVolatility = 0.3;
 		double dblFundingVolatility = 0.1;
 		double dblForwardFundingCorr = 0.2;
@@ -648,13 +649,28 @@ public class STIROption {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
+		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
-		mktParams.setFundingCurveVolSurface (fundingLabel, new FlatUnivariate (dblFundingVolatility));
+		mktParams.setCustomMetricVolSurface (
+			CustomMetricLabel.Standard (stir.name() + "_" + strManifestMeasure),
+			new FlatUnivariate (dblCustomMetricVolatility)
+		);
 
-		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblForwardVolatility));
+		mktParams.setFundingCurveVolSurface (
+			fundingLabel,
+			new FlatUnivariate (dblFundingVolatility)
+		);
 
-		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblForwardFundingCorr));
+		mktParams.setForwardCurveVolSurface (
+			fri,
+			new FlatUnivariate (dblForwardVolatility)
+		);
+
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabel,
+			new FlatUnivariate (dblForwardFundingCorr)
+		);
 
 		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
 

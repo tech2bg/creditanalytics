@@ -689,7 +689,14 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 
 		if (!prwc.absorb (prwcReference)) return null;
 
-		return !prwc.updateValue (dblPV) ? null : prwc;
+		if (!prwc.updateValue (dblPV)) return null;
+
+		/* System.out.println ("\t" + _floatReference.forwardLabel().fullyQualifiedName() + " | " +
+			_floatDerived.forwardLabel().fullyQualifiedName() + " | "  + pqs.forwardLabel().fullyQualifiedName());
+
+		prwc.displayString ("LALA"); */
+
+		return prwc;
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
@@ -746,13 +753,13 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		prwc.displayString (maturity().toString());
-
 		if (!prwc.absorb (prwcDerived)) return null;
 
 		if (!prwc.absorb (prwcReference)) return null;
 
-		return !prwc.updateValue (dblPV) ? null : prwc;
+		if (!prwc.updateValue (dblPV)) return null;
+
+		return prwc;
 	}
 
 	@Override public java.lang.String fieldDelimiter()

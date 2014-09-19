@@ -63,8 +63,9 @@ public class CCBSForwardCurve {
 
 	private static final FloatFloatComponent[] MakexM6MBasisSwap (
 		final JulianDate dtEffective,
-		final String strCurrency,
-		final CurrencyPair cp,
+		final String strPayCurrency,
+		final String strCouponCurrency,
+		final double dblNotional,
 		final String[] astrTenor,
 		final int iTenorInMonths)
 		throws Exception
@@ -96,13 +97,13 @@ public class CCBSForwardCurve {
 					"Act/360",
 					false,
 					false,
-					strCurrency,
-					-1.,
+					strPayCurrency,
+					-1. * dblNotional,
 					null,
 					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+					strPayCurrency,
+					strCouponCurrency,
+					ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
 					null
 				)
 			);
@@ -130,13 +131,13 @@ public class CCBSForwardCurve {
 					"Act/360",
 					false,
 					false,
-					strCurrency,
-					1.,
+					strPayCurrency,
+					dblNotional,
 					null,
 					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+					strPayCurrency,
+					strCouponCurrency,
+					ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 					null
 				)
 			);
@@ -148,10 +149,10 @@ public class CCBSForwardCurve {
 			aFFC[i] = new FloatFloatComponent (
 				fsReference,
 				fsDerived,
-				new CashSettleParams (0, strCurrency, 0)
+				new CashSettleParams (0, strPayCurrency, 0)
 			);
 
-			aFFC[i].setPrimaryCode (strCurrency + "_6M::" + iTenorInMonths + "M::" + astrTenor[i]);
+			aFFC[i].setPrimaryCode (fsReference.name() + "||" + fsDerived.name());
 		}
 
 		return aFFC;
@@ -161,15 +162,15 @@ public class CCBSForwardCurve {
 		final JulianDate dtValue,
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
-		final CurrencyPair cp,
 		final String[] astrTenor,
 		final int iTenorInMonths)
 		throws Exception
 	{
 		FloatFloatComponent[] aFFCReference = MakexM6MBasisSwap (
 			dtValue,
+			strDerivedCurrency,
 			strReferenceCurrency,
-			cp,
+			-1.,
 			astrTenor,
 			3
 		);
@@ -177,7 +178,8 @@ public class CCBSForwardCurve {
 		FloatFloatComponent[] aFFCDerived = MakexM6MBasisSwap (
 			dtValue,
 			strDerivedCurrency,
-			null,
+			strDerivedCurrency,
+			1.,
 			astrTenor,
 			3
 		);
@@ -214,7 +216,6 @@ public class CCBSForwardCurve {
 			dtValue,
 			strReferenceCurrency,
 			strDerivedCurrency,
-			CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency),
 			astrTenor,
 			3
 		);
@@ -233,15 +234,9 @@ public class CCBSForwardCurve {
 
 		FXLabel fxLabelBase = FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency));
 
-		FXLabel fxLabelInverse = FXLabel.Standard (CurrencyPair.FromCode (strReferenceCurrency + "/" + strDerivedCurrency));
-
 		mktParams.setFXCurve (fxLabelBase, new FlatUnivariate (dblRefDerFX));
 
-		mktParams.setFXCurve (fxLabelInverse, new FlatUnivariate (1. / dblRefDerFX));
-
 		mktParams.setFixing (aCCSP[0].effective(), fxLabelBase, dblRefDerFX);
-
-		mktParams.setFixing (aCCSP[0].effective(), fxLabelInverse, 1. / dblRefDerFX);
 
 		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
 

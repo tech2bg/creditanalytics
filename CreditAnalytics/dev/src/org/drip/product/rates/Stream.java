@@ -79,18 +79,14 @@ public class Stream extends org.drip.service.stream.Serializer {
 
 	public java.lang.String name()
 	{
-		org.drip.analytics.cashflow.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
 
-		try {
-			return "STREAM::" + cpFirst.payCurrency() + "/" + cpFirst.couponCurrency() + "::" + (12 / freq())
-				+ "M::{" + new org.drip.analytics.date.JulianDate (cpFirst.startDate()) + "->" + new
-					org.drip.analytics.date.JulianDate (_lsCouponPeriod.get (_lsCouponPeriod.size() -
-						1).endDate()) + "}";
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
+		java.lang.String strTrailer = "::{" + effective() + "->" + maturity() + "}";
 
-		return "";
+		if (null != forwardLabel)
+			return "FLOATSTREAM::" + payCurrency() + "::" + forwardLabel.fullyQualifiedName() + strTrailer;
+
+		return "FIXEDSTREAM::" + payCurrency() + "/" + couponCurrency() + "::" + (12 / freq()) + strTrailer;
 	}
 
 	/**

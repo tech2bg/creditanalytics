@@ -182,25 +182,34 @@ public class CCBSStretchBuilder {
 
 			org.drip.product.calib.ProductQuoteSet pqs = null;
 			org.drip.state.identifier.ForwardLabel forwardLabel = null;
+			org.drip.state.identifier.FundingLabel fundingLabel = null;
 
-			if (comp instanceof org.drip.product.rates.DualStreamComponent)
-				forwardLabel = ((org.drip.product.rates.DualStreamComponent)
-					comp).derivedStream().forwardLabel();
-			else {
-				org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
+			if (comp instanceof org.drip.product.rates.DualStreamComponent) {
+				org.drip.product.rates.Stream streamDerived = ((org.drip.product.rates.DualStreamComponent)
+					comp).derivedStream();
+
+				forwardLabel = streamDerived.forwardLabel();
+
+				fundingLabel = streamDerived.fundingLabel();
+			} else {
+				org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp.forwardLabel();
+
+				org.drip.state.identifier.FundingLabel[] aFundingLabel = comp.fundingLabel();
 
 				if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+
+				if (null != aFundingLabel && 0 != aFundingLabel.length) fundingLabel = aFundingLabel[0];
 			}
 
 			try { 
 				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
 					org.drip.state.representation.LatentStateSpecification
 						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
-							org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
-					comp.fundingLabel()[0]), new org.drip.state.representation.LatentStateSpecification
-						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
-							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-								forwardLabel)});
+							org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
+								fundingLabel), new org.drip.state.representation.LatentStateSpecification
+									(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+										org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
+					forwardLabel)});
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

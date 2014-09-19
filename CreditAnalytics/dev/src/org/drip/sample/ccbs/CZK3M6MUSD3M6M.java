@@ -582,7 +582,8 @@ public class CZK3M6MUSD3M6M {
 			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			null
+		);
 
 		DiscountCurve dcReference = OvernightIndexCurve.MakeDC (
 			strReferenceCurrency,
@@ -612,7 +613,7 @@ public class CZK3M6MUSD3M6M {
 			"ParForwardRate",
 			s_astrUSD6MFixFloatTenor,
 			s_adblUSD6MFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -620,7 +621,8 @@ public class CZK3M6MUSD3M6M {
 			null,
 			"DerivedParBasisSpread",
 			"---- USD LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
-			false);
+			false
+		);
 
 		ForwardCurve fc3MReference = IBOR.CustomIBORBuilderSample (
 			dcReference,
@@ -635,7 +637,7 @@ public class CZK3M6MUSD3M6M {
 			"ParForwardRate",
 			s_astrUSD3MFixFloatTenor,
 			s_adblUSD3MFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -643,7 +645,8 @@ public class CZK3M6MUSD3M6M {
 			s_adblUSD3MSyntheticFloatFloatQuote,
 			"DerivedParBasisSpread",
 			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
-			false);
+			false
+		);
 
 		DiscountCurve dcDerived = OvernightIndexCurve.MakeDC (
 			strDerivedCurrency,
@@ -673,7 +676,7 @@ public class CZK3M6MUSD3M6M {
 			"ParForwardRate",
 			s_astrCZK6MFixFloatTenor,
 			s_adblCZK6MFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -681,7 +684,8 @@ public class CZK3M6MUSD3M6M {
 			null,
 			"DerivedParBasisSpread",
 			"---- CZK LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
-			false);
+			false
+		);
 
 		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
 			strReferenceCurrency,

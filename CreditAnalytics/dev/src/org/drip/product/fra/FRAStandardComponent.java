@@ -428,8 +428,10 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 
 			double dblQuantoAdjustedParForward = dblParForward * dblMultiplicativeQuantoAdjustment;
 
-			double dblPV = dcFunding.df (dblMaturity) / dcFunding.df (dblCashSettle) * _dblNotional *
-				(dblQuantoAdjustedParForward - _dblStrike);
+			double dblDV01 = dblDCF * dcFunding.df (dblMaturity) / dcFunding.df (dblCashSettle) *
+				_dblNotional;
+
+			double dblPV = dblDV01 * (dblQuantoAdjustedParForward - _dblStrike);
 
 			double dblDCParForward = dcFunding.libor (_dblEffectiveDate, dblMaturity);
 
@@ -441,6 +443,8 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 				dblDCParForward);
 
 			mapResult.put ("discountcurveparforward", dblDCParForward);
+
+			mapResult.put ("dv01", dblDV01);
 
 			mapResult.put ("forward", dblParForward);
 
@@ -486,6 +490,8 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		setstrMeasureNames.add ("DiscountCurveMultiplicativeBasis");
 
 		setstrMeasureNames.add ("DiscountCurveParForward");
+
+		setstrMeasureNames.add ("DV01");
 
 		setstrMeasureNames.add ("Forward");
 

@@ -434,7 +434,8 @@ public class IBOR {
 		FixFloatComponent[] aFixFloat = FixFloatSwap (
 			dtValue,
 			fri,
-			astrFixFloatTenor);
+			astrFixFloatTenor
+		);
 
 		/*
 		 * Construct the Fix-Float Component Set Stretch Builder

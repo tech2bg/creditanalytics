@@ -618,7 +618,7 @@ public class CHF3M6MUSD3M6M {
 			"ParForwardRate",
 			s_astrUSD6MFixFloatTenor,
 			s_adblUSD6MFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -641,7 +641,7 @@ public class CHF3M6MUSD3M6M {
 			"ParForwardRate",
 			s_astrUSD3MFixFloatTenor,
 			s_adblUSD3MFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -679,7 +679,7 @@ public class CHF3M6MUSD3M6M {
 			"ParForwardRate",
 			s_astrCHF6MFixFloatTenor,
 			s_adblCHF6MFixFloatQuote,
-			"DerivedParBasisSpread",
+			"SwapRate",
 			null,
 			null,
 			"DerivedParBasisSpread",
@@ -687,7 +687,8 @@ public class CHF3M6MUSD3M6M {
 			null,
 			"DerivedParBasisSpread",
 			"---- CHF LIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
-			false);
+			false
+		);
 
 		CCBSForwardCurve.ForwardCurveReferenceComponentBasis (
 			strReferenceCurrency,

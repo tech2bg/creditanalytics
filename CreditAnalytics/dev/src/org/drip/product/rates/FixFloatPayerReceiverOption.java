@@ -95,6 +95,11 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 		if (dblValueDate >= exercise().julian()) return null;
 
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (_stir.payCurrency()[0]));
+
+		if (null == dcFunding) return null;
+
 		long lStart = System.nanoTime();
 
 		double dblExerciseDate = exercise().julian();
@@ -112,24 +117,11 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblATMManifestMeasure)) return null;
 
-		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel()[0];
-
-		org.drip.state.identifier.FundingLabel fundingLabel = fundingLabel()[0];
-
 		try {
-			double dblSTIRIntegratedQuantoDrift =
-				org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto (csqs.forwardCurveVolSurface
-					(forwardLabel), csqs.fundingCurveVolSurface (fundingLabel),
-						csqs.forwardFundingCorrSurface (forwardLabel, fundingLabel), dblValueDate,
-							dblExerciseDate);
-
-			// dblSTIRIntegratedQuantoDrift = 0.;
-
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedQuantoDrift)) return null;
-
 			double dblSTIRIntegratedSurfaceVariance =
 				org.drip.analytics.support.OptionHelper.IntegratedSurfaceVariance
-					(csqs.forwardCurveVolSurface (forwardLabel), dblValueDate, dblExerciseDate);
+					(csqs.customMetricVolSurface (org.drip.state.identifier.CustomMetricLabel.Standard
+						(_stir.name() + "_" + strManifestMeasure)), dblValueDate, dblExerciseDate);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSTIRIntegratedSurfaceVariance)) return null;
 
@@ -138,18 +130,30 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 			double dblStrike = strike();
 
-			double dblLogMoneynessFactor = java.lang.Math.log (dblATMManifestMeasure / dblStrike);
+			double dblMoneynessFactor = dblATMManifestMeasure / dblStrike;
+
+			double dblLogMoneynessFactor = java.lang.Math.log (dblMoneynessFactor);
 
 			double dblForwardIntrinsic = java.lang.Double.NaN;
 			double dblForwardATMIntrinsic = java.lang.Double.NaN;
-			double dblATMDPlus = (dblSTIRIntegratedQuantoDrift + 0.5 * dblSTIRIntegratedSurfaceVariance) /
+			double dblManifestMeasurePriceTransformer = java.lang.Double.NaN;
+			double dblManifestMeasureIntrinsic = _bIsReceiver ? dblATMManifestMeasure - dblStrike : dblStrike
+				- dblATMManifestMeasure;
+			double dblATMDPlus = 0.5 * dblSTIRIntegratedSurfaceVariance / dblSTIRIntegratedSurfaceVolatility;
+			double dblATMDMinus = -1. * dblATMDPlus;
+			double dblDPlus = (dblLogMoneynessFactor + 0.5 * dblSTIRIntegratedSurfaceVariance) /
 				dblSTIRIntegratedSurfaceVolatility;
-			double dblATMDMinus = (dblSTIRIntegratedQuantoDrift - 0.5 * dblSTIRIntegratedSurfaceVariance) /
+			double dblDMinus = (dblLogMoneynessFactor - 0.5 * dblSTIRIntegratedSurfaceVariance) /
 				dblSTIRIntegratedSurfaceVolatility;
-			double dblDPlus = (dblLogMoneynessFactor + dblSTIRIntegratedQuantoDrift + 0.5 *
-				dblSTIRIntegratedSurfaceVariance) / dblSTIRIntegratedSurfaceVolatility;
-			double dblDMinus = (dblLogMoneynessFactor + dblSTIRIntegratedQuantoDrift - 0.5 *
-				dblSTIRIntegratedSurfaceVariance) / dblSTIRIntegratedSurfaceVolatility;
+
+			if (strManifestMeasure.equalsIgnoreCase ("Price") || strManifestMeasure.equalsIgnoreCase ("PV"))
+				dblManifestMeasurePriceTransformer = dcFunding.df (dblExerciseDate);
+			else if (strManifestMeasure.equalsIgnoreCase ("FairPremium") ||
+				strManifestMeasure.equalsIgnoreCase ("SwapRate") || strManifestMeasure.equalsIgnoreCase
+					("Rate"))
+				dblManifestMeasurePriceTransformer = 10000. * dblFixedCleanDV01;
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblManifestMeasurePriceTransformer)) return null;
 
 			if (_bIsReceiver) {
 				dblForwardIntrinsic = dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
@@ -171,7 +175,7 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-			double dblSpotPrice = dblForwardIntrinsic * dblFixedCleanDV01;
+			double dblSpotPrice = dblForwardIntrinsic * dblManifestMeasurePriceTransformer;
 
 			mapResult.put ("ATMSwapRate", dblATMManifestMeasure);
 
@@ -181,9 +185,14 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 			mapResult.put ("ForwardIntrinsic", dblForwardIntrinsic);
 
-			mapResult.put ("IntegratedQuantoDrift", dblSTIRIntegratedQuantoDrift);
-
 			mapResult.put ("IntegratedSurfaceVariance", dblSTIRIntegratedSurfaceVariance);
+
+			mapResult.put ("ManifestMeasureIntrinsic", dblManifestMeasureIntrinsic);
+
+			mapResult.put ("ManifestMeasureIntrinsicValue", dblManifestMeasureIntrinsic *
+				dblManifestMeasurePriceTransformer);
+
+			mapResult.put ("MoneynessFactor", dblMoneynessFactor);
 
 			mapResult.put ("Price", dblSpotPrice);
 
@@ -213,9 +222,13 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 		setstrMeasureNames.add ("ForwardIntrinsic");
 
-		setstrMeasureNames.add ("IntegratedQuantoDrift");
-
 		setstrMeasureNames.add ("IntegratedSurfaceVariance");
+
+		setstrMeasureNames.add ("ManifestMeasureIntrinsic");
+
+		setstrMeasureNames.add ("ManifestMeasureIntrinsicValue");
+
+		setstrMeasureNames.add ("MoneynessFactor");
 
 		setstrMeasureNames.add ("Price");
 

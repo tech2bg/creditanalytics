@@ -560,13 +560,10 @@ public class FRAStdOptionVolAnalysis {
 			new FlatUnivariate (dblForwardFundingCorr)
 		);
 
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
-
+		double dblStrike = 0.0189;
 		String strManifestMeasure = "QuantoAdjustedParForward";
 
 		String strCurrency = fra.payCurrency()[0];
-
-		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
 
 		FRAStandardCapFloorlet fraCaplet = new FRAStandardCapFloorlet (
 			fra,
@@ -575,7 +572,8 @@ public class FRAStdOptionVolAnalysis {
 			dblStrike,
 			1.,
 			strCurrency,
-			strCurrency);
+			strCurrency
+		);
 
 		FRAStandardCapFloorlet fraFloorlet = new FRAStandardCapFloorlet (
 			fra,
@@ -584,7 +582,8 @@ public class FRAStdOptionVolAnalysis {
 			dblStrike,
 			1.,
 			strCurrency,
-			strCurrency);
+			strCurrency
+		);
 
 		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, mktParams, null);
 
@@ -592,11 +591,15 @@ public class FRAStdOptionVolAnalysis {
 
 		double dblATMFRA = mapFRACapletOutput.get ("ATMFRA");
 
-		double dblForwardATMCapletPrice = mapFRACapletOutput.get ("ForwardATMPrice");
+		double dblManifestMeasureIntrinsic = mapFRACapletOutput.get ("ManifestMeasureIntrinsic");
+
+		double dblManifestMeasureIntrinsicValue = mapFRACapletOutput.get ("ManifestMeasureIntrinsicValue");
+
+		double dblForwardATMCapletPrice = mapFRACapletOutput.get ("ForwardATMIntrinsic");
 
 		double dblSpotCapletPrice = mapFRACapletOutput.get ("SpotPrice");
 
-		double dblForwardATMFloorletPrice = mapFRAFloorletOutput.get ("ForwardATMPrice");
+		double dblForwardATMFloorletPrice = mapFRAFloorletOutput.get ("ForwardATMIntrinsic");
 
 		double dblSpotFloorletPrice = mapFRAFloorletOutput.get ("SpotPrice");
 
@@ -605,10 +608,12 @@ public class FRAStdOptionVolAnalysis {
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblATMFRA, 1, 4, 100.) + "% | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 3, 1.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 3, 1.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMFloorletPrice, 1, 3, 1.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotFloorletPrice, 1, 3, 1.));
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsic, 1, 1, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsicValue, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMFloorletPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotFloorletPrice, 1, 4, 1.));
 	}
 
 	public static final void main (
@@ -660,13 +665,17 @@ public class FRAStdOptionVolAnalysis {
 
 		System.out.println ("\t\tFRA ATM (%)");
 
-		System.out.println ("\t\tForward Caplet ATM Price (bp)");
+		System.out.println ("\t\tManifest Measure Instrinsic (bp)");
 
-		System.out.println ("\t\tSpot Caplet Price (bp)");
+		System.out.println ("\t\tManifest Measure Instrinsic Value");
 
-		System.out.println ("\t\tForward Floorlet ATM Price (bp)");
+		System.out.println ("\t\tForward Caplet ATM Price");
 
-		System.out.println ("\t\tSpot Floorlet Price (bp)");
+		System.out.println ("\t\tSpot Caplet Price");
+
+		System.out.println ("\t\tForward Floorlet ATM Price");
+
+		System.out.println ("\t\tSpot Floorlet Price");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
@@ -681,7 +690,8 @@ public class FRAStdOptionVolAnalysis {
 						mktParams,
 						dblSigmaFwd,
 						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX);
+						dblCorrFwdFwd2DomX
+					);
 			}
 		}
 	}

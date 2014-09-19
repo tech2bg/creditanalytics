@@ -91,10 +91,8 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 	{
 		if (null == valParams || null == csqs) return null;
 
-		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(_fra.payCurrency()[0]);
-
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (_fra.payCurrency()[0]));
 
 		if (null == dcFunding) return null;
 
@@ -113,9 +111,13 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		if (null == mapFRAOutput || !mapFRAOutput.containsKey (strManifestMeasure)) return null;
 
+		double dblFRADV01 = mapFRAOutput.get ("DV01");
+
 		double dblATMManifestMeasure = mapFRAOutput.get (strManifestMeasure);
 
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblATMManifestMeasure)) return null;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblATMManifestMeasure) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblFRADV01))
+			return null;
 
 		org.drip.quant.function1D.AbstractUnivariate auForwardVolSurface = csqs.forwardCurveVolSurface
 			(_fra.fri());
@@ -135,10 +137,15 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 			double dblNotional = notional();
 
-			double dblLogMoneynessFactor = java.lang.Math.log (dblATMManifestMeasure / dblStrike);
+			double dblMoneynessFactor = dblATMManifestMeasure / dblStrike;
 
-			double dblForwardPrice = java.lang.Double.NaN;
-			double dblForwardATMPrice = java.lang.Double.NaN;
+			double dblLogMoneynessFactor = java.lang.Math.log (dblMoneynessFactor);
+
+			double dblForwardIntrinsic = java.lang.Double.NaN;
+			double dblForwardATMIntrinsic = java.lang.Double.NaN;
+			double dblManifestMeasurePriceTransformer = java.lang.Double.NaN;
+			double dblManifestMeasureIntrinsic = _bIsCaplet ? dblATMManifestMeasure - dblStrike : dblStrike -
+				dblATMManifestMeasure;
 			double dblATMDPlus = 0.5 * dblIntegratedSurfaceVariance / dblIntegratedSurfaceVolatility;
 			double dblATMDMinus = -1. * dblATMDPlus;
 			double dblDPlus = (dblLogMoneynessFactor + 0.5 * dblIntegratedSurfaceVariance) /
@@ -146,18 +153,29 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 			double dblDMinus = (dblLogMoneynessFactor - 0.5 * dblIntegratedSurfaceVariance) /
 				dblIntegratedSurfaceVolatility;
 
+			if (strManifestMeasure.equalsIgnoreCase ("Price") || strManifestMeasure.equalsIgnoreCase ("PV"))
+				dblManifestMeasurePriceTransformer = dcFunding.df (dblExerciseDate);
+			else if (strManifestMeasure.equalsIgnoreCase ("ForwardRate") ||
+				strManifestMeasure.equalsIgnoreCase ("ParForward") || strManifestMeasure.equalsIgnoreCase
+					("ParForwardRate") || strManifestMeasure.equalsIgnoreCase ("QuantoAdjustedParForward") ||
+						strManifestMeasure.equalsIgnoreCase ("Rate"))
+				dblManifestMeasurePriceTransformer = dblFRADV01;
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblManifestMeasurePriceTransformer)) return null;
+
 			if (_bIsCaplet) {
-				dblForwardPrice = dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
+				dblForwardIntrinsic = dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
 					(dblDPlus) - dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF (dblDMinus);
 
-				dblForwardATMPrice = dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
-					(dblATMDPlus) - dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF
-						(dblATMDMinus);
+				dblForwardATMIntrinsic = dblATMManifestMeasure *
+					org.drip.quant.distribution.Gaussian.InverseCDF (dblATMDPlus) - dblStrike *
+						org.drip.quant.distribution.Gaussian.InverseCDF (dblATMDMinus);
 			} else {
-				dblForwardPrice = dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF (-dblDMinus) -
-					dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF (-dblDPlus);
+				dblForwardIntrinsic = dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF
+					(-dblDMinus) - dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
+						(-dblDPlus);
 
-				dblForwardATMPrice = dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF
+				dblForwardATMIntrinsic = dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF
 					(-dblATMDMinus) - dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
 						(-dblATMDPlus);
 			}
@@ -165,17 +183,24 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
-			double dblSpotPrice = dblForwardPrice * dcFunding.df (dblExerciseDate);
+			double dblSpotPrice = dblForwardIntrinsic * dblManifestMeasurePriceTransformer;
 
 			mapResult.put ("ATMFRA", dblATMManifestMeasure);
 
 			mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
-			mapResult.put ("ForwardATMPrice", dblForwardATMPrice);
+			mapResult.put ("ForwardATMIntrinsic", dblForwardATMIntrinsic);
 
-			mapResult.put ("ForwardPrice", dblForwardPrice);
+			mapResult.put ("ForwardIntrinsic", dblForwardIntrinsic);
 
 			mapResult.put ("IntegratedSurfaceVariance", dblIntegratedSurfaceVariance);
+
+			mapResult.put ("ManifestMeasureIntrinsic", dblManifestMeasureIntrinsic);
+
+			mapResult.put ("ManifestMeasureIntrinsicValue", dblManifestMeasureIntrinsic *
+				dblManifestMeasurePriceTransformer);
+
+			mapResult.put ("MoneynessFactor", dblMoneynessFactor);
 
 			mapResult.put ("Price", dblSpotPrice);
 
@@ -201,11 +226,17 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		setstrMeasureNames.add ("CalcTime");
 
-		setstrMeasureNames.add ("ForwardATMPrice");
+		setstrMeasureNames.add ("ForwardATMIntrinsic");
 
-		setstrMeasureNames.add ("ForwardPrice");
+		setstrMeasureNames.add ("ForwardIntrinsic");
 
 		setstrMeasureNames.add ("IntegratedSurfaceVariance");
+
+		setstrMeasureNames.add ("ManifestMeasureIntrinsic");
+
+		setstrMeasureNames.add ("ManifestMeasureIntrinsicValue");
+
+		setstrMeasureNames.add ("MoneynessFactor");
 
 		setstrMeasureNames.add ("Price");
 

@@ -615,14 +615,22 @@ public class STIROptionVolCorrAnalysis {
 		final FixFloatComponent stir,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
+		final double dblCustomMetricVolatility,
 		final double dblForwardVolatility,
 		final double dblFundingVolatility,
 		final double dblForwardFundingCorr)
 		throws Exception
 	{
+		String strManifestMeasure = "FairPremium";
+
 		ForwardLabel fri = stir.forwardLabel()[0];
 
 		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
+
+		mktParams.setCustomMetricVolSurface (
+			CustomMetricLabel.Standard (stir.name() + "_" + strManifestMeasure),
+			new FlatUnivariate (dblCustomMetricVolatility)
+		);
 
 		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblForwardVolatility));
 
@@ -631,8 +639,6 @@ public class STIROptionVolCorrAnalysis {
 		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblForwardFundingCorr));
 
 		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
-
-		String strManifestMeasure = "FairPremium";
 
 		String strCurrency = stir.payCurrency()[0];
 
@@ -664,6 +670,10 @@ public class STIROptionVolCorrAnalysis {
 
 		double dblATMSwapRate = mapSTIRPayerOutput.get ("ATMSwapRate");
 
+		double dblManifestMeasureIntrinsic = mapSTIRPayerOutput.get ("ManifestMeasureIntrinsic");
+
+		double dblManifestMeasureIntrinsicValue = mapSTIRPayerOutput.get ("ManifestMeasureIntrinsicValue");
+
 		double dblForwardPayerIntrinsic = mapSTIRPayerOutput.get ("ForwardIntrinsic");
 
 		double dblSpotPayerPrice = mapSTIRPayerOutput.get ("SpotPrice");
@@ -673,14 +683,17 @@ public class STIROptionVolCorrAnalysis {
 		double dblSpotReceiverPrice = mapSTIRReceiverOutput.get ("SpotPrice");
 
 		System.out.println ("\t[" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblCustomMetricVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblATMSwapRate, 1, 4, 100.) + "% | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardPayerIntrinsic, 1, 2, 1.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotPayerPrice, 1, 2, 10000.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardReceiverIntrinsic, 1, 2, 1.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotReceiverPrice, 1, 2, 10000.));
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsic, 1, 1, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsicValue, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardPayerIntrinsic, 1, 0, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotPayerPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardReceiverIntrinsic, 1, 0, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotReceiverPrice, 1, 4, 1.));
 	}
 
 	public static final void main (
@@ -717,6 +730,7 @@ public class STIROptionVolCorrAnalysis {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
+		double[] adblCustomMetricVolatility = new double[] {0.1, 0.5};
 		double[] adblForwardVolatility = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
 		double[] adblFundingVolatility = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
 		double[] adblForwardFundingCorr = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
@@ -725,29 +739,36 @@ public class STIROptionVolCorrAnalysis {
 
 		System.out.println ("\t\tATM Swap Rate(%)");
 
-		System.out.println ("\t\tForward Intrinsic Payer ATM Price");
+		System.out.println ("\t\tOption Intrinsic (bp)");
 
-		System.out.println ("\t\tSpot Payer STIR Option Price (bp)");
+		System.out.println ("\t\tOption Intrinsic Value");
 
-		System.out.println ("\t\tForward Intrinsic Receiver ATM Price");
+		System.out.println ("\t\tForward Intrinsic Payer (bp)");
 
-		System.out.println ("\t\tSpot Receiver STIR Option Price (bp)");
+		System.out.println ("\t\tSpot Payer STIR Option Price");
+
+		System.out.println ("\t\tForward Intrinsic Receiver (bp)");
+
+		System.out.println ("\t\tSpot Receiver STIR Option Price");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
-		for (double dblForwardVolatility : adblForwardVolatility) {
-			for (double dblFundingVolatility : adblFundingVolatility) {
-				for (double dblForwardFundingCorr : adblForwardFundingCorr)
-					VolCorrScenario (
-						stir,
-						valParams,
-						mktParams,
-						dblForwardVolatility,
-						dblFundingVolatility,
-						dblForwardFundingCorr
-					);
+		for (double dblCustomMetricVolatility : adblCustomMetricVolatility) {
+			for (double dblForwardVolatility : adblForwardVolatility) {
+				for (double dblFundingVolatility : adblFundingVolatility) {
+					for (double dblForwardFundingCorr : adblForwardFundingCorr)
+						VolCorrScenario (
+							stir,
+							valParams,
+							mktParams,
+							dblCustomMetricVolatility,
+							dblForwardVolatility,
+							dblFundingVolatility,
+							dblForwardFundingCorr
+						);
+				}
 			}
 		}
 	}
